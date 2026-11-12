@@ -33,7 +33,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-27 | todo | | | | | |
 | RT-28 | todo | | | | | |
 | RT-29 | todo | | | | | |
-| RT-30 | partial (indexes done; claims prepared, awaiting human) | rt-30-indexes | | | | 8 composite indexes added + static coverage test; claims plan + dry-run backfill script only, rules and auth untouched |
+| RT-30 | partial (indexes done; claims prepared, awaiting human) | rt-30-indexes | 4bc7d08 (merge) | PASS | orchestrator-reviewed (JSON indexes, dry-run default script) + integration gate | 8 composite indexes added + static coverage test; claims plan + dry-run backfill script only, rules and auth untouched |
 | RT-31 | todo | | | | | |
 | RT-32 | todo | | | | | |
 | RT-33 | todo | | | | | |
