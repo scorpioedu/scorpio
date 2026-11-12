@@ -243,6 +243,9 @@ Scorpio includes a dedicated research dashboard to monitor the performance of it
    npm run dev
    ```
 
+### ✅ Continuous Integration
+Every pull request and push to `main` runs `.github/workflows/ci.yml`: typecheck, ESLint (non-blocking until the baseline is cleared), Jest, the Firebase-emulator security suite, `next build`, `npm audit` (non-blocking for now) and a gitleaks secret scan. Reproduce locally with `npm run typecheck`, `npm run test:ci` and `npm run test:security` (needs Java for the emulators). Run `npm ci` in both the root and `functions/`.
+
 ### 🚀 Deployment
 Deploy to Firebase Hosting & Functions:
 ```bash
