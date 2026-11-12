@@ -1,6 +1,7 @@
 import {
   connectClientEmulators,
   isEmulatorModeEnabled,
+  resolveEmulatorPorts,
   planAdminInit,
 } from "@/lib/firebase-emulator";
 
@@ -26,6 +27,18 @@ describe("client emulator wiring (L-012)", () => {
     expect(c.connectAuthEmulator).toHaveBeenCalledWith(services.auth, "http://127.0.0.1:9099", { disableWarnings: true });
     expect(c.connectFirestoreEmulator).toHaveBeenCalledWith(services.db, "127.0.0.1", 8080);
     expect(c.connectStorageEmulator).toHaveBeenCalledWith(services.storage, "127.0.0.1", 9199);
+  });
+
+  it("uses port overrides when provided and falls back on invalid values", () => {
+    const c = makeConnectors();
+    connectClientEmulators("true", services, c, { auth: "19099", firestore: "abc", storage: "" });
+    expect(c.connectAuthEmulator).toHaveBeenCalledWith(services.auth, "http://127.0.0.1:19099", { disableWarnings: true });
+    expect(c.connectFirestoreEmulator).toHaveBeenCalledWith(services.db, "127.0.0.1", 8080);
+    expect(c.connectStorageEmulator).toHaveBeenCalledWith(services.storage, "127.0.0.1", 9199);
+  });
+
+  it("resolveEmulatorPorts defaults are unchanged", () => {
+    expect(resolveEmulatorPorts()).toEqual({ auth: 9099, firestore: 8080, storage: 9199 });
   });
 
   it("only treats the exact string 'true' as enabled", () => {

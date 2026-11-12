@@ -43,3 +43,23 @@ npm run dev            # or: npx next dev --webpack -p 3100
 - Emulator data is empty and is lost on exit unless you use `--export-on-exit`.
 - Not emulated: Gemini, Polar billing, Resend email. Features calling them will fail locally.
 - The Functions emulator is not part of `dev:emulators`.
+
+## Alternate ports (when 8080/9099/9199 are taken)
+
+Another project's emulators may hold the default ports. Use the alternate config (auth 19099, firestore 18080, storage 19199, UI 14001):
+
+```bash
+npm run dev:emulators:alt
+```
+
+and set in `.env.local` (restart `next dev` afterwards; `NEXT_PUBLIC_*` values are inlined):
+
+```
+NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT=19099
+NEXT_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT=18080
+NEXT_PUBLIC_FIREBASE_STORAGE_EMULATOR_PORT=19199
+FIRESTORE_EMULATOR_HOST=127.0.0.1:18080
+FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:19099
+```
+
+Unset or invalid port overrides fall back to the defaults. `firebase.test.json` is not used or modified.

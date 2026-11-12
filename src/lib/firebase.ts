@@ -71,7 +71,13 @@ const storage = getStorage(app);
 connectClientEmulators(
   useEmulators,
   { auth, db, storage },
-  { connectAuthEmulator, connectFirestoreEmulator, connectStorageEmulator }
+  { connectAuthEmulator, connectFirestoreEmulator, connectStorageEmulator },
+  // Literal references so Next.js inlines them at build time.
+  {
+    auth: process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT,
+    firestore: process.env.NEXT_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT,
+    storage: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_EMULATOR_PORT,
+  }
 );
 
 let _genAI: any = null;

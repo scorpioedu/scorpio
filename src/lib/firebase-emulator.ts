@@ -22,18 +22,36 @@ export type EmulatorConnectors = {
   connectStorageEmulator: (storage: FirebaseStorage, host: string, port: number) => void;
 };
 
+export type EmulatorPortOverrides = { auth?: string; firestore?: string; storage?: string };
+
+function parsePort(value: string | undefined, fallback: number): number {
+  const n = Number(value);
+  return value && Number.isInteger(n) && n > 0 && n < 65536 ? n : fallback;
+}
+
+/** Applies optional port overrides (raw env strings); invalid or empty values fall back to defaults. */
+export function resolveEmulatorPorts(overrides: EmulatorPortOverrides = {}) {
+  return {
+    auth: parsePort(overrides.auth, EMULATOR_PORTS.auth),
+    firestore: parsePort(overrides.firestore, EMULATOR_PORTS.firestore),
+    storage: parsePort(overrides.storage, EMULATOR_PORTS.storage),
+  };
+}
+
 /** Connects the client SDKs to local emulators when enabled. Returns whether it connected. */
 export function connectClientEmulators(
   flag: string | undefined,
   services: { auth: Auth; db: Firestore; storage: FirebaseStorage },
-  connectors: EmulatorConnectors
+  connectors: EmulatorConnectors,
+  portOverrides: EmulatorPortOverrides = {}
 ): boolean {
   if (!isEmulatorModeEnabled(flag)) return false;
-  connectors.connectAuthEmulator(services.auth, `http://${EMULATOR_HOST}:${EMULATOR_PORTS.auth}`, {
+  const ports = resolveEmulatorPorts(portOverrides);
+  connectors.connectAuthEmulator(services.auth, `http://${EMULATOR_HOST}:${ports.auth}`, {
     disableWarnings: true,
   });
-  connectors.connectFirestoreEmulator(services.db, EMULATOR_HOST, EMULATOR_PORTS.firestore);
-  connectors.connectStorageEmulator(services.storage, EMULATOR_HOST, EMULATOR_PORTS.storage);
+  connectors.connectFirestoreEmulator(services.db, EMULATOR_HOST, ports.firestore);
+  connectors.connectStorageEmulator(services.storage, EMULATOR_HOST, ports.storage);
   return true;
 }
 
