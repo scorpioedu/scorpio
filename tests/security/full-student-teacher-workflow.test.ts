@@ -32,6 +32,8 @@ jest.mock('../../src/lib/firebase-admin', () => {
         uid: token,
         email: `${token}@example.test`,
         auth_time: Math.floor(Date.now() / 1000),
+        // RT-06: platform admins are identified by the `admin: true` custom claim, not a shared secret.
+        ...(token === 'e2e-admin-root' ? { admin: true } : {}),
       }),
       deleteUser: jest.fn(async () => undefined),
     },
@@ -52,6 +54,8 @@ import { POST as networkMembership } from '../../src/app/api/teacher/network/mem
 import { POST as cleanupStudent } from '../../src/app/api/teacher/students/cleanup/route';
 import { GET as exportAccount, DELETE as deleteAccount } from '../../src/app/api/account/route';
 import { adminDb } from '../../src/lib/firebase-admin';
+
+const ADMIN_UID = 'e2e-admin-root';
 
 const apiReq = (
   path: string,
@@ -90,7 +94,6 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
   let submission2Id: string;
 
   beforeAll(async () => {
-    process.env.ADMIN_SECRET = 'test-admin-secret';
     process.env.GEMINI_API_KEY = 'test-gemini-key';
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = 'demo-scorpio-security.appspot.com';
 
@@ -168,9 +171,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
   test('1. Teacher invite code generation, validation, and teacher registration', async () => {
     // Admin generates a teacher invite code
     const genRes = await teacherCode(
-      apiReq('auth/teacher-code', null, { action: 'generate', label: 'E2E Physics Teacher' }, 'POST', {
-        'x-admin-secret': 'test-admin-secret',
-      })
+      apiReq('auth/teacher-code', ADMIN_UID, { action: 'generate', label: 'E2E Physics Teacher' })
     );
     expect(genRes.status).toBe(200);
     const genData = await genRes.json();
@@ -722,10 +723,8 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     const colGenRes = await teacherCode(
       apiReq(
         'auth/teacher-code',
-        null,
-        { action: 'generate', label: 'Colleague Invite', organizationId },
-        'POST',
-        { 'x-admin-secret': 'test-admin-secret' }
+        ADMIN_UID,
+        { action: 'generate', label: 'Colleague Invite', organizationId }
       )
     );
     colleagueInviteCode = (await colGenRes.json()).code;
@@ -785,9 +784,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
 
     // An outsider teacher from another school cannot access any of these records
     const outInviteRes = await teacherCode(
-      apiReq('auth/teacher-code', null, { action: 'generate', label: 'Outsider' }, 'POST', {
-        'x-admin-secret': 'test-admin-secret',
-      })
+      apiReq('auth/teacher-code', ADMIN_UID, { action: 'generate', label: 'Outsider' })
     );
     const outCode = (await outInviteRes.json()).code;
     await register(

@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue as FieldValue } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
+import { withAuthorizedRequest } from '@/lib/auth-verify';
 
 function generateCode(): string {
   const segment = () => randomBytes(2).toString('hex').toUpperCase();
   return `SCORP-${segment()}-${segment()}`;
 }
 
-function requireAdmin(req: NextRequest): boolean {
-  const secret = req.headers.get('x-admin-secret');
-  return !!(secret && secret === process.env.ADMIN_SECRET);
-}
-
-export async function POST(req: NextRequest) {
+async function handleRequestAccess(req: NextRequest) {
   try {
     const body = await req.json();
     const { action } = body;
@@ -21,8 +17,6 @@ export async function POST(req: NextRequest) {
 
     // ─── LIST (admin only) ────────────────────────────────────────────────────
     if (action === 'list') {
-      if (!requireAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
       const snapshot = await adminDb
         .collection('accessRequests')
         .orderBy('createdAt', 'desc')
@@ -50,8 +44,6 @@ export async function POST(req: NextRequest) {
 
     // ─── APPROVE (admin only) — generates invite code + marks request approved ─
     if (action === 'approve') {
-      if (!requireAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
       const { id } = body;
       if (!id) return NextResponse.json({ error: 'Missing request id' }, { status: 400 });
 
@@ -92,8 +84,6 @@ export async function POST(req: NextRequest) {
 
     // ─── REJECT (admin only) ──────────────────────────────────────────────────
     if (action === 'reject') {
-      if (!requireAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
       const { id } = body;
       if (!id) return NextResponse.json({ error: 'Missing request id' }, { status: 400 });
 
@@ -154,4 +144,14 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// list, approve and reject require the admin claim; submitting a request stays public.
+const ADMIN_ACTIONS = new Set(['list', 'approve', 'reject']);
+const adminRequestAccess = withAuthorizedRequest(handleRequestAccess, { admin: true });
+
+export async function POST(req: NextRequest) {
+  let action: unknown;
+  try { action = (await req.clone().json())?.action; } catch { action = undefined; }
+  return typeof action === 'string' && ADMIN_ACTIONS.has(action) ? adminRequestAccess(req) : handleRequestAccess(req);
 }

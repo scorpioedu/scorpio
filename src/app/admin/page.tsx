@@ -1,59 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useAdminAccess } from "@/lib/use-admin-access";
+import { logout } from "@/lib/firebase";
 import { SpaceBackground } from "@/components/ui/space-background";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AccessRequests } from "@/components/admin/access-requests";
 import { TeacherInviteCodes } from "@/components/admin/teacher-invite-codes";
 import { FirestoreExplorer } from "@/components/admin/firestore-explorer";
 import { GlobalAnalytics } from "@/components/admin/global-analytics";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShieldCheck, Eye, EyeOff, Lock, Database, BarChart3 } from "lucide-react";
+import { ShieldCheck, Lock, Database, BarChart3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminPage() {
-  const [secret, setSecret] = useState("");
-  const [showSecret, setShowSecret] = useState(false);
-  const [authed, setAuthed] = useState(false);
-  const [checking, setChecking] = useState(false);
-  const [error, setError] = useState("");
-  
+  const access = useAdminAccess();
   const [activeTab, setActiveTab] = useState<"access" | "database" | "analytics">("access");
 
-  const handleUnlock = async () => {
-    if (!secret.trim()) {
-      setError("Enter the admin secret.");
-      return;
-    }
-    setChecking(true);
-    setError("");
-    try {
-      // Verify the secret by attempting a list call
-      const res = await fetch("/api/auth/teacher-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-secret": secret.trim(),
-        },
-        body: JSON.stringify({ action: "list" }),
-      });
-      if (res.status === 401) {
-        setError("Invalid admin secret.");
-        return;
-      }
-      setAuthed(true);
-    } catch {
-      setError("Network error. Please try again.");
-    } finally {
-      setChecking(false);
-    }
-  };
-
-  if (!authed) {
+  if (access !== "admin") {
+    const message =
+      access === "loading" ? "Checking your account…"
+      : access === "signed-out" ? "Sign in with an administrator account to continue."
+      : "This account does not have administrator access.";
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
         <SpaceBackground />
@@ -71,40 +42,15 @@ export default function AdminPage() {
                 </div>
               </div>
               <CardTitle className="text-xl">Admin Access</CardTitle>
-              <CardDescription>Enter the admin secret to continue.</CardDescription>
+              <CardDescription>{message}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="admin-secret">Admin Secret</Label>
-                <div className="relative">
-                  <Input
-                    id="admin-secret"
-                    type={showSecret ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    value={secret}
-                    onChange={(e) => setSecret(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && !checking && handleUnlock()}
-                    className="pr-10"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowSecret(!showSecret)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              {error && (
-                <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
-                  {error}
-                </p>
-              )}
-              <Button className="w-full" onClick={handleUnlock} disabled={checking}>
-                {checking ? "Verifying…" : "Unlock"}
-              </Button>
-            </CardContent>
+            {access === "signed-out" && (
+              <CardContent>
+                <Button className="w-full" asChild>
+                  <Link href="/login">Sign in</Link>
+                </Button>
+              </CardContent>
+            )}
           </Card>
         </motion.div>
       </div>
@@ -163,7 +109,7 @@ export default function AdminPage() {
           <Button 
             variant="outline" 
             className="w-full justify-start text-muted-foreground hover:text-foreground"
-            onClick={() => setAuthed(false)}
+            onClick={() => { void logout(); }}
           >
             Log Out
           </Button>
@@ -188,8 +134,8 @@ export default function AdminPage() {
                   <p className="text-muted-foreground">Manage waitlist access requests and teacher invite codes.</p>
                 </div>
                 
-                <AccessRequests adminSecret={secret} />
-                <TeacherInviteCodes adminSecret={secret} />
+                <AccessRequests />
+                <TeacherInviteCodes />
               </motion.div>
             )}
 
@@ -221,7 +167,7 @@ export default function AdminPage() {
                 </div>
                 
                 <div className="flex-1 min-h-0">
-                  <FirestoreExplorer adminSecret={secret} />
+                  <FirestoreExplorer />
                 </div>
               </motion.div>
             )}

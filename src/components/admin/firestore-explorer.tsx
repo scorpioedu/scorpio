@@ -1,5 +1,6 @@
 "use client";
 
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,11 +11,7 @@ import { Loader2, Database, ChevronLeft, ChevronRight, RefreshCw, FileJson, Filt
 import { motion, AnimatePresence } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-interface FirestoreExplorerProps {
-  adminSecret: string;
-}
-
-export function FirestoreExplorer({ adminSecret }: FirestoreExplorerProps) {
+export function FirestoreExplorer() {
   const [collections, setCollections] = useState<string[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
   const [documents, setDocuments] = useState<any[]>([]);
@@ -30,11 +27,10 @@ export function FirestoreExplorer({ adminSecret }: FirestoreExplorerProps) {
   useEffect(() => {
     async function fetchCollections() {
       try {
-        const res = await fetch("/api/admin/firestore", {
+        const res = await authenticatedFetch("/api/admin/firestore", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-admin-secret": adminSecret,
           },
           body: JSON.stringify({ action: "listCollections" }),
         });
@@ -49,7 +45,7 @@ export function FirestoreExplorer({ adminSecret }: FirestoreExplorerProps) {
       }
     }
     fetchCollections();
-  }, [adminSecret]);
+  }, []);
 
   const loadDocuments = async (cursor: string | null = null, direction: "next" | "prev" | "refresh" = "refresh") => {
     if (!selectedCollection) return;
@@ -57,11 +53,10 @@ export function FirestoreExplorer({ adminSecret }: FirestoreExplorerProps) {
     setError("");
 
     try {
-      const res = await fetch("/api/admin/firestore", {
+      const res = await authenticatedFetch("/api/admin/firestore", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({
           action: "queryCollection",
