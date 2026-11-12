@@ -7,7 +7,7 @@
 [![Gemini 3.8](https://img.shields.io/badge/Gemini_3.8_Flash-AI-8E75B2?style=flat&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
 [![Polar](https://img.shields.io/badge/Polar-Subscription-blue?style=flat)](https://polar.sh/)
 
-![Scorpio Header](./public/og-image.png)
+![Scorpio Header](./public/og-image.jpg)
 
 > **Empower Thinking. Stop AI Solvers.**
 

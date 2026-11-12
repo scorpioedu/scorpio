@@ -199,7 +199,7 @@ export function DemoCarousel() {
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   className="rounded-lg border shadow-2xl w-full h-full object-cover"
                   title={`Current: ${slide.title}`}
                 />

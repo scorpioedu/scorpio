@@ -46,3 +46,8 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - Firestore TTL policy: in the Firebase console (Firestore > Time-to-live) add a policy on collection group `rate_limits`, field `expiresAt`. New buckets carry it (window end); old documents without it are never deleted by the policy and can be removed once by hand. Without a policy the collection only grows (one small document per user/route/IP); nothing breaks.
 - No composite index is needed (all access is by document id).
 - Confirm production runs on Vercel so `x-vercel-forwarded-for` is set. Per-IP limiting is only effective behind Vercel. On Firebase Hosting (the documented deployment) there is no trusted client IP, so only generous global caps apply (600/min for teacher-code validate and request-access, none for github/stats): brute-force protection of invite codes is weak there. Supply a trusted header (or move to Vercel) and tell us which one, and `getClientIp` can read it.
+
+## RT-24: media (owner actions)
+- Landing/demo videos are 300 s of screen recording squeezed to about 4.6-4.9 MB (720p, CRF 35 H.264 / CRF 49 VP9). If sharper text is wanted, re-export from the original recording and host the file in Firebase Storage or a CDN rather than in `public/`.
+- Deleted files stay in repository history (about 85 MB of videos/images). Shrinking clone size needs a history rewrite coordinated by the owner.
+- Social crawlers cache `/og-image.png`; re-scrape with the Facebook Sharing Debugger / LinkedIn Post Inspector after deploy.
