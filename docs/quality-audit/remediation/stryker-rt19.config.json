@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npx jest __tests__/auth-verify.test.ts __tests__/auth-wrapper-rt13.test.ts __tests__/auth-wrapper-rt19.test.ts --silent --bail"
+  },
+  "mutate": ["src/lib/auth-verify.ts"],
+  "coverageAnalysis": "off",
+  "concurrency": 4,
+  "timeoutMS": 60000,
+  "tempDirName": ".stryker-tmp",
+  "reporters": ["clear-text", "json"],
+  "jsonReporter": { "fileName": "reports/mutation/rt19-mutation.json" },
+  "cleanTempDir": true
+}

@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
+import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
 
 interface WaypointQuestion {
   id?: string;
@@ -136,14 +137,8 @@ export default function WaypointsPage() {
   }, [user, authLoading, fetchWaypoints]);
 
 
-  const isWaypointLocked = (waypoint: Waypoint, index: number): boolean => {
-    if (!isFreePlan) return false;
-    if (activeTab === "network") return true;
-    if (starterIds.length > 0) {
-      return !starterIds.includes(waypoint.id);
-    }
-    return index >= 3;
-  };
+  const isWaypointLocked = (waypoint: Waypoint, index: number): boolean =>
+    isWaypointLockedByPlan(waypoint.id, index, starterIds, isFreePlan, activeTab);
 
   const handleFork = async (waypoint: Waypoint, index: number) => {
     if (isWaypointLocked(waypoint, index)) {
