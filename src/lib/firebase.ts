@@ -1,8 +1,9 @@
 import { initializeApp, getApps } from "firebase/app";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider, getToken } from "firebase/app-check";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User, sendPasswordResetEmail, updateEmail, updatePassword, deleteUser } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where, writeBatch, deleteDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
+import { connectClientEmulators } from "./firebase-emulator";
+import { getAuth, connectAuthEmulator,signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User, sendPasswordResetEmail, updateEmail, updatePassword, deleteUser } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator,doc, setDoc, getDoc, collection, getDocs, query, where, writeBatch, deleteDoc } from "firebase/firestore";
+import { getStorage, connectStorageEmulator,ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { getAI, GoogleAIBackend } from "firebase/ai";
 import { UserProfile, UserRole } from "./types";
 const firebaseConfig = {
@@ -19,8 +20,12 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 // Initialize App Check (client-side only, before Firebase AI / Vertex AI initialization)
+// Emulator mode is read as a literal so Next.js can inline it at build time.
+const useEmulators = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS;
+
 let appCheck: any = null;
-if (typeof window !== "undefined") {
+// App Check (reCAPTCHA) is skipped in emulator mode: emulators do not enforce it and the demo project has no site key.
+if (typeof window !== "undefined" && useEmulators !== "true") {
   if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN) {
     // @ts-ignore
     self.FIREBASE_APPCHECK_DEBUG_TOKEN =
@@ -62,6 +67,18 @@ if (typeof window !== "undefined") {
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+
+connectClientEmulators(
+  useEmulators,
+  { auth, db, storage },
+  { connectAuthEmulator, connectFirestoreEmulator, connectStorageEmulator },
+  // Literal references so Next.js inlines them at build time.
+  {
+    auth: process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT,
+    firestore: process.env.NEXT_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT,
+    storage: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_EMULATOR_PORT,
+  }
+);
 
 let _genAI: any = null;
 export function getGenAIInstance() {
