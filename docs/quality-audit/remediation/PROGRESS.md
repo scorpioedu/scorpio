@@ -36,4 +36,4 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-30 | partial (indexes done; claims prepared, awaiting human) | rt-30-indexes | 4bc7d08 (merge) | PASS | orchestrator-reviewed (JSON indexes, dry-run default script) + integration gate | 8 composite indexes added + static coverage test; claims plan + dry-run backfill script only, rules and auth untouched |
 | RT-31 | todo | | | | | |
 | RT-32 | merged (partial) | rt-32-a11y | 3916ea5 (merge) | PASS | PASS | captions need human VTT; Lighthouse/axe not measured; dark destructive button now vivid red; drawer gets dialog semantics instead of Radix Sheet |
-| RT-33 | todo | | | | | |
+| RT-33 | partial (history rewrite human-needed) | rt-33-repo-hygiene | cea3740 (merge) | PASS | orchestrator-reviewed (4 unreferenced root files removed, docs only) + integration gate | deploy path NOT decided (RT-33-DEPLOY-PATHS.md); history rewrite runbook for owner; resume PDF untouched; .firebaserc commits real project id (reported) |
