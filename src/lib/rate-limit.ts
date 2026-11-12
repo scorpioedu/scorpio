@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from './firebase-admin';
 import { getClientIp } from './client-ip';
-import { RATE_LIMITS, type RateLimitKind } from './rate-limit-config';
+import { RATE_LIMITS, type RateLimitKind, type RateLimitPolicy } from './rate-limit-config';
 
 export interface RateLimitConfig {
   windowMs: number;
@@ -95,7 +95,17 @@ export async function checkRateLimit(
  * Firestore outage never turns routes that did not have a limiter before into 429s.
  */
 export async function enforceRateLimit(req: NextRequest, kind: RateLimitKind, uid?: string | null): Promise<NextResponse | null> {
-  const policy = RATE_LIMITS[kind];
+  const policy: RateLimitPolicy = RATE_LIMITS[kind];
+  if (!uid && !getClientIp(req.headers) && policy.noIp !== undefined) {
+    // No trusted IP (not behind Vercel): per-IP limiting is impossible, so never share a tiny bucket.
+    if (policy.noIp === "skip") return null;
+    const anon = await checkRateLimit(req, "anon", `anon_${kind}`, { windowMs: policy.windowMs, maxRequests: policy.noIp });
+    if (anon.allowed || anon.unavailable) return null;
+    return NextResponse.json(
+      { error: anon.error },
+      { status: 429, headers: anon.retryAfterSeconds ? { "Retry-After": String(anon.retryAfterSeconds) } : undefined }
+    );
+  }
   const result = await checkRateLimit(req, uid, kind, policy);
   if (result.allowed) return null;
   if (result.unavailable && policy.onError === "open") return null;

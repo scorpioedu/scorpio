@@ -12,6 +12,12 @@ export interface RateLimitPolicy {
   windowMs: number;
   maxRequests: number;
   onError: "open" | "closed";
+  /**
+   * Anonymous (IP-keyed) routes only: what to do when no trusted client IP is available (e.g. Firebase Hosting
+   * sends no x-vercel-forwarded-for). "skip" = no limit; a number = one generous global cap per window under
+   * `anon_<kind>`, which always fails open. Never a small shared bucket, which would lock out every visitor.
+   */
+  noIp?: "skip" | number;
 }
 
 const MINUTE = 60_000;
@@ -41,9 +47,9 @@ export const RATE_LIMITS = {
   write: { windowMs: MINUTE, maxRequests: 120, onError: "open" },
 
   // Unauthenticated routes, per trusted client IP.
-  teacherCode: { windowMs: MINUTE, maxRequests: 30, onError: "closed" },
-  requestAccess: { windowMs: MINUTE, maxRequests: 20, onError: "closed" },
-  githubStats: { windowMs: MINUTE, maxRequests: 30, onError: "open" },
+  teacherCode: { windowMs: MINUTE, maxRequests: 30, onError: "closed", noIp: 600 },
+  requestAccess: { windowMs: MINUTE, maxRequests: 20, onError: "closed", noIp: 600 },
+  githubStats: { windowMs: MINUTE, maxRequests: 30, onError: "open", noIp: "skip" },
 } as const satisfies Record<string, RateLimitPolicy>;
 
 export type RateLimitKind = keyof typeof RATE_LIMITS;

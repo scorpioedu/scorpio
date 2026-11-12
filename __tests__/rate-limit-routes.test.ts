@@ -192,3 +192,38 @@ describe('route wiring', () => {
     expect(res.status).not.toBe(429);
   });
 });
+
+// Firebase Hosting sends no trusted IP header: a tiny shared bucket would lock every visitor out.
+describe('anonymous routes with no trusted client IP', () => {
+  const noIp = (extra: Record<string, string> = {}) => post('/api/auth/teacher-code', extra, { action: 'validate', code: 'X' });
+
+  test('a burst of 100 teacher-code validates is not limited, the 601st in the window is', async () => {
+    for (let i = 0; i < 100; i++) expect(await enforceRateLimit(noIp({ 'x-forwarded-for': `10.0.0.${i}` }), 'teacherCode')).toBeNull();
+    fake.docs.set('rate_limits/anon_teacherCode_anon', { count: 600, windowStart: Date.now() });
+    const blocked = await enforceRateLimit(noIp({ 'x-forwarded-for': '10.9.9.9' }), 'teacherCode');
+    expect(blocked?.status).toBe(429);
+    expect(blocked?.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  test('the 600th call passes and the real 601st is blocked', async () => {
+    for (let i = 0; i < 600; i++) expect(await enforceRateLimit(noIp(), 'requestAccess')).toBeNull();
+    expect((await enforceRateLimit(noIp(), 'requestAccess'))?.status).toBe(429);
+  });
+
+  test('a Firestore outage does not block anonymous no-IP callers', async () => {
+    fake.failWith = new Error('UNAVAILABLE');
+    expect(await enforceRateLimit(noIp(), 'teacherCode')).toBeNull();
+  });
+
+  test('with a Vercel header the per-IP limit still applies and x-forwarded-for rotation does not bypass it', async () => {
+    for (let i = 0; i < RATE_LIMITS.teacherCode.maxRequests; i++) {
+      expect(await enforceRateLimit(noIp({ 'x-vercel-forwarded-for': IP, 'x-forwarded-for': `10.2.2.${i}` }), 'teacherCode')).toBeNull();
+    }
+    expect((await enforceRateLimit(noIp({ 'x-vercel-forwarded-for': IP, 'x-forwarded-for': '10.8.8.8' }), 'teacherCode'))?.status).toBe(429);
+  });
+
+  test('github/stats with no IP is never limited and writes nothing', async () => {
+    for (let i = 0; i < 100; i++) expect(await enforceRateLimit(post('/api/github/stats', { 'x-forwarded-for': `10.3.3.${i}` }), 'githubStats')).toBeNull();
+    expect(fake.transactions).toBe(0);
+  });
+});
