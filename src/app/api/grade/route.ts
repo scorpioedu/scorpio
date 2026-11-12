@@ -127,15 +127,24 @@ async function handlePost(req: NextRequest) {
             // Combine question-specific rubric (correctAnswer) with global rubric
             const combinedRubric = [question.correctAnswer, globalRubric].filter(Boolean).join("\n\nGlobal Assignment Rubric:\n");
             const result = await gradeResponse(question.text, ans.answer, combinedRubric, studentNames);
-            feedback = result.feedback;
-            reasoning = result.reasoning || "";
-            
-            // Track usage
+            // Track usage (the call was made and billed even if the result needs review)
             if (result.usage) {
                 totalPromptTokens += result.usage.inputTokens;
                 totalCandidateTokens += result.usage.outputTokens;
             }
-            
+
+            if (result.needsReview) {
+                // Suspected prompt injection or implausible full marks: never auto-finalise.
+                if (totalPromptTokens > 0 || totalCandidateTokens > 0) {
+                    await recordUsage(organizationId, "grading", totalPromptTokens, totalCandidateTokens);
+                }
+                if (!submissionData?.graded) await submissionRef.update({ status: "pending_review", gradingError: result.reviewReason || "Teacher review required", graded: false });
+                return NextResponse.json({ success: false, pendingReview: true, reason: result.reviewReason }, { status: 200 });
+            }
+
+            feedback = result.feedback;
+            reasoning = result.reasoning || "";
+
             // Calculate score based on points
             // result.score is out of 10
             const rawScore = result.score; // 0-10

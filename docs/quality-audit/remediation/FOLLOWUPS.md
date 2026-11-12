@@ -28,3 +28,10 @@
 - `checkRateLimit` (`src/lib/rate-limit.ts`) still derives its identifier from the raw `x-forwarded-for` when no user id is given. The landing route now passes a hashed trusted IP, but other callers (C-002) are unchanged.
 - A message is counted before the provider call; if the provider or budget fails after admission, the visitor's counter is not refunded.
 - Add a TTL policy on `landing_visitors` and `rate_limits` documents so they do not accumulate.
+
+## RT-07
+- `zod` is a root dependency but not a `functions/` dependency, and adding one was out of scope, so the grader-reply schema is a dependency-free validator in `functions/src/grading-schema.ts` (imported by the root app via a relative path, like `metering.ts`). Once `functions/` can take `zod` (with RT-02), swap the validator for a zod schema (`z.coerce.number().min(0).max(10)` plus the text fields) behind the same `parseGraderReply` signature.
+- Budget holds in `functions/src/grading.ts` `gradeResponseAI` (RT-04 follow-up check): a provider exception between `reserveBudget` and `settleBudget` (network error, 5xx, safety block) is NOT settled, so the hold stays `pending` until `expireStaleReservations` (30 min) expires it uncharged; a response without `usageMetadata` throws "reservation retained" by design and leaves the hold the same way. Parse/schema failures are fine because the settle happens before parsing. Fix (not done, to keep RT-07 in scope): wrap the provider call and settle with the input estimate on failure, as `callGeminiDirect` does in `src/lib/ai/config.ts`.
+- The injection heuristic is deliberately conservative regex; tune the patterns in `INJECTION_PATTERNS` from real `pending_review` volume. `responseSchema` in `generationConfig` (F-001 suggestion) is not used.
+- `synthesizeRubric`, `generateAssignmentQuestions` and `parseQuestionsFromText` still interpolate untrusted topic/learning-objective/pasted text into the user prompt without delimiters or a system instruction.
+- `src/lib/ai/assignment.ts` still contains an `// @ts-ignore` and `any` types (pre-existing, untouched).
