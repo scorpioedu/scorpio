@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regression Gate. Run from the root of any worktree of this repo: bash docs/quality-audit/remediation/gate.sh
 # Exit non-zero on any failure. Never reads .env.local; uses dummy public Firebase values for the build.
-# Env: GATE_NODE_BIN (default: nvm Node 22.22.0 bin), GATE_SKIP_BUILD=1 to skip build.
+# Env: GATE_PORT_OFFSET (shift emulator ports), GATE_NODE_BIN (default: nvm Node 22.22.0 bin), GATE_SKIP_BUILD=1 to skip build.
 set -u
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 export PATH="${GATE_NODE_BIN:-$HOME/.nvm/versions/node/v22.22.0/bin}:$PATH"
@@ -23,7 +23,16 @@ step "security (emulators)"
 LOCK=/tmp/scorpio-gate-emulator.lock
 until mkdir "$LOCK" 2>/dev/null; do sleep 5; done
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
-firebase emulators:exec --only firestore,storage --project demo-scorpio-security --config firebase.test.json \
+CFG=firebase.test.json
+if [ "${GATE_PORT_OFFSET:-0}" != "0" ]; then
+  # Use shifted emulator ports (e.g. when an orphaned emulator holds the default ports).
+  CFG=.firebase.gate.json
+  node -e '
+  const c=JSON.parse(require("fs").readFileSync("firebase.test.json","utf8"));const o=Number(process.argv[1]);
+  for(const k of Object.keys(c.emulators)){if(c.emulators[k]&&c.emulators[k].port)c.emulators[k].port+=o}
+  require("fs").writeFileSync(".firebase.gate.json",JSON.stringify(c))' "$GATE_PORT_OFFSET"
+fi
+firebase emulators:exec --only firestore,storage --project demo-scorpio-security --config "$CFG" \
   "npx --no-install jest --config jest.security.config.cjs --runInBand --json --outputFile=$OUT/security.json" > "$OUT/security.log" 2>&1
 rmdir "$LOCK" 2>/dev/null; trap - EXIT
 if [ ! -s "$OUT/security.json" ]; then bad "security produced no result (see $OUT/security.log)"; else

@@ -11,3 +11,4 @@
 - 2026-11-11 22:48:14 RT-03 attempt1 verifier FAIL (IP header), attempt2 PASS; merged. ESLint ceiling ratcheted to 244/194. Next RT-07.
 - 2026-11-11 23:00:06 RT-07 verifier PASS, merged. ESLint ceiling 242/193. Starting fresh-clone integration check (8 merged tickets).
 - 2026-11-11 23:02:24 Integration check #1 (fresh clone, npm ci root+functions, full gate): PASS (66 security, eslint 242/193, build). Browser smoke: covered by RT-06/RT-22 verifiers (admin pages, signup, login); landing page smoke to do after RT-02. Next: RT-02.
+- 2026-11-11 23:23:00 ENV NOTE: orphaned Firestore emulator (PID 72982, port 8188, project demo-scorpio-security, parent 1) left by an agent's gate run; kill was denied by the permission classifier. Added GATE_PORT_OFFSET to gate.sh so gates can run on shifted ports. Human may 'kill 72982'.
