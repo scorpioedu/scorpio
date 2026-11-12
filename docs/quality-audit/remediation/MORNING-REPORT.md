@@ -18,7 +18,7 @@
 - **Merged and verified (part of the ticket; remainder listed in `FOLLOWUPS.md`):** RT-02, RT-03, RT-06, RT-10, RT-11, RT-12, RT-13, RT-15, RT-16, RT-17, RT-18, RT-20, RT-21, RT-24, RT-29, RT-30, RT-31, RT-32, RT-33.
 - **Prepared, waiting for you (human-needed):** RT-01 (key rotation), RT-06 (admin claim), RT-30 (claims backfill/indexes deploy), RT-33 (deploy path, history rewrite).
 - **Skipped on purpose:** RT-25 (decompose mega pages), RT-26 (data layer), RT-27 (shared package), RT-28 (component/E2E tests). Reasons are in `PROGRESS.md`: large refactors that need RT-28's smoke tests first, or new tooling/dependencies.
-- **Blocked:** none. Three tickets failed their first verification (RT-05 sweep not exported, RT-03 wrong IP header, RT-11 anonymous shared bucket, RT-24 font preload inverted) and passed after a fix; no ticket hit the 3-attempt limit.
+- **Blocked:** none. Four tickets failed their first verification (RT-05 sweep not exported, RT-03 wrong IP header, RT-11 anonymous shared bucket, RT-24 font preload inverted) and passed after a fix; no ticket hit the 3-attempt limit.
 
 Status per finding: `docs/quality-audit/findings-status.csv` (+ `remediation/FINDINGS-STATUS-SUMMARY.md`).
 
@@ -30,7 +30,7 @@ Status per finding: `docs/quality-audit/findings-status.csv` (+ `remediation/FIN
 5. **Deploy order:** web app + functions first (or together), then `firebase deploy --only firestore:rules,storage` (RT-14) and `firebase deploy --only firestore:indexes` (RT-05/04/30). Add a Firestore TTL policy on `rate_limits.expiresAt` (RT-11).
 6. **Enable CI**: push the branch, require the `typecheck`, `jest`, `security`, `build`, `gitleaks` checks on `main`; enable GitHub secret scanning + push protection (`HUMAN-TODO.md`).
 7. **Decide:** deploy path (Vercel vs Firebase Hosting; per-IP rate limits and IP-based protections only work behind Vercel, see RT-11 and `RT-33-DEPLOY-PATHS.md`), the default of a newly created free network (RT-21: today membership creates `none`/0 so AI is refused for it, register creates `active`/50 cents), CSP enforcing after a week of report-only logs (RT-09), whether to rewrite git history (RT-33 runbook; `.git` is 272 MB), the résumé PDF in `public/`, captions for the demo videos.
-8. Optional cleanup: `git config --unset core.hooksPath` (an agent's `npm install` set it to `.husky/_`; developers get the husky pre-commit hook via `npm ci`).
+8. (Done by the orchestrator at the end) `core.hooksPath` was set to `.husky/_` in the shared git config by an agent's `npm install`; it was unset. Developers who run `npm ci` get the husky pre-commit hook again (and it will block commits touching files with legacy lint errors).
 9. Kill the leftover test emulator if still running: `lsof -iTCP:8188 -sTCP:LISTEN` then `kill <pid>` (a Firestore emulator started by one of the gate runs; I was not permitted to kill it).
 
 ## Intentional behaviour changes (full list: `BEHAVIOUR-CHANGES.md`)
@@ -47,7 +47,7 @@ Status per finding: `docs/quality-audit/findings-status.csv` (+ `remediation/FIN
 
 ## Incidents and caveats (honest list)
 - **Hard-rule slips:** (1) one dev server in the RT-17 work inherited `GEMINI_API_KEY` from your shell and sent ONE real request to Google (HTTP 400, no charge reported); (2) during RT-24 verification servers inherited the shell env and one read-only request with `GITHUB_TOKEN` to GitHub's API may have been made. Both logged in `LOG.md`; from then on all commands ran with provider variables unset. One RT-29 helper script also briefly tried real Google credentials without emulator variables (failed `invalid_grant`, no data access).
-- A shared git setting (`core.hooksPath`) and a leftover emulator process remain (steps 8 and 9).
+- A leftover test emulator process may still be running (step 9).
 - No Lighthouse/axe scores were measured (tools not available); some live flows were reasoned from code only: Google sign-in popup, Polar checkout, tutor microphone, lockdown fullscreen, calculator (loads desmos.com), real Gemini calls (no live AI was exercised; the major `@google/genai` bump in `functions/` was verified against the SDK's types and a stubbed request only).
 - `npm ci` needs npm 11 (the lockfile is npm-11 generated; npm 10 only warns). `next build` downloads Google Fonts, so it can flake offline (retry).
 - Remaining quality debt: 20 ESLint errors (React-compiler effect rules and CJS requires), ~20 API routes without body schemas, stricter ESLint rules not enabled (counts in `RT-31-RESULT.md`), pre-commit hook blocks commits touching the ~80 files that still have lint errors until they are fixed (see the suppressions recommendation in `FOLLOWUPS.md`).
