@@ -148,3 +148,4 @@
 - `/login`, `/signup` have no `<h1>` (`CardTitle` renders a `div`); `/` and `/features` have a few `cursor:pointer` non-interactive elements that were not investigated.
 - Dark-mode primary button (white on `--primary` 4.13:1) and primary used as text on dark (4.17:1) from M-005 are not changed (brand colour decision).
 - Not exercised in a real browser: minimized calculator button (embeds desmos.com), assignment-view drawer in the real page, reduced-motion behaviour, screen readers.
+- (RT-29 verifier) Gradebook "All assignments" mode likely has the same 20-id `in` limit as the old dashboard (not an RT-14 regression); surface partial/error state instead of silent zero in dashboard counts; page-level Firestore logic in teacher/page-client.tsx has no tests; /student/grades showed 0 graded for a student with submissions (pre-existing, unchanged page, not investigated).

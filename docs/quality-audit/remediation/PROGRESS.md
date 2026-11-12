@@ -32,7 +32,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-26 | todo | | | | | |
 | RT-27 | todo | | | | | |
 | RT-28 | todo | | | | | |
-| RT-29 | todo | | | | | |
+| RT-29 | merged (partial) | rt-29-bound-reads | dacd772 (merge) | PASS | PASS | dashboard totals via aggregate counts (also fixes pre-existing partial/0 totals for teachers with 20+ assignments); student submissions N+1 removed; gradebook/admin analytics/counter function skipped |
 | RT-30 | partial (indexes done; claims prepared, awaiting human) | rt-30-indexes | 4bc7d08 (merge) | PASS | orchestrator-reviewed (JSON indexes, dry-run default script) + integration gate | 8 composite indexes added + static coverage test; claims plan + dry-run backfill script only, rules and auth untouched |
 | RT-31 | todo | | | | | |
 | RT-32 | merged (partial) | rt-32-a11y | 3916ea5 (merge) | PASS | PASS | captions need human VTT; Lighthouse/axe not measured; dark destructive button now vivid red; drawer gets dialog semantics instead of Radix Sheet |
