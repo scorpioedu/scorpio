@@ -1,7 +1,7 @@
 {
   "eslintErrors": 20,
   "eslintWarnings": 168,
-  "jestSuites": 60,
-  "jestTests": 904,
-  "jestCoveragePctStatements": 64.48
+  "jestSuites": 76,
+  "jestTests": 1498,
+  "jestCoveragePctStatements": 93.03
 }
