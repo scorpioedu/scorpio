@@ -76,7 +76,7 @@ export const GradeAvailableEmail = ({
             <Section>
               <Text className="text-xs leading-relaxed text-zinc-400">
                 This is an automated message from Scorpio. 
-                If you have questions about your grade or the AI's reasoning, you can request a manual review from your teacher directly in the dashboard.
+                If you have questions about your grade or the AI&apos;s reasoning, you can request a manual review from your teacher directly in the dashboard.
               </Text>
             </Section>
           </Container>

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
+import type { Organization } from "@/lib/types";
 import {
   doc,
   getDoc,
@@ -14,6 +15,7 @@ import {
   onSnapshot,
   updateDoc,
   serverTimestamp,
+  type Timestamp,
   collection,
   query,
   where,
@@ -58,8 +60,8 @@ interface Notebook {
   title: string;
   content: string;
   studentId: string;
-  createdAt: any;
-  updatedAt: any;
+  createdAt: Timestamp | null;
+  updatedAt: Timestamp | null;
 }
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -99,7 +101,7 @@ export default function NotebookPage() {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
-  const [orgData, setOrgData] = useState<any>(null);
+  const [orgData, setOrgData] = useState<Partial<Organization> | null>(null);
   const [loading, setLoading] = useState(true);
   const [studentUsage, setStudentUsage] = useState<number>(0);
   const [showCopilot, setShowCopilot] = useState(false);
@@ -121,9 +123,10 @@ export default function NotebookPage() {
   // AI is disabled IF:
   // 1. Organization has exhausted its budget (aiUsageCurrent >= aiBudgetLimit, with safety for 0 limits)
   // 2. Student has reached their personal monthly interaction limit
+  const notebookAiLimit = orgData?.aiNotebookLimitPerStudent ?? 0;
   const isAiDisabled =
-    (orgData?.aiBudgetLimit > 0 && (orgData?.aiUsageCurrent || 0) >= (orgData?.aiBudgetLimit || 0)) ||
-    (orgData?.aiNotebookLimitPerStudent > 0 && studentUsage >= (orgData?.aiNotebookLimitPerStudent || 0));
+    ((orgData?.aiBudgetLimit ?? 0) > 0 && (orgData?.aiUsageCurrent || 0) >= (orgData?.aiBudgetLimit || 0)) ||
+    (notebookAiLimit > 0 && studentUsage >= (orgData?.aiNotebookLimitPerStudent || 0));
 
   // Helper to get HTML from Markdown
   const getHtml = (md: string) => converter.makeHtml(md);
@@ -179,7 +182,7 @@ export default function NotebookPage() {
     unsubscribers.push(onSnapshot(q, (snapshot) => {
       if (cancelled) return;
       const handleSnapshot = async () => {
-        let list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Notebook));
+        const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Notebook));
 
         // Migration: Check if a notebook existed at notebooks/{uid} (the old structure)
         if (list.length === 0) {
@@ -751,20 +754,20 @@ export default function NotebookPage() {
                   <RaiseLogo className="h-3 w-3" /> Raise Help
                 </Label>
                 <div className="flex items-center gap-1">
-                  {orgData?.aiNotebookLimitPerStudent > 0 && (
+                  {notebookAiLimit > 0 && (
                     <div className="flex flex-col items-end mr-2">
                       <div className="flex items-center gap-1.5 mb-1">
                         <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Usage</span>
-                        <span className="text-[10px] font-black tabular-nums">{studentUsage} / {orgData.aiNotebookLimitPerStudent}</span>
+                        <span className="text-[10px] font-black tabular-nums">{studentUsage} / {notebookAiLimit}</span>
                       </div>
                       <div className="w-20 h-1 bg-muted rounded-full overflow-hidden">
                         <div
                           className={cn(
                             "h-full transition-all duration-500",
-                            (studentUsage / orgData.aiNotebookLimitPerStudent) > 0.9 ? "bg-red-500" :
-                              (studentUsage / orgData.aiNotebookLimitPerStudent) > 0.7 ? "bg-amber-500" : "bg-emerald-500"
+                            (studentUsage / notebookAiLimit) > 0.9 ? "bg-red-500" :
+                              (studentUsage / notebookAiLimit) > 0.7 ? "bg-amber-500" : "bg-emerald-500"
                           )}
-                          style={{ width: `${Math.min(100, (studentUsage / orgData.aiNotebookLimitPerStudent) * 100)}%` }}
+                          style={{ width: `${Math.min(100, (studentUsage / notebookAiLimit) * 100)}%` }}
                         />
                       </div>
                     </div>
@@ -806,7 +809,7 @@ export default function NotebookPage() {
                         <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-1">Ask about your notes</h3>
                         <p className="text-[11px] text-muted-foreground leading-relaxed">
                           I can help you summarize your notes, suggest research topics,
-                          or explain concepts you've written about.
+                          or explain concepts you&apos;ve written about.
                         </p>
                       </div>
                       <div className="grid grid-cols-1 gap-2 pt-2">

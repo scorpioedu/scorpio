@@ -31,6 +31,7 @@ import {
 import { Plus, RefreshCw, Copy, Check, ShieldX, KeyRound, User, Clock, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { errorMessage } from "@/lib/error-utils";
 
 interface InviteCode {
   code: string;
@@ -67,8 +68,8 @@ export function TeacherInviteCodes() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to load codes");
       setCodes(data.codes ?? []);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setLoading(false);
     }
@@ -95,8 +96,8 @@ export function TeacherInviteCodes() {
       setLabel("");
       setDialogOpen(false);
       await fetchCodes();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setGenerating(false);
     }
@@ -116,8 +117,8 @@ export function TeacherInviteCodes() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to revoke code");
       await fetchCodes();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setRevoking(null);
     }
@@ -181,7 +182,7 @@ export function TeacherInviteCodes() {
                 <DialogHeader>
                   <DialogTitle>Generate Teacher Invite Code</DialogTitle>
                   <DialogDescription>
-                    Add an optional label (e.g. the teacher's name or school) to keep track of who you gave this to.
+                    Add an optional label (e.g. the teacher&apos;s name or school) to keep track of who you gave this to.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-2">

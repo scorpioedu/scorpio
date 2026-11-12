@@ -11,7 +11,7 @@ const okResponse = (body: unknown) => ({ ok: true, status: 200, json: async () =
 beforeAll(() => { process.env.GEMINI_API_KEY = 'test-key-not-real'; });
 afterEach(() => jest.restoreAllMocks());
 
-const send = (request: unknown) => billingContext.run({ type: 'research', organizationId: '' }, () => model.generateContent(request));
+const send = (request: Parameters<typeof model.generateContent>[0]) => billingContext.run({ type: 'research', organizationId: '' }, () => model.generateContent(request));
 const sentPayload = (spy: jest.SpyInstance) => JSON.parse((spy.mock.calls[0][1] as { body: string }).body);
 
 describe('callGeminiDirect systemInstruction', () => {

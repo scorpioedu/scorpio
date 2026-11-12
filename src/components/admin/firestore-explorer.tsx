@@ -10,11 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Database, ChevronLeft, ChevronRight, RefreshCw, FileJson, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { errorMessage } from "@/lib/error-utils";
 
 export function FirestoreExplorer() {
   const [collections, setCollections] = useState<string[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<{ id: string; [field: string]: unknown }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [lastDocId, setLastDocId] = useState<string | null>(null);
@@ -40,8 +41,8 @@ export function FirestoreExplorer() {
         if (data.collections.length > 0) {
           setSelectedCollection(data.collections[0]);
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(errorMessage(err) ?? "");
       }
     }
     fetchCollections();
@@ -88,8 +89,8 @@ export function FirestoreExplorer() {
           setLastDocId(data.lastDocId || null);
         }
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(errorMessage(err) ?? "");
     } finally {
       setLoading(false);
     }

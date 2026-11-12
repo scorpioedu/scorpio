@@ -14,8 +14,17 @@ import {
   aggregateByDifficulty,
   exportToCSV,
   generateComprehensiveLatexTables,
-  estimateStudyCost
+  estimateStudyCost,
+  type ConstraintLevelAggregate,
+  type DifficultyAggregate,
+  type StudyResult
 } from "@/lib/ai/research";
+
+interface StudyReport {
+  raw: StudyResult[];
+  constraintMetrics: Record<string, ConstraintLevelAggregate>;
+  difficultyMetrics: Record<string, DifficultyAggregate>;
+}
 
 export default function ResearchPage() {
   const access = useAdminAccess();
@@ -25,7 +34,7 @@ export default function ResearchPage() {
   const [currentCall, setCurrentCall] = useState(0);
   const [totalCalls, setTotalCalls] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState("");
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<StudyReport | null>(null);
   const [csvData, setCsvData] = useState<string>("");
   const [latexTables, setLatexTables] = useState<string>("");
 
@@ -266,7 +275,7 @@ export default function ResearchPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(results.constraintMetrics).map(([level, data]: [string, any]) => (
+                    {Object.entries(results.constraintMetrics).map(([level, data]) => (
                       <tr key={level} className="border-b hover:bg-muted/50">
                         <td className="p-2 font-medium">{level}</td>
                         <td className="text-right p-2">{data.onTopicRate.toFixed(1)}%</td>
@@ -304,7 +313,7 @@ export default function ResearchPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(results.difficultyMetrics).map(([diff, data]: [string, any]) => (
+                    {Object.entries(results.difficultyMetrics).map(([diff, data]) => (
                       <tr key={diff} className="border-b hover:bg-muted/50">
                         <td className="p-2 font-medium capitalize">{diff}</td>
                         <td className="text-right p-2">{data.totalQuestions}</td>
@@ -354,7 +363,7 @@ export default function ResearchPage() {
                   <ol className="list-decimal list-inside mt-2 space-y-1">
                     <li>Download CSV and open in Excel/Sheets</li>
                     <li>Manually code 20-30 responses for qualitative analysis</li>
-                    <li>Copy LaTeX tables into your paper's Results section</li>
+                    <li>Copy LaTeX tables into your paper&apos;s Results section</li>
                     <li>Write analysis interpreting the patterns you see</li>
                   </ol>
                 </AlertDescription>
@@ -372,7 +381,7 @@ export default function ResearchPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {results.raw.slice(0, 5).map((result: any, idx: number) => (
+                {results.raw.slice(0, 5).map((result, idx) => (
                   <div key={idx} className="border-l-4 border-primary pl-4 py-2 space-y-2">
                     <div>
                       <span className="font-mono text-xs bg-muted px-2 py-1 rounded">

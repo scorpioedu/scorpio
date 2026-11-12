@@ -48,12 +48,20 @@ const tableData = STUDENTS.map((n, i) => {
 const fmtAxis = (v: number) =>
   v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v}`;
 
-const fmtLabel = (v: any) =>
-  v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v}`;
+// Recharts hands label values over untyped; they are always the numeric series values here.
+const fmtLabel = (v: unknown) =>
+  (v as number) >= 1000 ? `$${((v as number) / 1000).toFixed(1)}k` : `$${v}`;
 
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipEntry {
+  dataKey: string;
+  name?: string;
+  color?: string;
+  value?: number | string;
+}
+
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipEntry[]; label?: string | number }) {
   if (!active || !payload?.length) return null;
   const meta: Record<string, string> = {
     ourTotal:     "Scorpio Total",
@@ -65,7 +73,7 @@ function CustomTooltip({ active, payload, label }: any) {
       <p className="text-[10px] font-black uppercase tracking-[0.25em] mb-4 text-muted-foreground">
         {label}
       </p>
-      {payload.map((entry: any) => (
+      {payload.map((entry) => (
         <div
           key={entry.dataKey}
           className="flex items-center justify-between gap-8 py-1.5"

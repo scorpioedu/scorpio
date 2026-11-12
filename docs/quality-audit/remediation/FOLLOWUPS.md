@@ -154,3 +154,14 @@
 - Conventional commits / commitlint (L-008) skipped: needs new dependencies (`@commitlint/*`) and a husky commit-msg hook. Do together with squash-merge PR titles and release tagging.
 - README line 108 links `LAYERING.md` but the file is `LAYERING.MD` (breaks on case-sensitive hosts such as GitHub). Fix when the file is moved.
 - `opencode.json` references nonexistent `AUDIT.md` and gitignored `GROUNDING_SKILL.md`.
+## RT-31
+Remaining ESLint errors (20) after the safe pass, none fixed because the fix would change effect/render timing or file module format:
+- `react-hooks/set-state-in-effect` (9): `src/components/admin/usage-analytics.tsx:83`, `src/components/motion/animated-sidebar.tsx:338` and `:342`, `src/components/route-progress-bar.tsx:14`, `src/components/ui/macbook-scroll.tsx:47`, `src/components/ui/smart-datetime-picker.tsx:46`, `src/components/ui/space-background.tsx:20`, `src/components/ui/typing-animation.tsx:109`, `src/hooks/use-sidebar-state.ts:17`. Synchronous setState in an effect (mount flags, hydration-safe reads); moving them to lazy initial state or `useSyncExternalStore` changes first-render output and has caused flashes before.
+- `react-hooks/refs` (3): `src/components/math-input.tsx:487` (x2), `src/components/motion/shared-layout-bg.tsx:78` (ref read during render).
+- `react-hooks/purity` (1): `src/components/landing/solution-flowchart.tsx:326` (`Math.random()` in the animation transition; a stable value changes the look).
+- `react-hooks/immutability` (1): `src/components/motion/animated-sidebar.tsx:613` (`context.triggerRef.current = node` in a ref callback).
+- `@typescript-eslint/no-require-imports` (6): `jest.config.js:1`, `tests/security/rules.test.cjs:1-4`, `tools/migrate-school-security.cjs:2` (CommonJS entry points).
+- 164 `no-unused-vars` warnings remain (mostly unused imports).
+- Stricter rules not enabled (would add findings): `no-floating-promises` 69, `no-misused-promises` 101, `consistent-type-imports` 87, `complexity`>15 79; `eslint-plugin-security` is not installed. Enable them one at a time with a fix batch each, then make the CI lint job blocking (needs the 20 above gone or fixed first).
+- `AssignmentQuestion` in `src/lib/types.ts` is intentionally loose (index signature). Several page-local `Question` interfaces could now share it (RT-25 restructuring).
+- `tsconfig.json` still excludes `functions/`; it is type-checked by the separate `functions` tsc step in the gate (A-008 not addressed).

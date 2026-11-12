@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import * as admin from 'firebase-admin';
 jest.mock('../../src/lib/firebase-admin',()=>{
- const admin=require('firebase-admin');
+ const admin=jest.requireActual<typeof import('firebase-admin')>('firebase-admin');
  if(!process.env.FIRESTORE_EMULATOR_HOST)throw new Error('Emulator required');
  if(!admin.apps.length)admin.initializeApp({projectId:'demo-scorpio-security'});
  return {adminDb:admin.firestore(),adminFieldWithValue:admin.firestore.FieldValue,adminAuth:{verifyIdToken:async(token:string)=>({uid:token,email:`${token}@example.test`,auth_time:Math.floor(Date.now()/1000)}),deleteUser:jest.fn(async()=>undefined)}};

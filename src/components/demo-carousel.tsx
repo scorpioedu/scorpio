@@ -4,6 +4,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, CirclePause, Maximize } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/** iOS Safari exposes webkitEnterFullscreen instead of the standard requestFullscreen on video elements. */
+type WebkitFullscreenVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+
 const demoSlides = [
   { src: "/demos/processed/ai-tutor-chat.mp4", title: "Raise", desc: "Conversational AI assistant with reasoning." },
   { src: "/demos/processed/assignment-creation-teacher.mp4", title: "Assignments", desc: "Teachers build assignments." },
@@ -225,8 +228,8 @@ export function DemoCarousel() {
                     if (video) {
                       if (video.requestFullscreen) {
                         video.requestFullscreen();
-                      } else if ((video as any).webkitEnterFullscreen) {
-                        (video as any).webkitEnterFullscreen();
+                      } else if ((video as WebkitFullscreenVideo).webkitEnterFullscreen) {
+                        (video as WebkitFullscreenVideo).webkitEnterFullscreen!();
                       }
                     }
                   }}

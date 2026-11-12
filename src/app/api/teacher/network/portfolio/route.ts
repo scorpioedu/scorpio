@@ -58,8 +58,8 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     const sessions = sessionsSnapshot.docs.reverse();
     
     for (const sessionDoc of sessions) {
-      const messages = sessionDoc.data().messages || [];
-      const formattedMessages = messages.map((m: any) => ({
+      const messages: { role: string; content: string }[] = sessionDoc.data().messages || [];
+      const formattedMessages = messages.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content
       }));

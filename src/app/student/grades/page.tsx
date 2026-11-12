@@ -29,8 +29,17 @@ interface Submission {
   score: number | null;
   graded: boolean;
   feedback?: string;
-  answers?: any;
+  answers?: GradedAnswer[];
   status?: string;
+}
+
+/** One graded answer as stored on a submission. */
+interface GradedAnswer {
+  questionId?: string;
+  questionText: string;
+  answer?: string;
+  feedback?: string;
+  score?: number;
 }
 
 export default function StudentGradesPage() {
@@ -246,7 +255,7 @@ export default function StudentGradesPage() {
                               {/* Graded Copy Section */}
                               {submission.graded && Array.isArray(submission.answers) && submission.answers.length > 0 ? (
                                 <div className="space-y-6">
-                                  {submission.answers.map((q: any, idx: number) => (
+                                  {submission.answers.map((q, idx) => (
                                     <div
                                       key={q.questionId || idx}
                                       className="space-y-4 border-b border-border pb-5 last:border-0 last:pb-0"

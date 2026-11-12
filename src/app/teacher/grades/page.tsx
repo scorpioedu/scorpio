@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import { ArrowUpRight, BarChart3, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { GradeExportButton } from "@/components/grade-export-button";
 import { GradeDistributionChart } from "@/components/admin/grade-distribution-chart";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Student {
   id: string;
@@ -44,7 +45,7 @@ export default function TeacherGradesPage() {
         if (!user) return;
         try {
             const snap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)));
-            const coursesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+            const coursesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string; code: string }));
             setCourses(coursesData);
             
             // If there's at least one course, select the first one by default 
@@ -108,7 +109,7 @@ export default function TeacherGradesPage() {
         }
 
         // 2. Query relevant submissions
-        let submissionsDocs: any[] = [];
+        let submissionsDocs: QueryDocumentSnapshot[] = [];
         if (selectedAssignmentId !== "all") {
             const snap = await getDocs(query(collection(db, "submissions"), where("assignmentId", "==", selectedAssignmentId)));
             submissionsDocs = snap.docs;
@@ -133,7 +134,7 @@ export default function TeacherGradesPage() {
 
 
         // Fetch students in the course to cross-reference (if course selected)
-        let courseStudentIds = new Set<string>();
+        const courseStudentIds = new Set<string>();
         if (selectedCourseId !== "all") {
             const snap = await getDocs(query(collection(db, "users"), where("courseId", "==", selectedCourseId), where("role", "==", "student")));
             snap.docs.forEach(d => courseStudentIds.add(d.id));
@@ -225,9 +226,9 @@ export default function TeacherGradesPage() {
       
       setStudents(students.filter((s) => s.id !== studentId));
       toast.success("Student records removed.");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting student:", error);
-      toast.error(`Failed to delete student: ${error.message}`);
+      toast.error(`Failed to delete student: ${errorMessage(error)}`);
     }
   };
 

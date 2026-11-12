@@ -100,7 +100,7 @@ export default function InvestmentTrackerPage() {
                 <div className="space-y-1">
                   <p className="text-sm font-bold">Predictive Scaling</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Automated allocation ensures students never face "Rate Limit" errors during peak assignment windows.
+                    Automated allocation ensures students never face &quot;Rate Limit&quot; errors during peak assignment windows.
                   </p>
                 </div>
               </div>
@@ -112,7 +112,7 @@ export default function InvestmentTrackerPage() {
                 <div className="space-y-1">
                   <p className="text-sm font-bold">Fast Computation Speed</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Scorpio's infrastructure is optimized for low latency, ensuring quick response times and a seamless user experience.
+                    Scorpio&apos;s infrastructure is optimized for low latency, ensuring quick response times and a seamless user experience.
                   </p>
                 </div>
               </div>

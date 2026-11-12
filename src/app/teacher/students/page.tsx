@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { collection, getDocs, query, where, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, deleteDoc, doc, getDoc, setDoc, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NetworkStudents } from "@/components/teacher/network-students";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Student {
   id: string;
@@ -80,10 +81,10 @@ export default function StudentsPage() {
 
         // Query unified collections to find students assigned to this teacher
         const [unifiedByUid, unifiedByCourses] = await Promise.all([
-          getDocs(query(collection(db, "users"), where("teacherId", "==", user.uid), where("role", "==", "student"))).catch(() => ({ docs: [] } as any)),
+          getDocs(query(collection(db, "users"), where("teacherId", "==", user.uid), where("role", "==", "student"))).catch(() => ({ docs: [] as QueryDocumentSnapshot[] })),
           (myCourseIds.size > 0
             ? getDocs(query(collection(db, "users"), where("courseId", "in", Array.from(myCourseIds).slice(0, 30)), where("role", "==", "student")))
-            : Promise.resolve({ docs: [] } as any)
+            : Promise.resolve({ docs: [] as QueryDocumentSnapshot[] })
           )
         ]);
 
@@ -121,9 +122,9 @@ export default function StudentsPage() {
       await cleanupStudentData(studentId, undefined, true);
       setStudents(students.filter((s) => s.id !== studentId));
       toast.success("Student records removed.");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting student:", error);
-      toast.error(`Failed to delete student: ${error.message}`);
+      toast.error(`Failed to delete student: ${errorMessage(error)}`);
     }
   };
 

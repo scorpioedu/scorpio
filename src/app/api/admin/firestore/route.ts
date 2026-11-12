@@ -66,7 +66,7 @@ async function handleAdminFirestore(req: NextRequest, { requestId }: AuthorizedC
 
       const snapshot = await query.limit(Math.min(limit, 100)).get();
 
-      const docs = snapshot.docs.map((doc: any) => ({
+      const docs = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         // We ensure any Firestore Timestamps are serialized safely

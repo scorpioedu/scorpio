@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enforceRateLimit } from '@/lib/rate-limit';
 
+/** Fields of the commits API response that this route reads. */
+interface RemoteCommit {
+  sha: string;
+  html_url: string;
+  commit: { message: string; author: { name: string; date: string } };
+}
+
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Cache for 1 hour
 
@@ -33,9 +40,9 @@ export async function GET(req: NextRequest) {
 
     const linkHeader = commitsRes.headers.get('link');
     const totalCommits = linkHeader?.match(/&page=(\d+)>; rel="last"/)?.[1] || "130";
-    const recentCommits = await recentRes.json();
+    const recentCommits: RemoteCommit[] = await recentRes.json();
 
-    const formattedCommits = recentCommits.map((c: any) => ({
+    const formattedCommits = recentCommits.map((c) => ({
       sha: c.sha,
       message: c.commit.message,
       date: c.commit.author.date,

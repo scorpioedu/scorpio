@@ -1,7 +1,11 @@
-export function parseQuestionsManually(text: string): any[] {
-  const questions: any[] = [];
+import type { AssignmentQuestion } from "./types";
+
+type ParsedQuestion = AssignmentQuestion & { options: string[]; correctAnswer: string };
+
+export function parseQuestionsManually(text: string): ParsedQuestion[] {
+  const questions: ParsedQuestion[] = [];
   const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-  let currentQuestion: any = null;
+  let currentQuestion: ParsedQuestion | null = null;
   let currentOptions: string[] = [];
   let lastWasOptions = false;
   

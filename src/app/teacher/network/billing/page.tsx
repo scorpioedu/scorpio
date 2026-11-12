@@ -25,6 +25,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Organization } from "@/lib/types";
+import { errorMessage } from "@/lib/error-utils";
 
 export default function BillingPage() {
   const { user, profile, loading: authLoading } = useAuth();
@@ -81,9 +82,9 @@ export default function BillingPage() {
       } else {
         throw new Error("No checkout URL returned.");
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      toast.error(e.message || "Failed to start upgrade process.");
+      toast.error(errorMessage(e) || "Failed to start upgrade process.");
     } finally {
       setUpgrading(false);
     }

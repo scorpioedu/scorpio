@@ -21,7 +21,7 @@ import { ref, uploadBytes, getBytes } from 'firebase/storage';
 import * as fs from 'node:fs';
 
 jest.mock('../../src/lib/firebase-admin', () => {
-  const admin = require('firebase-admin');
+  const admin = jest.requireActual<typeof import('firebase-admin')>('firebase-admin');
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Emulator required');
   if (!admin.apps.length) admin.initializeApp({ projectId: 'demo-scorpio-security' });
   return {
@@ -641,7 +641,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     expect(sub1AfterAi.answers[2].reasoning).toContain('F = ma');
 
     // Teacher reviews Student 1's submission in GradeSubmissionPage and manually adjusts Q3 to full 50/50 points with custom feedback
-    const updatedAnswers = sub1AfterAi.answers.map((ans: any) =>
+    const updatedAnswers = sub1AfterAi.answers.map((ans: { questionId: string; feedback?: string }) =>
       ans.questionId === 'q3-free'
         ? {
             ...ans,
@@ -818,7 +818,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     const exportRes = await exportAccount(apiReq('account', STUDENT_1_UID, undefined, 'GET'));
     expect(exportRes.status).toBe(200);
     const exportedCollections = await exportRes.json();
-    expect(exportedCollections.map((c: any) => c.collection)).toEqual(
+    expect(exportedCollections.map((c: { collection: string }) => c.collection)).toEqual(
       expect.arrayContaining(['submissions', 'notebooks', 'tutor_sessions', 'portfolios', 'users'])
     );
 

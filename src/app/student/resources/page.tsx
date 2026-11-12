@@ -14,7 +14,7 @@ interface Resource {
   id: string;
   title: string;
   url: string;
-  createdAt: any;
+  createdAt?: { toDate?: () => Date } | null;
   type?: "video" | "document" | "link";
   courseId?: string;
 }

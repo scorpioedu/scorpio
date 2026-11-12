@@ -1,3 +1,5 @@
+import type { AssignmentQuestion } from '../types';
+
 export { scrubPII } from '../../../functions/src/pii';
 
 // Helper: Split text into question chunks (robust, skips section headers, requires min text length)
@@ -5,8 +7,6 @@ export function splitIntoQuestions(text: string): string[] {
   const lines = text.split('\n');
   const chunks: string[] = [];
   let currentChunk = '';
-  // @ts-ignore
-  let inQuestion = false;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     // Skip empty lines
@@ -25,7 +25,6 @@ export function splitIntoQuestions(text: string): string[] {
         chunks.push(currentChunk.trim());
       }
       currentChunk = line;
-      inQuestion = true;
     } else {
       // Add to current chunk
       if (currentChunk) {
@@ -55,35 +54,36 @@ export function repairIncompleteJson(json: string): string {
   return json;
 }
 
-export function validateAndNormalizeQuestions(data: any): any[] {
-  let questions: any[] = [];
-  
+export function validateAndNormalizeQuestions(data: unknown): AssignmentQuestion[] {
+  let questions: Record<string, unknown>[] = [];
+
   // 1. Resolve to an array
   if (Array.isArray(data)) {
     questions = data;
   } else if (data && typeof data === 'object') {
+    const obj = data as Record<string, unknown>;
     // If it's an object with a 'questions' or 'items' key
-    if (Array.isArray(data.questions)) {
-      questions = data.questions;
-    } else if (Array.isArray(data.items)) {
-      questions = data.items;
+    if (Array.isArray(obj.questions)) {
+      questions = obj.questions;
+    } else if (Array.isArray(obj.items)) {
+      questions = obj.items;
     } else {
       // If it's a single question object, wrap it
-      if (data.text || data.question) {
-        questions = [data];
+      if (obj.text || obj.question) {
+        questions = [obj];
       } else {
         console.error("No array found in AI JSON response:", data);
         throw new Error("AI returned a JSON object but no list of questions was found.");
       }
     }
   }
-  
+
   if (questions.length === 0) {
     throw new Error("AI returned an empty result or invalid structure.");
   }
   
   // 2. Validate and normalize questions
-  const validatedQuestions = questions.map((q: any, index: number) => {
+  const validatedQuestions = questions.map((q, index): AssignmentQuestion | null => {
     // Attempt to salvage question even if text is in a different property
     const qText = q.text || q.question || q.problem || "";
     if (!qText || typeof qText !== 'string') {
@@ -92,16 +92,16 @@ export function validateAndNormalizeQuestions(data: any): any[] {
     }
     
     const validTypes = ["multiple-choice", "true-false", "short-answer", "text"];
-    const type = validTypes.includes(q.type) ? q.type : "text";
+    const type = validTypes.includes(q.type as string) ? (q.type as AssignmentQuestion["type"]) : "text";
     
     return {
       text: qText.trim(),
       type,
-      options: Array.isArray(q.options) ? q.options.filter(Boolean) : [],
-      correctAnswer: q.correctAnswer || q.answer || "",
+      options: Array.isArray(q.options) ? (q.options.filter(Boolean) as string[]) : [],
+      correctAnswer: (q.correctAnswer || q.answer || "") as string,
       points: Number(q.points) || 10,
     };
-  }).filter((q): q is any => q !== null);
+  }).filter((q): q is AssignmentQuestion => q !== null);
   
   if (validatedQuestions.length === 0) {
      throw new Error("No valid questions could be extracted from the AI response.");

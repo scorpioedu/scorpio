@@ -44,6 +44,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { CompassLogo } from "@/components/ui/compass-logo";
+import { errorMessage } from "@/lib/error-utils";
 
 function ToggleSwitch({
   checked,
@@ -149,11 +150,11 @@ export function SettingsDialog() {
         router.push("/signup");
         setOpen(false);
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting account:", error);
-      setAlertMessage(`Failed to delete account: ${error.message}`);
+      setAlertMessage(`Failed to delete account: ${errorMessage(error)}`);
       setAlertType("error");
-      toast.error(`Failed to delete account: ${error.message}`);
+      toast.error(`Failed to delete account: ${errorMessage(error)}`);
     }
   };
 

@@ -23,13 +23,13 @@ interface Resource {
   url: string;
   type?: "video" | "document" | "link";
   courseId?: string;
-  createdAt: any;
+  createdAt?: { toDate?: () => Date } | null;
 }
 
 export default function ResourcesPage() {
   const { user } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -49,7 +49,7 @@ export default function ResourcesPage() {
     try {
       const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
       const snap = await getDocs(q);
-      setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string })));
     } catch (e) { console.error(e); }
   }, [user]);
 

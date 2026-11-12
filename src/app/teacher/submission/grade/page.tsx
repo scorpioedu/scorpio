@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { toast } from "sonner";
 import { RaiseLogo } from "@/components/ui/raise-logo";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Question {
   id: string;
@@ -173,9 +174,9 @@ export default function GradeSubmissionPage() {
         }
         throw new Error(errMsg);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("AI Grading failed:", error);
-      toast.error(error.message || "AI grading failed. Please check your account budget.");
+      toast.error(errorMessage(error) || "AI grading failed. Please check your account budget.");
     } finally {
       setGradingQuestion(null);
     }
@@ -414,7 +415,7 @@ export default function GradeSubmissionPage() {
                             </div>
                             {!isGrading && aiReasoning[ans.questionId] && (
                               <div className="text-sm text-foreground/80 leading-relaxed italic">
-                                "{aiReasoning[ans.questionId]}"
+                                &quot;{aiReasoning[ans.questionId]}&quot;
                               </div>
                             )}
                           </div>

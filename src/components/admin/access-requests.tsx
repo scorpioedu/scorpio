@@ -45,6 +45,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { errorMessage } from "@/lib/error-utils";
 
 interface AccessRequest {
   id: string;
@@ -97,8 +98,8 @@ export function AccessRequests() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to load requests");
       setRequests(data.requests ?? []);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setLoading(false);
     }
@@ -124,8 +125,8 @@ export function AccessRequests() {
       setJustApproved({ id: req.id, code: data.code });
       setDetailRequest(null);
       await fetchRequests();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setProcessing(null);
     }
@@ -146,8 +147,8 @@ export function AccessRequests() {
       if (!res.ok) throw new Error(data.error ?? "Failed to reject request");
       setDetailRequest(null);
       await fetchRequests();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setProcessing(null);
     }

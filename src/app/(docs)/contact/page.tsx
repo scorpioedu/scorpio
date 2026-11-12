@@ -51,7 +51,7 @@ export default function ContactPage() {
           How can we <span className="text-primary">help you</span>?
         </h1>
         <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-          Whether you're an educator deploying Scorpio in your classroom or a developer exploring our architecture, we're here to support you.
+          Whether you&apos;re an educator deploying Scorpio in your classroom or a developer exploring our architecture, we&apos;re here to support you.
         </p>
       </section>
 
@@ -101,7 +101,7 @@ export default function ContactPage() {
           <div className="space-y-2">
             <h3 className="text-sm font-bold text-foreground">How do I reset my password?</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Password resets are handled securely through Firebase Auth. Click "Forgot Password" on the login screen.
+              Password resets are handled securely through Firebase Auth. Click &quot;Forgot Password&quot; on the login screen.
             </p>
           </div>
           <div className="space-y-2">

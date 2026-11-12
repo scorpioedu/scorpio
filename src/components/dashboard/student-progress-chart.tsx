@@ -28,7 +28,7 @@ interface StudentProgressChartProps {
   scores: ScoreDataPoint[];
 }
 
-function CustomTooltip({ active, payload }: any) {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: { payload: unknown }[] }) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as ScoreDataPoint;
 

@@ -32,7 +32,7 @@ async function handleRequestAccess(req: NextRequest) {
         .limit(200)
         .get();
 
-      const requests = snapshot.docs.map((d: any) => {
+      const requests = snapshot.docs.map((d) => {
         const data = d.data();
         return {
           id: d.id,

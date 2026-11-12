@@ -17,6 +17,7 @@ import { GraduationCap, Presentation, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { Skeleton } from "@/components/ui/skeleton";
+import { errorMessage } from "@/lib/error-utils";
 
 export default function LoginPage() {
   return <Suspense fallback={<LoginShell />}><LoginForm /></Suspense>;
@@ -107,9 +108,9 @@ function LoginForm() {
         ? teacherInvite ? networkInvitePath(teacherInvite) : "/teacher"
         : classCode ? classInvitePath(classCode) : "/student";
       window.location.href = target;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("[Login] Detailed Error:", err);
-      setError(err?.message === "Failed to create session"
+      setError(errorMessage(err) === "Failed to create session"
         ? "Session creation failed. Please try again."
         : "Invalid email or password");
       setLoading(false);
