@@ -133,7 +133,7 @@ export default function TeacherGradesPage() {
 
 
         // Fetch students in the course to cross-reference (if course selected)
-        let courseStudentIds = new Set<string>();
+        const courseStudentIds = new Set<string>();
         if (selectedCourseId !== "all") {
             const snap = await getDocs(query(collection(db, "users"), where("courseId", "==", selectedCourseId), where("role", "==", "student")));
             snap.docs.forEach(d => courseStudentIds.add(d.id));

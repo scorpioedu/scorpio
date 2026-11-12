@@ -23,7 +23,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       return NextResponse.json({ error: "User profile not found" }, { status: 404 });
     }
     const userData = userDoc.data();
-    let organizationId = userData?.organizationId;
+    const organizationId = userData?.organizationId;
 
     if (!organizationId) {
       return NextResponse.json({ error: "No organization found for user" }, { status: 403 });

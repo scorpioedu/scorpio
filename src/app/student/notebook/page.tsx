@@ -179,7 +179,7 @@ export default function NotebookPage() {
     unsubscribers.push(onSnapshot(q, (snapshot) => {
       if (cancelled) return;
       const handleSnapshot = async () => {
-        let list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Notebook));
+        const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Notebook));
 
         // Migration: Check if a notebook existed at notebooks/{uid} (the old structure)
         if (list.length === 0) {

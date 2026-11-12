@@ -173,7 +173,7 @@ async function callGeminiDirect(request: any) {
 export const model = {
   generateContent: (request: any) => callGeminiDirect(request),
   startChat: (options?: any) => {
-    let history = [...(options?.history || [])];
+    const history = [...(options?.history || [])];
     return {
       async sendMessage(prompt: string | any) {
         const userMsg = typeof prompt === "string" ? { role: "user", parts: [{ text: prompt }] } : prompt;

@@ -35,7 +35,7 @@ JSON array:`;
     }
   });
   const response = await result.response;
-  let responseText = response.text().trim();
+  const responseText = response.text().trim();
   
   // Extract only the array portion for robustness
   const startIdx = responseText.indexOf('[');
@@ -45,7 +45,7 @@ JSON array:`;
     throw new AiOutputError(`Failed to extract JSON array from batch starting at ${startNumber}`);
   }
   
-  let cleanJson = responseText.substring(startIdx, endIdx + 1).trim();
+  const cleanJson = responseText.substring(startIdx, endIdx + 1).trim();
   
   try {
     const parsed = JSON.parse(cleanJson);
@@ -163,9 +163,9 @@ export async function generateAssignmentQuestions(
             // If it's still failing and looks truncated, try to close it
             if (!recovery.endsWith('}') && !recovery.endsWith(']')) {
                 // Heuristic: determine if we are inside a string or array
-                let openBrackets = (recovery.match(/\[/g) || []).length;
+                const openBrackets = (recovery.match(/\[/g) || []).length;
                 let closeBrackets = (recovery.match(/\]/g) || []).length;
-                let openCurly = (recovery.match(/\{/g) || []).length;
+                const openCurly = (recovery.match(/\{/g) || []).length;
                 let closeCurly = (recovery.match(/\}/g) || []).length;
                 
                 // If we're inside a string (odd number of unescaped quotes)

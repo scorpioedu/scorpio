@@ -119,8 +119,8 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         }
 
         let totalAssignments = 0;
-        let currentAssignmentIds = new Set<string>();
-        let assignmentsList: any[] = [];
+        const currentAssignmentIds = new Set<string>();
+        const assignmentsList: any[] = [];
 
         // FETCHING LOGIC: Priority to courseId, fallback to teacherId (legacy)
         if (courseId) {

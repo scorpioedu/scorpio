@@ -61,7 +61,7 @@ export default function StudentDetailsPage() {
         const allowedAssignmentIdsSet = new Set(allowedAssignmentIdsArr);
 
         // Fetch submissions for this student belonging to the teacher's assignments
-        let submissionsDocs: any[] = [];
+        const submissionsDocs: any[] = [];
         if (allowedAssignmentIdsArr.length > 0) {
             const chunks = [];
             for (let i = 0; i < allowedAssignmentIdsArr.length; i += 30) {
