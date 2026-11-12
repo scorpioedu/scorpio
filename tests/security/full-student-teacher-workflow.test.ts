@@ -148,12 +148,12 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
       projectId: 'demo-scorpio-security',
       firestore: {
         host: '127.0.0.1',
-        port: 8188,
+        port: Number((process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8188').split(':').pop()),
         rules: fs.readFileSync('firestore.rules', 'utf8'),
       },
       storage: {
         host: '127.0.0.1',
-        port: 9298,
+        port: Number((process.env.FIREBASE_STORAGE_EMULATOR_HOST || '127.0.0.1:9298').split(':').pop()),
         rules: fs.readFileSync('storage.rules', 'utf8'),
       },
     });

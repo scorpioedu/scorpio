@@ -35,3 +35,4 @@
 - The injection heuristic is deliberately conservative regex; tune the patterns in `INJECTION_PATTERNS` from real `pending_review` volume. `responseSchema` in `generationConfig` (F-001 suggestion) is not used.
 - `synthesizeRubric`, `generateAssignmentQuestions` and `parseQuestionsFromText` still interpolate untrusted topic/learning-objective/pasted text into the user prompt without delimiters or a system instruction.
 - `src/lib/ai/assignment.ts` still contains an `// @ts-ignore` and `any` types (pre-existing, untouched).
+- Follow-up: tests/security hardcoded emulator ports; now read from FIRESTORE_EMULATOR_HOST/FIREBASE_STORAGE_EMULATOR_HOST (defaults unchanged).
