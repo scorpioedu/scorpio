@@ -49,8 +49,10 @@ export function SystemDemos() {
                 viewport={{ once: true }}
               >
                  <video 
-                   src="/demos/scorpio-demo.mp4" 
-                   controls 
+                   src="/demos/scorpio-demo.mp4"
+                   poster="/demos/scorpio-demo-poster.jpg"
+                   preload="none"
+                   controls
                    className="w-full h-auto aspect-video cursor-pointer"
                  />
               </motion.div>

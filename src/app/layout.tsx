@@ -14,13 +14,15 @@ import { Providers } from "@/components/providers";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
+  subsets: ["latin"],
   style: ["normal", "italic"],
   display: "swap",
-  preload: false,
+  preload: true, // default UI font
 });
 
 const lora = Lora({
   variable: "--font-lora",
+  subsets: ["latin"],
   style: ["normal", "italic"],
   display: "swap",
   preload: false,
@@ -30,6 +32,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   weight: ["100", "200", "300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  subsets: ["latin"],
   display: "swap",
   preload: false,
 });
@@ -47,7 +50,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  preload: true,
+  preload: false, // user-selectable theme font, not the default
 });
 
 const ptSerif = PT_Serif({
@@ -112,7 +115,7 @@ export const metadata: Metadata = {
     siteName: "Scorpio",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Scorpio - Socratic AI for Physics",
