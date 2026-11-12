@@ -149,3 +149,8 @@
 - Dark-mode primary button (white on `--primary` 4.13:1) and primary used as text on dark (4.17:1) from M-005 are not changed (brand colour decision).
 - Not exercised in a real browser: minimized calculator button (embeds desmos.com), assignment-view drawer in the real page, reduced-motion behaviour, screen readers.
 - (RT-29 verifier) Gradebook "All assignments" mode likely has the same 20-id `in` limit as the old dashboard (not an RT-14 regression); surface partial/error state instead of silent zero in dashboard counts; page-level Firestore logic in teacher/page-client.tsx has no tests; /student/grades showed 0 graded for a student with submissions (pre-existing, unchanged page, not investigated).
+
+## RT-33: repo hygiene
+- Conventional commits / commitlint (L-008) skipped: needs new dependencies (`@commitlint/*`) and a husky commit-msg hook. Do together with squash-merge PR titles and release tagging.
+- README line 108 links `LAYERING.md` but the file is `LAYERING.MD` (breaks on case-sensitive hosts such as GitHub). Fix when the file is moved.
+- `opencode.json` references nonexistent `AUDIT.md` and gitignored `GROUNDING_SKILL.md`.
