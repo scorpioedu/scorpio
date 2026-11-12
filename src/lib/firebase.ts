@@ -185,7 +185,8 @@ export async function compressImage(
 export async function uploadFilesToStorage(
   files: File[],
   userId: string,
-  onProgress?: (fileIndex: number, progress: number) => void
+  onProgress?: (fileIndex: number, progress: number) => void,
+  basePath: "submissions" | "resources" = "submissions"
 ): Promise<WorkFile[]> {
   const uploadPromises = files.map(async (file, index) => {
     let fileToUpload = file;
@@ -224,7 +225,7 @@ export async function uploadFilesToStorage(
     const fileExtension = fileToUpload.name.split('.').pop() || '';
     const baseName = fileToUpload.name.replace(/\.[^/.]+$/, ''); // Remove extension
     const fileName = `${timestamp}_${baseName}.${fileExtension}`;
-    const storageRef = ref(storage, `submissions/${userId}/${fileName}`);
+    const storageRef = ref(storage, `${basePath}/${userId}/${fileName}`);
 
     // Upload the file with progress tracking
     const uploadTask = uploadBytesResumable(storageRef, fileToUpload);

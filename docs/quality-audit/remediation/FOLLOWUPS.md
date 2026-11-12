@@ -36,3 +36,10 @@
 - `synthesizeRubric`, `generateAssignmentQuestions` and `parseQuestionsFromText` still interpolate untrusted topic/learning-objective/pasted text into the user prompt without delimiters or a system instruction.
 - `src/lib/ai/assignment.ts` still contains an `// @ts-ignore` and `any` types (pre-existing, untouched).
 - Follow-up: tests/security hardcoded emulator ports; now read from FIRESTORE_EMULATOR_HOST/FIREBASE_STORAGE_EMULATOR_HOST (defaults unchanged).
+
+## RT-14 follow-ups
+- Not applied: "enforce `notebookLimitPerStudent` via a server API route" (D-003 remediation). The client creates notebooks directly, so this needs a new API route and client change; rules still do not enforce the per-student count.
+- Not applied: ticket's `/resources/{courseId}/` storage path (used `resources/{teacherUid}/`, see BEHAVIOUR-CHANGES).
+- Legacy migration in `src/app/student/notebook/page.tsx:L196` (`updateDoc(oldRef, { studentId ... })` on a doc without `studentId`) was already denied by the update rule and still is; belongs with RT-15.
+- `storage.rules` `submissions/**` still allows `text/*` (including `text/html`) and lets a student overwrite/delete files after grading (D-006 notes); not in RT-14 steps.
+- Optional: the old `submissions/{teacherUid}/` resource files could be migrated to `resources/`.
