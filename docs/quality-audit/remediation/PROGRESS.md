@@ -25,7 +25,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-19 | merged | rt-19-test-hardening | 6d58280 (merge) | PASS | PASS | mutation: auth-verify 99%, usage-limit 94.8% (custom command runner; repo stryker config lacks plugins); webhook tests use real validateEvent; 401 not 403 |
 | RT-20 | merged (partial) | rt-20-dependency-hygiene | 4291461 (merge) | PASS | PASS | root audit 64->19 (0 critical, 4 high from firebase->grpc-js pin); firebase/firebase-admin majors skipped; 6 dead components deleted |
 | RT-21 | merged (decision pending) | rt-21-budget-policy | 87fb74e (merge) | PASS | PASS | new-network default left as today (membership none/0, register active/50); owner decision in HUMAN-TODO; pre-check tightened for 2 cases already refused at reservation |
-| RT-22 | in-progress | rt-22a-emulator-wiring | 0cf3c95 (merge) | PASS | PASS (part 1) | part 1 merged: engines, .nvmrc, env names, emulator wiring+alt ports. Part 2 (husky/prettier/lint-staged, zod env, README) todo |
+| RT-22 | merged | rt-22a-emulator-wiring, rt-22b-devex | 0cf3c95, b372420 | PASS | PASS (both parts) | hook blocks commits touching ~80 files with legacy lint errors until RT-31 (recommendation: eslint bulk suppressions); env.ts validator not wired into routes yet; README Quick Start rewritten |
 | RT-23 | merged | rt-23-error-boundaries | cf68642 (merge) | PASS | PASS | boundaries only log digest; no error-reporting service yet |
 | RT-24 | merged (partial) | rt-24-media-weight | ee77947 (merge) | PASS | FAIL on ea251b1 (inverted font preload), fixed in ee77947; delta reviewed by orchestrator + integration gate | public 103MB->16MB; demo video re-encoded (softer text); og-image.png->jpg (external social caches need re-scrape); 5 raw <img> remain |
 | RT-25 | todo | | | | | |
@@ -33,7 +33,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-27 | todo | | | | | |
 | RT-28 | todo | | | | | |
 | RT-29 | todo | | | | | |
-| RT-30 | todo | | | | | |
+| RT-30 | partial (indexes done; claims prepared, awaiting human) | rt-30-indexes | 4bc7d08 (merge) | PASS | orchestrator-reviewed (JSON indexes, dry-run default script) + integration gate | 8 composite indexes added + static coverage test; claims plan + dry-run backfill script only, rules and auth untouched |
 | RT-31 | todo | | | | | |
 | RT-32 | todo | | | | | |
 | RT-33 | todo | | | | | |

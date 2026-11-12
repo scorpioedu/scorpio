@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "npm": ">=11"
   },
   "scripts": {
+    "setup": "npm ci && npm ci --prefix functions",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
@@ -15,7 +17,8 @@
     "test:ci": "jest --ci",
     "test:security": "firebase emulators:exec --only firestore,storage --project demo-scorpio-security --config firebase.test.json 'jest --config jest.security.config.cjs --runInBand'",
     "dev:emulators": "firebase emulators:start --only auth,firestore,storage --project demo-scorpio",
-    "dev:emulators:alt": "firebase emulators:start --only auth,firestore,storage --project demo-scorpio --config firebase.emulators.alt.json"
+    "dev:emulators:alt": "firebase emulators:start --only auth,firestore,storage --project demo-scorpio --config firebase.emulators.alt.json",
+    "prepare": "node -e \"try{if(!process.env.CI&&require('fs').existsSync('.git')){require('child_process').execSync('husky',{stdio:'ignore'})}}catch(e){}\""
   },
   "dependencies": {
     "@afixt/a11y-calc": "^0.2.2",
@@ -85,7 +88,10 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "^16.3.8",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.10.1",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.15",
     "typescript": "5.9.3"
