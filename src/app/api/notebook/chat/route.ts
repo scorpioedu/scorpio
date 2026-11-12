@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue } from '@/lib/firebase-admin';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
 import { getNotebookAssistantResponse } from "@/lib/ai/notebook";
-import { checkRateLimit } from '@/lib/rate-limit';
 import { parseJsonBody } from '@/lib/api-schema';
 import { notebookChatBody } from '@/lib/schemas/api-bodies';
 
@@ -18,12 +17,6 @@ async function handlePost(req: NextRequest) {
     if (!parsed.ok) return parsed.response;
     const { messages, studentId } = parsed.data;
     const notebookContent = parsed.data.notebookContent ?? undefined;
-
-    // 1. Check Rate Limit
-    const rateLimitCheck = await checkRateLimit(req, studentId, "notebook", { windowMs: 60000, maxRequests: 20 });
-    if (!rateLimitCheck.allowed) {
-      return NextResponse.json({ error: rateLimitCheck.error }, { status: 429 });
-    }
 
     // 1. Resolve Organization for budget
     const studentDoc = await adminDb.collection("users").doc(studentId).get();
@@ -89,4 +82,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "studentId", "teacher": false, "feature": "notebook"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "studentId", "teacher": false, "feature": "notebook", "rateLimit": "notebook"});

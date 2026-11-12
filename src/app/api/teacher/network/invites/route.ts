@@ -32,4 +32,4 @@ export const POST = withAuthorizedRequest(async req => {
   return created
     ? NextResponse.json({ code }, { status: 201 })
     : NextResponse.json({ error: "Only the Network owner can create colleague invites." }, { status: 403 });
-}, { teacher: true });
+}, { teacher: true, rateLimit: "write" });

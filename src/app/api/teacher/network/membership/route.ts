@@ -50,4 +50,4 @@ export const POST = withAuthorizedRequest(async req => {
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Membership update failed' }, { status: 400 });
   }
-}, { teacher: true });
+}, { teacher: true, rateLimit: "write" });

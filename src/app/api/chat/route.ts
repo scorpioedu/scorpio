@@ -4,7 +4,6 @@ import { adminDb } from '@/lib/firebase-admin';
 import chatbotConfig from '@/lib/chatbot-config.json';
 import { getNavigationResponse } from '@/lib/ai/chatbot';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
-import { checkRateLimit } from '@/lib/rate-limit';
 
 async function handlePost(req: NextRequest) {
   try {
@@ -44,16 +43,6 @@ async function handlePost(req: NextRequest) {
       return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
     }
 
-    // --- Rate Limiting ---
-    const { windowMs, maxRequests } = chatbotConfig.rateLimit;
-    const rateLimitCheck = await checkRateLimit(req, userId, "chat", { windowMs, maxRequests });
-    
-    if (!rateLimitCheck.allowed) {
-      return NextResponse.json({ 
-        error: rateLimitCheck.error || `Rate limit exceeded. Max ${maxRequests} requests allowed.` 
-      }, { status: 429 });
-    }
-
     // AI Response using centralized logic in gemini.ts ---
     const features = userRole === 'teacher' ? chatbotConfig.teacherFeatures : chatbotConfig.studentFeatures;
     const featuresContext = features.map(f => `- ${f.label} (${f.path}) - ${f.description}`).join('\n');
@@ -86,4 +75,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false, "feature": "navigation"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false, "feature": "navigation", "rateLimit": "chat"});

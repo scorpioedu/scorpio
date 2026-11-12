@@ -28,7 +28,7 @@ export const POST = withAuthorizedRequest(async (req) => {
   batch.set(adminDb.collection('assignment_keys').doc(ref.id), { answers, rubric: rubric || '', teacherId: caller.uid });
   await batch.commit();
   return NextResponse.json({ id: ref.id });
-}, { teacher: true });
+}, { teacher: true, rateLimit: "write" });
 
 export async function GET(req: NextRequest) {
   const caller = await authenticateRequest(req);

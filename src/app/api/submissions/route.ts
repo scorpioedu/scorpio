@@ -67,4 +67,4 @@ export const POST = withAuthorizedRequest(async req => {
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Submission failed' }, { status: 400 });
   }
-});
+}, { rateLimit: "write" });

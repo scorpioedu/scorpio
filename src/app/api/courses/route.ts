@@ -20,4 +20,4 @@ export const POST = withAuthorizedRequest(async req => {
     });
     return NextResponse.json({ id: ref.id });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Could not create class' }, { status: 400 }); }
-}, { teacher: true });
+}, { teacher: true, rateLimit: "write" });

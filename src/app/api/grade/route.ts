@@ -203,4 +203,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": undefined, "teacher": true, "resource": "submission"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": undefined, "teacher": true, "resource": "submission", "rateLimit": "grade"});

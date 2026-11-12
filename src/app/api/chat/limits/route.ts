@@ -88,4 +88,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "feature": "navigation"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "feature": "navigation", "rateLimit": "limitsChat"});

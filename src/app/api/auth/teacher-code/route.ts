@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue as FieldValue } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
 import { withAuthorizedRequest } from '@/lib/auth-verify';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 function generateCode(): string {
   const segment = () => randomBytes(2).toString('hex').toUpperCase();
@@ -121,10 +122,14 @@ async function handleTeacherCode(req: NextRequest) {
 
 // generate, list and revoke require the admin claim; validate stays public (called during signup).
 const ADMIN_ACTIONS = new Set(['generate', 'list', 'revoke']);
-const adminTeacherCode = withAuthorizedRequest(handleTeacherCode, { admin: true });
+const adminTeacherCode = withAuthorizedRequest(handleTeacherCode, { admin: true, rateLimit: 'write' });
 
 export async function POST(req: NextRequest) {
   let action: unknown;
   try { action = (await req.clone().json())?.action; } catch { action = undefined; }
-  return typeof action === 'string' && ADMIN_ACTIONS.has(action) ? adminTeacherCode(req) : handleTeacherCode(req);
+  if (typeof action === 'string' && ADMIN_ACTIONS.has(action)) return adminTeacherCode(req);
+  // The public actions are unauthenticated, so they are keyed by the trusted client IP (RT-11).
+  const limited = await enforceRateLimit(req, 'teacherCode');
+  if (limited) return limited;
+  return handleTeacherCode(req);
 }

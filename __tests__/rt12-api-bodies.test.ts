@@ -49,7 +49,7 @@ jest.mock('../src/lib/firebase-admin', () => ({
 }));
 const checkBudget = jest.fn(async () => ({ allowed: true }));
 jest.mock('../src/lib/usage-limit', () => ({ checkBudget: (...a: unknown[]) => (checkBudget as jest.Mock)(...a), recordUsage: jest.fn(async () => undefined) }));
-jest.mock('../src/lib/rate-limit', () => ({ checkRateLimit: async () => ({ allowed: true }) }));
+jest.mock('../src/lib/rate-limit', () => ({ checkRateLimit: async () => ({ allowed: true }), enforceRateLimit: async () => null }));
 const notebookAi = jest.fn(async () => ({ content: 'copilot says hi', usage: null }));
 jest.mock('../src/lib/ai/notebook', () => ({ getNotebookAssistantResponse: (...a: unknown[]) => (notebookAi as jest.Mock)(...a) }));
 jest.mock('../src/lib/ai/grading', () => ({ gradeResponse: jest.fn() }));

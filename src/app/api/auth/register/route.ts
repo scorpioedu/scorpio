@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth-verify";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { findClassByCode } from "@/lib/class-enrollment";
 import { adminDb } from "@/lib/firebase-admin";
 import { newOrganizationDefaults } from "@/lib/organization-defaults";
@@ -7,6 +8,8 @@ import { newOrganizationDefaults } from "@/lib/organization-defaults";
 export async function POST(req: NextRequest) {
   const caller = await authenticateRequest(req);
   if (!caller) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  const limited = await enforceRateLimit(req, "register", caller.uid);
+  if (limited) return limited;
   try {
     const { role, name, code } = await req.json();
     if (!["teacher", "student"].includes(role) || typeof name !== "string" || !name.trim() || name.length > 120) {

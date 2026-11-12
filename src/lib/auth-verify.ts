@@ -2,6 +2,9 @@ import { createHash, randomUUID } from "crypto";
 import { billingContext } from "./billing-context";
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb } from "./firebase-admin";
+import { getClientIp } from "./client-ip";
+import { enforceRateLimit } from "./rate-limit";
+import type { RateLimitKind } from "./rate-limit-config";
 
 /** Authenticate before trusting any identifiers supplied by a client. */
 export async function authenticateRequest(req: NextRequest) {
@@ -29,7 +32,7 @@ export async function verifyCallerIdentity(req: NextRequest, expectedUid: string
 
 /** One-way digest so audit records show repeat callers without storing the address. */
 function hashIp(req: NextRequest): string {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown-ip";
+  const ip = getClientIp(req.headers) ?? "unknown-ip";
   return createHash("sha256").update(ip).digest("hex").slice(0, 16);
 }
 
@@ -87,11 +90,17 @@ export function withAuthorizedRequest(handler: AuthorizedHandler, options: {
   resource?: "submission" | "portfolio";
   /** Billing/usage feature recorded for AI calls. Defaults to the resource kind, else "navigation". */
   feature?: string;
+  /** Per-uid budget from rate-limit-config.ts, charged after authentication and before any other work. */
+  rateLimit?: RateLimitKind;
 } = {}): Handler {
   return async (req) => {
     const requestId = randomUUID();
     const caller = await authenticateRequest(req);
     if (!caller) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    if (options.rateLimit) {
+      const limited = await enforceRateLimit(req, options.rateLimit, caller.uid);
+      if (limited) return limited;
+    }
     if (options.admin) {
       const isAdmin = caller.admin === true;
       try {
