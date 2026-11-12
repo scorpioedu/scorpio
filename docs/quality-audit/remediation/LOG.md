@@ -10,3 +10,4 @@
 - 2026-11-11 22:32:56 RT-04 verifier PASS, merged 66f0ea5, gate PASS (48 security). RT-01 runbook merged (docs only). Next: RT-03.
 - 2026-11-11 22:48:14 RT-03 attempt1 verifier FAIL (IP header), attempt2 PASS; merged. ESLint ceiling ratcheted to 244/194. Next RT-07.
 - 2026-11-11 23:00:06 RT-07 verifier PASS, merged. ESLint ceiling 242/193. Starting fresh-clone integration check (8 merged tickets).
+- 2026-11-11 23:02:24 Integration check #1 (fresh clone, npm ci root+functions, full gate): PASS (66 security, eslint 242/193, build). Browser smoke: covered by RT-06/RT-22 verifiers (admin pages, signup, login); landing page smoke to do after RT-02. Next: RT-02.
