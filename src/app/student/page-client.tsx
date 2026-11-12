@@ -26,10 +26,35 @@ interface Stats {
   pendingAssignments: number;
 }
 
+/** A Firestore Timestamp (as seconds), an ISO string, epoch millis or a Date. */
+type FirestoreDate = { seconds?: number } | string | number | Date | null | undefined;
+
+/** Milliseconds for a FirestoreDate; `fallback` when the value is empty. */
+function dateMs(value: FirestoreDate, fallback: number): number {
+  const seconds = (value as { seconds?: number } | null | undefined)?.seconds;
+  if (seconds) return seconds * 1000;
+  return value ? new Date(value as string | number | Date).getTime() : fallback;
+}
+
+interface AssignmentDoc {
+  id: string;
+  title?: string;
+  dueDate?: FirestoreDate;
+}
+
+interface SubmissionDoc {
+  id: string;
+  assignmentId: string;
+  status?: string;
+  graded?: boolean;
+  score: number;
+  submittedAt?: FirestoreDate;
+}
+
 interface RecentAssignment {
   id: string;
   title: string;
-  dueDate: any;
+  dueDate: FirestoreDate;
   isSubmitted: boolean;
 }
 
@@ -121,7 +146,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
 
         let totalAssignments = 0;
         const currentAssignmentIds = new Set<string>();
-        const assignmentsList: any[] = [];
+        const assignmentsList: AssignmentDoc[] = [];
 
         // FETCHING LOGIC: Priority to courseId, fallback to teacherId (legacy)
         if (courseId) {
@@ -131,7 +156,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           totalAssignments = assignmentsSnap.size;
           assignmentsSnap.docs.forEach(doc => {
             currentAssignmentIds.add(doc.id);
-            assignmentsList.push({ id: doc.id, ...doc.data() });
+            assignmentsList.push({ id: doc.id, ...doc.data() } as AssignmentDoc);
           });
         } else if (teacherId) {
           // Fallback for legacy mode: fetch ALL assignments for this teacher
@@ -142,7 +167,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           totalAssignments = assignmentsSnap.size;
           assignmentsSnap.docs.forEach(doc => {
             currentAssignmentIds.add(doc.id);
-            assignmentsList.push({ id: doc.id, ...doc.data() });
+            assignmentsList.push({ id: doc.id, ...doc.data() } as AssignmentDoc);
           });
         }
 
@@ -150,7 +175,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           query(collection(db, "submissions"), where("studentId", "==", user.uid))
         );
 
-        const submissions = submissionsSnap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+        const submissions = submissionsSnap.docs.map(d => ({ id: d.id, ...d.data() } as SubmissionDoc));
         const submittedAssignmentIds = new Set(
           submissions.filter(data => data.status !== 'draft').map(data => data.assignmentId)
         );
@@ -166,13 +191,13 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         const gradedSubmissions = submissions
           .filter(s => s.graded && typeof s.score === 'number' && s.status !== 'draft' && currentAssignmentIds.has(s.assignmentId))
           .sort((a, b) => {
-            const timeA = a.submittedAt?.seconds ? a.submittedAt.seconds * 1000 : (a.submittedAt ? new Date(a.submittedAt).getTime() : 0);
-            const timeB = b.submittedAt?.seconds ? b.submittedAt.seconds * 1000 : (b.submittedAt ? new Date(b.submittedAt).getTime() : 0);
+            const timeA = dateMs(a.submittedAt, 0);
+            const timeB = dateMs(b.submittedAt, 0);
             return timeA - timeB;
           });
 
         const scorePoints: ScorePoint[] = gradedSubmissions.map(s => {
-          const rawDate = s.submittedAt?.seconds ? new Date(s.submittedAt.seconds * 1000) : (s.submittedAt ? new Date(s.submittedAt) : null);
+          const rawDate = s.submittedAt ? new Date(dateMs(s.submittedAt, 0)) : null;
           return {
             title: titleMap.get(s.assignmentId) || "Assignment",
             score: s.score,
@@ -192,8 +217,8 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             if (a.isSubmitted !== b.isSubmitted) {
               return a.isSubmitted ? 1 : -1;
             }
-            const timeA = a.dueDate?.seconds ? a.dueDate.seconds * 1000 : (a.dueDate ? new Date(a.dueDate).getTime() : Infinity);
-            const timeB = b.dueDate?.seconds ? b.dueDate.seconds * 1000 : (b.dueDate ? new Date(b.dueDate).getTime() : Infinity);
+            const timeA = dateMs(a.dueDate, Infinity);
+            const timeB = dateMs(b.dueDate, Infinity);
             return timeA - timeB;
           })
           .slice(0, 3);
@@ -457,7 +482,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
                       </div>
                       <span className="mt-0.5 block text-xs text-muted-foreground">
                         {assignment.dueDate
-                          ? `Due ${new Date(assignment.dueDate.seconds ? assignment.dueDate.seconds * 1000 : assignment.dueDate).toLocaleDateString()}`
+                          ? `Due ${new Date(dateMs(assignment.dueDate, 0)).toLocaleDateString()}`
                           : "No due date"}
                       </span>
                     </div>

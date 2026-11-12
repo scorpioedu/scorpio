@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, getDoc, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -45,7 +45,7 @@ export default function TeacherGradesPage() {
         if (!user) return;
         try {
             const snap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)));
-            const coursesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+            const coursesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string; code: string }));
             setCourses(coursesData);
             
             // If there's at least one course, select the first one by default 
@@ -109,7 +109,7 @@ export default function TeacherGradesPage() {
         }
 
         // 2. Query relevant submissions
-        let submissionsDocs: any[] = [];
+        let submissionsDocs: QueryDocumentSnapshot[] = [];
         if (selectedAssignmentId !== "all") {
             const snap = await getDocs(query(collection(db, "submissions"), where("assignmentId", "==", selectedAssignmentId)));
             submissionsDocs = snap.docs;

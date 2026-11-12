@@ -1,14 +1,14 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
-import { MessageSquare, Sparkles, Brain, Calculator, GraduationCap } from "lucide-react";
+import { MessageSquare, Sparkles, Brain, Calculator, GraduationCap, type LucideIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 
 interface PromptCardProps {
-  icon: any;
+  icon: LucideIcon;
   userText: string;
   aiText: string | React.ReactNode;
   delay: number;

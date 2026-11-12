@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { collection, query, where, getDocs, getDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -61,7 +61,7 @@ export default function StudentDetailsPage() {
         const allowedAssignmentIdsSet = new Set(allowedAssignmentIdsArr);
 
         // Fetch submissions for this student belonging to the teacher's assignments
-        const submissionsDocs: any[] = [];
+        const submissionsDocs: QueryDocumentSnapshot[] = [];
         if (allowedAssignmentIdsArr.length > 0) {
             const chunks = [];
             for (let i = 0; i < allowedAssignmentIdsArr.length; i += 30) {

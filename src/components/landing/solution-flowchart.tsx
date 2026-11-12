@@ -114,7 +114,7 @@ export function SolutionFlowchart() {
             items={steps.map(step => ({
               title: step.title,
               description: step.description,
-              icon: step.icon as any,
+              icon: step.icon,
               color: step.id === "step-1" ? "#f87171" :
                      step.id === "step-2" ? "#fb923c" :
                      step.id === "step-3" ? "#60a5fa" :

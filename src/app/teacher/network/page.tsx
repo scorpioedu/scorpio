@@ -80,13 +80,20 @@ import { NetworkTutorial } from "@/components/network-tutorial";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
+interface NetworkMember {
+  uid: string;
+  displayName?: string;
+  name?: string;
+  email?: string;
+}
+
 export default function NetworkPage() {
   const router = useRouter();
   const { user, profile, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState<Organization | null>(null);
-  const [networkMembers, setNetworkMembers] = useState<any[]>([]);
+  const [networkMembers, setNetworkMembers] = useState<NetworkMember[]>([]);
   const [newOrgName, setNewOrgName] = useState("");
   const [memberToKick, setMemberToKick] = useState<{ id: string, name: string } | null>(null);
   const [ownerToTransfer, setOwnerToTransfer] = useState<{ id: string, name: string } | null>(null);
@@ -387,7 +394,7 @@ export default function NetworkPage() {
         where("organizationId", "==", profile.organizationId),
         where("role", "==", "teacher")
       ));
-      const members = membersSnap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      const members = membersSnap.docs.map(d => ({ uid: d.id, ...d.data() } as NetworkMember));
       setNetworkMembers(members);
 
       const teacherIds = members.map(m => m.uid);

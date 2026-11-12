@@ -6,6 +6,7 @@ import {
   motion,
   type DOMMotionComponents,
   type MotionProps,
+  type Transition,
   type Variants,
 } from "framer-motion"
 
@@ -373,7 +374,7 @@ const TextAnimateBase = ({
           ...baseItemVariants.show,
           transition: {
             ...(typeof baseItemVariants.show === "object" && "transition" in baseItemVariants.show
-              ? (baseItemVariants.show as any).transition
+              ? (baseItemVariants.show as { transition?: Transition }).transition
               : {}),
             duration,
           },

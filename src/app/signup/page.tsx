@@ -16,7 +16,7 @@ import { GraduationCap, Presentation, Eye, EyeOff, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { errorCode, errorMessage } from "@/lib/error-utils";
+import { errorCode } from "@/lib/error-utils";
 
 export default function SignupPage() {
   return <Suspense fallback={<p className="p-8">Loading sign up…</p>}><SignupForm /></Suspense>;

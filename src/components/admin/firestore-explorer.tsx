@@ -15,7 +15,7 @@ import { errorMessage } from "@/lib/error-utils";
 export function FirestoreExplorer() {
   const [collections, setCollections] = useState<string[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<{ id: string; [field: string]: unknown }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [lastDocId, setLastDocId] = useState<string | null>(null);
