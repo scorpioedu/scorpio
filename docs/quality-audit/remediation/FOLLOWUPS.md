@@ -35,3 +35,9 @@
 - The injection heuristic is deliberately conservative regex; tune the patterns in `INJECTION_PATTERNS` from real `pending_review` volume. `responseSchema` in `generationConfig` (F-001 suggestion) is not used.
 - `synthesizeRubric`, `generateAssignmentQuestions` and `parseQuestionsFromText` still interpolate untrusted topic/learning-objective/pasted text into the user prompt without delimiters or a system instruction.
 - `src/lib/ai/assignment.ts` still contains an `// @ts-ignore` and `any` types (pre-existing, untouched).
+
+## From RT-02
+- `eslint-config-next` is held at 16.0.7: 16.4.1 brings eslint-plugin-react-hooks 7.1.1 and raises ESLint errors 242 -> 269 (new `react-hooks/set-state-in-effect`, `immutability`, `purity`, `refs`). Bump it together with a cleanup of those findings.
+- Root `firebase` 12.x pins `@grpc/grpc-js ~1.9` (flagged high); revisit with a firebase major bump or an override.
+- Remaining root high/critical advisories are the unused `vercel` CLI tree; remove `vercel` and `sib-api-v3-sdk` in RT-20.
+- Shared port 8188 can be held by orphaned Firestore emulators from other worktrees; use `GATE_PORT_OFFSET`.
