@@ -2,14 +2,14 @@ import { withAuthorizedRequest } from "@/lib/auth-verify";
 import { NextRequest, NextResponse } from "next/server";
 import { polar } from "@/lib/polar";
 import { adminDb } from "@/lib/firebase-admin";
+import { parseJsonBody } from "@/lib/api-schema";
+import { checkoutBody } from "@/lib/schemas/api-bodies";
 
 async function handlePost(req: NextRequest) {
   try {
-    const { userId, organizationId, planId } = await req.json();
-
-    if (!userId || !organizationId || !planId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, checkoutBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { userId, organizationId, planId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Server configuration error: database unavailable" }, { status: 500 });

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue as FieldValue } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
 import { withAuthorizedRequest } from '@/lib/auth-verify';
+import { z } from 'zod';
+import { parseJsonBody, parseValue } from '@/lib/api-schema';
+import { requestAccessAction, requestAccessReviewBody, requestAccessSubmitBody } from '@/lib/schemas/api-bodies';
 
 function generateCode(): string {
   const segment = () => randomBytes(2).toString('hex').toUpperCase();
@@ -10,8 +13,13 @@ function generateCode(): string {
 
 async function handleRequestAccess(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { action } = body;
+    const envelope = await parseJsonBody(req, z.record(z.string(), z.unknown()));
+    if (!envelope.ok) return envelope.response;
+    const raw = envelope.data;
+    const action = raw.action;
+    if (action !== undefined && !requestAccessAction.safeParse(action).success) {
+      return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+    }
     // Note: adminDb is a Proxy — getApp() is called lazily on first property access.
     // Any Firebase Admin init errors will be caught by the outer try/catch below.
 
@@ -44,48 +52,52 @@ async function handleRequestAccess(req: NextRequest) {
 
     // ─── APPROVE (admin only) — generates invite code + marks request approved ─
     if (action === 'approve') {
-      const { id } = body;
-      if (!id) return NextResponse.json({ error: 'Missing request id' }, { status: 400 });
+      const review = parseValue(raw, requestAccessReviewBody, 'Missing request id');
+      if (!review.ok) return review.response;
+      const { id } = review.data;
 
-      const reqDoc = await adminDb.collection('accessRequests').doc(id).get();
-      if (!reqDoc.exists) return NextResponse.json({ error: 'Request not found' }, { status: 404 });
+      const requestRef = adminDb.collection('accessRequests').doc(id);
+      const codeRef = adminDb.collection('teacherInviteCodes').doc(generateCode());
+      // One transaction so two concurrent approvals cannot both issue an invite code (G-009).
+      const outcome = await adminDb.runTransaction(async (tx: FirebaseFirestore.Transaction) => {
+        const reqDoc = await tx.get(requestRef);
+        if (!reqDoc.exists) return { status: 404, error: 'Request not found' } as const;
+        const data = reqDoc.data()!;
+        if (data.status !== 'pending') return { status: 409, error: 'Request is not pending' } as const;
 
-      const data = reqDoc.data()!;
-      if (data.status !== 'pending') {
-        return NextResponse.json({ error: 'Request is not pending' }, { status: 409 });
-      }
+        // Generate a teacher invite code labelled with the requester's info
+        const code = codeRef.id;
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 60); // 60-day expiry for requested codes
 
-      // Generate a teacher invite code labelled with the requester's info
-      const code = generateCode();
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 60); // 60-day expiry for requested codes
-
-      await adminDb.collection('teacherInviteCodes').doc(code).set({
-        code,
-        label: `${data.name} — ${data.institution}`,
-        organizationId: null,
-        createdAt: FieldValue.serverTimestamp(),
-        expiresAt,
-        isUsed: false,
-        usedAt: null,
-        usedBy: null,
-        usedByEmail: null,
-        requestId: id,
+        tx.set(codeRef, {
+          code,
+          label: `${data.name} — ${data.institution}`,
+          organizationId: null,
+          createdAt: FieldValue.serverTimestamp(),
+          expiresAt,
+          isUsed: false,
+          usedAt: null,
+          usedBy: null,
+          usedByEmail: null,
+          requestId: id,
+        });
+        tx.update(requestRef, {
+          status: 'approved',
+          reviewedAt: FieldValue.serverTimestamp(),
+          generatedCode: code,
+        });
+        return { status: 200, code } as const;
       });
-
-      await adminDb.collection('accessRequests').doc(id).update({
-        status: 'approved',
-        reviewedAt: FieldValue.serverTimestamp(),
-        generatedCode: code,
-      });
-
-      return NextResponse.json({ success: true, code });
+      if ('error' in outcome) return NextResponse.json({ error: outcome.error }, { status: outcome.status });
+      return NextResponse.json({ success: true, code: outcome.code });
     }
 
     // ─── REJECT (admin only) ──────────────────────────────────────────────────
     if (action === 'reject') {
-      const { id } = body;
-      if (!id) return NextResponse.json({ error: 'Missing request id' }, { status: 400 });
+      const review = parseValue(raw, requestAccessReviewBody, 'Missing request id');
+      if (!review.ok) return review.response;
+      const { id } = review.data;
 
       const reqDoc = await adminDb.collection('accessRequests').doc(id).get();
       if (!reqDoc.exists) return NextResponse.json({ error: 'Request not found' }, { status: 404 });
@@ -99,7 +111,9 @@ async function handleRequestAccess(req: NextRequest) {
     }
 
     // ─── SUBMIT (public — called from /request-access page) ──────────────────
-    const { name, email, institution, role, message } = body;
+    const submission = parseValue(raw, requestAccessSubmitBody, 'Missing required fields.');
+    if (!submission.ok) return submission.response;
+    const { name, email, institution, role, message } = submission.data;
 
     if (!name?.trim() || !email?.trim() || !institution?.trim() || !role?.trim()) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
@@ -110,31 +124,33 @@ async function handleRequestAccess(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
-    const existingSnapshot = await adminDb
-      .collection('accessRequests')
-      .where('email', '==', email.trim().toLowerCase())
-      .where('status', '==', 'pending')
-      .limit(1)
-      .get();
-
-    if (!existingSnapshot.empty) {
+    // Duplicate check and insert share one transaction so double-clicks cannot create two pending rows (G-009).
+    const created = await adminDb.runTransaction(async (tx: FirebaseFirestore.Transaction) => {
+      const existingSnapshot = await tx.get(adminDb
+        .collection('accessRequests')
+        .where('email', '==', email.trim().toLowerCase())
+        .where('status', '==', 'pending')
+        .limit(1));
+      if (!existingSnapshot.empty) return false;
+      tx.set(adminDb.collection('accessRequests').doc(), {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        institution: institution.trim(),
+        role: role.trim(),
+        message: message?.trim() || null,
+        status: 'pending',
+        createdAt: FieldValue.serverTimestamp(),
+        reviewedAt: null,
+        generatedCode: null,
+      });
+      return true;
+    });
+    if (!created) {
       return NextResponse.json(
         { error: "A pending request already exists for this email. We'll be in touch soon." },
         { status: 409 }
       );
     }
-
-    await adminDb.collection('accessRequests').add({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      institution: institution.trim(),
-      role: role.trim(),
-      message: message?.trim() || null,
-      status: 'pending',
-      createdAt: FieldValue.serverTimestamp(),
-      reviewedAt: null,
-      generatedCode: null,
-    });
 
     return NextResponse.json({ success: true });
   } catch (err) {
