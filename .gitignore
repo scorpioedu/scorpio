@@ -75,3 +75,6 @@ firestore-debug.log
 
 # Safe placeholder configuration template
 !.env.example
+
+# remediation gate build output
+/.next-gate/
