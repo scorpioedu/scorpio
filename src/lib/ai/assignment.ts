@@ -146,12 +146,9 @@ export async function generateAssignmentQuestions(
     
     let parsedData: any;
     try {
-        // Remove comments
-        const sanitizeJson = cleanJson
-          .replace(/\/\/.*/g, '') 
-          .replace(/\/\*[\s\S]*?\*\//g, '');
-          
-        parsedData = JSON.parse(sanitizeJson);
+        // No comment stripping: a "//" regex corrupts any string containing a URL. The result is
+        // validated by validateAndNormalizeQuestions below.
+        parsedData = JSON.parse(cleanJson);
     } catch (parseError) {
         console.error("Error parsing AI JSON:", cleanJson);
         try {

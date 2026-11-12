@@ -24,3 +24,7 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - [ ] Create a log-based alert in Cloud Logging for `[Landing Chat] ALERT` (80% budget, daily cap reached).
 - [ ] The app must be deployed on Vercel for per-IP limits to be effective: the client IP is read only from `x-vercel-forwarded-for` / `x-real-ip`. Elsewhere (no such header) per-IP limiting is skipped and only the signed cookie and the global daily cap protect the route.
 - [ ] Confirm Firestore rules deny client access to `landing_daily` and `landing_visitors` (they are written only via the Admin SDK; no rule changes were made).
+
+## RT-07
+- Teachers will now see AI-graded submissions land in `pending_review` when an answer looks like prompt injection, or gets full marks while being very short and absent from the reference. Decide whether the teacher UI should surface `reviewFlag` / `aiSuggestedScore` on those answers (stored on the answer in `submissions.answers[]`) and whether the thresholds (12-char answer, 40-char question) suit your question styles.
+- Out-of-range model scores used to be silently clamped to 10; they now go to review. Watch the `pending_review` rate with `gradingError` text "Invalid grading response" after deploy of the functions.

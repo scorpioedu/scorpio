@@ -52,6 +52,13 @@ async function callGeminiDirect(request: any) {
     ],
   };
 
+  if (request?.systemInstruction) {
+    // Trusted rules live here so untrusted text in `contents` can never outrank them.
+    payload.systemInstruction = typeof request.systemInstruction === "string"
+      ? { parts: [{ text: request.systemInstruction }] }
+      : request.systemInstruction;
+  }
+
   const context = billingContext.getStore();
   // Only the admin-only research route is exempt; public landing traffic must always be capped by a budget.
   const isExempt = context?.type === 'research';
