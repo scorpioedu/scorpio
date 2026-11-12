@@ -36,7 +36,7 @@ export const onAssignmentDeleted = onDocumentDeleted("assignments/{assignmentId}
 });
 
 // Import and export new grading triggers
-export { onSubmissionCreated, onSubmissionUpdated } from "./grading";
+export { onSubmissionCreated, onSubmissionUpdated, sweepStuckGrading } from "./grading";
 
 import * as React from "react";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";

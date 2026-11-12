@@ -6,3 +6,9 @@
 - `.github/dependabot.yml` (suggested by L-001) is not added.
 
 - RT-22a: emulator ports are hardcoded (auth 9099, firestore 8080, storage 9199) in src/lib/firebase-emulator.ts; if another project holds those ports there is no override. Consider NEXT_PUBLIC_FIREBASE_*_EMULATOR_PORT overrides. Also firebase.ts keeps a pre-existing ts-ignore (App Check debug token) and a hardcoded production reCAPTCHA site key fallback.
+
+## RT-05
+- `functions/src/index.ts`, `billing.ts` still use `console.*` (and index.ts logs recipient emails); migrate to `firebase-functions/logger` and redact emails (K-005 remainder, RT-17/RT-18).
+- `gradeSubmission` returns early (no org, non-AI assignment, budget) in ways that leave the status `submitted`; the sweep now covers the AI cases after 20 min, but the early-return paths should set an explicit status.
+- `gradeResponseAI` still uses `any` and an unvalidated JSON parse (RT-07). `@google/genai` ^0.13 pinned (RT-02).
+- Sweep scan is capped at 2000 candidates per run; with a very large permanent manual-grading backlog older than the cap, AI-stuck submissions beyond it wait for later runs. A denormalised `gradingType` field on submissions would allow a query-level filter.
