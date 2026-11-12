@@ -9,6 +9,6 @@ import "katex/dist/katex.min.css";
  * the source in red for invalid input instead of throwing. (I-018)
  */
 export function Latex({ math, display = false }: { math: string; display?: boolean }) {
-  const html = katex.renderToString(math, { throwOnError: false, displayMode: display, output: "html" });
+  const html = katex.renderToString(math, { throwOnError: false, displayMode: display });
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }

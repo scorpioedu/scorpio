@@ -19,7 +19,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-13 | merged (partial) | rt-13-auth-errors | 648474d (merge) | PASS | PASS | handler throw now 500 not 400; ai-parse/generate/rubric billing types; ctx arg additive, routes not yet converted; notebook counter unification not done |
 | RT-14 | merged | rt-14-rules | ccf7d82 (merge) | PASS (shifted ports) | PASS | rules must be deployed by owner (HUMAN-TODO); resources upload mime allowlist narrower (md/html rejected) |
 | RT-15 | merged (partial) | rt-15-client-effects | 1bc20a3 (merge) | PASS | PASS | per-student Copilot counter not server-maintained (FOLLOWUPS); timer grace now submits; 3 items skipped (mega pages, carousel) |
-| RT-16 | todo | | | | | |
+| RT-16 | merged (partial) | rt-16-cwv | efce093 (merge) | PASS | CONDITIONAL PASS (a11y finding fixed by orchestrator) | lazy chatbot/markdown; auth only on app routes; Firestore/App Check still eager on login; /student 580KB gz (target 450); Lighthouse not run |
 | RT-17 | todo | | | | | |
 | RT-18 | merged (partial) | rt-18-functions | 06c798e (merge) | PASS | PASS | emails only same-course students; at-most-once claim; storage cleanup scoped to submissions/<studentId>/; functions/ "npm test" script not added (tests in root) |
 | RT-19 | todo | | | | | |
