@@ -20,3 +20,7 @@
 - `/admin` and `/research/admin` no longer ask for a secret. They show the dashboard to a signed-in user whose token carries the claim; others see a sign-in prompt or "no administrator access".
 - Admins are locked out until the owner runs `tools/set-admin-claim.cjs` (see `RT-06-HUMAN.md`).
 - `ADMIN_SECRET` removed from `.env.example`.
+## RT-04 (F-004, B-003)
+- A provider call that fails in transport (timeout, network error) or returns an unreadable body now releases its budget hold and charges the conservative estimate (input bytes / 4 tokens, 0 output) instead of leaving the reservation pending forever. HTTP non-OK responses are unchanged (settled at zero cost).
+- A provider response without `usageMetadata` no longer throws; it settles with the same estimate and logs a warning, and the generated text is returned to the caller.
+- New scheduled function `expireStaleReservations` (every 15 min): `ai_reservations` still `pending` after 30 minutes are marked `expired` and their `maxCost` is subtracted from `organizations.aiUsageReserved` (floor 0). Expired holds are not charged. Needs the new `ai_reservations (status, createdAt)` composite index deployed; scans up to 10 pages of 200 per run.

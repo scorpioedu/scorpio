@@ -18,3 +18,8 @@
 - `/api/admin/firestore` still exposes `users`, `submissions` and `tutor_sessions` across tenants (now to admin-claim holders only, and audited). Consider trimming `ALLOWED_COLLECTIONS` or redacting fields (C-003 recommendation).
 - `admin_audit` has no Firestore rules entry; it is written by the Admin SDK only, so the default deny applies. Consider an explicit `allow read, write: if false` and a retention/TTL policy.
 - `teacher-code` error responses still return `err.stack` outside production; pre-existing, unrelated to RT-06.
+
+## RT-04
+- Reservation tests live in `tests/security/ai-reservations.test.ts` (emulator suite) rather than `workflows.test.ts` to avoid merge conflicts with concurrent tickets.
+- `functions/src/grading.ts` calls `reserveBudget`/`settleBudget` directly; check its failure paths settle the hold (RT-07 scope). Per-user usage counters incremented at reservation time are not rolled back when a reservation expires.
+- The stale threshold (30 min) is a constant in `functions/src/metering.ts`; finding F-004 suggested 5 min, the ticket says 30 min (kept, well above the 60 s provider timeout).

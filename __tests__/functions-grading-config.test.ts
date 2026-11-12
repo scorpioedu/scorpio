@@ -18,4 +18,8 @@ describe('deployed grading functions', () => {
   test('the stuck-grading sweep is exported so it deploys', () => {
     expect(endpoint(fns.sweepStuckGrading).scheduleTrigger?.schedule).toBeTruthy();
   });
+
+  test('the stale AI reservation sweep is exported and runs every 15 minutes', () => {
+    expect(endpoint(fns.expireStaleReservations).scheduleTrigger?.schedule).toBe('every 15 minutes');
+  });
 });

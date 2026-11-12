@@ -60,25 +60,49 @@ async function callGeminiDirect(request: any) {
       console.warn(`[AI] ${context.type} reservation skipped:`, budgetErr instanceof Error ? budgetErr.message : budgetErr);
     }
   }
-  // On transport uncertainty the reservation remains held for reconciliation, preventing overspend.
-  const res = await fetch(url, {
-    method: "POST",
-    signal: AbortSignal.timeout(60000),
-    headers: {
-      "Content-Type": "application/json",
-      "Referer": process.env.NEXT_PUBLIC_APP_URL || "https://scorpioedu.org",
-    },
-    body: payloadText,
-  });
+  // Any failure after the hold is taken must release it: charge the input estimate, never leave it pending.
+  const settleEstimate = async () => {
+    if (!reservation) return;
+    try {
+      await settleBudget(adminDb, reservation, Math.ceil(inputBytes / 4), 0);
+    } catch (settleErr) {
+      console.error('[AI] failed to settle reservation after provider failure:', settleErr instanceof Error ? settleErr.message : settleErr);
+    }
+  };
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      signal: AbortSignal.timeout(60000),
+      headers: {
+        "Content-Type": "application/json",
+        "Referer": process.env.NEXT_PUBLIC_APP_URL || "https://scorpioedu.org",
+      },
+      body: payloadText,
+    });
+  } catch (fetchErr) {
+    await settleEstimate();
+    throw fetchErr;
+  }
 
   if (!res.ok) {
     if (reservation) await settleBudget(adminDb, reservation, 0, 0);
     throw new Error(`AI provider returned ${res.status}`);
   }
 
-  const data = await res.json();
+  let data: Awaited<ReturnType<Response['json']>>;
+  try {
+    data = await res.json();
+  } catch (parseErr) {
+    await settleEstimate();
+    throw parseErr;
+  }
   if (!data.usageMetadata) {
-    if (reservation) throw new Error('Provider did not return usage; reservation retained for reconciliation');
+    if (reservation) {
+      console.warn('[AI] provider returned no usageMetadata; settling with the input-size estimate');
+      await settleEstimate();
+    }
   } else if (reservation) {
     await settleBudget(adminDb, reservation, data.usageMetadata.promptTokenCount || 0,
       (data.usageMetadata.candidatesTokenCount || 0) + (data.usageMetadata.thoughtsTokenCount || 0));
