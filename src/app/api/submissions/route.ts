@@ -2,6 +2,7 @@ import type { AssignmentQuestion } from "@/lib/assignment-security";
 import { NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
+import { isSubmissionLate } from '@/lib/due-date';
 import { parseJsonBody, type FieldIssue } from '@/lib/api-schema';
 import { submissionBody } from '@/lib/schemas/api-bodies';
 
@@ -47,7 +48,6 @@ export const POST = withAuthorizedRequest(async req => {
         return { questionId: q.id, questionText: q.text, answer };
       });
       const now = new Date();
-      const due = assignment.dueDate?.toDate?.();
       const files = Array.isArray(body.workFiles) ? body.workFiles : [];
       if (files.length > 20) throw new Error('Too many attachments');
       for (const file of files) {
@@ -59,7 +59,7 @@ export const POST = withAuthorizedRequest(async req => {
       }
       tx.set(ref, { assignmentId: body.assignmentId, studentId: caller.uid, studentName: profile.displayName || '', studentEmail: caller.email || '',
         teacherId: assignment.teacherId, courseId: assignment.courseId || null, answers, status: body.status,
-        updatedAt: now, ...(body.status === 'submitted' ? { submittedAt: now } : {}), isLate: !!due && now > due,
+        updatedAt: now, ...(body.status === 'submitted' ? { submittedAt: now } : {}), isLate: isSubmissionLate(assignment.dueDate, now),
         graded: false, totalPoints: (assignment.questions || []).reduce((n: number, q: AssignmentQuestion) => n + (q.points ?? 10), 0),
         earnedPoints: null, workFiles: files, unfocusCount: typeof body.unfocusCount === 'number' && Number.isFinite(body.unfocusCount) ? Math.max(0, body.unfocusCount) : 0 });
     });
