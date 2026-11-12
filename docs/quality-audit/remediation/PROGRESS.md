@@ -23,7 +23,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-17 | todo | | | | | |
 | RT-18 | merged (partial) | rt-18-functions | 06c798e (merge) | PASS | PASS | emails only same-course students; at-most-once claim; storage cleanup scoped to submissions/<studentId>/; functions/ "npm test" script not added (tests in root) |
 | RT-19 | todo | | | | | |
-| RT-20 | todo | | | | | |
+| RT-20 | merged (partial) | rt-20-dependency-hygiene | 4291461 (merge) | PASS | PASS | root audit 64->19 (0 critical, 4 high from firebase->grpc-js pin); firebase/firebase-admin majors skipped; 6 dead components deleted |
 | RT-21 | merged (decision pending) | rt-21-budget-policy | 87fb74e (merge) | PASS | PASS | new-network default left as today (membership none/0, register active/50); owner decision in HUMAN-TODO; pre-check tightened for 2 cases already refused at reservation |
 | RT-22 | in-progress | rt-22a-emulator-wiring | 0cf3c95 (merge) | PASS | PASS (part 1) | part 1 merged: engines, .nvmrc, env names, emulator wiring+alt ports. Part 2 (husky/prettier/lint-staged, zod env, README) todo |
 | RT-23 | merged | rt-23-error-boundaries | cf68642 (merge) | PASS | PASS | boundaries only log digest; no error-reporting service yet |
