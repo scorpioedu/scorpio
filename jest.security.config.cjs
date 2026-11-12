@@ -1,1 +1,1 @@
-module.exports = { preset: 'ts-jest', testEnvironment: 'node', testMatch: ['**/tests/security/*.test.cjs', '**/tests/security/*.test.ts'], testTimeout: 30000, moduleNameMapper: { '^@/(.*)$':'<rootDir>/src/$1' } };
+module.exports = { preset: 'ts-jest', testEnvironment: 'node', testMatch: ['**/tests/security/*.test.cjs', '**/tests/security/*.test.ts'], testTimeout: 30000, modulePathIgnorePatterns: ['<rootDir>/.next/','<rootDir>/.next-gate/'], moduleNameMapper: { '^@/(.*)$':'<rootDir>/src/$1' } };
