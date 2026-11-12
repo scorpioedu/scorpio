@@ -57,3 +57,5 @@
   - a non-free network with `aiBudgetLimit` 0 or unset is refused (the pre-check treated 0 as unlimited; the reservation already refused it).
 - `reserveBudget` decisions and error messages are unchanged. Network creation defaults are unchanged (see HUMAN-TODO).
 - Removed the unused `checkAndIncrementUsage` export from `src/lib/usage-limit.ts`.
+## RT-02
+- No intentional behaviour change. Dependency versions only: next 16.4.1, @tiptap/* 3.30.5 (editor paste sanitising per upstream fix), @google/genai 3.2.0 in `functions/` (same `generateContent` call).

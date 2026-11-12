@@ -49,3 +49,9 @@
 - `recordUsage` in `src/lib/usage-limit.ts` is a no-op but still called by 9 routes (B-003 suggests deleting it); left in place, removing it means editing each route.
 - Pre-check/reservation still read the org twice (pre-check, then transaction); the pre-check is advisory only. The reservation is the sole enforcement point.
 - Non-free networks with `aiBudgetLimit` 0 are unusable for AI (same as before at reservation). If "0 = unlimited" was ever intended for paid plans, the billing webhook should set an explicit limit.
+
+## From RT-02
+- `eslint-config-next` is held at 16.0.7: 16.4.1 brings eslint-plugin-react-hooks 7.1.1 and raises ESLint errors 242 -> 269 (new `react-hooks/set-state-in-effect`, `immutability`, `purity`, `refs`). Bump it together with a cleanup of those findings.
+- Root `firebase` 12.x pins `@grpc/grpc-js ~1.9` (flagged high); revisit with a firebase major bump or an override.
+- Remaining root high/critical advisories are the unused `vercel` CLI tree; remove `vercel` and `sib-api-v3-sdk` in RT-20.
+- Shared port 8188 can be held by orphaned Firestore emulators from other worktrees; use `GATE_PORT_OFFSET`.
