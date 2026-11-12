@@ -103,3 +103,4 @@
 - RT-20: `rich-text-editor.tsx` imports `@tiptap/extension-underline` although tiptap 3 `starter-kit` already includes it; check for duplicate-extension warnings, then drop the explicit import and package.
 - RT-20: `stryker.config.json` names `@stryker-mutator/jest-runner` and `typescript-checker`, which are not declared; mutation testing cannot run until they are added (no npm script uses it).
 - RT-20: `eslint-config-next` stays at 16.3.8 (16.4.x needs `eslint-plugin-react-hooks ^7.1.0` and raises ESLint errors). Optionally lower `baseline-counts.json` to 238 / 175 now that dead files are gone.
+- Build flake: next/font/google fetches fonts at build time; seen 3 times as transient failures in gates (RT-22a, integration check 3). Self-host fonts or cache to make builds hermetic.
