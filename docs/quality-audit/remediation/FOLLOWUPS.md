@@ -98,3 +98,8 @@
 - `src/components/landing/workspace-preview-tabs.tsx` and `src/components/ui/floating-prompts.tsx` still import `react-katex` (not in the ticket's two vault files); `react-katex` cannot leave package.json until they move to `Latex`.
 - Lighthouse mobile (step 5) was not re-run: no Lighthouse available here and the in-app browser pane does not emit LCP while hidden. Mechanism evidence is in RT-16-RESULT.md; re-run `/`, `/login`, `/pricing` before closing the ticket.
 - Landing LCP is still gated by the hero `reveal-preview` animation (1 s from opacity 0 after a 185 ms delay); making the LCP element visible from first paint is a design decision.
+- RT-20: not done (risk): `firebase-admin` 13 -> 14 (moderate-only fix, server-wide), `firebase` 12 -> 13 (does not fix the `@grpc/grpc-js ~1.9` pin), `@polar-sh/sdk` 0.44 -> 1.x, katex chain majors, `lucide-react`/`react-day-picker`/`react-resizable-panels` majors. Dead code remains (knip lists ~40 unused files); deleting it is a separate ticket.
+- RT-20: `showdown` has no fixed release (two moderate XSS advisories); consider replacing the notebook Markdown<->HTML path.
+- RT-20: `rich-text-editor.tsx` imports `@tiptap/extension-underline` although tiptap 3 `starter-kit` already includes it; check for duplicate-extension warnings, then drop the explicit import and package.
+- RT-20: `stryker.config.json` names `@stryker-mutator/jest-runner` and `typescript-checker`, which are not declared; mutation testing cannot run until they are added (no npm script uses it).
+- RT-20: `eslint-config-next` stays at 16.3.8 (16.4.x needs `eslint-plugin-react-hooks ^7.1.0` and raises ESLint errors). Optionally lower `baseline-counts.json` to 238 / 175 now that dead files are gone.

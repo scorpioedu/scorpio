@@ -12,7 +12,7 @@
 
 import { type LucideIcon } from "lucide-react";
 import { Cloud, Code, Cpu, Globe, Lock, Zap } from "lucide-react";
-import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "motion/react";
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
