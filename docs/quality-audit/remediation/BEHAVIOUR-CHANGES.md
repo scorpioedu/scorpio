@@ -59,3 +59,9 @@
 - Removed the unused `checkAndIncrementUsage` export from `src/lib/usage-limit.ts`.
 ## RT-02
 - No intentional behaviour change. Dependency versions only: next 16.4.1, @tiptap/* 3.30.5 (editor paste sanitising per upstream fix), @google/genai 3.2.0 in `functions/` (same `generateContent` call).
+## RT-09 (C-007): security response headers
+- Every response now carries `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Strict-Transport-Security: max-age=63072000; includeSubDomains` and a `Permissions-Policy`. Defined in `src/lib/security-headers.cjs`, wired in `next.config.mjs`.
+- `X-Frame-Options` is SAMEORIGIN, not the ticket's DENY: `/research` embeds its own same-origin PDF in an iframe, which DENY would block. The Desmos calculator iframes are outbound embeds and are unaffected.
+- `Permissions-Policy` disables only unused features (camera, geolocation, payment, usb, bluetooth, serial, hid, midi, motion sensors). It keeps `microphone=(self)` (tutor speech input), `fullscreen=(self)` (lockdown mode, demo video) and clipboard read/write for self and `www.desmos.com` (the Desmos iframes ask for it).
+- The CSP is `Content-Security-Policy-Report-Only` (owner decision): nothing is blocked. Violations are POSTed to the new `/api/csp-report`, which answers 204 and logs one sanitised `console.warn` line (`[csp-report] violated-directive=... blocked-uri=... document-uri=...`, query strings and fragments removed, 8 KB body cap, 60 lines/minute per server instance). It does not use `checkRateLimit` (that is a Firestore write per report and fails closed without the DB).
+- The CSP uses `'unsafe-inline'` for scripts and styles, because the inline scripts in `src/app/layout.tsx` and `src/components/loading-screen.tsx` and Next's bootstrap scripts have no nonce. Dev mode also allows `'unsafe-eval'` and localhost/emulator origins.

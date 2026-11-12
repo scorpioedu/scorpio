@@ -56,3 +56,6 @@
 - Remaining root high/critical advisories are the unused `vercel` CLI tree; remove `vercel` and `sib-api-v3-sdk` in RT-20.
 - Shared port 8188 can be held by orphaned Firestore emulators from other worktrees; use `GATE_PORT_OFFSET`.
 - (RT-02 verifier) @google/genai 3.2.0 constructor throws at import if GCLOUD_PROJECT and FIREBASE_PROJECT_ID are both unset; functions/src/grading.ts builds the client at module top level. Fine when deployed; make it lazy. `npm audit fix` also bumped `resend` within range (no email smoke test exists). Tiptap duplicate 'underline' extension warning is pre-existing (StarterKit already bundles it).
+## From RT-09
+- Replace `'unsafe-inline'` in the CSP `script-src` with a per-request nonce (needs a proxy/middleware that sets the nonce and makes pages dynamic) or hashes for the two inline scripts; Next's own inline bootstrap scripts are why it is not a one-line change.
+- `/api/csp-report` has only a per-instance log cap. If reports become noisy, move it behind the shared limiter from RT-11.
