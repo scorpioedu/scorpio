@@ -1,3 +1,4 @@
+export {};
 const mockApp = { name: 'app' };
 const mockAuth = { currentUser: null as null | { uid: string; getIdToken: jest.Mock } };
 const mockDb = { kind: 'db' };
