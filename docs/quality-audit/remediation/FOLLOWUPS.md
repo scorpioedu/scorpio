@@ -124,3 +124,9 @@
 - `/api/ai/parse` and `/api/ai/generate` surface `AiOutputError` (model produced unusable JSON) as 502; retry-with-backoff in the helper would reduce how often teachers see it.
 - Remaining `console.*` in route handlers and `src/lib` are not structured logs; a shared server logger (with requestId) would be the next step.
 - Support-report validation (screenshot size/type, populating identity from the authenticated profile rather than the body) from G-006 is not done; only the persistence failure is.
+
+## RT-29: not done / found
+- SKIPPED I-013 gradebook (`src/app/teacher/grades/page.tsx`) and `grades/student/page.tsx`: rows are per-student aggregates (count, average) built from every submission, and aggregate queries cannot group by student, so limit()/pagination would change the numbers. It needs a denormalised per-student grade summary (server-maintained) first. It is also broken in "All assignments" mode for the same rules reason as the dashboard (multi-assignment `in` is denied; a single selected assignment works). Not changed.
+- SKIPPED I-015 admin `global-analytics.tsx`: the organizations list feeds a `<Select>` of every tenant; a `limit()` would make tenants unreachable and there is no stat to turn into a count. A searchable/paged picker is a UI change.
+- Dashboard still reads every assignment document of the teacher (needed for ids, titles and the class check); only submission and student reads were removed. Counters on assignments (ticket step 1) were not built (needs a Cloud Function, backfill and rules).
+- Dashboard issues 4 count requests per assignment (rules limit, see HUMAN-TODO); at small scale that is about as many reads as before (246 vs 200 docs at 60 assignments / 200 submissions) and it only wins as submissions grow.

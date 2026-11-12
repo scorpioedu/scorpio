@@ -2,7 +2,7 @@
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where, orderBy, limit, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { collection, getCountFromServer, getDocs, query, where, orderBy, limit, startAfter, deleteDoc, doc, getDoc, type Query, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import Link from "next/link";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { chunk, summarizeSubmissionCounts, unionCount, type SubmissionCountParts } from "@/lib/count-math";
 import { classInvitePath } from "@/lib/onboarding-links";
 import { TeacherDashboardContent, type TeacherDashboardStats } from "@/components/teacher/dashboard-content";
 
@@ -44,6 +45,78 @@ interface RecentAssignment {
 }
 
 const emptySnapshot = { docs: [], size: 0 };
+
+// firestore.rules (RT-14) authorises submission reads with ownsAssignment(resource.data.assignmentId), which
+// Firestore can only evaluate for queries constrained to ONE assignment: an `in` over several ids is denied
+// (verified on the emulator). So submissions are counted per assignment, not per 30-id chunk. Raise this
+// only after the rules allow multi-assignment queries (e.g. a teacherId on submissions).
+const SUBMISSION_QUERY_CHUNK = 1;
+
+const zeroParts: SubmissionCountParts = { total: 0, drafts: 0, graded: 0, gradedDrafts: 0 };
+
+async function countOf(q: Query): Promise<number> {
+  return (await getCountFromServer(q)).data().count;
+}
+
+/** Aggregate counts for one `assignmentId in [...]` chunk (equality filters only, so no composite index). */
+async function countSubmissionParts(assignmentIds: string[]): Promise<SubmissionCountParts> {
+  const inChunk = where("assignmentId", "in", assignmentIds);
+  const submissions = collection(db, "submissions");
+  const [total, drafts, graded, gradedDrafts] = await Promise.all([
+    countOf(query(submissions, inChunk)),
+    countOf(query(submissions, inChunk, where("status", "==", "draft"))),
+    countOf(query(submissions, inChunk, where("graded", "==", true))),
+    countOf(query(submissions, inChunk, where("graded", "==", true), where("status", "==", "draft"))),
+  ]);
+  return { total, drafts, graded, gradedDrafts };
+}
+
+/** First `wanted` submitted (non-draft) ungraded submissions, reading only what is needed. */
+async function firstPendingSubmissions(chunks: string[][], wanted: number): Promise<Submission[]> {
+  const found: Submission[] = [];
+  const pageSize = 10;
+  for (const ids of chunks) {
+    let cursor: QueryDocumentSnapshot | undefined;
+    while (found.length < wanted) {
+      const base = [collection(db, "submissions"), where("assignmentId", "in", ids), where("graded", "==", false)] as const;
+      const snap = await getDocs(cursor ? query(...base, startAfter(cursor), limit(pageSize)) : query(...base, limit(pageSize))).catch(() => emptySnapshot);
+      for (const d of snap.docs) {
+        const sub = { id: d.id, ...d.data() } as Submission;
+        if (sub.status !== "draft" && found.length < wanted) found.push(sub);
+      }
+      if (snap.docs.length < pageSize) break;
+      cursor = snap.docs[snap.docs.length - 1] as QueryDocumentSnapshot;
+    }
+    if (found.length >= wanted) break;
+  }
+  return found;
+}
+
+/**
+ * Distinct students linked to this teacher directly or through one of their classes, via inclusion-exclusion
+ * on count queries: |A| + |B| - |A and B|. Falls back to reading the documents if counting is unavailable.
+ */
+async function countMyStudents(teacherId: string, courseIds: string[]): Promise<number> {
+  const users = collection(db, "users");
+  const student = where("role", "==", "student");
+  const byTeacher = query(users, where("teacherId", "==", teacherId), student);
+  try {
+    if (courseIds.length === 0) return await countOf(byTeacher);
+    const inCourses = where("courseId", "in", courseIds);
+    const [a, b, both] = await Promise.all([
+      countOf(byTeacher),
+      countOf(query(users, inCourses, student)),
+      countOf(query(users, where("teacherId", "==", teacherId), inCourses, student)),
+    ]);
+    return unionCount(a, b, both);
+  } catch {
+    const [unifiedSnap, unifiedByCourseSnap] = await Promise.all([
+      getDocs(byTeacher).catch(() => emptySnapshot),
+      courseIds.length > 0 ? getDocs(query(users, where("courseId", "in", courseIds), student)).catch(() => emptySnapshot) : Promise.resolve(emptySnapshot),
+    ]);
+    return new Set([...unifiedSnap.docs.map(d => d.id), ...unifiedByCourseSnap.docs.map(d => d.id)]).size;
+  }
+}
 
 function assignmentDueLabel(dueDate: RecentAssignment["dueDate"]) {
   if (!dueDate) return "No due date";
@@ -113,53 +186,24 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         setClassAssignmentIds(assignmentsSnap.docs.map(doc => doc.data().courseId).filter(Boolean));
 
         const myCourseIdsArr = courseDocs.slice(0, 30).map(doc => doc.id);
-        const [unifiedSnap, unifiedByCourseSnap] = await Promise.all([
-          getDocs(query(collection(db, "users"), where("teacherId", "==", user.uid), where("role", "==", "student"))).catch(() => emptySnapshot),
-          myCourseIdsArr.length > 0
-            ? getDocs(query(collection(db, "users"), where("courseId", "in", myCourseIdsArr), where("role", "==", "student"))).catch(() => emptySnapshot)
-            : Promise.resolve(emptySnapshot),
-        ]);
+        // RT-29 / I-012: totals come from aggregate count queries (1 billed read per 1000 index entries)
+        // instead of downloading every student and submission document.
+        const totalStudents = await countMyStudents(user.uid, myCourseIdsArr);
         if (!active) return;
 
-        const uniqueStudentIds = new Set([
-          ...unifiedSnap.docs.map(d => d.id),
-          ...unifiedByCourseSnap.docs.map(d => d.id)
-        ]);
-        
-        // We can't query submissions by teacherId directly unless we add it to the submission.
-        // Instead, filter submissions by checking if assignmentId belongs to one of our assignments.
-        const myAssignmentIds = new Set(assignmentsSnap.docs.map(d => d.id));
-        
-        // CHUNKED FETCHING: Only fetch submissions for teacher's assignments
-        // This is critical for security (prevent leaking all submissions) and performance.
-        const myAssignmentIdsArr = Array.from(myAssignmentIds);
-        const subChunks = [];
-        for (let i = 0; i < myAssignmentIdsArr.length; i += 30) {
-            subChunks.push(myAssignmentIdsArr.slice(i, i + 30));
-        }
-        
-        const submissions: Submission[] = [];
-        if (subChunks.length > 0) {
-            const subResults = await Promise.all(subChunks.map(chunk => 
-                getDocs(query(collection(db, "submissions"), where("assignmentId", "in", chunk))).catch(() => emptySnapshot)
-            ));
-            subResults.forEach(snap => {
-                snap.docs.forEach(doc => {
-                    submissions.push({ id: doc.id, ...doc.data() } as Submission);
-                });
-            });
-        }
-
+        // Submissions can't be queried by teacher, so count per chunk of the teacher's assignments.
+        const myAssignmentIdsArr = assignmentsSnap.docs.map(d => d.id);
+        const subChunks = chunk(myAssignmentIdsArr, SUBMISSION_QUERY_CHUNK);
+        const countParts = await Promise.all(subChunks.map(ids => countSubmissionParts(ids).catch(() => zeroParts)));
+        // Only look inside chunks the counts say contain something waiting to be graded.
+        const chunksWithPending = subChunks.filter((_, i) => summarizeSubmissionCounts([countParts[i]]).pendingSubmissions > 0);
+        const pendingSubmissionDocs = await firstPendingSubmissions(chunksWithPending, 3);
 
         if (!active) return;
-        const submitted = submissions.filter((s) => s.status !== "draft");
-        const pending = submitted.filter((s) => !s.graded);
-
         setStats({
           totalAssignments: assignmentsSnap.size,
-          totalStudents: uniqueStudentIds.size,
-          completedSubmissions: submitted.length - pending.length,
-          pendingSubmissions: pending.length,
+          totalStudents,
+          ...summarizeSubmissionCounts(countParts),
         });
 
         // Recent assignments (filtered)
@@ -174,7 +218,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         setRecentAssignments(recentSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
 
         // Pending grading (ungraded submissions from MY assignments)
-        const pendingSubs = pending.slice(0, 3);
+        const pendingSubs = pendingSubmissionDocs;
         
         // Get assignment titles
         const assignmentsMap = new Map(assignmentsSnap.docs.map((doc) => [doc.id, doc.data()]));
