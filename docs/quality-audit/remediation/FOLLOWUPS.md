@@ -44,3 +44,7 @@
 - Legacy migration in `src/app/student/notebook/page.tsx:L196` (`updateDoc(oldRef, { studentId ... })` on a doc without `studentId`) was already denied by the update rule and still is; belongs with RT-15.
 - `storage.rules` `submissions/**` still allows `text/*` (including `text/html`) and lets a student overwrite/delete files after grading (D-006 notes); not in RT-14 steps.
 - Optional: the old `submissions/{teacherUid}/` resource files could be migrated to `resources/`.
+
+## From RT-09
+- Replace `'unsafe-inline'` in the CSP `script-src` with a per-request nonce (needs a proxy/middleware that sets the nonce and makes pages dynamic) or hashes for the two inline scripts; Next's own inline bootstrap scripts are why it is not a one-line change.
+- `/api/csp-report` has only a per-instance log cap. If reports become noisy, move it behind the shared limiter from RT-11.

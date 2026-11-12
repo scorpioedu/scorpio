@@ -32,3 +32,9 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 ## RT-14: deploy rules (human-only)
 - After merge, deploy `firestore.rules` and `storage.rules` (`firebase deploy --only firestore:rules,storage`). Deploy the web app first or together: the old client writes teacher uploads to `submissions/` (still allowed for non-video files), and the new client writes to `resources/`, which only the new storage rules allow.
 - Check for existing `notebooks`/`tutor_sessions` docs that have a `studentId` different from their id-as-uid (possible squatted docs) before or after deploy.
+
+## RT-09: security headers (human-only)
+- After one week of `[csp-report]` log lines in production with nothing unexpected, switch the CSP to enforcing: rename `Content-Security-Policy-Report-Only` to `Content-Security-Policy` in `src/lib/security-headers.cjs`. Before that, replace `'unsafe-inline'` in `script-src` with a nonce/hash (see FOLLOWUPS), otherwise enforcement gives little XSS protection.
+- HSTS is `max-age=63072000; includeSubDomains` with no `preload`. Make sure every subdomain of the production domain serves HTTPS before deploying. Do not add `preload` or submit to hstspreload.org unless you accept that it is very hard to undo.
+- The headers come from `next.config.mjs`, which Vercel applies. `firebase.json` has a `hosting` block with `frameworksBackend`; if the app is ever deployed through Firebase Hosting instead, check the headers are present with `curl -I` (Firebase's framework backend normally forwards Next headers, but its static `headers` entries in `firebase.json` would then also need the same values).
+- Real-browser check on the deployed site: Google sign-in popup, App Check reCAPTCHA, Polar checkout redirect, Desmos calculator, tutor microphone and lockdown fullscreen. Only the first three origins were reasoned from code, not exercised (demo Firebase env, no Polar token).
