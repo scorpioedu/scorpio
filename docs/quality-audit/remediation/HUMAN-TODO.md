@@ -51,6 +51,10 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - Landing/demo videos are 300 s of screen recording squeezed to about 4.6-4.9 MB (720p, CRF 35 H.264 / CRF 49 VP9). If sharper text is wanted, re-export from the original recording and host the file in Firebase Storage or a CDN rather than in `public/`.
 - Deleted files stay in repository history (about 85 MB of videos/images). Shrinking clone size needs a history rewrite coordinated by the owner.
 - Social crawlers cache `/og-image.png`; re-scrape with the Facebook Sharing Debugger / LinkedIn Post Inspector after deploy.
+
+## RT-29: bounded reads (owner actions)
+- No index deploy needed: the new count queries use equality filters only (index merging). Nothing was added to `firestore.indexes.json`.
+- Decision for the rules owner (RT-30): the `submissions` read rule uses `ownsAssignment(resource.data.assignmentId)`, so on the emulator Firestore denies any teacher query over several assignments (`in`), which makes the gradebook "All assignments" view and the old dashboard query silently return nothing (confirm on a staging project). Fixing it needs a server-written `teacherId` on submissions (backfill) and a read rule on `resource.data.teacherId == request.auth.uid`; the dashboard can then count with 4 queries in total instead of 4 per assignment (raise `SUBMISSION_QUERY_CHUNK` or filter on `teacherId`).
 ## RT-30: indexes and custom claims (human-only)
 - Deploy the new composite indexes: `firebase deploy --only firestore:indexes --project <prod-project>`. Index builds take minutes on large collections; existing indexes are untouched. Nothing was deployed from this work.
 - Custom claims (not applied): follow `docs/quality-audit/remediation/RT-30-CLAIMS-PLAN.md`. First step you can run safely: `node tools/backfill-claims.cjs --project <prod-project>` (dry run, prints the plan), then add `--apply`. It only sets `role`/`organizationId` claims, keeps other claims, and nothing reads them until the rules change. It was unit tested only, not run against the Auth/Firestore emulators or production.
