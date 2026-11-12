@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
+import { newOrganizationDefaults } from '@/lib/organization-defaults';
 
 export const POST = withAuthorizedRequest(async req => {
   const caller = (await authenticateRequest(req))!;
@@ -14,7 +15,7 @@ export const POST = withAuthorizedRequest(async req => {
       if (action === 'create') {
         if (profile.organizationId || typeof name !== 'string' || !name.trim()) throw new Error('Leave your current network first');
         const fresh = adminDb.collection('organizations').doc();
-        tx.set(fresh, { id: fresh.id, name: name.trim().slice(0, 120), ownerId: caller.uid, ownerEmail: caller.email || '', planId: 'free', subscriptionStatus: 'none', aiUsageCurrent: 0, aiBudgetLimit: 0, createdAt: new Date() });
+        tx.set(fresh, { id: fresh.id, name: name.trim().slice(0, 120), ownerId: caller.uid, ownerEmail: caller.email || '', ...newOrganizationDefaults('membership'), createdAt: new Date() });
         tx.update(ref, { organizationId: fresh.id });
       } else if (action === 'join') {
         if (profile.organizationId) throw new Error('Leave your current network first');

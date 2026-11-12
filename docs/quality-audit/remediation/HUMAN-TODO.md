@@ -32,3 +32,7 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 ## RT-14: deploy rules (human-only)
 - After merge, deploy `firestore.rules` and `storage.rules` (`firebase deploy --only firestore:rules,storage`). Deploy the web app first or together: the old client writes teacher uploads to `submissions/` (still allowed for non-video files), and the new client writes to `resources/`, which only the new storage rules allow.
 - Check for existing `notebooks`/`tutor_sessions` docs that have a `studentId` different from their id-as-uid (possible squatted docs) before or after deploy.
+
+## RT-21: default of a newly created free network (G-003) - OPEN QUESTION
+- Decide what a newly created free network gets. Today `/api/auth/register` creates it `active` with a 50 cent AI budget, while `/api/teacher/network/membership` (action `create`) creates it `none` with a 0 budget, so AI is refused for it. Both are kept as-is.
+- To change: edit the `membership` preset (one line) in `src/lib/organization-defaults.ts` and update `__tests__/organization-defaults.test.ts`.

@@ -84,11 +84,11 @@ describe('budget table', () => {
     ['free, limit 0 (membership default)', { aiBudgetLimit: 0 }, false, false],
     ['free, usage at limit', { aiUsageCurrent: 50 }, false, false],
     ['free, reserved counts towards limit', { aiUsageCurrent: 20, aiUsageReserved: 30 }, false, false],
-    ['free, limit 500 above the 50c cap, usage 100', { aiBudgetLimit: 500, aiUsageCurrent: 100 }, true, false], // DIVERGES
+    ['free, limit 500 above the 50c cap, usage 100', { aiBudgetLimit: 500, aiUsageCurrent: 100 }, false, false], // RT-21: pre-check was true, now matches enforcement
     ['free, limit 500, usage 10', { aiBudgetLimit: 500, aiUsageCurrent: 10 }, true, true],
     ['paid, limit 1000, unused', { planId: 'dept', aiBudgetLimit: 1000 }, true, true],
     ['paid, usage at limit', { planId: 'dept', aiBudgetLimit: 1000, aiUsageCurrent: 1000 }, false, false],
-    ['paid, limit 0 (unlimited in pre-check only)', { planId: 'dept', aiBudgetLimit: 0 }, true, false], // DIVERGES
+    ['paid, limit 0 (pre-check used to treat as unlimited)', { planId: 'dept', aiBudgetLimit: 0 }, false, false], // RT-21: pre-check was true, now matches enforcement
     ['no planId, limit 0', { planId: undefined, aiBudgetLimit: 0 }, false, false],
     ['no planId, limit 1000, usage 100 (pre-check treats as free, reserve as paid)', { planId: undefined, aiBudgetLimit: 1000, aiUsageCurrent: 100 }, true, true],
     ['no planId, limit 1000, usage 999.5 and cost 1', { planId: undefined, aiBudgetLimit: 1000, aiUsageCurrent: 999.5 }, true, false], // DIVERGES (cost-aware)
