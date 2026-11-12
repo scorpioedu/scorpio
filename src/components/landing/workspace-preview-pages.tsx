@@ -1616,6 +1616,11 @@ export function CreateAssignmentPage({
         ]
   );
 
+  const [gradingRubric, setGradingRubric] = React.useState(
+    initialDraft?.gradingRubric ||
+      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
+  );
+
   // Sync when initialDraft changes (from Waypoint fork or Assignment duplicate)
   React.useEffect(() => {
     if (initialDraft) {
@@ -1654,10 +1659,6 @@ export function CreateAssignmentPage({
   const [scaffoldingLevel, setScaffoldingLevel] = React.useState("medium");
   const [lockdownMode, setLockdownMode] = React.useState(false);
   const [stealthAssessment, setStealthAssessment] = React.useState(false);
-  const [gradingRubric, setGradingRubric] = React.useState(
-    initialDraft?.gradingRubric ||
-      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
-  );
   const [isSynthesizingRubric, setIsSynthesizingRubric] = React.useState(false);
 
   // AI Question Generator Dialog
