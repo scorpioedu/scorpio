@@ -21,7 +21,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-15 | merged (partial) | rt-15-client-effects | 1bc20a3 (merge) | PASS | PASS | per-student Copilot counter not server-maintained (FOLLOWUPS); timer grace now submits; 3 items skipped (mega pages, carousel) |
 | RT-16 | todo | | | | | |
 | RT-17 | todo | | | | | |
-| RT-18 | todo | | | | | |
+| RT-18 | merged (partial) | rt-18-functions | 06c798e (merge) | PASS | PASS | emails only same-course students; at-most-once claim; storage cleanup scoped to submissions/<studentId>/; functions/ "npm test" script not added (tests in root) |
 | RT-19 | todo | | | | | |
 | RT-20 | todo | | | | | |
 | RT-21 | merged (decision pending) | rt-21-budget-policy | 87fb74e (merge) | PASS | PASS | new-network default left as today (membership none/0, register active/50); owner decision in HUMAN-TODO; pre-check tightened for 2 cases already refused at reservation |

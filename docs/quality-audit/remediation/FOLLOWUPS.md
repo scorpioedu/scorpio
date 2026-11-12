@@ -85,3 +85,4 @@
 - RT-18: step 3's `"test"` script in `functions/package.json` was not added (package.json must stay unchanged, and `functions/` has no jest). The function tests live in root `__tests__/functions-*.test.ts` and run in the Gate. Decide whether to add a jest devDependency in `functions/`.
 - RT-18: failed Storage deletes on assignment delete are only logged (no retry). A retry or a reconciliation sweep for orphaned `submissions/` objects needs a design decision. Objects whose submission docs were already deleted before this change remain orphaned (no backfill).
 - RT-18: grading lock-lease/partial-failure behaviour is covered by the existing `__tests__/grading-*.test.ts`; `deliverBillingUsage` is now covered by `functions-billing-outbox.test.ts`.
+- RT-18 hardening idea (verifier): check URL bucket/host equals default bucket in functions/src/assignment-cleanup.ts before deleting (defence in depth; write path already enforces).
