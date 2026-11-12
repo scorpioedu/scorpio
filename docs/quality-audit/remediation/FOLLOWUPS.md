@@ -35,8 +35,5 @@
 - The injection heuristic is deliberately conservative regex; tune the patterns in `INJECTION_PATTERNS` from real `pending_review` volume. `responseSchema` in `generationConfig` (F-001 suggestion) is not used.
 - `synthesizeRubric`, `generateAssignmentQuestions` and `parseQuestionsFromText` still interpolate untrusted topic/learning-objective/pasted text into the user prompt without delimiters or a system instruction.
 - `src/lib/ai/assignment.ts` still contains an `// @ts-ignore` and `any` types (pre-existing, untouched).
-<<<<<<< HEAD
 - RT-23: route error boundaries only `console.error` the `error.digest`; they do not post to a real error-reporting service (none exists in the repo). Wire `RouteError` (`src/components/route-error.tsx`) and `global-error.tsx` to one once chosen, sending digest/route only (no message, no PII). The jest environment is `node` with no DOM or testing-library, so `__tests__/route-boundaries.test.tsx` uses `renderToStaticMarkup` plus element-tree resolution; add `@testing-library/react` + jsdom (RT-02/RT-28) to click the button for real. `RouteLoading` is one generic skeleton for all student/teacher routes; per-page skeletons are not done. Also pre-existing and untouched: `src/components/route-progress-bar.tsx` has an ESLint `react-hooks/set-state-in-effect` error.
-=======
 - Follow-up: tests/security hardcoded emulator ports; now read from FIRESTORE_EMULATOR_HOST/FIREBASE_STORAGE_EMULATOR_HOST (defaults unchanged).
->>>>>>> remediation/audit-2026-11
