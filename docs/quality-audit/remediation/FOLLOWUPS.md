@@ -71,3 +71,7 @@
 - RT-13: `withAuthorizedRequest` still JSON-parses the body itself and converts handler exceptions to 400; `parseJsonBody` re-reads the (cloned) body in each handler. Once RT-13 passes the parsed body in context, drop the second read. `parseJsonBody` already treats an empty body as `{}` and returns 413/400 per RT-13's target semantics.
 - `DELETE /api/account` deletion order (second half of G-009) is untouched.
 - `/api/grade` route-level `submissionId` check is redundant with the wrapper's `resource: "submission"` check.
+
+- RT-13: handlers now receive `{caller, profile, organizationId, body, requestId}` as a second argument, but no route uses it yet. Converting the 17 routes to drop their own `authenticateRequest`/`users/{uid}` re-reads and the RT-12 `parseJsonBody` second read (use `parseValue(context.body, ...)`) is a mechanical follow-up. The 500 KB cap is still enforced only in the wrapper for wrapped routes.
+- RT-13 step 4 (unify the three notebook usage counters, remove the no-op `recordUsage()` stub calls) touches `functions/` metering and client pages, which were off limits for this ticket. `reserveBudget` already counts `notebook` and `tutor` per user; the other two counters remain.
+- RT-13: `generate-title` (no AI call) and other wrapped routes without AI still bill type "navigation" by default; it is only a label there.
