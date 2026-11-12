@@ -20,7 +20,7 @@
 - **Skipped on purpose:** RT-25 (decompose mega pages), RT-26 (data layer), RT-27 (shared package), RT-28 (component/E2E tests). Reasons are in `PROGRESS.md`: large refactors that need RT-28's smoke tests first, or new tooling/dependencies.
 - **Blocked:** none. Four tickets failed their first verification (RT-05 sweep not exported, RT-03 wrong IP header, RT-11 anonymous shared bucket, RT-24 font preload inverted) and passed after a fix; no ticket hit the 3-attempt limit.
 
-Status per finding: `docs/quality-audit/findings-status.csv` (+ `remediation/FINDINGS-STATUS-SUMMARY.md`).
+Status per finding: `docs/quality-audit/findings-status.csv` (132 findings: 43 fixed, 32 partially, 13 human-needed, 0 blocked, 44 open; summary in `remediation/FINDINGS-STATUS-SUMMARY.md`).
 
 ## What YOU must do (in this order)
 1. **Review** the branch: `git log --oneline f894a61..remediation/audit-2026-11` and the docs in `docs/quality-audit/remediation/`. Merge/push it yourself when satisfied.
