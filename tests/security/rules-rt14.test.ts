@@ -6,7 +6,7 @@ import { ref, uploadBytes } from 'firebase/storage';
 import fs from 'node:fs';
 let env: RulesTestEnvironment;
 beforeAll(async () => {
- env = await initializeTestEnvironment({ projectId: 'demo-scorpio-security', firestore: { host: '127.0.0.1', port: 8188, rules: fs.readFileSync('firestore.rules','utf8') }, storage: {host:'127.0.0.1',port:9298,rules:fs.readFileSync('storage.rules','utf8')} });
+ env = await initializeTestEnvironment({ projectId: 'demo-scorpio-security', firestore: { host: '127.0.0.1', port: Number((process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8188').split(':').pop()), rules: fs.readFileSync('firestore.rules','utf8') }, storage: {host:'127.0.0.1',port:9298,rules:fs.readFileSync('storage.rules','utf8')} });
  await env.clearFirestore();
  await env.withSecurityRulesDisabled(async ctx => {
   const db = ctx.firestore();

@@ -17,7 +17,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-11 | todo | | | | | |
 | RT-12 | todo | | | | | |
 | RT-13 | todo | | | | | |
-| RT-14 | todo | | | | | |
+| RT-14 | merged | rt-14-rules | ccf7d82 (merge) | PASS (shifted ports) | PASS | rules must be deployed by owner (HUMAN-TODO); resources upload mime allowlist narrower (md/html rejected) |
 | RT-15 | todo | | | | | |
 | RT-16 | todo | | | | | |
 | RT-17 | todo | | | | | |
