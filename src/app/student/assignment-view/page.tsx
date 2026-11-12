@@ -2,7 +2,8 @@
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useCallback, useEffect, useState, useRef, Suspense } from "react";
+import { useModalA11y } from "@/hooks/use-modal-a11y";
 import { getTimerExpiryAction, GRACE_PERIOD_SECONDS } from "@/lib/assignment-timer";
 import { useSearchParams, useRouter } from "next/navigation";
 import { doc, getDoc, collection, addDoc, query, where, getDocs, setDoc } from "firebase/firestore";
@@ -380,6 +381,8 @@ function AssignmentDetailContent() {
 
   // AI Helper Logic
   const [aiHelperOpen, setAiHelperOpen] = useState(false);
+  const closeAiHelper = useCallback(() => setAiHelperOpen(false), []);
+  const mobileDrawerRef = useModalA11y<HTMLDivElement>(isMobile && aiHelperOpen, closeAiHelper);
   const [aiMessages, setAiMessages] = useState<ChatMessage[]>([]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -1243,7 +1246,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
+                        <Button aria-label="Clear chat history"
                           variant="ghost"
                           size="icon"
                           onClick={handleResetChat}
@@ -1260,7 +1263,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </TooltipProvider>
 
                   {/* Close */}
-                  <Button
+                  <Button aria-label="Close Raise AI helper"
                     variant="ghost"
                     size="icon"
                     onClick={() => setAiHelperOpen(false)}
@@ -1503,7 +1506,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       }
                     }}
                   />
-                  <Button
+                  <Button aria-label="Send message"
                     onClick={() => handleAiSendMessage()}
                     disabled={aiLoading || !aiInput.trim()}
                     size="icon"
@@ -1535,14 +1538,20 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setAiHelperOpen(false)}
+              aria-hidden="true"
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
             />
             <motion.div
+              ref={mobileDrawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Raise AI helper"
+              tabIndex={-1}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-[101] flex w-[88%] max-w-[420px] flex-col bg-background shadow-2xl border-l border-border"
+              className="fixed inset-y-0 right-0 z-[101] flex w-[88%] max-w-[420px] flex-col bg-background shadow-2xl border-l border-border outline-none"
             >
               {/* Mobile Header */}
               <div className="flex h-16 shrink-0 items-center justify-between border-b px-4">
@@ -1562,10 +1571,11 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     onClick={handleResetChat}
                     disabled={aiMessages.length === 0}
                     className="h-8 w-8"
+                    aria-label="Reset conversation"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setAiHelperOpen(false)} className="h-8 w-8">
+                  <Button variant="ghost" size="icon" onClick={() => setAiHelperOpen(false)} className="h-8 w-8" aria-label="Close Raise AI helper">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -1655,6 +1665,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     onClick={() => handleAiSendMessage()}
                     disabled={aiLoading || !aiInput.trim()}
                     className="h-10 w-10 shrink-0 rounded-xl p-0"
+                    aria-label="Send message"
                   >
                     <Send className="h-4 w-4" />
                   </Button>

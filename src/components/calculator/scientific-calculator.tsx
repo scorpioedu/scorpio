@@ -208,13 +208,17 @@ export function ScientificCalculator({
 
         {/* Minimized bar */}
         {isMinimized ? (
-          <div className="p-2.5 px-4 flex items-center justify-between gap-4 bg-card cursor-pointer" onClick={() => setIsMinimized(false)}>
-            <div className="flex items-center gap-2 text-xs font-semibold">
+          <button
+            type="button"
+            className="w-full text-left p-2.5 px-4 flex items-center justify-between gap-4 bg-card cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            onClick={() => setIsMinimized(false)}
+          >
+            <span className="flex items-center gap-2 text-xs font-semibold">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Calculator Active ({mode === "desmos-sci" ? "Desmos Scientific" : mode === "desmos-graph" ? "Desmos Graphing" : mode === "react-calc" ? "React Calc" : "Constants"})</span>
-            </div>
+            </span>
             <span className="text-[11px] text-primary hover:underline font-medium">Click to open →</span>
-          </div>
+          </button>
         ) : (
           <div className="flex-1 min-h-0 relative flex flex-col bg-background">
             {/* ── Mode 1: Desmos Official Scientific Calculator ─────────────────── */}

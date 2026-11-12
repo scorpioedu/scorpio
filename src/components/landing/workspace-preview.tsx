@@ -610,7 +610,7 @@ export function WorkspacePreview() {
                                 </span>
                               </div>
                             </div>
-                            <Button
+                            <Button aria-label="Delete course"
                               variant="ghost"
                               size="icon"
                               className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0 cursor-pointer"

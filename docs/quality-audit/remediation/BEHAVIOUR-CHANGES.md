@@ -128,3 +128,11 @@ New 400s (body errors are `{ error, fields: [{ path, message }] }`; `error` keep
 - Cloud Functions log through `firebase-functions/logger` (index.ts, lib/email.ts, assignment-cleanup.ts); error payloads carry the error name, not the error object. The "Email sent" log no longer dumps the Resend response.
 - RT-17 test change (not a behaviour change): `__tests__/pii-log-redaction.test.ts` spied on `console.log/error`; email logs now go through `firebase-functions/logger`, so the same assertions (masked recipient present, full address absent) read the logger mock's `info`/`error` calls instead.
 - RT-22 part 2: developer workflow only, no runtime behaviour change. A git pre-commit hook (husky + lint-staged) now runs `eslint --fix` and `prettier --write` on staged JS/TS files and blocks the commit if ESLint errors remain in a staged file (including pre-existing ones in files you touch). It is installed by `npm ci`/`npm install` only in a git checkout outside CI. `engines.npm` is now `>=11` (warning only on npm 10, which cannot read the lockfile anyway). New `src/lib/env.ts` validates env var groups lazily on call; nothing calls it yet.
+
+## From RT-32 (accessibility)
+- Destructive buttons and badges are a slightly darker red (white text now 4.72:1, was 3.85:1 light / 2.77:1 dark). In dark mode they are no longer a 60% alpha fill. Hover now darkens (was a lighter 90% alpha) so the contrast holds on hover. Light-mode `text-destructive` is also a little darker.
+- The mobile Raise drawer on assignment-view now announces itself as a modal dialog: focus moves into it on open, Tab stays inside, Escape closes it and focus returns to the button that opened it. Mouse behaviour and animation are unchanged.
+- Math builder dialog: focus goes to the first field through Radix `onOpenAutoFocus` instead of React `autoFocus`; same visible result.
+- Minimized calculator bar is a real button (keyboard focusable, Enter/Space restores); mouse behaviour unchanged.
+- Framer-motion animations now follow the OS "reduce motion" setting (`MotionConfig reducedMotion="user"`): users who ask for reduced motion lose transform/layout animations (opacity still animates).
+- Screen-reader names added to 22 icon-only buttons; two demo videos carry an aria-label noting captions are missing.

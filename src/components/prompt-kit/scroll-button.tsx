@@ -48,7 +48,7 @@ export const ScrollButton = React.forwardRef<
   if (!visible) return null
 
   return (
-    <Button
+    <Button aria-label="Scroll to bottom"
       ref={ref}
       size="icon"
       variant="outline"

@@ -1,7 +1,7 @@
 'use client';
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -84,6 +84,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
   const { user, profile } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const supportFieldId = useId();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -580,7 +581,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                     rows={1}
                     disabled={isLoading}
                   />
-                  <Button
+                  <Button aria-label="Send message"
                     size="icon"
                     type="button"
                     onClick={() => sendMessage(input)}
@@ -625,8 +626,8 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                   <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
                     {/* Issue Type Pills */}
                     <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-muted-foreground">Category</label>
-                      <div className="grid grid-cols-3 gap-1.5">
+                      <span id={`${supportFieldId}-category`} className="text-[11px] font-semibold text-muted-foreground">Category</span>
+                      <div role="group" aria-labelledby={`${supportFieldId}-category`} className="grid grid-cols-3 gap-1.5">
                         {([
                           { id: 'bug' as const, label: 'Bug / Issue' },
                           { id: 'feature' as const, label: 'Feature' },
@@ -651,8 +652,9 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
 
                     {/* Main Textarea */}
                     <div className="space-y-1 flex flex-col">
-                      <label className="text-[11px] font-semibold text-muted-foreground">Description</label>
+                      <label htmlFor={`${supportFieldId}-description`} className="text-[11px] font-semibold text-muted-foreground">Description</label>
                       <textarea
+                        id={`${supportFieldId}-description`}
                         required
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}

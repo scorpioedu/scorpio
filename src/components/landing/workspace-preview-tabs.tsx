@@ -1357,7 +1357,7 @@ export function NetworkPage({
                 <Label className="text-xs font-bold uppercase text-muted-foreground">Department Invitation Link</Label>
                 <div className="flex items-center gap-2 p-2.5 bg-secondary/30 border rounded-xl text-xs font-mono">
                   <span className="flex-1 truncate select-all">{inviteUrl}</span>
-                  <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyLink}>
+                  <Button aria-label="Copy invite link" size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyLink}>
                     {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
@@ -1366,7 +1366,7 @@ export function NetworkPage({
                 <Label className="text-xs font-bold uppercase text-muted-foreground">Department Identifier (ID)</Label>
                 <div className="flex items-center gap-2 p-2.5 bg-secondary/30 border rounded-xl text-xs font-mono">
                   <span className="flex-1 truncate select-all">{orgId}</span>
-                  <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyId}>
+                  <Button aria-label="Copy department ID" size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyId}>
                     {copiedId ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
