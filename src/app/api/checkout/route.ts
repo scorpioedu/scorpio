@@ -56,7 +56,13 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
 
       // In @polar-sh/sdk v0.44.0, you must use the `products` array with Price IDs
       // Ensure POLAR_PRODUCT_ID in .env.local is a Price ID (starts with pri_)
-      const checkoutOptions: any = {
+      const checkoutOptions: {
+        products: string[];
+        successUrl: string;
+        includeConfirmationEmail: boolean;
+        metadata: Record<string, string>;
+        customerEmail?: string;
+      } = {
         products: [productId], 
         successUrl: `${process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin}/teacher/network?success=true`,
         includeConfirmationEmail: true,
@@ -78,7 +84,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       }
 
       return NextResponse.json({ url: result.url });
-    } catch (polarError: any) {
+    } catch (polarError: unknown) {
       // Upstream message and body stay in the log; the billing page shows `error` (RT-17, C-009).
       console.error(`[checkout] Polar checkout failed (requestId=${requestId}):`, polarError instanceof Error ? polarError.name : "unknown");
       return NextResponse.json({ error: "We could not start checkout. Please try again.", requestId }, { status: 502 });

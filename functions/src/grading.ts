@@ -76,12 +76,13 @@ async function gradeResponseAI(
   }
 }
 
+interface GradableQuestion { id: string; text: string; type?: string; points?: number; correctAnswer?: string }
 interface SubmittedAnswer { questionId: string; answer: string; [field: string]: unknown }
 
 /**
  * MAIN GRADING PROCESSOR
  */
-async function gradeSubmission(submissionId: string, submissionData: any) {
+async function gradeSubmission(submissionId: string, submissionData: admin.firestore.DocumentData) {
     const db = admin.firestore();
     const assignmentId = submissionData.assignmentId;
     const studentId = submissionData.studentId;
@@ -124,7 +125,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
       return;
     }
     const key = (await db.collection('assignment_keys').doc(assignmentId).get()).data();
-    const questions = (assignmentData?.questions || []).map((q: any) => ({ ...q, correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer }));
+    const questions = ((assignmentData?.questions || []) as GradableQuestion[]).map((q) => ({ ...q, correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer }));
     const answers = submissionData?.answers || [];
     const globalRubric = key?.rubric || assignmentData?.rubric || "";
 
@@ -137,7 +138,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     const reviewReasons: string[] = [];
 
     const gradedAnswers = await mapWithConcurrency(answers, GRADING_CONCURRENCY, async (ans: SubmittedAnswer) => {
-        const question = questions.find((q: any) => q.id === ans.questionId);
+        const question = questions.find((q) => q.id === ans.questionId);
         if (!question) return ans;
 
         const points = question.points || 10;

@@ -8,6 +8,48 @@ import { reserveBudget, settleBudget, estimateMaximumCost } from '../../../funct
  * Uses a server-only key, bounded requests, and transactional budget reservations.
  */
 
+/** Wire types for the subset of the Gemini REST API Scorpio uses. */
+export interface GeminiPart {
+  text?: string;
+  inlineData?: { mimeType: string; data: string };
+  [key: string]: unknown;
+}
+export interface GeminiContent {
+  role?: string;
+  parts: GeminiPart[];
+}
+export interface GeminiGenerationConfig {
+  temperature?: number;
+  maxOutputTokens?: number;
+  responseMimeType?: string;
+  responseSchema?: unknown;
+  [key: string]: unknown;
+}
+export interface GeminiRequest {
+  contents?: (string | GeminiContent)[];
+  prompt?: string;
+  scrubLevel?: ScrubLevel;
+  generationConfig?: GeminiGenerationConfig;
+  safetySettings?: unknown[];
+  systemInstruction?: string | GeminiContent;
+}
+export interface GeminiUsageMetadata {
+  promptTokenCount?: number;
+  candidatesTokenCount?: number;
+  totalTokenCount?: number;
+  thoughtsTokenCount?: number;
+}
+export interface GeminiCandidate {
+  content?: { parts?: GeminiPart[] };
+  finishReason?: string;
+}
+export interface GeminiChatOptions {
+  history?: GeminiContent[];
+  generationConfig?: GeminiGenerationConfig;
+  safetySettings?: unknown[];
+  scrubLevel?: ScrubLevel;
+}
+
 function resolveApiKey(): string {
   if (!process.env.GEMINI_API_KEY) throw new Error("Set the server-only GEMINI_API_KEY");
   return process.env.GEMINI_API_KEY;
@@ -33,21 +75,23 @@ function errText(e: unknown): string {
   return e && typeof e === 'object' && 'message' in e ? String((e as { message: unknown }).message) : 'unknown';
 }
 
-async function callGeminiDirect(request: any) {
+async function callGeminiDirect(request: string | GeminiRequest) {
+  // A bare string request carries no options; treat it as an empty options object.
+  const req: GeminiRequest = typeof request === "string" ? {} : request;
   const apiKey = resolveApiKey();
   const modelName = "gemini-3.8-flash";
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
-  let contents: any[] = [];
+  let contents: GeminiContent[] = [];
   if (typeof request === "string") {
     contents = [{ parts: [{ text: request }] }];
-  } else if (Array.isArray(request?.contents)) {
-    contents = request.contents.map((c: any) => {
+  } else if (Array.isArray(req?.contents)) {
+    contents = req.contents.map((c): GeminiContent => {
       if (typeof c === "string") return { parts: [{ text: c }] };
       return c;
     });
-  } else if (request?.prompt) {
-    contents = [{ parts: [{ text: request.prompt }] }];
+  } else if (req?.prompt) {
+    contents = [{ parts: [{ text: req.prompt }] }];
   }
 
   // Single choke point for PII: every text part leaves through here (RT-10). Idempotent, so callers
@@ -56,18 +100,23 @@ async function callGeminiDirect(request: any) {
   const scrubNames = billingContext.getStore()?.scrubNames ?? [];
   // Callers that always scrubbed (student-authored text) opt into 'full'; everything else, notably
   // teacher-authored assignment text, only loses emails and supplied names so dates and long decimals survive.
-  const scrubLevel: ScrubLevel = request?.scrubLevel === 'full' ? 'full' : 'contact';
+  const scrubLevel: ScrubLevel = req?.scrubLevel === 'full' ? 'full' : 'contact';
   contents = contents.map(c => scrubParts(c, scrubNames, scrubLevel));
 
-  const payload: any = {
+  const payload: {
+    contents: GeminiContent[];
+    generationConfig: GeminiGenerationConfig & { maxOutputTokens: number };
+    safetySettings: unknown[];
+    systemInstruction?: GeminiContent;
+  } = {
     contents,
     generationConfig: {
       temperature: 0.7,
-      ...request?.generationConfig,
-      maxOutputTokens: Math.min(request?.generationConfig?.maxOutputTokens || 2048, 8192),
+      ...req?.generationConfig,
+      maxOutputTokens: Math.min(req?.generationConfig?.maxOutputTokens || 2048, 8192),
       thinkingConfig: { thinkingBudget: 0 },
     },
-    safetySettings: request?.safetySettings || [
+    safetySettings: req?.safetySettings || [
       { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
       { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
       { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
@@ -75,12 +124,12 @@ async function callGeminiDirect(request: any) {
     ],
   };
 
-  if (request?.systemInstruction) {
+  if (req?.systemInstruction) {
     // Trusted rules live here so untrusted text in `contents` can never outrank them.
     payload.systemInstruction = scrubParts(
-      typeof request.systemInstruction === "string"
-        ? { parts: [{ text: request.systemInstruction }] }
-        : request.systemInstruction,
+      typeof req.systemInstruction === "string"
+        ? { parts: [{ text: req.systemInstruction }] }
+        : req.systemInstruction,
       scrubNames,
       scrubLevel,
     );
@@ -136,7 +185,7 @@ async function callGeminiDirect(request: any) {
     throw new AiProviderError(`AI provider returned ${res.status}`);
   }
 
-  let data: Awaited<ReturnType<Response['json']>>;
+  let data: { usageMetadata?: GeminiUsageMetadata; candidates?: GeminiCandidate[] };
   try {
     data = await res.json();
   } catch (parseErr) {
@@ -153,7 +202,7 @@ async function callGeminiDirect(request: any) {
       (data.usageMetadata.candidatesTokenCount || 0) + (data.usageMetadata.thoughtsTokenCount || 0));
   }
   const candidate = data.candidates?.[0];
-  const text = candidate?.content?.parts?.map((p: any) => p.text).join("") || "";
+  const text = candidate?.content?.parts?.map((p) => p.text).join("") || "";
 
   const responseObj = {
     text: () => text,
@@ -171,12 +220,12 @@ async function callGeminiDirect(request: any) {
 }
 
 export const model = {
-  generateContent: (request: any) => callGeminiDirect(request),
-  startChat: (options?: any) => {
-    const history = [...(options?.history || [])];
+  generateContent: (request: string | GeminiRequest) => callGeminiDirect(request),
+  startChat: (options?: GeminiChatOptions) => {
+    const history: GeminiContent[] = [...(options?.history || [])];
     return {
-      async sendMessage(prompt: string | any) {
-        const userMsg = typeof prompt === "string" ? { role: "user", parts: [{ text: prompt }] } : prompt;
+      async sendMessage(prompt: string | GeminiContent) {
+        const userMsg: GeminiContent = typeof prompt === "string" ? { role: "user", parts: [{ text: prompt }] } : prompt;
         const currentContents = [...history, userMsg];
         const res = await callGeminiDirect({
           contents: currentContents,
@@ -193,7 +242,9 @@ export const model = {
       getHistory: async () => history,
     };
   },
-} as any;
+};
+
+export type GeminiModel = typeof model;
 
 export const CONTEXT_WINDOW_SIZE = 10;
 

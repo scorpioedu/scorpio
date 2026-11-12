@@ -7,6 +7,12 @@ export type { firestore, auth, app };
 
 let _app: app.App | null = null;
 
+/** Reads `prop` off `service`, binding functions so they keep their receiver when called through the proxy. */
+function readBound(service: object, prop: string | symbol): unknown {
+  const value = (service as Record<string | symbol, unknown>)[prop];
+  return typeof value === 'function' ? value.bind(service) : value;
+}
+
 function getApp(): app.App | null {
   if (typeof window !== 'undefined') return null;
 
@@ -43,8 +49,8 @@ function getApp(): app.App | null {
         });
     console.log('[firebase-admin] Initialized successfully.');
     return _app;
-  } catch (e: any) {
-    if (/already exists/.test(e.message)) {
+  } catch (e: unknown) {
+    if (/already exists/.test((e as { message?: string }).message as string)) {
       return admin.app();
     }
     console.error('[firebase-admin] Initialization failed:', e);
@@ -60,8 +66,7 @@ export const adminDb: firestore.Firestore = new Proxy({} as firestore.Firestore,
     const app = getApp();
     if (!app) return undefined;
     const service = admin.firestore(app);
-    const value = (service as any)[prop];
-    return typeof value === 'function' ? value.bind(service) : value;
+    return readBound(service, prop);
   }
 });
 
@@ -70,8 +75,7 @@ export const adminAuth: auth.Auth = new Proxy({} as auth.Auth, {
     const app = getApp();
     if (!app) return undefined;
     const service = admin.auth(app);
-    const value = (service as any)[prop];
-    return typeof value === 'function' ? value.bind(service) : value;
+    return readBound(service, prop);
   }
 });
 
@@ -80,7 +84,6 @@ export const adminFieldWithValue: typeof firestore.FieldValue = new Proxy({} as 
     const app = getApp();
     if (!app) return undefined;
     const FV = admin.firestore.FieldValue;
-    const value = (FV as any)[prop];
-    return typeof value === 'function' ? value.bind(FV) : value;
+    return readBound(FV, prop);
   }
 });

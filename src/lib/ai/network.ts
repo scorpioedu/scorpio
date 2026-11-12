@@ -171,7 +171,8 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
     }
     
     // Parse JSON
-    let parsed: any;
+    // Shape requested from the model; every field is validated below before use.
+    let parsed: { masteryLevel?: string; strengths?: string[]; weaknesses?: string[]; aiSummary?: string };
     try {
       parsed = JSON.parse(text);
     } catch (e) {
@@ -193,13 +194,13 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
 
     // Validate fields
     const validLevels = ["Beginner", "Intermediate", "Advanced", "Expert"];
-    const masteryLevel = validLevels.includes(parsed.masteryLevel) ? parsed.masteryLevel : "Beginner";
+    const masteryLevel = validLevels.includes(parsed.masteryLevel as string) ? parsed.masteryLevel : "Beginner";
 
     return {
       portfolio: {
         strengths: Array.isArray(parsed.strengths) ? parsed.strengths.slice(0, 5) : ["Engaging with Raise"],
         weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses.slice(0, 5) : ["Needs more practice"],
-        masteryLevel: masteryLevel as any,
+        masteryLevel: masteryLevel as "Beginner" | "Intermediate" | "Advanced" | "Expert",
         aiSummary: parsed.aiSummary || "The student has primarily been using Raise casually. More intensive sessions are needed for a deeper analysis.",
       },
       usage: {

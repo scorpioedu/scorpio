@@ -49,7 +49,7 @@ async function handleTeacherCode(req: NextRequest) {
       .limit(100)
       .get();
 
-    const codes = snapshot.docs.map((doc: any) => {
+    const codes = snapshot.docs.map((doc) => {
       const d = doc.data();
       return {
         code: d.code,

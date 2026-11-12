@@ -1,6 +1,6 @@
 import { assignmentIdsOf, buildSubmissionRows, type AssignmentInfo, type RawSubmission } from "./student-submissions";
 
-const sub = (id: string, data: Record<string, any>): RawSubmission => ({ id, data });
+const sub = (id: string, data: Record<string, unknown>): RawSubmission => ({ id, data });
 const assignments = new Map<string, AssignmentInfo | null>([
   ["a1", { title: "Kinematics", courseId: "c1", teacherId: "t1" }],
   ["a2", { title: "Optics", courseId: "c2", teacherId: "t1" }],

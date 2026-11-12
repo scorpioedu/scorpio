@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function downloadCSV(filename: string, rows: Record<string, any>[]) {
+export function downloadCSV(filename: string, rows: Record<string, unknown>[]) {
   if (!rows || rows.length === 0) {
     const blob = new Blob([""], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");

@@ -9,7 +9,7 @@ global.fetch = mockFetch;
 const mockVisitorDoc = { exists: false, data: () => ({ messageCount: 0 }) };
 const mockDocSet = jest.fn(async () => {});
 const mockDocGet = jest.fn(async () => mockVisitorDoc);
-const mockCollection = jest.fn((..._args: any[]) => ({
+const mockCollection = jest.fn((..._args: unknown[]) => ({
   doc: jest.fn(() => ({
     get: mockDocGet,
     set: mockDocSet,
@@ -18,8 +18,8 @@ const mockCollection = jest.fn((..._args: any[]) => ({
 
 jest.mock('../src/lib/firebase-admin', () => ({
   adminDb: {
-    collection: (...args: any[]) => mockCollection(...args),
-    runTransaction: jest.fn(async (cb: any) =>
+    collection: (...args: unknown[]) => mockCollection(...args),
+    runTransaction: jest.fn(async (cb: (tx: unknown) => unknown) =>
       cb({
         get: jest.fn(async () => ({ exists: false, data: () => null })),
         set: jest.fn(),
@@ -97,7 +97,7 @@ describe('Landing Chat & Try AI Guest Access', () => {
   test('/api/chat/landing returns 429 when visitor demo limit is reached', async () => {
     // The visitor counter is now read inside a transaction.
     const { adminDb } = jest.requireMock('../src/lib/firebase-admin');
-    adminDb.runTransaction.mockImplementationOnce(async (cb: any) =>
+    adminDb.runTransaction.mockImplementationOnce(async (cb: (tx: unknown) => unknown) =>
       cb({
         get: jest.fn(async () => ({ exists: true, data: () => ({ messageCount: 10 }) })),
         set: jest.fn(),

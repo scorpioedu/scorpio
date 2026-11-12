@@ -8,6 +8,8 @@ import { checkBudget, recordUsage } from '@/lib/usage-limit';
 import { parseJsonBody } from '@/lib/api-schema';
 import { gradeBody } from '@/lib/schemas/api-bodies';
 
+interface GradableQuestion { id: string; text: string; type?: string; points?: number; correctAnswer?: string }
+
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     console.error("Firebase Admin not initialized");
@@ -88,7 +90,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
 
     const key = (await adminDb.collection("assignment_keys").doc(assignmentId).get()).data();
     const assignmentData = mergeAnswerKey(assignmentSnap.data()!, key);
-    const questions = assignmentData?.questions || [];
+    const questions: GradableQuestion[] = assignmentData?.questions || [];
     const answers = submissionData?.answers || []; 
     const globalRubric = assignmentData?.rubric || "";
 
@@ -106,7 +108,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     let totalCandidateTokens = 0;
 
     for (const ans of answers) {
-      const question = questions.find((q: any) => q.id === ans.questionId);
+      const question = questions.find((q) => q.id === ans.questionId);
       if (!question) {
         gradedAnswers.push(ans);
         continue;

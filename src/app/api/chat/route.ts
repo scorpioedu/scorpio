@@ -63,8 +63,8 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     return NextResponse.json({ 
       text: result.text,
       suggestedPrompts: userRole === 'teacher' 
-        ? (chatbotConfig as any).teacherSuggestedPrompts 
-        : (chatbotConfig as any).studentSuggestedPrompts
+        ? chatbotConfig.teacherSuggestedPrompts 
+        : chatbotConfig.studentSuggestedPrompts
     });
 
   } catch (error: unknown) {

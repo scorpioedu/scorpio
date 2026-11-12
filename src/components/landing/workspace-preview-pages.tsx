@@ -1777,7 +1777,7 @@ export function CreateAssignmentPage({
         id: `q-import-${Date.now()}-${idx}`,
         text: p.text,
         points: p.points || 25,
-        type: p.type === "free-response" ? "text" : p.type,
+        type: p.type,
         options:
           p.type === "multiple-choice"
             ? p.options
