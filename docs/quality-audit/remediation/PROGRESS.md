@@ -12,7 +12,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-06 | merged (human step pending) | rt-06-admin-auth | 9a55fb7 (merge) | PASS | PASS | Owner must run set-admin-claim per RT-06-HUMAN.md or admins are locked out; research.ts shim is a follow-up; audit-spam by signed-in users in FOLLOWUPS |
 | RT-07 | merged | rt-07-grading-hardening | fe5d34d (merge) | PASS | PASS | scores >max now go to pending_review; dependency-free validator instead of zod in functions; teacher UI does not show reviewFlag yet (FOLLOWUPS) |
 | RT-08 | merged | rt-08-ci-stale-test | eed8cfa (merge b082c73) | PASS | PASS | CI workflow, typecheck, stale test fixed; npm10 lockfile caveat in FOLLOWUPS |
-| RT-09 | todo | | | | | |
+| RT-09 | merged | rt-09-security-headers | 579ab24 (merge) | PASS | PASS | CSP report-only per owner; XFO SAMEORIGIN (research PDF iframe); csp-report body cap trusts Content-Length (FOLLOWUPS) |
 | RT-10 | todo | | | | | |
 | RT-11 | todo | | | | | |
 | RT-12 | todo | | | | | |
