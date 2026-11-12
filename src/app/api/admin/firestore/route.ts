@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { withAuthorizedRequest } from '@/lib/auth-verify';
 
 // List of allowed collections we expose in the Explorer.
 const ALLOWED_COLLECTIONS = [
@@ -18,18 +19,13 @@ const ALLOWED_COLLECTIONS = [
   'landing_visitors',
 ];
 
-export async function POST(req: NextRequest) {
+async function handleAdminFirestore(req: NextRequest) {
   try {
     if (!adminDb) {
       return NextResponse.json(
         { error: 'Service unavailable: Firebase Admin not initialized' },
         { status: 500 }
       );
-    }
-
-    const adminSecret = req.headers.get('x-admin-secret');
-    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
@@ -103,3 +99,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// Requires a verified ID token carrying the `admin: true` claim; every call is written to admin_audit.
+export const POST = withAuthorizedRequest(handleAdminFirestore, { admin: true });

@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useAdminAccess } from "@/lib/use-admin-access";
+import { withAuthenticatedResearchFetch } from "@/lib/research-admin-fetch";
 import { 
   runComprehensiveStudy, 
   aggregateByConstraintLevel, 
@@ -15,16 +18,7 @@ import {
 } from "@/lib/ai/research";
 
 export default function ResearchPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [error, setError] = useState("");
-
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await fetch('/api/admin/firestore', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-secret': passwordInput }, body: JSON.stringify({ action: 'listCollections' }) });
-    if (response.ok) setIsAuthenticated(true);
-    else setError('Incorrect admin code');
-  };
+  const access = useAdminAccess();
 
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState("");
@@ -40,14 +34,14 @@ export default function ResearchPage() {
     setProgress("Initializing comprehensive study...");
     
     try {
-      const studyResults = await runComprehensiveStudy(
+      const studyResults = await withAuthenticatedResearchFetch(() => runComprehensiveStudy(
         (current, total, status, timeLeft) => {
           setCurrentCall(current);
           setTotalCalls(total);
           setProgress(status);
           setTimeRemaining(timeLeft);
-        }, passwordInput
-      );
+        }
+      ));
       
       setProgress("Analyzing results...");
       
@@ -90,23 +84,18 @@ export default function ResearchPage() {
 
   const estimate = estimateStudyCost();
 
-  if (!isAuthenticated) {
+  if (access !== "admin") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <form onSubmit={handlePasswordSubmit} className="space-y-4 p-8 border rounded shadow bg-background">
+        <div className="space-y-4 p-8 border rounded shadow bg-background text-center">
           <h2 className="text-2xl font-bold mb-2">Admin Access</h2>
-          <p className="text-muted-foreground mb-4">Enter the admin code to access the research lab.</p>
-          <input
-            type="password"
-            className="input input-bordered w-full"
-            placeholder="Admin Code"
-            value={passwordInput}
-            onChange={e => setPasswordInput(e.target.value)}
-            required
-          />
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button type="submit" className="btn btn-primary w-full">Unlock</button>
-        </form>
+          <p className="text-muted-foreground">
+            {access === "loading" ? "Checking your account…"
+              : access === "signed-out" ? "Sign in with an administrator account to access the research lab."
+              : "This account does not have administrator access."}
+          </p>
+          {access === "signed-out" && <Link href="/login" className="btn btn-primary w-full">Sign in</Link>}
+        </div>
       </div>
     );
   }

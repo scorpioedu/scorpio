@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { billingContext } from '@/lib/billing-context';
 import { explainPhysicsConcept, helpSolveProblem } from '@/lib/ai/tutor';
 import { CONSTRAINT_LEVELS, ConstraintLevel } from '@/lib/ai/constants';
-export async function POST(req: NextRequest) {
-  if (!process.env.ADMIN_SECRET || req.headers.get('x-admin-secret') !== process.env.ADMIN_SECRET) return NextResponse.json({error:'Unauthorized'},{status:401});
+import { withAuthorizedRequest } from '@/lib/auth-verify';
+async function handleResearch(req: NextRequest) {
   const {message,mode,level}=await req.json();
   if(typeof message!=='string'||message.length>10000||!(level in CONSTRAINT_LEVELS))return NextResponse.json({error:'Invalid research request'},{status:400});
   try {
@@ -11,3 +11,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response);
   } catch {return NextResponse.json({error:'Research request failed; check budget and provider configuration'},{status:503});}
 }
+
+// Requires the admin claim; every call is written to admin_audit.
+export const POST = withAuthorizedRequest(handleResearch, { admin: true });

@@ -6,3 +6,10 @@
 - `.github/dependabot.yml` (suggested by L-001) is not added.
 
 - RT-22a: emulator ports are hardcoded (auth 9099, firestore 8080, storage 9199) in src/lib/firebase-emulator.ts; if another project holds those ports there is no override. Consider NEXT_PUBLIC_FIREBASE_*_EMULATOR_PORT overrides. Also firebase.ts keeps a pre-existing ts-ignore (App Check debug token) and a hardcoded production reCAPTCHA site key fallback.
+
+## RT-06
+- `src/lib/ai/research.ts` (owned by another ticket, deliberately untouched) still sends an `x-admin-secret` header from `researchResponse` and takes an unused `adminSecret` parameter in `runComprehensiveStudy`/`runAblationStudy`. The server ignores the header. `src/lib/research-admin-fetch.ts` is a temporary shim that swaps in `authenticatedFetch` for `/api/research/respond` while the study runs. Fix: have `researchResponse` use `authenticatedFetch`, drop the `adminSecret` parameters, then delete the shim and its use in `src/app/(docs)/research/admin/page.tsx`.
+- RT-06 step 1 (10/min `checkRateLimit` before the compare) was not implemented separately: it was superseded by step 4. Admin routes are now behind a verified identity plus `admin_audit`, but have no per-admin throttle. Consider `checkRateLimit(req, uid, 'admin', {windowMs: 60000, maxRequests: 60})` inside the admin branch of `withAuthorizedRequest`.
+- `/api/admin/firestore` still exposes `users`, `submissions` and `tutor_sessions` across tenants (now to admin-claim holders only, and audited). Consider trimming `ALLOWED_COLLECTIONS` or redacting fields (C-003 recommendation).
+- `admin_audit` has no Firestore rules entry; it is written by the Admin SDK only, so the default deny applies. Consider an explicit `allow read, write: if false` and a retention/TTL policy.
+- `teacher-code` error responses still return `err.stack` outside production; pre-existing, unrelated to RT-06.

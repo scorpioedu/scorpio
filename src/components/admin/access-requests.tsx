@@ -1,5 +1,6 @@
 "use client";
 
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Metadata } from "next";
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -68,16 +69,12 @@ const ROLE_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-interface AccessRequestsProps {
-  adminSecret: string;
-}
-
 export const metadata: Metadata = {
   title: "Access Request • Scorpio",
   description: "Apply for institutional access to Scorpio",
 };
 
-export function AccessRequests({ adminSecret }: AccessRequestsProps) {
+export function AccessRequests() {
   const [requests, setRequests] = useState<AccessRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
@@ -90,11 +87,10 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "list" }),
       });
@@ -106,7 +102,7 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     } finally {
       setLoading(false);
     }
-  }, [adminSecret]);
+  }, []);
 
   useEffect(() => {
     fetchRequests();
@@ -116,11 +112,10 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setProcessing(req.id);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "approve", id: req.id }),
       });
@@ -140,11 +135,10 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setProcessing(req.id);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "reject", id: req.id }),
       });
