@@ -44,3 +44,8 @@
 - Legacy migration in `src/app/student/notebook/page.tsx:L196` (`updateDoc(oldRef, { studentId ... })` on a doc without `studentId`) was already denied by the update rule and still is; belongs with RT-15.
 - `storage.rules` `submissions/**` still allows `text/*` (including `text/html`) and lets a student overwrite/delete files after grading (D-006 notes); not in RT-14 steps.
 - Optional: the old `submissions/{teacherUid}/` resource files could be migrated to `resources/`.
+## RT-10 follow-ups
+- No route supplies a roster through `withScrubNames` yet. Peer or student names typed in `/api/chat`, `ai/parse`, `ai/generate`, `ai/synthesize-rubric` and in portfolio chat history are not masked by name (only by pattern), because those routes have no roster and name-masking whole templates would corrupt words such as "Will" or "Grade". A roster-aware design (mask only user-supplied fragments) is needed to close the rest of C-008.
+- `scrubPII` patterns are broad for teacher content: a 13-16 digit run (for example a long decimal such as 3.14159265358979) becomes `[SENSITIVE]` and ISO dates become `[DATE]`. A separate narrower profile for assignment authoring could be added if teachers report damage.
+- Only `functions/src/index.ts` and `functions/src/lib/email.ts` email logs were masked (found by `rg email` over console/logger calls); other log sites were not audited further.
+- RT-27 should move `functions/src/pii.ts` into the shared package; `src/lib/ai/utils.ts` re-exports it by relative path for now.

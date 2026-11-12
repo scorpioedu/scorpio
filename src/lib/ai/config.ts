@@ -1,5 +1,6 @@
 import { billingContext } from '../billing-context';
 import { adminDb } from '../firebase-admin';
+import { scrubPII } from '../../../functions/src/pii';
 import { reserveBudget, settleBudget, estimateMaximumCost } from '../../../functions/src/metering';
 /**
  * Direct Gemini API configuration for Scorpio AI.
@@ -19,6 +20,18 @@ export class AiBudgetError extends Error {
   }
 }
 
+/** Scrubs every text part of a Gemini content; other part kinds and non-content values pass through. */
+function scrubParts<T>(content: T, names: string[]): T {
+  if (!content || typeof content !== "object") return content;
+  const parts = (content as { parts?: unknown }).parts;
+  if (!Array.isArray(parts)) return content;
+  const scrubbed = parts.map((p: unknown) => {
+    const text = (p as { text?: unknown } | null)?.text;
+    return typeof text === "string" ? { ...(p as object), text: scrubPII(text, names) } : p;
+  });
+  return { ...content, parts: scrubbed };
+}
+
 async function callGeminiDirect(request: any) {
   const apiKey = resolveApiKey();
   const modelName = "gemini-3.8-flash";
@@ -35,6 +48,12 @@ async function callGeminiDirect(request: any) {
   } else if (request?.prompt) {
     contents = [{ parts: [{ text: request.prompt }] }];
   }
+
+  // Single choke point for PII: every text part leaves through here (RT-10). Idempotent, so callers
+  // that already scrub are unaffected. Names come from billingContext (withScrubNames); with none
+  // supplied only pattern PII (email, phone, ids...) is masked.
+  const scrubNames = billingContext.getStore()?.scrubNames ?? [];
+  contents = contents.map(c => scrubParts(c, scrubNames));
 
   const payload: any = {
     contents,
@@ -54,9 +73,12 @@ async function callGeminiDirect(request: any) {
 
   if (request?.systemInstruction) {
     // Trusted rules live here so untrusted text in `contents` can never outrank them.
-    payload.systemInstruction = typeof request.systemInstruction === "string"
-      ? { parts: [{ text: request.systemInstruction }] }
-      : request.systemInstruction;
+    payload.systemInstruction = scrubParts(
+      typeof request.systemInstruction === "string"
+        ? { parts: [{ text: request.systemInstruction }] }
+        : request.systemInstruction,
+      scrubNames,
+    );
   }
 
   const context = billingContext.getStore();
