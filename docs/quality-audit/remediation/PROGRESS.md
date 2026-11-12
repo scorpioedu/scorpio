@@ -20,7 +20,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-14 | merged | rt-14-rules | ccf7d82 (merge) | PASS (shifted ports) | PASS | rules must be deployed by owner (HUMAN-TODO); resources upload mime allowlist narrower (md/html rejected) |
 | RT-15 | merged (partial) | rt-15-client-effects | 1bc20a3 (merge) | PASS | PASS | per-student Copilot counter not server-maintained (FOLLOWUPS); timer grace now submits; 3 items skipped (mega pages, carousel) |
 | RT-16 | merged (partial) | rt-16-cwv | efce093 (merge) | PASS | CONDITIONAL PASS (a11y finding fixed by orchestrator) | lazy chatbot/markdown; auth only on app routes; Firestore/App Check still eager on login; /student 580KB gz (target 450); Lighthouse not run |
-| RT-17 | todo | | | | | |
+| RT-17 | merged (partial) | rt-17-error-hygiene | 056eb8f (merge) | PASS | PASS | AI failures now 502/503 not 200 text; support/report 503 on persistence failure; grep test has blind spots (cast, intermediate var); old stored tutor error messages need prod cleanup (human) |
 | RT-18 | merged (partial) | rt-18-functions | 06c798e (merge) | PASS | PASS | emails only same-course students; at-most-once claim; storage cleanup scoped to submissions/<studentId>/; functions/ "npm test" script not added (tests in root) |
 | RT-19 | merged | rt-19-test-hardening | 6d58280 (merge) | PASS | PASS | mutation: auth-verify 99%, usage-limit 94.8% (custom command runner; repo stryker config lacks plugins); webhook tests use real validateEvent; 401 not 403 |
 | RT-20 | merged (partial) | rt-20-dependency-hygiene | 4291461 (merge) | PASS | PASS | root audit 64->19 (0 critical, 4 high from firebase->grpc-js pin); firebase/firebase-admin majors skipped; 6 dead components deleted |
