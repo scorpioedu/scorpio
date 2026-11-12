@@ -1,0 +1,1395 @@
+{
+  "../functions/src/metering.ts": [],
+  "app/(docs)/about/about-client.tsx": [
+    "app/(docs)/about/github-activity.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/logo.tsx"
+  ],
+  "app/(docs)/about/github-activity.tsx": [
+    "components/ui/badge.tsx"
+  ],
+  "app/(docs)/about/page.tsx": [
+    "app/(docs)/about/about-client.tsx"
+  ],
+  "app/(docs)/contact/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx"
+  ],
+  "app/(docs)/layout.tsx": [
+    "components/docs-sidebar.tsx",
+    "components/mode-toggle.tsx",
+    "components/page-transition.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/scroll-area.tsx",
+    "components/ui/sheet.tsx",
+    "components/ui/space-background.tsx"
+  ],
+  "app/(docs)/privacy/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx"
+  ],
+  "app/(docs)/research/admin/page.tsx": [
+    "components/ui/alert.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/ai/research.ts"
+  ],
+  "app/(docs)/research/page.tsx": [
+    "components/admin/cost-comparison-chart.tsx",
+    "components/markdown-renderer.tsx",
+    "components/ui/alert.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tabs.tsx",
+    "lib/utils.ts"
+  ],
+  "app/(docs)/template.tsx": [],
+  "app/(docs)/terms/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/card.tsx"
+  ],
+  "app/admin/layout.tsx": [],
+  "app/admin/page.tsx": [
+    "components/admin/access-requests.tsx",
+    "components/admin/firestore-explorer.tsx",
+    "components/admin/global-analytics.tsx",
+    "components/admin/teacher-invite-codes.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/tooltip.tsx"
+  ],
+  "app/ai/page.tsx": [
+    "components/landing/site-header.tsx",
+    "components/markdown-renderer.tsx",
+    "components/ui/button.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/textarea.tsx",
+    "lib/utils.ts"
+  ],
+  "app/api/account/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/admin/firestore/route.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/ai/generate-title/route.ts": [
+    "lib/auth-verify.ts"
+  ],
+  "app/api/ai/generate/route.ts": [
+    "lib/ai/assignment.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/rate-limit.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/ai/parse/route.ts": [
+    "lib/ai/assignment.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/ai/synthesize-rubric/route.ts": [
+    "lib/ai/grading.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/assignments/route.ts": [
+    "lib/assignment-security.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/auth/register/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/class-enrollment.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/auth/request-access/route.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/auth/session/route.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/auth/teacher-code/route.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/chat/landing/route.ts": [
+    "lib/ai/config.ts",
+    "lib/billing-context.ts",
+    "lib/firebase-admin.ts",
+    "lib/rate-limit.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/chat/limits/route.ts": [
+    "lib/ai/network.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/chat/route.ts": [
+    "lib/ai/chatbot.ts",
+    "lib/auth-verify.ts",
+    "lib/chatbot-config.json",
+    "lib/firebase-admin.ts",
+    "lib/rate-limit.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/checkout/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/polar.ts"
+  ],
+  "app/api/courses/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/github/stats/route.ts": [],
+  "app/api/grade/route.ts": [
+    "lib/ai/grading.ts",
+    "lib/assignment-security.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/notebook/chat/route.ts": [
+    "lib/ai/notebook.ts",
+    "lib/ai/utils.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/rate-limit.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/research/respond/route.ts": [
+    "lib/ai/constants.ts",
+    "lib/ai/tutor.ts",
+    "lib/billing-context.ts"
+  ],
+  "app/api/student/enrollment/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/class-enrollment.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/student/tutor/route.ts": [
+    "lib/ai/tutor.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/submissions/route.ts": [
+    "lib/assignment-security.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/support/report/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/teacher/network/invites/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/teacher/network/membership/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/teacher/network/portfolio/route.ts": [
+    "lib/ai/network.ts",
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts",
+    "lib/usage-limit.ts"
+  ],
+  "app/api/teacher/students/cleanup/route.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "app/api/webhooks/polar/route.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "app/demos/page.tsx": [
+    "components/landing/site-header.tsx",
+    "components/system-accordion.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx"
+  ],
+  "app/demos/sticky-banner/page.tsx": [
+    "components/sticky-banner-demo.tsx"
+  ],
+  "app/demos/teacher/loading.tsx": [],
+  "app/demos/teacher/page.tsx": [
+    "components/landing/workspace-preview.tsx",
+    "components/mode-toggle.tsx"
+  ],
+  "app/features/page.tsx": [
+    "components/demo-carousel.tsx",
+    "components/landing/site-header.tsx",
+    "components/markdown-renderer.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/tabs.tsx"
+  ],
+  "app/forgot-password/layout.tsx": [],
+  "app/forgot-password/page.tsx": [
+    "components/landing/auth-page-nav.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/globals.css": [],
+  "app/join/[id]/page.tsx": [
+    "app/join/invite-card.tsx",
+    "components/ui/button.tsx"
+  ],
+  "app/join/class/[code]/page.tsx": [
+    "app/join/invite-actions.tsx",
+    "app/join/invite-card.tsx",
+    "components/ui/button.tsx",
+    "lib/class-enrollment.ts"
+  ],
+  "app/join/error.tsx": [
+    "app/join/invite-card.tsx",
+    "components/ui/button.tsx"
+  ],
+  "app/join/invite-actions.tsx": [
+    "components/ui/button.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/onboarding-links.ts"
+  ],
+  "app/join/invite-card.tsx": [
+    "components/ui/card.tsx"
+  ],
+  "app/join/network/[code]/page.tsx": [
+    "app/join/invite-actions.tsx",
+    "app/join/invite-card.tsx"
+  ],
+  "app/layout.tsx": [
+    "app/globals.css",
+    "components/providers.tsx"
+  ],
+  "app/login/layout.tsx": [],
+  "app/login/page.tsx": [
+    "components/landing/auth-page-nav.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/tabs.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts",
+    "lib/onboarding-links.ts"
+  ],
+  "app/not-found.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx"
+  ],
+  "app/page.tsx": [
+    "components/landing-faq.tsx",
+    "components/landing/LandingHero.tsx",
+    "components/landing/classroom-bento.tsx",
+    "components/landing/comparison.tsx",
+    "components/landing/home-interactions.tsx",
+    "components/landing/home-reveal.module.css",
+    "components/loading-screen.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx"
+  ],
+  "app/pricing/layout.tsx": [],
+  "app/pricing/page.tsx": [
+    "components/landing-faq.tsx",
+    "components/landing/site-header.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "lib/utils.ts"
+  ],
+  "app/request-access/layout.tsx": [],
+  "app/request-access/page.tsx": [
+    "components/landing/auth-page-nav.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/select.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/textarea.tsx"
+  ],
+  "app/signup/layout.tsx": [],
+  "app/signup/page.tsx": [
+    "components/landing/auth-page-nav.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx",
+    "components/ui/tabs.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/firebase.ts",
+    "lib/onboarding-links.ts"
+  ],
+  "app/student/assignment-view/layout.tsx": [],
+  "app/student/assignment-view/page.tsx": [
+    "components/calculator/scientific-calculator.tsx",
+    "components/markdown-renderer.tsx",
+    "components/math-input.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/radio-group.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/resizable.tsx",
+    "components/ui/select.tsx",
+    "components/ui/textarea.tsx",
+    "components/ui/tooltip.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "hooks/use-mobile.ts",
+    "lib/assignment-points.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/utils.ts"
+  ],
+  "app/student/assignments/layout.tsx": [],
+  "app/student/assignments/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/student/grades/layout.tsx": [],
+  "app/student/grades/page.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/table.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/student/layout.tsx": [
+    "components/navigation-chatbot.tsx",
+    "components/protected-route.tsx",
+    "components/student-sidebar.tsx",
+    "hooks/use-sidebar-state.ts"
+  ],
+  "app/student/notebook/layout.tsx": [],
+  "app/student/notebook/page.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/rich-text-editor.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/label.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/scroll-area.tsx",
+    "components/ui/select.tsx",
+    "components/ui/textarea.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/utils.ts"
+  ],
+  "app/student/page-client.tsx": [
+    "components/dashboard/student-progress-chart.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/rundown-dialog.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts"
+  ],
+  "app/student/page.tsx": [
+    "app/student/page-client.tsx"
+  ],
+  "app/student/resources/layout.tsx": [],
+  "app/student/resources/page.tsx": [
+    "components/ui/input.tsx",
+    "components/ui/select.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/student/submissions/layout.tsx": [],
+  "app/student/submissions/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/table.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/student/template.tsx": [],
+  "app/student/tutor/layout.tsx": [],
+  "app/student/tutor/page.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/prompt-kit/chat-container.tsx",
+    "components/prompt-kit/message.tsx",
+    "components/prompt-kit/prompt-input.tsx",
+    "components/prompt-kit/scroll-button.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/input.tsx",
+    "components/ui/raise-logo.tsx",
+    "contexts/auth-context.tsx",
+    "hooks/use-mobile.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "app/student/vault/layout.tsx": [],
+  "app/student/vault/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/select.tsx",
+    "components/ui/workspace.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/sustainability/page.tsx": [
+    "components/landing/site-header.tsx",
+    "components/sustainability-content.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/space-background.tsx"
+  ],
+  "app/teacher/assignment-view/layout.tsx": [],
+  "app/teacher/assignment-view/page.tsx": [
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/table.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/utils.ts"
+  ],
+  "app/teacher/assignments/layout.tsx": [],
+  "app/teacher/assignments/page.tsx": [
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "contexts/auth-context.tsx",
+    "lib/assignment-points.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/create/layout.tsx": [],
+  "app/teacher/create/page.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/math-input.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/checkbox.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/radio-group.tsx",
+    "components/ui/select.tsx",
+    "components/ui/smart-datetime-picker.tsx",
+    "components/ui/textarea.tsx",
+    "contexts/auth-context.tsx",
+    "lib/assignment-parser.ts",
+    "lib/assignment-points.ts",
+    "lib/assignment-validation.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/types.ts"
+  ],
+  "app/teacher/grades/layout.tsx": [],
+  "app/teacher/grades/page.tsx": [
+    "components/admin/grade-distribution-chart.tsx",
+    "components/grade-export-button.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/grades/student/layout.tsx": [],
+  "app/teacher/grades/student/page.tsx": [
+    "components/grade-export-button.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/layout.tsx": [
+    "components/department-banner.tsx",
+    "components/navigation-chatbot.tsx",
+    "components/page-transition.tsx",
+    "components/protected-route.tsx",
+    "components/teacher-sidebar.tsx",
+    "components/ui/space-background.tsx",
+    "hooks/use-sidebar-state.ts"
+  ],
+  "app/teacher/network/billing/layout.tsx": [],
+  "app/teacher/network/billing/page.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "app/teacher/network/investment/layout.tsx": [],
+  "app/teacher/network/investment/page.tsx": [
+    "components/admin/ai-cost-calculator.tsx",
+    "components/ui/button.tsx"
+  ],
+  "app/teacher/network/layout.tsx": [],
+  "app/teacher/network/page.tsx": [
+    "components/admin/usage-analytics.tsx",
+    "components/markdown-renderer.tsx",
+    "components/network-tutorial.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tabs.tsx",
+    "components/ui/textarea.tsx",
+    "components/ui/tooltip.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/onboarding-links.ts",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "app/teacher/page-client.tsx": [
+    "components/teacher/dashboard-content.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/rundown-dialog.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/onboarding-links.ts"
+  ],
+  "app/teacher/page.tsx": [
+    "app/teacher/page-client.tsx"
+  ],
+  "app/teacher/students/layout.tsx": [],
+  "app/teacher/students/page.tsx": [
+    "components/roster-import.tsx",
+    "components/teacher/network-students.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tabs.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/submission/grade/layout.tsx": [],
+  "app/teacher/submission/grade/page.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/loading-spinner.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/textarea.tsx",
+    "lib/assignment-points.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/template.tsx": [],
+  "app/teacher/uploads/layout.tsx": [],
+  "app/teacher/uploads/page.tsx": [
+    "components/teacher/workspace.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/vault/layout.tsx": [],
+  "app/teacher/vault/page.tsx": [
+    "components/teacher/department-upgrade-dialog.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/select.tsx",
+    "components/ui/textarea.tsx",
+    "components/ui/tooltip.tsx",
+    "contexts/auth-context.tsx",
+    "hooks/use-department-plan.ts",
+    "lib/firebase.ts"
+  ],
+  "app/teacher/waypoints/layout.tsx": [],
+  "app/teacher/waypoints/page.tsx": [
+    "components/teacher/department-upgrade-dialog.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/select.tsx",
+    "components/ui/tabs.tsx",
+    "contexts/auth-context.tsx",
+    "hooks/use-department-plan.ts",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts"
+  ],
+  "components/admin/access-requests.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "components/admin/ai-cost-calculator.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/slider.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "components/admin/cost-comparison-chart.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/admin/firestore-explorer.tsx": [
+    "components/ui/accordion.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/scroll-area.tsx",
+    "components/ui/select.tsx"
+  ],
+  "components/admin/global-analytics.tsx": [
+    "components/admin/ai-cost-calculator.tsx",
+    "components/admin/cost-comparison-chart.tsx",
+    "components/admin/usage-analytics.tsx",
+    "components/ui/card.tsx",
+    "components/ui/select.tsx",
+    "components/ui/tabs.tsx",
+    "lib/firebase.ts"
+  ],
+  "components/admin/grade-distribution-chart.tsx": [],
+  "components/admin/teacher-invite-codes.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "components/admin/usage-analytics.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tooltip.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts",
+    "lib/utils.ts"
+  ],
+  "components/app-sidebar.tsx": [
+    "components/motion/animated-sidebar.tsx",
+    "components/settings-dialog.tsx",
+    "components/sustainability-content.tsx",
+    "components/ui/compass-logo.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/tooltip.tsx",
+    "contexts/auth-context.tsx"
+  ],
+  "components/appearance-settings.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/checkbox.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/select.tsx",
+    "contexts/appearance-context.tsx",
+    "contexts/space-effects-context.tsx"
+  ],
+  "components/calculator/scientific-calculator.tsx": [
+    "components/ui/button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/cobe-globe.tsx": [],
+  "components/dashboard/student-progress-chart.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/progress.tsx"
+  ],
+  "components/dashboard/teacher-grading-progress.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/progress.tsx"
+  ],
+  "components/demo-carousel.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "components/department-banner.tsx": [
+    "components/ui/raise-logo.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "components/docs-sidebar.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/feature-section.tsx": [
+    "components/scorpio-globe.tsx",
+    "lib/utils.ts"
+  ],
+  "components/grade-export-button.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "components/hero-section.tsx": [],
+  "components/kokonutui/spotlight-cards.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/landing-chatbot.tsx": [
+    "components/landing/home-reveal.module.css",
+    "components/markdown-renderer.tsx",
+    "components/ui/button.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/textarea.tsx",
+    "lib/utils.ts"
+  ],
+  "components/landing-faq.tsx": [
+    "components/ui/accordion.tsx",
+    "components/ui/button.tsx"
+  ],
+  "components/landing/LandingFooter.tsx": [
+    "components/ui/logo.tsx"
+  ],
+  "components/landing/LandingHero.tsx": [
+    "components/landing/home-reveal.module.css",
+    "components/landing/teacher-demo-link.tsx",
+    "components/ui/button.tsx"
+  ],
+  "components/landing/MathematicalFidelity.tsx": [
+    "components/ui/dialog.tsx"
+  ],
+  "components/landing/MissionControl.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/container-scroll-animation.tsx"
+  ],
+  "components/landing/TheChallenge.tsx": [],
+  "components/landing/auth-page-nav.tsx": [
+    "components/mode-toggle.tsx",
+    "components/ui/button.tsx"
+  ],
+  "components/landing/classroom-bento.tsx": [],
+  "components/landing/comparison.tsx": [],
+  "components/landing/efficacy.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "components/landing/header.tsx": [
+    "components/mode-toggle.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/sheet.tsx"
+  ],
+  "components/landing/home-interactions.tsx": [
+    "components/landing-chatbot.tsx",
+    "components/landing/site-header.tsx"
+  ],
+  "components/landing/home-reveal.module.css": [],
+  "components/landing/landing-cta.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "components/landing/layer-efficacy-chart.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/landing/logo-cloud.tsx": [],
+  "components/landing/pricing.tsx": [
+    "components/admin/cost-comparison-chart.tsx",
+    "components/ui/button.tsx"
+  ],
+  "components/landing/site-header.tsx": [
+    "components/landing/home-reveal.module.css",
+    "components/mode-toggle.tsx",
+    "components/ui/button.tsx",
+    "components/ui/logo.tsx",
+    "components/ui/sheet.tsx",
+    "lib/utils.ts"
+  ],
+  "components/landing/solution-flowchart.tsx": [
+    "components/ui/spotlight-cards.tsx"
+  ],
+  "components/landing/system-demos.tsx": [
+    "components/demo-carousel.tsx",
+    "components/ui/tabs.tsx"
+  ],
+  "components/landing/teacher-demo-link.tsx": [],
+  "components/landing/waypoints-network.tsx": [
+    "components/ui/badge.tsx"
+  ],
+  "components/landing/workflow.tsx": [
+    "components/ui/dialog.tsx"
+  ],
+  "components/landing/workspace-preview-data.ts": [
+    "lib/types.ts"
+  ],
+  "components/landing/workspace-preview-pages.tsx": [
+    "components/admin/grade-distribution-chart.tsx",
+    "components/grade-export-button.tsx",
+    "components/landing/workspace-preview-data.ts",
+    "components/landing/workspace-preview-tabs.tsx",
+    "components/markdown-renderer.tsx",
+    "components/math-input.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/checkbox.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "components/ui/textarea.tsx",
+    "lib/assignment-parser.ts",
+    "lib/utils.ts"
+  ],
+  "components/landing/workspace-preview-tabs.tsx": [
+    "components/landing/workspace-preview-data.ts",
+    "components/network-tutorial.tsx",
+    "components/teacher/learning-insights.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/select.tsx",
+    "components/ui/table.tsx",
+    "components/ui/tabs.tsx",
+    "components/ui/textarea.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "components/landing/workspace-preview.tsx": [
+    "components/landing/workspace-preview-data.ts",
+    "components/landing/workspace-preview-pages.tsx",
+    "components/teacher-sidebar.tsx",
+    "components/teacher/dashboard-content.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/rundown-dialog.tsx",
+    "lib/types.ts"
+  ],
+  "components/loading-screen.module.css": [],
+  "components/loading-screen.tsx": [
+    "components/loading-screen.module.css",
+    "components/ui/logo.tsx"
+  ],
+  "components/markdown-renderer.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/math-builder-modal.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx"
+  ],
+  "components/math-input.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/math-builder-modal.tsx",
+    "lib/utils.ts"
+  ],
+  "components/mode-toggle.tsx": [
+    "components/appearance-settings.tsx",
+    "components/ui/button.tsx",
+    "components/ui/popover.tsx"
+  ],
+  "components/motion/animated-sidebar.tsx": [
+    "components/motion/shared-layout-bg.tsx",
+    "lib/ease.ts",
+    "lib/utils.ts"
+  ],
+  "components/motion/shared-layout-bg.tsx": [
+    "lib/ease.ts",
+    "lib/utils.ts"
+  ],
+  "components/navigation-chatbot.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/ui/button.tsx",
+    "components/ui/raise-logo.tsx",
+    "components/ui/textarea.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/utils.ts"
+  ],
+  "components/network-tutorial.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "lib/utils.ts"
+  ],
+  "components/page-transition.tsx": [],
+  "components/prompt-kit/chat-container.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/prompt-kit/message.tsx": [
+    "components/markdown-renderer.tsx",
+    "components/ui/tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "components/prompt-kit/prompt-input.tsx": [
+    "components/ui/tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "components/prompt-kit/scroll-button.tsx": [
+    "components/ui/button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/protected-route.tsx": [
+    "components/ui/skeleton.tsx",
+    "contexts/auth-context.tsx"
+  ],
+  "components/providers.tsx": [
+    "components/route-progress-bar.tsx",
+    "contexts/appearance-context.tsx",
+    "contexts/auth-context.tsx",
+    "contexts/space-effects-context.tsx"
+  ],
+  "components/rich-text-editor.tsx": [
+    "components/ui/button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/roster-import.tsx": [
+    "components/ui/alert.tsx",
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts"
+  ],
+  "components/route-progress-bar.tsx": [],
+  "components/scorpio-globe.tsx": [],
+  "components/settings-dialog.tsx": [
+    "components/appearance-settings.tsx",
+    "components/ui/alert.tsx",
+    "components/ui/avatar.tsx",
+    "components/ui/button.tsx",
+    "components/ui/compass-logo.tsx",
+    "components/ui/confirm-dialog.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/tabs.tsx",
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts",
+    "lib/utils.ts"
+  ],
+  "components/sticky-banner-demo.tsx": [
+    "components/ui/sticky-banner.tsx"
+  ],
+  "components/student-sidebar.tsx": [
+    "components/app-sidebar.tsx",
+    "components/ui/raise-logo.tsx"
+  ],
+  "components/sustainability-content.tsx": [
+    "components/ui/accordion.tsx",
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/slider.tsx",
+    "components/ui/tabs.tsx"
+  ],
+  "components/system-accordion.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "lib/utils.ts"
+  ],
+  "components/teacher-sidebar.tsx": [
+    "components/app-sidebar.tsx"
+  ],
+  "components/teacher/dashboard-content.tsx": [
+    "components/dashboard/teacher-grading-progress.tsx",
+    "components/teacher/workspace.tsx",
+    "components/ui/card.tsx"
+  ],
+  "components/teacher/department-upgrade-dialog.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx"
+  ],
+  "components/teacher/learning-insights.tsx": [
+    "components/ui/badge.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "components/ui/tabs.tsx",
+    "lib/types.ts",
+    "lib/utils.ts"
+  ],
+  "components/teacher/network-students.tsx": [
+    "components/teacher/learning-insights.tsx",
+    "components/ui/card.tsx",
+    "contexts/auth-context.tsx",
+    "lib/authenticated-fetch.ts",
+    "lib/firebase.ts",
+    "lib/types.ts"
+  ],
+  "components/teacher/workspace.tsx": [
+    "components/ui/workspace.tsx"
+  ],
+  "components/theme-provider.tsx": [],
+  "components/ui/accordion.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/alert.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/avatar.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/back-button.tsx": [],
+  "components/ui/badge.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/button.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/calendar.tsx": [
+    "components/ui/button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/card-3d.tsx": [],
+  "components/ui/card.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/chart.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/checkbox.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/compass-logo.tsx": [],
+  "components/ui/confirm-dialog.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx"
+  ],
+  "components/ui/constraint-engine.tsx": [],
+  "components/ui/container-scroll-animation.tsx": [],
+  "components/ui/crux-logo.tsx": [
+    "components/ui/raise-logo.tsx"
+  ],
+  "components/ui/dialog.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/dot-flow.tsx": [],
+  "components/ui/dropdown-menu.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/floating-prompts.tsx": [
+    "components/ui/raise-logo.tsx"
+  ],
+  "components/ui/form.tsx": [
+    "components/ui/label.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/input.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/label.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/loading-spinner.tsx": [
+    "components/ui/compass-logo.tsx"
+  ],
+  "components/ui/logo.tsx": [],
+  "components/ui/macbook-scroll.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/popover.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/progress.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/radio-group.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/raise-logo.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/resizable.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/rundown-dialog.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/scroll-area.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/select.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/separator.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/sheet.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/sidebar.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/separator.tsx",
+    "components/ui/sheet.tsx",
+    "components/ui/skeleton.tsx",
+    "components/ui/tooltip.tsx",
+    "hooks/use-mobile.ts",
+    "lib/utils.ts"
+  ],
+  "components/ui/skeleton.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/slider.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/smart-datetime-picker.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/calendar.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/popover.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/space-background.tsx": [
+    "contexts/space-effects-context.tsx"
+  ],
+  "components/ui/spotlight-cards.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/sticky-banner.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/table.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/tabs.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/text-animate.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/textarea.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/tooltip.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/typing-animation.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/workspace.tsx": [],
+  "contexts/appearance-context.tsx": [],
+  "contexts/auth-context.tsx": [
+    "lib/firebase.ts",
+    "lib/types.ts"
+  ],
+  "contexts/space-effects-context.tsx": [],
+  "hooks/use-department-plan.ts": [
+    "contexts/auth-context.tsx",
+    "lib/firebase.ts",
+    "lib/types.ts"
+  ],
+  "hooks/use-mobile.ts": [],
+  "hooks/use-sidebar-state.ts": [],
+  "hooks/use-window-size.ts": [],
+  "lib/ai/assignment.ts": [
+    "lib/ai/config.ts",
+    "lib/ai/utils.ts",
+    "lib/assignment-parser.ts"
+  ],
+  "lib/ai/chatbot.ts": [
+    "lib/ai/config.ts"
+  ],
+  "lib/ai/config.ts": [
+    "../functions/src/metering.ts",
+    "lib/billing-context.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "lib/ai/constants.ts": [],
+  "lib/ai/grading.ts": [
+    "lib/ai/config.ts",
+    "lib/ai/utils.ts"
+  ],
+  "lib/ai/network.ts": [
+    "lib/ai/config.ts",
+    "lib/ai/utils.ts"
+  ],
+  "lib/ai/notebook.ts": [
+    "lib/ai/config.ts"
+  ],
+  "lib/ai/research.ts": [
+    "lib/ai/constants.ts"
+  ],
+  "lib/ai/tutor.ts": [
+    "lib/ai/config.ts",
+    "lib/ai/constants.ts",
+    "lib/ai/utils.ts"
+  ],
+  "lib/ai/utils.ts": [],
+  "lib/assignment-parser.ts": [],
+  "lib/assignment-points.ts": [],
+  "lib/assignment-security.ts": [],
+  "lib/assignment-validation.ts": [],
+  "lib/auth-verify.ts": [
+    "lib/billing-context.ts",
+    "lib/firebase-admin.ts"
+  ],
+  "lib/authenticated-fetch.ts": [
+    "lib/firebase.ts"
+  ],
+  "lib/billing-context.ts": [],
+  "lib/chatbot-config.json": [],
+  "lib/class-enrollment.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "lib/ease.ts": [],
+  "lib/firebase-admin.ts": [],
+  "lib/firebase.ts": [
+    "lib/types.ts"
+  ],
+  "lib/gemini.ts": [
+    "lib/ai/assignment.ts",
+    "lib/ai/chatbot.ts",
+    "lib/ai/config.ts",
+    "lib/ai/constants.ts",
+    "lib/ai/grading.ts",
+    "lib/ai/network.ts",
+    "lib/ai/notebook.ts",
+    "lib/ai/research.ts",
+    "lib/ai/tutor.ts",
+    "lib/ai/utils.ts"
+  ],
+  "lib/onboarding-links.ts": [],
+  "lib/polar.ts": [],
+  "lib/rate-limit.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "lib/types.ts": [],
+  "lib/usage-limit.ts": [
+    "lib/firebase-admin.ts"
+  ],
+  "lib/utils.test.ts": [
+    "lib/utils.ts"
+  ],
+  "lib/utils.ts": [],
+  "proxy.ts": [
+    "lib/auth-verify.ts",
+    "lib/firebase-admin.ts"
+  ]
+}

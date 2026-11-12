@@ -1,0 +1,9 @@
+light primary/white 5.82
+dark primary/white 4.13
+light muted-fg/background 7.68
+dark muted-fg/background 6.59
+dark muted-fg/card 6.00
+dark primary(text on bg) 4.17
+light primary as text on bg 5.72
+destructive light white text 3.85
+destructive dark white text 2.77

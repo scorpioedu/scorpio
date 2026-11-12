@@ -1,0 +1,123 @@
+=== motion vs framer-motion imports ===
+src/app/not-found.tsx:4:import { motion } from "framer-motion";
+src/app/signup/page.tsx:16:import { motion } from "framer-motion";
+src/app/login/page.tsx:18:import { motion, AnimatePresence } from "framer-motion";
+src/components/route-progress-bar.tsx:5:import { motion, AnimatePresence } from "framer-motion";
+src/components/landing-faq.tsx:4:import { motion, AnimatePresence } from "framer-motion";
+src/app/student/tutor/page.tsx:7:import { motion } from "framer-motion"
+src/app/features/page.tsx:4:import { motion } from "framer-motion";
+src/app/(docs)/about/about-client.tsx:10:import { motion } from "framer-motion";
+src/app/student/assignment-view/page.tsx:24:import { motion, AnimatePresence } from "framer-motion";
+src/app/(docs)/about/github-activity.tsx:4:import { motion } from "framer-motion";
+src/app/teacher/vault/page.tsx:36:import { motion, AnimatePresence } from "framer-motion";
+src/components/feature-section.tsx:5:import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
+src/app/teacher/submission/grade/page.tsx:19:import { motion, AnimatePresence } from "framer-motion";
+src/app/forgot-password/page.tsx:14:import { motion, AnimatePresence } from "framer-motion";
+src/components/page-transition.tsx:4:import { motion } from "framer-motion";
+src/app/ai/page.tsx:4:import { motion, AnimatePresence } from "framer-motion";
+src/app/pricing/page.tsx:4:import { motion, AnimatePresence } from "framer-motion";
+src/app/request-access/page.tsx:34:import { motion } from "framer-motion";
+src/app/demos/page.tsx:3:import { motion } from "framer-motion";
+src/components/landing-chatbot.tsx:4:import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+src/app/admin/page.tsx:16:import { motion, AnimatePresence } from "framer-motion";
+src/app/teacher/network/investment/page.tsx:7:import { motion } from "framer-motion";
+src/components/demo-carousel.tsx:5:import { motion, AnimatePresence } from "framer-motion";
+src/components/calculator/scientific-calculator.tsx:4:import { motion, AnimatePresence } from "framer-motion";
+src/app/teacher/waypoints/page.tsx:18:import { motion, AnimatePresence } from "framer-motion";
+src/components/landing/solution-flowchart.tsx:3:import { motion } from "framer-motion";
+src/components/system-accordion.tsx:4:import { AnimatePresence, motion } from "framer-motion";
+src/components/hero-section.tsx:1:import { motion } from "framer-motion";
+src/components/motion/animated-sidebar.tsx:11:} from "motion/react";
+src/components/ui/loading-spinner.tsx:3:import { motion } from "framer-motion";
+src/components/motion/shared-layout-bg.tsx:9:} from "motion/react";
+src/components/ui/container-scroll-animation.tsx:3:import { useScroll, useTransform, motion, MotionValue } from "motion/react";
+src/components/ui/sticky-banner.tsx:3:import { motion, useMotionValueEvent, useScroll } from "motion/react";
+src/app/sustainability/page.tsx:9:import { motion } from "framer-motion";
+src/components/kokonutui/spotlight-cards.tsx:15:import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "motion/react";
+src/components/ui/typing-animation.tsx:18:} from "motion/react"
+src/components/ui/raise-logo.tsx:4:import { motion, HTMLMotionProps } from "framer-motion";
+src/components/ui/rundown-dialog.tsx:16:import { motion, AnimatePresence } from "framer-motion";
+src/components/ui/spotlight-cards.tsx:15:import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
+src/components/ui/macbook-scroll.tsx:3:import { MotionValue, motion, useScroll, useTransform } from "motion/react";
+src/components/admin/ai-cost-calculator.tsx:15:import { motion, AnimatePresence, useSpring, useMotionValueEvent } from "framer-motion";
+src/components/ui/floating-prompts.tsx:3:import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+src/components/landing/waypoints-network.tsx:3:import { motion } from "framer-motion";
+src/components/ui/constraint-engine.tsx:3:import { motion } from "framer-motion";
+src/components/admin/global-analytics.tsx:13:import { motion } from "framer-motion";
+src/components/ui/logo.tsx:4:import { motion, SVGMotionProps } from 'framer-motion';
+src/components/landing/site-header.tsx:8:} from "framer-motion";
+src/components/landing/header.tsx:5:import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+src/components/admin/usage-analytics.tsx:36:import { motion } from "framer-motion";
+src/components/landing/efficacy.tsx:3:import { motion } from "framer-motion";
+src/components/landing/workflow.tsx:3:import { motion } from "framer-motion";
+src/components/admin/teacher-invite-codes.tsx:31:import { motion, AnimatePresence } from "framer-motion";
+src/components/ui/text-animate.tsx:10:} from "motion/react"
+src/components/landing/layer-efficacy-chart.tsx:15:import { motion } from "framer-motion";
+src/components/landing/TheChallenge.tsx:3:import { motion } from "framer-motion";
+src/components/landing/pricing.tsx:3:import { motion } from "framer-motion";
+src/components/admin/access-requests.tsx:45:import { motion, AnimatePresence } from "framer-motion";
+src/components/landing/landing-cta.tsx:3:import { motion } from "framer-motion";
+src/components/department-banner.tsx:12:import { motion, AnimatePresence } from "framer-motion";
+src/components/landing/system-demos.tsx:3:import { motion } from "framer-motion";
+src/components/admin/firestore-explorer.tsx:10:import { motion, AnimatePresence } from "framer-motion";
+src/components/landing/MathematicalFidelity.tsx:3:import { motion } from "framer-motion";
+
+=== radix-ui vs @radix-ui/* imports ===
+src/components/ui/form.tsx:4:import * as LabelPrimitive from "@radix-ui/react-label"
+src/components/ui/form.tsx:5:import { Slot } from "@radix-ui/react-slot"
+src/components/ui/popover.tsx:4:import * as PopoverPrimitive from "@radix-ui/react-popover"
+src/components/ui/slider.tsx:4:import { Slider as SliderPrimitive } from "radix-ui"
+src/components/ui/select.tsx:4:import * as SelectPrimitive from "@radix-ui/react-select"
+src/components/ui/tabs.tsx:4:import * as TabsPrimitive from "@radix-ui/react-tabs"
+src/components/ui/dropdown-menu.tsx:4:import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
+src/components/ui/radio-group.tsx:4:import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
+src/components/ui/checkbox.tsx:5:import { Checkbox as CheckboxPrimitive } from "radix-ui"
+src/components/ui/sheet.tsx:4:import * as SheetPrimitive from "@radix-ui/react-dialog"
+src/components/ui/accordion.tsx:5:import { Accordion as AccordionPrimitive } from "radix-ui"
+src/components/ui/progress.tsx:4:import * as ProgressPrimitive from "@radix-ui/react-progress"
+src/components/ui/scroll-area.tsx:4:import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
+src/components/ui/label.tsx:4:import * as LabelPrimitive from "@radix-ui/react-label"
+src/components/ui/button.tsx:2:import { Slot } from "@radix-ui/react-slot"
+src/components/ui/sidebar.tsx:4:import { Slot } from "@radix-ui/react-slot"
+src/components/ui/tooltip.tsx:4:import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+src/components/ui/badge.tsx:2:import { Slot } from "@radix-ui/react-slot"
+src/components/ui/dialog.tsx:4:import * as DialogPrimitive from "@radix-ui/react-dialog"
+src/components/ui/avatar.tsx:4:import * as AvatarPrimitive from "@radix-ui/react-avatar"
+src/components/ui/separator.tsx:4:import * as SeparatorPrimitive from "@radix-ui/react-separator"
+
+=== showdown / turndown / react-markdown imports ===
+src/app/student/notebook/page.tsx:67:import TurndownService from "turndown";
+src/app/student/notebook/page.tsx:68:import Showdown from "showdown";
+src/components/math-builder-modal.tsx:15:import ReactMarkdown from "react-markdown";
+src/components/markdown-renderer.tsx:4:import ReactMarkdown from "react-markdown";
+
+=== @tiptap/* imports ===
+src/components/rich-text-editor.tsx:3:import { useEditor, EditorContent } from '@tiptap/react';
+src/components/rich-text-editor.tsx:4:import StarterKit from '@tiptap/starter-kit';
+src/components/rich-text-editor.tsx:5:import Underline from '@tiptap/extension-underline';
+src/components/rich-text-editor.tsx:6:import TextAlign from '@tiptap/extension-text-align';
+src/components/rich-text-editor.tsx:7:import Placeholder from '@tiptap/extension-placeholder';
+
+=== Check every knip unused dependency across repo ===
+@hookform/resolvers -> referenced in 0 files: 
+@lucide/lab -> referenced in 0 files: 
+@polar-sh/nextjs -> referenced in 0 files: 
+@radix-ui/react-icons -> referenced in 0 files: 
+@radix-ui/react-separator -> referenced in 1 files: src/components/ui/separator.tsx 
+@vercel/analytics -> referenced in 0 files: 
+@vercel/speed-insights -> referenced in 0 files: 
+baseline-browser-mapping -> referenced in 1 files: functions/package-lock.json 
+cobe -> referenced in 1 files: src/components/cobe-globe.tsx 
+firebase-functions -> referenced in 5 files: functions/src/billing.ts functions/src/grading.ts functions/src/index.ts functions/package.json functions/package-lock.json 
+mathjs -> referenced in 0 files: 
+mathlive -> referenced in 0 files: 
+react-globe.gl -> referenced in 1 files: src/components/scorpio-globe.tsx 
+react-hook-form -> referenced in 1 files: src/components/ui/form.tsx 
+sib-api-v3-sdk -> referenced in 0 files: 
+three -> referenced in 3 files: src/components/scorpio-globe.tsx src/components/teacher/learning-insights.tsx src/components/sustainability-content.tsx 
+vercel -> referenced in 0 files: 
+zod -> referenced in 1 files: functions/package-lock.json 
+@fontsource-variable/alan-sans -> referenced in 0 files: 
+@google-cloud/vertexai -> referenced in 0 files: 
+node-mocks-http -> referenced in 0 files: 
+@afixt/a11y-calc -> referenced in 1 files: src/components/calculator/scientific-calculator.tsx 

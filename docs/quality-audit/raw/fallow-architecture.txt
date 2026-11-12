@@ -1,0 +1,3 @@
+  134 entry points detected (132 plugin, 2 package.json)
+
+✓ No issues found (0.08s)

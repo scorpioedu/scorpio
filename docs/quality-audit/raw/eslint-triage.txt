@@ -1,0 +1,44 @@
+=== TOTALS === { totalErrors: 246, totalWarnings: 195, total: 441 }
+
+=== BY RULE ===
+@typescript-eslint/no-unused-vars: total=175 (err=0, warn=175) e.g. __tests__/landing-chat.test.ts:12, functions/src/grading.ts:251, functions/src/grading.ts:252, functions/src/templates/AssignmentCreatedEmail.tsx:25, jest.config.js:3
+@typescript-eslint/no-explicit-any: total=153 (err=153, warn=0) e.g. __tests__/due-date.test.ts:6, __tests__/due-date.test.ts:7, __tests__/landing-chat.test.ts:12, __tests__/landing-chat.test.ts:21, __tests__/landing-chat.test.ts:22
+react/no-unescaped-entities: total=47 (err=47, warn=0) e.g. functions/src/templates/GradeAvailableEmail.tsx:79, src/app/(docs)/about/about-client.tsx:140, src/app/(docs)/about/about-client.tsx:140, src/app/(docs)/about/about-client.tsx:140, src/app/(docs)/about/about-client.tsx:140
+react-hooks/exhaustive-deps: total=14 (err=0, warn=14) e.g. src/app/student/assignment-view/page.tsx:359, src/app/student/notebook/page.tsx:238, src/app/student/notebook/page.tsx:263, src/app/student/notebook/page.tsx:274, src/app/student/submissions/page.tsx:84
+prefer-const: total=13 (err=13, warn=0) e.g. src/app/api/ai/generate/route.ts:32, src/app/api/ai/parse/route.ts:25, src/app/api/ai/synthesize-rubric/route.ts:25, src/app/student/notebook/page.tsx:177, src/app/student/page-client.tsx:122
+react-hooks/set-state-in-effect: total=10 (err=10, warn=0) e.g. src/components/admin/usage-analytics.tsx:83, src/components/motion/animated-sidebar.tsx:336, src/components/motion/animated-sidebar.tsx:340, src/components/route-progress-bar.tsx:14, src/components/scorpio-globe.tsx:14
+@typescript-eslint/no-require-imports: total=9 (err=9, warn=0) e.g. jest.config.js:1, tests/security/full-student-teacher-workflow.test.ts:24, tests/security/rules.test.cjs:1, tests/security/rules.test.cjs:2, tests/security/rules.test.cjs:3
+@next/next/no-img-element: total=6 (err=0, warn=6) e.g. src/app/(docs)/about/about-client.tsx:229, src/app/request-access/page.tsx:341, src/app/teacher/submission/grade/page.tsx:557, src/components/feature-section.tsx:237, src/components/feature-section.tsx:276
+@typescript-eslint/no-empty-object-type: total=4 (err=4, warn=0) e.g. src/components/motion/animated-sidebar.tsx:595, src/components/motion/animated-sidebar.tsx:634, src/components/motion/animated-sidebar.tsx:667, src/components/motion/animated-sidebar.tsx:703
+react-hooks/refs: total=3 (err=3, warn=0) e.g. src/components/math-input.tsx:487, src/components/math-input.tsx:487, src/components/motion/shared-layout-bg.tsx:78
+@typescript-eslint/ban-ts-comment: total=3 (err=3, warn=0) e.g. src/lib/ai/assignment.ts:120, src/lib/ai/utils.ts:75, src/lib/firebase.ts:25
+react-hooks/purity: total=2 (err=2, warn=0) e.g. src/components/landing/solution-flowchart.tsx:326, src/components/ui/sidebar.tsx:611
+react-hooks/immutability: total=2 (err=2, warn=0) e.g. src/components/landing/workspace-preview-pages.tsx:1642, src/components/motion/animated-sidebar.tsx:612
+
+=== BY DIR ===
+src/app: total=202 (err=110, warn=92)
+src/components: total=125 (err=60, warn=65)
+src/lib: total=82 (err=52, warn=30)
+tests/security: total=11 (err=9, warn=2)
+functions/src: total=9 (err=6, warn=3)
+__tests__: total=7 (err=6, warn=1)
+jest.config.js: total=2 (err=1, warn=1)
+tools: total=2 (err=1, warn=1)
+src/hooks: total=1 (err=1, warn=0)
+
+=== TOP 15 FILES ===
+src/app/teacher/network/page.tsx: total=17 (err=4, warn=13)
+src/lib/ai/assignment.ts: total=17 (err=14, warn=3)
+src/app/features/page.tsx: total=16 (err=0, warn=16)
+src/app/student/assignment-view/page.tsx: total=16 (err=12, warn=4)
+src/app/(docs)/research/page.tsx: total=13 (err=7, warn=6)
+src/lib/firebase.ts: total=13 (err=3, warn=10)
+src/app/student/notebook/page.tsx: total=11 (err=5, warn=6)
+src/app/(docs)/about/about-client.tsx: total=10 (err=9, warn=1)
+src/components/motion/animated-sidebar.tsx: total=10 (err=10, warn=0)
+src/lib/ai/config.ts: total=10 (err=10, warn=0)
+src/app/teacher/submission/grade/page.tsx: total=9 (err=3, warn=6)
+src/app/student/page-client.tsx: total=8 (err=7, warn=1)
+src/components/admin/global-analytics.tsx: total=8 (err=0, warn=8)
+src/components/ui/chart.tsx: total=8 (err=0, warn=8)
+src/lib/ai/research.ts: total=8 (err=7, warn=1)

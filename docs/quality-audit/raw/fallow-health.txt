@@ -1,0 +1,358 @@
+
+■ Metrics: 58,197 LOC · dead files 12.7% · dead exports 10.8% · avg cyclomatic 2.8 · p90 cyclomatic 6 · maintainability 89.2 (good) · 0 churn hotspots (since 6 months) · 28 unused deps
+  Cyclomatic units: functions 2785, module scopes 5, templates 0
+  Module scope: max cyclomatic 11; included in metrics, not function findings
+
+  Function size: 76% low · 10% medium · 6% high · 8% very high  (1-15 / 16-30 / 31-60 / >60 LOC)
+
+  Render fan-in: <Button> 82 parents (402 incl. repeats) · <Card> 50 parents (128 incl. repeats) · <CardContent> 48 parents (119 incl. repeats) · <CardHeader> 42 parents (103 incl. repeats) · <Badge> 39 parents (119 incl. repeats)
+
+● Large functions (10 shown, 221 total)
+  src/app/student/assignment-view/page.tsx
+    :78 AssignmentDetailContent  1598 lines
+  src/app/teacher/network/page.tsx
+    :83 NetworkPage  1413 lines
+  src/components/landing/workspace-preview-tabs.tsx
+    :114 NetworkPage  1411 lines
+  src/app/student/tutor/page.tsx
+    :199 TutorPage  1387 lines
+  src/app/teacher/create/page.tsx
+    :97 CreateAssignmentForm  1057 lines
+  src/components/landing/workspace-preview-pages.tsx
+    :1550 CreateAssignmentPage  924 lines
+  src/components/sustainability-content.tsx
+    :41 SustainabilityContent  916 lines
+  src/app/student/notebook/page.tsx
+    :86 NotebookPage  818 lines
+  tests/security/full-student-teacher-workflow.test.ts
+    :73 describe("Full End-to-End Student-Teacher Workflow")  761 lines
+  src/components/admin/usage-analytics.tsx
+    :61 UsageAnalytics  721 lines
+  Functions exceeding 60 lines of code (very high risk)
+  https://fallow.tools/docs/explanations/health/#unit-size
+  use --top 221 to see all
+
+● Coverage gaps (215 untested files, 405 untested exports, 14.3% file coverage)
+
+  Files
+  functions/src/billing.ts
+  functions/src/grading.ts
+  functions/src/index.ts
+  functions/src/lib/email.ts
+  functions/src/templates/AssignmentCreatedEmail.tsx
+  src/app/(docs)/about/about-client.tsx
+  src/app/(docs)/about/github-activity.tsx
+  src/app/(docs)/about/page.tsx
+  src/app/(docs)/contact/page.tsx
+  src/app/(docs)/layout.tsx
+  ... and 205 more files (--format json for full list)
+
+  Exports
+  functions/src/billing.ts:5 `deliverBillingUsage`
+  functions/src/grading.ts:326 `onSubmissionCreated`
+  functions/src/grading.ts:336 `onSubmissionUpdated`
+  functions/src/index.ts:116 `deliverBillingUsage`
+  functions/src/index.ts:52 `onAssignmentCreated`
+  functions/src/index.ts:22 `onAssignmentDeleted`
+  functions/src/index.ts:39 `onSubmissionCreated`
+  functions/src/index.ts:39 `onSubmissionUpdated`
+  functions/src/lib/email.ts:6 `sendEmail`
+  functions/src/templates/AssignmentCreatedEmail.tsx:22 `AssignmentCreatedEmail`
+  ... and 395 more exports (--format json for full list)
+
+  Static test dependency gaps (not line-level coverage)
+  https://fallow.tools/docs/explanations/health/#coverage-gaps
+
+● Hotspots (54 files, since 6 months)
+
+   31.8 ▼  src/app/api/auth/register/route.ts
+           3 commits     72 churn  0.82 density   2 fan-in  ▼ cooling  19.0 files/commit
+
+   28.0 ▲  src/app/teacher/create/page.tsx
+          11 commits   1769 churn  0.23 density   0 fan-in  ▲ accelerating  6.0 files/commit
+
+   27.6 ─  src/lib/usage-limit.ts
+           7 commits    178 churn  0.39 density  10 fan-in  ─ stable  6.5 files/commit
+
+   24.0 ─  src/lib/ai/config.ts
+           6 commits    245 churn  0.39 density  10 fan-in  ─ stable  4.0 files/commit
+
+   21.7 ▲  src/components/teacher/network-students.tsx
+           7 commits    810 churn  0.27 density   1 fan-in  ▲ accelerating  6.0 files/commit
+
+   21.0 ─  src/app/student/page-client.tsx
+           9 commits    932 churn  0.23 density   1 fan-in  ─ stable  7.0 files/commit
+
+   19.5 ▲  src/app/teacher/network/page.tsx
+          10 commits   2669 churn  0.17 density   0 fan-in  ▲ accelerating  6.0 files/commit
+
+   19.1 ─  src/app/student/assignment-view/page.tsx
+           8 commits   1085 churn  0.23 density   0 fan-in  ─ stable  4.5 files/commit
+
+   18.6 ▲  src/lib/auth-verify.ts
+           3 commits    188 churn  0.55 density  23 fan-in  ▲ accelerating  9.5 files/commit
+
+   17.5 ─  src/components/navigation-chatbot.tsx
+           8 commits   1306 churn  0.21 density   2 fan-in  ─ stable  5.0 files/commit
+
+   15.4 ▲  src/components/landing-chatbot.tsx
+           7 commits   1039 churn  0.19 density   1 fan-in  ▲ accelerating  8.0 files/commit
+
+   15.0 ▲  src/components/landing/site-header.tsx
+           8 commits   1116 churn  0.16 density   6 fan-in  ▲ accelerating  7.0 files/commit
+
+   14.2 ▼  src/app/teacher/page-client.tsx
+           5 commits   1072 churn  0.22 density   1 fan-in  ▼ cooling  6.0 files/commit
+
+   12.5 ▼  src/lib/firebase.ts
+           8 commits    424 churn  0.19 density  36 fan-in  ▼ cooling  3.0 files/commit
+
+   12.2 ▲  src/app/api/chat/landing/route.ts
+           6 commits    133 churn  0.18 density   1 fan-in  ▲ accelerating  5.0 files/commit
+
+   12.0 ─  src/app/student/notebook/page.tsx
+           5 commits    389 churn  0.22 density   0 fan-in  ─ stable  5.0 files/commit
+
+   11.3 ▲  src/components/app-sidebar.tsx
+           7 commits    784 churn  0.14 density   2 fan-in  ▲ accelerating  5.0 files/commit
+
+   10.4 ▲  src/app/student/assignments/page.tsx
+           3 commits    339 churn  0.27 density   0 fan-in  ▲ accelerating  13.5 files/commit
+
+    9.8 ▼  src/app/api/student/tutor/route.ts
+           4 commits     15 churn  0.27 density   1 fan-in  ▼ cooling  5.0 files/commit
+
+    9.7 ▲  src/contexts/auth-context.tsx
+           3 commits    232 churn  0.29 density  34 fan-in  ▲ accelerating  12.5 files/commit
+
+    9.3 ─  src/app/student/tutor/page.tsx
+           6 commits   2303 churn  0.15 density   0 fan-in  ─ stable  4.0 files/commit
+
+    8.8 ▼  src/app/teacher/students/page.tsx
+           3 commits    431 churn  0.23 density   0 fan-in  ▼ cooling  6.5 files/commit
+
+    8.2 ─  src/lib/ai/network.ts
+           6 commits     59 churn  0.13 density   3 fan-in  ─ stable  21.0 files/commit
+
+    8.0 ▲  src/components/settings-dialog.tsx
+           6 commits   1503 churn  0.11 density   1 fan-in  ▲ accelerating  5.0 files/commit
+
+    7.8 ▼  src/app/teacher/assignments/page.tsx
+           3 commits    277 churn  0.20 density   0 fan-in  ▼ cooling  10.0 files/commit
+
+    7.5 ▲  src/contexts/appearance-context.tsx
+           4 commits     46 churn  0.16 density   2 fan-in  ▲ accelerating  5.0 files/commit
+
+    7.1 ▲  src/components/math-input.tsx
+           3 commits     26 churn  0.21 density   3 fan-in  ▲ accelerating  6.0 files/commit
+
+    7.1 ▼  src/app/api/ai/generate-title/route.ts
+           3 commits     95 churn  0.25 density   0 fan-in  ▼ cooling  3.5 files/commit
+
+    6.6 ─  src/app/teacher/submission/grade/page.tsx
+           4 commits     83 churn  0.16 density   0 fan-in  ─ stable  5.0 files/commit
+
+    6.5 ▲  src/app/signup/page.tsx
+           4 commits    118 churn  0.14 density   0 fan-in  ▲ accelerating  4.0 files/commit
+
+    6.2 ▼  src/app/teacher/waypoints/page.tsx
+           3 commits    405 churn  0.16 density   0 fan-in  ▼ cooling  3.0 files/commit
+
+    6.0 ─  src/app/teacher/network/billing/page.tsx
+           5 commits    651 churn  0.11 density   0 fan-in  ─ stable  6.0 files/commit
+
+    5.5 ▼  src/components/demo-carousel.tsx
+           3 commits    208 churn  0.19 density   2 fan-in  ▼ cooling  2.0 files/commit
+
+    5.2 ─  src/components/landing/workspace-preview-tabs.tsx
+           4 commits   3347 churn  0.10 density   1 fan-in  ─ stable  19.5 files/commit
+
+    4.9 ▼  src/app/ai/page.tsx
+           3 commits     80 churn  0.17 density   0 fan-in  ▼ cooling  4.0 files/commit
+
+    4.7 ▼  src/app/login/page.tsx
+           3 commits    126 churn  0.12 density   0 fan-in  ▼ cooling  4.0 files/commit
+
+    3.1 ─  src/components/landing-faq.tsx
+           4 commits     83 churn  0.06 density   2 fan-in  ─ stable  18.0 files/commit
+
+    2.9 ▼  src/components/landing/header.tsx
+           3 commits      6 churn  0.10 density   0 fan-in  ▼ cooling  9.5 files/commit
+
+    2.1 ─  src/app/page.tsx
+          10 commits   1297 churn  0.02 density   0 fan-in  ─ stable  3.0 files/commit
+
+    2.0 ▼  src/app/pricing/page.tsx
+           5 commits    973 churn  0.04 density   0 fan-in  ▼ cooling  8.0 files/commit
+
+    2.0 ▼  src/components/network-tutorial.tsx
+           3 commits      6 churn  0.07 density   2 fan-in  ▼ cooling  3.0 files/commit
+
+    1.8 ▲  src/components/mode-toggle.tsx
+           5 commits    249 churn  0.03 density   5 fan-in  ▲ accelerating  5.0 files/commit
+
+    1.7 ▲  src/components/system-accordion.tsx
+           3 commits    301 churn  0.05 density   1 fan-in  ▲ accelerating  3.0 files/commit
+
+    1.7 ▼  src/components/student-sidebar.tsx
+           6 commits     77 churn  0.03 density   1 fan-in  ▼ cooling  6.0 files/commit
+
+    1.5 ▼  src/app/features/page.tsx
+           5 commits   1098 churn  0.03 density   0 fan-in  ▼ cooling  20.0 files/commit
+
+    1.3 ─  src/components/landing/pricing.tsx
+           4 commits     58 churn  0.03 density   0 fan-in  ─ stable  13.0 files/commit
+
+    0.9 ▲  src/components/loading-screen.tsx
+           4 commits    423 churn  0.02 density   1 fan-in  ▲ accelerating  7.0 files/commit
+
+    0.9 ▼  src/components/landing/comparison.tsx
+           3 commits    189 churn  0.03 density   1 fan-in  ▼ cooling  19.0 files/commit
+
+    0.8 ─  src/app/(docs)/research/page.tsx
+           4 commits     30 churn  0.02 density   0 fan-in  ─ stable  6.0 files/commit
+
+    0.8 ▼  src/app/layout.tsx
+           9 commits    104 churn  0.01 density   0 fan-in  ▼ cooling  4.0 files/commit
+
+    0.6 ▼  src/components/landing/solution-flowchart.tsx
+           3 commits     52 churn  0.02 density   0 fan-in  ▼ cooling  4.0 files/commit
+
+    0.4 ─  src/components/landing/LandingHero.tsx
+           4 commits    353 churn  0.01 density   1 fan-in  ─ stable  19.0 files/commit
+
+    0.4 ─  src/components/teacher-sidebar.tsx
+           4 commits     62 churn  0.01 density   2 fan-in  ─ stable  7.0 files/commit
+
+    0.3 ▲  src/app/sustainability/page.tsx
+           3 commits   2236 churn  0.01 density   0 fan-in  ▲ accelerating  13.0 files/commit
+
+  155 files excluded (< 3 commits)
+
+  Files with high churn and high complexity
+  https://fallow.tools/docs/explanations/health/#hotspot-metrics
+
+● Hidden change coupling (35 pairs, since 12 months)
+
+   91%  src/app/(docs)/contact/page.tsx  src/app/(docs)/privacy/page.tsx [strong]
+         5 shared commits (6 and 5 in total), no import between them
+   91%  src/app/(docs)/privacy/page.tsx  src/app/(docs)/terms/page.tsx [strong]
+         5 shared commits (5 and 6 in total), no import between them
+   86%  src/app/student/template.tsx  src/app/teacher/template.tsx [strong]
+         6 shared commits (7 and 7 in total), no import between them
+   83%  src/app/(docs)/contact/page.tsx  src/app/(docs)/terms/page.tsx [strong]
+         5 shared commits (6 and 6 in total), no import between them
+   80%  src/app/student/resources/page.tsx  src/app/teacher/uploads/page.tsx [strong]
+         6 shared commits (7 and 8 in total), no import between them
+   67%  src/components/student-sidebar.tsx  src/components/teacher-sidebar.tsx [strong]
+         11 shared commits (17 and 16 in total), no import between them
+   62%  src/app/student/layout.tsx  src/app/teacher/layout.tsx [strong]
+         8 shared commits (14 and 12 in total), no import between them
+   60%  src/app/login/page.tsx  src/app/signup/page.tsx [strong]
+         9 shared commits (15 and 15 in total), no import between them
+   60%  src/app/(docs)/about/page.tsx  src/app/(docs)/research/page.tsx [strong]
+         6 shared commits (9 and 11 in total), no import between them
+   59%  src/app/(docs)/contact/page.tsx  src/app/(docs)/research/page.tsx [strong]
+         5 shared commits (6 and 11 in total), no import between them
+   55%  src/app/student/assignment-view/page.tsx  src/app/teacher/create/page.tsx [strong]
+         20 shared commits (34 and 39 in total), no import between them
+   55%  src/app/teacher/grades/page.tsx  src/app/teacher/grades/student/page.tsx [strong]
+         6 shared commits (14 and 8 in total), no import between them
+   53%  src/app/student/grades/page.tsx  src/app/student/submissions/page.tsx [strong]
+         5 shared commits (12 and 7 in total), no import between them
+   53%  src/app/student/template.tsx  src/app/teacher/layout.tsx [strong]
+         5 shared commits (7 and 12 in total), no import between them
+   50%  src/components/mode-toggle.tsx  src/contexts/appearance-context.tsx [strong]
+         6 shared commits (15 and 9 in total), no import between them
+   48%  src/app/student/layout.tsx  src/app/student/template.tsx
+         5 shared commits (14 and 7 in total), no import between them
+   48%  src/app/student/resources/page.tsx  src/app/teacher/grades/page.tsx
+         5 shared commits (7 and 14 in total), no import between them
+   47%  src/components/settings-dialog.tsx  src/contexts/appearance-context.tsx
+         9 shared commits (29 and 9 in total), no import between them
+   46%  src/app/student/grades/page.tsx  src/app/teacher/grades/page.tsx
+         6 shared commits (12 and 14 in total), no import between them
+   45%  src/app/teacher/grades/page.tsx  src/app/teacher/students/page.tsx
+         5 shared commits (14 and 8 in total), no import between them
+   45%  src/app/teacher/grades/page.tsx  src/app/teacher/uploads/page.tsx
+         5 shared commits (14 and 8 in total), no import between them
+   44%  src/app/globals.css  src/contexts/appearance-context.tsx
+         7 shared commits (23 and 9 in total), no import between them
+   42%  src/app/globals.css  src/components/mode-toggle.tsx
+         8 shared commits (23 and 15 in total), no import between them
+   42%  src/app/student/submissions/page.tsx  src/app/teacher/page.tsx
+         5 shared commits (7 and 17 in total), no import between them
+   42%  src/app/teacher/assignment-view/page.tsx  src/app/teacher/grades/page.tsx
+         5 shared commits (10 and 14 in total), no import between them
+   41%  src/components/mode-toggle.tsx  src/components/settings-dialog.tsx
+         9 shared commits (15 and 29 in total), no import between them
+   38%  src/app/student/assignment-view/page.tsx  src/app/teacher/grades/page.tsx
+         9 shared commits (34 and 14 in total), no import between them
+   38%  src/app/student/assignment-view/page.tsx  src/app/teacher/submission/grade/page.tsx
+         9 shared commits (34 and 13 in total), no import between them
+   38%  src/app/teacher/network/page.tsx  src/lib/usage-limit.ts
+         7 shared commits (25 and 12 in total), no import between them
+   38%  src/app/student/page.tsx  src/app/teacher/page.tsx
+         6 shared commits (15 and 17 in total), no import between them
+   35%  src/app/teacher/create/page.tsx  src/lib/gemini.ts
+         12 shared commits (39 and 29 in total), no import between them
+   35%  src/app/teacher/assignments/page.tsx  src/app/teacher/create/page.tsx
+         9 shared commits (12 and 39 in total), no import between them
+   32%  src/lib/gemini.ts  src/lib/types.ts
+         6 shared commits (29 and 9 in total), no import between them
+   31%  src/app/globals.css  src/components/settings-dialog.tsx
+         8 shared commits (23 and 29 in total), no import between them
+   30%  src/app/student/assignment-view/page.tsx  src/app/teacher/assignments/page.tsx
+         7 shared commits (34 and 12 in total), no import between them
+
+  Files that change together without an import
+  https://fallow.tools/docs/explanations/health/#change-coupling
+
+● Refactoring targets (64)
+  7 low effort · 34 medium · 23 high
+    score = quick-win ROI (higher = better) · pri = absolute priority
+
+   22.9  pri:22.9    src/components/ui/crux-logo.tsx
+         dead code · effort:low · confidence:high  Remove 3 unused exports to reduce surface area (100% dead)
+
+   19.6  pri:39.2    tools/migrate-school-security.cjs
+         untested risk · effort:medium · confidence:high  2 complex functions lack test coverage path, add tests before modifying
+
+   18.0  pri:36.0    src/lib/usage-limit.ts
+         complexity · effort:medium · confidence:high  Extract checkBudget (cognitive: 39) in 106-LOC file into smaller functions
+         importers: src/app/api/ai/generate/route.ts (checkBudget, recordUsage); src/app/api/ai/parse/route.ts (checkBudget, recordUsage); src/app/api/ai/synthesize-rubric/route.ts (checkBudget, recordUsage); src/app/api/chat/landing/route.ts (recordUsage); src/app/api/chat/limits/route.ts (checkBudget, recordUsage)
+
+   16.7  pri:33.3    src/app/api/submissions/route.ts
+         complexity · effort:medium · confidence:high  Extract <arrow> (cognitive: 30) in 56-LOC file into smaller functions
+         importers: tests/security/full-student-teacher-workflow.test.ts (POST as submitAssignment); tests/security/workflows.test.ts (POST as submit)
+
+   15.1  pri:30.2    src/lib/ai/config.ts
+         high impact · effort:medium · confidence:medium  Split high-impact file (130 LOC), 10 dependents amplify every change
+         importers: __tests__/grading-failure.test.ts (model, side effect); __tests__/landing-chat.test.ts (model); src/app/api/chat/landing/route.ts (model); src/lib/ai/assignment.ts (model); src/lib/ai/chatbot.ts (model)
+
+   15.0  pri:29.9    functions/src/metering.ts
+         high impact · effort:medium · confidence:medium  Split high-impact file (65 LOC), 3 dependents amplify every change
+         importers: functions/src/grading.ts (estimateMaximumCost, reserveBudget, settleBudget); src/lib/ai/config.ts (estimateMaximumCost, reserveBudget, settleBudget); tests/security/workflows.test.ts (reserveBudget, settleBudget)
+
+   14.6  pri:29.2    src/app/api/teacher/network/membership/route.ts
+         complexity · effort:medium · confidence:high  Extract <arrow> (cognitive: 48) in 53-LOC file into smaller functions
+         importers: tests/security/full-student-teacher-workflow.test.ts (POST as networkMembership); tests/security/workflows.test.ts (POST as changeMembership)
+
+   13.4  pri:26.8    src/components/ui/typing-animation.tsx
+         complexity · effort:medium · confidence:high  Extract TypingAnimation (cognitive: 32) in 240-LOC file into smaller functions
+         clones: src/components/ui/text-animate.tsx:27-44 dup:cae653ee
+
+   12.6  pri:37.8    src/lib/auth-verify.ts
+         high impact · effort:high · confidence:medium  Split high-impact file (103 LOC), 23 dependents amplify every change
+         importers: __tests__/auth-verify.test.ts (authenticateRequest, verifyCallerIdentity, withAuthorizedRequest); src/app/api/account/route.ts (authenticateRequest); src/app/api/ai/generate/route.ts (withAuthorizedRequest); src/app/api/ai/generate-title/route.ts (withAuthorizedRequest); src/app/api/ai/parse/route.ts (withAuthorizedRequest)
+
+   12.4  pri:24.7    src/components/ui/chart.tsx
+         dead code · effort:medium · confidence:high  Remove 3 unused exports to reduce surface area (100% dead)
+
+  ... and 54 more targets (--format json for full list)
+
+  Prioritized refactoring recommendations based on complexity, churn, and
+  coupling signals
+  https://fallow.tools/docs/explanations/health/#refactoring-targets
+
+⚠ 351 above threshold · 2785 analyzed (0.09s)

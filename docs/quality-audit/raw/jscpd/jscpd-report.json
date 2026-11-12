@@ -1,0 +1,2501 @@
+{
+  "duplicates": [
+    {
+      "firstFile": {
+        "end": 59,
+        "endLoc": {
+          "column": 1,
+          "line": 59,
+          "position": 2364
+        },
+        "name": "grading.ts",
+        "start": 19,
+        "startLoc": {
+          "column": 0,
+          "line": 19,
+          "position": 649
+        }
+      },
+      "format": "typescript",
+      "fragment": "function scrubPII(text: string, studentNames: string[] = []): string {\n  if (!text) return text;\n\n  let scrubbed = text\n    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g, \"[EMAIL]\")\n    .replace(/(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}/g, \"[PHONE]\")\n    .replace(/\\b\\d{3}-\\d{2}-\\d{4}\\b/g, \"[ID]\")\n    .replace(/\\b(ID|Student\\s?#?|ID\\s?#?):?\\s?\\d{5,9}\\b/gi, \"[STUDENT_ID]\")\n    .replace(/\\b\\d+\\s+[A-Z][a-z]+(?:\\s+[A-Z][a-z]+){0,3}\\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Ter|Terrace|Way)\\.?\\b/gi, \"[ADDRESS]\")\n    .replace(/(?:DOB|Birth|Born)(?:\\s+on)?\\s*[:\\-]?\\s*(\\b\\d{1,2}[\\/\\-]\\d{1,2}[\\/\\-]\\d{2,4}\\b|\\b[A-Z][a-z]{2,8}\\s+\\d{1,2},?\\s+\\d{4}\\b)/gi, \"[BIRTH_DATE]\")\n    .replace(/\\b(19|20)\\d{2}[\\/\\-]\\d{1,2}[\\/\\-]\\d{1,2}\\b/g, \"[DATE]\")\n    .replace(/\\b\\d{1,2}[\\/\\-]\\d{1,2}[\\/\\-](19|20)\\d{2}\\b/g, \"[DATE]\")\n    .replace(/\\b(?:\\d[ -]*?){13,16}\\b/g, \"[SENSITIVE]\");\n\n  if (studentNames.length > 0) {\n    const nameParts = new Set<string>();\n    studentNames.forEach(fullName => {\n      if (!fullName) return;\n      nameParts.add(fullName);\n      const split = fullName.split(/\\s+/);\n      if (split.length > 1) {\n        split.forEach(part => {\n          if (part.length > 2 && !['and', 'the', 'with'].includes(part.toLowerCase())) {\n            nameParts.add(part);\n          }\n        });\n      }\n    });\n\n    const sortedParts = Array.from(nameParts).sort((a, b) => b.length - a.length);\n\n    sortedParts.forEach((name) => {\n      if (name && name.length > 2) {\n        const nameRegex = new RegExp(`\\\\b${name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\\\b`, 'gi');\n        scrubbed = scrubbed.replace(nameRegex, \"[NAME]\");\n      }\n    });\n  }\n\n  return scrubbed;\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 41,
+      "secondFile": {
+        "end": 68,
+        "endLoc": {
+          "column": 1,
+          "line": 68,
+          "position": 2986
+        },
+        "name": "lib/ai/utils.ts",
+        "start": 9,
+        "startLoc": {
+          "column": 7,
+          "line": 9,
+          "position": 355
+        }
+      },
+      "tokens": 291
+    },
+    {
+      "firstFile": {
+        "end": 153,
+        "endLoc": {
+          "column": 48,
+          "line": 153,
+          "position": 6423
+        },
+        "name": "grading.ts",
+        "start": 147,
+        "startLoc": {
+          "column": 4,
+          "line": 147,
+          "position": 6068
+        }
+      },
+      "format": "typescript",
+      "fragment": "    if (typeof data.score !== \"number\" || !Number.isFinite(data.score)) throw new Error(\"Invalid score\");\n    let score = 0;\n    if (typeof data.score === 'number') {\n        score = Math.min(10, Math.max(0, data.score));\n    } else if (typeof data.score === 'string') {\n        if (data.score.includes('/')) {\n            const parts = data.score.split('/');",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 7,
+      "secondFile": {
+        "end": 99,
+        "endLoc": {
+          "column": 52,
+          "line": 99,
+          "position": 3957
+        },
+        "name": "lib/ai/grading.ts",
+        "start": 91,
+        "startLoc": {
+          "column": 8,
+          "line": 91,
+          "position": 3491
+        }
+      },
+      "tokens": 97
+    },
+    {
+      "firstFile": {
+        "end": 208,
+        "endLoc": {
+          "column": 63,
+          "line": 208,
+          "position": 8507
+        },
+        "name": "grading.ts",
+        "start": 201,
+        "startLoc": {
+          "column": 45,
+          "line": 201,
+          "position": 8093
+        }
+      },
+      "format": "typescript",
+      "fragment": "            const studentsSnapshot = await db.collection(\"users\")\n                .where(\"teacherId\", \"==\", teacherId)\n                .where(\"role\", \"==\", \"student\")\n                .get();\n            studentNames = studentsSnapshot.docs.map(doc => doc.data().displayName || doc.data().name).filter(Boolean);\n        }\n        const currentName = studentData?.displayName || studentData?.name;\n        if (currentName && !studentNames.includes(currentName)) studentNames.push(currentName);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 74,
+        "endLoc": {
+          "column": 61,
+          "line": 74,
+          "position": 2897
+        },
+        "name": "app/api/grade/route.ts",
+        "start": 64,
+        "startLoc": {
+          "column": 46,
+          "line": 64,
+          "position": 2447
+        }
+      },
+      "tokens": 84
+    },
+    {
+      "firstFile": {
+        "end": 245,
+        "endLoc": {
+          "column": 91,
+          "line": 245,
+          "position": 10214
+        },
+        "name": "grading.ts",
+        "start": 229,
+        "startLoc": {
+          "column": 4,
+          "line": 229,
+          "position": 9700
+        }
+      },
+      "format": "typescript",
+      "fragment": "    const gradedAnswers = [];\n    let totalPromptTokens = 0;\n    let totalCandidateTokens = 0;\n\n    for (const ans of answers) {\n        const question = questions.find((q: any) => q.id === ans.questionId);\n        if (!question) {\n            gradedAnswers.push(ans);\n            continue;\n        }\n\n        const points = question.points || 10;\n        let score = 0;\n        let feedback = \"\";\n        let reasoning = \"\";\n\n        if ((question.type === \"text\" || question.type === \"short-answer\") && ans.answer) {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 17,
+      "secondFile": {
+        "end": 124,
+        "endLoc": {
+          "column": 89,
+          "line": 124,
+          "position": 4548
+        },
+        "name": "app/api/grade/route.ts",
+        "start": 103,
+        "startLoc": {
+          "column": 4,
+          "line": 103,
+          "position": 3838
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 261,
+        "endLoc": {
+          "column": 18,
+          "line": 261,
+          "position": 11199
+        },
+        "name": "grading.ts",
+        "start": 255,
+        "startLoc": {
+          "column": 8,
+          "line": 255,
+          "position": 10791
+        }
+      },
+      "format": "typescript",
+      "fragment": "        } else if (question.correctAnswer && (question.type === \"multiple-choice\" || question.type === \"true-false\")) {\n            const isCorrect = ans.answer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();\n            score = isCorrect ? points : 0;\n            feedback = isCorrect ? \"Correct!\" : `Incorrect. The correct answer was: ${question.correctAnswer}`;\n        }\n\n        totalScore += score;",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 7,
+      "secondFile": {
+        "end": 154,
+        "endLoc": {
+          "column": 12,
+          "line": 154,
+          "position": 6237
+        },
+        "name": "app/api/grade/route.ts",
+        "start": 149,
+        "startLoc": {
+          "column": 6,
+          "line": 149,
+          "position": 5810
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 23,
+          "line": 64,
+          "position": 4999
+        },
+        "name": "app/ai/page.tsx",
+        "start": 54,
+        "startLoc": {
+          "column": 46,
+          "line": 54,
+          "position": 4747
+        }
+      },
+      "format": "tsx",
+      "fragment": "  if (typeof window === \"undefined\") return \"\";\n  let id = localStorage.getItem(VISITOR_KEY);\n  if (!id) {\n    id = `v_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;\n    localStorage.setItem(VISITOR_KEY, id);\n  }\n  return id;\n}\n\nfunction getLocalCount(): number {\n  if (typeof window === \"undefined\") return 0;",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 11,
+      "secondFile": {
+        "end": 42,
+        "endLoc": {
+          "column": 23,
+          "line": 42,
+          "position": 1135
+        },
+        "name": "components/landing-chatbot.tsx",
+        "start": 32,
+        "startLoc": {
+          "column": 46,
+          "line": 32,
+          "position": 883
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 45,
+        "endLoc": {
+          "column": 24,
+          "line": 45,
+          "position": 1758
+        },
+        "name": "app/api/ai/generate/route.ts",
+        "start": 19,
+        "startLoc": {
+          "column": 78,
+          "line": 19,
+          "position": 864
+        }
+      },
+      "format": "typescript",
+      "fragment": "      return NextResponse.json({ error: rateLimitCheck.error }, { status: 429 });\n    }\n\n    if (!adminDb) {\n      return NextResponse.json({ error: \"Service unavailable\" }, { status: 503 });\n    }\n\n    // 1. Resolve OrganizationId from User ID (Teacher-only feature usually)\n    const userDoc = await adminDb.collection(\"users\").doc(userId).get();\n    if (!userDoc.exists) {\n      return NextResponse.json({ error: \"User profile not found\" }, { status: 404 });\n    }\n    const userData = userDoc.data();\n    let organizationId = userData?.organizationId;\n\n    if (!organizationId) {\n      return NextResponse.json({ error: \"No organization found for user\" }, { status: 403 });\n    }\n\n    // 2. Check Budget for Organization\n    const budgetCheck = await checkBudget(organizationId, \"generation\");\n    if (!budgetCheck.allowed) {\n      return NextResponse.json({ error: budgetCheck.error }, { status: 403 });\n    }\n\n    // 3. Perform AI Generation\n    const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 27,
+      "secondFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 24,
+          "line": 38,
+          "position": 1362
+        },
+        "name": "app/api/ai/parse/route.ts",
+        "start": 12,
+        "startLoc": {
+          "column": 83,
+          "line": 12,
+          "position": 502
+        }
+      },
+      "tokens": 161
+    },
+    {
+      "firstFile": {
+        "end": 34,
+        "endLoc": {
+          "column": 23,
+          "line": 34,
+          "position": 1366
+        },
+        "name": "app/api/ai/generate/route.ts",
+        "start": 19,
+        "startLoc": {
+          "column": 78,
+          "line": 19,
+          "position": 864
+        }
+      },
+      "format": "typescript",
+      "fragment": "      return NextResponse.json({ error: rateLimitCheck.error }, { status: 429 });\n    }\n\n    if (!adminDb) {\n      return NextResponse.json({ error: \"Service unavailable\" }, { status: 503 });\n    }\n\n    // 1. Resolve OrganizationId from User ID (Teacher-only feature usually)\n    const userDoc = await adminDb.collection(\"users\").doc(userId).get();\n    if (!userDoc.exists) {\n      return NextResponse.json({ error: \"User profile not found\" }, { status: 404 });\n    }\n    const userData = userDoc.data();\n    let organizationId = userData?.organizationId;\n\n    if (!organizationId) {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 34,
+        "endLoc": {
+          "column": 23,
+          "line": 34,
+          "position": 1372
+        },
+        "name": "app/api/student/tutor/route.ts",
+        "start": 18,
+        "startLoc": {
+          "column": 73,
+          "line": 18,
+          "position": 813
+        }
+      },
+      "tokens": 96
+    },
+    {
+      "firstFile": {
+        "end": 34,
+        "endLoc": {
+          "column": 23,
+          "line": 34,
+          "position": 1366
+        },
+        "name": "app/api/ai/generate/route.ts",
+        "start": 23,
+        "startLoc": {
+          "column": 79,
+          "line": 23,
+          "position": 974
+        }
+      },
+      "format": "typescript",
+      "fragment": "      return NextResponse.json({ error: \"Service unavailable\" }, { status: 503 });\n    }\n\n    // 1. Resolve OrganizationId from User ID (Teacher-only feature usually)\n    const userDoc = await adminDb.collection(\"users\").doc(userId).get();\n    if (!userDoc.exists) {\n      return NextResponse.json({ error: \"User profile not found\" }, { status: 404 });\n    }\n    const userData = userDoc.data();\n    let organizationId = userData?.organizationId;\n\n    if (!organizationId) {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 30,
+        "endLoc": {
+          "column": 23,
+          "line": 30,
+          "position": 1197
+        },
+        "name": "app/api/chat/route.ts",
+        "start": 18,
+        "startLoc": {
+          "column": 84,
+          "line": 18,
+          "position": 748
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 38,
+        "endLoc": {
+          "column": 9,
+          "line": 38,
+          "position": 1347
+        },
+        "name": "app/api/ai/parse/route.ts",
+        "start": 11,
+        "startLoc": {
+          "column": 14,
+          "line": 11,
+          "position": 405
+        }
+      },
+      "format": "typescript",
+      "fragment": "    if (!text || !userId) {\n      return NextResponse.json({ error: \"Missing required fields\" }, { status: 400 });\n    }\n\n    if (!adminDb) {\n      return NextResponse.json({ error: \"Service unavailable\" }, { status: 503 });\n    }\n\n    // 1. Resolve OrganizationId from User ID\n    const userDoc = await adminDb.collection(\"users\").doc(userId).get();\n    if (!userDoc.exists) {\n      return NextResponse.json({ error: \"User profile not found\" }, { status: 404 });\n    }\n    const userData = userDoc.data();\n    let organizationId = userData?.organizationId;\n\n    if (!organizationId) {\n      return NextResponse.json({ error: \"No organization found for user\" }, { status: 403 });\n    }\n\n    // 2. Check Budget for Organization\n    const budgetCheck = await checkBudget(organizationId, \"generation\");\n    if (!budgetCheck.allowed) {\n      return NextResponse.json({ error: budgetCheck.error }, { status: 403 });\n    }\n\n    // 3. Perform AI Parsing\n    const result = await parseQuestionsFromText(text);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 28,
+      "secondFile": {
+        "end": 37,
+        "endLoc": {
+          "column": 9,
+          "line": 37,
+          "position": 1332
+        },
+        "name": "app/api/ai/synthesize-rubric/route.ts",
+        "start": 11,
+        "startLoc": {
+          "column": 22,
+          "line": 11,
+          "position": 419
+        }
+      },
+      "tokens": 178
+    },
+    {
+      "firstFile": {
+        "end": 59,
+        "endLoc": {
+          "column": 100,
+          "line": 59,
+          "position": 2376
+        },
+        "name": "app/api/auth/request-access/route.ts",
+        "start": 52,
+        "startLoc": {
+          "column": 28,
+          "line": 52,
+          "position": 1973
+        }
+      },
+      "format": "typescript",
+      "fragment": "    if (action === 'approve') {\n      if (!requireAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });\n\n      const { id } = body;\n      if (!id) return NextResponse.json({ error: 'Missing request id' }, { status: 400 });\n\n      const reqDoc = await adminDb.collection('accessRequests').doc(id).get();\n      if (!reqDoc.exists) return NextResponse.json({ error: 'Request not found' }, { status: 404 });",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 101,
+        "endLoc": {
+          "column": 100,
+          "line": 101,
+          "position": 4014
+        },
+        "name": "app/api/auth/request-access/route.ts",
+        "start": 94,
+        "startLoc": {
+          "column": 27,
+          "line": 94,
+          "position": 3611
+        }
+      },
+      "tokens": 103
+    },
+    {
+      "firstFile": {
+        "end": 36,
+        "endLoc": {
+          "column": 39,
+          "line": 36,
+          "position": 1445
+        },
+        "name": "app/api/chat/route.ts",
+        "start": 18,
+        "startLoc": {
+          "column": 86,
+          "line": 18,
+          "position": 750
+        }
+      },
+      "format": "typescript",
+      "fragment": "      return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });\n    }\n\n    // 1. Resolve OrganizationId from User ID\n    const userDoc = await adminDb.collection(\"users\").doc(userId).get();\n    if (!userDoc.exists) {\n      return NextResponse.json({ error: \"User profile not found\" }, { status: 404 });\n    }\n    const userData = userDoc.data();\n    let organizationId = userData?.organizationId;\n\n    // Fallback: students may not have organizationId directly — inherit from teacher\n    if (!organizationId && userData?.teacherId) {\n      const teacherDoc = await adminDb.collection(\"users\").doc(userData.teacherId).get();\n      organizationId = teacherDoc.data()?.organizationId;\n    }\n\n    if (!organizationId) {\n      return NextResponse.json({ error: \"You must be enrolled in an active Scorpio Network to use AI features.\" }, { status: 403 });",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 40,
+        "endLoc": {
+          "column": 39,
+          "line": 40,
+          "position": 1620
+        },
+        "name": "app/api/student/tutor/route.ts",
+        "start": 22,
+        "startLoc": {
+          "column": 81,
+          "line": 22,
+          "position": 925
+        }
+      },
+      "tokens": 122
+    },
+    {
+      "firstFile": {
+        "end": 35,
+        "endLoc": {
+          "column": 61,
+          "line": 35,
+          "position": 1296
+        },
+        "name": "app/demos/page.tsx",
+        "start": 23,
+        "startLoc": {
+          "column": 3,
+          "line": 23,
+          "position": 932
+        }
+      },
+      "format": "tsx",
+      "fragment": "  };\n\n  return (\n    <div className=\"min-h-screen relative font-medium scroll-smooth\">\n      <SpaceBackground />\n      <SiteHeader />\n\n      <motion.div\n        initial={{ opacity: 0, y: 10 }}\n        animate={{ opacity: 1, y: 0 }}\n        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}\n      >\n        <main className=\"relative z-10 pt-24 md:pt-32 pb-24\">",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 128,
+        "endLoc": {
+          "column": 61,
+          "line": 128,
+          "position": 5219
+        },
+        "name": "app/features/page.tsx",
+        "start": 116,
+        "startLoc": {
+          "column": 3,
+          "line": 116,
+          "position": 4855
+        }
+      },
+      "tokens": 79
+    },
+    {
+      "firstFile": {
+        "end": 219,
+        "endLoc": {
+          "column": 56,
+          "line": 219,
+          "position": 12378
+        },
+        "name": "app/demos/page.tsx",
+        "start": 196,
+        "startLoc": {
+          "column": 15,
+          "line": 196,
+          "position": 10768
+        }
+      },
+      "format": "tsx",
+      "fragment": "          </div>\n        </main>\n\n        {/* Global Footer */}\n        <footer className=\"relative z-10 bg-background/50 backdrop-blur-sm border-t border-border/50\">\n          <div className=\"container mx-auto px-6 py-12\">\n            <div className=\"w-full flex flex-col md:flex-row md:items-center md:justify-between gap-8\">\n              <div className=\"flex items-center space-x-3 justify-center md:justify-start mb-6 md:mb-0\">\n                <Logo size={24} className=\"text-foreground\" />\n                <span className=\"text-md font-extrabold\">Scorpio</span>\n              </div>\n\n              <div className=\"flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0\">\n                <Link href=\"https://github.com/RushilMahadevu/scorpio\" target=\"_blank\" rel=\"noopener noreferrer\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Github className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">GitHub</span>\n                </Link>\n                <Link href=\"/about\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Info className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">About</span>\n                </Link>\n                <Link href=\"/research\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <BookOpen className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Research</span>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 24,
+      "secondFile": {
+        "end": 57,
+        "endLoc": {
+          "column": 56,
+          "line": 57,
+          "position": 2770
+        },
+        "name": "app/sustainability/page.tsx",
+        "start": 23,
+        "startLoc": {
+          "column": 34,
+          "line": 23,
+          "position": 955
+        }
+      },
+      "tokens": 175
+    },
+    {
+      "firstFile": {
+        "end": 257,
+        "endLoc": {
+          "column": 1,
+          "line": 257,
+          "position": 14523
+        },
+        "name": "app/demos/page.tsx",
+        "start": 197,
+        "startLoc": {
+          "column": 8,
+          "line": 197,
+          "position": 10778
+        }
+      },
+      "format": "tsx",
+      "fragment": "        </main>\n\n        {/* Global Footer */}\n        <footer className=\"relative z-10 bg-background/50 backdrop-blur-sm border-t border-border/50\">\n          <div className=\"container mx-auto px-6 py-12\">\n            <div className=\"w-full flex flex-col md:flex-row md:items-center md:justify-between gap-8\">\n              <div className=\"flex items-center space-x-3 justify-center md:justify-start mb-6 md:mb-0\">\n                <Logo size={24} className=\"text-foreground\" />\n                <span className=\"text-md font-extrabold\">Scorpio</span>\n              </div>\n\n              <div className=\"flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0\">\n                <Link href=\"https://github.com/RushilMahadevu/scorpio\" target=\"_blank\" rel=\"noopener noreferrer\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Github className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">GitHub</span>\n                </Link>\n                <Link href=\"/about\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Info className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">About</span>\n                </Link>\n                <Link href=\"/research\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <BookOpen className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Research</span>\n                </Link>\n                <Link href=\"/sustainability\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Leaf className=\"h-5 w-5 text-emerald-500\" />\n                  <span className=\"text-sm font-medium\">Sustainability</span>\n                </Link>\n                <Link href=\"/privacy\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Shield className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Privacy</span>\n                </Link>\n                <Link href=\"/terms\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <FileText className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Terms</span>\n                </Link>\n                <Link href=\"/request-access\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <KeyRound className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Request Access</span>\n                </Link>\n                <Link href=\"/contact\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Mail className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Contact</span>\n                </Link>\n              </div>\n\n              <div className=\"text-center md:text-right space-y-2\">\n                <div className=\"text-sm text-muted-foreground font-medium\">\n                  Built by <span className=\"text-foreground font-semibold\">Rushil Mahadevu</span>\n                </div>\n                <div className=\"text-xs text-muted-foreground\">\n                  © {new Date().getFullYear()} Scorpio. All rights reserved.\n                </div>\n              </div>\n            </div>\n          </div>\n        </footer>\n      </motion.div>\n    </div>\n  );\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 61,
+      "secondFile": {
+        "end": 682,
+        "endLoc": {
+          "column": 1,
+          "line": 682,
+          "position": 39332
+        },
+        "name": "app/features/page.tsx",
+        "start": 622,
+        "startLoc": {
+          "column": 8,
+          "line": 622,
+          "position": 35587
+        }
+      },
+      "tokens": 452
+    },
+    {
+      "firstFile": {
+        "end": 257,
+        "endLoc": {
+          "column": 1,
+          "line": 257,
+          "position": 14523
+        },
+        "name": "app/demos/page.tsx",
+        "start": 222,
+        "startLoc": {
+          "column": 61,
+          "line": 222,
+          "position": 12642
+        }
+      },
+      "format": "tsx",
+      "fragment": "                  <Leaf className=\"h-5 w-5 text-emerald-500\" />\n                  <span className=\"text-sm font-medium\">Sustainability</span>\n                </Link>\n                <Link href=\"/privacy\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Shield className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Privacy</span>\n                </Link>\n                <Link href=\"/terms\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <FileText className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Terms</span>\n                </Link>\n                <Link href=\"/request-access\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <KeyRound className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Request Access</span>\n                </Link>\n                <Link href=\"/contact\" className=\"flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer\">\n                  <Mail className=\"h-5 w-5\" />\n                  <span className=\"text-sm font-medium\">Contact</span>\n                </Link>\n              </div>\n\n              <div className=\"text-center md:text-right space-y-2\">\n                <div className=\"text-sm text-muted-foreground font-medium\">\n                  Built by <span className=\"text-foreground font-semibold\">Rushil Mahadevu</span>\n                </div>\n                <div className=\"text-xs text-muted-foreground\">\n                  © {new Date().getFullYear()} Scorpio. All rights reserved.\n                </div>\n              </div>\n            </div>\n          </div>\n        </footer>\n      </motion.div>\n    </div>\n  );\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 36,
+      "secondFile": {
+        "end": 110,
+        "endLoc": {
+          "column": 1,
+          "line": 110,
+          "position": 5164
+        },
+        "name": "app/sustainability/page.tsx",
+        "start": 63,
+        "startLoc": {
+          "column": 44,
+          "line": 63,
+          "position": 3071
+        }
+      },
+      "tokens": 253
+    },
+    {
+      "firstFile": {
+        "end": 188,
+        "endLoc": {
+          "column": 52,
+          "line": 188,
+          "position": 4255
+        },
+        "name": "app/globals.css",
+        "start": 173,
+        "startLoc": {
+          "column": 51,
+          "line": 173,
+          "position": 3486
+        }
+      },
+      "format": "css",
+      "fragment": "  --font-mono: var(--font-ibm-plex-mono), monospace;\n  --radius: 1.4rem;\n  --shadow-x: 0px;\n  --shadow-y: 2px;\n  --shadow-blur: 3px;\n  --shadow-spread: 0px;\n  --shadow-opacity: 0.16;\n  --shadow-color: hsl(0 0% 0%);\n  --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);\n  --shadow-xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);\n  --shadow-sm: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);\n  --shadow: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);\n  --shadow-md: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 2px 4px -1px hsl(0 0% 0% / 0.16);\n  --shadow-lg: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 4px 6px -1px hsl(0 0% 0% / 0.16);\n  --shadow-xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 8px 10px -1px hsl(0 0% 0% / 0.16);\n  --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 240,
+        "endLoc": {
+          "column": 52,
+          "line": 240,
+          "position": 6525
+        },
+        "name": "app/globals.css",
+        "start": 225,
+        "startLoc": {
+          "column": 47,
+          "line": 225,
+          "position": 5756
+        }
+      },
+      "tokens": 367
+    },
+    {
+      "firstFile": {
+        "end": 17,
+        "endLoc": {
+          "column": 49,
+          "line": 17,
+          "position": 908
+        },
+        "name": "app/login/page.tsx",
+        "start": 8,
+        "startLoc": {
+          "column": 49,
+          "line": 8,
+          "position": 371
+        }
+      },
+      "format": "tsx",
+      "fragment": "import { useAuth } from \"@/contexts/auth-context\";\nimport { AuthPageNav } from \"@/components/landing/auth-page-nav\";\nimport { Button } from \"@/components/ui/button\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from \"@/components/ui/tabs\";\nimport { SpaceBackground } from \"@/components/ui/space-background\";\nimport Link from \"next/link\";\nimport { GraduationCap, Presentation, Eye, EyeOff } from \"lucide-react\";",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 10,
+      "secondFile": {
+        "end": 15,
+        "endLoc": {
+          "column": 49,
+          "line": 15,
+          "position": 756
+        },
+        "name": "app/signup/page.tsx",
+        "start": 6,
+        "startLoc": {
+          "column": 41,
+          "line": 6,
+          "position": 219
+        }
+      },
+      "tokens": 78
+    },
+    {
+      "firstFile": {
+        "end": 225,
+        "endLoc": {
+          "column": 33,
+          "line": 225,
+          "position": 8998
+        },
+        "name": "app/login/page.tsx",
+        "start": 205,
+        "startLoc": {
+          "column": 2,
+          "line": 205,
+          "position": 8246
+        }
+      },
+      "format": "tsx",
+      "fragment": "  return (\n    <div className=\"min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative\">\n      <SpaceBackground />\n      <AuthPageNav />\n      <motion.div\n        initial={{ opacity: 0, y: 20 }}\n        animate={{ opacity: 1, y: 0 }}\n        transition={{ duration: 0.6 }}\n        className=\"w-full max-w-md\"\n      >\n        <Card>\n          <CardHeader className=\"text-center\">\n            <motion.div\n              className=\"flex justify-center mb-4\"\n              initial={{ scale: 0.8, opacity: 0 }}\n              animate={{ scale: 1, opacity: 1 }}\n              transition={{ delay: 0.2, duration: 0.5 }}\n            >\n              <Logo size={48} className=\"text-primary\" />\n            </motion.div>\n            <CardTitle className=\"text-2xl font-inter font-black tracking-tighter\">Welcome Back</CardTitle>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 21,
+      "secondFile": {
+        "end": 170,
+        "endLoc": {
+          "column": 33,
+          "line": 170,
+          "position": 6727
+        },
+        "name": "app/signup/page.tsx",
+        "start": 150,
+        "startLoc": {
+          "column": 2,
+          "line": 150,
+          "position": 5975
+        }
+      },
+      "tokens": 146
+    },
+    {
+      "firstFile": {
+        "end": 254,
+        "endLoc": {
+          "column": 35,
+          "line": 254,
+          "position": 10359
+        },
+        "name": "app/login/page.tsx",
+        "start": 243,
+        "startLoc": {
+          "column": 45,
+          "line": 243,
+          "position": 9919
+        }
+      },
+      "format": "tsx",
+      "fragment": "                  initial={{ opacity: 0, x: -10 }}\n                  animate={{ opacity: 1, x: 0 }}\n                  transition={{ duration: 0.3 }}\n                  className=\"space-y-4\"\n                >\n                  <motion.div\n                    initial={{ opacity: 0, y: 10 }}\n                    animate={{ opacity: 1, y: 0 }}\n                    transition={{ delay: 0.1 }}\n                    className=\"space-y-2\"\n                  >\n                    <Label htmlFor=\"student-email\">Email</Label>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 340,
+        "endLoc": {
+          "column": 35,
+          "line": 340,
+          "position": 14130
+        },
+        "name": "app/login/page.tsx",
+        "start": 329,
+        "startLoc": {
+          "column": 44,
+          "line": 329,
+          "position": 13690
+        }
+      },
+      "tokens": 78
+    },
+    {
+      "firstFile": {
+        "end": 318,
+        "endLoc": {
+          "column": 49,
+          "line": 318,
+          "position": 13287
+        },
+        "name": "app/login/page.tsx",
+        "start": 288,
+        "startLoc": {
+          "column": 24,
+          "line": 288,
+          "position": 11861
+        }
+      },
+      "format": "tsx",
+      "fragment": "                        required\n                      />\n                      <Button\n                        type=\"button\"\n                        variant=\"ghost\"\n                        size=\"icon\"\n                        onClick={() => setShowPassword(!showPassword)}\n                        className=\"absolute inset-y-0 right-0 text-muted-foreground\"\n                        aria-label={showPassword ? \"Hide password\" : \"Show password\"}\n                      >\n                        {showPassword ? <EyeOff className=\"h-4 w-4\" /> : <Eye className=\"h-4 w-4\" />}\n                      </Button>\n                    </div>\n                  </motion.div>\n                  {error && (\n                    <motion.p\n                      initial={{ opacity: 0, scale: 0.95 }}\n                      animate={{ opacity: 1, scale: 1 }}\n                      className=\"text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20\"\n                    >\n                      {error}\n                    </motion.p>\n                  )}\n                  <motion.div\n                    initial={{ opacity: 0, y: 10 }}\n                    animate={{ opacity: 1, y: 0 }}\n                    transition={{ delay: 0.3 }}\n                  >\n                    <Button\n                      className=\"w-full bg-primary text-primary-foreground hover:bg-primary/90\"\n                      onClick={() => handleLogin(\"student\")}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 31,
+      "secondFile": {
+        "end": 404,
+        "endLoc": {
+          "column": 49,
+          "line": 404,
+          "position": 17058
+        },
+        "name": "app/login/page.tsx",
+        "start": 374,
+        "startLoc": {
+          "column": 24,
+          "line": 374,
+          "position": 15632
+        }
+      },
+      "tokens": 184
+    },
+    {
+      "firstFile": {
+        "end": 140,
+        "endLoc": {
+          "column": 27,
+          "line": 140,
+          "position": 6540
+        },
+        "name": "app/pricing/page.tsx",
+        "start": 129,
+        "startLoc": {
+          "column": 53,
+          "line": 129,
+          "position": 6057
+        }
+      },
+      "format": "tsx",
+      "fragment": "                    \"Standard coursework submissions\",\n                  ].map((feat) => (\n                    <li key={feat} className=\"flex items-start gap-2.5 text-foreground/80\">\n                      <Check className=\"h-4 w-4 text-muted-foreground/60 shrink-0 mt-0.5\" />\n                      <span>{feat}</span>\n                    </li>\n                  ))}\n                </ul>\n              </div>\n\n              <Button asChild variant=\"outline\" className=\"w-full py-5 rounded-2xl font-semibold\">\n                <Link href=\"/signup\">Start Free</Link>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 237,
+        "endLoc": {
+          "column": 27,
+          "line": 237,
+          "position": 11772
+        },
+        "name": "app/pricing/page.tsx",
+        "start": 226,
+        "startLoc": {
+          "column": 59,
+          "line": 226,
+          "position": 11289
+        }
+      },
+      "tokens": 74
+    },
+    {
+      "firstFile": {
+        "end": 200,
+        "endLoc": {
+          "column": 37,
+          "line": 200,
+          "position": 8218
+        },
+        "name": "app/signup/page.tsx",
+        "start": 189,
+        "startLoc": {
+          "column": 47,
+          "line": 189,
+          "position": 7756
+        }
+      },
+      "format": "tsx",
+      "fragment": "                    initial={{ opacity: 0, x: -10 }}\n                    animate={{ opacity: 1, x: 0 }}\n                    transition={{ duration: 0.3 }}\n                    className=\"space-y-4\"\n                  >\n                    <motion.div\n                      initial={{ opacity: 0, y: 10 }}\n                      animate={{ opacity: 1, y: 0 }}\n                      transition={{ delay: 0.1 }}\n                      className=\"space-y-2\"\n                    >\n                      <Label htmlFor=\"student-name\">Full Name</Label>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 339,
+        "endLoc": {
+          "column": 37,
+          "line": 339,
+          "position": 14757
+        },
+        "name": "app/signup/page.tsx",
+        "start": 328,
+        "startLoc": {
+          "column": 46,
+          "line": 328,
+          "position": 14295
+        }
+      },
+      "tokens": 78
+    },
+    {
+      "firstFile": {
+        "end": 216,
+        "endLoc": {
+          "column": 37,
+          "line": 216,
+          "position": 8904
+        },
+        "name": "app/signup/page.tsx",
+        "start": 204,
+        "startLoc": {
+          "column": 24,
+          "line": 204,
+          "position": 8393
+        }
+      },
+      "format": "tsx",
+      "fragment": "                        value={name}\n                        onChange={(e) => setName(e.target.value)}\n                        aria-label=\"Full Name\"\n                        required\n                      />\n                    </motion.div>\n                    <motion.div\n                      initial={{ opacity: 0, y: 10 }}\n                      animate={{ opacity: 1, y: 0 }}\n                      transition={{ delay: 0.15 }}\n                      className=\"space-y-2\"\n                    >\n                      <Label htmlFor=\"student-email\">Email</Label>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 355,
+        "endLoc": {
+          "column": 37,
+          "line": 355,
+          "position": 15444
+        },
+        "name": "app/signup/page.tsx",
+        "start": 343,
+        "startLoc": {
+          "column": 24,
+          "line": 343,
+          "position": 14933
+        }
+      },
+      "tokens": 83
+    },
+    {
+      "firstFile": {
+        "end": 233,
+        "endLoc": {
+          "column": 37,
+          "line": 233,
+          "position": 9632
+        },
+        "name": "app/signup/page.tsx",
+        "start": 221,
+        "startLoc": {
+          "column": 24,
+          "line": 221,
+          "position": 9124
+        }
+      },
+      "format": "tsx",
+      "fragment": "                        value={email}\n                        onChange={(e) => setEmail(e.target.value)}\n                        aria-label=\"Email\"\n                        required\n                      />\n                    </motion.div>\n                    <motion.div\n                      initial={{ opacity: 0, y: 10 }}\n                      animate={{ opacity: 1, y: 0 }}\n                      transition={{ delay: 0.2 }}\n                      className=\"space-y-2\"\n                    >\n                      <Label htmlFor=\"student-password\">Password</Label>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 372,
+        "endLoc": {
+          "column": 37,
+          "line": 372,
+          "position": 16172
+        },
+        "name": "app/signup/page.tsx",
+        "start": 360,
+        "startLoc": {
+          "column": 24,
+          "line": 360,
+          "position": 15664
+        }
+      },
+      "tokens": 83
+    },
+    {
+      "firstFile": {
+        "end": 282,
+        "endLoc": {
+          "column": 37,
+          "line": 282,
+          "position": 12113
+        },
+        "name": "app/signup/page.tsx",
+        "start": 237,
+        "startLoc": {
+          "column": 26,
+          "line": 237,
+          "position": 9822
+        }
+      },
+      "format": "tsx",
+      "fragment": "                          type={showPassword ? \"text\" : \"password\"}\n                          value={password}\n                          onChange={(e) => setPassword(e.target.value)}\n                          className=\"pr-10\"\n                          aria-label=\"Password\"\n                          required\n                        />\n                        <Button\n                          type=\"button\"\n                          variant=\"ghost\"\n                          size=\"icon\"\n                          onClick={() => setShowPassword(!showPassword)}\n                          className=\"absolute inset-y-0 right-0 text-muted-foreground\"\n                          aria-label={showPassword ? \"Hide password\" : \"Show password\"}\n                        >\n                          {showPassword ? <EyeOff className=\"h-4 w-4\" /> : <Eye className=\"h-4 w-4\" />}\n                        </Button>\n                      </div>\n                      {password && (\n                        <motion.div\n                          initial={{ opacity: 0, height: 0 }}\n                          animate={{ opacity: 1, height: \"auto\" }}\n                          className=\"space-y-1\"\n                        >\n                          <div className=\"flex h-1 w-full gap-1 overflow-hidden rounded-full bg-muted\">\n                            {[1, 2, 3, 4, 5].map((i) => (\n                              <div\n                                key={i}\n                                className={`h-full flex-1 transition-colors duration-300 ${i <= strength ? strengthColor : \"bg-transparent\"\n                                  }`}\n                              />\n                            ))}\n                          </div>\n                          <p className=\"text-[10px] text-muted-foreground text-right\">\n                            Strength: <span className=\"font-medium\">{strengthText}</span>\n                          </p>\n                        </motion.div>\n                      )}\n                    </motion.div>\n                    <motion.div\n                      initial={{ opacity: 0, y: 10 }}\n                      animate={{ opacity: 1, y: 0 }}\n                      transition={{ delay: 0.25 }}\n                      className=\"space-y-2\"\n                    >\n                      <div className=\"flex items-center gap-2\">",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 46,
+      "secondFile": {
+        "end": 421,
+        "endLoc": {
+          "column": 37,
+          "line": 421,
+          "position": 18653
+        },
+        "name": "app/signup/page.tsx",
+        "start": 376,
+        "startLoc": {
+          "column": 26,
+          "line": 376,
+          "position": 16362
+        }
+      },
+      "tokens": 294
+    },
+    {
+      "firstFile": {
+        "end": 317,
+        "endLoc": {
+          "column": 52,
+          "line": 317,
+          "position": 13866
+        },
+        "name": "app/signup/page.tsx",
+        "start": 299,
+        "startLoc": {
+          "column": 23,
+          "line": 299,
+          "position": 13006
+        }
+      },
+      "format": "tsx",
+      "fragment": "                      />\n                    </motion.div>\n                    {error && (\n                      <motion.p\n                        initial={{ opacity: 0, scale: 0.95 }}\n                        animate={{ opacity: 1, scale: 1 }}\n                        className=\"text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20\"\n                      >\n                        {error}\n                      </motion.p>\n                    )}\n                    <motion.div\n                      initial={{ opacity: 0, y: 10 }}\n                      animate={{ opacity: 1, y: 0 }}\n                      transition={{ delay: 0.3 }}\n                    >\n                      <Button\n                        className=\"w-full bg-primary text-primary-foreground hover:bg-primary/90\"\n                        onClick={() => handleSignup(\"student\")}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 483,
+        "endLoc": {
+          "column": 52,
+          "line": 483,
+          "position": 22046
+        },
+        "name": "app/signup/page.tsx",
+        "start": 465,
+        "startLoc": {
+          "column": 25,
+          "line": 465,
+          "position": 21186
+        }
+      },
+      "tokens": 115
+    },
+    {
+      "firstFile": {
+        "end": 228,
+        "endLoc": {
+          "column": 11,
+          "line": 228,
+          "position": 8959
+        },
+        "name": "app/student/assignment-view/page.tsx",
+        "start": 214,
+        "startLoc": {
+          "column": 70,
+          "line": 214,
+          "position": 8352
+        }
+      },
+      "format": "tsx",
+      "fragment": "                studentTeacherId = studentTeacherId || sData.teacherId;\n              }\n            } catch (e) { console.error(\"Could not fetch legacy student profile\", e); }\n          }\n\n          // --- LEGACY RESOLUTION START ---\n          if (studentTeacherId && !studentCourseId) {\n            const codeMatch = await getDocs(query(collection(db, \"courses\"), where(\"code\", \"==\", studentTeacherId.trim())));\n            if (!codeMatch.empty) {\n              const courseDoc = codeMatch.docs[0];\n              const courseData = courseDoc.data();\n              studentCourseId = courseDoc.id;\n              studentTeacherId = courseData.teacherId;\n            }\n          }",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 15,
+      "secondFile": {
+        "end": 72,
+        "endLoc": {
+          "column": 9,
+          "line": 72,
+          "position": 2478
+        },
+        "name": "app/student/grades/page.tsx",
+        "start": 55,
+        "startLoc": {
+          "column": 71,
+          "line": 55,
+          "position": 1894
+        }
+      },
+      "tokens": 98
+    },
+    {
+      "firstFile": {
+        "end": 569,
+        "endLoc": {
+          "column": 7,
+          "line": 569,
+          "position": 21379
+        },
+        "name": "app/student/assignment-view/page.tsx",
+        "start": 559,
+        "startLoc": {
+          "column": 6,
+          "line": 559,
+          "position": 20978
+        }
+      },
+      "format": "tsx",
+      "fragment": "      let studentName = profile?.displayName || user.displayName || \"\";\n      if (!studentName) {\n        try {\n          const studentDoc = await getDoc(doc(db, \"students\", user.uid));\n          if (studentDoc.exists()) {\n            studentName = studentDoc.data().name || studentName;\n          }\n        } catch (error) {\n          console.error(\"Error fetching student name:\", error);\n        }\n      }",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 11,
+      "secondFile": {
+        "end": 665,
+        "endLoc": {
+          "column": 7,
+          "line": 665,
+          "position": 24346
+        },
+        "name": "app/student/assignment-view/page.tsx",
+        "start": 655,
+        "startLoc": {
+          "column": 6,
+          "line": 655,
+          "position": 23945
+        }
+      },
+      "tokens": 78
+    },
+    {
+      "firstFile": {
+        "end": 181,
+        "endLoc": {
+          "column": 7,
+          "line": 181,
+          "position": 6568
+        },
+        "name": "app/student/assignments/page.tsx",
+        "start": 163,
+        "startLoc": {
+          "column": 3,
+          "line": 163,
+          "position": 6021
+        }
+      },
+      "format": "tsx",
+      "fragment": "  };\n\n  // Sorting\n  filteredAssignments = filteredAssignments.sort((a, b) => {\n    if (sort === \"dueDateAsc\") {\n      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();\n    } else if (sort === \"dueDateDesc\") {\n      return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();\n    } else if (sort === \"titleAsc\") {\n      return a.title.localeCompare(b.title);\n    } else if (sort === \"titleDesc\") {\n      return b.title.localeCompare(a.title);\n    }\n    return 0;\n  });\n\n  return (\n    <div className=\"space-y-6\">\n      <WorkspaceHeader title=\"Assignments\" description=\"Open coursework and check what’s due.\" />",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 165,
+        "endLoc": {
+          "column": 7,
+          "line": 165,
+          "position": 6070
+        },
+        "name": "app/teacher/assignments/page.tsx",
+        "start": 147,
+        "startLoc": {
+          "column": 4,
+          "line": 147,
+          "position": 5523
+        }
+      },
+      "tokens": 139
+    },
+    {
+      "firstFile": {
+        "end": 496,
+        "endLoc": {
+          "column": 7,
+          "line": 496,
+          "position": 14243
+        },
+        "name": "app/student/tutor/page.tsx",
+        "start": 486,
+        "startLoc": {
+          "column": 23,
+          "line": 486,
+          "position": 13874
+        }
+      },
+      "format": "tsx",
+      "fragment": "      SpeechRecognition?: new () => {\n        continuous: boolean\n        interimResults: boolean\n        lang: string\n        onstart: () => void\n        onresult: (event: { results: { [key: number]: { [key: number]: { transcript: string } } } }) => void\n        onerror: (event: { error: string }) => void\n        onend: () => void\n        start: () => void\n        stop: () => void\n      }",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 11,
+      "secondFile": {
+        "end": 507,
+        "endLoc": {
+          "column": 7,
+          "line": 507,
+          "position": 14642
+        },
+        "name": "app/student/tutor/page.tsx",
+        "start": 497,
+        "startLoc": {
+          "column": 29,
+          "line": 497,
+          "position": 14273
+        }
+      },
+      "tokens": 87
+    },
+    {
+      "firstFile": {
+        "end": 46,
+        "endLoc": {
+          "column": 2,
+          "line": 46,
+          "position": 1422
+        },
+        "name": "app/student/vault/page.tsx",
+        "start": 37,
+        "startLoc": {
+          "column": 38,
+          "line": 37,
+          "position": 1059
+        }
+      },
+      "format": "tsx",
+      "fragment": "  { id: \"all\", name: \"All categories\" },\n  { id: \"kinematics\", name: \"Kinematics\" },\n  { id: \"dynamics\", name: \"Dynamics\" },\n  { id: \"energy\", name: \"Energy & Momentum\" },\n  { id: \"optics\", name: \"Waves & Optics\" },\n  { id: \"thermo\", name: \"Thermodynamics\" },\n  { id: \"electricity\", name: \"Electricity\" },\n  { id: \"nuclear\", name: \"Nuclear & Atomic\" },\n  { id: \"custom\", name: \"Custom Equations\" },\n];",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 10,
+      "secondFile": {
+        "end": 51,
+        "endLoc": {
+          "column": 2,
+          "line": 51,
+          "position": 2019
+        },
+        "name": "app/teacher/vault/page.tsx",
+        "start": 42,
+        "startLoc": {
+          "column": 34,
+          "line": 42,
+          "position": 1656
+        }
+      },
+      "tokens": 84
+    },
+    {
+      "firstFile": {
+        "end": 187,
+        "endLoc": {
+          "column": 29,
+          "line": 187,
+          "position": 7332
+        },
+        "name": "app/teacher/assignments/page.tsx",
+        "start": 178,
+        "startLoc": {
+          "column": 31,
+          "line": 178,
+          "position": 6924
+        }
+      },
+      "format": "tsx",
+      "fragment": "                  <SelectValue />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value=\"all\">All Classes</SelectItem>\n                  {courses.map((course) => <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>)}\n                </SelectContent>\n              </Select>\n            </div>\n            <div className=\"min-w-0 space-y-1.5\">\n              <label htmlFor=\"assignment-status\" className=\"block text-xs font-medium text-muted-foreground\">Status</label>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 10,
+      "secondFile": {
+        "end": 275,
+        "endLoc": {
+          "column": 29,
+          "line": 275,
+          "position": 11104
+        },
+        "name": "app/teacher/grades/page.tsx",
+        "start": 266,
+        "startLoc": {
+          "column": 57,
+          "line": 266,
+          "position": 10696
+        }
+      },
+      "tokens": 88
+    },
+    {
+      "firstFile": {
+        "end": 239,
+        "endLoc": {
+          "column": 34,
+          "line": 239,
+          "position": 10454
+        },
+        "name": "app/teacher/create/page.tsx",
+        "start": 233,
+        "startLoc": {
+          "column": 4,
+          "line": 233,
+          "position": 10155
+        }
+      },
+      "format": "tsx",
+      "fragment": "    async function fetchCourses() {\n      if (!user) return;\n      try {\n        const q = query(collection(db, \"courses\"), where(\"teacherId\", \"==\", user.uid));\n        const snap = await getDocs(q);\n        setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() })));\n      } catch (e) { console.error(\"Error fetching courses\", e); }",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 7,
+      "secondFile": {
+        "end": 60,
+        "endLoc": {
+          "column": 32,
+          "line": 60,
+          "position": 2553
+        },
+        "name": "app/teacher/uploads/page.tsx",
+        "start": 54,
+        "startLoc": {
+          "column": 2,
+          "line": 54,
+          "position": 2266
+        }
+      },
+      "tokens": 87
+    },
+    {
+      "firstFile": {
+        "end": 304,
+        "endLoc": {
+          "column": 63,
+          "line": 304,
+          "position": 12943
+        },
+        "name": "app/teacher/create/page.tsx",
+        "start": 296,
+        "startLoc": {
+          "column": 54,
+          "line": 296,
+          "position": 12550
+        }
+      },
+      "format": "tsx",
+      "fragment": "      const newQuestions: Question[] = parsedQuestions.map((q: RawQuestion) => ({\n        id: crypto.randomUUID(),\n        text: (q.text || \"\").toString(),\n        type: (q.type as Question[\"type\"]) || \"short-answer\",\n        options: q.options || [],\n        correctAnswer: (q.correctAnswer ?? \"\").toString(),\n        points: typeof q.points === \"number\" ? q.points : 10,\n      }));\n      setQuestions((current) => [...current, ...newQuestions]);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 440,
+        "endLoc": {
+          "column": 63,
+          "line": 440,
+          "position": 17382
+        },
+        "name": "app/teacher/create/page.tsx",
+        "start": 431,
+        "startLoc": {
+          "column": 57,
+          "line": 431,
+          "position": 16988
+        }
+      },
+      "tokens": 105
+    },
+    {
+      "firstFile": {
+        "end": 12,
+        "endLoc": {
+          "column": 8,
+          "line": 12,
+          "position": 579
+        },
+        "name": "app/teacher/grades/page.tsx",
+        "start": 4,
+        "startLoc": {
+          "column": 56,
+          "line": 4,
+          "position": 116
+        }
+      },
+      "format": "tsx",
+      "fragment": "import { collection, getDocs, query, where, doc, getDoc } from \"firebase/firestore\";\nimport { db, cleanupStudentData } from \"@/lib/firebase\";\nimport { useAuth } from \"@/contexts/auth-context\";\nimport { toast } from \"sonner\";\nimport { ConfirmDialog } from \"@/components/ui/confirm-dialog\";\nimport { Card, CardContent, CardHeader } from \"@/components/ui/card\";\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from \"@/components/ui/table\";\nimport { Button } from \"@/components/ui/button\";\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from \"@/components/ui/dropdown-menu\";",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 13,
+        "endLoc": {
+          "column": 8,
+          "line": 13,
+          "position": 649
+        },
+        "name": "app/teacher/students/page.tsx",
+        "start": 5,
+        "startLoc": {
+          "column": 75,
+          "line": 5,
+          "position": 186
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 1410,
+        "endLoc": {
+          "column": 27,
+          "line": 1410,
+          "position": 67627
+        },
+        "name": "app/teacher/network/page.tsx",
+        "start": 1399,
+        "startLoc": {
+          "column": 132,
+          "line": 1399,
+          "position": 66987
+        }
+      },
+      "format": "tsx",
+      "fragment": "          <DialogContent className=\"sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0 overflow-hidden border-border/60 rounded-3xl\">\n            <DialogHeader className=\"p-6 bg-secondary/30 border-b border-border/50\">\n              <div className=\"flex items-center gap-3\">\n                <div className=\"p-2 bg-purple-500/10 rounded-xl\">\n                  <RaiseLogo size={20} className=\"text-purple-500\" />\n                </div>\n                <div>\n                  <DialogTitle className=\"text-lg font-black tracking-tight\">Limits & Safety Assistant</DialogTitle>\n                  <DialogDescription className=\"text-xs\">Context-aware recommendations for department caps.</DialogDescription>\n                </div>\n              </div>\n            </DialogHeader>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 1455,
+        "endLoc": {
+          "column": 27,
+          "line": 1455,
+          "position": 72549
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1444,
+        "startLoc": {
+          "column": 132,
+          "line": 1444,
+          "position": 71909
+        }
+      },
+      "tokens": 83
+    },
+    {
+      "firstFile": {
+        "end": 1443,
+        "endLoc": {
+          "column": 41,
+          "line": 1443,
+          "position": 69319
+        },
+        "name": "app/teacher/network/page.tsx",
+        "start": 1434,
+        "startLoc": {
+          "column": 12,
+          "line": 1434,
+          "position": 68733
+        }
+      },
+      "format": "tsx",
+      "fragment": "            <div className=\"p-4 bg-background border-t border-border/50\">\n              <div className=\"flex gap-2 relative\">\n                <Textarea\n                  placeholder=\"Ask Raise about quotas (e.g. 'What is a good budget for 60 students?')...\"\n                  className=\"min-h-[44px] h-[44px] resize-none pr-12 rounded-2xl border-border\"\n                  value={limitsInput}\n                  onChange={(e) => setLimitsInput(e.target.value)}\n                  onKeyDown={(e) => {\n                    if (e.key === \"Enter\" && !e.shiftKey) {\n                      e.preventDefault();",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 10,
+      "secondFile": {
+        "end": 1481,
+        "endLoc": {
+          "column": 41,
+          "line": 1481,
+          "position": 73907
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1472,
+        "startLoc": {
+          "column": 12,
+          "line": 1472,
+          "position": 73321
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 116,
+        "endLoc": {
+          "column": 43,
+          "line": 116,
+          "position": 4110
+        },
+        "name": "app/teacher/submission/grade/page.tsx",
+        "start": 109,
+        "startLoc": {
+          "column": 13,
+          "line": 109,
+          "position": 3706
+        }
+      },
+      "format": "tsx",
+      "fragment": "          sub.answers.forEach((ans) => {\n            if (ans.score !== undefined) initialGrades[ans.questionId] = ans.score;\n            if (ans.feedback) initialFeedback[ans.questionId] = ans.feedback;\n            if (ans.reasoning) initialReasoning[ans.questionId] = ans.reasoning;\n          });\n          setGrades(initialGrades);\n          setFeedback(initialFeedback);\n          setAiReasoning(initialReasoning);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 162,
+        "endLoc": {
+          "column": 43,
+          "line": 162,
+          "position": 5955
+        },
+        "name": "app/teacher/submission/grade/page.tsx",
+        "start": 154,
+        "startLoc": {
+          "column": 20,
+          "line": 154,
+          "position": 5540
+        }
+      },
+      "tokens": 81
+    },
+    {
+      "firstFile": {
+        "end": 597,
+        "endLoc": {
+          "column": 31,
+          "line": 597,
+          "position": 25815
+        },
+        "name": "app/teacher/vault/page.tsx",
+        "start": 585,
+        "startLoc": {
+          "column": 114,
+          "line": 585,
+          "position": 25328
+        }
+      },
+      "format": "tsx",
+      "fragment": "                      className={isFreePlan ? \"text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10\" : (isRestricted ? \"text-destructive\" : \"text-primary\")}\n                      onClick={(event) => {\n                        event.stopPropagation();\n                        toggleFormula(formula.id);\n                      }}\n                    >\n                      {isRestricted ? <Lock /> : <Unlock />}\n                    </Button>\n                  </div>\n                </div>\n              </CardHeader>\n              <CardContent className=\"pt-2\">\n                <div className=\"bg-background rounded-2xl p-6 text-center shadow-sm flex flex-col items-center justify-center min-h-[100px]\">",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 2242,
+        "endLoc": {
+          "column": 31,
+          "line": 2242,
+          "position": 110275
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 2230,
+        "startLoc": {
+          "column": 54,
+          "line": 2230,
+          "position": 109788
+        }
+      },
+      "tokens": 77
+    },
+    {
+      "firstFile": {
+        "end": 302,
+        "endLoc": {
+          "column": 14,
+          "line": 302,
+          "position": 11962
+        },
+        "name": "app/teacher/waypoints/page.tsx",
+        "start": 287,
+        "startLoc": {
+          "column": 19,
+          "line": 287,
+          "position": 11324
+        }
+      },
+      "format": "tsx",
+      "fragment": "          </motion.div>\n        </div>\n      </div>\n\n      {/* Control Bar */}\n      <div className=\"flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-3\">\n        <div className=\"relative w-full lg:min-w-48 lg:flex-1\">\n          <Search className=\"absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n          <Input \n            aria-label=\"Search templates\"\n            placeholder=\"Search templates…\"\n            className=\"pl-11 h-12 bg-background dark:bg-background border-border\"\n            value={searchQuery}\n            onChange={(e) => setSearchQuery(e.target.value)}\n          />\n        </div>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 1815,
+        "endLoc": {
+          "column": 14,
+          "line": 1815,
+          "position": 89574
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1800,
+        "startLoc": {
+          "column": 12,
+          "line": 1800,
+          "position": 88937
+        }
+      },
+      "tokens": 77
+    },
+    {
+      "firstFile": {
+        "end": 326,
+        "endLoc": {
+          "column": 35,
+          "line": 326,
+          "position": 13050
+        },
+        "name": "app/teacher/waypoints/page.tsx",
+        "start": 314,
+        "startLoc": {
+          "column": 12,
+          "line": 314,
+          "position": 12508
+        }
+      },
+      "format": "tsx",
+      "fragment": "            </TabsTrigger>\n          </TabsList>\n        </Tabs>\n\n        <Select value={topicFilter} onValueChange={setTopicFilter}>\n          <SelectTrigger aria-label=\"Topic\" className=\"cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border\">\n            <div className=\"flex items-center gap-2\">\n              <Filter className=\"h-4 w-4\" />\n              <SelectValue placeholder=\"All Topics\" />\n            </div>\n          </SelectTrigger>\n          <SelectContent>\n            <SelectItem value=\"all\" className=\"cursor-pointer\">All Topics</SelectItem>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 1838,
+        "endLoc": {
+          "column": 35,
+          "line": 1838,
+          "position": 90604
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1826,
+        "startLoc": {
+          "column": 12,
+          "line": 1826,
+          "position": 90062
+        }
+      },
+      "tokens": 81
+    },
+    {
+      "firstFile": {
+        "end": 362,
+        "endLoc": {
+          "column": 39,
+          "line": 362,
+          "position": 15796
+        },
+        "name": "components/admin/usage-analytics.tsx",
+        "start": 350,
+        "startLoc": {
+          "column": 55,
+          "line": 350,
+          "position": 15078
+        }
+      },
+      "format": "tsx",
+      "fragment": "              const maxC = Math.max(...dailyData.map(d => d.totalCost), 0.000001);\n\n              const xAt = (i: number) => PAD.left + (n > 1 ? (i / (n - 1)) * cW : cW / 2);\n              const yQ  = (v: number) => PAD.top + (1 - v / maxQ) * cH;\n              const yC  = (v: number) => PAD.top + (1 - v / maxC) * cH;\n\n              const qPts = dailyData.map((d, i) => `${xAt(i).toFixed(1)},${yQ(d.queries).toFixed(1)}`);\n              const cPts = dailyData.map((d, i) => `${xAt(i).toFixed(1)},${yC(d.totalCost).toFixed(1)}`);\n\n              // Monotone cubic (Fritsch-Carlson) — curves never overshoot data range\n              const smoothCurve = (pts: string[]) => {\n                if (pts.length === 1) return `M ${pts[0]}`;\n                const points = pts.map(p => { const [x, y] = p.split(',').map(Number); return { x, y }; });",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 1000,
+        "endLoc": {
+          "column": 43,
+          "line": 1000,
+          "position": 49117
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 989,
+        "startLoc": {
+          "column": 61,
+          "line": 989,
+          "position": 48457
+        }
+      },
+      "tokens": 201
+    },
+    {
+      "firstFile": {
+        "end": 375,
+        "endLoc": {
+          "column": 17,
+          "line": 375,
+          "position": 16589
+        },
+        "name": "components/admin/usage-analytics.tsx",
+        "start": 365,
+        "startLoc": {
+          "column": 40,
+          "line": 365,
+          "position": 16095
+        }
+      },
+      "format": "tsx",
+      "fragment": "                const h: number[] = [], delta: number[] = [];\n                for (let i = 0; i < np - 1; i++) {\n                  h[i] = points[i+1].x - points[i].x;\n                  delta[i] = (points[i+1].y - points[i].y) / h[i];\n                }\n                const m: number[] = new Array(np);\n                m[0] = delta[0];\n                m[np - 1] = delta[np - 2];\n                for (let i = 1; i < np - 1; i++) {\n                  m[i] = delta[i-1] * delta[i] <= 0 ? 0 : (delta[i-1] + delta[i]) / 2;\n                }",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 11,
+      "secondFile": {
+        "end": 1017,
+        "endLoc": {
+          "column": 21,
+          "line": 1017,
+          "position": 50062
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1007,
+        "startLoc": {
+          "column": 26,
+          "line": 1007,
+          "position": 49520
+        }
+      },
+      "tokens": 168
+    },
+    {
+      "firstFile": {
+        "end": 605,
+        "endLoc": {
+          "column": 114,
+          "line": 605,
+          "position": 29736
+        },
+        "name": "components/admin/usage-analytics.tsx",
+        "start": 594,
+        "startLoc": {
+          "column": 86,
+          "line": 594,
+          "position": 28975
+        }
+      },
+      "format": "tsx",
+      "fragment": "                    const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;\n                    return (\n                      <div key={item.name} className=\"space-y-1.5\">\n                        <div className=\"flex items-center justify-between\">\n                          <div className=\"flex items-center gap-2\">\n                            <div className=\"p-1 rounded-md bg-muted/50 border border-border/40 shrink-0\">\n                              {getTypeIcon(item.name)}\n                            </div>\n                            <span className=\"text-[11px] font-bold capitalize\">{item.name}</span>\n                          </div>\n                          <div className=\"flex items-center gap-3 shrink-0\">\n                            <span className=\"text-[10px] text-muted-foreground font-mono tabular-nums\">{item.value.toLocaleString()}</span>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 1247,
+        "endLoc": {
+          "column": 114,
+          "line": 1247,
+          "position": 61672
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1236,
+        "startLoc": {
+          "column": 70,
+          "line": 1236,
+          "position": 60911
+        }
+      },
+      "tokens": 90
+    },
+    {
+      "firstFile": {
+        "end": 144,
+        "endLoc": {
+          "column": 10,
+          "line": 144,
+          "position": 4030
+        },
+        "name": "components/app-sidebar.tsx",
+        "start": 134,
+        "startLoc": {
+          "column": 8,
+          "line": 134,
+          "position": 3774
+        }
+      },
+      "format": "tsx",
+      "fragment": "        .split(\" \")\n        .filter(Boolean)\n        .map((n) => n[0])\n        .join(\"\")\n        .toUpperCase()\n        .slice(0, 2);\n    }\n    if (email && typeof email === \"string\" && email.trim()) {\n      return email.slice(0, 2).toUpperCase();\n    }\n    return roleLabel.slice(0, 2).toUpperCase();",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 11,
+      "secondFile": {
+        "end": 173,
+        "endLoc": {
+          "column": 10,
+          "line": 173,
+          "position": 5131
+        },
+        "name": "components/settings-dialog.tsx",
+        "start": 163,
+        "startLoc": {
+          "column": 8,
+          "line": 163,
+          "position": 4875
+        }
+      },
+      "tokens": 72
+    },
+    {
+      "firstFile": {
+        "end": 35,
+        "endLoc": {
+          "column": 3,
+          "line": 35,
+          "position": 1334
+        },
+        "name": "components/kokonutui/spotlight-cards.tsx",
+        "start": 15,
+        "startLoc": {
+          "column": 97,
+          "line": 15,
+          "position": 494
+        }
+      },
+      "format": "tsx",
+      "fragment": "import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from \"motion/react\";\nimport { useRef, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n// ─── Constants ──────────────────────────────────────────────────────────────────\n\nconst TILT_MAX = 9;\nconst TILT_SPRING = { stiffness: 300, damping: 28 } as const;\nconst GLOW_SPRING = { stiffness: 180, damping: 22 } as const;\n\n// ─── Data ────────────────────────────────────────────────────────────────────────\n\nexport interface SpotlightItem {\n  icon: LucideIcon;\n  title: string;\n  description: string;\n  color: string;\n}\n\nconst DEFAULT_ITEMS: SpotlightItem[] = [\n  {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 21,
+      "secondFile": {
+        "end": 35,
+        "endLoc": {
+          "column": 3,
+          "line": 35,
+          "position": 1365
+        },
+        "name": "components/ui/spotlight-cards.tsx",
+        "start": 15,
+        "startLoc": {
+          "column": 98,
+          "line": 15,
+          "position": 525
+        }
+      },
+      "tokens": 82
+    },
+    {
+      "firstFile": {
+        "end": 136,
+        "endLoc": {
+          "column": 20,
+          "line": 136,
+          "position": 4250
+        },
+        "name": "components/kokonutui/spotlight-cards.tsx",
+        "start": 76,
+        "startLoc": {
+          "column": 2,
+          "line": 76,
+          "position": 2352
+        }
+      },
+      "format": "tsx",
+      "fragment": "  },\n];\n\n// ─── Card ────────────────────────────────────────────────────────────────────────\n\ninterface CardProps {\n  item: SpotlightItem;\n  dimmed: boolean;\n  onHoverStart: () => void;\n  onHoverEnd: () => void;\n}\n\nconst Card = ({ item, dimmed, onHoverStart, onHoverEnd }: CardProps) => {\n  const Icon = item.icon;\n  const cardRef = useRef<HTMLDivElement>(null);\n\n  const normX = useMotionValue(0.5);\n  const normY = useMotionValue(0.5);\n\n  const rawRotateX = useTransform(normY, [0, 1], [TILT_MAX, -TILT_MAX]);\n  const rawRotateY = useTransform(normX, [0, 1], [-TILT_MAX, TILT_MAX]);\n\n  const rotateX = useSpring(rawRotateX, TILT_SPRING);\n  const rotateY = useSpring(rawRotateY, TILT_SPRING);\n  const glowOpacity = useSpring(0, GLOW_SPRING);\n\n  const mouseX = useTransform(normX, [0, 1], [0, 100]);\n  const mouseY = useTransform(normY, [0, 1], [0, 100]);\n\n  const spotlightBg = useMotionTemplate`radial-gradient(ellipse at ${mouseX}% ${mouseY}%, ${item.color}14, transparent 65%)`;\n  const focusBg = useMotionTemplate`radial-gradient(ellipse at ${mouseX}% ${mouseY}%, ${item.color}2e, transparent 65%)`;\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    const el = cardRef.current;\n    if (!el) {\n      return;\n    }\n    const rect = el.getBoundingClientRect();\n    normX.set((e.clientX - rect.left) / rect.width);\n    normY.set((e.clientY - rect.top) / rect.height);\n  };\n\n  const handleMouseEnter = () => {\n    glowOpacity.set(1);\n    onHoverStart();\n  };\n\n  const handleMouseLeave = () => {\n    normX.set(0.5);\n    normY.set(0.5);\n    glowOpacity.set(0);\n    onHoverEnd();\n  };\n\n  return (\n    <motion.div\n      animate={{\n        scale: dimmed ? 0.96 : 1,\n        opacity: dimmed ? 0.5 : 1,\n      }}\n      className={cn(",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 61,
+      "secondFile": {
+        "end": 112,
+        "endLoc": {
+          "column": 20,
+          "line": 112,
+          "position": 3876
+        },
+        "name": "components/ui/spotlight-cards.tsx",
+        "start": 52,
+        "startLoc": {
+          "column": 2,
+          "line": 52,
+          "position": 1978
+        }
+      },
+      "tokens": 389
+    },
+    {
+      "firstFile": {
+        "end": 165,
+        "endLoc": {
+          "column": 6,
+          "line": 165,
+          "position": 5132
+        },
+        "name": "components/kokonutui/spotlight-cards.tsx",
+        "start": 137,
+        "startLoc": {
+          "column": 83,
+          "line": 137,
+          "position": 4334
+        }
+      },
+      "format": "tsx",
+      "fragment": "        \"group relative flex flex-col gap-5 overflow-hidden rounded-2xl border p-6\",\n        // Light\n        \"border-zinc-200/50 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]\",\n        // Dark\n        \"dark:border-white/5 dark:bg-white/3 dark:shadow-none\",\n        \"transition-[border-color] duration-300\",\n        \"hover:border-zinc-300\"\n      )}\n      onMouseEnter={handleMouseEnter}\n      onMouseLeave={handleMouseLeave}\n      onMouseMove={handleMouseMove}\n      ref={cardRef}\n      style={{\n        rotateX,\n        rotateY,\n        transformPerspective: 900,\n      }}\n      transition={{ duration: 0.18, ease: \"easeOut\" }}\n      whileHover={{ borderColor: `${item.color}50` }}\n    >\n      <motion.div\n        aria-hidden=\"true\"\n        className=\"pointer-events-none absolute inset-0 rounded-2xl\"\n        style={{\n          background: spotlightBg,\n        }}\n      />\n\n      <motion.div",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 29,
+      "secondFile": {
+        "end": 141,
+        "endLoc": {
+          "column": 6,
+          "line": 141,
+          "position": 4761
+        },
+        "name": "components/ui/spotlight-cards.tsx",
+        "start": 113,
+        "startLoc": {
+          "column": 86,
+          "line": 113,
+          "position": 3963
+        }
+      },
+      "tokens": 95
+    },
+    {
+      "firstFile": {
+        "end": 225,
+        "endLoc": {
+          "column": 24,
+          "line": 225,
+          "position": 7135
+        },
+        "name": "components/kokonutui/spotlight-cards.tsx",
+        "start": 196,
+        "startLoc": {
+          "column": 85,
+          "line": 196,
+          "position": 6296
+        }
+      },
+      "format": "tsx",
+      "fragment": "        <p className=\"text-[12.5px] text-zinc-500 leading-relaxed dark:text-white/40\">\n          {item.description}\n        </p>\n      </div>\n\n      {/* Accent bottom line */}\n      <div\n        aria-hidden=\"true\"\n        className=\"absolute bottom-0 left-0 h-[2px] w-0 rounded-full transition-all duration-500 group-hover:w-full\"\n        style={{\n          background: `linear-gradient(to right, ${item.color}80, transparent)`,\n        }}\n      />\n    </motion.div>\n  );\n}\n\nCard.displayName = \"Card\";\n\n// ─── Main export ──────────────────────────────────────────────────────────────────\n\nexport interface SpotlightCardsProps {\n  items?: SpotlightItem[];\n  eyebrow?: string;\n  heading?: string;\n  className?: string;\n}\n\nexport default function SpotlightCards({\n  items = DEFAULT_ITEMS,",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 30,
+      "secondFile": {
+        "end": 202,
+        "endLoc": {
+          "column": 24,
+          "line": 202,
+          "position": 6807
+        },
+        "name": "components/ui/spotlight-cards.tsx",
+        "start": 173,
+        "startLoc": {
+          "column": 95,
+          "line": 173,
+          "position": 5968
+        }
+      },
+      "tokens": 98
+    },
+    {
+      "firstFile": {
+        "end": 275,
+        "endLoc": {
+          "column": 1,
+          "line": 275,
+          "position": 8626
+        },
+        "name": "components/kokonutui/spotlight-cards.tsx",
+        "start": 262,
+        "startLoc": {
+          "column": 73,
+          "line": 262,
+          "position": 8281
+        }
+      },
+      "format": "tsx",
+      "fragment": "      <div className=\"relative grid grid-cols-2 gap-3 sm:grid-cols-3 p-4\">\n        {items.map((item) => (\n          <Card\n            dimmed={hoveredTitle !== null && hoveredTitle !== item.title}\n            item={item}\n            key={item.title}\n            onHoverEnd={() => setHoveredTitle(null)}\n            onHoverStart={() => setHoveredTitle(item.title)}\n          />\n        ))}\n      </div>\n    </div>\n  );\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 14,
+      "secondFile": {
+        "end": 229,
+        "endLoc": {
+          "column": 1,
+          "line": 229,
+          "position": 7536
+        },
+        "name": "components/ui/spotlight-cards.tsx",
+        "start": 216,
+        "startLoc": {
+          "column": 94,
+          "line": 216,
+          "position": 7191
+        }
+      },
+      "tokens": 81
+    },
+    {
+      "firstFile": {
+        "end": 222,
+        "endLoc": {
+          "column": 23,
+          "line": 222,
+          "position": 13187
+        },
+        "name": "components/landing/header.tsx",
+        "start": 207,
+        "startLoc": {
+          "column": 153,
+          "line": 207,
+          "position": 12181
+        }
+      },
+      "format": "tsx",
+      "fragment": "                      { id: \"waypoints\", label: \"Waypoints Network\", desc: \"Peer-validated physics modules shared across institutions.\", icon: Waypoints },\n                    ].map((item) => (\n                      <button\n                        key={item.id}\n                        onClick={() => scrollToElement(item.id)}\n                        className=\"flex items-start gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors text-left group cursor-pointer\"\n                      >\n                        <div className=\"h-8 w-8 rounded-lg bg-primary/8 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors mt-0.5\">\n                          <item.icon className=\"h-4 w-4 text-primary\" />\n                        </div>\n                        <div className=\"min-w-0\">\n                          <p className=\"text-xs font-bold text-foreground group-hover:text-primary transition-colors leading-tight\">{item.label}</p>\n                          <p className=\"text-[10px] text-muted-foreground mt-0.5 leading-snug\">{item.desc}</p>\n                        </div>\n                      </button>\n                    ))}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 249,
+        "endLoc": {
+          "column": 23,
+          "line": 249,
+          "position": 14955
+        },
+        "name": "components/landing/header.tsx",
+        "start": 234,
+        "startLoc": {
+          "column": 129,
+          "line": 234,
+          "position": 13949
+        }
+      },
+      "tokens": 111
+    },
+    {
+      "firstFile": {
+        "end": 603,
+        "endLoc": {
+          "column": 19,
+          "line": 603,
+          "position": 24276
+        },
+        "name": "components/landing/site-header.tsx",
+        "start": 585,
+        "startLoc": {
+          "column": 12,
+          "line": 585,
+          "position": 23234
+        }
+      },
+      "format": "tsx",
+      "fragment": "            initial={{ opacity: 0, y: -6, scale: 0.98 }}\n            animate={{ opacity: 1, y: 0, scale: 1 }}\n            exit={{ opacity: 0, y: -6, scale: 0.98 }}\n            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}\n            onMouseEnter={cancelClose}\n            onMouseLeave={scheduleClose}\n            className=\"absolute top-full left-1/2 -translate-x-1/2 mt-1\n                     w-[calc(100%-2rem)] max-w-[860px]\n                     bg-popover text-popover-foreground border border-border\n                     rounded-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.3)]\n                     overflow-hidden\"\n          >\n            <div className=\"absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent\" />\n\n            <div className=\"px-6 py-6 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6\">\n              {/* Left Column */}\n              <div className=\"space-y-4\">\n                <div className=\"h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center\">\n                  <Orbit className=\"h-4.5 w-4.5 text-primary\" />",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 671,
+        "endLoc": {
+          "column": 19,
+          "line": 671,
+          "position": 27319
+        },
+        "name": "components/landing/site-header.tsx",
+        "start": 653,
+        "startLoc": {
+          "column": 12,
+          "line": 653,
+          "position": 26277
+        }
+      },
+      "tokens": 122
+    },
+    {
+      "firstFile": {
+        "end": 648,
+        "endLoc": {
+          "column": 10,
+          "line": 648,
+          "position": 26167
+        },
+        "name": "components/landing/site-header.tsx",
+        "start": 627,
+        "startLoc": {
+          "column": 49,
+          "line": 627,
+          "position": 25479
+        }
+      },
+      "format": "tsx",
+      "fragment": "                    key={item.target || item.href}\n                    icon={item.icon}\n                    label={item.label}\n                    desc={item.desc}\n                    href={item.href}\n                    delay={i * 0.03}\n                    onClick={() => {\n                      setHoveredNav(null);\n                      if (item.target) {\n                        if (isHomePage) {\n                          scrollToSection(item.target);\n                        } else {\n                          router.push(\"/#\" + item.target);\n                        }\n                      }\n                    }}\n                  />\n                ))}\n              </div>\n            </div>\n          </motion.div>\n        )}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 22,
+      "secondFile": {
+        "end": 715,
+        "endLoc": {
+          "column": 10,
+          "line": 715,
+          "position": 29187
+        },
+        "name": "components/landing/site-header.tsx",
+        "start": 694,
+        "startLoc": {
+          "column": 35,
+          "line": 694,
+          "position": 28499
+        }
+      },
+      "tokens": 109
+    },
+    {
+      "firstFile": {
+        "end": 64,
+        "endLoc": {
+          "column": 22,
+          "line": 64,
+          "position": 3559
+        },
+        "name": "components/landing/workflow.tsx",
+        "start": 46,
+        "startLoc": {
+          "column": 119,
+          "line": 46,
+          "position": 2738
+        }
+      },
+      "format": "tsx",
+      "fragment": "               <p className=\"text-muted-foreground font-bold text-[10px] uppercase tracking-[0.15em]\">Faculty Interface</p>\n            </div>\n          </div>\n\n          {/* Teacher Image Modal */}\n          <Dialog>\n            <DialogTrigger asChild>\n              <motion.div \n                className=\"relative rounded-2xl overflow-hidden border border-border shadow-2xl mb-12 group cursor-pointer\"\n                whileHover={{ scale: 1.02 }}\n                transition={{ duration: 0.4 }}\n              >\n                <div className=\"absolute inset-0 bg-black/40 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center\">\n                   <div className=\"bg-background/20 backdrop-blur-md p-3 rounded-full border border-white/20\">\n                      <Maximize2 className=\"h-6 w-6 text-white\" />\n                   </div>\n                </div>\n                <Image \n                  src=\"/demos/teacher-editor.png\" ",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 145,
+        "endLoc": {
+          "column": 22,
+          "line": 145,
+          "position": 8210
+        },
+        "name": "components/landing/workflow.tsx",
+        "start": 127,
+        "startLoc": {
+          "column": 119,
+          "line": 127,
+          "position": 7389
+        }
+      },
+      "tokens": 90
+    },
+    {
+      "firstFile": {
+        "end": 2648,
+        "endLoc": {
+          "column": 14,
+          "line": 2648,
+          "position": 102201
+        },
+        "name": "components/landing/workspace-preview-pages.tsx",
+        "start": 2637,
+        "startLoc": {
+          "column": 61,
+          "line": 2637,
+          "position": 101791
+        }
+      },
+      "format": "tsx",
+      "fragment": "                  <SelectValue placeholder=\"Filter by Class\" />\n                </SelectTrigger>\n                <SelectContent>\n                  <SelectItem value=\"all\">All Classes</SelectItem>\n                  {courses.map((course) => (\n                    <SelectItem key={course.id} value={course.id}>\n                      {course.name}\n                    </SelectItem>\n                  ))}\n                </SelectContent>\n              </Select>\n            </div>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 1667,
+        "endLoc": {
+          "column": 14,
+          "line": 1667,
+          "position": 82057
+        },
+        "name": "components/landing/workspace-preview-tabs.tsx",
+        "start": 1656,
+        "startLoc": {
+          "column": 57,
+          "line": 1656,
+          "position": 81647
+        }
+      },
+      "tokens": 78
+    },
+    {
+      "firstFile": {
+        "end": 453,
+        "endLoc": {
+          "column": 16,
+          "line": 453,
+          "position": 19226
+        },
+        "name": "components/math-input.tsx",
+        "start": 445,
+        "startLoc": {
+          "column": 32,
+          "line": 445,
+          "position": 18878
+        }
+      },
+      "format": "tsx",
+      "fragment": "                    {COMMON_SYMS.map((s, i) => (\n                      <button key={i} type=\"button\" title={s.tip} className={symCls}\n                        onMouseDown={(e) => { e.preventDefault(); insertText(s.insert); }}>\n                        {s.label}\n                      </button>\n                    ))}\n                  </div>\n                </div>\n                <div className=\"space-y-1.5\">",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 464,
+        "endLoc": {
+          "column": 16,
+          "line": 464,
+          "position": 19815
+        },
+        "name": "components/math-input.tsx",
+        "start": 456,
+        "startLoc": {
+          "column": 31,
+          "line": 456,
+          "position": 19467
+        }
+      },
+      "tokens": 81
+    },
+    {
+      "firstFile": {
+        "end": 45,
+        "endLoc": {
+          "column": 1,
+          "line": 45,
+          "position": 798
+        },
+        "name": "components/ui/text-animate.tsx",
+        "start": 27,
+        "startLoc": {
+          "column": 0,
+          "line": 27,
+          "position": 439
+        }
+      },
+      "format": "tsx",
+      "fragment": "const motionElements = {\n  article: motion.article,\n  div: motion.div,\n  h1: motion.h1,\n  h2: motion.h2,\n  h3: motion.h3,\n  h4: motion.h4,\n  h5: motion.h5,\n  h6: motion.h6,\n  li: motion.li,\n  p: motion.p,\n  section: motion.section,\n  span: motion.span,\n} as const\n\ntype MotionElementType = Extract<\n  keyof DOMMotionComponents,\n  keyof typeof motionElements\n>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 19,
+      "secondFile": {
+        "end": 40,
+        "endLoc": {
+          "column": 1,
+          "line": 40,
+          "position": 666
+        },
+        "name": "components/ui/typing-animation.tsx",
+        "start": 22,
+        "startLoc": {
+          "column": 0,
+          "line": 22,
+          "position": 307
+        }
+      },
+      "tokens": 91
+    },
+    {
+      "firstFile": {
+        "end": 36,
+        "endLoc": {
+          "column": 71,
+          "line": 36,
+          "position": 1312
+        },
+        "name": "lib/ai/chatbot.ts",
+        "start": 21,
+        "startLoc": {
+          "column": 53,
+          "line": 21,
+          "position": 849
+        }
+      },
+      "format": "typescript",
+      "fragment": "- Keep responses concise, warm, helpful, and direct.`;\n\n    const result = await model.generateContent({\n      contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],\n      generationConfig: {\n        maxOutputTokens: 1024,\n        temperature: 0.1,\n      }\n    });\n    const response = await result.response;\n    \n    return {\n      text: response.text(),\n      usage: {\n        inputTokens: response.usageMetadata?.promptTokenCount || 0,\n        outputTokens: response.usageMetadata?.candidatesTokenCount || 0,",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 82,
+        "endLoc": {
+          "column": 71,
+          "line": 82,
+          "position": 3603
+        },
+        "name": "lib/ai/network.ts",
+        "start": 67,
+        "startLoc": {
+          "column": 93,
+          "line": 67,
+          "position": 3144
+        }
+      },
+      "tokens": 85
+    },
+    {
+      "firstFile": {
+        "end": 68,
+        "endLoc": {
+          "column": 18,
+          "line": 68,
+          "position": 2255
+        },
+        "name": "lib/ai/chatbot.ts",
+        "start": 53,
+        "startLoc": {
+          "column": 99,
+          "line": 53,
+          "position": 1854
+        }
+      },
+      "format": "typescript",
+      "fragment": "      contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\\n\\nVisitor question: ${message}` }] }],\n      generationConfig: {\n        maxOutputTokens: 1024,\n        temperature: 0.7,\n      }\n    });\n    const response = await result.response;\n    return {\n      text: response.text(),\n      usage: {\n        inputTokens: response.usageMetadata?.promptTokenCount || 0,\n        outputTokens: response.usageMetadata?.candidatesTokenCount || 0,\n      }\n    };\n  } catch (error) {\n    console.error(\"Error getting landing chatbot response:\", error);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 162,
+        "endLoc": {
+          "column": 18,
+          "line": 162,
+          "position": 6191
+        },
+        "name": "lib/ai/grading.ts",
+        "start": 147,
+        "startLoc": {
+          "column": 56,
+          "line": 147,
+          "position": 5790
+        }
+      },
+      "tokens": 74
+    },
+    {
+      "firstFile": {
+        "end": 158,
+        "endLoc": {
+          "column": 71,
+          "line": 158,
+          "position": 6136
+        },
+        "name": "lib/ai/grading.ts",
+        "start": 144,
+        "startLoc": {
+          "column": 5,
+          "line": 144,
+          "position": 5682
+        }
+      },
+      "format": "typescript",
+      "fragment": "    `;\n\n    const result = await model.generateContent({\n      contents: [{ role: 'user', parts: [{ text: prompt }] }],\n      generationConfig: {\n        maxOutputTokens: 1024,\n        temperature: 0.7,\n      }\n    });\n    const response = await result.response;\n    return {\n      text: response.text(),\n      usage: {\n        inputTokens: response.usageMetadata?.promptTokenCount || 0,\n        outputTokens: response.usageMetadata?.candidatesTokenCount || 0,",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 15,
+      "secondFile": {
+        "end": 59,
+        "endLoc": {
+          "column": 71,
+          "line": 59,
+          "position": 2970
+        },
+        "name": "lib/ai/tutor.ts",
+        "start": 45,
+        "startLoc": {
+          "column": 99,
+          "line": 45,
+          "position": 2512
+        }
+      },
+      "tokens": 85
+    },
+    {
+      "firstFile": {
+        "end": 158,
+        "endLoc": {
+          "column": 71,
+          "line": 158,
+          "position": 6136
+        },
+        "name": "lib/ai/grading.ts",
+        "start": 144,
+        "startLoc": {
+          "column": 5,
+          "line": 144,
+          "position": 5682
+        }
+      },
+      "format": "typescript",
+      "fragment": "    `;\n\n    const result = await model.generateContent({\n      contents: [{ role: 'user', parts: [{ text: prompt }] }],\n      generationConfig: {\n        maxOutputTokens: 1024,\n        temperature: 0.7,\n      }\n    });\n    const response = await result.response;\n    return {\n      text: response.text(),\n      usage: {\n        inputTokens: response.usageMetadata?.promptTokenCount || 0,\n        outputTokens: response.usageMetadata?.candidatesTokenCount || 0,",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 15,
+      "secondFile": {
+        "end": 115,
+        "endLoc": {
+          "column": 71,
+          "line": 115,
+          "position": 5668
+        },
+        "name": "lib/ai/tutor.ts",
+        "start": 101,
+        "startLoc": {
+          "column": 80,
+          "line": 101,
+          "position": 5210
+        }
+      },
+      "tokens": 85
+    },
+    {
+      "firstFile": {
+        "end": 370,
+        "endLoc": {
+          "column": 20,
+          "line": 370,
+          "position": 14275
+        },
+        "name": "lib/ai/research.ts",
+        "start": 359,
+        "startLoc": {
+          "column": 8,
+          "line": 359,
+          "position": 13781
+        }
+      },
+      "format": "typescript",
+      "fragment": "        const response = question.type === 'declarative' \n          ? await explainPhysicsConcept(question.question, [], level, adminSecret)\n          : await helpSolveProblem(question.question, [], level, adminSecret);\n        const metrics = analyzeResponse(response.text, question, level);\n        results.push({\n          question,\n          constraintLevel: level,\n          response: response.text,\n          metrics,\n          timestamp: new Date().toISOString()\n        });\n        console.log(`✓ Completed ${currentCall}/${totalCalls}: ${question.id} [${level}]`);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 396,
+        "endLoc": {
+          "column": 24,
+          "line": 396,
+          "position": 15658
+        },
+        "name": "lib/ai/research.ts",
+        "start": 385,
+        "startLoc": {
+          "column": 12,
+          "line": 385,
+          "position": 15120
+        }
+      },
+      "tokens": 89
+    },
+    {
+      "firstFile": {
+        "end": 63,
+        "endLoc": {
+          "column": 18,
+          "line": 63,
+          "position": 3024
+        },
+        "name": "lib/ai/tutor.ts",
+        "start": 48,
+        "startLoc": {
+          "column": 25,
+          "line": 48,
+          "position": 2593
+        }
+      },
+      "format": "typescript",
+      "fragment": "      contents: [{ role: 'user', parts: [{ text: prompt }] }],\n      generationConfig: {\n        maxOutputTokens: 1024,\n        temperature: 0.7,\n      }\n    });\n    const response = await result.response;\n    return {\n      text: response.text(),\n      usage: {\n        inputTokens: response.usageMetadata?.promptTokenCount || 0,\n        outputTokens: response.usageMetadata?.candidatesTokenCount || 0\n      }\n    };\n  } catch (error) {\n    console.error(\"Error explaining concept:\", error);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 119,
+        "endLoc": {
+          "column": 18,
+          "line": 119,
+          "position": 5722
+        },
+        "name": "lib/ai/tutor.ts",
+        "start": 104,
+        "startLoc": {
+          "column": 25,
+          "line": 104,
+          "position": 5291
+        }
+      },
+      "tokens": 82
+    }
+  ],
+  "statistics": {
+    "detectionDate": "2026-11-12T03:40:07.535Z",
+    "formats": {
+      "css": {
+        "clones": 1,
+        "duplicatedLines": 16,
+        "duplicatedTokens": 367,
+        "lines": 635,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 2.5196850393700787,
+        "percentageTokens": 6.623353185345605,
+        "sources": 3,
+        "tokens": 5541
+      },
+      "json": {
+        "clones": 0,
+        "duplicatedLines": 0,
+        "duplicatedTokens": 0,
+        "lines": 39,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.0,
+        "percentageTokens": 0.0,
+        "sources": 1,
+        "tokens": 273
+      },
+      "tsx": {
+        "clones": 46,
+        "duplicatedLines": 825,
+        "duplicatedTokens": 5508,
+        "lines": 48489,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 1.701416816185114,
+        "percentageTokens": 1.9915176101788679,
+        "sources": 179,
+        "tokens": 276573
+      },
+      "typescript": {
+        "clones": 17,
+        "duplicatedLines": 280,
+        "duplicatedTokens": 1881,
+        "lines": 6798,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 4.1188584877905265,
+        "percentageTokens": 4.308784789829343,
+        "sources": 66,
+        "tokens": 43655
+      }
+    },
+    "total": {
+      "clones": 64,
+      "duplicatedLines": 1121,
+      "duplicatedTokens": 7756,
+      "lines": 55961,
+      "newClones": 0,
+      "newDuplicatedLines": 0,
+      "percentage": 2.003180786619253,
+      "percentageTokens": 2.378834628667472,
+      "sources": 249,
+      "tokens": 326042
+    }
+  }
+}

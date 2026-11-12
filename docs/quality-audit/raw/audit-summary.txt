@@ -1,0 +1,64 @@
+=== ROOT AUDIT METADATA === { info: 0, low: 8, moderate: 44, high: 39, critical: 6, total: 97 }
+[ROOT HIGH] @fastify/busboy (isDirect=false, range=<=3.2.1) -> nodes=node_modules/@fastify/busboy, node_modules/@vercel/node/node_modules/@fastify/busboy
+[ROOT HIGH] @grpc/grpc-js (isDirect=false, range=<=1.13.5 || 1.14.0 - 1.14.4) -> nodes=node_modules/@grpc/grpc-js, node_modules/google-gax/node_modules/@grpc/grpc-js
+[ROOT HIGH] @tiptap/core (isDirect=false, range=<=3.30.4) -> nodes=node_modules/@tiptap/core
+[ROOT HIGH] @vercel/backends (isDirect=false, range=*) -> nodes=node_modules/@vercel/backends
+[ROOT HIGH] @vercel/cervel (isDirect=false, range=>=0.0.12) -> nodes=node_modules/@vercel/cervel
+[ROOT HIGH] @vercel/elysia (isDirect=false, range=*) -> nodes=node_modules/@vercel/elysia
+[ROOT HIGH] @vercel/express (isDirect=false, range=*) -> nodes=node_modules/@vercel/express
+[ROOT HIGH] @vercel/fastify (isDirect=false, range=*) -> nodes=node_modules/@vercel/fastify
+[ROOT HIGH] @vercel/fun (isDirect=false, range=<=1.3.1) -> nodes=node_modules/@vercel/fun
+[ROOT HIGH] @vercel/h3 (isDirect=false, range=*) -> nodes=node_modules/@vercel/h3
+[ROOT HIGH] @vercel/hono (isDirect=false, range=*) -> nodes=node_modules/@vercel/hono
+[ROOT HIGH] @vercel/koa (isDirect=false, range=*) -> nodes=node_modules/@vercel/koa
+[ROOT HIGH] @vercel/nestjs (isDirect=false, range=*) -> nodes=node_modules/@vercel/nestjs
+[ROOT HIGH] @vercel/node (isDirect=false, range=>=2.1.1-canary.0) -> nodes=node_modules/@vercel/node
+[ROOT HIGH] @vercel/python-analysis (isDirect=false, range=*) -> nodes=node_modules/@vercel/python-analysis
+[ROOT HIGH] @vercel/remix-builder (isDirect=false, range=*) -> nodes=node_modules/@vercel/remix-builder
+[ROOT HIGH] basic-ftp (isDirect=false, range=<=6.2.0) -> nodes=node_modules/basic-ftp
+[ROOT HIGH] body-parser (isDirect=false, range=<=1.20.8) -> nodes=node_modules/body-parser
+[ROOT HIGH] brace-expansion (isDirect=false, range=<=1.1.20 || 2.0.0 - 2.1.6 || 3.0.0 - 5.0.11) -> nodes=node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion, node_modules/@vercel/nft/node_modules/brace-expansion
+[ROOT HIGH] browserslist (isDirect=false, range=<=4.28.6) -> nodes=node_modules/browserslist
+[ROOT HIGH] fast-xml-builder (isDirect=false, range=<=1.1.6) -> nodes=node_modules/fast-xml-builder
+[ROOT HIGH] form-data (isDirect=false, range=>=4.0.0 <4.0.6 || <2.5.6) -> nodes=node_modules/form-data, node_modules/vercel/node_modules/form-data
+[ROOT CRITICAL] handlebars (isDirect=false, range=3.0.0 - 4.7.9) -> nodes=node_modules/handlebars
+[ROOT HIGH] ip-address (isDirect=false, range=<=10.7.3) -> nodes=node_modules/ip-address
+[ROOT HIGH] js-yaml (isDirect=false, range=<=3.15.1 || 4.0.0 - 4.3.1) -> nodes=node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml, node_modules/js-yaml
+[ROOT HIGH] linkify-it (isDirect=false, range=<=5.0.1) -> nodes=node_modules/linkify-it
+[ROOT HIGH] markdown-it (isDirect=false, range=<=14.3.2) -> nodes=node_modules/markdown-it
+[ROOT HIGH] minimatch (isDirect=false, range=7.0.0 - 11.0.0) -> nodes=node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch, node_modules/@vercel/nft/node_modules/minimatch
+[ROOT HIGH] nanoid (isDirect=false, range=<=3.3.17) -> nodes=node_modules/nanoid
+[ROOT CRITICAL] next (isDirect=true, range=9.3.4-canary.0 - 16.4.0) -> nodes=node_modules/next
+[ROOT HIGH] node-forge (isDirect=false, range=<=1.4.2) -> nodes=node_modules/node-forge
+[ROOT HIGH] path-to-regexp (isDirect=false, range=<=0.1.12 || 4.0.0 - 6.2.2 || 8.0.0 - 8.3.0) -> nodes=node_modules/@vercel/backends/node_modules/path-to-regexp, node_modules/@vercel/express/node_modules/path-to-regexp
+[ROOT HIGH] picomatch (isDirect=false, range=<=2.3.1 || 4.0.0 - 4.0.3) -> nodes=node_modules/jest-util/node_modules/picomatch, node_modules/picomatch
+[ROOT HIGH] postcss (isDirect=false, range=<=8.5.22) -> nodes=node_modules/next/node_modules/postcss, node_modules/postcss
+[ROOT HIGH] prosemirror-view (isDirect=false, range=<1.42.3) -> nodes=node_modules/prosemirror-view
+[ROOT CRITICAL] protobufjs (isDirect=false, range=<=7.6.4) -> nodes=node_modules/protobufjs
+[ROOT CRITICAL] proxy-addr (isDirect=false, range=1.1.0 - 2.0.7) -> nodes=node_modules/proxy-addr
+[ROOT HIGH] sharp (isDirect=false, range=<=0.35.5-rc.1) -> nodes=node_modules/sharp
+[ROOT HIGH] smol-toml (isDirect=false, range=<=1.8.0) -> nodes=node_modules/smol-toml
+[ROOT HIGH] source-map-js (isDirect=false, range=1.0.0 - 1.2.1) -> nodes=node_modules/source-map-js
+[ROOT CRITICAL] tar (isDirect=false, range=<=7.5.20) -> nodes=node_modules/tar
+[ROOT HIGH] undici (isDirect=false, range=<=6.29.0) -> nodes=node_modules/@vercel/node/node_modules/undici, node_modules/undici
+[ROOT HIGH] vercel (isDirect=true, range=28.12.3 || 28.17.0 - 65.11.0) -> nodes=node_modules/vercel
+[ROOT CRITICAL] websocket-driver (isDirect=false, range=<=0.7.4) -> nodes=node_modules/websocket-driver
+[ROOT HIGH] zod (isDirect=true, range=<4.6.6) -> nodes=node_modules/@vercel/backends/node_modules/zod, node_modules/@vercel/express/node_modules/zod
+
+=== FUNCTIONS AUDIT METADATA === { info: 0, low: 8, moderate: 24, high: 13, critical: 3, total: 48 }
+[FUNC HIGH] @fastify/busboy (isDirect=false, range=<=3.2.1) -> nodes=node_modules/@fastify/busboy
+[FUNC HIGH] @google/genai (isDirect=true, range=0.9.0 - 1.8.0) -> nodes=node_modules/@google/genai
+[FUNC HIGH] @grpc/grpc-js (isDirect=false, range=1.14.0 - 1.14.4) -> nodes=node_modules/@grpc/grpc-js
+[FUNC HIGH] body-parser (isDirect=false, range=<=1.20.8) -> nodes=node_modules/body-parser
+[FUNC HIGH] brace-expansion (isDirect=false, range=<=1.1.20 || 2.0.0 - 2.1.6) -> nodes=node_modules/brace-expansion, node_modules/test-exclude/node_modules/brace-expansion
+[FUNC HIGH] browserslist (isDirect=false, range=<=4.28.6) -> nodes=node_modules/browserslist
+[FUNC HIGH] fast-xml-builder (isDirect=false, range=<=1.1.6) -> nodes=node_modules/fast-xml-builder
+[FUNC HIGH] form-data (isDirect=false, range=<2.5.6) -> nodes=node_modules/form-data
+[FUNC HIGH] js-yaml (isDirect=false, range=<=3.15.1) -> nodes=node_modules/js-yaml
+[FUNC HIGH] lodash (isDirect=false, range=4.0.0 - 4.17.23) -> nodes=node_modules/lodash
+[FUNC HIGH] node-forge (isDirect=false, range=<=1.4.2) -> nodes=node_modules/node-forge
+[FUNC CRITICAL] protobufjs (isDirect=false, range=<=7.6.4) -> nodes=node_modules/protobufjs
+[FUNC CRITICAL] proxy-addr (isDirect=false, range=1.1.0 - 2.0.7) -> nodes=node_modules/proxy-addr
+[FUNC CRITICAL] websocket-driver (isDirect=false, range=<=0.7.4) -> nodes=node_modules/websocket-driver
+[FUNC HIGH] ws (isDirect=false, range=8.0.0 - 8.20.1) -> nodes=node_modules/ws
+[FUNC HIGH] zod (isDirect=false, range=<4.6.6) -> nodes=node_modules/@google/genai/node_modules/zod, node_modules/zod

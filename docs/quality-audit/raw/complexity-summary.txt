@@ -1,0 +1,67 @@
+Total violations: complexity=79, max-lines-per-function=73, max-depth=16
+
+=== TOP 25 BY CYCLOMATIC COMPLEXITY ===
+1. [complexity=80] src/app/student/assignment-view/page.tsx:L78-L78 -> Function 'AssignmentDetailContent' has a complexity of 80. Maximum allowed is 15.
+2. [complexity=76] src/app/teacher/network/page.tsx:L83-L83 -> Function 'NetworkPage' has a complexity of 76. Maximum allowed is 15.
+3. [complexity=61] src/app/api/grade/route.ts:L8-L8 -> Async function 'handlePost' has a complexity of 61. Maximum allowed is 15.
+4. [complexity=59] src/app/teacher/create/page.tsx:L97-L97 -> Function 'CreateAssignmentForm' has a complexity of 59. Maximum allowed is 15.
+5. [complexity=49] functions/src/grading.ts:L178-L178 -> Async function 'gradeSubmission' has a complexity of 49. Maximum allowed is 15.
+6. [complexity=48] src/app/student/notebook/page.tsx:L86-L86 -> Function 'NotebookPage' has a complexity of 48. Maximum allowed is 15.
+7. [complexity=42] src/app/api/teacher/network/membership/route.ts:L9-L9 -> Async arrow function has a complexity of 42. Maximum allowed is 15.
+8. [complexity=40] src/lib/ai/config.ts:L14-L14 -> Async function 'callGeminiDirect' has a complexity of 40. Maximum allowed is 15.
+9. [complexity=40] src/lib/assignment-parser.ts:L1-L1 -> Function 'parseQuestionsManually' has a complexity of 40. Maximum allowed is 15.
+10. [complexity=39] src/app/student/assignment-view/page.tsx:L195-L195 -> Async function 'fetchAssignment' has a complexity of 39. Maximum allowed is 15.
+11. [complexity=39] src/lib/auth-verify.ts:L35-L35 -> Async arrow function has a complexity of 39. Maximum allowed is 15.
+12. [complexity=39] src/lib/usage-limit.ts:L7-L7 -> Async function 'checkBudget' has a complexity of 39. Maximum allowed is 15.
+13. [complexity=37] src/components/motion/animated-sidebar.tsx:L1038-L1038 -> Function 'AnimatedSidebarMenuButton' has a complexity of 37. Maximum allowed is 15.
+14. [complexity=36] src/app/api/submissions/route.ts:L16-L16 -> Async arrow function has a complexity of 36. Maximum allowed is 15.
+15. [complexity=35] src/lib/ai/assignment.ts:L70-L70 -> Async function 'generateAssignmentQuestions' has a complexity of 35. Maximum allowed is 15.
+16. [complexity=34] src/app/student/tutor/page.tsx:L199-L199 -> Function 'TutorPage' has a complexity of 34. Maximum allowed is 15.
+17. [complexity=34] src/components/landing-chatbot.tsx:L77-L77 -> Function 'LandingChatbot' has a complexity of 34. Maximum allowed is 15.
+18. [complexity=33] functions/src/grading.ts:L64-L64 -> Async function 'gradeResponseAI' has a complexity of 33. Maximum allowed is 15.
+19. [complexity=32] src/app/api/auth/teacher-code/route.ts:L10-L10 -> Async function 'POST' has a complexity of 32. Maximum allowed is 15.
+20. [complexity=31] src/app/api/auth/register/route.ts:L18-L18 -> Async arrow function has a complexity of 31. Maximum allowed is 15.
+21. [complexity=31] src/app/student/assignment-view/page.tsx:L942-L942 -> Arrow function has a complexity of 31. Maximum allowed is 15.
+22. [complexity=30] src/app/student/page-client.tsx:L41-L41 -> Function 'StudentDashboard' has a complexity of 30. Maximum allowed is 15.
+23. [complexity=30] src/lib/ai/research.ts:L266-L266 -> Function 'analyzeResponse' has a complexity of 30. Maximum allowed is 15.
+24. [complexity=29] src/app/teacher/network/billing/page.tsx:L29-L29 -> Function 'BillingPage' has a complexity of 29. Maximum allowed is 15.
+25. [complexity=29] src/lib/ai/grading.ts:L4-L4 -> Async function 'gradeResponse' has a complexity of 29. Maximum allowed is 15.
+
+=== TOP 20 BY FUNCTION LENGTH ===
+1. [lines=1444] src/app/student/assignment-view/page.tsx:L78-L1675 -> Function 'AssignmentDetailContent' has too many lines (1444). Maximum allowed is 150.
+2. [lines=1349] src/components/landing/workspace-preview-tabs.tsx:L114-L1524 -> Function 'NetworkPage' has too many lines (1349). Maximum allowed is 150.
+3. [lines=1318] src/app/teacher/network/page.tsx:L83-L1495 -> Function 'NetworkPage' has too many lines (1318). Maximum allowed is 150.
+4. [lines=1257] src/app/student/tutor/page.tsx:L199-L1585 -> Function 'TutorPage' has too many lines (1257). Maximum allowed is 150.
+5. [lines=989] src/app/teacher/create/page.tsx:L97-L1153 -> Function 'CreateAssignmentForm' has too many lines (989). Maximum allowed is 150.
+6. [lines=885] src/components/landing/workspace-preview-pages.tsx:L1550-L2473 -> Function 'CreateAssignmentPage' has too many lines (885). Maximum allowed is 150.
+7. [lines=846] src/components/sustainability-content.tsx:L41-L956 -> Function 'SustainabilityContent' has too many lines (846). Maximum allowed is 150.
+8. [lines=740] src/app/student/notebook/page.tsx:L86-L903 -> Function 'NotebookPage' has too many lines (740). Maximum allowed is 150.
+9. [lines=666] src/components/admin/usage-analytics.tsx:L61-L781 -> Function 'UsageAnalytics' has too many lines (666). Maximum allowed is 150.
+10. [lines=652] src/components/landing/workspace-preview.tsx:L87-L785 -> Function 'WorkspacePreview' has too many lines (652). Maximum allowed is 150.
+11. [lines=601] src/components/navigation-chatbot.tsx:L83-L731 -> Function 'NavigationChatbot' has too many lines (601). Maximum allowed is 150.
+12. [lines=591] src/app/features/page.tsx:L56-L682 -> Function 'FeaturesPage' has too many lines (591). Maximum allowed is 150.
+13. [lines=491] src/app/teacher/vault/page.tsx:L104-L640 -> Function 'TeacherVault' has too many lines (491). Maximum allowed is 150.
+14. [lines=487] src/components/landing-chatbot.tsx:L77-L593 -> Function 'LandingChatbot' has too many lines (487). Maximum allowed is 150.
+15. [lines=467] src/app/student/page-client.tsx:L41-L545 -> Function 'StudentDashboard' has too many lines (467). Maximum allowed is 150.
+16. [lines=463] src/app/teacher/submission/grade/page.tsx:L67-L570 -> Function 'GradeSubmissionPage' has too many lines (463). Maximum allowed is 150.
+17. [lines=463] src/components/landing/workspace-preview-pages.tsx:L116-L598 -> Function 'GradingTerminalView' has too many lines (463). Maximum allowed is 150.
+18. [lines=462] src/components/admin/access-requests.tsx:L80-L562 -> Function 'AccessRequests' has too many lines (462). Maximum allowed is 150.
+19. [lines=461] src/app/(docs)/research/page.tsx:L21-L503 -> Function 'ResearchPage' has too many lines (461). Maximum allowed is 150.
+20. [lines=461] src/app/signup/page.tsx:L24-L505 -> Function 'SignupForm' has too many lines (461). Maximum allowed is 150.
+
+=== TOP 15 BY MAX DEPTH ===
+1. [depth=6] src/lib/ai/assignment.ts:L176-L176 -> Blocks are nested too deeply (6). Maximum allowed is 4.
+2. [depth=6] src/lib/assignment-parser.ts:L51-L53 -> Blocks are nested too deeply (6). Maximum allowed is 4.
+3. [depth=6] src/lib/assignment-parser.ts:L108-L110 -> Blocks are nested too deeply (6). Maximum allowed is 4.
+4. [depth=6] src/lib/assignment-parser.ts:L113-L115 -> Blocks are nested too deeply (6). Maximum allowed is 4.
+5. [depth=5] src/app/api/grade/route.ts:L134-L137 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+6. [depth=5] src/app/api/grade/route.ts:L146-L146 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+7. [depth=5] src/app/signup/page.tsx:L83-L83 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+8. [depth=5] src/app/student/assignment-view/page.tsx:L211-L215 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+9. [depth=5] src/app/student/assignment-view/page.tsx:L301-L311 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+10. [depth=5] src/app/student/tutor/page.tsx:L655-L657 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+11. [depth=5] src/lib/ai/assignment.ts:L174-L178 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+12. [depth=5] src/lib/ai/assignment.ts:L181-L184 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+13. [depth=5] src/lib/ai/assignment.ts:L185-L188 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+14. [depth=5] src/lib/ai/research.ts:L384-L401 -> Blocks are nested too deeply (5). Maximum allowed is 4.
+15. [depth=5] src/lib/assignment-parser.ts:L45-L54 -> Blocks are nested too deeply (5). Maximum allowed is 4.

@@ -1,0 +1,13 @@
+{
+  "testRunner": "jest",
+  "jest": { "configFile": "jest.config.js" },
+  "checkers": ["typescript"],
+  "tsconfigFile": "tsconfig.json",
+  "mutate": [
+    "src/lib/assignment-validation.ts",
+    "src/lib/auth-verify.ts",
+    "src/lib/usage-limit.ts"
+  ],
+  "reporters": ["clear-text", "json"],
+  "coverageAnalysis": "perTest"
+}

@@ -1,0 +1,121 @@
+
+> scorpio@0.1.0 build
+> next build --webpack
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/pradeepmahdevu/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/pradeepmahdevu/source/learn/scorpio/package-lock.json
+
+▲ Next.js 16.2.1 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+
+
+Retrying 1/3...
+
+
+Retrying 1/3...
+✓ Compiled successfully in 25.9s
+  Running TypeScript ...
+  Finished TypeScript in 8.6s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/72) ...
+  Generating static pages using 9 workers (18/72) 
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+  Generating static pages using 9 workers (36/72) 
+  Generating static pages using 9 workers (54/72) 
+✓ Generating static pages using 9 workers (72/72) in 599ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /admin
+├ ○ /ai
+├ ƒ /api/account
+├ ƒ /api/admin/firestore
+├ ƒ /api/ai/generate
+├ ƒ /api/ai/generate-title
+├ ƒ /api/ai/parse
+├ ƒ /api/ai/synthesize-rubric
+├ ƒ /api/assignments
+├ ƒ /api/auth/register
+├ ƒ /api/auth/request-access
+├ ƒ /api/auth/session
+├ ƒ /api/auth/teacher-code
+├ ƒ /api/chat
+├ ƒ /api/chat/landing
+├ ƒ /api/chat/limits
+├ ƒ /api/checkout
+├ ƒ /api/courses
+├ ƒ /api/github/stats
+├ ƒ /api/grade
+├ ƒ /api/notebook/chat
+├ ƒ /api/research/respond
+├ ƒ /api/student/enrollment
+├ ƒ /api/student/tutor
+├ ƒ /api/submissions
+├ ƒ /api/support/report
+├ ƒ /api/teacher/network/invites
+├ ƒ /api/teacher/network/membership
+├ ƒ /api/teacher/network/portfolio
+├ ƒ /api/teacher/students/cleanup
+├ ƒ /api/webhooks/polar
+├ ○ /contact
+├ ○ /demos
+├ ○ /demos/sticky-banner
+├ ○ /demos/teacher
+├ ○ /features
+├ ○ /forgot-password
+├ ƒ /join/[id]
+├ ƒ /join/class/[code]
+├ ƒ /join/network/[code]
+├ ○ /login
+├ ○ /pricing
+├ ○ /privacy
+├ ○ /request-access
+├ ○ /research
+├ ○ /research/admin
+├ ○ /signup
+├ ○ /student
+├ ○ /student/assignment-view
+├ ○ /student/assignments
+├ ○ /student/grades
+├ ○ /student/notebook
+├ ○ /student/resources
+├ ○ /student/submissions
+├ ○ /student/tutor
+├ ○ /student/vault
+├ ○ /sustainability
+├ ○ /teacher
+├ ○ /teacher/assignment-view
+├ ○ /teacher/assignments
+├ ○ /teacher/create
+├ ○ /teacher/grades
+├ ○ /teacher/grades/student
+├ ○ /teacher/network
+├ ○ /teacher/network/billing
+├ ○ /teacher/network/investment
+├ ○ /teacher/students
+├ ○ /teacher/submission/grade
+├ ○ /teacher/uploads
+├ ○ /teacher/vault
+├ ○ /teacher/waypoints
+└ ○ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+Build exit code: 0 (elapsed: 53s)

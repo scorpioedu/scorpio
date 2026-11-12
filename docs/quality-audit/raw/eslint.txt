@@ -1,0 +1,926 @@
+
+/Users/pradeepmahdevu/source/learn/scorpio/__tests__/due-date.test.ts
+  6:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  7:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/__tests__/landing-chat.test.ts
+  12:36  warning  '_args' is defined but never used         @typescript-eslint/no-unused-vars
+  12:43  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:27  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:40  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  82:10  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/functions/src/grading.ts
+  169:19  error    Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+  178:70  error    Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+  221:65  error    Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+  234:45  error    Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+  251:17  warning  'totalPromptTokens' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  252:17  warning  'totalCandidateTokens' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  308:69  error    Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/functions/src/templates/AssignmentCreatedEmail.tsx
+  25:3  warning  'courseName' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/functions/src/templates/GradeAvailableEmail.tsx
+  79:65  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/jest.config.js
+  1:33  error    A `require()` style import is forbidden                  @typescript-eslint/no-require-imports
+  3:7   warning  'tsJestTransformCfg' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/(docs)/about/about-client.tsx
+  140:59   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  140:71   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  140:103  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  140:165  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  143:39   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  143:54   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  146:136  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  158:46   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  158:52   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  229:15   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/(docs)/contact/page.tsx
+    1:8    warning  'Link' is defined but never used                                 @typescript-eslint/no-unused-vars
+    6:16   warning  'MessageCircle' is defined but never used                        @typescript-eslint/no-unused-vars
+    6:57   warning  'Globe' is defined but never used                                @typescript-eslint/no-unused-vars
+   54:22   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   54:119  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  104:81   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  104:97   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/(docs)/research/admin/page.tsx
+    3:20  warning  'useEffect' is defined but never used                            @typescript-eslint/no-unused-vars
+   34:42  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  280:93  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  318:92  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  368:58  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  386:55  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/(docs)/research/page.tsx
+    1:8    warning  'Link' is defined but never used                                 @typescript-eslint/no-unused-vars
+    4:29   warning  'CardDescription' is defined but never used                      @typescript-eslint/no-unused-vars
+    9:10   warning  'RaiseLogo' is defined but never used                            @typescript-eslint/no-unused-vars
+   10:85   warning  'Microscope' is defined but never used                           @typescript-eslint/no-unused-vars
+   10:141  warning  'Shield' is defined but never used                               @typescript-eslint/no-unused-vars
+   10:155  warning  'Activity' is defined but never used                             @typescript-eslint/no-unused-vars
+  131:40   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  131:55   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  131:60   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  131:81   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  295:62   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  375:74   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  496:18   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/(docs)/terms/page.tsx
+   2:10   warning  'FileText' is defined but never used                             @typescript-eslint/no-unused-vars
+  90:111  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  90:117  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/admin/firestore/route.ts
+  72:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  98:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/ai/generate/route.ts
+  32:9   error  'organizationId' is never reassigned. Use 'const' instead  prefer-const
+  62:19  error  Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/ai/parse/route.ts
+  25:9   error  'organizationId' is never reassigned. Use 'const' instead  prefer-const
+  53:19  error  Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/ai/synthesize-rubric/route.ts
+  25:9   error  'organizationId' is never reassigned. Use 'const' instead  prefer-const
+  48:19  error  Unexpected any. Specify a different type                   @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/auth/request-access/route.ts
+  32:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/auth/teacher-code/route.ts
+   18:32  warning  'usedBy' is assigned a value but never used       @typescript-eslint/no-unused-vars
+   18:40  warning  'usedByEmail' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   59:43  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  130:17  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/chat/landing/route.ts
+    3:10  warning  'recordUsage' is defined but never used   @typescript-eslint/no-unused-vars
+   73:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  113:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/chat/limits/route.ts
+  85:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/chat/route.ts
+  76:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  80:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/checkout/route.ts
+  60:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  82:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/github/stats/route.ts
+   1:10  warning  'NextResponse' is defined but never used  @typescript-eslint/no-unused-vars
+  36:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/grade/route.ts
+  108:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/notebook/chat/route.ts
+  83:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/api/teacher/network/portfolio/route.ts
+   61:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/demos/page.tsx
+  4:90   warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+  4:104  warning  'Video' is defined but never used         @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/features/page.tsx
+   9:3   warning  'Sparkles' is defined but never used               @typescript-eslint/no-unused-vars
+  10:21  warning  'Activity' is defined but never used               @typescript-eslint/no-unused-vars
+  10:31  warning  'PlayCircle' is defined but never used             @typescript-eslint/no-unused-vars
+  10:43  warning  'CheckCircle2' is defined but never used           @typescript-eslint/no-unused-vars
+  10:57  warning  'Zap' is defined but never used                    @typescript-eslint/no-unused-vars
+  11:3   warning  'MonitorPlay' is defined but never used            @typescript-eslint/no-unused-vars
+  11:16  warning  'ShieldCheck' is defined but never used            @typescript-eslint/no-unused-vars
+  11:29  warning  'FileDown' is defined but never used               @typescript-eslint/no-unused-vars
+  11:50  warning  'Globe' is defined but never used                  @typescript-eslint/no-unused-vars
+  11:57  warning  'ChartColumnIncreasing' is defined but never used  @typescript-eslint/no-unused-vars
+  12:11  warning  'Sliders' is defined but never used                @typescript-eslint/no-unused-vars
+  18:10  warning  'Tabs' is defined but never used                   @typescript-eslint/no-unused-vars
+  18:16  warning  'TabsList' is defined but never used               @typescript-eslint/no-unused-vars
+  18:26  warning  'TabsTrigger' is defined but never used            @typescript-eslint/no-unused-vars
+  18:39  warning  'TabsContent' is defined but never used            @typescript-eslint/no-unused-vars
+  24:7   warning  'DemoCarousel' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/forgot-password/page.tsx
+  35:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/login/page.tsx
+   6:25  warning  'db' is defined but never used                        @typescript-eslint/no-unused-vars
+   6:29  warning  'auth' is defined but never used                      @typescript-eslint/no-unused-vars
+   7:10  warning  'doc' is defined but never used                       @typescript-eslint/no-unused-vars
+   7:15  warning  'setDoc' is defined but never used                    @typescript-eslint/no-unused-vars
+  18:18  warning  'AnimatePresence' is defined but never used           @typescript-eslint/no-unused-vars
+  41:24  warning  'setIsRecovering' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  81:19  error    Unexpected any. Specify a different type              @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/pricing/page.tsx
+   4:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+   7:10  warning  'Badge' is defined but never used            @typescript-eslint/no-unused-vars
+  16:3   warning  'Building2' is defined but never used        @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/request-access/page.tsx
+   12:3   warning  'CardDescription' is defined but never used                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   13:3   warning  'CardHeader' is defined but never used                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   14:3   warning  'CardTitle' is defined but never used                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  341:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/signup/page.tsx
+  107:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  136:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/assignment-view/page.tsx
+     7:35   warning  'addDoc' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+     7:66   warning  'setDoc' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+    91:64   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   161:29   warning  'e' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+   288:49   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   359:6    warning  React Hook useEffect has a missing dependency: 'handleSubmit'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   498:21   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   672:43   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   673:36   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   681:29   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   950:69   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  1028:65   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  1035:33   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                  react/no-unescaped-entities
+  1035:72   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  1035:120  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                  react/no-unescaped-entities
+  1041:92   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/assignments/page.tsx
+  256:21  warning  'pastDue' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/grades/page.tsx
+   32:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:63  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/notebook/page.tsx
+   61:14  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+   62:14  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  102:42  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  177:13  error    'list' is never reassigned. Use 'const' instead                                                                      prefer-const
+  238:6   warning  React Hook useEffect has a missing dependency: 'activeNotebookId'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  263:6   warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array              react-hooks/exhaustive-deps
+  274:6   warning  React Hook useEffect has a missing dependency: 'saveNotebook'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  317:14  warning  'err' is defined but never used                                                                                      @typescript-eslint/no-unused-vars
+  341:14  warning  'err' is defined but never used                                                                                      @typescript-eslint/no-unused-vars
+  428:14  warning  'error' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  806:50  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                      react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/page-client.tsx
+   10:27  warning  'WorkspaceSummary' is defined but never used                     @typescript-eslint/no-unused-vars
+   31:12  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  122:13  error    'currentAssignmentIds' is never reassigned. Use 'const' instead  prefer-const
+  123:13  error    'assignmentsList' is never reassigned. Use 'const' instead       prefer-const
+  123:30  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  152:89  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  242:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  262:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/resources/page.tsx
+  17:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/submissions/page.tsx
+  18:12  error    Unexpected any. Specify a different type                                                                                                       @typescript-eslint/no-explicit-any
+  84:6   warning  React Hook useEffect has missing dependencies: 'profile.courseId' and 'profile.teacherId'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/student/vault/page.tsx
+  11:3  warning  'BatteryFull' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/assignment-view/page.tsx
+  22:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/assignments/page.tsx
+  61:6  warning  React Hook useEffect has a missing dependency: 'fetchAssignments'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/grades/page.tsx
+   47:82  error    Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+  111:30  error    Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+  136:13  error    'courseStudentIds' is never reassigned. Use 'const' instead  prefer-const
+  173:21  warning  '_' is defined but never used                                @typescript-eslint/no-unused-vars
+  176:50  warning  '_' is defined but never used                                @typescript-eslint/no-unused-vars
+  228:21  error    Unexpected any. Specify a different type                     @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/grades/student/page.tsx
+   5:45  warning  'getDoc' is defined but never used                          @typescript-eslint/no-unused-vars
+   5:53  warning  'doc' is defined but never used                             @typescript-eslint/no-unused-vars
+  64:13  error    'submissionsDocs' is never reassigned. Use 'const' instead  prefer-const
+  64:30  error    Unexpected any. Specify a different type                    @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/network/billing/page.tsx
+  43:6   warning  React Hook useEffect has a missing dependency: 'fetchOrg'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  83:17  error    Unexpected any. Specify a different type                                                                     @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/network/investment/page.tsx
+  103:70  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  103:81  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  115:28  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/network/page.tsx
+    5:31  warning  'useMemo' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+   18:3   warning  'Building2' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+   21:3   warning  'AlertTriangle' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+   32:3   warning  'TrendingUp' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+   34:3   warning  'CheckCircle2' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   40:3   warning  'HelpCircle' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+   48:3   warning  'Sparkles' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   49:3   warning  'RefreshCw' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+   52:3   warning  'Tooltip' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+   53:3   warning  'TooltipContent' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   55:3   warning  'TooltipTrigger' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   89:56  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  218:14  warning  'e' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  218:17  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  370:6   warning  React Hook useEffect has a missing dependency: 'fetchNetworkInfo'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  739:40  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                      react/no-unescaped-entities
+  814:59  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                      react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/students/page.tsx
+    5:45   warning  'deleteDoc' is defined but never used     @typescript-eslint/no-unused-vars
+    5:56   warning  'doc' is defined but never used           @typescript-eslint/no-unused-vars
+    5:61   warning  'getDoc' is defined but never used        @typescript-eslint/no-unused-vars
+    5:69   warning  'setDoc' is defined but never used        @typescript-eslint/no-unused-vars
+   83:148  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:47   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:21   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/submission/grade/page.tsx
+   16:67   warning  'Brain' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   16:112  warning  'XCircle' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   17:8    warning  'Link' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   42:11   warning  'User' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  171:18   warning  'e' is defined but never used                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  176:21   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  417:33   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  417:63   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  557:27   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/uploads/page.tsx
+  26:14  error    Unexpected any. Specify a different type                                                                                                @typescript-eslint/no-explicit-any
+  32:42  error    Unexpected any. Specify a different type                                                                                                @typescript-eslint/no-explicit-any
+  52:6   warning  React Hook useEffect has missing dependencies: 'fetchCourses' and 'fetchResources'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/app/teacher/waypoints/page.tsx
+  68:6  warning  React Hook useEffect has a missing dependency: 'fetchWaypoints'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/access-requests.tsx
+  104:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/ai-cost-calculator.tsx
+   9:73  warning  'ChevronDown' is defined but never used                                                                                                               @typescript-eslint/no-unused-vars
+   9:86  warning  'ChevronUp' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+  15:10  warning  'motion' is defined but never used                                                                                                                    @typescript-eslint/no-unused-vars
+  15:18  warning  'AnimatePresence' is defined but never used                                                                                                           @typescript-eslint/no-unused-vars
+  61:6   warning  React Hook useMemo has missing dependencies: 'BASE_FEE', 'INPUT_RATE_USD', and 'OUTPUT_RATE_USD'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/cost-comparison-chart.tsx
+  51:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  68:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/firestore-explorer.tsx
+  20:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  47:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  96:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/global-analytics.tsx
+   6:10  warning  'Card' is defined but never used              @typescript-eslint/no-unused-vars
+   6:16  warning  'CardContent' is defined but never used       @typescript-eslint/no-unused-vars
+   6:29  warning  'CardHeader' is defined but never used        @typescript-eslint/no-unused-vars
+   6:41  warning  'CardTitle' is defined but never used         @typescript-eslint/no-unused-vars
+   6:52  warning  'CardDescription' is defined but never used   @typescript-eslint/no-unused-vars
+  12:43  warning  'Users' is defined but never used             @typescript-eslint/no-unused-vars
+  13:10  warning  'motion' is defined but never used            @typescript-eslint/no-unused-vars
+  18:10  warning  'loading' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/teacher-invite-codes.tsx
+   74:17  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  103:17  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  125:17  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  190:60  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/usage-analytics.tsx
+    4:43  warning  'getDocs' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+    6:10  warning  'useAuth' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   11:20  warning  'Clock' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   66:10  warning  'error' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   83:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/usage-analytics.tsx:83:5
+  81 |   useEffect(() => {
+  82 |     if (!organizationId) return;
+> 83 |     setError(null);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  84 |     setLoading(true);
+  85 |
+  86 |     const q = query(  react-hooks/set-state-in-effect
+  314:52  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  565:87  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/cobe-globe.tsx
+  33:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  39:8   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/dashboard/student-progress-chart.tsx
+  31:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/demo-carousel.tsx
+   47:6   warning  React Hook useEffect has missing dependencies: 'next' and 'prev'. Either include them or remove the dependency array                                             react-hooks/exhaustive-deps
+   81:6   warning  React Hook useEffect has missing dependencies: 'isVideoPaused', 'isVideoVisible', 'next', and 'unavailable'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  107:6   warning  React Hook useEffect has a missing dependency: 'next'. Either include it or remove the dependency array                                                          react-hooks/exhaustive-deps
+  228:44  error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+  229:35  error    Unexpected any. Specify a different type                                                                                                                         @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/feature-section.tsx
+    4:17  warning  'useRef' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+    6:61  warning  'ZapIcon' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+    6:70  warning  'ShieldCheckIcon' is defined but never used                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  237:6   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  276:6   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  378:10  warning  'ReportsChartsSvg' is defined but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/header.tsx
+   3:28  warning  'useCallback' is defined but never used               @typescript-eslint/no-unused-vars
+  19:9   warning  'closeTimeoutRef' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/solution-flowchart.tsx
+    5:3   warning  'ArrowRight' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   12:3   warning  'Lock' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   14:3   warning  'MessageSquare' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  117:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+  326:45  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/solution-flowchart.tsx:326:45
+  324 |                           }}
+  325 |                           transition={{
+> 326 |                             duration: 1.5 + Math.random(),
+      |                                             ^^^^^^^^^^^^^ Cannot call impure function
+  327 |                             repeat: Infinity,
+  328 |                             ease: "easeInOut"
+  329 |                           }}  react-hooks/purity
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/system-demos.tsx
+  59:21   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  59:140  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/workspace-preview-pages.tsx
+  1642:9  error  Error: Cannot access variable before it is declared
+
+`setGradingRubric` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/workspace-preview-pages.tsx:1642:9
+  1640 |       }
+  1641 |       if (initialDraft.gradingRubric) {
+> 1642 |         setGradingRubric(initialDraft.gradingRubric);
+       |         ^^^^^^^^^^^^^^^^ `setGradingRubric` accessed before it is declared
+  1643 |       }
+  1644 |       onClearDraft?.();
+  1645 |     }
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/workspace-preview-pages.tsx:1654:25
+  1652 |   const [lockdownMode, setLockdownMode] = React.useState(false);
+  1653 |   const [stealthAssessment, setStealthAssessment] = React.useState(false);
+> 1654 |   const [gradingRubric, setGradingRubric] = React.useState(
+       |                         ^^^^^^^^^^^^^^^^ `setGradingRubric` is declared here
+  1655 |     initialDraft?.gradingRubric ||
+  1656 |       "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
+  1657 |   );  react-hooks/immutability
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/math-input.tsx
+  487:20  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/math-input.tsx:487:20
+  485 |                 </p>
+  486 |                 <div className="flex flex-wrap gap-1.5">
+> 487 |                   {[
+      |                    ^
+> 488 |                     { icon: <Bold className="h-4 w-4" />, label: "Bold", action: () => applyFormat("bold") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 489 |                     { icon: <Italic className="h-4 w-4" />, label: "Italic", action: () => applyFormat("italic") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 490 |                     { icon: <List className="h-4 w-4" />, label: "Bullets", action: () => applyList("unordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 491 |                     { icon: <ListOrdered className="h-4 w-4" />, label: "Numbered", action: () => applyList("ordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 492 |                   ].map((b, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  493 |                     <button key={i} type="button"
+  494 |                       onMouseDown={(e) => { e.preventDefault(); b.action(); }}
+  495 |                       className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">      react-hooks/refs
+  487:20  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/math-input.tsx:487:20
+  485 |                 </p>
+  486 |                 <div className="flex flex-wrap gap-1.5">
+> 487 |                   {[
+      |                    ^
+> 488 |                     { icon: <Bold className="h-4 w-4" />, label: "Bold", action: () => applyFormat("bold") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 489 |                     { icon: <Italic className="h-4 w-4" />, label: "Italic", action: () => applyFormat("italic") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 490 |                     { icon: <List className="h-4 w-4" />, label: "Bullets", action: () => applyList("unordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 491 |                     { icon: <ListOrdered className="h-4 w-4" />, label: "Numbered", action: () => applyList("ordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 492 |                   ].map((b, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  493 |                     <button key={i} type="button"
+  494 |                       onMouseDown={(e) => { e.preventDefault(); b.action(); }}
+  495 |                       className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">  react-hooks/refs
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx
+   336:19  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:336:19
+  334 |   const openMobileRef = useRef(context.openMobile);
+  335 |
+> 336 |   useEffect(() => setMounted(true), []);
+      |                   ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  337 |
+  338 |   useEffect(() => {
+  339 |     openMobileRef.current = context.openMobile;            react-hooks/set-state-in-effect
+   340:29  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:340:29
+  338 |   useEffect(() => {
+  339 |     openMobileRef.current = context.openMobile;
+> 340 |     if (context.openMobile) setHidden(false);
+      |                             ^^^^^^^^^ Avoid calling setState() directly within an effect
+  341 |   }, [context.openMobile]);
+  342 |
+  343 |   useEffect(() => {  react-hooks/set-state-in-effect
+   595:18  error  An interface declaring no members is equivalent to its supertype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-empty-object-type
+   612:9   error  Error: This value cannot be modified
+
+Modifying a value returned from a hook is not allowed. Consider moving the modification into the hook where the value is constructed.
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:612:9
+  610 |       {...props}
+  611 |       ref={(node) => {
+> 612 |         context.triggerRef.current = node;
+      |         ^^^^^^^^^^^^^^^^^^ `context` cannot be modified
+  613 |         if (typeof forwardedRef === "function") forwardedRef(node);
+  614 |         else if (forwardedRef) forwardedRef.current = node;
+  615 |       }}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/immutability
+   634:18  error  An interface declaring no members is equivalent to its supertype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-empty-object-type
+   667:18  error  An interface declaring no members is equivalent to its supertype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-empty-object-type
+   703:18  error  An interface declaring no members is equivalent to its supertype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-empty-object-type
+  1156:21  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+  1157:28  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+  1180:28  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/shared-layout-bg.tsx
+  78:12  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/shared-layout-bg.tsx:78:12
+   76 |     const renderedChildren = Children.toArray(children)
+   77 |       .filter(isValidElement)
+>  78 |       .map((child, index) => {
+      |            ^^^^^^^^^^^^^^^^^^^
+>  79 |         const el = child as ReactElement<{
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  80 |           className?: string;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 133 |         );
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |       });
+      | ^^^^^^^^ Passing a ref to a function may read its value during render
+  135 |
+  136 |     const handleMouseLeave = (event: MouseEvent<HTMLElement>) => {
+  137 |       hovering.current = false;  react-hooks/refs
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/navigation-chatbot.tsx
+  6:10  warning  'Textarea' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/network-tutorial.tsx
+  20:3  warning  'BookOpen' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/rich-text-editor.tsx
+   14:3   warning  'AlignLeft' is defined but never used    @typescript-eslint/no-unused-vars
+   15:3   warning  'AlignCenter' is defined but never used  @typescript-eslint/no-unused-vars
+   16:3   warning  'AlignRight' is defined but never used   @typescript-eslint/no-unused-vars
+   24:10  warning  'Button' is defined but never used       @typescript-eslint/no-unused-vars
+  135:18  warning  'e' is defined but never used            @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/roster-import.tsx
+  120:19  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  140:49  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  140:55  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  140:61  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  140:66  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/route-progress-bar.tsx
+  14:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/route-progress-bar.tsx:14:5
+  12 |   // When pathname or searchParams change, flash a subtle, sleek progress indicator
+  13 |   useEffect(() => {
+> 14 |     setIsNavigating(true);
+     |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     const timeout = setTimeout(() => {
+  16 |       setIsNavigating(false);
+  17 |     }, 280);  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/scorpio-globe.tsx
+  14:3  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/scorpio-globe.tsx:14:3
+  12 |
+  13 | 	useEffect(() => {
+> 14 | 		setMounted(true);
+     | 		^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 | 	}, []);
+  16 |
+  17 | 	if (!mounted) return null;  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/settings-dialog.tsx
+  152:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  183:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  199:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/calendar.tsx
+  58:37  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/chart.tsx
+  39:3  warning  'className' is defined but never used           @typescript-eslint/no-unused-vars
+  87:7  warning  'hideLabel' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  89:7  warning  'label' is defined but never used               @typescript-eslint/no-unused-vars
+  90:7  warning  'labelFormatter' is defined but never used      @typescript-eslint/no-unused-vars
+  91:7  warning  'labelClassName' is defined but never used      @typescript-eslint/no-unused-vars
+  92:7  warning  'formatter' is defined but never used           @typescript-eslint/no-unused-vars
+  93:7  warning  'color' is defined but never used               @typescript-eslint/no-unused-vars
+  95:7  warning  'labelKey' is defined but never used            @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/constraint-engine.tsx
+  8:9  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/container-scroll-animation.tsx
+  57:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/floating-prompts.tsx
+    4:25   warning  'Sparkles' is defined but never used                             @typescript-eslint/no-unused-vars
+    7:22   warning  'BlockMath' is defined but never used                            @typescript-eslint/no-unused-vars
+   11:9    error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   99:109  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   99:120  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  131:16   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  131:47   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/macbook-scroll.tsx
+    2:28  warning  'useMemo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   47:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/macbook-scroll.tsx:47:7
+  45 |   useEffect(() => {
+  46 |     if (window && window.innerWidth < 768) {
+> 47 |       setIsMobile(true);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  48 |     }
+  49 |   }, []);
+  50 |  react-hooks/set-state-in-effect
+  166:9   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @next/next/no-img-element
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/rundown-dialog.tsx
+   7:3   warning  'DialogDescription' is defined but never used  @typescript-eslint/no-unused-vars
+   9:3   warning  'DialogHeader' is defined but never used       @typescript-eslint/no-unused-vars
+  10:3   warning  'DialogTitle' is defined but never used        @typescript-eslint/no-unused-vars
+  15:43  warning  'BrainCircuit' is defined but never used       @typescript-eslint/no-unused-vars
+  34:40  warning  'title' is defined but never used              @typescript-eslint/no-unused-vars
+  34:83  warning  'userRole' is defined but never used           @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/sidebar.tsx
+  611:26  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, [])
+  613 |
+  614 |   return (  react-hooks/purity
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/smart-datetime-picker.tsx
+  46:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/smart-datetime-picker.tsx:46:9
+  44 |       const d = new Date(initialValue)
+  45 |       if (!isNaN(d.getTime())) {
+> 46 |         setDate(d)
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  47 |         // If we're not currently typing, update the input value too
+  48 |         // but normally we want the input value to be natural language
+  49 |       }  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/space-background.tsx
+  20:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/space-background.tsx:20:5
+  18 |   useEffect(() => {
+  19 |     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+> 20 |     setReducedMotion(mq.matches);
+     |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+  22 |     mq.addEventListener("change", handler);
+  23 |     return () => mq.removeEventListener("change", handler);  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/spotlight-cards.tsx
+  14:10  warning  'Cloud' is defined but never used  @typescript-eslint/no-unused-vars
+  14:17  warning  'Code' is defined but never used   @typescript-eslint/no-unused-vars
+  14:23  warning  'Cpu' is defined but never used    @typescript-eslint/no-unused-vars
+  14:28  warning  'Globe' is defined but never used  @typescript-eslint/no-unused-vars
+  14:35  warning  'Lock' is defined but never used   @typescript-eslint/no-unused-vars
+  14:41  warning  'Zap' is defined but never used    @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/text-animate.tsx
+  376:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/typing-animation.tsx
+  109:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/typing-animation.tsx:109:5
+  107 |
+  108 |   useEffect(() => {
+> 109 |     setDisplayedText("")
+      |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  110 |     setCurrentWordIndex(0)
+  111 |     setCurrentCharIndex(0)
+  112 |     setPhase("typing")  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/hooks/use-sidebar-state.ts
+  17:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/hooks/use-sidebar-state.ts:17:7
+  15 |     
+  16 |     if (saved !== null) {
+> 17 |       setIsCollapsedState(saved === "true");
+     |       ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |     }
+  19 |     
+  20 |     setIsLoaded(true);  react-hooks/set-state-in-effect
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/assignment.ts
+    5:80   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+    5:107  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+   36:7    error    'responseText' is never reassigned. Use 'const' instead                                                              prefer-const
+   46:7    error    'cleanJson' is never reassigned. Use 'const' instead                                                                 prefer-const
+   76:25   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  120:5    error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  121:11   warning  'isTruncated' is assigned a value but never used                                                                     @typescript-eslint/no-unused-vars
+  141:17   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  147:21   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  155:14   warning  'parseError' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+  167:21   error    'openBrackets' is never reassigned. Use 'const' instead                                                              prefer-const
+  169:21   error    'openCurly' is never reassigned. Use 'const' instead                                                                 prefer-const
+  192:18   warning  'e' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  194:46   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  201:21   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  224:82   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  233:25   error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/config.ts
+   14:42  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+   19:17  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+   23:41  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+   31:18  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+   87:51  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+  105:30  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+  106:25  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+  107:9   error  'history' is never reassigned. Use 'const' instead  prefer-const
+  109:42  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+  126:6   error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/grading.ts
+  118:14  warning  'parseError' is defined but never used    @typescript-eslint/no-unused-vars
+  123:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/network.ts
+  172:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  175:14  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  187:16  warning  'e2' is defined but never used            @typescript-eslint/no-unused-vars
+  201:39  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/research.ts
+  269:3   warning  'constraintLevel' is defined but never used  @typescript-eslint/no-unused-vars
+  427:93  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  428:36  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  444:48  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  448:79  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  450:36  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  495:42  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  496:33  error    Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/utils.ts
+   75:3   error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   95:7   warning  'inQuestion' is assigned a value but never used                                                                      @typescript-eslint/no-unused-vars
+  125:53  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  125:59  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  126:18  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  153:48  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  171:23  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/assignment-parser.ts
+  1:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  2:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  4:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/firebase-admin.ts
+  47:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  64:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  74:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  84:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/firebase.ts
+    4:45  warning  'collection' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+    4:57  warning  'getDocs' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+    4:66  warning  'query' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+    4:73  warning  'where' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+    4:80  warning  'writeBatch' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+    4:92  warning  'deleteDoc' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+    5:27  warning  'uploadBytes' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+    5:78  warning  'deleteObject' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+    7:23  warning  'UserRole' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   22:15  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+   25:5   error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   66:13  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  326:54  warning  'role' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/gemini.ts
+  3:27   warning  'DOMAIN_CONSTRAINT' is defined but never used          @typescript-eslint/no-unused-vars
+  3:46   warning  'PEDAGOGICAL_CONSTRAINT' is defined but never used     @typescript-eslint/no-unused-vars
+  3:70   warning  'NOTATION_CONSTRAINT' is defined but never used        @typescript-eslint/no-unused-vars
+  3:91   warning  'SOCRATIC_CONSTRAINT' is defined but never used        @typescript-eslint/no-unused-vars
+  3:112  warning  'CONTACT_CONSTRAINT' is defined but never used         @typescript-eslint/no-unused-vars
+  3:132  warning  'STRICT_CONCISE_CONSTRAINT' is defined but never used  @typescript-eslint/no-unused-vars
+  3:159  warning  'CONSTRAINT_LEVELS' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/types.ts
+  68:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/usage-limit.ts
+  92:3   warning  '_organizationId' is defined but never used  @typescript-eslint/no-unused-vars
+  92:47  warning  '_type' is defined but never used            @typescript-eslint/no-unused-vars
+  93:3   warning  '_inputTokens' is defined but never used     @typescript-eslint/no-unused-vars
+  93:25  warning  '_outputTokens' is defined but never used    @typescript-eslint/no-unused-vars
+  93:48  warning  '_userId' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/lib/utils.ts
+  8:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/tests/security/full-student-teacher-workflow.test.ts
+   14:3   warning  'deleteDoc' is defined but never used          @typescript-eslint/no-unused-vars
+   24:17  error    A `require()` style import is forbidden        @typescript-eslint/no-require-imports
+   51:18  warning  'networkMembership' is defined but never used  @typescript-eslint/no-unused-vars
+  643:58  error    Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  824:40  error    Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+/Users/pradeepmahdevu/source/learn/scorpio/tests/security/rules.test.cjs
+  1:68  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:79  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/pradeepmahdevu/source/learn/scorpio/tests/security/webhooks.test.ts
+  3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/pradeepmahdevu/source/learn/scorpio/tests/security/workflows.test.ts
+  4:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/pradeepmahdevu/source/learn/scorpio/tools/migrate-school-security.cjs
+   2:15  error    A `require()` style import is forbidden         @typescript-eslint/no-require-imports
+  16:27  warning  'questions' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 441 problems (246 errors, 195 warnings)
+  13 errors and 0 warnings potentially fixable with the `--fix` option.
+

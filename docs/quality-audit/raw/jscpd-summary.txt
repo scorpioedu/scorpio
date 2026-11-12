@@ -1,0 +1,39 @@
+=== JSCPD TOTAL === {
+  clones: 64,
+  duplicatedLines: 1121,
+  duplicatedTokens: 7756,
+  lines: 55961,
+  newClones: 0,
+  newDuplicatedLines: 0,
+  percentage: 2.003180786619253,
+  percentageTokens: 2.378834628667472,
+  sources: 249,
+  tokens: 326042
+}
+Total clone pairs: 64
+=== TOP 25 CLONE PAIRS BY LINES ===
+1. [61 lines, 452 tokens] app/demos/page.tsx:L197-L257 <-> app/features/page.tsx:L622-L682
+2. [61 lines, 389 tokens] components/kokonutui/spotlight-cards.tsx:L76-L136 <-> components/ui/spotlight-cards.tsx:L52-L112
+3. [46 lines, 294 tokens] app/signup/page.tsx:L237-L282 <-> app/signup/page.tsx:L376-L421
+4. [41 lines, 291 tokens] grading.ts:L19-L59 <-> lib/ai/utils.ts:L9-L68
+5. [36 lines, 253 tokens] app/demos/page.tsx:L222-L257 <-> app/sustainability/page.tsx:L63-L110
+6. [31 lines, 184 tokens] app/login/page.tsx:L288-L318 <-> app/login/page.tsx:L374-L404
+7. [30 lines, 98 tokens] components/kokonutui/spotlight-cards.tsx:L196-L225 <-> components/ui/spotlight-cards.tsx:L173-L202
+8. [29 lines, 95 tokens] components/kokonutui/spotlight-cards.tsx:L137-L165 <-> components/ui/spotlight-cards.tsx:L113-L141
+9. [28 lines, 178 tokens] app/api/ai/parse/route.ts:L11-L38 <-> app/api/ai/synthesize-rubric/route.ts:L11-L37
+10. [27 lines, 161 tokens] app/api/ai/generate/route.ts:L19-L45 <-> app/api/ai/parse/route.ts:L12-L38
+11. [24 lines, 175 tokens] app/demos/page.tsx:L196-L219 <-> app/sustainability/page.tsx:L23-L57
+12. [22 lines, 109 tokens] components/landing/site-header.tsx:L627-L648 <-> components/landing/site-header.tsx:L694-L715
+13. [21 lines, 146 tokens] app/login/page.tsx:L205-L225 <-> app/signup/page.tsx:L150-L170
+14. [21 lines, 82 tokens] components/kokonutui/spotlight-cards.tsx:L15-L35 <-> components/ui/spotlight-cards.tsx:L15-L35
+15. [19 lines, 122 tokens] app/api/chat/route.ts:L18-L36 <-> app/api/student/tutor/route.ts:L22-L40
+16. [19 lines, 115 tokens] app/signup/page.tsx:L299-L317 <-> app/signup/page.tsx:L465-L483
+17. [19 lines, 139 tokens] app/student/assignments/page.tsx:L163-L181 <-> app/teacher/assignments/page.tsx:L147-L165
+18. [19 lines, 122 tokens] components/landing/site-header.tsx:L585-L603 <-> components/landing/site-header.tsx:L653-L671
+19. [19 lines, 90 tokens] components/landing/workflow.tsx:L46-L64 <-> components/landing/workflow.tsx:L127-L145
+20. [19 lines, 91 tokens] components/ui/text-animate.tsx:L27-L45 <-> components/ui/typing-animation.tsx:L22-L40
+21. [17 lines, 107 tokens] grading.ts:L229-L245 <-> app/api/grade/route.ts:L103-L124
+22. [16 lines, 96 tokens] app/api/ai/generate/route.ts:L19-L34 <-> app/api/student/tutor/route.ts:L18-L34
+23. [16 lines, 367 tokens] app/globals.css:L173-L188 <-> app/globals.css:L225-L240
+24. [16 lines, 77 tokens] app/teacher/waypoints/page.tsx:L287-L302 <-> components/landing/workspace-preview-tabs.tsx:L1800-L1815
+25. [16 lines, 111 tokens] components/landing/header.tsx:L207-L222 <-> components/landing/header.tsx:L234-L249

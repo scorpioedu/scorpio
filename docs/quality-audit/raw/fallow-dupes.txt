@@ -1,0 +1,103 @@
+note: skipped 14 files matching default duplicates ignores
+  (--explain-skipped for the list)
+note: module wiring excluded from clones
+  (--no-ignore-imports to include it)
+
+● Duplicates (148 clone groups)
+
+     24 lines  2 instances  spread 2  dup:a99c5dec
+    src/components/admin/usage-analytics.tsx:344-365
+    src/components/landing/workspace-preview-tabs.tsx:983-1006
+
+     61 lines  2 instances  spread 2  dup:8b51bff0
+    src/components/kokonutui/spotlight-cards.tsx:76-136
+    src/components/ui/spotlight-cards.tsx:52-112
+
+     59 lines  2 instances  spread 5  dup:bde308d7
+    functions/src/grading.ts:19-58
+    src/lib/ai/utils.ts:9-67
+
+     33 lines  2 instances  spread 5  dup:df93ce70
+    src/app/teacher/vault/page.tsx:62-94
+    src/components/landing/workspace-preview-data.ts:675-707
+
+     64 lines  2 instances  spread 2  dup:ddf7d7ca
+    src/app/features/page.tsx:616-679
+    src/app/pricing/page.tsx:373-435
+
+     61 lines  2 instances  spread 2  dup:1b214f99
+    src/app/demos/page.tsx:196-255
+    src/app/features/page.tsx:620-680
+
+     39 lines  4 instances  spread 2  dup:f872af32
+    src/app/demos/page.tsx:196-221
+    src/app/features/page.tsx:620-646
+    src/app/pricing/page.tsx:377-402
+    src/app/sustainability/page.tsx:23-61
+
+     46 lines  3 instances  spread 2  dup:68dfa961
+    src/app/demos/page.tsx:222-255
+    src/app/features/page.tsx:647-680
+    src/app/sustainability/page.tsx:63-108
+
+     24 lines  5 instances  spread 4  dup:c5e56ef5
+    src/app/demos/page.tsx:234-253
+    src/app/features/page.tsx:659-678
+    src/app/pricing/page.tsx:415-434
+    src/app/sustainability/page.tsx:84-106
+    src/components/landing/LandingFooter.tsx:52-75
+
+     30 lines  5 instances  spread 4  dup:30010fa5
+    src/app/demos/page.tsx:205-221
+    src/app/features/page.tsx:630-646
+    src/app/pricing/page.tsx:386-402
+    src/app/sustainability/page.tsx:32-60
+    src/components/landing/LandingFooter.tsx:13-42
+
+  ... 138 of 148 clone groups withheld by a display limit
+  Duplicate code blocks
+  https://fallow.tools/docs/explanations/duplication/#clone-groups
+
+● Clone families (26 with multiple groups)
+
+  4 groups, 55 lines across functions/src/grading.ts, src/app/api/grade/route.ts
+    → Extract 4 shared clone groups (55 lines) from grading.ts, route.ts into a shared directory
+
+  2 groups, 50 lines across functions/src/grading.ts, src/lib/ai/grading.ts
+    → Extract 2 shared clone groups (50 lines) from grading.ts, grading.ts into a shared directory
+
+  4 groups, 57 lines across src/app/(docs)/research/admin/page.tsx
+    → Extract 4 shared clone groups (57 lines) from page.tsx into src/app/(docs)/research/admin
+
+  2 groups, 54 lines across src/app/demos/page.tsx, src/app/features/page.tsx, src/app/pricing/page.tsx, src/app/sustainability/page.tsx, src/components/landing/LandingFooter.tsx
+    → Extract 2 shared clone groups (54 lines) from page.tsx, page.tsx, page.tsx, page.tsx, LandingFooter.tsx into a shared directory
+
+  3 groups, 66 lines across src/app/login/page.tsx, src/app/signup/page.tsx
+    → Extract 3 shared clone groups (66 lines) from page.tsx, page.tsx into a shared directory
+
+  2 groups, 27 lines across src/app/pricing/page.tsx
+    → Extract shared function (16 lines) from page.tsx, page.tsx
+    → Extract shared function (11 lines) from page.tsx, page.tsx
+
+  4 groups, 91 lines across src/app/signup/page.tsx
+    → Extract 4 shared clone groups (91 lines) from page.tsx into src/app/signup
+
+  2 groups, 18 lines across src/app/teacher/assignments/page.tsx, src/app/teacher/grades/page.tsx
+    → Extract shared function (10 lines) from page.tsx, page.tsx
+    → Extract shared function (8 lines) from page.tsx, page.tsx
+
+  2 groups, 20 lines across src/app/teacher/assignments/page.tsx, src/app/teacher/uploads/page.tsx
+    → Extract shared function (10 lines) from page.tsx, page.tsx, page.tsx
+    → Extract shared function (10 lines) from page.tsx, page.tsx
+
+  3 groups, 38 lines across src/app/teacher/grades/page.tsx, src/app/teacher/students/page.tsx
+    → Extract shared function (20 lines) from page.tsx, page.tsx
+    → Extract shared function (9 lines) from page.tsx, page.tsx
+    → Extract shared function (9 lines) from page.tsx, page.tsx
+
+  ... and 16 more families
+
+  Groups of related clones across the same files
+  https://fallow.tools/docs/explanations/duplication/#clone-families
+
+⚠ 4,866 lines (8.7%) duplicated across 71 files (0.04s)
