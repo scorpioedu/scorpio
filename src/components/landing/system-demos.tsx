@@ -59,7 +59,7 @@ export function SystemDemos() {
               </motion.div>
               <div className="mt-10 text-center max-w-3xl mx-auto space-y-4">
                  <p className="text-muted-foreground text-lg font-medium leading-relaxed italic">
-                    "A comprehensive 5-minute deep-dive into the architectural nuances and pedagogical advantages of the Scorpio framework."
+                    &quot;A comprehensive 5-minute deep-dive into the architectural nuances and pedagogical advantages of the Scorpio framework.&quot;
                  </p>
               </div>
            </TabsContent>

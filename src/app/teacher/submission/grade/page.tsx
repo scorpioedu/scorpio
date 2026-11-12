@@ -414,7 +414,7 @@ export default function GradeSubmissionPage() {
                             </div>
                             {!isGrading && aiReasoning[ans.questionId] && (
                               <div className="text-sm text-foreground/80 leading-relaxed italic">
-                                "{aiReasoning[ans.questionId]}"
+                                &quot;{aiReasoning[ans.questionId]}&quot;
                               </div>
                             )}
                           </div>

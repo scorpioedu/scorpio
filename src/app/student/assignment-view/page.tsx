@@ -1037,7 +1037,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                                 <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Feedback</span>
                               </div>
                               <div className="text-sm leading-relaxed text-foreground italic">
-                                "{existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.feedback}"
+                                &quot;{existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.feedback}&quot;
                               </div>
                             </div>
                           )}

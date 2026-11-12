@@ -138,13 +138,13 @@ export default function AboutClient() {
               <div className="mt-1 h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                 <div className="h-2 w-2 rounded-full bg-primary" />
               </div>
-              <p className="text-muted-foreground italic">"Physics isn't about memorizing formulas; it's about seeing the fundamental laws that govern the universe."</p>
+              <p className="text-muted-foreground italic">&quot;Physics isn&apos;t about memorizing formulas; it&apos;s about seeing the fundamental laws that govern the universe.&quot;</p>
             </div>
             <p className="text-foreground/80 leading-relaxed">
-              Most AI tools today are "Answer Engines"—they provide the result but skip the derivation. Scorpio is built on the philosophy that true learning happens in the <strong>struggle</strong>.
+              Most AI tools today are &quot;Answer Engines&quot;—they provide the result but skip the derivation. Scorpio is built on the philosophy that true learning happens in the <strong>struggle</strong>.
             </p>
             <p className="text-foreground/80 leading-relaxed">
-              By enforcing Socratic dialogue, we guide students through hints, analogies, and conceptual checkpoints, ensuring they don't just get the answer, but gain the intuition.
+              By enforcing Socratic dialogue, we guide students through hints, analogies, and conceptual checkpoints, ensuring they don&apos;t just get the answer, but gain the intuition.
             </p>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function AboutClient() {
                 <span className="font-bold">Student Success</span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Reduces homework anxiety and "stuck" time by providing 24/7 expert-level Socratic assistance that adapts to their specific level.
+                Reduces homework anxiety and &quot;stuck&quot; time by providing 24/7 expert-level Socratic assistance that adapts to their specific level.
               </p>
             </CardContent>
           </Card>

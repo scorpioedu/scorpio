@@ -96,7 +96,7 @@ const PromptCard = ({ icon: Icon, userText, aiText, delay, rotation, side, top }
             </div>
             <div className="space-y-0.5 mt-0.5">
               <p className="text-[8px] font-black uppercase tracking-[0.25em] text-muted-foreground/50 leading-none">Perspective</p>
-              <p className="text-[10px] xl:text-[12px] font-bold text-foreground leading-tight italic pr-2">"{userText}"</p>
+              <p className="text-[10px] xl:text-[12px] font-bold text-foreground leading-tight italic pr-2">&quot;{userText}&quot;</p>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@ export const FloatingPrompts = () => {
       userText: "What's the answer to question 4?",
       aiText: (
         <>
-          I can't give you the answer, but let's look at the free-body diagram first. The sum of forces is:
+          I can&apos;t give you the answer, but let&apos;s look at the free-body diagram first. The sum of forces is:
           <div className="mt-2 py-1 px-2.5 bg-primary/8 rounded-lg border border-primary/20 overflow-x-hidden text-xs">
             <InlineMath math="\sum F_y = N - mg \cos \theta = 0" />
           </div>

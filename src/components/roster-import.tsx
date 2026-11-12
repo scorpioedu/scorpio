@@ -137,7 +137,7 @@ export function RosterImport() {
         <DialogHeader>
           <DialogTitle>Import Class Roster</DialogTitle>
           <DialogDescription>
-            Upload a .csv file with columns for 'Email' and 'Name'.
+            Upload a .csv file with columns for &apos;Email&apos; and &apos;Name&apos;.
           </DialogDescription>
         </DialogHeader>
 

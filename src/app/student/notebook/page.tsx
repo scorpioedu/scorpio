@@ -806,7 +806,7 @@ export default function NotebookPage() {
                         <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-1">Ask about your notes</h3>
                         <p className="text-[11px] text-muted-foreground leading-relaxed">
                           I can help you summarize your notes, suggest research topics,
-                          or explain concepts you've written about.
+                          or explain concepts you&apos;ve written about.
                         </p>
                       </div>
                       <div className="grid grid-cols-1 gap-2 pt-2">

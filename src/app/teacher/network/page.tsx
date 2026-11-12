@@ -736,7 +736,7 @@ export default function NetworkPage() {
                     Join Existing Department
                   </CardTitle>
                   <CardDescription>
-                    Joining your school's team? Enter the code provided by your lead.
+                    Joining your school&apos;s team? Enter the code provided by your lead.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -811,7 +811,7 @@ export default function NetworkPage() {
                         Department Teachers ({networkMembers.length})
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        All educators sharing this network's curriculum and AI pool.
+                        All educators sharing this network&apos;s curriculum and AI pool.
                       </CardDescription>
                     </div>
                     {isOwner && (

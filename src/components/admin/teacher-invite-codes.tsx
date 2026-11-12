@@ -181,7 +181,7 @@ export function TeacherInviteCodes() {
                 <DialogHeader>
                   <DialogTitle>Generate Teacher Invite Code</DialogTitle>
                   <DialogDescription>
-                    Add an optional label (e.g. the teacher's name or school) to keep track of who you gave this to.
+                    Add an optional label (e.g. the teacher&apos;s name or school) to keep track of who you gave this to.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-2">

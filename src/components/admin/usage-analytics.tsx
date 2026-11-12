@@ -311,7 +311,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                           <p className="font-black text-[10px] uppercase tracking-widest">Growth Analytics</p>
                         </div>
                         <p className="text-[10px] leading-relaxed opacity-90 font-medium font-sans">
-                          Track how your department's AI usage correlates with actual financial investment over time.
+                          Track how your department&apos;s AI usage correlates with actual financial investment over time.
                         </p>
                       </div>
                       <div className="p-4 space-y-3 bg-white dark:bg-zinc-950">
@@ -562,7 +562,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                         <p className="font-black text-xs uppercase tracking-widest">Workload Breakdown</p>
                       </div>
                       <p className="text-[11px] leading-relaxed opacity-90 font-medium font-sans">
-                        See exactly where your AI usage is going across the department's active curriculum.
+                        See exactly where your AI usage is going across the department&apos;s active curriculum.
                       </p>
                     </div>
                     <div className="p-4 space-y-3 bg-white dark:bg-zinc-950">
