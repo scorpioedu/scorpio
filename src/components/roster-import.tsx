@@ -117,7 +117,7 @@ export function RosterImport() {
         router.refresh(); // Refresh to see new students without full reload
       }, 2000);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Import error:", err);
       setError("Failed to import roster. Please check your permissions.");
     } finally {

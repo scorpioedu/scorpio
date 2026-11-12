@@ -12,6 +12,7 @@ import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
 import { Send, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { errorCode } from "@/lib/error-utils";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -32,11 +33,11 @@ export default function ForgotPasswordPage() {
     try {
       await resetPassword(email);
       setSuccess(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Reset password error:", err);
-      if (err.code === "auth/user-not-found") {
+      if (errorCode(err) === "auth/user-not-found") {
         setError("No account found with this email address.");
-      } else if (err.code === "auth/invalid-email") {
+      } else if (errorCode(err) === "auth/invalid-email") {
         setError("Please enter a valid email address.");
       } else {
         setError("An error occurred. Please try again later.");

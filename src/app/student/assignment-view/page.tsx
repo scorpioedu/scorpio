@@ -42,6 +42,7 @@ import { getAssignmentPoints } from "@/lib/assignment-points";
 import { ScientificCalculator } from "@/components/calculator/scientific-calculator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Question {
   id: string;
@@ -496,12 +497,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
         content: responseText
       };
       setAiMessages(prev => [...prev, aiResponse]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("AI Error:", error);
       setAiMessages(prev => [...prev, {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: error.message || "I'm having trouble connecting right now. Please try again."
+        content: errorMessage(error) || "I'm having trouble connecting right now. Please try again."
       }]);
     } finally {
       setAiLoading(false);

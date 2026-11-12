@@ -18,6 +18,7 @@ import { RaiseLogo } from "@/components/ui/raise-logo";
 import Link from "next/link";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import { StudentProgressChart } from "@/components/dashboard/student-progress-chart";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Stats {
   totalAssignments: number;
@@ -239,9 +240,9 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
       setClassCode("");
       toast.success('Joined class successfully');
       router.refresh(); // Refresh to pick up new claims without full reload
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error joining class:", error);
-      toast.error(`Failed to join class: ${error.message}`);
+      toast.error(`Failed to join class: ${errorMessage(error)}`);
     }
     finally {
       setJoining(false);
@@ -259,9 +260,9 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
       setClassCode("");
       toast.success("Successfully left class.");
       router.refresh(); // Refresh to clear context without full reload
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error leaving class:", error);
-      toast.error(`Failed to leave class: ${error.message}`);
+      toast.error(`Failed to leave class: ${errorMessage(error)}`);
     } finally {
       setLeaving(false);
     }

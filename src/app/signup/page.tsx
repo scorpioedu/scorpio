@@ -16,6 +16,7 @@ import { GraduationCap, Presentation, Eye, EyeOff, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { errorCode, errorMessage } from "@/lib/error-utils";
 
 export default function SignupPage() {
   return <Suspense fallback={<p className="p-8">Loading sign up…</p>}><SignupForm /></Suspense>;
@@ -104,7 +105,7 @@ function SignupForm() {
           return;
         }
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         // 3. Catch actual network failures (e.g. ERR_CONNECTION_REFUSED)
         console.error("Invite code verification failed:", err);
         setError("Network error: Could not reach the verification server. Please ensure your connection is stable.");
@@ -133,11 +134,11 @@ function SignupForm() {
 
       router.refresh();
       router.push(role === "teacher" ? "/teacher" : "/student");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      if (err.code === 'auth/email-already-in-use') {
+      if (errorCode(err) === 'auth/email-already-in-use') {
         setError("Email is already in use");
-      } else if (err.code === 'auth/weak-password') {
+      } else if (errorCode(err) === 'auth/weak-password') {
         setError("Password should be at least 6 characters");
       } else {
         setError(err instanceof Error ? err.message : "Failed to create account. Please try again.");

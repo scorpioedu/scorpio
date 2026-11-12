@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NetworkStudents } from "@/components/teacher/network-students";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Student {
   id: string;
@@ -121,9 +122,9 @@ export default function StudentsPage() {
       await cleanupStudentData(studentId, undefined, true);
       setStudents(students.filter((s) => s.id !== studentId));
       toast.success("Student records removed.");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting student:", error);
-      toast.error(`Failed to delete student: ${error.message}`);
+      toast.error(`Failed to delete student: ${errorMessage(error)}`);
     }
   };
 

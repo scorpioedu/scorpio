@@ -215,7 +215,7 @@ export default function NetworkPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to get response");
       setLimitsMessages(prev => [...prev, { role: "assistant", content: data.text }]);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLimitsMessages(prev => [...prev, { role: "assistant", content: "Sorry, I couldn't process that right now. Please try again." }]);
     } finally {
       setLimitsLoading(false);

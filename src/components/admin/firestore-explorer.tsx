@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Database, ChevronLeft, ChevronRight, RefreshCw, FileJson, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { errorMessage } from "@/lib/error-utils";
 
 export function FirestoreExplorer() {
   const [collections, setCollections] = useState<string[]>([]);
@@ -40,8 +41,8 @@ export function FirestoreExplorer() {
         if (data.collections.length > 0) {
           setSelectedCollection(data.collections[0]);
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(errorMessage(err) ?? "");
       }
     }
     fetchCollections();
@@ -88,8 +89,8 @@ export function FirestoreExplorer() {
           setLastDocId(data.lastDocId || null);
         }
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(errorMessage(err) ?? "");
     } finally {
       setLoading(false);
     }

@@ -16,6 +16,7 @@ import { ArrowUpRight, BarChart3, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { GradeExportButton } from "@/components/grade-export-button";
 import { GradeDistributionChart } from "@/components/admin/grade-distribution-chart";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Student {
   id: string;
@@ -225,9 +226,9 @@ export default function TeacherGradesPage() {
       
       setStudents(students.filter((s) => s.id !== studentId));
       toast.success("Student records removed.");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting student:", error);
-      toast.error(`Failed to delete student: ${error.message}`);
+      toast.error(`Failed to delete student: ${errorMessage(error)}`);
     }
   };
 
