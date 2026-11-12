@@ -25,7 +25,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-19 | todo | | | | | |
 | RT-20 | todo | | | | | |
 | RT-21 | todo | | | | | |
-| RT-22 | todo | | | | | |
+| RT-22 | in-progress | rt-22a-emulator-wiring | 0cf3c95 (merge) | PASS | PASS (part 1) | part 1 merged: engines, .nvmrc, env names, emulator wiring+alt ports. Part 2 (husky/prettier/lint-staged, zod env, README) todo |
 | RT-23 | todo | | | | | |
 | RT-24 | todo | | | | | |
 | RT-25 | todo | | | | | |
