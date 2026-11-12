@@ -62,3 +62,30 @@ export async function settleBudget(db: firestore.Firestore, id: string, inputTok
     });
   });
 }
+
+export const STALE_RESERVATION_MS = 30 * 60 * 1000;
+
+/** Expire pending reservations older than 30 minutes, releasing their hold (floor 0). Idempotent. */
+export async function releaseStaleReservations(db: firestore.Firestore, now: Date = new Date()): Promise<number> {
+  const cutoff = new Date(now.getTime() - STALE_RESERVATION_MS);
+  let expired = 0;
+  for (let page = 0; page < 10; page++) {
+    const stale = await db.collection('ai_reservations').where('status', '==', 'pending').where('createdAt', '<', cutoff).limit(200).get();
+    if (stale.empty) break;
+    for (const doc of stale.docs) {
+      const released = await db.runTransaction(async tx => {
+        const ref = db.collection('ai_reservations').doc(doc.id);
+        const reservation = (await tx.get(ref)).data();
+        if (!reservation || reservation.status !== 'pending') return false;
+        const orgRef = db.collection('organizations').doc(reservation.organizationId);
+        const org = (await tx.get(orgRef)).data();
+        if (org) tx.update(orgRef, { aiUsageReserved: Math.max(0, (org.aiUsageReserved || 0) - reservation.maxCost) });
+        tx.update(ref, { status: 'expired', expiredAt: new Date() });
+        return true;
+      });
+      if (released) expired++;
+    }
+    if (stale.size < 200) break;
+  }
+  return expired;
+}

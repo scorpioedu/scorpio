@@ -12,3 +12,8 @@
 - `gradeSubmission` returns early (no org, non-AI assignment, budget) in ways that leave the status `submitted`; the sweep now covers the AI cases after 20 min, but the early-return paths should set an explicit status.
 - `gradeResponseAI` still uses `any` and an unvalidated JSON parse (RT-07). `@google/genai` ^0.13 pinned (RT-02).
 - Sweep scan is capped at 2000 candidates per run; with a very large permanent manual-grading backlog older than the cap, AI-stuck submissions beyond it wait for later runs. A denormalised `gradingType` field on submissions would allow a query-level filter.
+
+## RT-04
+- Reservation tests live in `tests/security/ai-reservations.test.ts` (emulator suite) rather than `workflows.test.ts` to avoid merge conflicts with concurrent tickets.
+- `functions/src/grading.ts` calls `reserveBudget`/`settleBudget` directly; check its failure paths settle the hold (RT-07 scope). Per-user usage counters incremented at reservation time are not rolled back when a reservation expires.
+- The stale threshold (30 min) is a constant in `functions/src/metering.ts`; finding F-004 suggested 5 min, the ticket says 30 min (kept, well above the 60 s provider timeout).

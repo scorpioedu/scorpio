@@ -114,3 +114,5 @@ export const onAssignmentCreated = onDocumentCreated({
 });
 
 export { deliverBillingUsage } from "./billing";
+
+export { expireStaleReservations } from "./reservations";

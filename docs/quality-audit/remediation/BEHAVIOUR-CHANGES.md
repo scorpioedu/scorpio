@@ -10,3 +10,8 @@
 - Sweep scans up to 10 pages of 200 stuck candidates per run (ordered by `submittedAt`), paging past manual-grading submissions so they cannot starve AI ones.
 - After one answer fails, no further model calls are started and the trigger waits for in-flight calls before routing to `pending_review` (the lock is never released while calls run).
 - `sweepStuckGrading` is exported from `functions/src/index.ts` so it deploys.
+
+## RT-04 (F-004, B-003)
+- A provider call that fails in transport (timeout, network error) or returns an unreadable body now releases its budget hold and charges the conservative estimate (input bytes / 4 tokens, 0 output) instead of leaving the reservation pending forever. HTTP non-OK responses are unchanged (settled at zero cost).
+- A provider response without `usageMetadata` no longer throws; it settles with the same estimate and logs a warning, and the generated text is returned to the caller.
+- New scheduled function `expireStaleReservations` (every 15 min): `ai_reservations` still `pending` after 30 minutes are marked `expired` and their `maxCost` is subtracted from `organizations.aiUsageReserved` (floor 0). Expired holds are not charged. Needs the new `ai_reservations (status, createdAt)` composite index deployed; scans up to 10 pages of 200 per run.
