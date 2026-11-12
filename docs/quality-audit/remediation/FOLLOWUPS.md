@@ -59,3 +59,10 @@
 ## From RT-09
 - Replace `'unsafe-inline'` in the CSP `script-src` with a per-request nonce (needs a proxy/middleware that sets the nonce and makes pages dynamic) or hashes for the two inline scripts; Next's own inline bootstrap scripts are why it is not a one-line change.
 - `/api/csp-report` has only a per-instance log cap. If reports become noisy, move it behind the shared limiter from RT-11.
+## From RT-12
+- Routes still without zod body schemas (not in the six-route scope, client contracts not reviewed): ai/generate, ai/parse (G-005 asks for upper bounds on `count`/`text`), ai/generate-title, ai/synthesize-rubric, chat, chat/landing, courses, account, auth/register, auth/session, auth/teacher-code, admin/firestore, research/respond, student/enrollment, student/tutor, support/report, teacher/network/*, teacher/students. `src/lib/ai/*` was off-limits (RT-10), so the AI routes should wait for it.
+- Ticket step "move `validateQuestionAnswers` server-side" is not done: the rules (multiple-choice answer must be one of the options, true/false must be "True"/"False", short-answer non-empty) change what `/api/assignments` accepts, and `scripts`/other importers may rely on partial keys. Add it behind a characterization pass over the importers.
+- `/api/assignments` question objects use `looseObject` because editors/importers add per-type fields (options etc.); tighten to an allow-list once the question shape is shared with `src/app/teacher/create/page.tsx` (ticket step 3, client pages were off-limits here).
+- RT-13: `withAuthorizedRequest` still JSON-parses the body itself and converts handler exceptions to 400; `parseJsonBody` re-reads the (cloned) body in each handler. Once RT-13 passes the parsed body in context, drop the second read. `parseJsonBody` already treats an empty body as `{}` and returns 413/400 per RT-13's target semantics.
+- `DELETE /api/account` deletion order (second half of G-009) is untouched.
+- `/api/grade` route-level `submissionId` check is redundant with the wrapper's `resource: "submission"` check.

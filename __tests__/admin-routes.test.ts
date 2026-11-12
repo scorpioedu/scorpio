@@ -15,6 +15,10 @@ jest.mock('../src/lib/firebase-admin', () => ({
   adminAuth: { verifyIdToken: (...a: unknown[]) => verifyIdToken(...a), verifySessionCookie: jest.fn() },
   adminFieldWithValue: { serverTimestamp: () => 'ts' },
   adminDb: {
+    // RT-12: approve/submit in request-access now run in a transaction; reads delegate to the same stubs.
+    runTransaction: async (fn: (tx: unknown) => Promise<unknown>) => fn({
+      get: async (r: { get: () => Promise<unknown> }) => r.get(), set: () => undefined, update: () => undefined,
+    }),
     collection: (name: string) => name === 'admin_audit'
       ? { add: async (d: Record<string, unknown>) => { audits.push(d); return { id: 'x' }; } }
       : Object.assign({ doc: () => docRef, add: async () => ({ id: 'n1' }) }, query),

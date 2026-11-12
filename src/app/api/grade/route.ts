@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { gradeResponse } from '@/lib/ai/grading';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { gradeBody } from '@/lib/schemas/api-bodies';
 
 async function handlePost(req: NextRequest) {
   if (!adminDb) {
@@ -12,11 +14,9 @@ async function handlePost(req: NextRequest) {
   }
 
   try {
-    const { submissionId } = await req.json();
-
-    if (!submissionId) {
-      return NextResponse.json({ error: 'Missing submissionId' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, gradeBody, { message: 'Missing submissionId' });
+    if (!parsed.ok) return parsed.response;
+    const { submissionId } = parsed.data;
 
     // 1. Fetch Submission
     const submissionRef = adminDb.collection('submissions').doc(submissionId);

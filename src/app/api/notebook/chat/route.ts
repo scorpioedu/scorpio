@@ -5,6 +5,8 @@ import { adminDb, adminFieldWithValue } from '@/lib/firebase-admin';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
 import { getNotebookAssistantResponse } from "@/lib/ai/notebook";
 import { checkRateLimit } from '@/lib/rate-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { notebookChatBody } from '@/lib/schemas/api-bodies';
 
 async function handlePost(req: NextRequest) {
   if (!adminDb) {
@@ -12,11 +14,10 @@ async function handlePost(req: NextRequest) {
   }
 
   try {
-    const { messages, notebookContent, studentId } = await req.json();
-
-    if (!messages || !studentId) {
-      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, notebookChatBody, { message: 'Missing required parameters' });
+    if (!parsed.ok) return parsed.response;
+    const { messages, studentId } = parsed.data;
+    const notebookContent = parsed.data.notebookContent ?? undefined;
 
     // 1. Check Rate Limit
     const rateLimitCheck = await checkRateLimit(req, studentId, "notebook", { windowMs: 60000, maxRequests: 20 });
@@ -57,7 +58,7 @@ async function handlePost(req: NextRequest) {
     const budgetCheck = await checkBudget(organizationId, "notebook", studentId);
     if (budgetCheck.allowed) {
         // 3. Generate AI Response using centralized gemini helper
-        const result = await getNotebookAssistantResponse(messages.map((m: { role: "user" | "assistant"; content: string }) => ({ ...m, content: scrubPII(m.content, [studentData?.displayName || ""]) })), scrubPII(notebookContent, [studentData?.displayName || ""]));
+        const result = await getNotebookAssistantResponse(messages.map(m => ({ ...m, content: scrubPII(m.content, [studentData?.displayName || ""]) })), scrubPII(notebookContent as string, [studentData?.displayName || ""]));
         const responseText = result.content;
 
         // 4. Record Usage and Increment Notebook Count
