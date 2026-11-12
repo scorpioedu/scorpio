@@ -11,6 +11,14 @@ function resolveApiKey(): string {
   return process.env.GEMINI_API_KEY;
 }
 
+/** Thrown when the budget reservation for a call is refused or cannot be made. */
+export class AiBudgetError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AiBudgetError';
+  }
+}
+
 async function callGeminiDirect(request: any) {
   const apiKey = resolveApiKey();
   const modelName = "gemini-3.8-flash";
@@ -45,7 +53,8 @@ async function callGeminiDirect(request: any) {
   };
 
   const context = billingContext.getStore();
-  const isExempt = context?.type === 'landing' || context?.type === 'research';
+  // Only the admin-only research route is exempt; public landing traffic must always be capped by a budget.
+  const isExempt = context?.type === 'research';
   if (!context?.organizationId && !isExempt) throw new Error('An authenticated network is required for AI');
   const payloadText = JSON.stringify(payload);
   const inputBytes = Buffer.byteLength(payloadText);
@@ -56,8 +65,9 @@ async function callGeminiDirect(request: any) {
       reservation = await reserveBudget(adminDb, context.organizationId, context.type, context.userId,
         estimateMaximumCost(inputBytes, payload.generationConfig.maxOutputTokens));
     } catch (budgetErr) {
-      if (!isExempt) throw budgetErr;
-      console.warn(`[AI] ${context.type} reservation skipped:`, budgetErr instanceof Error ? budgetErr.message : budgetErr);
+      const detail = budgetErr instanceof Error ? budgetErr.message : String(budgetErr);
+      if (!isExempt) throw new AiBudgetError(detail);
+      console.error(`[AI] ${context.type} reservation skipped (exempt type, proceeding uncapped):`, detail);
     }
   }
   // Any failure after the hold is taken must release it: charge the input estimate, never leave it pending.

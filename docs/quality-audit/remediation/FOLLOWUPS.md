@@ -23,3 +23,8 @@
 - Reservation tests live in `tests/security/ai-reservations.test.ts` (emulator suite) rather than `workflows.test.ts` to avoid merge conflicts with concurrent tickets.
 - `functions/src/grading.ts` calls `reserveBudget`/`settleBudget` directly; check its failure paths settle the hold (RT-07 scope). Per-user usage counters incremented at reservation time are not rolled back when a reservation expires.
 - The stale threshold (30 min) is a constant in `functions/src/metering.ts`; finding F-004 suggested 5 min, the ticket says 30 min (kept, well above the 60 s provider timeout).
+
+## RT-03
+- `checkRateLimit` (`src/lib/rate-limit.ts`) still derives its identifier from the raw `x-forwarded-for` when no user id is given. The landing route now passes a hashed trusted IP, but other callers (C-002) are unchanged.
+- A message is counted before the provider call; if the provider or budget fails after admission, the visitor's counter is not refunded.
+- Add a TTL policy on `landing_visitors` and `rate_limits` documents so they do not accumulate.
