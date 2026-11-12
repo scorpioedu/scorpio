@@ -25,8 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/auth-context";
 import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
+import { Latex } from "@/components/latex";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -383,7 +382,7 @@ export default function TeacherVault() {
                       onChange={(e) => setNewFormula({ ...newFormula, latex: e.target.value })}
                     />
                     <div className="bg-muted/40 border border-border p-6 rounded-2xl flex items-center justify-center min-h-[80px] shadow-inner">
-                      {newFormula.latex ? <BlockMath math={newFormula.latex} /> : <span className="text-muted-foreground text-sm italic">Live preview</span>}
+                      {newFormula.latex ? <Latex math={newFormula.latex} display /> : <span className="text-muted-foreground text-sm italic">Live preview</span>}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -595,7 +594,7 @@ export default function TeacherVault() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="bg-background rounded-2xl p-6 text-center shadow-sm flex flex-col items-center justify-center min-h-[100px]">
-                  <BlockMath math={formula.latex} />
+                  <Latex math={formula.latex} display />
                 </div>
               </CardContent>
             </Card>

@@ -91,3 +91,10 @@
 - RT-11: `rate_limits` documents of retired formats (`<kind>_<raw x-forwarded-for>`) and anything without `expiresAt` are not covered by the TTL policy; a one-off cleanup is needed.
 - RT-11: landing chat still has its own `admit()` counters (F-002 territory); only its Retry-After header changed here.
 - RT-11: /api/ai/generate-title is a stub returning a constant; limited anyway so it cannot be hammered once it calls a model.
+
+## From RT-16
+- Skipped: lazy-initialising Firestore, Storage and App Check inside `src/lib/firebase.ts`. `auth`, `db`, `storage` are module-level exports used by many files (and `doc(db, ...)` needs a real Firestore instance, so a Proxy is not viable), and deferring App Check risks the first Auth/Firestore calls going out without a token if enforcement is on (auth-flow risk). Needs an ops decision on App Check enforcement plus a `getDb()` migration. Effect today: `/login`, `/signup`, `/forgot-password` still load `@firebase/firestore` (82 KB gz) and reCAPTCHA Enterprise; `/pricing` and `/` no longer do.
+- `/student` first-load JS is 582 KB gz (was 717), above the ticket's 450 KB target. The remainder is page/sidebar code (RT-25) and shared chunks (framer-motion, lucide, firebase auth + firestore). `/student/tutor`, `/features`, `/ai`, `/teacher/network`, `/teacher/create` and grade pages still import `MarkdownRenderer` (KaTeX) statically; moving them to `LazyMarkdownRenderer` is per-page work for RT-24/25.
+- `src/components/landing/workspace-preview-tabs.tsx` and `src/components/ui/floating-prompts.tsx` still import `react-katex` (not in the ticket's two vault files); `react-katex` cannot leave package.json until they move to `Latex`.
+- Lighthouse mobile (step 5) was not re-run: no Lighthouse available here and the in-app browser pane does not emit LCP while hidden. Mechanism evidence is in RT-16-RESULT.md; re-run `/`, `/login`, `/pricing` before closing the ticket.
+- Landing LCP is still gated by the hero `reveal-preview` animation (1 s from opacity 0 after a 185 ms delay); making the LCP element visible from first paint is a design decision.

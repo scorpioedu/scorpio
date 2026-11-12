@@ -2,6 +2,7 @@
 
 import { AuthProvider } from "@/contexts/auth-context";
 import { usePathname } from "next/navigation";
+import { pathNeedsAuth } from "@/lib/auth-routes";
 import { ThemeProvider } from "next-themes";
 import { SpaceEffectsProvider } from "@/contexts/space-effects-context";
 import { AppearanceProvider } from "@/contexts/appearance-context";
@@ -11,7 +12,7 @@ import { Suspense } from "react";
 
 export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
-  const needsAuth = pathname !== "/" && pathname !== "/demos/teacher";
+  const needsAuth = pathNeedsAuth(pathname);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
