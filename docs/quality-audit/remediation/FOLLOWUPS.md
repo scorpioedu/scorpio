@@ -124,3 +124,7 @@
 - `/api/ai/parse` and `/api/ai/generate` surface `AiOutputError` (model produced unusable JSON) as 502; retry-with-backoff in the helper would reduce how often teachers see it.
 - Remaining `console.*` in route handlers and `src/lib` are not structured logs; a shared server logger (with requestId) would be the next step.
 - Support-report validation (screenshot size/type, populating identity from the authenticated profile rather than the body) from G-006 is not done; only the persistence failure is.
+## From RT-30
+- The 11 "missing" indexes in the audit (D-007) collapse to 8 distinct composites because Firestore equality filters are order-independent (`users` courseId+role and teacherId+role serve two rows each; `submissions` studentId+assignmentId serves two). Strictly, none of the 8 is required today: every `==`/`in` only query is served by single-field index merging, and the queries that truly need composites (equality + orderBy/range) already had indexes. The 8 follow the audit recommendation. `__tests__/firestore-indexes-coverage.test.ts` is a static table, not an emulator proof, and must be updated by hand when queries change.
+- `src/app/teacher/students/page.tsx:68` queries courses with `teacherId == uid` and `code == uid` (a user id used as a course code); looks like a leftover and always returns empty.
+- Custom claims migration, rules changes, `students/` and `teachers/` deprecation: prepared in RT-30-CLAIMS-PLAN.md, not executed.
