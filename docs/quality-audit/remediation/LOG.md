@@ -7,3 +7,4 @@
 - 2026-11-11 22:04:00 RT-22 part 1 verified PASS, merged; integration gate PASS. Next: RT-05 and RT-06 in parallel (disjoint files).
 - 2026-11-11 22:20:38 RT-05 attempt1 verifier FAIL (sweep not exported); attempt2 PASS; merged 139d0b2; integration gate PASS. ESLint error ceiling ratcheted 246->245. RT-06 under verification; RT-04 dispatched.
 - 2026-11-11 22:30:46 RT-06 verifier PASS; merged (doc conflicts resolved keeping both; accidentally staged .claude/worktrees gitlinks removed by amend; excluded via .git/info/exclude). Integration gate PASS (40 security). RT-04 under verification.
+- 2026-11-11 22:32:56 RT-04 verifier PASS, merged 66f0ea5, gate PASS (48 security). RT-01 runbook merged (docs only). Next: RT-03.
