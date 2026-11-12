@@ -37,10 +37,10 @@ Proof: `rg -F` for the file name and the basename without extension across `src`
 ffmpeg was available. Compression is heavy (300 s into 5 MB), so on-screen text is softer; see BEHAVIOUR-CHANGES.md and HUMAN-TODO.md.
 
 ## Code changes
-- `src/components/landing/system-demos.tsx`: poster + `preload="none"` (I-002).
+- `src/components/landing/system-demos.tsx`: poster + `preload="none"`, but this file is dead code (imported nowhere), so no runtime effect. The live video is on `/demos` (already `preload="metadata"`, poster `/ai-tutor.png` 376 KB); its poster is now `/demos/scorpio-demo-poster.jpg` (24 KB, frame from the video) instead of the 376 KB `/ai-tutor.png`; `preload="metadata"` kept.
 - `src/components/demo-carousel.tsx`: active clip `preload="metadata"` (I-003).
 - `src/app/(docs)/about/about-client.tsx`: `next/image` with `fill`, `sizes`, `priority` (I-004, I-005 for this file).
-- `src/app/layout.tsx`: `subsets: ['latin']` on Plus Jakarta, Lora, IBM Plex Mono; Plus Jakarta (default) preload on; IBM Plex Sans preload off; OG image path `/og-image.jpg` (still 1200x630). All eight families are referenced from CSS, so none were dropped.
+- `src/app/layout.tsx`: `subsets: ['latin']` on Plus Jakarta, Lora, IBM Plex Mono; preload flags unchanged (IBM Plex Sans default body font and Inter preloaded; the others not); OG image path `/og-image.jpg` (still 1200x630). All eight families are referenced from CSS, so none were dropped.
 
 ## Browser evidence (own tab, next dev on port 5100; 5000 is held by macOS Control Center)
 - `/about`: headshot served via `/_next/image` (`w=828`, 395x395 natural, 34 KB at w=1080), renders correctly; og:image meta is `https://scorpioedu.org/og-image.jpg`.

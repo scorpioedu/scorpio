@@ -17,7 +17,7 @@ const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   style: ["normal", "italic"],
   display: "swap",
-  preload: true, // default UI font
+  preload: false,
 });
 
 const lora = Lora({
@@ -50,7 +50,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  preload: false, // user-selectable theme font, not the default
+  preload: true, // default body font (font-ibm-plex-sans class)
 });
 
 const ptSerif = PT_Serif({
