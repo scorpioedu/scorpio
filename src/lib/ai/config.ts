@@ -1,6 +1,6 @@
 import { billingContext } from '../billing-context';
 import { adminDb } from '../firebase-admin';
-import { scrubPII } from '../../../functions/src/pii';
+import { scrubPII, type ScrubLevel } from '../../../functions/src/pii';
 import { reserveBudget, settleBudget, estimateMaximumCost } from '../../../functions/src/metering';
 /**
  * Direct Gemini API configuration for Scorpio AI.
@@ -21,13 +21,13 @@ export class AiBudgetError extends Error {
 }
 
 /** Scrubs every text part of a Gemini content; other part kinds and non-content values pass through. */
-function scrubParts<T>(content: T, names: string[]): T {
+function scrubParts<T>(content: T, names: string[], level: ScrubLevel): T {
   if (!content || typeof content !== "object") return content;
   const parts = (content as { parts?: unknown }).parts;
   if (!Array.isArray(parts)) return content;
   const scrubbed = parts.map((p: unknown) => {
     const text = (p as { text?: unknown } | null)?.text;
-    return typeof text === "string" ? { ...(p as object), text: scrubPII(text, names) } : p;
+    return typeof text === "string" ? { ...(p as object), text: scrubPII(text, names, level) } : p;
   });
   return { ...content, parts: scrubbed };
 }
@@ -53,7 +53,10 @@ async function callGeminiDirect(request: any) {
   // that already scrub are unaffected. Names come from billingContext (withScrubNames); with none
   // supplied only pattern PII (email, phone, ids...) is masked.
   const scrubNames = billingContext.getStore()?.scrubNames ?? [];
-  contents = contents.map(c => scrubParts(c, scrubNames));
+  // Callers that always scrubbed (student-authored text) opt into 'full'; everything else, notably
+  // teacher-authored assignment text, only loses emails and supplied names so dates and long decimals survive.
+  const scrubLevel: ScrubLevel = request?.scrubLevel === 'full' ? 'full' : 'contact';
+  contents = contents.map(c => scrubParts(c, scrubNames, scrubLevel));
 
   const payload: any = {
     contents,
@@ -78,6 +81,7 @@ async function callGeminiDirect(request: any) {
         ? { parts: [{ text: request.systemInstruction }] }
         : request.systemInstruction,
       scrubNames,
+      scrubLevel,
     );
   }
 
@@ -176,6 +180,7 @@ export const model = {
           contents: currentContents,
           generationConfig: options?.generationConfig,
           safetySettings: options?.safetySettings,
+          scrubLevel: options?.scrubLevel,
         });
         const respObj = await res.response;
         const modelText = respObj.text();

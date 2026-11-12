@@ -46,6 +46,6 @@
 - Optional: the old `submissions/{teacherUid}/` resource files could be migrated to `resources/`.
 ## RT-10 follow-ups
 - No route supplies a roster through `withScrubNames` yet. Peer or student names typed in `/api/chat`, `ai/parse`, `ai/generate`, `ai/synthesize-rubric` and in portfolio chat history are not masked by name (only by pattern), because those routes have no roster and name-masking whole templates would corrupt words such as "Will" or "Grade". A roster-aware design (mask only user-supplied fragments) is needed to close the rest of C-008.
-- `scrubPII` patterns are broad for teacher content: a 13-16 digit run (for example a long decimal such as 3.14159265358979) becomes `[SENSITIVE]` and ISO dates become `[DATE]`. A separate narrower profile for assignment authoring could be added if teachers report damage.
+- Routes without prior scrubbing only get the email + roster-name scrub (`scrubLevel` defaults to "contact" in `callGeminiDirect`), so a phone number, student id or address typed into `/api/chat`, landing chat or teacher assignment text is not masked. Extending the contact level with a decimal-safe phone pattern is possible if needed.
 - Only `functions/src/index.ts` and `functions/src/lib/email.ts` email logs were masked (found by `rg email` over console/logger calls); other log sites were not audited further.
 - RT-27 should move `functions/src/pii.ts` into the shared package; `src/lib/ai/utils.ts` re-exports it by relative path for now.

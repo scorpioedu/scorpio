@@ -21,14 +21,19 @@ const PUBLIC_CONTACT_EMAILS = new Set(["rushil@scorpioedu.org"]);
  * 
  * @param text The input string to scrub
  * @param studentNames Optional list of names to mask (e.g., student roster)
+ * @param level 'full' (default) applies every pattern. 'contact' applies only emails and supplied
+ *   names, for teacher-authored content (assignments, rubrics) where dates, long decimals and
+ *   number lists are legitimate and were never scrubbed.
  */
-export function scrubPII(text: string, studentNames: string[] = []): string {
+export type ScrubLevel = 'full' | 'contact';
+
+export function scrubPII(text: string, studentNames: string[] = [], level: ScrubLevel = 'full'): string {
   if (!text) return text;
   
-  let scrubbed = text
-    // Email addresses
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, (m) => (PUBLIC_CONTACT_EMAILS.has(m.toLowerCase()) ? m : "[EMAIL]"))
-    
+  // Email addresses
+  let scrubbed = text.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, (m) => (PUBLIC_CONTACT_EMAILS.has(m.toLowerCase()) ? m : "[EMAIL]"));
+
+  if (level === 'full') scrubbed = scrubbed
     // Improved Phone numbers: requires some form of separator or parentheses to avoid matching 10-digit physics values
     // Matches: (123) 456-7890, 123-456-7890, 123.456.7890, +1 123 456 7890
     .replace(/(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g, "[PHONE]")

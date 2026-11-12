@@ -131,6 +131,7 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
     const prompt = `${systemPrompt}\n\n${chatContext}`;
 
     const result = await model.generateContent({
+      scrubLevel: "full",
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: 8192,
