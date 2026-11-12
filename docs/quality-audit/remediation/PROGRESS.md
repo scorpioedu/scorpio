@@ -11,7 +11,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-05 | todo | | | | | |
 | RT-06 | todo | | | | | |
 | RT-07 | todo | | | | | |
-| RT-08 | todo | | | | | |
+| RT-08 | merged | rt-08-ci-stale-test | eed8cfa (merge b082c73) | PASS | PASS | CI workflow, typecheck, stale test fixed; npm10 lockfile caveat in FOLLOWUPS |
 | RT-09 | todo | | | | | |
 | RT-10 | todo | | | | | |
 | RT-11 | todo | | | | | |
