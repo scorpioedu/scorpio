@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import type { firestore, auth, app } from 'firebase-admin';
+import { planAdminInit } from './firebase-emulator';
 
 // Re-export type for external use
 export type { firestore, auth, app };
@@ -15,33 +16,31 @@ function getApp(): app.App | null {
   
   if (_app) return _app;
 
-  // Use either FIREBASE_PROJECT_ID or the public one as fallback
-  const projectId = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY
-    ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/^"|"$/g, '')
-    : undefined;
+  const plan = planAdminInit(process.env);
 
-  if (!projectId || !clientEmail || !privateKey) {
-    console.error('[firebase-admin] Missing credentials:', { 
-      hasProjectId: !!projectId, 
-      hasClientEmail: !!clientEmail, 
-      hasPrivateKey: !!privateKey 
+  if (plan.mode === 'missing') {
+    console.error('[firebase-admin] Missing credentials:', {
+      hasProjectId: plan.hasProjectId,
+      hasClientEmail: plan.hasClientEmail,
+      hasPrivateKey: plan.hasPrivateKey
     });
     return null; // Return null instead of throwing to allow routes to handle the error
   }
 
-  console.log('[firebase-admin] Initializing for Project:', projectId);
+  const projectId = plan.projectId;
+  console.log('[firebase-admin] Initializing for Project:', projectId, plan.mode === 'emulator' ? '(emulator, no credentials)' : '');
 
   try {
-    _app = admin.initializeApp({
-      credential: admin.credential.cert({ 
-        projectId, 
-        clientEmail, 
-        privateKey 
-      }),
-      projectId,
-    });
+    _app = plan.mode === 'emulator'
+      ? admin.initializeApp({ projectId })
+      : admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId,
+            clientEmail: plan.clientEmail,
+            privateKey: plan.privateKey
+          }),
+          projectId,
+        });
     console.log('[firebase-admin] Initialized successfully.');
     return _app;
   } catch (e: any) {
