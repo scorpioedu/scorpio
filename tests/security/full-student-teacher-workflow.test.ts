@@ -21,7 +21,7 @@ import { ref, uploadBytes, getBytes } from 'firebase/storage';
 import * as fs from 'node:fs';
 
 jest.mock('../../src/lib/firebase-admin', () => {
-  const admin = require('firebase-admin');
+  const admin = jest.requireActual<typeof import('firebase-admin')>('firebase-admin');
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Emulator required');
   if (!admin.apps.length) admin.initializeApp({ projectId: 'demo-scorpio-security' });
   return {

@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 jest.mock('../../src/lib/firebase-admin',()=>{
- const admin=require('firebase-admin');if(!process.env.FIRESTORE_EMULATOR_HOST)throw new Error('Emulator required');
+ const admin=jest.requireActual<typeof import('firebase-admin')>('firebase-admin');if(!process.env.FIRESTORE_EMULATOR_HOST)throw new Error('Emulator required');
  if(!admin.apps.length)admin.initializeApp({projectId:'demo-scorpio-security'});return {adminDb:admin.firestore()};
 });
 jest.mock('@polar-sh/sdk/webhooks',()=>({validateEvent:(body:string)=>JSON.parse(body)}));
