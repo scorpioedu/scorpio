@@ -25,6 +25,24 @@ describe('mapWithConcurrency', () => {
   });
 });
 
+describe('mapWithConcurrency failure handling', () => {
+  test('stops starting new work after a failure and waits for in-flight calls before rejecting', async () => {
+    const started: number[] = [];
+    let inFlight = 0;
+    await expect(mapWithConcurrency([0, 1, 2, 3, 4, 5, 6, 7], 3, async n => {
+      started.push(n);
+      inFlight++;
+      try {
+        await sleep(n === 0 ? 5 : 40);
+        if (n === 0) throw new Error('first fails');
+        return n;
+      } finally { inFlight--; }
+    })).rejects.toThrow('first fails');
+    expect(inFlight).toBe(0);
+    expect(started).toEqual([0, 1, 2]);
+  });
+});
+
 describe('isStuckSubmission', () => {
   const ts = (ms: number) => ({ toMillis: () => ms });
   const now = 10_000_000;

@@ -65,4 +65,11 @@ describe('sweepStuckSubmissions', () => {
     expect(await status('sw-graded')).toBe('graded');
     expect((await db.collection('grading_locks').doc('sw-stuck').get()).exists).toBe(false);
   });
+
+  test('old manual-grading submissions cannot starve AI ones out of the scan', async () => {
+    for (const n of [1, 2, 3]) await seed(`st-manual-${n}`, { status: 'submitted', submittedAt: ago(STUCK_AFTER_MS * 10 + n * 1000), assignmentId: 'a-manual' });
+    await seed('st-ai', { status: 'submitted', submittedAt: ago(STUCK_AFTER_MS * 5) });
+    const swept = await sweepStuckSubmissions(db, Date.now(), { pageSize: 2, maxPages: 5 });
+    expect(swept).toEqual(['st-ai']);
+  });
 });

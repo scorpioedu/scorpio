@@ -175,6 +175,8 @@ async function gradeResponseAI(
   }
 }
 
+interface SubmittedAnswer { questionId: string; answer: string; [field: string]: unknown }
+
 /**
  * MAIN GRADING PROCESSOR
  */
@@ -232,7 +234,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     let totalPromptTokens = 0;
     let totalCandidateTokens = 0;
 
-    const gradedAnswers = await mapWithConcurrency(answers, GRADING_CONCURRENCY, async (ans: any) => {
+    const gradedAnswers = await mapWithConcurrency(answers, GRADING_CONCURRENCY, async (ans: SubmittedAnswer) => {
         const question = questions.find((q: any) => q.id === ans.questionId);
         if (!question) return ans;
 

@@ -11,4 +11,4 @@
 - `functions/src/index.ts`, `billing.ts` still use `console.*` (and index.ts logs recipient emails); migrate to `firebase-functions/logger` and redact emails (K-005 remainder, RT-17/RT-18).
 - `gradeSubmission` returns early (no org, non-AI assignment, budget) in ways that leave the status `submitted`; the sweep now covers the AI cases after 20 min, but the early-return paths should set an explicit status.
 - `gradeResponseAI` still uses `any` and an unvalidated JSON parse (RT-07). `@google/genai` ^0.13 pinned (RT-02).
-- Sweep processes at most 200 candidates per run; revisit if backlog is ever larger.
+- Sweep scan is capped at 2000 candidates per run; with a very large permanent manual-grading backlog older than the cap, AI-stuck submissions beyond it wait for later runs. A denormalised `gradingType` field on submissions would allow a query-level filter.

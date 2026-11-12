@@ -7,3 +7,6 @@
 - Short-answer questions of one submission are graded up to 3 at a time instead of sequentially. Results and answer order are unchanged; token budget reservations for concurrent calls are made concurrently.
 - Grading now operates on the submission re-read inside the lease transaction, not the trigger snapshot.
 - Grading errors are logged with `firebase-functions/logger` (structured, with `submissionId`) instead of being swallowed; `console.*` in `functions/src/grading.ts` replaced.
+- Sweep scans up to 10 pages of 200 stuck candidates per run (ordered by `submittedAt`), paging past manual-grading submissions so they cannot starve AI ones.
+- After one answer fails, no further model calls are started and the trigger waits for in-flight calls before routing to `pending_review` (the lock is never released while calls run).
+- `sweepStuckGrading` is exported from `functions/src/index.ts` so it deploys.
