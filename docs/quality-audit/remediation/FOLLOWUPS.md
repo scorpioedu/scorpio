@@ -98,3 +98,11 @@
 - `src/components/landing/workspace-preview-tabs.tsx` and `src/components/ui/floating-prompts.tsx` still import `react-katex` (not in the ticket's two vault files); `react-katex` cannot leave package.json until they move to `Latex`.
 - Lighthouse mobile (step 5) was not re-run: no Lighthouse available here and the in-app browser pane does not emit LCP while hidden. Mechanism evidence is in RT-16-RESULT.md; re-run `/`, `/login`, `/pricing` before closing the ticket.
 - Landing LCP is still gated by the hero `reveal-preview` animation (1 s from opacity 0 after a 185 ms delay); making the LCP element visible from first paint is a design decision.
+
+## From RT-17
+- C-009 also asks to drop `export const dynamic = 'force-dynamic'` from `src/app/api/github/stats/route.ts` so `revalidate = 3600` takes effect. Not done: the handler reads request headers through `enforceRateLimit`, so it stays dynamic regardless, and real caching needs a cached upstream fetch (`fetch(..., { next: { revalidate } })` or an in-memory TTL) plus a decision on rate-limit behaviour.
+- `tutor_sessions` documents written before this change can contain "Error: ..." assistant messages (and ones from the 4xx path). A one-off cleanup needs production data access.
+- `src/app/student/assignment-view/page.tsx` (in-assignment tutor) still shows a failed turn as a local assistant bubble with the server's `error` text. It is not persisted (component state only), so it was left alone; it could use the same banner as the tutor page.
+- `/api/ai/parse` and `/api/ai/generate` surface `AiOutputError` (model produced unusable JSON) as 502; retry-with-backoff in the helper would reduce how often teachers see it.
+- Remaining `console.*` in route handlers and `src/lib` are not structured logs; a shared server logger (with requestId) would be the next step.
+- Support-report validation (screenshot size/type, populating identity from the authenticated profile rather than the body) from G-006 is not done; only the persistence failure is.

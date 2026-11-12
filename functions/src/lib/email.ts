@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import * as React from 'react';
+import * as logger from 'firebase-functions/logger';
 import { maskEmail } from '../pii';
 
 let resend: Resend | null = null;
@@ -17,7 +18,7 @@ export async function sendEmail({
 }) {
   const finalApiKey = apiKey || process.env.RESEND_API_KEY;
   if (!finalApiKey) {
-    console.warn("No RESEND_API_KEY found. Skipping email send.");
+    logger.warn("No RESEND_API_KEY found. Skipping email send.");
     return;
   }
   
@@ -32,10 +33,10 @@ export async function sendEmail({
       subject,
       react,
     });
-    console.log(`Email sent successfully to ${maskEmail(to)}`, data);
+    logger.info(`Email sent successfully to ${maskEmail(to)}`, { id: data?.data?.id });
     return data;
   } catch (error) {
-    console.error(`Failed to send email to ${maskEmail(to)}`, error);
+    logger.error(`Failed to send email to ${maskEmail(to)}`, { error: error instanceof Error ? error.name : "unknown" });
     throw error;
   }
 }

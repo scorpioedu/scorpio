@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
-export const POST = withAuthorizedRequest(async req => {
+import { errorResponse } from '@/lib/api-errors';
+import { ClientError } from '@/lib/client-error';
+export const POST = withAuthorizedRequest(async (req, { requestId }) => {
   const caller = (await authenticateRequest(req))!;
   const { name, code } = await req.json();
   if (typeof name !== 'string' || !name.trim()) return NextResponse.json({ error: 'Enter a class name' }, { status: 400 });
@@ -14,10 +16,10 @@ export const POST = withAuthorizedRequest(async req => {
       const codeRef = adminDb.collection('course_codes').doc(code);
       const reserved = await tx.get(codeRef);
       const existing = await tx.get(adminDb.collection('courses').where('code', '==', code).limit(1));
-      if (reserved.exists || !existing.empty) throw new Error('Class code already exists');
+      if (reserved.exists || !existing.empty) throw new ClientError('Class code already exists');
       tx.create(codeRef, { courseId: ref.id });
       tx.create(ref, { name: name.trim().slice(0,120), code, teacherId: caller.uid, organizationId: profile.organizationId, createdAt: new Date().toISOString() });
     });
     return NextResponse.json({ id: ref.id });
-  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Could not create class' }, { status: 400 }); }
+  } catch (error) { return errorResponse(error, 'courses', requestId); }
 }, { teacher: true, rateLimit: "write" });

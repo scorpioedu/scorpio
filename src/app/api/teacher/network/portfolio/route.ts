@@ -1,4 +1,5 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb, adminFieldWithValue } from "@/lib/firebase-admin";
 import { generateStudentPortfolio } from "@/lib/ai/network";
@@ -6,7 +7,7 @@ import { checkBudget, recordUsage } from "@/lib/usage-limit";
 
 
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { teacherId, studentId, organizationId } = await req.json();
 
@@ -107,9 +108,8 @@ async function handlePost(req: NextRequest) {
         lastUpdated: new Date() // Send client-friendly date format
       } 
     });
-  } catch (error: any) {
-    console.error("Student Portfolio Generation Error:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "portfolio", requestId);
   }
 }
 

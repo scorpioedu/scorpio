@@ -27,9 +27,8 @@ export async function GET(req: NextRequest) {
     ]);
 
     if (!commitsRes.ok || !recentRes.ok) {
-      const text = await commitsRes.text();
-      console.error("GitHub API error:", commitsRes.status, text);
-      return Response.json({ error: "GitHub API error", details: text }, { status: 502 });
+      console.error("GitHub API error:", commitsRes.status, recentRes.status);
+      return Response.json({ error: "GitHub is unavailable right now" }, { status: 502 });
     }
 
     const linkHeader = commitsRes.headers.get('link');

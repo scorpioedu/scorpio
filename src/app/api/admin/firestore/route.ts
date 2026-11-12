@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-import { withAuthorizedRequest } from '@/lib/auth-verify';
+import { withAuthorizedRequest, type AuthorizedContext } from '@/lib/auth-verify';
+import { errorResponse } from '@/lib/api-errors';
 
 // List of allowed collections we expose in the Explorer.
 const ALLOWED_COLLECTIONS = [
@@ -19,7 +20,7 @@ const ALLOWED_COLLECTIONS = [
   'landing_visitors',
 ];
 
-async function handleAdminFirestore(req: NextRequest) {
+async function handleAdminFirestore(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     if (!adminDb) {
       return NextResponse.json(
@@ -91,12 +92,8 @@ async function handleAdminFirestore(req: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
-  } catch (err: any) {
-    console.error('[admin-firestore] Error:', err);
-    return NextResponse.json(
-      { error: err?.message || 'Internal error' },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    return errorResponse(err, 'admin-firestore', requestId);
   }
 }
 

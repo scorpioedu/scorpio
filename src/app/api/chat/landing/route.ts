@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { errorResponse } from '@/lib/api-errors';
 
 import { model, AiBudgetError } from '@/lib/ai/config';
 import { VISITOR_COOKIE, VISITOR_COOKIE_MAX_AGE_S, getVisitorSecret, hashIp, issueVisitorToken, verifyVisitorToken } from '@/lib/landing-visitor';
@@ -191,10 +192,7 @@ export async function POST(req: NextRequest) {
       text: result.text,
       remaining: admission.remaining,
     }));
-  } catch (error: any) {
-    console.error('[Landing Chat API] Error:', error);
-    return NextResponse.json({
-      error: error?.message || 'Internal server error',
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'landing-chat');
   }
 }

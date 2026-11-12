@@ -1,5 +1,6 @@
 import { scrubPII } from "./utils";
 import { model } from "./config";
+import { AiOutputError } from "./errors";
 
 /**
  * Network Limits Assistant — answers teacher questions about their org's AI limits,
@@ -186,8 +187,7 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
       try {
         parsed = JSON.parse(sanitized);
       } catch (e2) {
-        console.error("Failed to parse portfolio JSON:", text);
-        throw new Error(`AI returned invalid JSON: ${text}`);
+        throw new AiOutputError("AI returned invalid JSON for the portfolio");
       }
     }
 

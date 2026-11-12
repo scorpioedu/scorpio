@@ -22,7 +22,6 @@ export async function explainPhysicsConcept(
   constraintLevel: ConstraintLevel = "FULL",
   studentNames: string[] = []
 ): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const constraints = CONSTRAINT_LEVELS[constraintLevel];
     const scrubbedMessage = scrubPII(concept, studentNames);
     const historyContext = chatHistory.length > 0 
@@ -60,13 +59,6 @@ Instructions for your response:
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0
       }
     };
-  } catch (error) {
-    console.error("Error explaining concept:", error);
-    if (error instanceof Error) {
-      return { text: `Error: ${error.message}` };
-    }
-    return { text: "Sorry, I couldn't explain that concept right now." };
-  }
 }
 
 export async function helpSolveProblem(
@@ -76,7 +68,6 @@ export async function helpSolveProblem(
   assignmentContext?: string,
   studentNames: string[] = []
 ): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const constraints = CONSTRAINT_LEVELS[constraintLevel];
     const scrubbedMessage = scrubPII(problem, studentNames);
     const historyContext = chatHistory.length > 0 
@@ -117,11 +108,4 @@ Instructions for your response:
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0
       }
     };
-  } catch (error) {
-    console.error("Error solving problem:", error);
-    if (error instanceof Error) {
-      return { text: `Error: ${error.message}` };
-    }
-    return { text: "Sorry, I couldn't help solve that problem right now." };
-  }
 }

@@ -1,11 +1,12 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { explainPhysicsConcept, helpSolveProblem } from "@/lib/ai/tutor";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
 import { verifyCallerIdentity } from "@/lib/auth-verify";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { message, userId, role, mode, chatHistory, assignmentContext } = await req.json();
 
@@ -84,8 +85,8 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ response: result.text });
   } catch (error) {
-    console.error("Student AI Tutor Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // AiProviderError/AiBudgetError -> 502/503 with generic text; the client shows a retry state and stores nothing.
+    return errorResponse(error, "tutor", requestId);
   }
 }
 

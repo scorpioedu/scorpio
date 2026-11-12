@@ -4,8 +4,9 @@ import { adminDb } from '@/lib/firebase-admin';
 import { splitAssignmentQuestions, mergeAnswerKey } from '@/lib/assignment-security';
 import { parseJsonBody } from '@/lib/api-schema';
 import { createAssignmentBody } from '@/lib/schemas/api-bodies';
+import { errorResponse } from '@/lib/api-errors';
 
-export const POST = withAuthorizedRequest(async (req) => {
+export const POST = withAuthorizedRequest(async (req, { requestId }) => {
   const caller = (await authenticateRequest(req))!;
   const parsed = await parseJsonBody(req, createAssignmentBody, { message: 'Invalid assignment' });
   if (!parsed.ok) return parsed.response;
@@ -18,7 +19,7 @@ export const POST = withAuthorizedRequest(async (req) => {
   const { rubric, dueDate, questions, ...fields } = data;
   let split: ReturnType<typeof splitAssignmentQuestions>;
   try { split = splitAssignmentQuestions(questions); }
-  catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Invalid assignment' }, { status: 400 }); }
+  catch (error) { return errorResponse(error, 'assignments', requestId); }
   const { publicQuestions, answers } = split;
   const ref = adminDb.collection('assignments').doc();
   const batch = adminDb.batch();

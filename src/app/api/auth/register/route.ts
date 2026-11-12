@@ -4,6 +4,8 @@ import { enforceRateLimit } from "@/lib/rate-limit";
 import { findClassByCode } from "@/lib/class-enrollment";
 import { adminDb } from "@/lib/firebase-admin";
 import { newOrganizationDefaults } from "@/lib/organization-defaults";
+import { errorResponse } from "@/lib/api-errors";
+import { ClientError } from "@/lib/client-error";
 
 export async function POST(req: NextRequest) {
   const caller = await authenticateRequest(req);
@@ -17,23 +19,23 @@ export async function POST(req: NextRequest) {
     }
     const userRef = adminDb.collection("users").doc(caller.uid);
     const normalizedCode = typeof code === "string" ? code.trim() : "";
-    if (normalizedCode.includes("/") || normalizedCode.length > 128) throw new Error("Invalid code");
+    if (normalizedCode.includes("/") || normalizedCode.length > 128) throw new ClientError("Invalid code");
     const newOrg = adminDb.collection("organizations").doc();
     await adminDb.runTransaction(async tx => {
       const existing = await tx.get(userRef);
-      if (existing.exists) throw new Error("Profile already exists; sign in instead");
+      if (existing.exists) throw new ClientError("Profile already exists; sign in instead");
       const course = role === "student" && normalizedCode ? await findClassByCode(normalizedCode, tx) : null;
-      if (role === "student" && normalizedCode && !course) throw new Error("A valid class code is required");
+      if (role === "student" && normalizedCode && !course) throw new ClientError("A valid class code is required");
       let orgId: string | null = course?.organizationId ?? null;
       let inviteRef;
       if (role === "teacher") {
-        if (!normalizedCode) throw new Error("A teacher invite code is required");
+        if (!normalizedCode) throw new ClientError("A teacher invite code is required");
         inviteRef = adminDb.collection("teacherInviteCodes").doc(normalizedCode.toUpperCase());
         const invite = (await tx.get(inviteRef)).data();
-        if (!invite || invite.isUsed || !invite.expiresAt || invite.expiresAt.toDate() <= new Date()) throw new Error("Invalid or expired invite code");
+        if (!invite || invite.isUsed || !invite.expiresAt || invite.expiresAt.toDate() <= new Date()) throw new ClientError("Invalid or expired invite code");
         orgId = invite.organizationId || newOrg.id;
-        if (invite.organizationId && !(await tx.get(adminDb.collection("organizations").doc(invite.organizationId))).exists) throw new Error("Network no longer exists");
-        if (invite.organizationId && (await tx.get(adminDb.collection("users").where("organizationId", "==", invite.organizationId).where("role", "==", "teacher").limit(50))).size >= 50) throw new Error("Network teacher capacity reached");
+        if (invite.organizationId && !(await tx.get(adminDb.collection("organizations").doc(invite.organizationId))).exists) throw new ClientError("Network no longer exists");
+        if (invite.organizationId && (await tx.get(adminDb.collection("users").where("organizationId", "==", invite.organizationId).where("role", "==", "teacher").limit(50))).size >= 50) throw new ClientError("Network teacher capacity reached");
       }
       const data = { uid: caller.uid, email: caller.email || "", displayName: name.trim(), role,
         organizationId: orgId, teacherId: course?.teacherId ?? null, courseId: course?.courseId ?? null,
@@ -48,6 +50,6 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Registration failed" }, { status: 400 });
+    return errorResponse(error, "register");
   }
 }

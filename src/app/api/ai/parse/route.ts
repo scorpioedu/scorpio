@@ -1,10 +1,11 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { parseQuestionsFromText } from "@/lib/ai/assignment";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { text, userId } = await req.json();
 
@@ -50,12 +51,8 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ questions: result.questions });
-  } catch (error: any) {
-    console.error("AI Parse API Error:", error);
-    return NextResponse.json({ 
-      error: error?.message || "Internal server error",
-      details: process.env.NODE_ENV === "development" ? error?.stack : undefined
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "ai-parse", requestId);
   }
 }
 

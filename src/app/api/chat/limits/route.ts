@@ -1,11 +1,12 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { getNetworkLimitsHelp } from '@/lib/ai/network';
 import type { NetworkLimitsContext } from '@/lib/ai/network';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { message, chatHistory, userId } = await req.json();
 
@@ -82,9 +83,8 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ text: result.text });
-  } catch (error: any) {
-    console.error('Limits assistant error:', error);
-    return NextResponse.json({ error: error?.message || 'Internal server error' }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'limits-chat', requestId);
   }
 }
 
