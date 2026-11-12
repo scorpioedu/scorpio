@@ -101,4 +101,4 @@ async function handleAdminFirestore(req: NextRequest) {
 }
 
 // Requires a verified ID token carrying the `admin: true` claim; every call is written to admin_audit.
-export const POST = withAuthorizedRequest(handleAdminFirestore, { admin: true });
+export const POST = withAuthorizedRequest(handleAdminFirestore, { admin: true, rateLimit: "write" });

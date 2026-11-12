@@ -113,4 +113,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "teacherId", "teacher": true, "resource": "portfolio"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "teacherId", "teacher": true, "resource": "portfolio", "rateLimit": "portfolio"});

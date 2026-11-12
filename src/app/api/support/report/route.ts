@@ -72,4 +72,4 @@ async function handlePost(req: NextRequest) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, { identityField: "userId" });
+export const POST = withAuthorizedRequest(handlePost, { identityField: "userId", rateLimit: "support" });

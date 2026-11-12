@@ -33,4 +33,4 @@ export const POST = withAuthorizedRequest(async req => {
   return result
     ? NextResponse.json({ error: result.error }, { status: result.status })
     : NextResponse.json({ success: true });
-});
+}, { rateLimit: "write" });

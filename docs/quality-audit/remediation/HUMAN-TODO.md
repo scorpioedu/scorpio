@@ -41,3 +41,8 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - HSTS is `max-age=63072000; includeSubDomains` with no `preload`. Make sure every subdomain of the production domain serves HTTPS before deploying. Do not add `preload` or submit to hstspreload.org unless you accept that it is very hard to undo.
 - The headers come from `next.config.mjs`, which Vercel applies. `firebase.json` has a `hosting` block with `frameworksBackend`; if the app is ever deployed through Firebase Hosting instead, check the headers are present with `curl -I` (Firebase's framework backend normally forwards Next headers, but its static `headers` entries in `firebase.json` would then also need the same values).
 - Real-browser check on the deployed site: Google sign-in popup, App Check reCAPTCHA, Polar checkout redirect, Desmos calculator, tutor microphone and lockdown fullscreen. Only the first three origins were reasoned from code, not exercised (demo Firebase env, no Polar token).
+
+## RT-11: rate limits (human-only)
+- Firestore TTL policy: in the Firebase console (Firestore > Time-to-live) add a policy on collection group `rate_limits`, field `expiresAt`. New buckets carry it (window end); old documents without it are never deleted by the policy and can be removed once by hand. Without a policy the collection only grows (one small document per user/route/IP); nothing breaks.
+- No composite index is needed (all access is by document id).
+- Confirm production runs on Vercel so `x-vercel-forwarded-for` is set. If the app is served another way, anonymous routes fall into one shared `unknown-ip` bucket (30/min for teacher-code) and would throttle all visitors together.

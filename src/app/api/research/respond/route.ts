@@ -13,4 +13,4 @@ async function handleResearch(req: NextRequest) {
 }
 
 // Requires the admin claim; every call is written to admin_audit.
-export const POST = withAuthorizedRequest(handleResearch, { admin: true });
+export const POST = withAuthorizedRequest(handleResearch, { admin: true, rateLimit: "research" });

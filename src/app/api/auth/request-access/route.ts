@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue as FieldValue } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
 import { withAuthorizedRequest } from '@/lib/auth-verify';
+import { enforceRateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
 import { parseJsonBody, parseValue } from '@/lib/api-schema';
 import { requestAccessAction, requestAccessReviewBody, requestAccessSubmitBody } from '@/lib/schemas/api-bodies';
@@ -164,10 +165,14 @@ async function handleRequestAccess(req: NextRequest) {
 
 // list, approve and reject require the admin claim; submitting a request stays public.
 const ADMIN_ACTIONS = new Set(['list', 'approve', 'reject']);
-const adminRequestAccess = withAuthorizedRequest(handleRequestAccess, { admin: true });
+const adminRequestAccess = withAuthorizedRequest(handleRequestAccess, { admin: true, rateLimit: 'write' });
 
 export async function POST(req: NextRequest) {
   let action: unknown;
   try { action = (await req.clone().json())?.action; } catch { action = undefined; }
-  return typeof action === 'string' && ADMIN_ACTIONS.has(action) ? adminRequestAccess(req) : handleRequestAccess(req);
+  if (typeof action === 'string' && ADMIN_ACTIONS.has(action)) return adminRequestAccess(req);
+  // The public actions are unauthenticated, so they are keyed by the trusted client IP (RT-11).
+  const limited = await enforceRateLimit(req, 'requestAccess');
+  if (limited) return limited;
+  return handleRequestAccess(req);
 }

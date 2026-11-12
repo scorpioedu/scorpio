@@ -86,3 +86,8 @@
 - RT-18: failed Storage deletes on assignment delete are only logged (no retry). A retry or a reconciliation sweep for orphaned `submissions/` objects needs a design decision. Objects whose submission docs were already deleted before this change remain orphaned (no backfill).
 - RT-18: grading lock-lease/partial-failure behaviour is covered by the existing `__tests__/grading-*.test.ts`; `deliverBillingUsage` is now covered by `functions-billing-outbox.test.ts`.
 - RT-18 hardening idea (verifier): check URL bucket/host equals default bucket in functions/src/assignment-cleanup.ts before deleting (defence in depth; write path already enforces).
+- RT-11: GET /api/assignments, GET/DELETE /api/account and DELETE /api/auth/session are unlimited (written exemptions in `RT-11-LIMITS.md`); move them onto `withAuthorizedRequest` with `rateLimit` if desired.
+- RT-11: the limiter is a Firestore transaction per call. If cost matters, a per-instance in-memory pre-check or a counter service (Redis/Upstash) would avoid the write; not added (no new dependency).
+- RT-11: `rate_limits` documents of retired formats (`<kind>_<raw x-forwarded-for>`) and anything without `expiresAt` are not covered by the TTL policy; a one-off cleanup is needed.
+- RT-11: landing chat still has its own `admit()` counters (F-002 territory); only its Retry-After header changed here.
+- RT-11: /api/ai/generate-title is a stub returning a constant; limited anyway so it cannot be hammered once it calls a model.

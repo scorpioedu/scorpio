@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Cache for 1 hour
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const limited = await enforceRateLimit(req, 'githubStats');
+  if (limited) return limited;
   // Works for both local (.env.local) and Firebase Functions secrets
   const token = process.env.GITHUB_TOKEN;
   if (!token) {

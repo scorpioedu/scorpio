@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
 
     if (ipHash) {
       const rate = await checkRateLimit(req, `ip_${ipHash}`, 'landing', { windowMs: 60000, maxRequests: 5 });
-      if (!rate.allowed) return withCookie(NextResponse.json({ error: rate.error }, { status: 429 }));
+      if (!rate.allowed) return withCookie(NextResponse.json({ error: rate.error }, { status: 429, headers: rate.retryAfterSeconds ? { 'Retry-After': String(rate.retryAfterSeconds) } : undefined }));
     }
 
     let admission: Admission;

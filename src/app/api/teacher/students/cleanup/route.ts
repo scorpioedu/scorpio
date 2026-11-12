@@ -23,4 +23,4 @@ export const POST = withAuthorizedRequest(async req => {
  for(let i=0;i<refs.length;i+=400){const batch=adminDb.batch();refs.slice(i,i+400).forEach(ref=>batch.delete(ref));await batch.commit();}
  if(unlink){const batch=adminDb.batch();for(const name of ['users','students'])batch.set(adminDb.collection(name).doc(studentId),{teacherId:null,courseId:null,organizationId:null},{merge:true});await batch.commit();}
  return NextResponse.json({success:true});
-},{teacher:true});
+},{teacher:true,rateLimit:"write"});
