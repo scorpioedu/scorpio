@@ -2,10 +2,16 @@
 
 import { ProtectedRoute } from "@/components/protected-route";
 import { StudentSidebar } from "@/components/student-sidebar";
-import { NavigationChatbot } from "@/components/navigation-chatbot";
+import dynamic from "next/dynamic";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { usePathname } from "next/navigation";
 
+
+// Client-only floating widget; keep it (and its chat dependencies) out of the layout's initial JS. (I-018)
+const NavigationChatbot = dynamic(
+  () => import("@/components/navigation-chatbot").then((m) => m.NavigationChatbot),
+  { ssr: false }
+);
 
 export default function StudentLayout({
   children,

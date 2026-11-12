@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
-import { MarkdownRenderer } from './markdown-renderer';
+import { LazyMarkdownRenderer as MarkdownRenderer } from './lazy-markdown-renderer';
 import { cn } from '@/lib/utils';
 import { RaiseLogo } from './ui/raise-logo';
 import { toast } from 'sonner';
