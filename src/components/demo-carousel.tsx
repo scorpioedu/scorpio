@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, CirclePause, Maximize } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,8 +28,8 @@ export function DemoCarousel() {
   const currentVideoRef = useRef<HTMLVideoElement>(null);
   const [unavailableSlides, setUnavailableSlides] = useState<string[]>([]);
 
-  const next = () => setIndex(i => (i + 1) % total);
-  const prev = () => setIndex(i => (i - 1 + total) % total);
+  const next = useCallback(() => setIndex(i => (i + 1) % total), [total]);
+  const prev = useCallback(() => setIndex(i => (i - 1 + total) % total), [total]);
 
   const getSlide = (o: number) => demoSlides[(index + o + total) % total];
 
@@ -44,7 +44,7 @@ export function DemoCarousel() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [next, prev]);
 
 
   // Auto-play and progress bar animation with per-slide timing, pause on click
@@ -104,7 +104,7 @@ export function DemoCarousel() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isVideoPaused, isVideoVisible, unavailable, index]);
+  }, [isVideoPaused, isVideoVisible, unavailable, index, next]);
 
   // Pause/resume video on pause state
   useEffect(() => {

@@ -1,8 +1,9 @@
 "use client";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import { defaultNotebookId } from "@/lib/notebook-ids";
 
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
@@ -16,8 +17,7 @@ import {
   collection,
   query,
   where,
-  deleteDoc,
-  increment
+  deleteDoc
 } from "firebase/firestore";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -143,36 +143,41 @@ export default function NotebookPage() {
   useEffect(() => {
     if (!user) return;
 
+    // Everything subscribed here is collected in `unsubscribers`; `cancelled` stops late async work
+    // (e.g. the org listener, which is only created after getDoc resolves) from subscribing after cleanup.
+    let cancelled = false;
+    const unsubscribers: Array<() => void> = [];
+
     // 1. Fetch Organization Data first for limits
     async function fetchOrgSettings() {
       try {
         const userDoc = await getDoc(doc(db, "users", user!.uid));
+        if (cancelled) return;
         const userData = userDoc.data();
         const orgId = userData?.organizationId;
 
         if (orgId) {
           // Use onSnapshot for real-time subscription status updates
-          const unsubscribeOrg = onSnapshot(doc(db, "organizations", orgId), (orgSnap) => {
+          unsubscribers.push(onSnapshot(doc(db, "organizations", orgId), (orgSnap) => {
+            if (cancelled) return;
             if (orgSnap.exists()) {
               const data = orgSnap.data();
               setOrgData(data);
               if (data?.notebookLimit === 0) setIsLocked(true);
             }
-          });
-          return unsubscribeOrg;
+          }));
         }
       } catch (err) {
         console.error("Access config failed:", err);
       }
     }
 
-    const orgPromise = fetchOrgSettings();
-    let orgUnsubscribe: (() => void) | undefined;
-    orgPromise.then(unsub => { orgUnsubscribe = unsub; });
+    fetchOrgSettings();
 
     // 2. Load Notebook List
     const q = query(collection(db, "notebooks"), where("studentId", "==", user.uid));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    unsubscribers.push(onSnapshot(q, (snapshot) => {
+      if (cancelled) return;
       const handleSnapshot = async () => {
         let list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Notebook));
 
@@ -197,8 +202,8 @@ export default function NotebookPage() {
                 return; // Re-fire listener
               }
             } else {
-              // New user - create one
-              const newRef = doc(collection(db, "notebooks"));
+              // New user - create one. Deterministic id so a repeated snapshot cannot create a duplicate.
+              const newRef = doc(db, "notebooks", defaultNotebookId(user.uid));
               await setDoc(newRef, {
                 title: "My Research Notebook",
                 content: "# Welcome\n\nCapture your thoughts here.",
@@ -216,8 +221,8 @@ export default function NotebookPage() {
         } else {
           setNotebooks(list);
 
-          if (!activeNotebookId && list.length > 0) {
-            setActiveNotebookId(list[0].id);
+          if (list.length > 0) {
+            setActiveNotebookId(prev => prev ?? list[0].id);
           }
 
           setLoading(false);
@@ -229,13 +234,19 @@ export default function NotebookPage() {
       console.error("Snapshot error:", error);
       setLoading(false);
       toast.error("Cloud synchronization error.");
-    });
+    }));
 
     return () => {
-      unsubscribe();
-      if (orgUnsubscribe) orgUnsubscribe();
+      cancelled = true;
+      unsubscribers.forEach(unsub => unsub());
     };
   }, [user]);
+
+  // Latest unsaved-changes flag for the remote-sync listener, so typing does not re-subscribe it (H-003)
+  const hasUnsavedChangesRef = useRef(false);
+  useEffect(() => {
+    hasUnsavedChangesRef.current = hasUnsavedChanges;
+  }, [hasUnsavedChanges]);
 
   // Sync content and message history with active notebook
   useEffect(() => {
@@ -245,7 +256,7 @@ export default function NotebookPage() {
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (!hasUnsavedChanges) {
+        if (!hasUnsavedChangesRef.current) {
           setContent(data.content || "");
           setTitle(data.title || "Untitled");
           setLastSavedAt(data.updatedAt?.toDate() || null);
@@ -260,20 +271,9 @@ export default function NotebookPage() {
     });
 
     return () => unsubscribe();
-  }, [activeNotebookId, hasUnsavedChanges]);
+  }, [activeNotebookId, user]);
 
-  // Auto-save logic
-  useEffect(() => {
-    if (!hasUnsavedChanges) return;
-
-    const timeoutId = setTimeout(async () => {
-      await saveNotebook();
-    }, 3000);
-
-    return () => clearTimeout(timeoutId);
-  }, [hasUnsavedChanges, content, title]);
-
-  const saveNotebook = async () => {
+  const saveNotebook = useCallback(async () => {
     if (!user || !activeNotebookId || !hasUnsavedChanges) return;
 
     setIsSaving(true);
@@ -292,7 +292,18 @@ export default function NotebookPage() {
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [user, activeNotebookId, hasUnsavedChanges, content, title]);
+
+  // Auto-save logic
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const timeoutId = setTimeout(async () => {
+      await saveNotebook();
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [hasUnsavedChanges, saveNotebook]);
 
   const createNewNotebook = async () => {
     if (!user || !orgData) return;
@@ -417,14 +428,6 @@ export default function NotebookPage() {
         }
         return updatedMessages;
       });
-
-      // Persist usage count to Firestore
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          aiUsageCount: increment(1)
-        });
-      }
     } catch (error) {
       toast.error("Copilot connection severed.");
     } finally {

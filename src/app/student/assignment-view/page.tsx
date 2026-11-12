@@ -3,6 +3,7 @@ import { WorkspaceHeader } from "@/components/ui/workspace";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useEffect, useState, useRef, Suspense } from "react";
+import { getTimerExpiryAction, GRACE_PERIOD_SECONDS } from "@/lib/assignment-timer";
 import { useSearchParams, useRouter } from "next/navigation";
 import { doc, getDoc, collection, addDoc, query, where, getDocs, setDoc } from "firebase/firestore";
 import { db, uploadFilesToStorage, type WorkFile } from "@/lib/firebase";
@@ -324,29 +325,9 @@ function AssignmentDetailContent() {
     fetchAssignment();
   }, [id, user, profile]);
 
-  // Timer Effect
+  // Timer: one interval for as long as the timer is active (H-002). Expiry is handled in the next effect.
   useEffect(() => {
-    if (!timerActive || timeLeft === null) return;
-
-    if (timeLeft <= 0) {
-      setTimerActive(false);
-      // If work submission is required and there are timed limits, enter grace period
-      if (assignment?.requireWorkSubmission && assignment?.timeLimit) {
-        setInGracePeriod(true);
-        setTimeLeft(300); // 5 minutes = 300 seconds
-        setTimerActive(true);
-      } else {
-        handleSubmit(); // Auto-submit
-      }
-      return;
-    }
-
-    // In grace period, auto-submit when time runs out
-    if (inGracePeriod && timeLeft <= 0) {
-      setTimerActive(false);
-      handleSubmit();
-      return;
-    }
+    if (!timerActive) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -356,7 +337,24 @@ function AssignmentDetailContent() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timerActive, timeLeft, inGracePeriod, assignment]);
+  }, [timerActive]);
+
+  // Latest handleSubmit (kept current by an effect after its definition), so expiry never submits a stale closure.
+  const handleSubmitRef = useRef<() => Promise<void>>(async () => {});
+
+  const hasGraceOption = Boolean(assignment?.requireWorkSubmission && assignment?.timeLimit);
+  useEffect(() => {
+    if (!timerActive) return;
+    const action = getTimerExpiryAction(timeLeft, inGracePeriod, hasGraceOption);
+    if (action === "start-grace") {
+      // Work submission is required with a time limit: enter the grace period
+      setInGracePeriod(true);
+      setTimeLeft(GRACE_PERIOD_SECONDS);
+    } else if (action === "submit") {
+      setTimerActive(false);
+      handleSubmitRef.current(); // Auto-submit
+    }
+  }, [timerActive, timeLeft, inGracePeriod, hasGraceOption]);
 
   const handleStartAssignment = () => {
     if (!assignment || !user) return;
@@ -716,6 +714,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    handleSubmitRef.current = handleSubmit;
+  });
 
   if (loading) {
     return <LoadingSpinner fullPage />;

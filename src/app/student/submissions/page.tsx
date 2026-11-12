@@ -81,7 +81,7 @@ export default function SubmissionsPage() {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, profile?.courseId, profile?.teacherId]);
 
   return (
     <div className="space-y-6">
