@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import * as React from 'react';
+import { maskEmail } from '../pii';
 
 let resend: Resend | null = null;
 
@@ -31,10 +32,10 @@ export async function sendEmail({
       subject,
       react,
     });
-    console.log(`Email sent successfully to ${to}`, data);
+    console.log(`Email sent successfully to ${maskEmail(to)}`, data);
     return data;
   } catch (error) {
-    console.error(`Failed to send email to ${to}`, error);
+    console.error(`Failed to send email to ${maskEmail(to)}`, error);
     throw error;
   }
 }

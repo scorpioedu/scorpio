@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { defineSecret } from "firebase-functions/params";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
+import { scrubPII } from "./pii";
 import { gradeWithModel, GradeResult } from "./grading-schema";
 import { GRADING_CONCURRENCY, GRADING_MEMORY, GRADING_TIMEOUT_SECONDS, mapWithConcurrency, processGradingWith, sweepStuckSubmissions } from "./grading-runner";
 
@@ -16,51 +17,6 @@ const client = new GoogleGenAI({
     project: process.env.GCLOUD_PROJECT || process.env.FIREBASE_PROJECT_ID,
     location: "us-central1"
 });
-
-/**
- * SCRUB PII - Ported from src/lib/gemini.ts
- */
-function scrubPII(text: string, studentNames: string[] = []): string {
-  if (!text) return text;
-
-  let scrubbed = text
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[EMAIL]")
-    .replace(/(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g, "[PHONE]")
-    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[ID]")
-    .replace(/\b(ID|Student\s?#?|ID\s?#?):?\s?\d{5,9}\b/gi, "[STUDENT_ID]")
-    .replace(/\b\d+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Ter|Terrace|Way)\.?\b/gi, "[ADDRESS]")
-    .replace(/(?:DOB|Birth|Born)(?:\s+on)?\s*[:\-]?\s*(\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b|\b[A-Z][a-z]{2,8}\s+\d{1,2},?\s+\d{4}\b)/gi, "[BIRTH_DATE]")
-    .replace(/\b(19|20)\d{2}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/g, "[DATE]")
-    .replace(/\b\d{1,2}[\/\-]\d{1,2}[\/\-](19|20)\d{2}\b/g, "[DATE]")
-    .replace(/\b(?:\d[ -]*?){13,16}\b/g, "[SENSITIVE]");
-
-  if (studentNames.length > 0) {
-    const nameParts = new Set<string>();
-    studentNames.forEach(fullName => {
-      if (!fullName) return;
-      nameParts.add(fullName);
-      const split = fullName.split(/\s+/);
-      if (split.length > 1) {
-        split.forEach(part => {
-          if (part.length > 2 && !['and', 'the', 'with'].includes(part.toLowerCase())) {
-            nameParts.add(part);
-          }
-        });
-      }
-    });
-
-    const sortedParts = Array.from(nameParts).sort((a, b) => b.length - a.length);
-
-    sortedParts.forEach((name) => {
-      if (name && name.length > 2) {
-        const nameRegex = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-        scrubbed = scrubbed.replace(nameRegex, "[NAME]");
-      }
-    });
-  }
-
-  return scrubbed;
-}
 
 /**
  * GRADE RESPONSE - Re-implemented using modern @google/genai SDK
@@ -79,7 +35,12 @@ async function gradeResponseAI(
 
     return await gradeWithModel(
       { question, answer, rubric },
-      async ({ systemInstruction, userPrompt }) => {
+      async (request) => {
+        // Same choke-point rule as callGeminiDirect: nothing leaves unscrubbed (patterns only; roster names
+        // were already masked in the inputs and must not hit our own template words). Idempotent, so the
+        // already-scrubbed question/answer/rubric inside the prompt are unchanged.
+        const systemInstruction = scrubPII(request.systemInstruction);
+        const userPrompt = scrubPII(request.userPrompt);
         const promptBytes = Buffer.byteLength(systemInstruction) + Buffer.byteLength(userPrompt);
         if (promptBytes > 100000) throw new Error('Submission is too long for AI grading');
         const reservation = await reserveBudget(admin.firestore(), organizationId, 'grading', undefined, estimateMaximumCost(promptBytes, 1024));

@@ -26,6 +26,7 @@ export async function gradeResponse(
       { question, answer, rubric },
       async ({ systemInstruction, userPrompt }) => {
         const result = await model.generateContent({
+          scrubLevel: "full",
           systemInstruction,
           contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
           generationConfig: {

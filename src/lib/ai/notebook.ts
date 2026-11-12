@@ -9,6 +9,7 @@ export async function getNotebookAssistantResponse(
 ) {
   try {
     const chat = model.startChat({
+      scrubLevel: "full",
       history: messages.slice(0, -1).map(m => ({
         role: m.role === "user" ? "user" : "model",
         parts: [{ text: m.content }]

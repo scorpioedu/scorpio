@@ -59,3 +59,8 @@
 ## From RT-09
 - Replace `'unsafe-inline'` in the CSP `script-src` with a per-request nonce (needs a proxy/middleware that sets the nonce and makes pages dynamic) or hashes for the two inline scripts; Next's own inline bootstrap scripts are why it is not a one-line change.
 - `/api/csp-report` has only a per-instance log cap. If reports become noisy, move it behind the shared limiter from RT-11.
+## RT-10 follow-ups
+- No route supplies a roster through `withScrubNames` yet. Peer or student names typed in `/api/chat`, `ai/parse`, `ai/generate`, `ai/synthesize-rubric` and in portfolio chat history are not masked by name (only by pattern), because those routes have no roster and name-masking whole templates would corrupt words such as "Will" or "Grade". A roster-aware design (mask only user-supplied fragments) is needed to close the rest of C-008.
+- Routes without prior scrubbing only get the email + roster-name scrub (`scrubLevel` defaults to "contact" in `callGeminiDirect`), so a phone number, student id or address typed into `/api/chat`, landing chat or teacher assignment text is not masked. Extending the contact level with a decimal-safe phone pattern is possible if needed.
+- Only `functions/src/index.ts` and `functions/src/lib/email.ts` email logs were masked (found by `rg email` over console/logger calls); other log sites were not audited further.
+- RT-27 should move `functions/src/pii.ts` into the shared package; `src/lib/ai/utils.ts` re-exports it by relative path for now.

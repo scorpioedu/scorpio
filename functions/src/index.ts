@@ -42,6 +42,7 @@ import * as React from "react";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
 import { sendEmail } from "./lib/email";
+import { maskEmail } from "./pii";
 import { AssignmentCreatedEmail } from "./templates/AssignmentCreatedEmail";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
@@ -105,7 +106,7 @@ export const onAssignmentCreated = onDocumentCreated({
             })
         }).catch(err => {
             // Log but don't fail the entire batch if one email fails
-            console.error(`Failed to email student ${student.email}`, err);
+            console.error(`Failed to email student ${maskEmail(student.email)}`, err);
         });
     });
     

@@ -45,6 +45,7 @@ Instructions for your response:
    - End with a thought-provoking check for understanding or offer a natural next concept/example.`;
     
     const result = await model.generateContent({
+      scrubLevel: "full",
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: 1024,
@@ -101,6 +102,7 @@ Instructions for your response:
    - Keep your guidance concise and focused on the student's immediate blocker.`;
     
     const result = await model.generateContent({
+      scrubLevel: "full",
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: 1024,
