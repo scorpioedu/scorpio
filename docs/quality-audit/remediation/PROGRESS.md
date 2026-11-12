@@ -13,7 +13,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-07 | merged | rt-07-grading-hardening | fe5d34d (merge) | PASS | PASS | scores >max now go to pending_review; dependency-free validator instead of zod in functions; teacher UI does not show reviewFlag yet (FOLLOWUPS) |
 | RT-08 | merged | rt-08-ci-stale-test | eed8cfa (merge b082c73) | PASS | PASS | CI workflow, typecheck, stale test fixed; npm10 lockfile caveat in FOLLOWUPS |
 | RT-09 | merged | rt-09-security-headers | 579ab24 (merge) | PASS | PASS | CSP report-only per owner; XFO SAMEORIGIN (research PDF iframe); csp-report body cap trusts Content-Length (FOLLOWUPS) |
-| RT-10 | todo | | | | | |
+| RT-10 | merged (partial) | rt-10-pii-scrubbing | 9f38e53 (merge) | PASS | PASS | emails scrubbed centrally; roster names only where caller supplies them (withScrubNames not wired into contact-level routes); phones/ids not masked there |
 | RT-11 | todo | | | | | |
 | RT-12 | todo | | | | | |
 | RT-13 | todo | | | | | |
