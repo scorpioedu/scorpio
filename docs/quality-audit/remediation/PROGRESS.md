@@ -5,7 +5,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | Ticket | Status | Branch | Commit | Gate | Verifier | Notes |
 |---|---|---|---|---|---|---|
 | RT-01 | human-needed | rt-01-runbook | 8f76777 (merged) | n/a (docs) | orchestrator reviewed (no key material) | runbook prepared; owner must rotate key |
-| RT-02 | todo | | | | | |
+| RT-02 | merged (partial) | rt-02-dependency-patching | f40e808 (merge) | PASS | PASS | next 16.4.1, tiptap 3.30.5, functions clean; root still 1 critical/32 high (mostly unused vercel CLI tree -> RT-20); eslint-config-next held back; genai 3.2.0 verified by stub only, no live call |
 | RT-03 | merged (human step pending) | rt-03-landing-spend | c164c5b (merge) | PASS | PASS (2nd attempt) | verifier 1 flagged IP header vs Vercel decision; fixed. Owner must set LANDING_VISITOR_COOKIE_SECRET + LANDING_ORG_ID budget, else landing chat returns 503 |
 | RT-04 | merged | rt-04-reservation-lifecycle | c23fec6 (merge 66f0ea5) | PASS | PASS | failed provider calls now charge input estimate; stale holds expire in 30-45 min; index must be deployed |
 | RT-05 | merged | rt-05-grading-timeout | 8ac99af (merge 139d0b2) | PASS | PASS (2nd attempt) | verifier 1 FAILED (sweep not exported); fixed; sweep skips manual assignments |

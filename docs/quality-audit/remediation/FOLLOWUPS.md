@@ -55,3 +55,4 @@
 - Root `firebase` 12.x pins `@grpc/grpc-js ~1.9` (flagged high); revisit with a firebase major bump or an override.
 - Remaining root high/critical advisories are the unused `vercel` CLI tree; remove `vercel` and `sib-api-v3-sdk` in RT-20.
 - Shared port 8188 can be held by orphaned Firestore emulators from other worktrees; use `GATE_PORT_OFFSET`.
+- (RT-02 verifier) @google/genai 3.2.0 constructor throws at import if GCLOUD_PROJECT and FIREBASE_PROJECT_ID are both unset; functions/src/grading.ts builds the client at module top level. Fine when deployed; make it lazy. `npm audit fix` also bumped `resend` within range (no email smoke test exists). Tiptap duplicate 'underline' extension warning is pre-existing (StarterKit already bundles it).
