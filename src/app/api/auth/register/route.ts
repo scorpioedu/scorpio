@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth-verify";
 import { findClassByCode } from "@/lib/class-enrollment";
 import { adminDb } from "@/lib/firebase-admin";
+import { newOrganizationDefaults } from "@/lib/organization-defaults";
 
 export async function POST(req: NextRequest) {
   const caller = await authenticateRequest(req);
@@ -36,8 +37,7 @@ export async function POST(req: NextRequest) {
         createdAt: new Date(), lastLoginAt: new Date() };
       if (role === "teacher" && orgId === newOrg.id) tx.set(newOrg, {
         id: orgId, name: `${name.trim()}'s Network`, ownerId: caller.uid, ownerEmail: caller.email || "",
-        subscriptionStatus: "active", planId: "free", aiUsageCurrent: 0, aiBudgetLimit: 50,
-        baseMonthlyFee: 0, createdAt: new Date(),
+        ...newOrganizationDefaults("register"), createdAt: new Date(),
       });
       if (inviteRef) tx.update(inviteRef, { isUsed: true, usedAt: new Date(), usedBy: caller.uid, usedByEmail: caller.email || "" });
       tx.set(userRef, data);

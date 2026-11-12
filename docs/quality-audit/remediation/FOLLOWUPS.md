@@ -44,3 +44,8 @@
 - Legacy migration in `src/app/student/notebook/page.tsx:L196` (`updateDoc(oldRef, { studentId ... })` on a doc without `studentId`) was already denied by the update rule and still is; belongs with RT-15.
 - `storage.rules` `submissions/**` still allows `text/*` (including `text/html`) and lets a student overwrite/delete files after grading (D-006 notes); not in RT-14 steps.
 - Optional: the old `submissions/{teacherUid}/` resource files could be migrated to `resources/`.
+
+## RT-21
+- `recordUsage` in `src/lib/usage-limit.ts` is a no-op but still called by 9 routes (B-003 suggests deleting it); left in place, removing it means editing each route.
+- Pre-check/reservation still read the org twice (pre-check, then transaction); the pre-check is advisory only. The reservation is the sole enforcement point.
+- Non-free networks with `aiBudgetLimit` 0 are unusable for AI (same as before at reservation). If "0 = unlimited" was ever intended for paid plans, the billing webhook should set an explicit limit.

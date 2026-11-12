@@ -50,3 +50,10 @@
 - A render error on any page now shows a friendly "Something went wrong" card with a "Try again" button instead of the Next.js default screen. For `/student/*` and `/teacher/*` the card renders inside the existing layout (sidebar, chatbot, banner stay); `app/error.tsx` covers other routes and `app/global-error.tsx` (own `<html>/<body>`, inline styles) covers a root layout failure. `reset()` re-renders the segment; navigating elsewhere also clears the error.
 - Error details are never shown to users. Each boundary logs only `error.digest` with `console.error("[route-error] <scope>", { digest })`; there is no server-side reporting endpoint yet (see FOLLOWUPS).
 - `student/loading.tsx` and `teacher/loading.tsx` show a skeleton (title, three cards, a panel; `role="status"`) inside the layout while a route segment loads, instead of the previous content staying frozen until the new page is ready.
+
+## RT-21 (B-003, E-007): one budget policy (`evaluateBudget`)
+- `checkBudget` (the pre-check) now applies the same rules as `reserveBudget`, via `functions/src/budget-policy.ts`. Two cases the pre-check used to let through are now refused up front; `reserveBudget` already refused both, so nobody who could actually spend is affected, only the error appears earlier (and as the pre-check message):
+  - a free network with `aiBudgetLimit` above 50 cents is capped at 50 cents (the pre-check used the configured limit);
+  - a non-free network with `aiBudgetLimit` 0 or unset is refused (the pre-check treated 0 as unlimited; the reservation already refused it).
+- `reserveBudget` decisions and error messages are unchanged. Network creation defaults are unchanged (see HUMAN-TODO).
+- Removed the unused `checkAndIncrementUsage` export from `src/lib/usage-limit.ts`.

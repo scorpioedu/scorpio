@@ -1,5 +1,6 @@
 import type { firestore } from 'firebase-admin';
 import { randomUUID } from 'node:crypto';
+import { evaluateBudget } from './budget-policy';
 
 // Gemini 3.8 Flash text rates in cents/token.
 // Introductory through Dec 31, 2026: $0.75/1M input, $3.75/1M output
@@ -26,15 +27,19 @@ export async function reserveBudget(db: firestore.Firestore, organizationId: str
   await db.runTransaction(async tx => {
     const org = (await tx.get(orgRef)).data();
     const user = userRef ? (await tx.get(userRef)).data() : null;
-    if (!org || !['active','trialing'].includes(org.subscriptionStatus)) throw new Error('AI subscription is not active');
-    const limit = org.planId === 'free' ? Math.min(org.aiBudgetLimit || 0, 50) : (org.aiBudgetLimit || 0);
-    if ((org.aiUsageCurrent || 0) + (org.aiUsageReserved || 0) + maxCost > limit) throw new Error('Insufficient AI budget for this request');
-    const fields: Record<string, [string,string]> = { tutor: ['tutorUsageCurrent','aiTutorLimitPerStudent'], notebook: ['aiNotebookUsageCurrent','aiNotebookLimitPerStudent'] };
-    const fieldsForType = fields[type];
-    if (userRef && user && fieldsForType) {
-      const [counter, allowance] = fieldsForType;
+    const decision = evaluateBudget(org, user, type, maxCost, month);
+    if (!decision.allowed) {
+      throw new Error({
+        subscription_inactive: 'AI subscription is not active',
+        budget_exhausted: 'Insufficient AI budget for this request',
+        user_allowance_reached: 'Your monthly AI allowance has been reached',
+      }[decision.reason]);
+    }
+    if (!org) throw new Error('AI subscription is not active'); // unreachable: evaluateBudget denies a missing org
+    const counters: Record<string, string> = { tutor: 'tutorUsageCurrent', notebook: 'aiNotebookUsageCurrent' };
+    const counter = counters[type];
+    if (userRef && user && counter) {
       const usage = user.usageMonth === month ? (user[counter] || 0) : 0;
-      if (org[allowance] > 0 && usage >= org[allowance]) throw new Error('Your monthly AI allowance has been reached');
       tx.update(userRef, { ...(user.usageMonth !== month ? { tutorUsageCurrent: 0, aiNotebookUsageCurrent: 0 } : {}), usageMonth: month, [counter]: usage + 1 });
     }
     tx.update(orgRef, { aiUsageReserved: (org.aiUsageReserved || 0) + maxCost });
