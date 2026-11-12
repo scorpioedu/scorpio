@@ -27,8 +27,8 @@ let appCheck: ReturnType<typeof initializeAppCheck> | null = null;
 // App Check (reCAPTCHA) is skipped in emulator mode: emulators do not enforce it and the demo project has no site key.
 if (typeof window !== "undefined" && useEmulators !== "true") {
   if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN) {
-    // @ts-ignore
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN =
+    // The App Check SDK reads this well-known global; it is not part of the Window typings.
+    (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string }).FIREBASE_APPCHECK_DEBUG_TOKEN =
       process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN === "true"
         ? true
         : (process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN || true);
