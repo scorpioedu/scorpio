@@ -10,6 +10,8 @@
 import {setGlobalOptions} from "firebase-functions";
 import {onDocumentDeleted} from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
+import { collectSubmissionObjects, deleteStorageObjects } from "./assignment-cleanup";
+import { mapWithConcurrency, selectRecipients } from "./assignment-email";
 
 admin.initializeApp();
 
@@ -26,13 +28,20 @@ export const onAssignmentDeleted = onDocumentDeleted("assignments/{assignmentId}
 
     const snapshot = await submissionsRef.where("assignmentId", "==", assignmentId).get();
 
+    // Remove uploaded files first (only under submissions/{studentId}/), then the documents that reference them.
+    const objects = collectSubmissionObjects(snapshot.docs.map(doc => doc.data()));
+    const failedObjects = await deleteStorageObjects(admin.storage().bucket(), objects);
+    if (failedObjects.length > 0) {
+        console.error(`Could not delete ${failedObjects.length} storage objects for assignment ${assignmentId}`);
+    }
+
     for (let i = 0; i < snapshot.docs.length; i += 400) {
       const batch = db.batch();
       snapshot.docs.slice(i, i + 400).forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     }
     await db.collection('assignment_keys').doc(assignmentId).delete();
-    console.log(`Deleted ${snapshot.size} submissions for assignment ${assignmentId}`);
+    console.log(`Deleted ${snapshot.size} submissions and ${objects.length - failedObjects.length} files for assignment ${assignmentId}`);
 });
 
 // Import and export new grading triggers
@@ -46,6 +55,7 @@ import { maskEmail } from "./pii";
 import { AssignmentCreatedEmail } from "./templates/AssignmentCreatedEmail";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
+const EMAIL_CONCURRENCY = 5;
 
 /**
  * Trigger to send emails to all students when a teacher creates a new assignment.
@@ -77,40 +87,52 @@ export const onAssignmentCreated = onDocumentCreated({
         }
     }
     
-    // Find all students for this teacher
+    // Idempotency: Firestore triggers are at-least-once. Claim the send in a transaction so a
+    // duplicate delivery of the same create event does not email everyone twice.
+    const assignmentRef = db.collection("assignments").doc(event.params.assignmentId);
+    const claimed = await db.runTransaction(async (tx) => {
+        const current = await tx.get(assignmentRef);
+        if (current.data()?.emailsSentAt) return false;
+        tx.update(assignmentRef, { emailsSentAt: admin.firestore.FieldValue.serverTimestamp() });
+        return true;
+    });
+    if (!claimed) {
+        console.log(`Assignment ${event.params.assignmentId} emails already sent, skipping.`);
+        return;
+    }
+
+    // Find all students for this teacher, narrowed to the assignment's course when it has one
     const studentsSnapshot = await db.collection("users")
         .where("teacherId", "==", teacherId)
         .where("role", "==", "student")
         .get();
-        
-    if (studentsSnapshot.empty) {
-        console.log(`No students found for teacher ${teacherId}, skipping emails.`);
+
+    const recipients = selectRecipients(studentsSnapshot.docs, assignmentData.courseId);
+    if (recipients.length === 0) {
+        console.log(`No students found for assignment ${event.params.assignmentId}, skipping emails.`);
         return;
     }
-    
-    console.log(`Sending assignment notification to ${studentsSnapshot.size} students.`);
-    
-    // Batch process emails to avoid timeouts on large classes
-    const emailPromises = studentsSnapshot.docs.map(doc => {
-        const student = doc.data();
-        if (!student.email) return Promise.resolve();
-        
-        return sendEmail({
-            apiKey: resendApiKey.value(),
-            to: student.email,
-            subject: `New Assignment Published: ${assignmentData.title || 'Assignment'}`,
-            react: React.createElement(AssignmentCreatedEmail, {
-                studentName: student.displayName || student.name || "Student",
-                assignmentName: assignmentData.title || 'Assignment',
-                link: `https://scorpioedu.org/student/assignments`
-            })
-        }).catch(err => {
+
+    console.log(`Sending assignment notification to ${recipients.length} students.`);
+
+    await mapWithConcurrency(recipients, EMAIL_CONCURRENCY, async (student) => {
+        const email = student.email as string;
+        try {
+            await sendEmail({
+                apiKey: resendApiKey.value(),
+                to: email,
+                subject: `New Assignment Published: ${assignmentData.title || 'Assignment'}`,
+                react: React.createElement(AssignmentCreatedEmail, {
+                    studentName: (student.displayName as string) || (student.name as string) || "Student",
+                    assignmentName: assignmentData.title || 'Assignment',
+                    link: `https://scorpioedu.org/student/assignments`
+                })
+            });
+        } catch (err) {
             // Log but don't fail the entire batch if one email fails
-            console.error(`Failed to email student ${maskEmail(student.email)}`, err);
-        });
+            console.error(`Failed to email student ${maskEmail(email)}`, err);
+        }
     });
-    
-    await Promise.all(emailPromises);
     console.log(`Finished sending assignment creation emails for ${event.params.assignmentId}`);
 });
 
