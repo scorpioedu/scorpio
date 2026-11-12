@@ -22,7 +22,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-16 | merged (partial) | rt-16-cwv | efce093 (merge) | PASS | CONDITIONAL PASS (a11y finding fixed by orchestrator) | lazy chatbot/markdown; auth only on app routes; Firestore/App Check still eager on login; /student 580KB gz (target 450); Lighthouse not run |
 | RT-17 | todo | | | | | |
 | RT-18 | merged (partial) | rt-18-functions | 06c798e (merge) | PASS | PASS | emails only same-course students; at-most-once claim; storage cleanup scoped to submissions/<studentId>/; functions/ "npm test" script not added (tests in root) |
-| RT-19 | todo | | | | | |
+| RT-19 | merged | rt-19-test-hardening | 6d58280 (merge) | PASS | PASS | mutation: auth-verify 99%, usage-limit 94.8% (custom command runner; repo stryker config lacks plugins); webhook tests use real validateEvent; 401 not 403 |
 | RT-20 | merged (partial) | rt-20-dependency-hygiene | 4291461 (merge) | PASS | PASS | root audit 64->19 (0 critical, 4 high from firebase->grpc-js pin); firebase/firebase-admin majors skipped; 6 dead components deleted |
 | RT-21 | merged (decision pending) | rt-21-budget-policy | 87fb74e (merge) | PASS | PASS | new-network default left as today (membership none/0, register active/50); owner decision in HUMAN-TODO; pre-check tightened for 2 cases already refused at reservation |
 | RT-22 | in-progress | rt-22a-emulator-wiring | 0cf3c95 (merge) | PASS | PASS (part 1) | part 1 merged: engines, .nvmrc, env names, emulator wiring+alt ports. Part 2 (husky/prettier/lint-staged, zod env, README) todo |
