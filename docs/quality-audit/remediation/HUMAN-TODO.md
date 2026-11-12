@@ -28,3 +28,7 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 ## RT-07
 - Teachers will now see AI-graded submissions land in `pending_review` when an answer looks like prompt injection, or gets full marks while being very short and absent from the reference. Decide whether the teacher UI should surface `reviewFlag` / `aiSuggestedScore` on those answers (stored on the answer in `submissions.answers[]`) and whether the thresholds (12-char answer, 40-char question) suit your question styles.
 - Out-of-range model scores used to be silently clamped to 10; they now go to review. Watch the `pending_review` rate with `gradingError` text "Invalid grading response" after deploy of the functions.
+
+## RT-14: deploy rules (human-only)
+- After merge, deploy `firestore.rules` and `storage.rules` (`firebase deploy --only firestore:rules,storage`). Deploy the web app first or together: the old client writes teacher uploads to `submissions/` (still allowed for non-video files), and the new client writes to `resources/`, which only the new storage rules allow.
+- Check for existing `notebooks`/`tutor_sessions` docs that have a `studentId` different from their id-as-uid (possible squatted docs) before or after deploy.

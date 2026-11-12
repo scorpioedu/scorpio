@@ -12,5 +12,20 @@ service firebase.storage {
         request.resource.size < 25 * 1024 * 1024 &&
         (request.resource.contentType.matches('image/.*') || request.resource.contentType == 'application/pdf' || request.resource.contentType.matches('text/.*'));
     }
+    // D-006: teacher course resources (including video) live under resources/{teacherUid}/, not submissions/.
+    function isTeacher() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+    function isStudentOf(ownerId) {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.get('teacherId', null) == ownerId;
+    }
+    match /resources/{ownerId}/{allPaths=**} {
+      allow read: if request.auth != null && (request.auth.uid == ownerId || isStudentOf(ownerId));
+      allow delete: if request.auth != null && request.auth.uid == ownerId;
+      allow create, update: if request.auth != null && request.auth.uid == ownerId && isTeacher() &&
+        request.resource.size < 500 * 1024 * 1024 &&
+        (request.resource.contentType.matches('image/.*') || request.resource.contentType == 'application/pdf' ||
+         request.resource.contentType in ['text/plain', 'text/csv'] || request.resource.contentType in ['video/mp4', 'video/webm', 'video/quicktime']);
+    }
   }
 }

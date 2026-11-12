@@ -94,7 +94,7 @@ export default function ResourcesPage() {
         setUploadProgress(10);
         const uploadedFiles = await uploadFilesToStorage([file], user.uid, (_, progress) => {
           setUploadProgress(progress);
-        });
+        }, "resources");
         if (uploadedFiles.length > 0) {
           finalUrl = uploadedFiles[0].url;
           // Auto-assign type if it's a file

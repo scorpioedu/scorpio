@@ -29,7 +29,10 @@ service cloud.firestore {
         request.resource.data.role == 'student' && request.resource.data.teacherId == request.auth.uid &&
         request.resource.data.importedBy == request.auth.uid && request.resource.data.status == 'pending_invite';
       allow update: if signedIn() && (
-        (id == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','email','lastLoginAt','preferences','appearance','photoURL','theme'])) ||
+        (id == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','email','lastLoginAt','preferences','appearance','photoURL','theme']) &&
+          // D-005: Cloud Functions mail to users/{uid}.email, so it may only be set to the verified auth email.
+          (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['email']) ||
+            request.resource.data.get('email', null) == request.auth.token.get('email', null))) ||
         (teacher() && resource.data.get('teacherId', null) == request.auth.uid &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['teacherId','courseId','organizationId']) &&
           request.resource.data.teacherId == null && request.resource.data.courseId == null && request.resource.data.organizationId == null));
@@ -45,6 +48,10 @@ service cloud.firestore {
       allow read: if signedIn() && ((teacher() && (resource.data.teacherId == request.auth.uid || resource.data.visibility == 'global' || member(resource.data.get('organizationId', null)))) ||
         (resource.data.get('answerKeySeparated', false) == true && enrolled(resource.data)));
       allow delete: if teacher() && resource.data.teacherId == request.auth.uid;
+      // D-002: the owner may only change sharing (Waypoints visibility); content and answer keys are server-written.
+      allow update: if teacher() && resource.data.teacherId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visibility']) &&
+        request.resource.data.visibility in ['private', 'network', 'global'];
     }
     match /assignment_keys/{id} {
       allow read: if ownsAssignment(id);
@@ -73,15 +80,37 @@ service cloud.firestore {
       allow update: if signedIn() && resource.data.studentId == request.auth.uid && request.resource.data.studentId == resource.data.studentId;
       allow delete: if signedIn() && resource.data.studentId == request.auth.uid;
     }
+    // D-003: owner is decided by the studentId field only. A doc at notebooks/{uid} is readable by that user
+    // solely as a legacy (no studentId) doc or a not-found probe, and no one can create a doc at another user's id.
+    function validTitle(d) { return d.get('title', '') is string && d.get('title', '').size() <= 200; }
+    function validMessages(d) { return d.get('messages', []) is list && d.get('messages', []).size() <= 2000; }
+    function validNotebook(d) { return validTitle(d) && validMessages(d) && d.get('content', '') is string && d.get('content', '').size() <= 500000; }
+    function ownsDocOrLegacy(id, d) {
+      return d.get('studentId', null) == request.auth.uid || (id == request.auth.uid && d.get('studentId', null) == null);
+    }
     match /notebooks/{id} {
-      allow read, delete: if signedIn() && (resource.data.studentId == request.auth.uid || id == request.auth.uid);
-      allow create: if signedIn() && request.resource.data.studentId == request.auth.uid;
-      allow update: if signedIn() && resource.data.studentId == request.auth.uid && request.resource.data.studentId == resource.data.studentId;
+      allow get: if signedIn() && (resource == null ? id == request.auth.uid : ownsDocOrLegacy(id, resource.data));
+      allow list: if signedIn() && resource.data.studentId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.studentId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.studentId == request.auth.uid &&
+        !exists(/databases/$(database)/documents/users/$(id)) &&
+        request.resource.data.keys().hasOnly(['studentId','title','content','messages','createdAt','updatedAt']) &&
+        validNotebook(request.resource.data);
+      allow update: if signedIn() && resource.data.studentId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','content','messages','updatedAt']) &&
+        validNotebook(request.resource.data);
     }
     match /tutor_sessions/{id} {
-      allow read, delete: if signedIn() && (resource.data.studentId == request.auth.uid || id == request.auth.uid);
-      allow create: if signedIn() && request.resource.data.studentId == request.auth.uid;
-      allow update: if signedIn() && resource.data.studentId == request.auth.uid && request.resource.data.studentId == resource.data.studentId;
+      allow get: if signedIn() && (resource == null ? id == request.auth.uid : ownsDocOrLegacy(id, resource.data));
+      allow list: if signedIn() && resource.data.studentId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.studentId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.studentId == request.auth.uid &&
+        !exists(/databases/$(database)/documents/users/$(id)) &&
+        request.resource.data.keys().hasOnly(['studentId','title','messages','createdAt','updatedAt']) &&
+        validTitle(request.resource.data) && validMessages(request.resource.data);
+      allow update: if signedIn() && resource.data.studentId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','messages','updatedAt']) &&
+        validTitle(request.resource.data) && validMessages(request.resource.data);
     }
     match /organizations/{id} {
       allow read: if member(id);

@@ -131,6 +131,7 @@ export default function AssignmentsPage() {
       setAssignments(assignments.map(a => a.id === id ? { ...a, visibility } : a));
     } catch (error) {
       console.error("Error updating visibility:", error);
+      toast.error("Failed to update sharing. Please try again.");
     }
   }
 
