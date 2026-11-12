@@ -29,7 +29,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-23 | merged | rt-23-error-boundaries | cf68642 (merge) | PASS | PASS | boundaries only log digest; no error-reporting service yet |
 | RT-24 | merged (partial) | rt-24-media-weight | ee77947 (merge) | PASS | FAIL on ea251b1 (inverted font preload), fixed in ee77947; delta reviewed by orchestrator + integration gate | public 103MB->16MB; demo video re-encoded (softer text); og-image.png->jpg (external social caches need re-scrape); 5 raw <img> remain |
 | RT-25 | skipped | | | | | large behaviour-preserving refactor of 1,400-line pages needs RT-28 browser smoke tests first (ticket's own precondition); too risky unattended |
-| RT-26 | todo | | | | | |
+| RT-26 | skipped | | | | | 30-file migration of client Firestore access to a data layer; high regression risk without component/E2E tests (RT-28) |
 | RT-27 | skipped | | | | | needs a new workspace package and tsconfig path aliasing across Next and functions builds; deploy-path undecided (RT-33), risk of breaking Cloud Functions deploys |
 | RT-28 | skipped | | | | | needs new deps (jsdom, Testing Library, Playwright + browsers) and CI changes; not attempted in this unattended run |
 | RT-29 | merged (partial) | rt-29-bound-reads | dacd772 (merge) | PASS | PASS | dashboard totals via aggregate counts (also fixes pre-existing partial/0 totals for teachers with 20+ assignments); student submissions N+1 removed; gradebook/admin analytics/counter function skipped |
