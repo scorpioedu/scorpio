@@ -22,5 +22,5 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - [ ] Make sure `LANDING_ORG_ID` is set to a dedicated organization doc with `subscriptionStatus: active` and an `aiBudgetLimit` you are happy to lose; when it is unset or exhausted the landing chat now returns 503 instead of spending uncapped.
 - [ ] Optionally set `LANDING_DAILY_CAP` (default 2000 messages/day).
 - [ ] Create a log-based alert in Cloud Logging for `[Landing Chat] ALERT` (80% budget, daily cap reached).
-- [ ] Verify the proxy hop count: the route trusts the right-most `x-forwarded-for` entry as the client IP. If the deployment adds trusted proxies after the client-facing one, per-IP counting would key on a proxy address; check the real header on a staging request.
+- [ ] The app must be deployed on Vercel for per-IP limits to be effective: the client IP is read only from `x-vercel-forwarded-for` / `x-real-ip`. Elsewhere (no such header) per-IP limiting is skipped and only the signed cookie and the global daily cap protect the route.
 - [ ] Confirm Firestore rules deny client access to `landing_daily` and `landing_visitors` (they are written only via the Admin SDK; no rule changes were made).

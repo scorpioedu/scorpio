@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 
 import { model, AiBudgetError } from '@/lib/ai/config';
-import { VISITOR_COOKIE, VISITOR_COOKIE_MAX_AGE_S, clientIp, getVisitorSecret, hashIp, issueVisitorToken, verifyVisitorToken } from '@/lib/landing-visitor';
+import { VISITOR_COOKIE, VISITOR_COOKIE_MAX_AGE_S, getVisitorSecret, hashIp, issueVisitorToken, verifyVisitorToken } from '@/lib/landing-visitor';
+import { getClientIp } from '@/lib/client-ip';
 import { billingContext } from '@/lib/billing-context';
 import { checkRateLimit } from '@/lib/rate-limit';
 async function callGeminiDirect(prompt: string) {
@@ -74,23 +75,23 @@ function dailyCap(): number {
 type Admission = { ok: true; remaining: number } | { ok: false; reason: 'visitor' | 'ip' | 'daily' };
 
 /** Atomically checks and increments the per-visitor, per-IP-per-day and global-per-day counters. */
-async function admit(visitorId: string, ipHash: string): Promise<Admission> {
+async function admit(visitorId: string, ipHash: string | null): Promise<Admission> {
   const day = new Date().toISOString().slice(0, 10);
   const visitorRef = adminDb.collection('landing_visitors').doc(`c_${visitorId}`);
-  const ipRef = adminDb.collection('landing_visitors').doc(`ip_${ipHash}_${day}`);
+  const ipRef = ipHash ? adminDb.collection('landing_visitors').doc(`ip_${ipHash}_${day}`) : null;
   const dailyRef = adminDb.collection('landing_daily').doc(day);
   const cap = dailyCap();
   return adminDb.runTransaction(async (tx): Promise<Admission> => {
-    const [v, ip, d] = await Promise.all([tx.get(visitorRef), tx.get(ipRef), tx.get(dailyRef)]);
+    const [v, ip, d] = await Promise.all([tx.get(visitorRef), ipRef ? tx.get(ipRef) : Promise.resolve(null), tx.get(dailyRef)]);
     const visitorCount: number = v.exists ? (v.data()?.messageCount ?? 0) : 0;
-    const ipCount: number = ip.exists ? (ip.data()?.messageCount ?? 0) : 0;
+    const ipCount: number = ip && ip.exists ? (ip.data()?.messageCount ?? 0) : 0;
     const dailyCount: number = d.exists ? (d.data()?.count ?? 0) : 0;
     if (visitorCount >= LANDING_LIMIT) return { ok: false, reason: 'visitor' };
     if (ipCount >= LANDING_IP_DAILY_LIMIT) return { ok: false, reason: 'ip' };
     if (dailyCount >= cap) return { ok: false, reason: 'daily' };
     const now = new Date();
     tx.set(visitorRef, { messageCount: visitorCount + 1, lastMessageAt: now, ...(visitorCount === 0 ? { firstMessageAt: now } : {}) }, { merge: true });
-    tx.set(ipRef, { messageCount: ipCount + 1, lastMessageAt: now }, { merge: true });
+    if (ipRef) tx.set(ipRef, { messageCount: ipCount + 1, lastMessageAt: now }, { merge: true });
     tx.set(dailyRef, { count: dailyCount + 1, updatedAt: now }, { merge: true });
     return { ok: true, remaining: LANDING_LIMIT - (visitorCount + 1) };
   });
@@ -135,7 +136,9 @@ export async function POST(req: NextRequest) {
       visitorId = issued.id;
       newToken = issued.token;
     }
-    const ipHash = hashIp(clientIp(req.headers), secret);
+    // No trusted IP header (not on Vercel): skip per-IP controls and rely on the cookie and the global daily cap.
+    const ip = getClientIp(req.headers);
+    const ipHash = ip ? hashIp(ip, secret) : null;
 
     const withCookie = (res: NextResponse) => {
       if (newToken) {
@@ -146,8 +149,10 @@ export async function POST(req: NextRequest) {
       return res;
     };
 
-    const rate = await checkRateLimit(req, `ip_${ipHash}`, 'landing', { windowMs: 60000, maxRequests: 5 });
-    if (!rate.allowed) return withCookie(NextResponse.json({ error: rate.error }, { status: 429 }));
+    if (ipHash) {
+      const rate = await checkRateLimit(req, `ip_${ipHash}`, 'landing', { windowMs: 60000, maxRequests: 5 });
+      if (!rate.allowed) return withCookie(NextResponse.json({ error: rate.error }, { status: 429 }));
+    }
 
     let admission: Admission;
     try {

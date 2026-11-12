@@ -97,8 +97,6 @@ describe('Landing Chat & Try AI Guest Access', () => {
   test('/api/chat/landing returns 429 when visitor demo limit is reached', async () => {
     // The visitor counter is now read inside a transaction.
     const { adminDb } = jest.requireMock('../src/lib/firebase-admin');
-    const emptyTx = { get: jest.fn(async () => ({ exists: false, data: () => null })), set: jest.fn() };
-    adminDb.runTransaction.mockImplementationOnce(async (cb: any) => cb(emptyTx)); // rate limiter
     adminDb.runTransaction.mockImplementationOnce(async (cb: any) =>
       cb({
         get: jest.fn(async () => ({ exists: true, data: () => ({ messageCount: 10 }) })),

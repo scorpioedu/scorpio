@@ -24,8 +24,10 @@ const okResponse = (text = 'ok') => ({
 let ipCounter = 0;
 const newIp = () => `203.0.113.${(++ipCounter % 250) + 1}`;
 
-function send(opts: { ip?: string; cookie?: string; visitorId?: string; message?: string } = {}) {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json', 'x-forwarded-for': opts.ip ?? '198.51.100.7' };
+function send(opts: { ip?: string; cookie?: string; visitorId?: string; message?: string; spoofXff?: string; noIp?: boolean } = {}) {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json', 'x-vercel-forwarded-for': opts.ip ?? '198.51.100.7' };
+  if (opts.spoofXff) headers['x-forwarded-for'] = opts.spoofXff;
+  if (opts.noIp) delete headers['x-vercel-forwarded-for'];
   if (opts.cookie) headers.cookie = opts.cookie;
   return POST(new NextRequest('https://scorpio.test/api/chat/landing', {
     method: 'POST', headers,
@@ -91,6 +93,46 @@ describe('visitor identity and per-visitor limit', () => {
     }
     expect(rejected).toBeGreaterThan(0);
     expect(fetchSpy.mock.calls.length).toBeLessThanOrEqual(30);
+  });
+});
+
+describe('trusted client IP source', () => {
+  test('varying x-forwarded-for alone does not change the per-IP bucket', async () => {
+    const ip = newIp();
+    let rejected = 0;
+    for (let i = 0; i < 40; i++) {
+      await wipe('rate_limits');
+      if ((await send({ ip, spoofXff: `9.9.9.${i}` })).status === 429) rejected++;
+    }
+    expect(rejected).toBeGreaterThan(0);
+    expect(fetchSpy.mock.calls.length).toBeLessThanOrEqual(30);
+  });
+
+  test('varying x-vercel-forwarded-for gives separate per-IP buckets', async () => {
+    for (let i = 0; i < 40; i++) {
+      await wipe('rate_limits');
+      expect((await send({ ip: `192.0.2.${i + 1}` })).status).toBe(200);
+    }
+  });
+
+  test('with no trusted IP header there is no per-IP limiting, but cookie and daily caps still apply', async () => {
+    const first = await send({ noIp: true });
+    expect(first.status).toBe(200);
+    const cookie = cookieOf(first);
+    for (let i = 0; i < 9; i++) expect((await send({ noIp: true, cookie })).status).toBe(200);
+    expect((await send({ noIp: true, cookie })).status).toBe(429);
+    process.env.LANDING_DAILY_CAP = '10';
+    expect((await send({ noIp: true })).status).toBe(503);
+    expect((await adminDb.collection('landing_visitors').get()).docs.some(d => d.id.startsWith('ip_'))).toBe(false);
+  });
+
+  test('the real per-minute limiter (not wiped) allows normal use then throttles bursts', async () => {
+    const ip = newIp();
+    const cookie = cookieOf(await send({ ip }));
+    const statuses: number[] = [];
+    for (let i = 0; i < 6; i++) statuses.push((await send({ ip, cookie })).status);
+    expect(statuses.slice(0, 4)).toEqual([200, 200, 200, 200]);
+    expect(statuses[5]).toBe(429);
   });
 });
 

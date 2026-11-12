@@ -32,15 +32,6 @@ export function verifyVisitorToken(token: string | undefined, secret: string): s
   return id;
 }
 
-/**
- * Client IP as seen by the platform proxy. The left-most X-Forwarded-For entries are client supplied
- * and spoofable; the right-most entry is appended by the nearest proxy, so that is the one we trust.
- */
-export function clientIp(headers: Headers): string {
-  const parts = (headers.get('x-forwarded-for') || '').split(',').map(p => p.trim()).filter(Boolean);
-  return parts.length ? parts[parts.length - 1] : 'unknown-ip';
-}
-
 /** Salted hash so raw IPs are never stored. */
 export function hashIp(ip: string, secret: string): string {
   return createHmac('sha256', secret).update(`ip:${ip}`).digest('hex').slice(0, 32);
