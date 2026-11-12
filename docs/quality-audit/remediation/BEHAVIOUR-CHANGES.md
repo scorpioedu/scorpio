@@ -150,3 +150,6 @@ New 400s (body errors are `{ error, fields: [{ path, message }] }`; `error` keep
 
 ## RT-29 correction (verifier, authoritative)
 The RT-29 notes above claiming the RT-14 rules broke the teacher dashboard (0/0, 'in' over 2+ ids denied) are WRONG. The submissions read rule is byte-identical to the original commit. Measured on the emulator with original and current rules: `assignmentId in [..]` succeeds up to about 19 ids and is denied from 20 ids (rules get()-call limit). The old dashboard used chunks of 30 with errors swallowed, so a teacher with 45 assignments saw partial numbers (e.g. 42/30), and 0/0 only when every chunk had 20+ ids. This is a PRE-EXISTING bug that RT-29 fixes via per-assignment aggregate counts (chunk size 1). Known weakness: a failed count request still silently undercounts (as the old code swallowed errors), and read cost grows with the number of assignments (4 count requests each).
+
+## RT-33 (safe parts)
+No runtime behaviour change. Removed unreferenced scratch files (`check_portfolios.ts`, `update_mermaid.py`, `diagram.mermaid`, `demo.md`); `check_portfolios.ts` was previously included in the root `tsc` run. Added `.next-*/` to `.gitignore`.

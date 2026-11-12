@@ -242,7 +242,7 @@ Scorpio includes a dedicated research dashboard to monitor the performance of it
 Every pull request and push to `main` runs `.github/workflows/ci.yml`: typecheck, ESLint (non-blocking until the baseline is cleared), Jest, the Firebase-emulator security suite, `next build`, `npm audit` (non-blocking for now) and a gitleaks secret scan. CI installs npm 11, then runs `npm ci` in the root and in `functions/`.
 
 ### 🚀 Deployment
-> **TODO (RT-33 owns the deploy-path decision):** `firebase.json` configures Firebase Hosting with `hosting.frameworksBackend` (Next.js on Cloud Functions) plus the `functions/` codebase, and there are no Vercel artefacts in the repo, so the paths below describe Firebase. This section will be finalised when RT-33 settles the deployment target.
+> **TODO (RT-33 owns the deploy-path decision):** `firebase.json` configures Firebase Hosting with `hosting.frameworksBackend` (Next.js on Cloud Functions) plus the `functions/` codebase, and there are no Vercel artefacts in the repo, so the paths below describe Firebase. This section will be finalised when RT-33 settles the deployment target. Facts and options: [RT-33-DEPLOY-PATHS.md](docs/quality-audit/remediation/RT-33-DEPLOY-PATHS.md).
 
 ```bash
 npm run build
