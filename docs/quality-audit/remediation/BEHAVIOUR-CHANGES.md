@@ -65,3 +65,9 @@
 - `Permissions-Policy` disables only unused features (camera, geolocation, payment, usb, bluetooth, serial, hid, midi, motion sensors). It keeps `microphone=(self)` (tutor speech input), `fullscreen=(self)` (lockdown mode, demo video) and clipboard read/write for self and `www.desmos.com` (the Desmos iframes ask for it).
 - The CSP is `Content-Security-Policy-Report-Only` (owner decision): nothing is blocked. Violations are POSTed to the new `/api/csp-report`, which answers 204 and logs one sanitised `console.warn` line (`[csp-report] violated-directive=... blocked-uri=... document-uri=...`, query strings and fragments removed, 8 KB body cap, 60 lines/minute per server instance). It does not use `checkRateLimit` (that is a Firestore write per report and fails closed without the DB).
 - The CSP uses `'unsafe-inline'` for scripts and styles, because the inline scripts in `src/app/layout.tsx` and `src/components/loading-screen.tsx` and Next's bootstrap scripts have no nonce. Dev mode also allows `'unsafe-eval'` and localhost/emulator origins.
+
+## From RT-15
+- Notebook Copilot no longer attempts the client write to `users/{uid}.aiUsageCount` (denied by rules), so a successful answer is no longer followed by a spurious "Copilot connection severed." toast.
+- Assignment timer: when the 5 minute grace period (time limit + required work upload) runs out, the page now auto-submits. Before, the "grace expired" branch was unreachable (the first branch re-entered the grace period every time), so the grace period restarted indefinitely.
+- Assignment timer: auto-submit uses the latest answers/files (ref to the latest `handleSubmit`), not the closure from the last tick.
+- A new student's auto-created first notebook now has the deterministic id `{uid}_default` instead of a random id (prevents duplicates when the snapshot fires twice). Existing notebooks are unchanged.

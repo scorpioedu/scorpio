@@ -59,3 +59,10 @@
 ## From RT-09
 - Replace `'unsafe-inline'` in the CSP `script-src` with a per-request nonce (needs a proxy/middleware that sets the nonce and makes pages dynamic) or hashes for the two inline scripts; Next's own inline bootstrap scripts are why it is not a one-line change.
 - `/api/csp-report` has only a per-instance log cap. If reports become noisy, move it behind the shared limiter from RT-11.
+
+## From RT-15
+- The per-student Copilot counter is not maintained anywhere: `/api/notebook/chat` increments only `organizations/{id}.notebookUsageCurrent`, and `recordUsage` has no per-student field. The ticket's `aiNotebookUsageCurrent` does not exist. The notebook page still reads `users/{uid}.aiUsageCount` (always 0 now, as it was in practice since the client write was denied), so `aiNotebookLimitPerStudent` is not enforced. Needs a server-side per-student increment in `src/app/api/notebook/chat/route.ts` / `src/lib/usage-limit.ts` (RT-12 / RT-10 territory).
+- Notebook first-create race: right after `setDoc` of the first notebook, the doc listener can subscribe before the server commit and logs one `permission-denied` (rules L92 `get` on a nonexistent doc whose id is not the uid). Pre-existing, one-time per new user, harmless; fix belongs in rules (RT-14) or by delaying the doc listener until `hasPendingWrites` is false.
+- Notebook still mixes edits across notebooks if the user switches notebooks with unsaved changes (the 3 s auto-save writes current content to the newly selected id). Needs tracking the id the edit belongs to; design decision, skipped.
+- `src/app/teacher/network/page.tsx:L370` `fetchNetworkInfo` exhaustive-deps warning left (mega page, RT-25 will decompose it). `src/components/demo-carousel.tsx` effect at L81 still warns for `isVideoPaused/isVideoVisible/unavailable`: those are intentionally excluded (the pause/resume effect handles them; adding them would reset progress on pause), needs a small timer refactor.
+- The org listener in notebook could use `useDepartmentPlan()` (H-001 recommendation); not done to keep the diff surgical.

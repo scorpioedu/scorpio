@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, where } from "firebase/firestore";
 import { db, uploadFilesToStorage } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
@@ -44,23 +44,16 @@ export default function ResourcesPage() {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchResources();
-      fetchCourses();
-    }
-  }, [user]);
-
-  async function fetchCourses() {
+  const fetchCourses = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
       const snap = await getDocs(q);
       setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     } catch (e) { console.error(e); }
-  }
+  }, [user]);
 
-  async function fetchResources() {
+  const fetchResources = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(
@@ -79,7 +72,16 @@ export default function ResourcesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchResources();
+      fetchCourses();
+    }
+  }, [user, fetchResources, fetchCourses]);
+
+
 
   async function handleAddResource(e: React.FormEvent) {
     e.preventDefault();

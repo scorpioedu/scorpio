@@ -1,7 +1,7 @@
 "use client";
 import { getTeacherAssignment } from "@/lib/authenticated-fetch";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
@@ -61,13 +61,7 @@ export default function WaypointsPage() {
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<"waypoints" | "network-share">("waypoints");
 
-  useEffect(() => {
-    if (user && !authLoading) {
-      fetchWaypoints();
-    }
-  }, [user, authLoading, activeTab, profile?.organizationId, topicFilter]);
-
-  async function fetchWaypoints() {
+  const fetchWaypoints = useCallback(async () => {
     if (!user || authLoading) return;
     setLoading(true);
     try {
@@ -119,7 +113,7 @@ export default function WaypointsPage() {
       setWaypoints(docs);
 
       // Track the first 3 global templates as starter waypoints for Free plan
-      if (activeTab === "global" && (starterIds.length === 0 || topicFilter === "all")) {
+      if (activeTab === "global") {
         setStarterIds(prev => prev.length === 0 ? docs.slice(0, 3).map(d => d.id) : prev);
       }
     } catch (e: unknown) {
@@ -133,7 +127,14 @@ export default function WaypointsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user, authLoading, activeTab, profile?.organizationId, topicFilter]);
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      fetchWaypoints();
+    }
+  }, [user, authLoading, fetchWaypoints]);
+
 
   const isWaypointLocked = (waypoint: Waypoint, index: number): boolean => {
     if (!isFreePlan) return false;
