@@ -1,20 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
-import { recordUsage } from '@/lib/usage-limit';
 
-import { model } from '@/lib/ai/config';
+import { model, AiBudgetError } from '@/lib/ai/config';
+import { VISITOR_COOKIE, VISITOR_COOKIE_MAX_AGE_S, clientIp, getVisitorSecret, hashIp, issueVisitorToken, verifyVisitorToken } from '@/lib/landing-visitor';
 import { billingContext } from '@/lib/billing-context';
 import { checkRateLimit } from '@/lib/rate-limit';
 async function callGeminiDirect(prompt: string) {
-  const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
+  const result = await model.generateContent({
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { maxOutputTokens: LANDING_MAX_OUTPUT_TOKENS },
+  });
   const response = await result.response;
   return { text: response.text(), usage: undefined };
 }
 
 const LANDING_LIMIT = 10;
-
-// Developer's org ID from env — all landing page AI costs are billed here
-const LANDING_ORG_ID = process.env.LANDING_ORG_ID;
+// Per-IP daily ceiling is looser than the per-visitor limit so shared school/office networks still work.
+const LANDING_IP_DAILY_LIMIT = 30;
+const LANDING_DAILY_CAP_DEFAULT = 2000;
+const LANDING_MAX_OUTPUT_TOKENS = 512;
+const BUDGET_ALERT_RATIO = 0.8;
 
 const LANDING_SYSTEM_PROMPT = `You are Raise, Scorpio's AI learning assistant and expert product guide embedded in the Scorpio Physics LMS public landing page and Try AI playground. Your role is to help prospective teachers, students, and institutions understand Scorpio's value, answer questions about features, research, pricing, and demonstrate Scorpio's signature Socratic physics tutoring.
 
@@ -58,58 +63,129 @@ When a visitor asks a physics question, conceptual problem, homework question, o
 
 TONE: Be warm, confident, and genuinely helpful. You're excited about Scorpio because you know it actually works. Keep most answers to 2–4 sentences. Use markdown formatting (bold, bullets) for clarity. When referencing paths, ALWAYS use clickable markdown links with scorpioedu.org as the base, e.g., [scorpioedu.org/research](https://scorpioedu.org/research). Guide interested visitors specifically toward scorpioedu.org/signup. Never make up features that don't exist.`;
 
+const unavailable = (error: string) =>
+  NextResponse.json({ error, unavailable: true }, { status: 503, headers: { 'Retry-After': '300' } });
+
+function dailyCap(): number {
+  const n = Number(process.env.LANDING_DAILY_CAP);
+  return Number.isInteger(n) && n > 0 ? n : LANDING_DAILY_CAP_DEFAULT;
+}
+
+type Admission = { ok: true; remaining: number } | { ok: false; reason: 'visitor' | 'ip' | 'daily' };
+
+/** Atomically checks and increments the per-visitor, per-IP-per-day and global-per-day counters. */
+async function admit(visitorId: string, ipHash: string): Promise<Admission> {
+  const day = new Date().toISOString().slice(0, 10);
+  const visitorRef = adminDb.collection('landing_visitors').doc(`c_${visitorId}`);
+  const ipRef = adminDb.collection('landing_visitors').doc(`ip_${ipHash}_${day}`);
+  const dailyRef = adminDb.collection('landing_daily').doc(day);
+  const cap = dailyCap();
+  return adminDb.runTransaction(async (tx): Promise<Admission> => {
+    const [v, ip, d] = await Promise.all([tx.get(visitorRef), tx.get(ipRef), tx.get(dailyRef)]);
+    const visitorCount: number = v.exists ? (v.data()?.messageCount ?? 0) : 0;
+    const ipCount: number = ip.exists ? (ip.data()?.messageCount ?? 0) : 0;
+    const dailyCount: number = d.exists ? (d.data()?.count ?? 0) : 0;
+    if (visitorCount >= LANDING_LIMIT) return { ok: false, reason: 'visitor' };
+    if (ipCount >= LANDING_IP_DAILY_LIMIT) return { ok: false, reason: 'ip' };
+    if (dailyCount >= cap) return { ok: false, reason: 'daily' };
+    const now = new Date();
+    tx.set(visitorRef, { messageCount: visitorCount + 1, lastMessageAt: now, ...(visitorCount === 0 ? { firstMessageAt: now } : {}) }, { merge: true });
+    tx.set(ipRef, { messageCount: ipCount + 1, lastMessageAt: now }, { merge: true });
+    tx.set(dailyRef, { count: dailyCount + 1, updatedAt: now }, { merge: true });
+    return { ok: true, remaining: LANDING_LIMIT - (visitorCount + 1) };
+  });
+}
+
+/** Logs when the landing organization has used 80% or more of its budget. Never throws. */
+async function warnIfNearBudget(orgId: string) {
+  try {
+    const org = (await adminDb.collection('organizations').doc(orgId).get()).data();
+    const limit = Number(org?.aiBudgetLimit) || 0;
+    if (limit <= 0) return;
+    const used = (Number(org?.aiUsageCurrent) || 0) + (Number(org?.aiUsageReserved) || 0);
+    if (used >= limit * BUDGET_ALERT_RATIO) {
+      console.warn(`[Landing Chat] ALERT: landing org budget past 80% (${Math.round((used / limit) * 100)}% used)`);
+    }
+  } catch (err) {
+    console.error('[Landing Chat] budget alert check failed:', err instanceof Error ? err.message : err);
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { message, visitorId } = await req.json();
+    const { message } = await req.json();
 
-    if (typeof message !== "string" || message.length > 4000 || typeof visitorId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(visitorId)) {
+    if (typeof message !== "string" || message.length > 4000) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const rate = await checkRateLimit(req, null, 'landing', { windowMs: 60000, maxRequests: 5 });
-    if (!rate.allowed) return NextResponse.json({ error: rate.error }, { status: 429 });
-
-    let currentCount = 0;
-    let visitorRef: any = null;
-    if (adminDb && typeof adminDb.collection === 'function') {
-      try {
-        visitorRef = adminDb.collection('landing_visitors').doc(visitorId);
-        const visitorDoc = await visitorRef.get();
-        currentCount = visitorDoc.exists ? (visitorDoc.data()?.messageCount ?? 0) : 0;
-      } catch (dbErr) {
-        console.warn('[Landing Chat] Firestore visitor check failed:', dbErr);
-      }
+    // Fail closed: without a budgeted landing org or a signing secret, never reach the provider.
+    const landingOrgId = process.env.LANDING_ORG_ID;
+    const secret = getVisitorSecret();
+    if (!landingOrgId || !secret) {
+      console.error('[Landing Chat] not configured: LANDING_ORG_ID or LANDING_VISITOR_COOKIE_SECRET missing');
+      return unavailable('The demo is temporarily unavailable. Please try again later.');
     }
 
-    if (currentCount >= LANDING_LIMIT) {
-      return NextResponse.json({
+    // Visitor identity is a server-signed cookie; any visitorId in the body is ignored.
+    let visitorId = verifyVisitorToken(req.cookies.get(VISITOR_COOKIE)?.value, secret);
+    let newToken: string | null = null;
+    if (!visitorId) {
+      const issued = issueVisitorToken(secret);
+      visitorId = issued.id;
+      newToken = issued.token;
+    }
+    const ipHash = hashIp(clientIp(req.headers), secret);
+
+    const withCookie = (res: NextResponse) => {
+      if (newToken) {
+        res.cookies.set(VISITOR_COOKIE, newToken, {
+          httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/', maxAge: VISITOR_COOKIE_MAX_AGE_S,
+        });
+      }
+      return res;
+    };
+
+    const rate = await checkRateLimit(req, `ip_${ipHash}`, 'landing', { windowMs: 60000, maxRequests: 5 });
+    if (!rate.allowed) return withCookie(NextResponse.json({ error: rate.error }, { status: 429 }));
+
+    let admission: Admission;
+    try {
+      admission = await admit(visitorId, ipHash);
+    } catch (dbErr) {
+      console.error('[Landing Chat] counter transaction failed; refusing request:', dbErr instanceof Error ? dbErr.message : dbErr);
+      return withCookie(unavailable('The demo is temporarily unavailable. Please try again later.'));
+    }
+
+    if (!admission.ok) {
+      if (admission.reason === 'daily') {
+        console.error('[Landing Chat] ALERT: global daily message cap reached');
+        return withCookie(unavailable('The demo has reached its daily capacity. Please try again tomorrow or sign up.'));
+      }
+      return withCookie(NextResponse.json({
         error: `You've reached the ${LANDING_LIMIT}-message demo limit. Sign up for unlimited access.`,
         limitReached: true,
-      }, { status: 429 });
-    }
-
-    if (visitorRef) {
-      try {
-        await visitorRef.set({
-          messageCount: currentCount + 1,
-          lastMessageAt: new Date(),
-          visitorId,
-          ...(currentCount === 0 ? { firstMessageAt: new Date() } : {}),
-        }, { merge: true });
-      } catch (dbErr) {
-        console.warn('[Landing Chat] Firestore visitor increment failed:', dbErr);
-      }
+      }, { status: 429 }));
     }
 
     // Generate AI response (server-side direct REST call — avoids firebase/ai client SDK in Cloud Run)
-    const result = await billingContext.run({ organizationId: LANDING_ORG_ID || "", type: "landing" }, () => callGeminiDirect(`${LANDING_SYSTEM_PROMPT}\n\nVisitor question: ${message}`));
+    let result;
+    try {
+      result = await billingContext.run({ organizationId: landingOrgId, type: "landing" }, () => callGeminiDirect(`${LANDING_SYSTEM_PROMPT}\n\nVisitor question: ${message}`));
+    } catch (aiErr) {
+      if (aiErr instanceof AiBudgetError) {
+        console.error('[Landing Chat] landing budget refused the request:', aiErr.message);
+        return withCookie(unavailable('The demo is temporarily unavailable. Please try again later.'));
+      }
+      throw aiErr;
+    }
 
-    const remaining = LANDING_LIMIT - (currentCount + 1);
+    await warnIfNearBudget(landingOrgId);
 
-    return NextResponse.json({
+    return withCookie(NextResponse.json({
       text: result.text,
-      remaining,
-    });
+      remaining: admission.remaining,
+    }));
   } catch (error: any) {
     console.error('[Landing Chat API] Error:', error);
     return NextResponse.json({

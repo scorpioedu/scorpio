@@ -24,3 +24,13 @@
 - A provider call that fails in transport (timeout, network error) or returns an unreadable body now releases its budget hold and charges the conservative estimate (input bytes / 4 tokens, 0 output) instead of leaving the reservation pending forever. HTTP non-OK responses are unchanged (settled at zero cost).
 - A provider response without `usageMetadata` no longer throws; it settles with the same estimate and logs a warning, and the generated text is returned to the caller.
 - New scheduled function `expireStaleReservations` (every 15 min): `ai_reservations` still `pending` after 30 minutes are marked `expired` and their `maxCost` is subtracted from `organizations.aiUsageReserved` (floor 0). Expired holds are not charged. Needs the new `ai_reservations (status, createdAt)` composite index deployed; scans up to 10 pages of 200 per run.
+
+## RT-03 (F-002, C-002): landing/research AI spend
+- `POST /api/chat/landing` no longer trusts the body `visitorId` (it is ignored). Visitors are identified by a server-issued, HMAC-signed, `httpOnly`, `SameSite=Lax` cookie `scorpio_lv` (1 year, `Secure` in production), set on first response. The 10-message limit is counted per cookie and, additionally, 30 messages per hashed client IP per UTC day (shared school networks still work; clearing cookies no longer resets the limit). The client IP is the right-most `x-forwarded-for` entry (the one appended by the platform proxy).
+- New 429 `limitReached` responses for visitors who rotate `visitorId` values; counters update in one Firestore transaction (`landing_visitors/c_<id>`, `landing_visitors/ip_<hash>_<day>`).
+- New global daily cap (`landing_daily/<yyyy-mm-dd>`, default 2,000 messages, override with `LANDING_DAILY_CAP`). Past it the route returns 503 with `Retry-After`.
+- The route now fails closed with a friendly 503 (no provider call) when `LANDING_ORG_ID` is unset, `LANDING_VISITOR_COOKIE_SECRET` is unset, the landing org's budget is exhausted or inactive, or the counter transaction fails (previously Firestore errors were ignored).
+- `landing` AI calls are no longer exempt in `src/lib/ai/config.ts`: they require an organization and a successful budget reservation (`AiBudgetError`, a subclass of `Error` with the same message). `research` stays exempt, but the swallowed reservation error is now logged with `console.error`.
+- Landing replies are capped at `maxOutputTokens: 512` (previously the 2048 default).
+- A warning is logged (`[Landing Chat] ALERT: landing org budget past 80%`) when the landing org has used 80% or more of its budget.
+- The existing unit test that asserted a landing call without an organization succeeds was changed to assert it is rejected (that was the fail-open being fixed); the research equivalent is kept.
