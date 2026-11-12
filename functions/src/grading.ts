@@ -3,6 +3,9 @@ import * as admin from "firebase-admin";
 import { onDocumentUpdated, onDocumentCreated } from "firebase-functions/v2/firestore";
 import { GoogleGenAI } from "@google/genai";
 import { defineSecret } from "firebase-functions/params";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import * as logger from "firebase-functions/logger";
+import { GRADING_CONCURRENCY, GRADING_MEMORY, GRADING_TIMEOUT_SECONDS, mapWithConcurrency, processGradingWith, sweepStuckSubmissions } from "./grading-runner";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
@@ -167,7 +170,7 @@ async function gradeResponseAI(
         }
     };
   } catch (error: any) {
-    console.error("Error in gradeResponseAI (Modern GenAI):", error);
+    logger.error("Error in gradeResponseAI", { error: error instanceof Error ? error.message : String(error) });
     throw new Error("AI grading unavailable; manual review required");
   }
 }
@@ -190,7 +193,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     }
 
     if (!organizationId) {
-        console.error("No organization found for grading budget.");
+        logger.error("No organization found for grading budget", { submissionId });
         return;
     }
 
@@ -206,7 +209,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         }
         const currentName = studentData?.displayName || studentData?.name;
         if (currentName && !studentNames.includes(currentName)) studentNames.push(currentName);
-    } catch (e) { console.error("Error resolving student names:", e); }
+    } catch (e) { logger.error("Error resolving student names", { submissionId, error: e instanceof Error ? e.message : String(e) }); }
 
     const assignmentSnap = await db.collection('assignments').doc(assignmentId).get();
     if (!assignmentSnap.exists) return;
@@ -226,16 +229,12 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     let maxScore = 0;
     for (const q of questions) maxScore += (q.points || 10);
 
-    const gradedAnswers = [];
     let totalPromptTokens = 0;
     let totalCandidateTokens = 0;
 
-    for (const ans of answers) {
+    const gradedAnswers = await mapWithConcurrency(answers, GRADING_CONCURRENCY, async (ans: any) => {
         const question = questions.find((q: any) => q.id === ans.questionId);
-        if (!question) {
-            gradedAnswers.push(ans);
-            continue;
-        }
+        if (!question) return ans;
 
         const points = question.points || 10;
         let score = 0;
@@ -259,10 +258,8 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         }
 
         totalScore += score;
-        gradedAnswers.push({ ...ans, feedback, reasoning, score, maxPoints: points });
-    }
-
-
+        return { ...ans, feedback, reasoning, score, maxPoints: points };
+    });
 
     const finalScore = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
 
@@ -276,7 +273,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         gradedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    console.log(`Successfully graded submission ${submissionId} (Modern GenAI)`);
+    logger.info("Successfully graded submission", { submissionId });
 
     // --- EMAIL NOTIFICATION (DISABLED) ---
     // if (studentData?.email && finalScore !== undefined) {
@@ -305,42 +302,44 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
 /**
  * FIRESTORE TRIGGERS
  */
-async function processGrading(submissionId: string, submissionData: any) {
-  const db = admin.firestore();
-  const ref = db.collection('submissions').doc(submissionId);
-  const lease = db.collection('grading_locks').doc(submissionId);
-  const acquired = await db.runTransaction(async tx => {
-    const current = (await tx.get(ref)).data();
-    const lock = (await tx.get(lease)).data();
-    if (!current || current.graded || (lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
-    tx.set(lease, { expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 15 * 60 * 1000) });
-    return true;
-  });
-  if (!acquired) return;
-  try { await gradeSubmission(submissionId, submissionData); }
-  catch {
-    await ref.update({ graded: false, status: 'pending_review', gradingError: 'AI grading unavailable; teacher review required' });
-  } finally { await lease.delete(); }
+async function processGrading(submissionId: string) {
+  await processGradingWith(admin.firestore(), submissionId, gradeSubmission);
 }
 
 export const onSubmissionCreated = onDocumentCreated({
     document: "submissions/{submissionId}",
-    secrets: [resendApiKey]
+    secrets: [resendApiKey],
+    timeoutSeconds: GRADING_TIMEOUT_SECONDS,
+    memory: GRADING_MEMORY
 }, async (event) => {
     const submissionData = event.data?.data();
     if (submissionData && submissionData.status === 'submitted' && !submissionData.graded) {
-        await processGrading(event.params.submissionId, submissionData);
+        await processGrading(event.params.submissionId);
     }
 });
 
 export const onSubmissionUpdated = onDocumentUpdated({
     document: "submissions/{submissionId}",
-    secrets: [resendApiKey]
+    secrets: [resendApiKey],
+    timeoutSeconds: GRADING_TIMEOUT_SECONDS,
+    memory: GRADING_MEMORY
 }, async (event) => {
     const beforeData = event.data?.before.data();
     const afterData = event.data?.after.data();
 
     if (afterData && afterData.status === 'submitted' && beforeData?.status !== 'submitted' && !afterData.graded) {
-        await processGrading(event.params.submissionId, afterData);
+        await processGrading(event.params.submissionId);
     }
+});
+
+/**
+ * Safety net: a platform timeout or crash skips the trigger's catch block, so periodically move
+ * AI submissions stuck in `submitted` to `pending_review` for teacher attention.
+ */
+export const sweepStuckGrading = onSchedule({
+    schedule: "every 15 minutes",
+    timeoutSeconds: 120,
+    memory: "256MiB"
+}, async () => {
+    await sweepStuckSubmissions(admin.firestore());
 });
