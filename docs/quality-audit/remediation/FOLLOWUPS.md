@@ -86,3 +86,8 @@
 - RT-18: failed Storage deletes on assignment delete are only logged (no retry). A retry or a reconciliation sweep for orphaned `submissions/` objects needs a design decision. Objects whose submission docs were already deleted before this change remain orphaned (no backfill).
 - RT-18: grading lock-lease/partial-failure behaviour is covered by the existing `__tests__/grading-*.test.ts`; `deliverBillingUsage` is now covered by `functions-billing-outbox.test.ts`.
 - RT-18 hardening idea (verifier): check URL bucket/host equals default bucket in functions/src/assignment-cleanup.ts before deleting (defence in depth; write path already enforces).
+- RT-20: not done (risk): `firebase-admin` 13 -> 14 (moderate-only fix, server-wide), `firebase` 12 -> 13 (does not fix the `@grpc/grpc-js ~1.9` pin), `@polar-sh/sdk` 0.44 -> 1.x, katex chain majors, `lucide-react`/`react-day-picker`/`react-resizable-panels` majors. Dead code remains (knip lists ~40 unused files); deleting it is a separate ticket.
+- RT-20: `showdown` has no fixed release (two moderate XSS advisories); consider replacing the notebook Markdown<->HTML path.
+- RT-20: `rich-text-editor.tsx` imports `@tiptap/extension-underline` although tiptap 3 `starter-kit` already includes it; check for duplicate-extension warnings, then drop the explicit import and package.
+- RT-20: `stryker.config.json` names `@stryker-mutator/jest-runner` and `typescript-checker`, which are not declared; mutation testing cannot run until they are added (no npm script uses it).
+- RT-20: `eslint-config-next` stays at 16.3.8 (16.4.x needs `eslint-plugin-react-hooks ^7.1.0` and raises ESLint errors). Optionally lower `baseline-counts.json` to 238 / 175 now that dead files are gone.
