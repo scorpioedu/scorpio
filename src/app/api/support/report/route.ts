@@ -1,8 +1,9 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const body = await req.json();
     const {
@@ -47,14 +48,17 @@ async function handlePost(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    if (adminDb) {
-      try {
-        await adminDb.collection('support_tickets').doc(ticketId).set(reportData);
-      } catch (dbError) {
-        console.error('[Support API] Error writing to Firestore:', dbError);
-      }
-    } else {
-      console.log('[Support API] Admin DB not available, logged report:', reportData);
+    // A ticket that was not stored must never be acknowledged: the user would believe support has it (G-006).
+    // Nothing from `reportData` (description, email, screenshots) is logged.
+    if (!adminDb) {
+      console.error(`[Support API] Admin DB not available; ticket ${ticketId} was not stored (requestId=${requestId})`);
+      return NextResponse.json({ error: 'Support is temporarily unavailable. Please try again shortly.', requestId }, { status: 503 });
+    }
+    try {
+      await adminDb.collection('support_tickets').doc(ticketId).set(reportData);
+    } catch (dbError) {
+      console.error(`[Support API] Could not store ticket ${ticketId} (requestId=${requestId}):`, dbError instanceof Error ? dbError.name : 'unknown');
+      return NextResponse.json({ error: 'We could not save your report. Please try again.', requestId }, { status: 503 });
     }
 
     return NextResponse.json({
@@ -63,12 +67,7 @@ async function handlePost(req: NextRequest) {
       message: 'Support ticket submitted successfully.',
     });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error while submitting report.';
-    console.error('[Support API] Failed to submit report:', error);
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    return errorResponse(error, 'support-report', requestId);
   }
 }
 

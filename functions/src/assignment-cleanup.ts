@@ -1,3 +1,5 @@
+import * as logger from 'firebase-functions/logger';
+
 /** Pure helpers for removing a deleted assignment's uploaded files (K-003). */
 
 export interface WorkFileRef {
@@ -51,7 +53,7 @@ export async function deleteStorageObjects(bucket: DeletableBucket, objects: str
     try {
       await bucket.file(object).delete({ ignoreNotFound: true });
     } catch (err) {
-      console.error(`Failed to delete storage object ${object}`, err);
+      logger.error(`Failed to delete storage object ${object}`, { error: err instanceof Error ? err.name : 'unknown' });
       failed.push(object);
     }
   }

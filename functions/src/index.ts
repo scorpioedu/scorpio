@@ -8,6 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
+import * as logger from "firebase-functions/logger";
 import {onDocumentDeleted} from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 import { collectSubmissionObjects, deleteStorageObjects } from "./assignment-cleanup";
@@ -32,7 +33,7 @@ export const onAssignmentDeleted = onDocumentDeleted("assignments/{assignmentId}
     const objects = collectSubmissionObjects(snapshot.docs.map(doc => doc.data()));
     const failedObjects = await deleteStorageObjects(admin.storage().bucket(), objects);
     if (failedObjects.length > 0) {
-        console.error(`Could not delete ${failedObjects.length} storage objects for assignment ${assignmentId}`);
+        logger.error(`Could not delete ${failedObjects.length} storage objects for assignment ${assignmentId}`);
     }
 
     for (let i = 0; i < snapshot.docs.length; i += 400) {
@@ -41,7 +42,7 @@ export const onAssignmentDeleted = onDocumentDeleted("assignments/{assignmentId}
       await batch.commit();
     }
     await db.collection('assignment_keys').doc(assignmentId).delete();
-    console.log(`Deleted ${snapshot.size} submissions and ${objects.length - failedObjects.length} files for assignment ${assignmentId}`);
+    logger.info(`Deleted ${snapshot.size} submissions and ${objects.length - failedObjects.length} files for assignment ${assignmentId}`);
 });
 
 // Import and export new grading triggers
@@ -73,7 +74,7 @@ export const onAssignmentCreated = onDocumentCreated({
     const teacherId = assignmentData.teacherId;
     
     if (!teacherId) {
-        console.log("No teacherId found on assignment, skipping emails.");
+        logger.info("No teacherId found on assignment, skipping emails.");
         return;
     }
 
@@ -82,7 +83,7 @@ export const onAssignmentCreated = onDocumentCreated({
         const teacherData = teacherDoc.data();
         const disableEmails = teacherData?.preferences?.disableAssignmentEmails ?? true;
         if (disableEmails) {
-            console.log(`Teacher ${teacherId} has disabled assignment emails, skipping.`);
+            logger.info(`Teacher ${teacherId} has disabled assignment emails, skipping.`);
             return;
         }
     }
@@ -97,7 +98,7 @@ export const onAssignmentCreated = onDocumentCreated({
         return true;
     });
     if (!claimed) {
-        console.log(`Assignment ${event.params.assignmentId} emails already sent, skipping.`);
+        logger.info(`Assignment ${event.params.assignmentId} emails already sent, skipping.`);
         return;
     }
 
@@ -109,11 +110,11 @@ export const onAssignmentCreated = onDocumentCreated({
 
     const recipients = selectRecipients(studentsSnapshot.docs, assignmentData.courseId);
     if (recipients.length === 0) {
-        console.log(`No students found for assignment ${event.params.assignmentId}, skipping emails.`);
+        logger.info(`No students found for assignment ${event.params.assignmentId}, skipping emails.`);
         return;
     }
 
-    console.log(`Sending assignment notification to ${recipients.length} students.`);
+    logger.info(`Sending assignment notification to ${recipients.length} students.`);
 
     await mapWithConcurrency(recipients, EMAIL_CONCURRENCY, async (student) => {
         const email = student.email as string;
@@ -130,10 +131,10 @@ export const onAssignmentCreated = onDocumentCreated({
             });
         } catch (err) {
             // Log but don't fail the entire batch if one email fails
-            console.error(`Failed to email student ${maskEmail(email)}`, err);
+            logger.error(`Failed to email student ${maskEmail(email)}`, { error: err instanceof Error ? err.name : "unknown" });
         }
     });
-    console.log(`Finished sending assignment creation emails for ${event.params.assignmentId}`);
+    logger.info(`Finished sending assignment creation emails for ${event.params.assignmentId}`);
 });
 
 export { deliverBillingUsage } from "./billing";

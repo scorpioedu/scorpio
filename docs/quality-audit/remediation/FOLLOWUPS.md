@@ -116,3 +116,11 @@
 - Unreachable or equivalent mutants left in rate-limit.ts (`if (!identifier)` is dead: the identifier always has the `ip_` prefix; `doc.exists`/`data` guards), usage-limit.ts (`data?.` where `data` is known non-null after `orgDoc.exists`) and auth-verify.ts (`portfolio` check `student.teacherId !== caller.uid &&` is redundant when the caller's own profile is the teacher record). Candidates for deletion in a later cleanup.
 - `findClassByCode` and the join/enrollment routes: only the lookup helper has unit tests now; `/api/student/enrollment` and `/api/auth/register` still rely on emulator workflow tests (E-007 asked for route tests for /api/grade, /api/checkout, /api/student/tutor too; not in RT-19's six steps).
 - tests/security/webhooks.test.ts (emulator suite) still mocks `validateEvent`; the unit tests added in `__tests__/` cover the real path, so the emulator test can stay as a transaction/idempotency check.
+
+## From RT-17
+- C-009 also asks to drop `export const dynamic = 'force-dynamic'` from `src/app/api/github/stats/route.ts` so `revalidate = 3600` takes effect. Not done: the handler reads request headers through `enforceRateLimit`, so it stays dynamic regardless, and real caching needs a cached upstream fetch (`fetch(..., { next: { revalidate } })` or an in-memory TTL) plus a decision on rate-limit behaviour.
+- `tutor_sessions` documents written before this change can contain "Error: ..." assistant messages (and ones from the 4xx path). A one-off cleanup needs production data access.
+- `src/app/student/assignment-view/page.tsx` (in-assignment tutor) still shows a failed turn as a local assistant bubble with the server's `error` text. It is not persisted (component state only), so it was left alone; it could use the same banner as the tutor page.
+- `/api/ai/parse` and `/api/ai/generate` surface `AiOutputError` (model produced unusable JSON) as 502; retry-with-backoff in the helper would reduce how often teachers see it.
+- Remaining `console.*` in route handlers and `src/lib` are not structured logs; a shared server logger (with requestId) would be the next step.
+- Support-report validation (screenshot size/type, populating identity from the authenticated profile rather than the body) from G-006 is not done; only the persistence failure is.

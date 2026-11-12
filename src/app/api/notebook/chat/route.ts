@@ -1,5 +1,6 @@
 import { scrubPII } from "@/lib/ai/utils";
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue } from '@/lib/firebase-admin';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
@@ -7,7 +8,7 @@ import { getNotebookAssistantResponse } from "@/lib/ai/notebook";
 import { parseJsonBody } from '@/lib/api-schema';
 import { notebookChatBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
   }
@@ -74,11 +75,8 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
 
-  } catch (error: any) {
-    console.error('Notebook Copilot API Error:', error);
-    return NextResponse.json({ 
-      error: error?.message || 'Digital resonance failure. Copilot is offline.' 
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'notebook-chat', requestId);
   }
 }
 

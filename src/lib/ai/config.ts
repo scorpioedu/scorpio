@@ -1,6 +1,7 @@
 import { billingContext } from '../billing-context';
 import { adminDb } from '../firebase-admin';
 import { scrubPII, type ScrubLevel } from '../../../functions/src/pii';
+import { AiBudgetError, AiInputError, AiProviderError } from './errors';
 import { reserveBudget, settleBudget, estimateMaximumCost } from '../../../functions/src/metering';
 /**
  * Direct Gemini API configuration for Scorpio AI.
@@ -12,13 +13,8 @@ function resolveApiKey(): string {
   return process.env.GEMINI_API_KEY;
 }
 
-/** Thrown when the budget reservation for a call is refused or cannot be made. */
-export class AiBudgetError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AiBudgetError';
-  }
-}
+// Typed failures live in ./errors (RT-17); AiBudgetError stays importable from here for existing callers.
+export { AiBudgetError };
 
 /** Scrubs every text part of a Gemini content; other part kinds and non-content values pass through. */
 function scrubParts<T>(content: T, names: string[], level: ScrubLevel): T {
@@ -30,6 +26,11 @@ function scrubParts<T>(content: T, names: string[], level: ScrubLevel): T {
     return typeof text === "string" ? { ...(p as object), text: scrubPII(text, names, level) } : p;
   });
   return { ...content, parts: scrubbed };
+}
+
+/** Message of anything thrown, including DOMException (not an Error in every realm). Log-only. */
+function errText(e: unknown): string {
+  return e && typeof e === 'object' && 'message' in e ? String((e as { message: unknown }).message) : 'unknown';
 }
 
 async function callGeminiDirect(request: any) {
@@ -91,7 +92,7 @@ async function callGeminiDirect(request: any) {
   if (!context?.organizationId && !isExempt) throw new Error('An authenticated network is required for AI');
   const payloadText = JSON.stringify(payload);
   const inputBytes = Buffer.byteLength(payloadText);
-  if (inputBytes > 100000) throw new Error('Conversation is too long; start a new conversation');
+  if (inputBytes > 100000) throw new AiInputError('Conversation is too long; start a new conversation');
   let reservation: string | null = null;
   if (context?.organizationId) {
     try {
@@ -126,12 +127,13 @@ async function callGeminiDirect(request: any) {
     });
   } catch (fetchErr) {
     await settleEstimate();
-    throw fetchErr;
+    // The cause (timeout, DNS, TLS) stays in this message for server logs; callers only get a generic 502.
+    throw new AiProviderError(`AI provider request failed: ${errText(fetchErr)}`);
   }
 
   if (!res.ok) {
     if (reservation) await settleBudget(adminDb, reservation, 0, 0);
-    throw new Error(`AI provider returned ${res.status}`);
+    throw new AiProviderError(`AI provider returned ${res.status}`);
   }
 
   let data: Awaited<ReturnType<Response['json']>>;
@@ -139,7 +141,7 @@ async function callGeminiDirect(request: any) {
     data = await res.json();
   } catch (parseErr) {
     await settleEstimate();
-    throw parseErr;
+    throw new AiProviderError(`AI provider returned an unreadable body: ${errText(parseErr)}`);
   }
   if (!data.usageMetadata) {
     if (reservation) {

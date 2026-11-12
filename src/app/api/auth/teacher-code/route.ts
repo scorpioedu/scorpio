@@ -3,6 +3,7 @@ import { adminDb, adminFieldWithValue as FieldValue } from '@/lib/firebase-admin
 import { randomBytes } from 'crypto';
 import { withAuthorizedRequest } from '@/lib/auth-verify';
 import { enforceRateLimit } from '@/lib/rate-limit';
+import { errorResponse } from '@/lib/api-errors';
 
 function generateCode(): string {
   const segment = () => randomBytes(2).toString('hex').toUpperCase();
@@ -114,9 +115,8 @@ async function handleTeacherCode(req: NextRequest) {
   }
 
   return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
-  } catch (err: any) {
-    console.error('[teacher-code] Unhandled error:', err);
-    return NextResponse.json({ error: err?.message ?? 'Internal error', stack: process.env.NODE_ENV !== 'production' ? err?.stack : undefined }, { status: 500 });
+  } catch (err: unknown) {
+    return errorResponse(err, 'teacher-code');
   }
 }
 

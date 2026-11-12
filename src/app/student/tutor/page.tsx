@@ -675,31 +675,19 @@ export default function TutorPage() {
       }
     } catch (error: unknown) {
       console.error("Error getting response:", error)
+      // Server errors carry a friendly message (budget, 502/503 "please try again"); network and JSON
+      // failures do not, so they get the generic text.
       const errMessage =
-        error instanceof Error
+        error instanceof Error && !(error instanceof TypeError) && !(error instanceof SyntaxError) && error.message
           ? error.message
           : "Sorry, I encountered an error answering your question. Please try again."
 
-      const errorMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: errMessage,
-      }
-
-      const updatedWithErr = [...updatedMessages, errorMessage]
-      setMessages(updatedWithErr)
+      // A failed turn is never stored as an assistant message (RT-17, F-003): drop it from the chat, give the
+      // text back to the input so the student can resend, and show the error in the banner instead.
+      setMessages(messages)
       setTypingId(null)
-
-      if (sessionId) {
-        updateDoc(doc(db, "tutor_sessions", sessionId), {
-          messages: updatedWithErr,
-          updatedAt: serverTimestamp(),
-        }).catch(() => {})
-      }
-
-      if (errMessage.includes("Budget")) {
-        setRateLimitError(errMessage)
-      }
+      setPrompt(inputContent)
+      setRateLimitError(errMessage)
     } finally {
       setIsLoading(false)
     }

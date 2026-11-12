@@ -1,11 +1,12 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import chatbotConfig from '@/lib/chatbot-config.json';
 import { getNavigationResponse } from '@/lib/ai/chatbot';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { message, userRole, userId } = await req.json();
 
@@ -66,12 +67,8 @@ async function handlePost(req: NextRequest) {
         : (chatbotConfig as any).studentSuggestedPrompts
     });
 
-  } catch (error: any) {
-    console.error('Chat API Error:', error);
-    return NextResponse.json({ 
-      error: error?.message || 'Internal server error',
-      details: process.env.NODE_ENV === "development" ? error?.stack : undefined
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'chat', requestId);
   }
 }
 

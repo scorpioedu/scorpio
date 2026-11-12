@@ -1,10 +1,11 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { synthesizeRubric } from "@/lib/ai/grading";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const { questionText, topic, userId } = await req.json();
 
@@ -45,9 +46,8 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ rubric: rubric.text });
-  } catch (error: any) {
-    console.error("Rubric synthesis API error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "synthesize-rubric", requestId);
   }
 }
 

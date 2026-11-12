@@ -1,5 +1,6 @@
 import { mergeAnswerKey } from "@/lib/assignment-security";
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { gradeResponse } from '@/lib/ai/grading';
@@ -7,7 +8,7 @@ import { checkBudget, recordUsage } from '@/lib/usage-limit';
 import { parseJsonBody } from '@/lib/api-schema';
 import { gradeBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     console.error("Firebase Admin not initialized");
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
@@ -197,9 +198,8 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ success: true, score: finalScore });
 
-  } catch (error: any) {
-    console.error("Error in grading API:", error);
-    return NextResponse.json({ error: error?.message || 'Internal Server Error' }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "grade", requestId);
   }
 }
 

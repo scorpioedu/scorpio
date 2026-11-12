@@ -411,8 +411,8 @@ export default function NotebookPage() {
 
       const data = await response.json();
 
-      if (data.error) {
-        toast.error(data.error);
+      if (!response.ok || data.error || typeof data.content !== 'string') {
+        toast.error(data.error || "Copilot is unavailable right now. Please try again.");
         return;
       }
 

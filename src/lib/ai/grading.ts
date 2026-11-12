@@ -63,7 +63,6 @@ export async function gradeResponse(
 }
 
 export async function synthesizeRubric(questionText: string, topic: string): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const prompt = `
       You are an academic curriculum assistant.
       Your task is to create a detailed Scoring Guide for a question about "${topic}".
@@ -94,10 +93,6 @@ export async function synthesizeRubric(questionText: string, topic: string): Pro
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
       }
     };
-  } catch (error) {
-    console.error("Error synthesizing rubric:", error);
-    return { text: "Failed to synthesize rubric. Please provide manual guidelines." };
-  }
 }
 
 export interface ValidationResult {
