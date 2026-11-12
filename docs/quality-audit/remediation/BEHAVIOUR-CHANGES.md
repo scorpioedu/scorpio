@@ -136,3 +136,8 @@ New 400s (body errors are `{ error, fields: [{ path, message }] }`; `error` keep
 - Minimized calculator bar is a real button (keyboard focusable, Enter/Space restores); mouse behaviour unchanged.
 - Framer-motion animations now follow the OS "reduce motion" setting (`MotionConfig reducedMotion="user"`): users who ask for reduced motion lose transform/layout animations (opacity still animates).
 - Screen-reader names added to 22 icon-only buttons; two demo videos carry an aria-label noting captions are missing.
+
+## RT-32 corrections (verifier)
+- The destructive button in DARK mode changes visibly: before it rendered `dark:bg-destructive/60` (a muted brown-red, roughly rgb 159,79,80, about 5.66:1 with white text); now it is the vivid solid rgb(211,58,65) at 4.72:1 in both themes. AA is met either way; the earlier "2.77:1 before" figure in RT-32-RESULT.md is wrong. Light mode improved from 3.85 to 4.72.
+- Workspace-preview labels are now associated with their controls: clicking the "Class"/"Assignment" label opens the select (standard label behaviour).
+- On the mobile assignment drawer, Escape and Tab now act (close / trap focus) while it is open.
