@@ -176,3 +176,8 @@ Remaining ESLint errors (20) after the safe pass, none fixed because the fix wou
 - **`functions/src/metering.ts`.** Line 75 message "Network missing during usage settlement" reads like a typo for "Organization" (tests pin the current text). Line 51 `reserveBudget` resets only the two existing counter types; update if a third is added.
 - **Jest picks up `.claude/worktrees/`.** A bare `npx jest` also runs stale agent worktrees (1,045 suites, 192 failing for missing modules). Add `/.claude/` to `testPathIgnorePatterns` and `modulePathIgnorePatterns` in `jest.config.js` if worktrees stay in the repo.
 - **Still low:** `src/components/department-banner.tsx` (34%), `src/hooks/use-modal-a11y.ts` (30%), `tools/backfill-claims.cjs` (48%), `tools/set-admin-claim.cjs` (55%) need jsdom or script-level tests.
+- **`scrubPII` performance (functions/src/pii.ts, called from `src/lib/ai/config.ts`).** A 100,001-character run of one repeated character made `generateContent` take ~16 s versus milliseconds for normal text. Some regex backtracks badly; a user-supplied long repeated-character input could stall a request. Not investigated further.
+- **`checkBudget` (`src/lib/usage-limit.ts`)** `switch` has no `default`; an unknown denial reason would return `undefined` instead of `{ allowed: false }`.
+- **`tools/set-admin-claim.cjs`** accepts `--uid` with no value silently; only the later "Missing --uid" error fires.
+- **`tools/*.cjs` `main()`** (~40 branches) is untestable under Jest: it only runs under `require.main === module` and uses dynamic `import('firebase-admin')`. Export `main` or run Jest with `--experimental-vm-modules` to cover it.
+- **`functions/src/metering.ts:38`** `if (!org) throw` is dead (source comment says so).
