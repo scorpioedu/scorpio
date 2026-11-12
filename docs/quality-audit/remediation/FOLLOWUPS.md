@@ -71,3 +71,7 @@
 - RT-13: `withAuthorizedRequest` still JSON-parses the body itself and converts handler exceptions to 400; `parseJsonBody` re-reads the (cloned) body in each handler. Once RT-13 passes the parsed body in context, drop the second read. `parseJsonBody` already treats an empty body as `{}` and returns 413/400 per RT-13's target semantics.
 - `DELETE /api/account` deletion order (second half of G-009) is untouched.
 - `/api/grade` route-level `submissionId` check is redundant with the wrapper's `resource: "submission"` check.
+- RT-18: `disableAssignmentEmails ?? true` (opt-in default, K-002) is unchanged. The settings dialog also shows `?? true`, so this is consistent; flipping it to opt-out is a product decision and would start emailing existing teachers.
+- RT-18: step 3's `"test"` script in `functions/package.json` was not added (package.json must stay unchanged, and `functions/` has no jest). The function tests live in root `__tests__/functions-*.test.ts` and run in the Gate. Decide whether to add a jest devDependency in `functions/`.
+- RT-18: failed Storage deletes on assignment delete are only logged (no retry). A retry or a reconciliation sweep for orphaned `submissions/` objects needs a design decision. Objects whose submission docs were already deleted before this change remain orphaned (no backfill).
+- RT-18: grading lock-lease/partial-failure behaviour is covered by the existing `__tests__/grading-*.test.ts`; `deliverBillingUsage` is now covered by `functions-billing-outbox.test.ts`.
