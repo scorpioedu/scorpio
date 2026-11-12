@@ -14,7 +14,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@google/genai": "^0.13.0",
+    "@google/genai": "^3.2.0",
     "@polar-sh/sdk": "^0.44.0",
     "@react-email/components": "^1.0.10",
     "firebase-admin": "^13.6.0",
