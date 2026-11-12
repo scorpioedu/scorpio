@@ -15,7 +15,7 @@ Statuses: todo / in-progress / verifying / merged / blocked / human-needed / ski
 | RT-09 | merged | rt-09-security-headers | 579ab24 (merge) | PASS | PASS | CSP report-only per owner; XFO SAMEORIGIN (research PDF iframe); csp-report body cap trusts Content-Length (FOLLOWUPS) |
 | RT-10 | merged (partial) | rt-10-pii-scrubbing | 9f38e53 (merge) | PASS | PASS | emails scrubbed centrally; roster names only where caller supplies them (withScrubNames not wired into contact-level routes); phones/ids not masked there |
 | RT-11 | todo | | | | | |
-| RT-12 | todo | | | | | |
+| RT-12 | merged (partial: 6 routes) | rt-12-zod-schemas | 4923f3a (merge) | PASS | PASS | ~20 other routes unschematised (FOLLOWUPS); chat message cap 2000 |
 | RT-13 | todo | | | | | |
 | RT-14 | merged | rt-14-rules | ccf7d82 (merge) | PASS (shifted ports) | PASS | rules must be deployed by owner (HUMAN-TODO); resources upload mime allowlist narrower (md/html rejected) |
 | RT-15 | todo | | | | | |

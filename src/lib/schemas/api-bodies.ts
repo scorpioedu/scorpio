@@ -41,7 +41,7 @@ export const notebookChatBody = z.object({
   messages: z.array(z.object({
     role: z.enum(["user", "assistant"]),
     content: z.string().max(50000),
-  })).min(1).max(500),
+  })).min(1).max(2000),
   notebookContent: z.string().max(500000).nullish(),
   studentId: z.string().min(1).max(256),
 });
