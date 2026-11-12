@@ -53,6 +53,7 @@ export function SystemDemos() {
                    poster="/demos/scorpio-demo-poster.jpg"
                    preload="none"
                    controls
+                   aria-label="Scorpio platform tour video. A captions file is not yet available; see the description below the video."
                    className="w-full h-auto aspect-video cursor-pointer"
                  />
               </motion.div>

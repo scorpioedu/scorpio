@@ -51,3 +51,6 @@ Full steps: `docs/quality-audit/remediation/RT-01-runbook.md`. Nothing has been 
 - Landing/demo videos are 300 s of screen recording squeezed to about 4.6-4.9 MB (720p, CRF 35 H.264 / CRF 49 VP9). If sharper text is wanted, re-export from the original recording and host the file in Firebase Storage or a CDN rather than in `public/`.
 - Deleted files stay in repository history (about 85 MB of videos/images). Shrinking clone size needs a history rewrite coordinated by the owner.
 - Social crawlers cache `/og-image.png`; re-scrape with the Facebook Sharing Debugger / LinkedIn Post Inspector after deploy.
+
+## RT-32: captions (M-006)
+- The demo videos (`public/demos/scorpio-demo.mp4` / `.webm`, shown on `/demos` and the landing page) have no captions. Someone who knows the narration/screen content must write a WebVTT file (for example `public/demos/scorpio-demo.en.vtt`) and add `<track kind="captions" srclang="en" label="English" src="..." default />` to `src/app/demos/page.tsx` and `src/components/landing/system-demos.tsx` (the carousel videos in `demo-carousel.tsx` are muted decorative loops). I did not fabricate captions; the videos only carry an aria-label saying captions are not yet available.

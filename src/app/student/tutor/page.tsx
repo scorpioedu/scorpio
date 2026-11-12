@@ -906,7 +906,7 @@ export default function TutorPage() {
                             autoFocus
                             maxLength={50}
                           />
-                          <Button
+                          <Button aria-label="Save conversation title"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
@@ -914,7 +914,7 @@ export default function TutorPage() {
                           >
                             <Check className="size-3.5" />
                           </Button>
-                          <Button
+                          <Button aria-label="Cancel renaming"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
@@ -1252,7 +1252,7 @@ export default function TutorPage() {
                           )}
                         >
                           <MessageAction tooltip="Copy message">
-                            <Button
+                            <Button aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1265,7 +1265,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Good response">
-                            <Button
+                            <Button aria-label="Mark response as helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
@@ -1283,7 +1283,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Bad response">
-                            <Button
+                            <Button aria-label="Mark response as not helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
@@ -1301,7 +1301,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Delete message">
-                            <Button
+                            <Button aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
@@ -1322,7 +1322,7 @@ export default function TutorPage() {
                         {/* User Actions */}
                         <MessageActions className="flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 pr-1">
                           <MessageAction tooltip="Edit prompt">
-                            <Button
+                            <Button aria-label="Edit message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1335,7 +1335,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Copy text">
-                            <Button
+                            <Button aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1348,7 +1348,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Delete prompt">
-                            <Button
+                            <Button aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"

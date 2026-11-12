@@ -124,3 +124,12 @@
 - `/api/ai/parse` and `/api/ai/generate` surface `AiOutputError` (model produced unusable JSON) as 502; retry-with-backoff in the helper would reduce how often teachers see it.
 - Remaining `console.*` in route handlers and `src/lib` are not structured logs; a shared server logger (with requestId) would be the next step.
 - Support-report validation (screenshot size/type, populating identity from the authenticated profile rather than the body) from G-006 is not done; only the persistence failure is.
+
+## RT-32: accessibility follow-ups
+- Run Lighthouse/axe on `/`, `/features`, `/pricing`, `/login`, `/signup` (and signed-in pages with the emulators) to close the "score 95+" criterion; neither tool is installed. Add `jsx-a11y` rules (`control-has-associated-label`) to ESLint once the 40 existing warnings are triaged.
+- Four `autoFocus` remain on user-initiated inline fields (tutor sidebar search and rename, notebook rename, network rename). Replacing them with a ref-based focus-on-mount would only satisfy the lint rule; keep unless the interaction is redesigned.
+- Other hand-rolled overlays still lack dialog semantics: notebook full-screen editor (`student/notebook/page.tsx`), navigation-chatbot expanded panel, animated-sidebar mobile backdrop. `useModalA11y` in `src/hooks/use-modal-a11y.ts` can be reused. After RT-25 splits assignment-view, consider replacing the drawer with the Radix `Sheet` if its CSS animation is acceptable.
+- Math builder: focus is not restored to the opener on Escape because the component returns `null` as soon as `type` is cleared (Radix cleanup runs too late). Keep the dialog mounted while closing or restore focus in the parent.
+- `/login`, `/signup` have no `<h1>` (`CardTitle` renders a `div`); `/` and `/features` have a few `cursor:pointer` non-interactive elements that were not investigated.
+- Dark-mode primary button (white on `--primary` 4.13:1) and primary used as text on dark (4.17:1) from M-005 are not changed (brand colour decision).
+- Not exercised in a real browser: minimized calculator button (embeds desmos.com), assignment-view drawer in the real page, reduced-motion behaviour, screen readers.

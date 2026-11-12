@@ -74,6 +74,7 @@ export default function DemosPage() {
                   <video
                     ref={videoRef}
                     controls
+                    aria-label="Scorpio platform tour video. A captions file is not yet available; chapter titles are listed below the video."
                     className="w-full h-full aspect-video cursor-pointer"
                     preload="metadata"
                     poster="/demos/scorpio-demo-poster.jpg"

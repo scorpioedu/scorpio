@@ -227,7 +227,7 @@ export default function GradeSubmissionPage() {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <Button aria-label="Go back" variant="ghost" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
@@ -538,7 +538,7 @@ export default function GradeSubmissionPage() {
                           )}
                           <p className="text-xs font-medium truncate w-32">{file.name}</p>
                         </div>
-                        <Button 
+                        <Button aria-label={`Download ${file.name}`} 
                           variant="ghost" 
                           size="icon" 
                           className="h-8 w-8"

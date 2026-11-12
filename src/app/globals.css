@@ -150,8 +150,11 @@
   --muted-foreground: oklch(0.4386 0 0);
   --accent: oklch(0.9550 0.0200 286.7462);
   --accent-foreground: oklch(0.5393 0.2713 286.7462);
-  --destructive: oklch(0.6290 0.1902 23.0704);
+  --destructive: oklch(0.5800 0.1902 23.0704);
   --destructive-foreground: oklch(1.0000 0 0);
+  /* Solid fill for destructive buttons (white text, WCAG AA >= 4.5:1 in both themes). */
+  --destructive-solid: oklch(0.5800 0.1902 23.0704);
+  --destructive-solid-hover: oklch(0.5300 0.1902 23.0704);
   --border: oklch(0.9300 0.0094 286.2156);
   --input: oklch(0.9401 0 0);
   --ring: oklch(0.5393 0.2713 286.7462);
@@ -257,6 +260,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-solid: var(--destructive-solid);
+  --color-destructive-solid-hover: var(--destructive-solid-hover);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
