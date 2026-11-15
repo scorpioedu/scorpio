@@ -38,13 +38,30 @@ describe('Assignment Due Date Enforcement', () => {
     expect(isSubmissionLate(stamp(new Date('not a date')), new Date('2030-01-01T00:00:00Z'))).toBe(false);
   });
 
-  // Documents current behaviour: only Firestore-style `toDate()` values count. A Date or ISO string
-  // stored in the field is silently "no due date" (see FOLLOWUPS.md).
+  // Legacy and imported assignments can hold a Date, an ISO string, epoch milliseconds or a serialized
+  // Timestamp ({ seconds }); these used to be read as "no due date", so late work was never flagged.
+  const dueAt = new Date('2026-05-01T12:00:00Z');
+  const before = new Date(dueAt.getTime() - 1000);
+  const after = new Date(dueAt.getTime() + 1000);
   it.each([
-    ['a plain Date', new Date('2026-05-01T12:00:00Z')],
-    ['an ISO string', '2026-05-01T12:00:00Z'],
+    ['a plain Date', dueAt],
+    ['an ISO string', dueAt.toISOString()],
+    ['epoch milliseconds', dueAt.getTime()],
+    ['a serialized Timestamp', { seconds: dueAt.getTime() / 1000, nanoseconds: 0 }],
+    ['an admin-serialized Timestamp', { _seconds: dueAt.getTime() / 1000, _nanoseconds: 0 }],
+  ])('reads %s as the due date', (_name, value) => {
+    const dueDate = value as unknown as Parameters<typeof isSubmissionLate>[0];
+    expect(isSubmissionLate(dueDate, before)).toBe(false);
+    expect(isSubmissionLate(dueDate, after)).toBe(true);
+  });
+
+  it.each([
     ['an empty object', {}],
+    ['an empty string', ''],
+    ['an unparsable string', 'next friday'],
+    ['NaN', NaN],
+    ['a boolean', true],
   ])('treats %s as having no due date', (_name, value) => {
-    expect(isSubmissionLate(value as unknown as { toDate?: () => Date }, new Date('2030-01-01T00:00:00Z'))).toBe(false);
+    expect(isSubmissionLate(value as unknown as Parameters<typeof isSubmissionLate>[0], new Date('2030-01-01T00:00:00Z'))).toBe(false);
   });
 });

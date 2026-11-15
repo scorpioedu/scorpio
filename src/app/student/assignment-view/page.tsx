@@ -1,4 +1,5 @@
 "use client";
+import { isSubmissionLate, type DueDateLike } from "@/lib/due-date";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
@@ -686,17 +687,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       }
 
       // Check due date enforcement
-      let isLate = false;
-      if (assignment.dueDate) {
-        const dueDate = assignment.dueDate instanceof Date 
-          ? assignment.dueDate 
-          : typeof (assignment.dueDate as unknown as { toDate?: () => Date } | undefined)?.toDate === 'function'
-          ? (assignment.dueDate as unknown as { toDate: () => Date }).toDate() 
-          : new Date(assignment.dueDate);
-        if (new Date() > dueDate) {
-          isLate = true;
-        }
-      }
+      const isLate = isSubmissionLate(assignment.dueDate as DueDateLike | null | undefined, new Date());
 
       // Remove forbidden fields for student update
       const submissionData: Record<string, unknown> = {
