@@ -579,7 +579,7 @@ describe('POST /api/auth/register', () => {
   ])('400 for %s', async (_label, b) => {
     const res = await call(b);
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Invalid profile' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Invalid profile' }));
     expect(mockDb.writes).toEqual([]);
   });
 
@@ -908,13 +908,13 @@ describe('POST /api/courses', () => {
   test.each([[''], ['   '], [5], [undefined]])('400 for name %p', async name => {
     const res = await courses(req({ name, code: 'PHYS101' }));
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Enter a class name' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Enter a class name' }));
   });
 
   test.each([['short'], ['has space'], ['bad/slash'], ['x'.repeat(65)], [123456], [undefined]])('400 for code %p', async code => {
     const res = await courses(req({ name: 'Physics', code }));
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Use a class code of 6–64 letters, numbers, dashes, or underscores' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Use a class code of 6–64 letters, numbers, dashes, or underscores' }));
     expect(mockDb.writes).toEqual([]);
   });
 

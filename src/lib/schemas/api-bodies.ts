@@ -83,3 +83,37 @@ export const checkoutBody = z.object({
   organizationId: docId,
   planId: z.string().min(1).max(128),
 });
+
+// ─── POST /api/courses ─────────────────────────────────────────────────────
+// Error texts are the route's original client-facing messages (see `courseBodyMessage`).
+export const courseBody = z.object({
+  name: z.string().refine(v => v.trim().length > 0).pipe(z.string().max(10000)),
+  code: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
+});
+export const courseBodyMessage = (issues: { path: string }[]) =>
+  issues[0]?.path === "name" ? "Enter a class name" : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
+
+// ─── POST /api/student/enrollment ──────────────────────────────────────────
+// `code` is validated further by findClassByCode; it is absent for action "leave".
+export const enrollmentBody = z.object({
+  action: z.enum(["join", "leave"]).optional(),
+  code: z.string().max(128).optional(),
+});
+
+// ─── POST /api/auth/register ───────────────────────────────────────────────
+export const registerBody = z.object({
+  role: z.enum(["teacher", "student"]),
+  name: z.string().refine(v => v.trim().length > 0).pipe(z.string().max(120)),
+  code: z.string().nullish(), // length/"/" checks stay in the route ("Invalid code")
+});
+
+// ─── POST /api/auth/session ────────────────────────────────────────────────
+// The client also sends role/organizationId; they are ignored (roles come from the server profile).
+export const sessionBody = z.object({ idToken: z.string().min(1).max(10000) });
+
+// ─── POST /api/research/respond ────────────────────────────────────────────
+export const researchRespondBody = z.object({
+  message: z.string().max(10000),
+  level: z.string().max(64),
+  mode: z.string().max(64).optional(),
+});

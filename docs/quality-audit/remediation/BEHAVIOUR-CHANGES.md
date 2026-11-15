@@ -153,3 +153,10 @@ The RT-29 notes above claiming the RT-14 rules broke the teacher dashboard (0/0,
 
 ## RT-33 (safe parts)
 No runtime behaviour change. Removed unreferenced scratch files (`check_portfolios.ts`, `update_mermaid.py`, `diagram.mermaid`, `demo.md`); `check_portfolios.ts` was previously included in the root `tsc` run. Added `.next-*/` to `.gitignore`.
+
+## RT-12 follow-up, batch 1: courses, student/enrollment, auth/register, auth/session, research/respond
+- Source: `src/lib/schemas/api-bodies.ts`; tests: `__tests__/rt12b-api-bodies.test.ts`. Each route keeps its previous `error` text; 400 bodies now also carry `fields: [{ path, message }]`.
+- `POST /api/student/enrollment`: `action` must be `join` or `leave` (the client sends `join`, `leave`, or omits it); `code` must be a string of at most 128 characters when present. Anything else is a 400 instead of reaching the transaction.
+- `POST /api/auth/session`: any body problem (bad JSON, missing or non-string `idToken`) still answers 401 "Invalid session credentials". The extra `role`/`organizationId` the client sends are ignored, as before.
+- `POST /api/auth/register`: invalid JSON is now a 400 "Invalid profile"; a non-string `code` is a 400 instead of being treated as empty. Code length and "/" checks stay in the route ("Invalid code").
+- `POST /api/courses`, `POST /api/research/respond`: same accepted inputs as before; malformed JSON is a 400 "Invalid JSON" rather than an unhandled error.

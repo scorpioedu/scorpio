@@ -3,11 +3,13 @@ import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
 import { errorResponse } from '@/lib/api-errors';
 import { ClientError } from '@/lib/client-error';
+import { parseJsonBody } from '@/lib/api-schema';
+import { courseBody, courseBodyMessage } from '@/lib/schemas/api-bodies';
 export const POST = withAuthorizedRequest(async (req, { requestId }) => {
   const caller = (await authenticateRequest(req))!;
-  const { name, code } = await req.json();
-  if (typeof name !== 'string' || !name.trim()) return NextResponse.json({ error: 'Enter a class name' }, { status: 400 });
-  if (typeof code !== 'string' || !/^[A-Za-z0-9_-]{6,64}$/.test(code)) return NextResponse.json({ error: 'Use a class code of 6–64 letters, numbers, dashes, or underscores' }, { status: 400 });
+  const parsed = await parseJsonBody(req, courseBody, { message: courseBodyMessage });
+  if (!parsed.ok) return parsed.response;
+  const { name, code } = parsed.data;
   const profile = (await adminDb.collection('users').doc(caller.uid).get()).data()!;
   if (!profile.organizationId) return NextResponse.json({ error: 'Join a network first' }, { status: 400 });
   try {

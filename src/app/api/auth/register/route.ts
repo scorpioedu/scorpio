@@ -6,6 +6,8 @@ import { adminDb } from "@/lib/firebase-admin";
 import { newOrganizationDefaults } from "@/lib/organization-defaults";
 import { errorResponse } from "@/lib/api-errors";
 import { ClientError } from "@/lib/client-error";
+import { parseJsonBody } from "@/lib/api-schema";
+import { registerBody } from "@/lib/schemas/api-bodies";
 
 export async function POST(req: NextRequest) {
   const caller = await authenticateRequest(req);
@@ -13,12 +15,11 @@ export async function POST(req: NextRequest) {
   const limited = await enforceRateLimit(req, "register", caller.uid);
   if (limited) return limited;
   try {
-    const { role, name, code } = await req.json();
-    if (!["teacher", "student"].includes(role) || typeof name !== "string" || !name.trim() || name.length > 120) {
-      return NextResponse.json({ error: "Invalid profile" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, registerBody, { message: "Invalid profile" });
+    if (!parsed.ok) return parsed.response;
+    const { role, name, code } = parsed.data;
     const userRef = adminDb.collection("users").doc(caller.uid);
-    const normalizedCode = typeof code === "string" ? code.trim() : "";
+    const normalizedCode = code?.trim() ?? "";
     if (normalizedCode.includes("/") || normalizedCode.length > 128) throw new ClientError("Invalid code");
     const newOrg = adminDb.collection("organizations").doc();
     await adminDb.runTransaction(async tx => {
