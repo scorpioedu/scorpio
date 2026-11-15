@@ -606,7 +606,7 @@ describe('POST /api/support/report', () => {
     const feature = await (await call(supportPost, { description: 'd', category: 'feature', title: ' My title ', userAgent: 'ua', screenshots: ['a', 'b', 'c', 'd'] })).json();
     expect(feature.ticketId).toMatch(/^SC-FEAT-/);
     expect(mockWrites[0].data).toMatchObject({ title: 'My title', userAgent: 'ua', screenshots: ['a', 'b', 'c'] });
-    const other = await (await call(supportPost, { description: 'd', category: 'question', screenshots: 'nope' })).json();
+    const other = await (await call(supportPost, { description: 'd', category: 'question' })).json();
     expect(other.ticketId).toMatch(/^SC-SUP-/);
     expect(mockWrites[1].data).toMatchObject({ screenshots: [], userAgent: 'Unknown' });
   });
@@ -625,9 +625,17 @@ describe('POST /api/support/report', () => {
     expect(JSON.stringify(await res.json())).not.toContain('write failed');
   });
 
-  test('a body that is not JSON is a generic 500', async () => {
+  test('a body that is not JSON is a 400', async () => {
     const res = await supportPost(new NextRequest('https://scorpio.test/api/x', { method: 'POST', body: 'not json' }));
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'Invalid JSON' });
+  });
+
+  test.each([[{ description: '   ' }], [{ description: 5 }], [{ description: 'd', screenshots: 'nope' }], [{ description: 'd', category: 'rant' }]])('400 for %j without storing', async b => {
+    const before = mockWrites.length;
+    const res = await call(supportPost, b);
+    expect(res.status).toBe(400);
+    expect(mockWrites).toHaveLength(before);
   });
 });
 

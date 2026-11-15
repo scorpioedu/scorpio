@@ -4,10 +4,14 @@ import { adminDb } from '@/lib/firebase-admin';
 import { newOrganizationDefaults } from '@/lib/organization-defaults';
 import { errorResponse } from '@/lib/api-errors';
 import { ClientError } from '@/lib/client-error';
+import { parseJsonBody } from '@/lib/api-schema';
+import { membershipBody } from '@/lib/schemas/api-bodies';
 
 export const POST = withAuthorizedRequest(async (req, { requestId }) => {
   const caller = (await authenticateRequest(req))!;
-  const { action, name, code, memberId } = await req.json();
+  const parsed = await parseJsonBody(req, membershipBody);
+  if (!parsed.ok) return parsed.response;
+  const { action, name, code, memberId } = parsed.data;
   try {
     await adminDb.runTransaction(async tx => {
       const ref = adminDb.collection('users').doc(caller.uid);

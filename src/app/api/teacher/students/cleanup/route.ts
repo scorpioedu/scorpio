@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
+import { parseJsonBody } from '@/lib/api-schema';
+import { cleanupBody } from '@/lib/schemas/api-bodies';
 export const POST = withAuthorizedRequest(async req => {
  const caller=(await authenticateRequest(req))!;
- const {studentId,courseId,unlink}=await req.json();
- if(typeof studentId!=='string'||studentId.includes('/'))return NextResponse.json({error:'Invalid student'},{status:400});
+ const parsed=await parseJsonBody(req,cleanupBody,{message:'Invalid student'});
+ if(!parsed.ok)return parsed.response;
+ const {studentId,courseId,unlink}=parsed.data;
  const profile=(await adminDb.collection('users').doc(studentId).get()).data();
  if(profile?.teacherId!==caller.uid)return NextResponse.json({error:'Access denied'},{status:403});
  const submissions=await adminDb.collection('submissions').where('studentId','==',studentId).get();

@@ -232,10 +232,17 @@ describe('POST /api/teacher/network/membership', () => {
       expect((writesTo('organizations/auto-1')[0].data as { name: string }).name).toHaveLength(120);
     });
 
-    test.each([[''], ['   '], [42], [undefined]])('rejects a name of %p with 400 and no writes', async name => {
+    test.each([[''], ['   '], [undefined]])('rejects a name of %p with 400 and no writes', async name => {
       const res = await call({ action: 'create', name });
       expect(res.status).toBe(400);
       expect(await json(res)).toEqual({ error: 'Leave your current network first' });
+      expect(mockDb.writes).toEqual([]);
+    });
+
+    test.each([['name', 42], ['code', 7], ['memberId', 5]])('a non-string %s is a schema 400 with no writes', async (field, value) => {
+      const res = await call({ action: 'create', [field]: value });
+      expect(res.status).toBe(400);
+      expect(await json(res)).toEqual(expect.objectContaining({ error: 'Invalid request body', fields: [expect.objectContaining({ path: field })] }));
       expect(mockDb.writes).toEqual([]);
     });
 
@@ -272,7 +279,7 @@ describe('POST /api/teacher/network/membership', () => {
       expect(await json(res)).toEqual({ error: 'Leave your current network first' });
     });
 
-    test.each([[undefined], [''], ['  '], ['A/B'], [7]])('rejects code %p', async code => {
+    test.each([[undefined], [''], ['  '], ['A/B']])('rejects code %p', async code => {
       const res = await call({ action: 'join', code });
       expect(res.status).toBe(400);
       expect(await json(res)).toEqual({ error: 'A network-linked teacher invite code is required' });
@@ -385,7 +392,7 @@ describe('POST /api/teacher/network/membership', () => {
       expect(mockDb.writes).toEqual([]);
     });
 
-    test.each([[undefined], [5], ['a/b']])('remove rejects memberId %p', async memberId => {
+    test.each([[undefined], ['a/b']])('remove rejects memberId %p', async memberId => {
       mockVerifyIdToken.mockResolvedValue({ uid: 'o1' });
       const res = await call({ action: 'remove', memberId });
       expect(res.status).toBe(400);
@@ -818,7 +825,7 @@ describe('POST /api/teacher/students/cleanup', () => {
   test.each([[undefined], [12], ['a/b']])('400 for studentId %p', async studentId => {
     const res = await cleanup(req({ studentId }));
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Invalid student' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Invalid student' }));
   });
 
   test('403 for a student who is not enrolled with this teacher; nothing is deleted', async () => {

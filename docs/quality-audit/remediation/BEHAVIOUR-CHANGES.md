@@ -160,3 +160,10 @@ No runtime behaviour change. Removed unreferenced scratch files (`check_portfoli
 - `POST /api/auth/session`: any body problem (bad JSON, missing or non-string `idToken`) still answers 401 "Invalid session credentials". The extra `role`/`organizationId` the client sends are ignored, as before.
 - `POST /api/auth/register`: invalid JSON is now a 400 "Invalid profile"; a non-string `code` is a 400 instead of being treated as empty. Code length and "/" checks stay in the route ("Invalid code").
 - `POST /api/courses`, `POST /api/research/respond`: same accepted inputs as before; malformed JSON is a 400 "Invalid JSON" rather than an unhandled error.
+
+## RT-12 follow-up, batch 2: teacher/network/membership, teacher/students/cleanup, support/report
+- Tests: `__tests__/rt12b-api-bodies.test.ts`. 400s carry `fields` as in batch 1.
+- `POST /api/teacher/network/membership`: `action`, `name`, `code`, `memberId` must be strings when present. A non-string value is now a 400 "Invalid request body" naming the field, instead of a misleading route message ("Leave your current network first", "Invalid member"). Missing or empty values keep the route's messages. Invalid JSON is a 400 "Invalid JSON".
+- `POST /api/teacher/students/cleanup`: `studentId` (string, no "/") keeps the "Invalid student" text; `courseId` must be a string and `unlink` a boolean when present.
+- `POST /api/support/report`: `category` must be `bug`, `feature` or `question` (the chatbot's only values; previously any string was stored). `screenshots` must be an array of at most 10 strings (previously a non-array silently became `[]`; the route still keeps the first 3). A blank or non-string `description` keeps the original message. Non-JSON bodies are a 400 "Invalid JSON" instead of a 500.
+- Not done in this batch: `auth/teacher-code` (the router reads the body twice and splits public/admin actions; needs its own pass) and `teacher/network/invites` (takes no body).

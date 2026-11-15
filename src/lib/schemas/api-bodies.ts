@@ -117,3 +117,35 @@ export const researchRespondBody = z.object({
   level: z.string().max(64),
   mode: z.string().max(64).optional(),
 });
+
+// ─── POST /api/teacher/network/membership ──────────────────────────────────
+// Per-action requirements (which fields each action needs) stay in the route, with its messages.
+export const membershipBody = z.object({
+  action: z.string().max(32).optional(),
+  name: z.string().max(10000).optional(),
+  code: z.string().max(10000).optional(),
+  memberId: z.string().max(256).optional(),
+});
+
+// ─── POST /api/teacher/students/cleanup ────────────────────────────────────
+export const cleanupBody = z.object({
+  studentId: docId,
+  courseId: z.string().max(256).nullish(),
+  unlink: z.boolean().nullish(),
+});
+
+// ─── POST /api/support/report ──────────────────────────────────────────────
+// The navigation chatbot sends screenshots as data URLs; the 500 KB body cap bounds their size.
+export const supportReportBody = z.object({
+  title: z.string().max(1000).nullish(),
+  description: z.string().trim().min(1).max(20000),
+  category: z.enum(["bug", "feature", "question"]).optional(),
+  priority: z.string().max(64).optional(),
+  pageUrl: z.string().max(2048).optional(),
+  userRole: z.string().max(64).optional(),
+  userId: z.string().max(256).nullish(),
+  userEmail: z.string().max(512).nullish(),
+  userName: z.string().max(512).nullish(),
+  userAgent: z.string().max(1024).optional(),
+  screenshots: z.array(z.string()).max(10).optional(),
+});

@@ -2,10 +2,13 @@ import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify
 import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { parseJsonBody } from '@/lib/api-schema';
+import { supportReportBody } from '@/lib/schemas/api-bodies';
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const body = await req.json();
+    const parsed = await parseJsonBody(req, supportReportBody, { message: 'Please provide a description of the issue or feedback.' });
+    if (!parsed.ok) return parsed.response;
     const {
       title,
       description,
@@ -18,14 +21,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       userName = null,
       userAgent = '',
       screenshots = [],
-    } = body;
-
-    if (!description || typeof description !== 'string' || !description.trim()) {
-      return NextResponse.json(
-        { error: 'Please provide a description of the issue or feedback.' },
-        { status: 400 }
-      );
-    }
+    } = parsed.data;
 
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const prefix = category === 'bug' ? 'BUG' : category === 'feature' ? 'FEAT' : 'SUP';
@@ -42,7 +38,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       userId,
       userEmail,
       userName,
-      screenshots: Array.isArray(screenshots) ? screenshots.slice(0, 3) : [],
+      screenshots: screenshots.slice(0, 3),
       userAgent: userAgent || req.headers.get('user-agent') || 'Unknown',
       status: 'open',
       createdAt: new Date().toISOString(),

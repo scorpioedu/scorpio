@@ -59,3 +59,35 @@ describe('researchRespondBody', () => {
     expect(researchRespondBody.safeParse(body).success).toBe(false);
   });
 });
+
+// ─── batch 2 ───────────────────────────────────────────────────────────────
+import { membershipBody, cleanupBody, supportReportBody } from '../src/lib/schemas/api-bodies';
+
+describe('membershipBody', () => {
+  it.each([{ action: 'create', name: 'My Network' }, { action: 'join', code: 'SCORP-1' }, { action: 'leave' }, { action: 'remove', memberId: 'u1' }])('accepts %j', b => {
+    expect(membershipBody.safeParse(b).success).toBe(true);
+  });
+  it.each([{ name: 1 }, { code: {} }, { memberId: 5 }, { action: 'x'.repeat(33) }])('rejects %j', b => {
+    expect(membershipBody.safeParse(b).success).toBe(false);
+  });
+});
+
+describe('cleanupBody', () => {
+  it('accepts the client payload (courseId may be omitted)', () => {
+    expect(cleanupBody.safeParse({ studentId: 's1', unlink: true }).success).toBe(true);
+    expect(cleanupBody.safeParse({ studentId: 's1', courseId: 'c1', unlink: false }).success).toBe(true);
+  });
+  it.each([{}, { studentId: 12 }, { studentId: 'a/b' }, { studentId: 's1', unlink: 'yes' }])('rejects %j', b => {
+    expect(cleanupBody.safeParse(b).success).toBe(false);
+  });
+});
+
+describe('supportReportBody', () => {
+  it('accepts the navigation chatbot payload and trims the description', () => {
+    const r = supportReportBody.parse({ description: '  broken  ', category: 'bug', pageUrl: '/x', userRole: 'student', userId: null, userEmail: 'a@b.c', userName: null, screenshots: ['data:image/png;base64,AAA'] });
+    expect(r.description).toBe('broken');
+  });
+  it.each([{}, { description: '   ' }, { description: 'd', category: 'rant' }, { description: 'd', screenshots: 'nope' }, { description: 'd', screenshots: Array(11).fill('x') }])('rejects %j', b => {
+    expect(supportReportBody.safeParse(b).success).toBe(false);
+  });
+});
