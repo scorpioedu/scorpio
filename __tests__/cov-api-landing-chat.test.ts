@@ -88,10 +88,10 @@ describe('POST /api/chat/landing validation and configuration', () => {
     expect((await call({ message: 'hi' })).status).toBe(503);
   });
 
-  test('a malformed JSON body is a generic 500', async () => {
+  test('a malformed JSON body is a 400', async () => {
     const res = await call('{oops');
-    expect(res.status).toBe(500);
-    expect((await res.json()).error).toBe('Internal server error');
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe('Invalid JSON');
   });
 });
 

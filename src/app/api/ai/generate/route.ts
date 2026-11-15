@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateAssignmentQuestions } from "@/lib/ai/assignment";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { aiGenerateBody } from "@/lib/schemas/api-bodies";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { topic, count, difficulty, questionType, userId, context } = await req.json();
-
-    if (!topic || !userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, aiGenerateBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { topic, count, difficulty, questionType, userId, context } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -36,7 +36,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     }
 
     // 3. Perform AI Generation
-    const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context);
+    const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context ?? undefined);
 
     // 4. Record usage (Silent fail to not block response)
     if (result.usage) {

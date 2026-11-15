@@ -7,6 +7,8 @@ import { VISITOR_COOKIE, VISITOR_COOKIE_MAX_AGE_S, getVisitorSecret, hashIp, iss
 import { getClientIp } from '@/lib/client-ip';
 import { billingContext } from '@/lib/billing-context';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { landingChatBody } from '@/lib/schemas/api-bodies';
 async function callGeminiDirect(prompt: string) {
   const result = await model.generateContent({
     contents: [{ parts: [{ text: prompt }] }],
@@ -115,11 +117,9 @@ async function warnIfNearBudget(orgId: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json();
-
-    if (typeof message !== "string" || message.length > 4000) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, landingChatBody, { message: 'Missing required fields' });
+    if (!parsed.ok) return parsed.response;
+    const { message } = parsed.data;
 
     // Fail closed: without a budgeted landing org or a signing secret, never reach the provider.
     const landingOrgId = process.env.LANDING_ORG_ID;

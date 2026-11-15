@@ -167,3 +167,13 @@ No runtime behaviour change. Removed unreferenced scratch files (`check_portfoli
 - `POST /api/teacher/students/cleanup`: `studentId` (string, no "/") keeps the "Invalid student" text; `courseId` must be a string and `unlink` a boolean when present.
 - `POST /api/support/report`: `category` must be `bug`, `feature` or `question` (the chatbot's only values; previously any string was stored). `screenshots` must be an array of at most 10 strings (previously a non-array silently became `[]`; the route still keeps the first 3). A blank or non-string `description` keeps the original message. Non-JSON bodies are a 400 "Invalid JSON" instead of a 500.
 - Not done in this batch: `auth/teacher-code` (the router reads the body twice and splits public/admin actions; needs its own pass) and `teacher/network/invites` (takes no body).
+
+## RT-12 follow-up, batch 3: AI and chat routes (ai/generate, ai/parse, ai/synthesize-rubric, chat, chat/limits, chat/landing, student/tutor)
+- Schemas in `src/lib/schemas/api-bodies.ts`, tests in `__tests__/rt12b-api-bodies.test.ts`. Missing or blank required fields keep "Missing required fields"; 400s also carry `fields`. Non-JSON bodies are 400 "Invalid JSON" (the landing route was a 500).
+- Ceilings on text sent to the model (before: unbounded apart from the 500 KB body cap): `ai/generate` topic 2,000, context 20,000; `ai/parse` text 200,000; `ai/synthesize-rubric` questionText 50,000; `chat` and `chat/limits` message 10,000; tutor message 20,000, assignmentContext 100,000; landing 4,000 (unchanged). Chat history: at most 200 entries, 50,000 characters each.
+- `ai/generate`: `count` must be an integer 1–50 (default 3, the page default); `difficulty` defaults to "Medium". Previously a missing value put "undefined" into the prompt.
+- `chat`: `userRole` must be `teacher` or `student` (the only values the chatbot sends; it picks the feature list from it).
+- `chat/limits`, `student/tutor`: `chatHistory` entries must be `{ role: "user" | "assistant", content: string }`. Before, a client could inject a `system`-role entry or non-string content into the prompt history.
+- `student/tutor`: presence checks (`message`, `userId`, `role === "student"`) still answer 401 "Unauthorized"; only wrong types and oversize values are new 400s.
+- `chat/landing`: still ignores any `visitorId` in the body.
+- Still without schemas: `auth/teacher-code`, `admin/firestore`, `teacher/network/portfolio`, `webhooks/polar` (signature-verified raw body, probably leave), `ai/generate-title` and `teacher/network/invites` (no body).

@@ -756,7 +756,7 @@ describe('POST /api/chat/limits', () => {
   test('400 when the message is missing', async () => {
     const res = await chatLimits(req({ userId: 't1' }));
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Missing required fields' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Missing required fields' }));
     expect(mockLimitsHelp).not.toHaveBeenCalled();
   });
 
@@ -1055,7 +1055,7 @@ describe('POST /api/ai/parse', () => {
   test('400 when text is missing', async () => {
     const res = await aiParse(req({ userId: 't1' }));
     expect(res.status).toBe(400);
-    expect(await json(res)).toEqual({ error: 'Missing required fields' });
+    expect(await json(res)).toEqual(expect.objectContaining({ error: 'Missing required fields' }));
     expect(mockParse).not.toHaveBeenCalled();
   });
 

@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseQuestionsFromText } from "@/lib/ai/assignment";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { aiParseBody } from "@/lib/schemas/api-bodies";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { text, userId } = await req.json();
-
-    if (!text || !userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, aiParseBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { text, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });

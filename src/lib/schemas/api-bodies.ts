@@ -149,3 +149,61 @@ export const supportReportBody = z.object({
   userAgent: z.string().max(1024).optional(),
   screenshots: z.array(z.string()).max(10).optional(),
 });
+
+// ─── AI and chat routes ────────────────────────────────────────────────────
+// These feed text to the model, so every string has a ceiling. The 500 KB body cap still applies.
+// Missing/blank required fields keep each route's "Missing required fields" text.
+const chatHistory = z.array(z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().max(50000),
+})).max(200);
+
+// POST /api/ai/generate (teacher/create sends numbers for count; the others are free text)
+export const aiGenerateBody = z.object({
+  topic: z.string().min(1).max(2000),
+  userId: z.string().min(1).max(256),
+  count: z.number().int().min(1).max(50).default(3),
+  difficulty: z.string().max(64).default("Medium"),
+  questionType: z.string().max(64).optional(),
+  context: z.string().max(20000).nullish(),
+});
+
+// POST /api/ai/parse
+export const aiParseBody = z.object({
+  text: z.string().min(1).max(200000),
+  userId: z.string().min(1).max(256),
+});
+
+// POST /api/ai/synthesize-rubric
+export const synthesizeRubricBody = z.object({
+  questionText: z.string().min(1).max(50000),
+  topic: z.string().max(2000).nullish(),
+  userId: z.string().min(1).max(256),
+});
+
+// POST /api/chat (navigation assistant)
+export const navigationChatBody = z.object({
+  message: z.string().min(1).max(10000),
+  userRole: z.enum(["teacher", "student"]),
+  userId: z.string().min(1).max(256),
+});
+
+// POST /api/chat/limits
+export const limitsChatBody = z.object({
+  message: z.string().min(1).max(10000),
+  userId: z.string().min(1).max(256),
+  chatHistory: chatHistory.nullish(),
+});
+
+// POST /api/chat/landing (public; the visitor id comes from the signed cookie, never the body)
+export const landingChatBody = z.object({ message: z.string().max(4000) });
+
+// POST /api/student/tutor. Authorisation (role === "student", userId, message present) stays in the route as 401.
+export const tutorBody = z.object({
+  message: z.string().max(20000).optional(),
+  userId: z.string().max(256).optional(),
+  role: z.string().max(64).optional(),
+  mode: z.string().max(32).optional(),
+  chatHistory: chatHistory.optional(),
+  assignmentContext: z.string().max(100000).nullish(),
+});

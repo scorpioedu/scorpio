@@ -5,10 +5,14 @@ import { explainPhysicsConcept, helpSolveProblem } from "@/lib/ai/tutor";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
 import { verifyCallerIdentity } from "@/lib/auth-verify";
+import { parseJsonBody } from "@/lib/api-schema";
+import { tutorBody } from "@/lib/schemas/api-bodies";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, userId, role, mode, chatHistory, assignmentContext } = await req.json();
+    const parsed = await parseJsonBody(req, tutorBody, { message: "Invalid request body" });
+    if (!parsed.ok) return parsed.response;
+    const { message, userId, role, mode, chatHistory, assignmentContext } = parsed.data;
 
     if (!message || !userId || role !== "student") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -70,7 +74,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     // 3. Perform AI Operation
     const result = mode === "concept" 
       ? await explainPhysicsConcept(message, chatHistory, "FULL", studentNames)
-      : await helpSolveProblem(message, chatHistory, "STRICT_CONCISE", assignmentContext, studentNames);
+      : await helpSolveProblem(message, chatHistory, "STRICT_CONCISE", assignmentContext ?? undefined, studentNames);
 
     // 4. Record usage if possible
     if (result.usage) {

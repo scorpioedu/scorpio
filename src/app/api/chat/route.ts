@@ -5,14 +5,14 @@ import { adminDb } from '@/lib/firebase-admin';
 import chatbotConfig from '@/lib/chatbot-config.json';
 import { getNavigationResponse } from '@/lib/ai/chatbot';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { navigationChatBody } from '@/lib/schemas/api-bodies';
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, userRole, userId } = await req.json();
-
-    if (!message || !userRole || !userId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, navigationChatBody, { message: 'Missing required fields' });
+    if (!parsed.ok) return parsed.response;
+    const { message, userRole, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });

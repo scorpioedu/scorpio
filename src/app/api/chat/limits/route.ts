@@ -5,14 +5,14 @@ import { adminDb } from '@/lib/firebase-admin';
 import { getNetworkLimitsHelp } from '@/lib/ai/network';
 import type { NetworkLimitsContext } from '@/lib/ai/network';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { limitsChatBody } from '@/lib/schemas/api-bodies';
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, chatHistory, userId } = await req.json();
-
-    if (!message || !userId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, limitsChatBody, { message: 'Missing required fields' });
+    if (!parsed.ok) return parsed.response;
+    const { message, chatHistory, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });

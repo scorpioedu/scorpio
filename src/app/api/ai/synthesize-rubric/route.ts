@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { synthesizeRubric } from "@/lib/ai/grading";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { synthesizeRubricBody } from "@/lib/schemas/api-bodies";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { questionText, topic, userId } = await req.json();
-
-    if (!questionText || !userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, synthesizeRubricBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { questionText, topic, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
