@@ -207,3 +207,32 @@ export const tutorBody = z.object({
   chatHistory: chatHistory.optional(),
   assignmentContext: z.string().max(100000).nullish(),
 });
+
+// ─── POST /api/auth/teacher-code ───────────────────────────────────────────
+// One route, several actions (generate/list/revoke are admin-only, validate is public); each action's
+// own required fields stay in the route with its messages ("Missing code"). usedBy/usedByEmail were
+// accepted from the client but never read; they are dropped.
+export const teacherCodeBody = z.object({
+  action: z.string().max(32).optional(),
+  code: z.string().max(256).nullish(),
+  label: z.string().max(500).nullish(),
+  organizationId: z.string().max(256).nullish(),
+});
+
+// ─── POST /api/admin/firestore ─────────────────────────────────────────────
+// Read-only explorer. collectionName is checked against an allow-list in the route.
+export const adminFirestoreBody = z.object({
+  action: z.string().max(32).optional(),
+  collectionName: z.string().max(256).nullish(),
+  limit: z.number().int().min(1).max(1000).default(50),
+  lastDocId: z.string().max(256).refine(v => !v.includes("/"), "must not contain '/'").nullish(),
+  filterField: z.string().max(256).nullish(),
+  filterValue: z.union([z.string().max(1000), z.number(), z.boolean()]).nullish(),
+});
+
+// ─── POST /api/teacher/network/portfolio ───────────────────────────────────
+export const portfolioBody = z.object({
+  teacherId: docId,
+  studentId: docId,
+  organizationId: docId,
+});

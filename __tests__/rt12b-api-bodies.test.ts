@@ -156,3 +156,38 @@ describe('tutorBody', () => {
     expect(tutorBody.safeParse(b).success).toBe(false);
   });
 });
+
+// ─── batch 4: teacher-code, admin firestore, portfolio ─────────────────────
+import { teacherCodeBody, adminFirestoreBody, portfolioBody } from '../src/lib/schemas/api-bodies';
+
+describe('teacherCodeBody', () => {
+  it.each([{ action: 'list' }, { action: 'generate', label: null }, { action: 'generate', label: 'Maths dept', organizationId: 'o1' }, { action: 'revoke', code: 'SCORP-1' }, { action: 'validate', code: 'scorp-1' }])('accepts %j', b => {
+    expect(teacherCodeBody.safeParse(b).success).toBe(true);
+  });
+  it('drops the unused usedBy/usedByEmail fields', () => {
+    expect(teacherCodeBody.parse({ action: 'markUsed', code: 'x', usedBy: 'u', usedByEmail: 'e' })).toEqual({ action: 'markUsed', code: 'x' });
+  });
+  it.each([{ action: 7 }, { code: {} }, { label: 'x'.repeat(501) }, { code: 'x'.repeat(257) }])('rejects %j', b => {
+    expect(teacherCodeBody.safeParse(b).success).toBe(false);
+  });
+});
+
+describe('adminFirestoreBody', () => {
+  it('accepts the explorer payloads and defaults limit to 50', () => {
+    expect(adminFirestoreBody.parse({ action: 'listCollections' }).limit).toBe(50);
+    expect(adminFirestoreBody.safeParse({ action: 'queryCollection', collectionName: 'users', limit: 20, lastDocId: null, filterField: '', filterValue: '' }).success).toBe(true);
+    expect(adminFirestoreBody.safeParse({ action: 'queryCollection', collectionName: 'users', filterField: 'role', filterValue: 'teacher' }).success).toBe(true);
+  });
+  it.each([{ limit: 'all' }, { limit: 0 }, { limit: 1.5 }, { lastDocId: 'a/b' }, { filterValue: { $ne: 1 } }, { collectionName: ['users'] }])('rejects %j', b => {
+    expect(adminFirestoreBody.safeParse(b).success).toBe(false);
+  });
+});
+
+describe('portfolioBody', () => {
+  it('accepts the network-students payload', () => {
+    expect(portfolioBody.safeParse({ teacherId: 't1', studentId: 's1', organizationId: 'o1' }).success).toBe(true);
+  });
+  it.each([{ teacherId: 't1', studentId: 's1' }, { teacherId: 't1', studentId: 's/1', organizationId: 'o1' }, { teacherId: 1, studentId: 's1', organizationId: 'o1' }])('rejects %j', b => {
+    expect(portfolioBody.safeParse(b).success).toBe(false);
+  });
+});

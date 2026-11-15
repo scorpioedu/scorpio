@@ -63,7 +63,7 @@ describe('portfolio request validation and authorization', () => {
   test.each(['teacherId', 'studentId', 'organizationId'])('missing %s is 400', async field => {
     const res = await call({ ...ids, [field]: undefined });
     expect(res.status).toBe(400);
-    expect(await res.json()).toEqual({ error: 'Missing required fields' });
+    expect(await res.json()).toEqual(expect.objectContaining({ error: 'Missing required fields' }));
   });
 
   test('a missing database is 503', async () => {

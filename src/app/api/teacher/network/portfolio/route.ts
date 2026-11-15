@@ -4,16 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb, adminFieldWithValue } from "@/lib/firebase-admin";
 import { generateStudentPortfolio } from "@/lib/ai/network";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { portfolioBody } from "@/lib/schemas/api-bodies";
 
 
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { teacherId, studentId, organizationId } = await req.json();
-
-    if (!teacherId || !studentId || !organizationId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, portfolioBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { teacherId, studentId, organizationId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });

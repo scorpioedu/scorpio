@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { withAuthorizedRequest, type AuthorizedContext } from '@/lib/auth-verify';
 import { errorResponse } from '@/lib/api-errors';
+import { parseJsonBody } from '@/lib/api-schema';
+import { adminFirestoreBody } from '@/lib/schemas/api-bodies';
 
 // List of allowed collections we expose in the Explorer.
 const ALLOWED_COLLECTIONS = [
@@ -29,8 +31,9 @@ async function handleAdminFirestore(req: NextRequest, { requestId }: AuthorizedC
       );
     }
 
-    const body = await req.json();
-    const { action, collectionName, limit = 50, lastDocId, filterField, filterValue } = body;
+    const parsed = await parseJsonBody(req, adminFirestoreBody);
+    if (!parsed.ok) return parsed.response;
+    const { action, collectionName, limit, lastDocId, filterField, filterValue } = parsed.data;
 
     // ─── LIST COLLECTIONS ────────────────────────────────────────────────────
     if (action === 'listCollections') {

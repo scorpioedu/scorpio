@@ -182,10 +182,10 @@ describe('teacher-code public actions', () => {
     expect((await res.json()).error).toBe('Unknown action');
   });
 
-  test('an unparseable body falls through to the public handler and fails generically', async () => {
+  test('an unparseable body falls through to the public handler, which answers 400', async () => {
     const res = await call('not json');
-    expect(res.status).toBe(500);
-    expect(await res.json()).toMatchObject({ error: 'Internal server error' });
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'Invalid JSON' });
   });
 
   test('503-style 500 when Firebase Admin is not initialised', async () => {

@@ -4,6 +4,8 @@ import { randomBytes } from 'crypto';
 import { withAuthorizedRequest } from '@/lib/auth-verify';
 import { enforceRateLimit } from '@/lib/rate-limit';
 import { errorResponse } from '@/lib/api-errors';
+import { parseJsonBody } from '@/lib/api-schema';
+import { teacherCodeBody } from '@/lib/schemas/api-bodies';
 
 function generateCode(): string {
   const segment = () => randomBytes(2).toString('hex').toUpperCase();
@@ -17,8 +19,9 @@ async function handleTeacherCode(req: NextRequest) {
     return NextResponse.json({ error: 'Service unavailable: Firebase Admin not initialized' }, { status: 500 });
   }
 
-  const body = await req.json();
-  const { action, code, label, usedBy, usedByEmail, organizationId } = body;
+  const parsed = await parseJsonBody(req, teacherCodeBody);
+  if (!parsed.ok) return parsed.response;
+  const { action, code, label, organizationId } = parsed.data;
 
   // ─── GENERATE (admin only) ───────────────────────────────────────────────
   if (action === 'generate') {

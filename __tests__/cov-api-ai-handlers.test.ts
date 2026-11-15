@@ -689,8 +689,13 @@ describe('POST /api/admin/firestore', () => {
     expect(mockQueryLog.some(l => l.startsWith('startAfter'))).toBe(false);
   });
 
-  test('an unexpected failure is a generic 500', async () => {
+  test('a body that is not JSON is a 400', async () => {
     const res = await adminFirestorePost(new NextRequest('https://scorpio.test/api/x', { method: 'POST', body: '{bad' }));
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'Invalid JSON' });
+  });
+
+  test.each([[{ action: 'queryCollection', collectionName: 'users', limit: 'all' }], [{ action: 'queryCollection', collectionName: 'users', lastDocId: 'a/b' }], [{ action: 'queryCollection', collectionName: 'users', filterValue: { $ne: 1 } }]])('400 for %j', async b => {
+    expect((await call(adminFirestorePost, b)).status).toBe(400);
   });
 });

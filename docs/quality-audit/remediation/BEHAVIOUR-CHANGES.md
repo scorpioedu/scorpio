@@ -177,3 +177,9 @@ No runtime behaviour change. Removed unreferenced scratch files (`check_portfoli
 - `student/tutor`: presence checks (`message`, `userId`, `role === "student"`) still answer 401 "Unauthorized"; only wrong types and oversize values are new 400s.
 - `chat/landing`: still ignores any `visitorId` in the body.
 - Still without schemas: `auth/teacher-code`, `admin/firestore`, `teacher/network/portfolio`, `webhooks/polar` (signature-verified raw body, probably leave), `ai/generate-title` and `teacher/network/invites` (no body).
+
+## RT-12 follow-up, batch 4: auth/teacher-code, admin/firestore, teacher/network/portfolio
+- `POST /api/auth/teacher-code`: `action`, `code`, `label`, `organizationId` must be strings (`code`, `label`, `organizationId` may be null). Per-action checks ("Missing code", "Unknown action") stay in the route. `usedBy` and `usedByEmail` were accepted but never read; they are dropped. The public/admin split in `POST` still peeks at `action` with `req.clone()`, unchanged. A non-JSON body is a 400 "Invalid JSON" (was 500).
+- `POST /api/admin/firestore`: `limit` must be an integer 1–1000 (default 50; the route still caps results at 100). `lastDocId` must not contain "/" (it addressed a sub-path). `filterValue` must be a string, number or boolean; an object value is rejected. Non-JSON is 400 (was 500).
+- `POST /api/teacher/network/portfolio`: `teacherId`, `studentId`, `organizationId` must be non-empty strings without "/" (error text "Missing required fields" kept).
+- Left alone on purpose: `webhooks/polar` (signature is verified over the raw body), `ai/generate-title`, `teacher/network/invites` and `csp-report` (no body or own parser), `github/stats` (no request body).
