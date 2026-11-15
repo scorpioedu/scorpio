@@ -148,7 +148,7 @@
 - `/login`, `/signup` have no `<h1>` (`CardTitle` renders a `div`); `/` and `/features` have a few `cursor:pointer` non-interactive elements that were not investigated.
 - Dark-mode primary button (white on `--primary` 4.13:1) and primary used as text on dark (4.17:1) from M-005 are not changed (brand colour decision).
 - Not exercised in a real browser: minimized calculator button (embeds desmos.com), assignment-view drawer in the real page, reduced-motion behaviour, screen readers.
-- (RT-29 verifier) Gradebook "All assignments" mode likely has the same 20-id `in` limit as the old dashboard (not an RT-14 regression); surface partial/error state instead of silent zero in dashboard counts; page-level Firestore logic in teacher/page-client.tsx has no tests; /student/grades showed 0 graded for a student with submissions (pre-existing, unchanged page, not investigated).
+- (RT-29 verifier) Gradebook "All assignments" mode likely has the same 20-id `in` limit as the old dashboard (not an RT-14 regression); surface partial/error state instead of silent zero in dashboard counts; page-level Firestore logic in teacher/page-client.tsx has no tests; /student/grades showed 0 graded for a student with submissions: fixed (see below).
 
 ## RT-33: repo hygiene
 - Conventional commits / commitlint (L-008) skipped: needs new dependencies (`@commitlint/*`) and a husky commit-msg hook. Do together with squash-merge PR titles and release tagging.
@@ -181,3 +181,8 @@ Remaining ESLint errors (20) after the safe pass, none fixed because the fix wou
 - **`tools/set-admin-claim.cjs`** accepts `--uid` with no value silently; only the later "Missing --uid" error fires.
 - **`tools/*.cjs` `main()`** (~40 branches) is untestable under Jest: it only runs under `require.main === module` and uses dynamic `import('firebase-admin')`. Export `main` or run Jest with `--experimental-vm-modules` to cover it.
 - **`functions/src/metering.ts:38`** `if (!org) throw` is dead (source comment says so).
+
+## Fixed after the audit: /student/grades showed 0 graded
+- Cause (from reading the code and `firestore.rules`; not reproduced against the emulator with real data): the page read every submission's assignment inside one `Promise.all` with no per-item handling. Students may read an assignment only when it is migrated (`answerKeySeparated`) and in their class, so one legacy, deleted or other-class assignment made the read throw; the outer `catch` logged it and the list stayed empty.
+- Fix: `loadAssignments` in `src/lib/student-submissions.ts` treats a failed read as "unavailable" for that assignment only, and the page now uses the same `buildSubmissionRows` filter as `/student/submissions`. Test: `src/lib/student-submissions.test.ts`.
+- Still worth checking in the app: a student whose only graded work is on a legacy (un-migrated) assignment still will not see it, because the rules deny that read by design; run the assignment migration for such data.

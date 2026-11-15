@@ -52,6 +52,26 @@ export function assignmentIdsOf(submissions: readonly RawSubmission[]): string[]
   return Array.from(ids);
 }
 
+/**
+ * Reads each assignment once. A read that throws (Firestore rules deny legacy, deleted or other-class
+ * assignments) counts as "unavailable" (null) so one bad assignment cannot hide the student's other grades.
+ */
+export async function loadAssignments(
+  ids: readonly string[],
+  fetchOne: (id: string) => Promise<AssignmentInfo | null>,
+  onError: (id: string, error: unknown) => void = () => {},
+): Promise<Map<string, AssignmentInfo | null>> {
+  const entries = await Promise.all(ids.map(async (id): Promise<[string, AssignmentInfo | null]> => {
+    try {
+      return [id, await fetchOne(id)];
+    } catch (error) {
+      onError(id, error);
+      return [id, null];
+    }
+  }));
+  return new Map(entries);
+}
+
 function toDate(value: DateLike): Date | null {
   if (!value) return null;
   if (typeof value === "object" && !(value instanceof Date) && typeof value.toDate === "function") return value.toDate();
