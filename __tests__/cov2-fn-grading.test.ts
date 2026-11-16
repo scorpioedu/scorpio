@@ -11,7 +11,8 @@ jest.mock(require.resolve('../functions/node_modules/firebase-admin'), () => {
 jest.mock(require.resolve('../functions/node_modules/firebase-functions/lib/logger/index.js'), () => ({
   info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
 }));
-jest.mock(require.resolve('../functions/node_modules/@google/genai'), () => ({
+// Resolve like functions/src/grading.ts does (bare specifier, honours the package's "exports"), or the mock is missed.
+jest.mock(require.resolve('@google/genai', { paths: [`${__dirname}/../functions`] }), () => ({
   GoogleGenAI: jest.fn().mockImplementation(() => ({ models: { generateContent: (...a: unknown[]) => mockGenerate(...a) } })),
 }));
 
