@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, CirclePause, Maximize } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+/** iOS Safari exposes webkitEnterFullscreen instead of the standard requestFullscreen on video elements. */
+type WebkitFullscreenVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 
 const demoSlides = [
   { src: "/demos/processed/ai-tutor-chat.mp4", title: "Raise", desc: "Conversational AI assistant with reasoning." },
@@ -28,8 +31,8 @@ export function DemoCarousel() {
   const currentVideoRef = useRef<HTMLVideoElement>(null);
   const [unavailableSlides, setUnavailableSlides] = useState<string[]>([]);
 
-  const next = () => setIndex(i => (i + 1) % total);
-  const prev = () => setIndex(i => (i - 1 + total) % total);
+  const next = useCallback(() => setIndex(i => (i + 1) % total), [total]);
+  const prev = useCallback(() => setIndex(i => (i - 1 + total) % total), [total]);
 
   const getSlide = (o: number) => demoSlides[(index + o + total) % total];
 
@@ -44,7 +47,7 @@ export function DemoCarousel() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [next, prev]);
 
 
   // Auto-play and progress bar animation with per-slide timing, pause on click
@@ -104,7 +107,7 @@ export function DemoCarousel() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isVideoPaused, isVideoVisible, unavailable, index]);
+  }, [isVideoPaused, isVideoVisible, unavailable, index, next]);
 
   // Pause/resume video on pause state
   useEffect(() => {
@@ -199,7 +202,7 @@ export function DemoCarousel() {
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   className="rounded-lg border shadow-2xl w-full h-full object-cover"
                   title={`Current: ${slide.title}`}
                 />
@@ -225,8 +228,8 @@ export function DemoCarousel() {
                     if (video) {
                       if (video.requestFullscreen) {
                         video.requestFullscreen();
-                      } else if ((video as any).webkitEnterFullscreen) {
-                        (video as any).webkitEnterFullscreen();
+                      } else if ((video as WebkitFullscreenVideo).webkitEnterFullscreen) {
+                        (video as WebkitFullscreenVideo).webkitEnterFullscreen!();
                       }
                     }
                   }}

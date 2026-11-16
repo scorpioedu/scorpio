@@ -5,33 +5,36 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useAdminAccess } from "@/lib/use-admin-access";
+import { withAuthenticatedResearchFetch } from "@/lib/research-admin-fetch";
 import { 
   runComprehensiveStudy, 
   aggregateByConstraintLevel, 
   aggregateByDifficulty,
   exportToCSV,
   generateComprehensiveLatexTables,
-  estimateStudyCost
+  estimateStudyCost,
+  type ConstraintLevelAggregate,
+  type DifficultyAggregate,
+  type StudyResult
 } from "@/lib/ai/research";
 
-export default function ResearchPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [error, setError] = useState("");
+interface StudyReport {
+  raw: StudyResult[];
+  constraintMetrics: Record<string, ConstraintLevelAggregate>;
+  difficultyMetrics: Record<string, DifficultyAggregate>;
+}
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await fetch('/api/admin/firestore', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-secret': passwordInput }, body: JSON.stringify({ action: 'listCollections' }) });
-    if (response.ok) setIsAuthenticated(true);
-    else setError('Incorrect admin code');
-  };
+export default function ResearchPage() {
+  const access = useAdminAccess();
 
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState("");
   const [currentCall, setCurrentCall] = useState(0);
   const [totalCalls, setTotalCalls] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState("");
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<StudyReport | null>(null);
   const [csvData, setCsvData] = useState<string>("");
   const [latexTables, setLatexTables] = useState<string>("");
 
@@ -40,14 +43,14 @@ export default function ResearchPage() {
     setProgress("Initializing comprehensive study...");
     
     try {
-      const studyResults = await runComprehensiveStudy(
+      const studyResults = await withAuthenticatedResearchFetch(() => runComprehensiveStudy(
         (current, total, status, timeLeft) => {
           setCurrentCall(current);
           setTotalCalls(total);
           setProgress(status);
           setTimeRemaining(timeLeft);
-        }, passwordInput
-      );
+        }
+      ));
       
       setProgress("Analyzing results...");
       
@@ -90,23 +93,18 @@ export default function ResearchPage() {
 
   const estimate = estimateStudyCost();
 
-  if (!isAuthenticated) {
+  if (access !== "admin") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <form onSubmit={handlePasswordSubmit} className="space-y-4 p-8 border rounded shadow bg-background">
+        <div className="space-y-4 p-8 border rounded shadow bg-background text-center">
           <h2 className="text-2xl font-bold mb-2">Admin Access</h2>
-          <p className="text-muted-foreground mb-4">Enter the admin code to access the research lab.</p>
-          <input
-            type="password"
-            className="input input-bordered w-full"
-            placeholder="Admin Code"
-            value={passwordInput}
-            onChange={e => setPasswordInput(e.target.value)}
-            required
-          />
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button type="submit" className="btn btn-primary w-full">Unlock</button>
-        </form>
+          <p className="text-muted-foreground">
+            {access === "loading" ? "Checking your account…"
+              : access === "signed-out" ? "Sign in with an administrator account to access the research lab."
+              : "This account does not have administrator access."}
+          </p>
+          {access === "signed-out" && <Link href="/login" className="btn btn-primary w-full">Sign in</Link>}
+        </div>
       </div>
     );
   }
@@ -277,7 +275,7 @@ export default function ResearchPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(results.constraintMetrics).map(([level, data]: [string, any]) => (
+                    {Object.entries(results.constraintMetrics).map(([level, data]) => (
                       <tr key={level} className="border-b hover:bg-muted/50">
                         <td className="p-2 font-medium">{level}</td>
                         <td className="text-right p-2">{data.onTopicRate.toFixed(1)}%</td>
@@ -315,7 +313,7 @@ export default function ResearchPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(results.difficultyMetrics).map(([diff, data]: [string, any]) => (
+                    {Object.entries(results.difficultyMetrics).map(([diff, data]) => (
                       <tr key={diff} className="border-b hover:bg-muted/50">
                         <td className="p-2 font-medium capitalize">{diff}</td>
                         <td className="text-right p-2">{data.totalQuestions}</td>
@@ -365,7 +363,7 @@ export default function ResearchPage() {
                   <ol className="list-decimal list-inside mt-2 space-y-1">
                     <li>Download CSV and open in Excel/Sheets</li>
                     <li>Manually code 20-30 responses for qualitative analysis</li>
-                    <li>Copy LaTeX tables into your paper's Results section</li>
+                    <li>Copy LaTeX tables into your paper&apos;s Results section</li>
                     <li>Write analysis interpreting the patterns you see</li>
                   </ol>
                 </AlertDescription>
@@ -383,7 +381,7 @@ export default function ResearchPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {results.raw.slice(0, 5).map((result: any, idx: number) => (
+                {results.raw.slice(0, 5).map((result, idx) => (
                   <div key={idx} className="border-l-4 border-primary pl-4 py-2 space-y-2">
                     <div>
                       <span className="font-mono text-xs bg-muted px-2 py-1 rounded">

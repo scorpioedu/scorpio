@@ -49,14 +49,17 @@ export function SystemDemos() {
                 viewport={{ once: true }}
               >
                  <video 
-                   src="/demos/scorpio-demo.mp4" 
-                   controls 
+                   src="/demos/scorpio-demo.mp4"
+                   poster="/demos/scorpio-demo-poster.jpg"
+                   preload="none"
+                   controls
+                   aria-label="Scorpio platform tour video. A captions file is not yet available; see the description below the video."
                    className="w-full h-auto aspect-video cursor-pointer"
                  />
               </motion.div>
               <div className="mt-10 text-center max-w-3xl mx-auto space-y-4">
                  <p className="text-muted-foreground text-lg font-medium leading-relaxed italic">
-                    "A comprehensive 5-minute deep-dive into the architectural nuances and pedagogical advantages of the Scorpio framework."
+                    &quot;A comprehensive 5-minute deep-dive into the architectural nuances and pedagogical advantages of the Scorpio framework.&quot;
                  </p>
               </div>
            </TabsContent>

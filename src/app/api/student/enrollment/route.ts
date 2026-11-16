@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { authenticateRequest, withAuthorizedRequest } from "@/lib/auth-verify";
 import { findClassByCode } from "@/lib/class-enrollment";
 import { adminDb } from "@/lib/firebase-admin";
+import { parseJsonBody } from "@/lib/api-schema";
+import { enrollmentBody } from "@/lib/schemas/api-bodies";
 
 export const POST = withAuthorizedRequest(async req => {
   const caller = (await authenticateRequest(req))!;
-  const { code, action } = await req.json();
+  const parsed = await parseJsonBody(req, enrollmentBody);
+  if (!parsed.ok) return parsed.response;
+  const { code, action } = parsed.data;
   const userRef = adminDb.collection("users").doc(caller.uid);
   const studentRef = adminDb.collection("students").doc(caller.uid);
 
@@ -33,4 +37,4 @@ export const POST = withAuthorizedRequest(async req => {
   return result
     ? NextResponse.json({ error: result.error }, { status: result.status })
     : NextResponse.json({ success: true });
-});
+}, { rateLimit: "write" });

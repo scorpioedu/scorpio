@@ -1,0 +1,208 @@
+[1mClone found (typescript)[22m
+ - [1m[32mgrading.ts[39m[22m [19:1 - 59:2] (41 lines, 291 tokens)
+   lib/ai/utils.ts [9:8 - 68:2]
+[1mClone found (typescript)[22m
+ - [1m[32mgrading.ts[39m[22m [147:5 - 153:49] (7 lines, 97 tokens)
+   lib/ai/grading.ts [91:9 - 99:53]
+[1mClone found (typescript)[22m
+ - [1m[32mgrading.ts[39m[22m [201:46 - 208:64] (8 lines, 84 tokens)
+   app/api/grade/route.ts [64:47 - 74:62]
+[1mClone found (typescript)[22m
+ - [1m[32mgrading.ts[39m[22m [229:5 - 245:92] (17 lines, 107 tokens)
+   app/api/grade/route.ts [103:5 - 124:90]
+[1mClone found (typescript)[22m
+ - [1m[32mgrading.ts[39m[22m [255:9 - 261:19] (7 lines, 71 tokens)
+   app/api/grade/route.ts [149:7 - 154:13]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/ai/page.tsx[39m[22m [54:47 - 64:24] (11 lines, 71 tokens)
+   components/landing-chatbot.tsx [32:47 - 42:24]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/ai/generate/route.ts[39m[22m [19:79 - 45:25] (27 lines, 161 tokens)
+   app/api/ai/parse/route.ts [12:84 - 38:25]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/ai/generate/route.ts[39m[22m [19:79 - 34:24] (16 lines, 96 tokens)
+   app/api/student/tutor/route.ts [18:74 - 34:24]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/ai/generate/route.ts[39m[22m [23:80 - 34:24] (12 lines, 71 tokens)
+   app/api/chat/route.ts [18:85 - 30:24]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/ai/parse/route.ts[39m[22m [11:15 - 38:10] (28 lines, 178 tokens)
+   app/api/ai/synthesize-rubric/route.ts [11:23 - 37:10]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/auth/request-access/route.ts[39m[22m [52:29 - 59:101] (8 lines, 103 tokens)
+   app/api/auth/request-access/route.ts [94:28 - 101:101]
+[1mClone found (typescript)[22m
+ - [1m[32mapp/api/chat/route.ts[39m[22m [18:87 - 36:40] (19 lines, 122 tokens)
+   app/api/student/tutor/route.ts [22:82 - 40:40]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/demos/page.tsx[39m[22m [23:4 - 35:62] (13 lines, 79 tokens)
+   app/features/page.tsx [116:4 - 128:62]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/demos/page.tsx[39m[22m [196:16 - 219:57] (24 lines, 175 tokens)
+   app/sustainability/page.tsx [23:35 - 57:57]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/demos/page.tsx[39m[22m [197:9 - 257:2] (61 lines, 452 tokens)
+   app/features/page.tsx [622:9 - 682:2]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/demos/page.tsx[39m[22m [222:62 - 257:2] (36 lines, 253 tokens)
+   app/sustainability/page.tsx [63:45 - 110:2]
+[1mClone found (css)[22m
+ - [1m[32mapp/globals.css[39m[22m [173:52 - 188:53] (16 lines, 367 tokens)
+   app/globals.css [225:48 - 240:53]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/login/page.tsx[39m[22m [8:50 - 17:50] (10 lines, 78 tokens)
+   app/signup/page.tsx [6:42 - 15:50]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/login/page.tsx[39m[22m [205:3 - 225:34] (21 lines, 146 tokens)
+   app/signup/page.tsx [150:3 - 170:34]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/login/page.tsx[39m[22m [243:46 - 254:36] (12 lines, 78 tokens)
+   app/login/page.tsx [329:45 - 340:36]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/login/page.tsx[39m[22m [288:25 - 318:50] (31 lines, 184 tokens)
+   app/login/page.tsx [374:25 - 404:50]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/pricing/page.tsx[39m[22m [129:54 - 140:28] (12 lines, 74 tokens)
+   app/pricing/page.tsx [226:60 - 237:28]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/signup/page.tsx[39m[22m [189:48 - 200:38] (12 lines, 78 tokens)
+   app/signup/page.tsx [328:47 - 339:38]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/signup/page.tsx[39m[22m [204:25 - 216:38] (13 lines, 83 tokens)
+   app/signup/page.tsx [343:25 - 355:38]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/signup/page.tsx[39m[22m [221:25 - 233:38] (13 lines, 83 tokens)
+   app/signup/page.tsx [360:25 - 372:38]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/signup/page.tsx[39m[22m [237:27 - 282:38] (46 lines, 294 tokens)
+   app/signup/page.tsx [376:27 - 421:38]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/signup/page.tsx[39m[22m [299:24 - 317:53] (19 lines, 115 tokens)
+   app/signup/page.tsx [465:26 - 483:53]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/student/assignment-view/page.tsx[39m[22m [214:71 - 228:12] (15 lines, 98 tokens)
+   app/student/grades/page.tsx [55:72 - 72:10]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/student/assignment-view/page.tsx[39m[22m [559:7 - 569:8] (11 lines, 78 tokens)
+   app/student/assignment-view/page.tsx [655:7 - 665:8]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/student/assignments/page.tsx[39m[22m [163:4 - 181:8] (19 lines, 139 tokens)
+   app/teacher/assignments/page.tsx [147:5 - 165:8]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/student/tutor/page.tsx[39m[22m [486:24 - 496:8] (11 lines, 87 tokens)
+   app/student/tutor/page.tsx [497:30 - 507:8]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/student/vault/page.tsx[39m[22m [37:39 - 46:3] (10 lines, 84 tokens)
+   app/teacher/vault/page.tsx [42:35 - 51:3]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/assignments/page.tsx[39m[22m [178:32 - 187:30] (10 lines, 88 tokens)
+   app/teacher/grades/page.tsx [266:58 - 275:30]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/create/page.tsx[39m[22m [233:5 - 239:35] (7 lines, 87 tokens)
+   app/teacher/uploads/page.tsx [54:3 - 60:33]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/create/page.tsx[39m[22m [296:55 - 304:64] (9 lines, 105 tokens)
+   app/teacher/create/page.tsx [431:58 - 440:64]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/grades/page.tsx[39m[22m [4:57 - 12:9] (9 lines, 71 tokens)
+   app/teacher/students/page.tsx [5:76 - 13:9]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/network/page.tsx[39m[22m [1399:133 - 1410:28] (12 lines, 83 tokens)
+   components/landing/workspace-preview-tabs.tsx [1444:133 - 1455:28]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/network/page.tsx[39m[22m [1434:13 - 1443:42] (10 lines, 71 tokens)
+   components/landing/workspace-preview-tabs.tsx [1472:13 - 1481:42]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/submission/grade/page.tsx[39m[22m [109:14 - 116:44] (8 lines, 81 tokens)
+   app/teacher/submission/grade/page.tsx [154:21 - 162:44]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/vault/page.tsx[39m[22m [585:115 - 597:32] (13 lines, 77 tokens)
+   components/landing/workspace-preview-tabs.tsx [2230:55 - 2242:32]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/waypoints/page.tsx[39m[22m [287:20 - 302:15] (16 lines, 77 tokens)
+   components/landing/workspace-preview-tabs.tsx [1800:13 - 1815:15]
+[1mClone found (tsx)[22m
+ - [1m[32mapp/teacher/waypoints/page.tsx[39m[22m [314:13 - 326:36] (13 lines, 81 tokens)
+   components/landing/workspace-preview-tabs.tsx [1826:13 - 1838:36]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/admin/usage-analytics.tsx[39m[22m [350:56 - 362:40] (13 lines, 201 tokens)
+   components/landing/workspace-preview-tabs.tsx [989:62 - 1000:44]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/admin/usage-analytics.tsx[39m[22m [365:41 - 375:18] (11 lines, 168 tokens)
+   components/landing/workspace-preview-tabs.tsx [1007:27 - 1017:22]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/admin/usage-analytics.tsx[39m[22m [594:87 - 605:115] (12 lines, 90 tokens)
+   components/landing/workspace-preview-tabs.tsx [1236:71 - 1247:115]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/app-sidebar.tsx[39m[22m [134:9 - 144:11] (11 lines, 72 tokens)
+   components/settings-dialog.tsx [163:9 - 173:11]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/kokonutui/spotlight-cards.tsx[39m[22m [15:98 - 35:4] (21 lines, 82 tokens)
+   components/ui/spotlight-cards.tsx [15:99 - 35:4]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/kokonutui/spotlight-cards.tsx[39m[22m [76:3 - 136:21] (61 lines, 389 tokens)
+   components/ui/spotlight-cards.tsx [52:3 - 112:21]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/kokonutui/spotlight-cards.tsx[39m[22m [137:84 - 165:7] (29 lines, 95 tokens)
+   components/ui/spotlight-cards.tsx [113:87 - 141:7]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/kokonutui/spotlight-cards.tsx[39m[22m [196:86 - 225:25] (30 lines, 98 tokens)
+   components/ui/spotlight-cards.tsx [173:96 - 202:25]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/kokonutui/spotlight-cards.tsx[39m[22m [262:74 - 275:2] (14 lines, 81 tokens)
+   components/ui/spotlight-cards.tsx [216:95 - 229:2]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/landing/header.tsx[39m[22m [207:154 - 222:24] (16 lines, 111 tokens)
+   components/landing/header.tsx [234:130 - 249:24]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/landing/site-header.tsx[39m[22m [585:13 - 603:20] (19 lines, 122 tokens)
+   components/landing/site-header.tsx [653:13 - 671:20]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/landing/site-header.tsx[39m[22m [627:50 - 648:11] (22 lines, 109 tokens)
+   components/landing/site-header.tsx [694:36 - 715:11]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/landing/workflow.tsx[39m[22m [46:120 - 64:23] (19 lines, 90 tokens)
+   components/landing/workflow.tsx [127:120 - 145:23]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/landing/workspace-preview-pages.tsx[39m[22m [2637:62 - 2648:15] (12 lines, 78 tokens)
+   components/landing/workspace-preview-tabs.tsx [1656:58 - 1667:15]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/math-input.tsx[39m[22m [445:33 - 453:17] (9 lines, 81 tokens)
+   components/math-input.tsx [456:32 - 464:17]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents/ui/text-animate.tsx[39m[22m [27:1 - 45:2] (19 lines, 91 tokens)
+   components/ui/typing-animation.tsx [22:1 - 40:2]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/chatbot.ts[39m[22m [21:54 - 36:72] (16 lines, 85 tokens)
+   lib/ai/network.ts [67:94 - 82:72]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/chatbot.ts[39m[22m [53:100 - 68:19] (16 lines, 74 tokens)
+   lib/ai/grading.ts [147:57 - 162:19]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/grading.ts[39m[22m [144:6 - 158:72] (15 lines, 85 tokens)
+   lib/ai/tutor.ts [45:100 - 59:72]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/grading.ts[39m[22m [144:6 - 158:72] (15 lines, 85 tokens)
+   lib/ai/tutor.ts [101:81 - 115:72]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/research.ts[39m[22m [359:9 - 370:21] (12 lines, 89 tokens)
+   lib/ai/research.ts [385:13 - 396:25]
+[1mClone found (typescript)[22m
+ - [1m[32mlib/ai/tutor.ts[39m[22m [48:26 - 63:19] (16 lines, 82 tokens)
+   lib/ai/tutor.ts [104:26 - 119:19]
+[90m┌────────────┬────────────────┬─────────────┬──────────────┬──────────────┬──────────────────┬───────────────────┐[39m
+[90m│[39m[31m Format     [39m[90m│[39m[31m Files analyzed [39m[90m│[39m[31m Total lines [39m[90m│[39m[31m Total tokens [39m[90m│[39m[31m Clones found [39m[90m│[39m[31m Duplicated lines [39m[90m│[39m[31m Duplicated tokens [39m[90m│[39m
+[90m├────────────┼────────────────┼─────────────┼──────────────┼──────────────┼──────────────────┼───────────────────┤[39m
+[90m│[39m css        [90m│[39m 3              [90m│[39m 635         [90m│[39m 5541         [90m│[39m 1            [90m│[39m 16 (2.52%)       [90m│[39m 367 (6.62%)       [90m│[39m
+[90m├────────────┼────────────────┼─────────────┼──────────────┼──────────────┼──────────────────┼───────────────────┤[39m
+[90m│[39m json       [90m│[39m 1              [90m│[39m 39          [90m│[39m 273          [90m│[39m 0            [90m│[39m 0 (0.00%)        [90m│[39m 0 (0.00%)         [90m│[39m
+[90m├────────────┼────────────────┼─────────────┼──────────────┼──────────────┼──────────────────┼───────────────────┤[39m
+[90m│[39m tsx        [90m│[39m 179            [90m│[39m 48489       [90m│[39m 276573       [90m│[39m 46           [90m│[39m 825 (1.70%)      [90m│[39m 5508 (1.99%)      [90m│[39m
+[90m├────────────┼────────────────┼─────────────┼──────────────┼──────────────┼──────────────────┼───────────────────┤[39m
+[90m│[39m typescript [90m│[39m 66             [90m│[39m 6798        [90m│[39m 43655        [90m│[39m 17           [90m│[39m 280 (4.12%)      [90m│[39m 1881 (4.31%)      [90m│[39m
+[90m├────────────┼────────────────┼─────────────┼──────────────┼──────────────┼──────────────────┼───────────────────┤[39m
+[90m│[39m [1mTotal:[22m     [90m│[39m 249            [90m│[39m 55961       [90m│[39m 326042       [90m│[39m 64           [90m│[39m 1121 (2.00%)     [90m│[39m 7756 (2.38%)      [90m│[39m
+[90m└────────────┴────────────────┴─────────────┴──────────────┴──────────────┴──────────────────┴───────────────────┘[39m
+[90mFound 64 clones.[39m
+[32mJSON report saved to docs/quality-audit/raw/jscpd/jscpd-report.json[39m
+[90mtime: 35.228ms[39m

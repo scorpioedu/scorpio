@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { toast } from "sonner";
 import { RaiseLogo } from "@/components/ui/raise-logo";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Question {
   id: string;
@@ -173,9 +174,9 @@ export default function GradeSubmissionPage() {
         }
         throw new Error(errMsg);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("AI Grading failed:", error);
-      toast.error(error.message || "AI grading failed. Please check your account budget.");
+      toast.error(errorMessage(error) || "AI grading failed. Please check your account budget.");
     } finally {
       setGradingQuestion(null);
     }
@@ -227,7 +228,7 @@ export default function GradeSubmissionPage() {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <Button aria-label="Go back" variant="ghost" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
@@ -414,7 +415,7 @@ export default function GradeSubmissionPage() {
                             </div>
                             {!isGrading && aiReasoning[ans.questionId] && (
                               <div className="text-sm text-foreground/80 leading-relaxed italic">
-                                "{aiReasoning[ans.questionId]}"
+                                &quot;{aiReasoning[ans.questionId]}&quot;
                               </div>
                             )}
                           </div>
@@ -538,7 +539,7 @@ export default function GradeSubmissionPage() {
                           )}
                           <p className="text-xs font-medium truncate w-32">{file.name}</p>
                         </div>
-                        <Button 
+                        <Button aria-label={`Download ${file.name}`} 
                           variant="ghost" 
                           size="icon" 
                           className="h-8 w-8"

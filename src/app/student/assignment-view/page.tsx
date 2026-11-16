@@ -1,8 +1,11 @@
 "use client";
+import { isSubmissionLate, type DueDateLike } from "@/lib/due-date";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useCallback, useEffect, useState, useRef, Suspense } from "react";
+import { useModalA11y } from "@/hooks/use-modal-a11y";
+import { getTimerExpiryAction, GRACE_PERIOD_SECONDS } from "@/lib/assignment-timer";
 import { useSearchParams, useRouter } from "next/navigation";
 import { doc, getDoc, collection, addDoc, query, where, getDocs, setDoc } from "firebase/firestore";
 import { db, uploadFilesToStorage, type WorkFile } from "@/lib/firebase";
@@ -40,6 +43,7 @@ import { getAssignmentPoints } from "@/lib/assignment-points";
 import { ScientificCalculator } from "@/components/calculator/scientific-calculator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { errorMessage } from "@/lib/error-utils";
 
 interface Question {
   id: string;
@@ -48,6 +52,25 @@ interface Question {
   options?: string[];
   correctAnswer?: string;
   points?: number;
+}
+
+/** One answer inside a stored submission; graded fields are present once a teacher or the AI has graded it. */
+interface SubmissionAnswer {
+  questionId: string;
+  answer?: string;
+  score?: number;
+  feedback?: string;
+  [key: string]: unknown;
+}
+
+/** A stored submission as returned by Firestore or the submissions API. */
+interface ExistingSubmission {
+  id: string;
+  status?: string;
+  graded?: boolean;
+  score?: number;
+  answers?: SubmissionAnswer[];
+  [key: string]: unknown;
 }
 
 interface Assignment {
@@ -88,7 +111,7 @@ function AssignmentDetailContent() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [existingSubmission, setExistingSubmission] = useState<any>(null);
+  const [existingSubmission, setExistingSubmission] = useState<ExistingSubmission | null>(null);
 
   // Timer State
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
@@ -285,8 +308,8 @@ function AssignmentDetailContent() {
 
             // Populate answers from existing submission
             const existingAnswers: Record<string, string> = {};
-            existingData.answers?.forEach((ans: any) => {
-              existingAnswers[ans.questionId] = ans.answer;
+            (existingData.answers as SubmissionAnswer[] | undefined)?.forEach((ans) => {
+              existingAnswers[ans.questionId] = ans.answer as string;
             });
             setAnswers(existingAnswers);
           } else {
@@ -324,29 +347,9 @@ function AssignmentDetailContent() {
     fetchAssignment();
   }, [id, user, profile]);
 
-  // Timer Effect
+  // Timer: one interval for as long as the timer is active (H-002). Expiry is handled in the next effect.
   useEffect(() => {
-    if (!timerActive || timeLeft === null) return;
-
-    if (timeLeft <= 0) {
-      setTimerActive(false);
-      // If work submission is required and there are timed limits, enter grace period
-      if (assignment?.requireWorkSubmission && assignment?.timeLimit) {
-        setInGracePeriod(true);
-        setTimeLeft(300); // 5 minutes = 300 seconds
-        setTimerActive(true);
-      } else {
-        handleSubmit(); // Auto-submit
-      }
-      return;
-    }
-
-    // In grace period, auto-submit when time runs out
-    if (inGracePeriod && timeLeft <= 0) {
-      setTimerActive(false);
-      handleSubmit();
-      return;
-    }
+    if (!timerActive) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -356,7 +359,24 @@ function AssignmentDetailContent() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timerActive, timeLeft, inGracePeriod, assignment]);
+  }, [timerActive]);
+
+  // Latest handleSubmit (kept current by an effect after its definition), so expiry never submits a stale closure.
+  const handleSubmitRef = useRef<() => Promise<void>>(async () => {});
+
+  const hasGraceOption = Boolean(assignment?.requireWorkSubmission && assignment?.timeLimit);
+  useEffect(() => {
+    if (!timerActive) return;
+    const action = getTimerExpiryAction(timeLeft, inGracePeriod, hasGraceOption);
+    if (action === "start-grace") {
+      // Work submission is required with a time limit: enter the grace period
+      setInGracePeriod(true);
+      setTimeLeft(GRACE_PERIOD_SECONDS);
+    } else if (action === "submit") {
+      setTimerActive(false);
+      handleSubmitRef.current(); // Auto-submit
+    }
+  }, [timerActive, timeLeft, inGracePeriod, hasGraceOption]);
 
   const handleStartAssignment = () => {
     if (!assignment || !user) return;
@@ -382,6 +402,8 @@ function AssignmentDetailContent() {
 
   // AI Helper Logic
   const [aiHelperOpen, setAiHelperOpen] = useState(false);
+  const closeAiHelper = useCallback(() => setAiHelperOpen(false), []);
+  const mobileDrawerRef = useModalA11y<HTMLDivElement>(isMobile && aiHelperOpen, closeAiHelper);
   const [aiMessages, setAiMessages] = useState<ChatMessage[]>([]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -495,12 +517,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
         content: responseText
       };
       setAiMessages(prev => [...prev, aiResponse]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("AI Error:", error);
       setAiMessages(prev => [...prev, {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: error.message || "I'm having trouble connecting right now. Please try again."
+        content: errorMessage(error) || "I'm having trouble connecting right now. Please try again."
       }]);
     } finally {
       setAiLoading(false);
@@ -665,20 +687,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       }
 
       // Check due date enforcement
-      let isLate = false;
-      if (assignment.dueDate) {
-        const dueDate = assignment.dueDate instanceof Date 
-          ? assignment.dueDate 
-          : typeof (assignment.dueDate as any)?.toDate === 'function'
-          ? (assignment.dueDate as any).toDate() 
-          : new Date(assignment.dueDate);
-        if (new Date() > dueDate) {
-          isLate = true;
-        }
-      }
+      const isLate = isSubmissionLate(assignment.dueDate as DueDateLike | null | undefined, new Date());
 
       // Remove forbidden fields for student update
-      const submissionData: any = {
+      const submissionData: Record<string, unknown> = {
         assignmentId: assignment.id,
         studentId: user.uid,
         studentName: studentName,
@@ -716,6 +728,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    handleSubmitRef.current = handleSubmit;
+  });
 
   if (loading) {
     return <LoadingSpinner fullPage />;
@@ -947,7 +963,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                           <h2 className="text-sm font-semibold">Question {index + 1}</h2>
                           {existingSubmission?.graded && (
                             <Badge variant="secondary" className="text-[10px] font-bold">
-                              {existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.score ?? 0} / {question.points ?? 10} PTS
+                              {existingSubmission.answers?.find((a) => a.questionId === question.id)?.score ?? 0} / {question.points ?? 10} PTS
                             </Badge>
                           )}
                         </div>
@@ -1025,20 +1041,20 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
                       {existingSubmission?.graded && (
                         <div className="mt-8 pt-6 border-t space-y-4">
-                          {existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.feedback && (
+                          {existingSubmission.answers?.find((a) => a.questionId === question.id)?.feedback && (
                             <div className="bg-muted/30 rounded-xl p-5 border">
                               <div className="flex items-center gap-2 mb-2">
                                 <MessagesSquare className="h-4 w-4 text-primary" />
                                 <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Feedback</span>
                               </div>
                               <div className="text-sm leading-relaxed text-foreground italic">
-                                "{existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.feedback}"
+                                &quot;{existingSubmission.answers?.find((a) => a.questionId === question.id)?.feedback}&quot;
                               </div>
                             </div>
                           )}
 
                           {/* Correct Reference Section */}
-                          {(question.correctAnswer || existingSubmission.answers?.find((a: any) => a.questionId === question.id)?.score < (question.points || 10)) && (
+                          {(question.correctAnswer || (existingSubmission.answers?.find((a) => a.questionId === question.id)?.score as number) < (question.points || 10)) && (
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
                                 <CheckCircle className="h-4 w-4 text-emerald-600" />
@@ -1241,7 +1257,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
+                        <Button aria-label="Clear chat history"
                           variant="ghost"
                           size="icon"
                           onClick={handleResetChat}
@@ -1258,7 +1274,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </TooltipProvider>
 
                   {/* Close */}
-                  <Button
+                  <Button aria-label="Close Raise AI helper"
                     variant="ghost"
                     size="icon"
                     onClick={() => setAiHelperOpen(false)}
@@ -1501,7 +1517,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       }
                     }}
                   />
-                  <Button
+                  <Button aria-label="Send message"
                     onClick={() => handleAiSendMessage()}
                     disabled={aiLoading || !aiInput.trim()}
                     size="icon"
@@ -1533,14 +1549,20 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setAiHelperOpen(false)}
+              aria-hidden="true"
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
             />
             <motion.div
+              ref={mobileDrawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Raise AI helper"
+              tabIndex={-1}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-[101] flex w-[88%] max-w-[420px] flex-col bg-background shadow-2xl border-l border-border"
+              className="fixed inset-y-0 right-0 z-[101] flex w-[88%] max-w-[420px] flex-col bg-background shadow-2xl border-l border-border outline-none"
             >
               {/* Mobile Header */}
               <div className="flex h-16 shrink-0 items-center justify-between border-b px-4">
@@ -1560,10 +1582,11 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     onClick={handleResetChat}
                     disabled={aiMessages.length === 0}
                     className="h-8 w-8"
+                    aria-label="Reset conversation"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setAiHelperOpen(false)} className="h-8 w-8">
+                  <Button variant="ghost" size="icon" onClick={() => setAiHelperOpen(false)} className="h-8 w-8" aria-label="Close Raise AI helper">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -1653,6 +1676,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     onClick={() => handleAiSendMessage()}
                     disabled={aiLoading || !aiInput.trim()}
                     className="h-10 w-10 shrink-0 rounded-xl p-0"
+                    aria-label="Send message"
                   >
                     <Send className="h-4 w-4" />
                   </Button>

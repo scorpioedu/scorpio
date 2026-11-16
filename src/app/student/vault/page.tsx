@@ -19,8 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/contexts/auth-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { InlineMath } from "react-katex";
-import "katex/dist/katex.min.css";
+import { Latex } from "@/components/latex";
 import { toast } from "sonner";
 
 interface Formula {
@@ -373,7 +372,7 @@ export default function Vault() {
               </CardHeader>
               <CardContent className="space-y-3 px-4">
                 <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3">
-                  <div className="min-w-0 flex-1 overflow-x-auto py-3 text-center"><InlineMath math={formula.latex} /></div>
+                  <div className="min-w-0 flex-1 overflow-x-auto py-3 text-center"><Latex math={formula.latex} /></div>
                   <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(formula)} aria-label={copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`}>
                     {copiedId === formula.id ? <Check /> : <Copy />}
                   </Button>
@@ -403,7 +402,7 @@ export default function Vault() {
                 <h2 className="break-words text-sm font-medium">{formula.name}</h2>
                 <p className="break-words text-xs text-muted-foreground">{formula.description}</p>
               </div>
-              <div className="min-w-0 max-w-full overflow-x-auto"><InlineMath math={formula.latex} /></div>
+              <div className="min-w-0 max-w-full overflow-x-auto"><Latex math={formula.latex} /></div>
               <Badge variant="outline" className="capitalize">{formula.category}</Badge>
               <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(formula)} aria-label={copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`}>
                 {copiedId === formula.id ? <Check /> : <Copy />}

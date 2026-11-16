@@ -1,23 +1,17 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { generateAssignmentQuestions } from "@/lib/ai/assignment";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { aiGenerateBody } from "@/lib/schemas/api-bodies";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { topic, count, difficulty, questionType, userId, context } = await req.json();
-
-    if (!topic || !userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    // 1. Check Rate Limit
-    const rateLimitCheck = await checkRateLimit(req, userId, "generate", { windowMs: 60000, maxRequests: 5 });
-    if (!rateLimitCheck.allowed) {
-      return NextResponse.json({ error: rateLimitCheck.error }, { status: 429 });
-    }
+    const parsed = await parseJsonBody(req, aiGenerateBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { topic, count, difficulty, questionType, userId, context } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -29,7 +23,7 @@ async function handlePost(req: NextRequest) {
       return NextResponse.json({ error: "User profile not found" }, { status: 404 });
     }
     const userData = userDoc.data();
-    let organizationId = userData?.organizationId;
+    const organizationId = userData?.organizationId;
 
     if (!organizationId) {
       return NextResponse.json({ error: "No organization found for user" }, { status: 403 });
@@ -42,7 +36,7 @@ async function handlePost(req: NextRequest) {
     }
 
     // 3. Perform AI Generation
-    const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context);
+    const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context ?? undefined);
 
     // 4. Record usage (Silent fail to not block response)
     if (result.usage) {
@@ -59,13 +53,9 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ questions: result.questions });
-  } catch (error: any) {
-    console.error("AI Generation API Error:", error);
-    return NextResponse.json({ 
-      error: error?.message || "Internal server error",
-      details: process.env.NODE_ENV === "development" ? (error?.rawText || error?.stack) : undefined
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "ai-generate", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "feature": "ai-generate", "rateLimit": "generate"});

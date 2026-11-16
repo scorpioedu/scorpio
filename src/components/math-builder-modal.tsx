@@ -49,12 +49,11 @@ function MathPreview({ latex }: { latex: string }) {
 }
 
 // Shows a clear descriptive label & a field, completely abstracted from LaTeX
-function FieldRow({ label, hint, value, onChange, autoFocus = false, id }: {
+function FieldRow({ label, hint, value, onChange, id }: {
   label: string;
   hint?: string;
   value: string;
   onChange: (v: string) => void;
-  autoFocus?: boolean;
   id: string;
 }) {
   return (
@@ -65,7 +64,6 @@ function FieldRow({ label, hint, value, onChange, autoFocus = false, id }: {
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        autoFocus={autoFocus}
         className="font-mono"
         placeholder={hint}
       />
@@ -193,7 +191,15 @@ export function MathBuilderModal({ open, type, onClose, onInsert }: MathBuilderM
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onOpenAutoFocus={(event) => {
+          // Single deliberate focus target: the first field of the dialog.
+          // preventScroll avoids a scroll jump while the dialog animates in.
+          event.preventDefault();
+          (event.currentTarget as HTMLElement).querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
+        }}
+      >
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl font-bold text-primary select-none">
@@ -210,53 +216,53 @@ export function MathBuilderModal({ open, type, onClose, onInsert }: MathBuilderM
           {/* === Fraction === */}
           {type === "fraction" && (
             <div className="space-y-3">
-              <FieldRow id="numerator" label="Top Number (Numerator)" hint="e.g., 3" value={numerator} onChange={setNumerator} autoFocus />
+              <FieldRow id="numerator" label="Top Number (Numerator)" hint="e.g., 3" value={numerator} onChange={setNumerator} />
               <FieldRow id="denominator" label="Bottom Number (Denominator)" hint="e.g., 4" value={denominator} onChange={setDenominator} />
             </div>
           )}
 
           {/* === Vector === */}
           {type === "vector" && (
-            <FieldRow id="variable" label="Variable Name" hint="e.g., v, F, a" value={variable} onChange={setVariable} autoFocus />
+            <FieldRow id="variable" label="Variable Name" hint="e.g., v, F, a" value={variable} onChange={setVariable} />
           )}
 
           {/* === Power === */}
           {type === "power" && (
             <div className="space-y-3">
-              <FieldRow id="base" label="Base (main symbol)" hint="e.g., x, 10" value={base} onChange={setBase} autoFocus />
+              <FieldRow id="base" label="Base (main symbol)" hint="e.g., x, 10" value={base} onChange={setBase} />
               <FieldRow id="exponent" label="Exponent (raised number)" hint="e.g., 2, 3" value={exponent} onChange={setExponent} />
             </div>
           )}
 
           {/* === Square Root === */}
           {type === "sqrt" && (
-            <FieldRow id="expression" label="Inside the Square Root" hint="e.g., 25, x+1" value={expression} onChange={setExpression} autoFocus />
+            <FieldRow id="expression" label="Inside the Square Root" hint="e.g., 25, x+1" value={expression} onChange={setExpression} />
           )}
 
           {/* === Integral === */}
           {type === "integral" && (
-            <FieldRow id="expression" label="Function to Integrate" hint="e.g., f(x), x^2" value={expression} onChange={setExpression} autoFocus />
+            <FieldRow id="expression" label="Function to Integrate" hint="e.g., f(x), x^2" value={expression} onChange={setExpression} />
           )}
 
           {/* === Partial Derivative === */}
           {type === "partial" && (
-            <FieldRow id="variable" label="Variable to Differentiate" hint="e.g., x, y, t" value={variable} onChange={setVariable} autoFocus />
+            <FieldRow id="variable" label="Variable to Differentiate" hint="e.g., x, y, t" value={variable} onChange={setVariable} />
           )}
 
           {/* === Nabla === */}
           {type === "nabla" && (
-            <FieldRow id="variable" label="Function" hint="e.g., f, V" value={variable} onChange={setVariable} autoFocus />
+            <FieldRow id="variable" label="Function" hint="e.g., f, V" value={variable} onChange={setVariable} />
           )}
 
           {/* === Sum === */}
           {type === "sum" && (
-            <FieldRow id="expression" label="Expression Inside Sum" hint="e.g., x_i, n^2" value={expression} onChange={setExpression} autoFocus />
+            <FieldRow id="expression" label="Expression Inside Sum" hint="e.g., x_i, n^2" value={expression} onChange={setExpression} />
           )}
 
           {/* === Subscript === */}
           {type === "subscript" && (
             <div className="space-y-3">
-              <FieldRow id="base" label="Main Symbol" hint="e.g., v, x" value={base} onChange={setBase} autoFocus />
+              <FieldRow id="base" label="Main Symbol" hint="e.g., v, x" value={base} onChange={setBase} />
               <FieldRow id="subscript" label="Subscript (small number/letter below)" hint="e.g., 0, i, initial" value={subscript} onChange={setSubscript} />
             </div>
           )}

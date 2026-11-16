@@ -675,31 +675,19 @@ export default function TutorPage() {
       }
     } catch (error: unknown) {
       console.error("Error getting response:", error)
+      // Server errors carry a friendly message (budget, 502/503 "please try again"); network and JSON
+      // failures do not, so they get the generic text.
       const errMessage =
-        error instanceof Error
+        error instanceof Error && !(error instanceof TypeError) && !(error instanceof SyntaxError) && error.message
           ? error.message
           : "Sorry, I encountered an error answering your question. Please try again."
 
-      const errorMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: errMessage,
-      }
-
-      const updatedWithErr = [...updatedMessages, errorMessage]
-      setMessages(updatedWithErr)
+      // A failed turn is never stored as an assistant message (RT-17, F-003): drop it from the chat, give the
+      // text back to the input so the student can resend, and show the error in the banner instead.
+      setMessages(messages)
       setTypingId(null)
-
-      if (sessionId) {
-        updateDoc(doc(db, "tutor_sessions", sessionId), {
-          messages: updatedWithErr,
-          updatedAt: serverTimestamp(),
-        }).catch(() => {})
-      }
-
-      if (errMessage.includes("Budget")) {
-        setRateLimitError(errMessage)
-      }
+      setPrompt(inputContent)
+      setRateLimitError(errMessage)
     } finally {
       setIsLoading(false)
     }
@@ -918,7 +906,7 @@ export default function TutorPage() {
                             autoFocus
                             maxLength={50}
                           />
-                          <Button
+                          <Button aria-label="Save conversation title"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
@@ -926,7 +914,7 @@ export default function TutorPage() {
                           >
                             <Check className="size-3.5" />
                           </Button>
-                          <Button
+                          <Button aria-label="Cancel renaming"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
@@ -1264,7 +1252,7 @@ export default function TutorPage() {
                           )}
                         >
                           <MessageAction tooltip="Copy message">
-                            <Button
+                            <Button aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1277,7 +1265,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Good response">
-                            <Button
+                            <Button aria-label="Mark response as helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
@@ -1295,7 +1283,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Bad response">
-                            <Button
+                            <Button aria-label="Mark response as not helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
@@ -1313,7 +1301,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Delete message">
-                            <Button
+                            <Button aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
@@ -1334,7 +1322,7 @@ export default function TutorPage() {
                         {/* User Actions */}
                         <MessageActions className="flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 pr-1">
                           <MessageAction tooltip="Edit prompt">
-                            <Button
+                            <Button aria-label="Edit message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1347,7 +1335,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Copy text">
-                            <Button
+                            <Button aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
@@ -1360,7 +1348,7 @@ export default function TutorPage() {
                           </MessageAction>
 
                           <MessageAction tooltip="Delete prompt">
-                            <Button
+                            <Button aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"

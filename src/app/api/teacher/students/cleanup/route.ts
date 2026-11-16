@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
+import { parseJsonBody } from '@/lib/api-schema';
+import { cleanupBody } from '@/lib/schemas/api-bodies';
 export const POST = withAuthorizedRequest(async req => {
  const caller=(await authenticateRequest(req))!;
- const {studentId,courseId,unlink}=await req.json();
- if(typeof studentId!=='string'||studentId.includes('/'))return NextResponse.json({error:'Invalid student'},{status:400});
+ const parsed=await parseJsonBody(req,cleanupBody,{message:'Invalid student'});
+ if(!parsed.ok)return parsed.response;
+ const {studentId,courseId,unlink}=parsed.data;
  const profile=(await adminDb.collection('users').doc(studentId).get()).data();
  if(profile?.teacherId!==caller.uid)return NextResponse.json({error:'Access denied'},{status:403});
  const submissions=await adminDb.collection('submissions').where('studentId','==',studentId).get();
@@ -23,4 +26,4 @@ export const POST = withAuthorizedRequest(async req => {
  for(let i=0;i<refs.length;i+=400){const batch=adminDb.batch();refs.slice(i,i+400).forEach(ref=>batch.delete(ref));await batch.commit();}
  if(unlink){const batch=adminDb.batch();for(const name of ['users','students'])batch.set(adminDb.collection(name).doc(studentId),{teacherId:null,courseId:null,organizationId:null},{merge:true});await batch.commit();}
  return NextResponse.json({success:true});
-},{teacher:true});
+},{teacher:true,rateLimit:"write"});

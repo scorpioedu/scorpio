@@ -21,7 +21,7 @@ import { ref, uploadBytes, getBytes } from 'firebase/storage';
 import * as fs from 'node:fs';
 
 jest.mock('../../src/lib/firebase-admin', () => {
-  const admin = require('firebase-admin');
+  const admin = jest.requireActual<typeof import('firebase-admin')>('firebase-admin');
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Emulator required');
   if (!admin.apps.length) admin.initializeApp({ projectId: 'demo-scorpio-security' });
   return {
@@ -32,6 +32,8 @@ jest.mock('../../src/lib/firebase-admin', () => {
         uid: token,
         email: `${token}@example.test`,
         auth_time: Math.floor(Date.now() / 1000),
+        // RT-06: platform admins are identified by the `admin: true` custom claim, not a shared secret.
+        ...(token === 'e2e-admin-root' ? { admin: true } : {}),
       }),
       deleteUser: jest.fn(async () => undefined),
     },
@@ -52,6 +54,8 @@ import { POST as networkMembership } from '../../src/app/api/teacher/network/mem
 import { POST as cleanupStudent } from '../../src/app/api/teacher/students/cleanup/route';
 import { GET as exportAccount, DELETE as deleteAccount } from '../../src/app/api/account/route';
 import { adminDb } from '../../src/lib/firebase-admin';
+
+const ADMIN_UID = 'e2e-admin-root';
 
 const apiReq = (
   path: string,
@@ -90,7 +94,6 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
   let submission2Id: string;
 
   beforeAll(async () => {
-    process.env.ADMIN_SECRET = 'test-admin-secret';
     process.env.GEMINI_API_KEY = 'test-gemini-key';
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = 'demo-scorpio-security.appspot.com';
 
@@ -145,12 +148,12 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
       projectId: 'demo-scorpio-security',
       firestore: {
         host: '127.0.0.1',
-        port: 8188,
+        port: Number((process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8188').split(':').pop()),
         rules: fs.readFileSync('firestore.rules', 'utf8'),
       },
       storage: {
         host: '127.0.0.1',
-        port: 9298,
+        port: Number((process.env.FIREBASE_STORAGE_EMULATOR_HOST || '127.0.0.1:9298').split(':').pop()),
         rules: fs.readFileSync('storage.rules', 'utf8'),
       },
     });
@@ -168,9 +171,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
   test('1. Teacher invite code generation, validation, and teacher registration', async () => {
     // Admin generates a teacher invite code
     const genRes = await teacherCode(
-      apiReq('auth/teacher-code', null, { action: 'generate', label: 'E2E Physics Teacher' }, 'POST', {
-        'x-admin-secret': 'test-admin-secret',
-      })
+      apiReq('auth/teacher-code', ADMIN_UID, { action: 'generate', label: 'E2E Physics Teacher' })
     );
     expect(genRes.status).toBe(200);
     const genData = await genRes.json();
@@ -640,7 +641,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     expect(sub1AfterAi.answers[2].reasoning).toContain('F = ma');
 
     // Teacher reviews Student 1's submission in GradeSubmissionPage and manually adjusts Q3 to full 50/50 points with custom feedback
-    const updatedAnswers = sub1AfterAi.answers.map((ans: any) =>
+    const updatedAnswers = sub1AfterAi.answers.map((ans: { questionId: string; feedback?: string }) =>
       ans.questionId === 'q3-free'
         ? {
             ...ans,
@@ -722,10 +723,8 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     const colGenRes = await teacherCode(
       apiReq(
         'auth/teacher-code',
-        null,
-        { action: 'generate', label: 'Colleague Invite', organizationId },
-        'POST',
-        { 'x-admin-secret': 'test-admin-secret' }
+        ADMIN_UID,
+        { action: 'generate', label: 'Colleague Invite', organizationId }
       )
     );
     colleagueInviteCode = (await colGenRes.json()).code;
@@ -785,9 +784,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
 
     // An outsider teacher from another school cannot access any of these records
     const outInviteRes = await teacherCode(
-      apiReq('auth/teacher-code', null, { action: 'generate', label: 'Outsider' }, 'POST', {
-        'x-admin-secret': 'test-admin-secret',
-      })
+      apiReq('auth/teacher-code', ADMIN_UID, { action: 'generate', label: 'Outsider' })
     );
     const outCode = (await outInviteRes.json()).code;
     await register(
@@ -821,7 +818,7 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     const exportRes = await exportAccount(apiReq('account', STUDENT_1_UID, undefined, 'GET'));
     expect(exportRes.status).toBe(200);
     const exportedCollections = await exportRes.json();
-    expect(exportedCollections.map((c: any) => c.collection)).toEqual(
+    expect(exportedCollections.map((c: { collection: string }) => c.collection)).toEqual(
       expect.arrayContaining(['submissions', 'notebooks', 'tutor_sessions', 'portfolios', 'users'])
     );
 

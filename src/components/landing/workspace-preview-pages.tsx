@@ -540,7 +540,7 @@ export function GradingTerminalView({
                         </p>
                       </div>
                     </div>
-                    <Button
+                    <Button aria-label="Open student work"
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 shrink-0 cursor-pointer"
@@ -622,6 +622,7 @@ export function GradebookPage({
     updatedAnswers: SubmissionAnswer[]
   ) => void;
 }) {
+  const uid = React.useId();
   const [selectedCourse, setSelectedCourse] = React.useState<string>("all");
   const [selectedAssignment, setSelectedAssignment] =
     React.useState<string>("all");
@@ -870,7 +871,7 @@ export function GradebookPage({
       <div className="flex flex-col sm:flex-row gap-4 sm:items-end justify-between border-b border-border pb-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 max-w-xl">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">
+            <label htmlFor={`${uid}-course`} className="text-xs font-medium text-muted-foreground">
               Class
             </label>
             <Select
@@ -880,7 +881,7 @@ export function GradebookPage({
                 setSelectedAssignment("all");
               }}
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger id={`${uid}-course`} className="h-9">
                 <SelectValue placeholder="All classes" />
               </SelectTrigger>
               <SelectContent>
@@ -895,14 +896,14 @@ export function GradebookPage({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">
+            <label htmlFor={`${uid}-assignment`} className="text-xs font-medium text-muted-foreground">
               Assignment
             </label>
             <Select
               value={selectedAssignment}
               onValueChange={setSelectedAssignment}
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger id={`${uid}-assignment`} className="h-9">
                 <SelectValue placeholder="All assignments" />
               </SelectTrigger>
               <SelectContent>
@@ -1297,6 +1298,7 @@ export function AssignmentsPage({
   onDeleteAssignment: (assignmentId: string) => void;
   onOpenSubmission: (submissionId: string) => void;
 }) {
+  const uid = React.useId();
   const [selectedCourse, setSelectedCourse] = React.useState<string>("all");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [sortOrder, setSortOrder] = React.useState<string>("dueDate-desc");
@@ -1366,11 +1368,11 @@ export function AssignmentsPage({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
+          <label htmlFor={`${uid}-course`} className="text-xs font-medium text-muted-foreground">
             Class
           </label>
           <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger id={`${uid}-course`} className="h-9">
               <SelectValue placeholder="All classes" />
             </SelectTrigger>
             <SelectContent>
@@ -1385,11 +1387,11 @@ export function AssignmentsPage({
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
+          <label htmlFor={`${uid}-status`} className="text-xs font-medium text-muted-foreground">
             Status
           </label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger id={`${uid}-status`} className="h-9">
               <SelectValue placeholder="All" />
             </SelectTrigger>
             <SelectContent>
@@ -1401,11 +1403,11 @@ export function AssignmentsPage({
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
+          <label htmlFor={`${uid}-sort`} className="text-xs font-medium text-muted-foreground">
             Sort
           </label>
           <Select value={sortOrder} onValueChange={setSortOrder}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger id={`${uid}-sort`} className="h-9">
               <ArrowUpDown className="mr-1.5 h-3.5 w-3.5 text-muted-foreground shrink-0" />
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
@@ -1573,6 +1575,7 @@ export function CreateAssignmentPage({
   }) => void;
   onCancel: () => void;
 }) {
+  const uid = React.useId();
   const [title, setTitle] = React.useState(
     initialDraft?.title || "Rotational Dynamics & Angular Momentum Problem Set"
   );
@@ -1613,6 +1616,11 @@ export function CreateAssignmentPage({
         ]
   );
 
+  const [gradingRubric, setGradingRubric] = React.useState(
+    initialDraft?.gradingRubric ||
+      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
+  );
+
   // Sync when initialDraft changes (from Waypoint fork or Assignment duplicate)
   React.useEffect(() => {
     if (initialDraft) {
@@ -1651,10 +1659,6 @@ export function CreateAssignmentPage({
   const [scaffoldingLevel, setScaffoldingLevel] = React.useState("medium");
   const [lockdownMode, setLockdownMode] = React.useState(false);
   const [stealthAssessment, setStealthAssessment] = React.useState(false);
-  const [gradingRubric, setGradingRubric] = React.useState(
-    initialDraft?.gradingRubric ||
-      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
-  );
   const [isSynthesizingRubric, setIsSynthesizingRubric] = React.useState(false);
 
   // AI Question Generator Dialog
@@ -1774,7 +1778,7 @@ export function CreateAssignmentPage({
         id: `q-import-${Date.now()}-${idx}`,
         text: p.text,
         points: p.points || 25,
-        type: p.type === "free-response" ? "text" : p.type,
+        type: p.type,
         options:
           p.type === "multiple-choice"
             ? p.options
@@ -2103,7 +2107,7 @@ export function CreateAssignmentPage({
                       Question {index + 1}
                     </h4>
                   </div>
-                  <Button
+                  <Button aria-label="Remove question"
                     type="button"
                     variant="ghost"
                     size="icon"
@@ -2192,7 +2196,7 @@ export function CreateAssignmentPage({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                       {q.options.map((opt, oIdx) => (
                         <div key={oIdx} className="flex items-center gap-2">
-                          <Button
+                          <Button aria-label={`Mark option ${opt} as the correct answer`}
                             type="button"
                             variant={
                               q.correctAnswer === opt ? "default" : "outline"
@@ -2331,7 +2335,7 @@ export function CreateAssignmentPage({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
+                <label htmlFor={`${uid}-lockdown`} className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
                   <div className="space-y-0.5 pr-2">
                     <span className="text-sm font-medium">Lockdown Mode</span>
                     <p className="text-[11px] text-muted-foreground">
@@ -2339,12 +2343,13 @@ export function CreateAssignmentPage({
                     </p>
                   </div>
                   <Checkbox
+                    id={`${uid}-lockdown`}
                     checked={lockdownMode}
                     onCheckedChange={(v) => setLockdownMode(!!v)}
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
+                <label htmlFor={`${uid}-stealth`} className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
                   <div className="space-y-0.5 pr-2">
                     <span className="text-sm font-medium">
                       Stealth Assessment
@@ -2354,6 +2359,7 @@ export function CreateAssignmentPage({
                     </p>
                   </div>
                   <Checkbox
+                    id={`${uid}-stealth`}
                     checked={stealthAssessment}
                     onCheckedChange={(v) => setStealthAssessment(!!v)}
                   />

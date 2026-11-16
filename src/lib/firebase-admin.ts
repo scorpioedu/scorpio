@@ -1,10 +1,17 @@
 import * as admin from 'firebase-admin';
 import type { firestore, auth, app } from 'firebase-admin';
+import { planAdminInit } from './firebase-emulator';
 
 // Re-export type for external use
 export type { firestore, auth, app };
 
 let _app: app.App | null = null;
+
+/** Reads `prop` off `service`, binding functions so they keep their receiver when called through the proxy. */
+function readBound(service: object, prop: string | symbol): unknown {
+  const value = (service as Record<string | symbol, unknown>)[prop];
+  return typeof value === 'function' ? value.bind(service) : value;
+}
 
 function getApp(): app.App | null {
   if (typeof window !== 'undefined') return null;
@@ -15,37 +22,35 @@ function getApp(): app.App | null {
   
   if (_app) return _app;
 
-  // Use either FIREBASE_PROJECT_ID or the public one as fallback
-  const projectId = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY
-    ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/^"|"$/g, '')
-    : undefined;
+  const plan = planAdminInit(process.env);
 
-  if (!projectId || !clientEmail || !privateKey) {
-    console.error('[firebase-admin] Missing credentials:', { 
-      hasProjectId: !!projectId, 
-      hasClientEmail: !!clientEmail, 
-      hasPrivateKey: !!privateKey 
+  if (plan.mode === 'missing') {
+    console.error('[firebase-admin] Missing credentials:', {
+      hasProjectId: plan.hasProjectId,
+      hasClientEmail: plan.hasClientEmail,
+      hasPrivateKey: plan.hasPrivateKey
     });
     return null; // Return null instead of throwing to allow routes to handle the error
   }
 
-  console.log('[firebase-admin] Initializing for Project:', projectId);
+  const projectId = plan.projectId;
+  console.log('[firebase-admin] Initializing for Project:', projectId, plan.mode === 'emulator' ? '(emulator, no credentials)' : '');
 
   try {
-    _app = admin.initializeApp({
-      credential: admin.credential.cert({ 
-        projectId, 
-        clientEmail, 
-        privateKey 
-      }),
-      projectId,
-    });
+    _app = plan.mode === 'emulator'
+      ? admin.initializeApp({ projectId })
+      : admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId,
+            clientEmail: plan.clientEmail,
+            privateKey: plan.privateKey
+          }),
+          projectId,
+        });
     console.log('[firebase-admin] Initialized successfully.');
     return _app;
-  } catch (e: any) {
-    if (/already exists/.test(e.message)) {
+  } catch (e: unknown) {
+    if (/already exists/.test((e as { message?: string }).message as string)) {
       return admin.app();
     }
     console.error('[firebase-admin] Initialization failed:', e);
@@ -61,8 +66,7 @@ export const adminDb: firestore.Firestore = new Proxy({} as firestore.Firestore,
     const app = getApp();
     if (!app) return undefined;
     const service = admin.firestore(app);
-    const value = (service as any)[prop];
-    return typeof value === 'function' ? value.bind(service) : value;
+    return readBound(service, prop);
   }
 });
 
@@ -71,8 +75,7 @@ export const adminAuth: auth.Auth = new Proxy({} as auth.Auth, {
     const app = getApp();
     if (!app) return undefined;
     const service = admin.auth(app);
-    const value = (service as any)[prop];
-    return typeof value === 'function' ? value.bind(service) : value;
+    return readBound(service, prop);
   }
 });
 
@@ -81,7 +84,6 @@ export const adminFieldWithValue: typeof firestore.FieldValue = new Proxy({} as 
     const app = getApp();
     if (!app) return undefined;
     const FV = admin.firestore.FieldValue;
-    const value = (FV as any)[prop];
-    return typeof value === 'function' ? value.bind(FV) : value;
+    return readBound(FV, prop);
   }
 });

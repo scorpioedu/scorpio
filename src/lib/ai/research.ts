@@ -423,9 +423,28 @@ export async function runComprehensiveStudy(
   return results;
 }
 
+export interface ConstraintLevelAggregate {
+  totalQuestions: number;
+  onTopicRate: number;
+  directAnswerRate: number;
+  latexUsageRate: number;
+  avgQuestionCount: number;
+  avgResponseLength: number;
+  avgPhysicsTermDensity: number;
+  avgPedagogicalQuality: number;
+  totalViolations: number;
+}
+
+export interface DifficultyAggregate {
+  totalQuestions: number;
+  avgPedagogicalQuality: number;
+  appropriateDifficultyRate: number;
+  avgResponseLength: number;
+}
+
 // Aggregate results by constraint level
-export function aggregateByConstraintLevel(results: StudyResult[]): Record<ConstraintLevel, any> {
-  const aggregated: Record<string, any> = {};
+export function aggregateByConstraintLevel(results: StudyResult[]): Record<ConstraintLevel, ConstraintLevelAggregate> {
+  const aggregated: Record<string, ConstraintLevelAggregate> = {};
   for (const level of Object.keys(CONSTRAINT_LEVELS) as ConstraintLevel[]) {
     const levelResults = results.filter(r => r.constraintLevel === level);
     if (levelResults.length === 0) continue;
@@ -441,13 +460,13 @@ export function aggregateByConstraintLevel(results: StudyResult[]): Record<Const
       totalViolations: levelResults.reduce((sum, r) => sum + r.metrics.violations.length, 0)
     };
   }
-  return aggregated as Record<ConstraintLevel, any>;
+  return aggregated as Record<ConstraintLevel, ConstraintLevelAggregate>;
 }
 
 // Aggregate results by difficulty level
-export function aggregateByDifficulty(results: StudyResult[]): Record<string, any> {
+export function aggregateByDifficulty(results: StudyResult[]): Record<string, DifficultyAggregate> {
   const difficulties = ['basic', 'intermediate', 'advanced', 'college'];
-  const aggregated: Record<string, any> = {};
+  const aggregated: Record<string, DifficultyAggregate> = {};
   for (const difficulty of difficulties) {
     const diffResults = results.filter(r => r.question.difficulty === difficulty);
     if (diffResults.length > 0) {
@@ -492,8 +511,8 @@ export function exportToCSV(results: StudyResult[]): string {
 
 // Generate LaTeX tables for paper
 export function generateComprehensiveLatexTables(
-  constraintAgg: Record<ConstraintLevel, any>,
-  difficultyAgg: Record<string, any>
+  constraintAgg: Record<ConstraintLevel, ConstraintLevelAggregate>,
+  difficultyAgg: Record<string, DifficultyAggregate>
 ): string {
   let latex = `% Table 1: Constraint Level Effectiveness\n`;
   latex += `\\begin{table}[h]\n\\centering\n\\begin{tabular}{|l|c|c|c|c|c|}\n\\hline\n`;

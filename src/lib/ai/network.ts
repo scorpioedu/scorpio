@@ -1,5 +1,6 @@
 import { scrubPII } from "./utils";
 import { model } from "./config";
+import { AiOutputError } from "./errors";
 
 /**
  * Network Limits Assistant — answers teacher questions about their org's AI limits,
@@ -131,6 +132,7 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
     const prompt = `${systemPrompt}\n\n${chatContext}`;
 
     const result = await model.generateContent({
+      scrubLevel: "full",
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: 8192,
@@ -169,7 +171,8 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
     }
     
     // Parse JSON
-    let parsed: any;
+    // Shape requested from the model; every field is validated below before use.
+    let parsed: { masteryLevel?: string; strengths?: string[]; weaknesses?: string[]; aiSummary?: string };
     try {
       parsed = JSON.parse(text);
     } catch (e) {
@@ -185,20 +188,19 @@ IMPORTANT: Return ONLY a valid JSON object matching this structure:
       try {
         parsed = JSON.parse(sanitized);
       } catch (e2) {
-        console.error("Failed to parse portfolio JSON:", text);
-        throw new Error(`AI returned invalid JSON: ${text}`);
+        throw new AiOutputError("AI returned invalid JSON for the portfolio");
       }
     }
 
     // Validate fields
     const validLevels = ["Beginner", "Intermediate", "Advanced", "Expert"];
-    const masteryLevel = validLevels.includes(parsed.masteryLevel) ? parsed.masteryLevel : "Beginner";
+    const masteryLevel = validLevels.includes(parsed.masteryLevel as string) ? parsed.masteryLevel : "Beginner";
 
     return {
       portfolio: {
         strengths: Array.isArray(parsed.strengths) ? parsed.strengths.slice(0, 5) : ["Engaging with Raise"],
         weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses.slice(0, 5) : ["Needs more practice"],
-        masteryLevel: masteryLevel as any,
+        masteryLevel: masteryLevel as "Beginner" | "Intermediate" | "Advanced" | "Expert",
         aiSummary: parsed.aiSummary || "The student has primarily been using Raise casually. More intensive sessions are needed for a deeper analysis.",
       },
       usage: {

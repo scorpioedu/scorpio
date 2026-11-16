@@ -1,8 +1,11 @@
-import { model } from "./config";
+import { model, type GeminiModel } from "./config";
+import type { AssignmentQuestion } from "../types";
+import { AiOutputError } from "./errors";
+import { ClientError } from "../client-error";
 import { splitIntoQuestions, validateAndNormalizeQuestions } from "./utils";
 
 // Helper: Parse a single batch of questions using Gemini
-async function parseSingleBatch(batchText: string, startNumber: number, model: any): Promise<{ questions: any[], usage: { inputTokens: number, outputTokens: number } }> {
+async function parseSingleBatch(batchText: string, startNumber: number, model: GeminiModel): Promise<{ questions: unknown[], usage: { inputTokens: number, outputTokens: number } }> {
   const prompt = `Parse these quiz questions into a JSON array. Return ONLY the JSON array, no markdown, no other text.
 
 QUESTIONS:
@@ -33,22 +36,22 @@ JSON array:`;
     }
   });
   const response = await result.response;
-  let responseText = response.text().trim();
+  const responseText = response.text().trim();
   
   // Extract only the array portion for robustness
   const startIdx = responseText.indexOf('[');
   const endIdx = responseText.lastIndexOf(']');
   
   if (startIdx === -1 || endIdx === -1) {
-    throw new Error(`Failed to extract JSON array from batch starting at ${startNumber}`);
+    throw new AiOutputError(`Failed to extract JSON array from batch starting at ${startNumber}`);
   }
   
-  let cleanJson = responseText.substring(startIdx, endIdx + 1).trim();
+  const cleanJson = responseText.substring(startIdx, endIdx + 1).trim();
   
   try {
     const parsed = JSON.parse(cleanJson);
     if (!Array.isArray(parsed)) {
-      throw new Error('Parsed result is not an array');
+      throw new AiOutputError('Parsed result is not an array');
     }
     return {
       questions: parsed,
@@ -58,7 +61,7 @@ JSON array:`;
       }
     };
   } catch (e) {
-    throw new Error(`Failed to parse questions in batch starting at ${startNumber}. Error: ${e instanceof Error ? e.message : 'Invalid JSON format'}`);
+    throw new AiOutputError(`Failed to parse questions in batch starting at ${startNumber}: ${e instanceof Error ? e.name : 'invalid JSON'}`);
   }
 }
 
@@ -73,7 +76,7 @@ export async function generateAssignmentQuestions(
   difficulty: string, 
   questionType: string = "mixed",
   learningObjectives?: string
-): Promise<{ questions: any[], usage?: { inputTokens: number, outputTokens: number } }> {
+): Promise<{ questions: AssignmentQuestion[], usage?: { inputTokens: number, outputTokens: number } }> {
   try {
     const prompt = `You are an expert curriculum designer.
     Generate ${count} professional and academic questions about "${topic}" at a ${difficulty} level.
@@ -115,14 +118,10 @@ export async function generateAssignmentQuestions(
     const response = await result.response;
     let text = response.text()?.trim() || "";
     
-    // Check if the response was truncated by the model
-    const finReason = response.candidates?.[0]?.finishReason;
-    // @ts-ignore
-    const isTruncated = finReason === 'MAX_TOKENS' || text.endsWith('...');
-    
     // Safety check for empty or blocked response
     if (!text || text.length < 2) {
-      throw new Error("AI returned an empty response. Please try with a more specific topic.");
+      const empty = "AI returned an empty response. Please try with a more specific topic.";
+      throw new AiOutputError(empty, empty);
     }
 
     // Aggressive cleanup for JSON results
@@ -137,21 +136,17 @@ export async function generateAssignmentQuestions(
     
     if (jsonStartIdx === -1 || jsonEndIdx === -1) {
         console.error("AI did not return any JSON structure. Raw text:", text);
-        const err = new Error("AI returned a non-JSON response. Please try adjusting the topic context.");
-        (err as any).rawText = text;
-        throw err;
+        const msg = "AI returned a non-JSON response. Please try adjusting the topic context.";
+        throw new AiOutputError(msg, msg);
     }
 
     const cleanJson = text.substring(jsonStartIdx, jsonEndIdx + 1).trim();
     
-    let parsedData: any;
+    let parsedData: unknown;
     try {
-        // Remove comments
-        const sanitizeJson = cleanJson
-          .replace(/\/\/.*/g, '') 
-          .replace(/\/\*[\s\S]*?\*\//g, '');
-          
-        parsedData = JSON.parse(sanitizeJson);
+        // No comment stripping: a "//" regex corrupts any string containing a URL. The result is
+        // validated by validateAndNormalizeQuestions below.
+        parsedData = JSON.parse(cleanJson);
     } catch (parseError) {
         console.error("Error parsing AI JSON:", cleanJson);
         try {
@@ -164,9 +159,9 @@ export async function generateAssignmentQuestions(
             // If it's still failing and looks truncated, try to close it
             if (!recovery.endsWith('}') && !recovery.endsWith(']')) {
                 // Heuristic: determine if we are inside a string or array
-                let openBrackets = (recovery.match(/\[/g) || []).length;
+                const openBrackets = (recovery.match(/\[/g) || []).length;
                 let closeBrackets = (recovery.match(/\]/g) || []).length;
-                let openCurly = (recovery.match(/\{/g) || []).length;
+                const openCurly = (recovery.match(/\{/g) || []).length;
                 let closeCurly = (recovery.match(/\}/g) || []).length;
                 
                 // If we're inside a string (odd number of unescaped quotes)
@@ -191,15 +186,12 @@ export async function generateAssignmentQuestions(
             parsedData = JSON.parse(recovery);
         } catch (e) {
             // Check if truncate reason was tokens
-            const isTruncated = (response as any).candidates?.[0]?.finishReason === 'MAX_TOKENS';
+            const isTruncated = response.candidates?.[0]?.finishReason === 'MAX_TOKENS';
             
-            const err = new Error(
-              isTruncated 
-                ? "The assignment was too long for the AI to finish. Try generating fewer questions or a less complex topic."
-                : "AI generated an incomplete or invalid question format. This usually happens with very complex topics; try a more specific topic."
-            );
-            (err as any).rawText = text;
-            throw err;
+            const msg = isTruncated
+              ? "The assignment was too long for the AI to finish. Try generating fewer questions or a less complex topic."
+              : "AI generated an incomplete or invalid question format. This usually happens with very complex topics; try a more specific topic.";
+            throw new AiOutputError(msg, msg);
         }
     }
 
@@ -221,16 +213,16 @@ export async function generateAssignmentQuestions(
  * Parses pasted text (from Google Forms, Word, etc.) and extracts questions
  * using AI to intelligently identify question text, types, and options
  */
-export async function parseQuestionsFromText(text: string): Promise<{ questions: any[], usage?: { inputTokens: number, outputTokens: number } }> {
+export async function parseQuestionsFromText(text: string): Promise<{ questions: AssignmentQuestion[], usage?: { inputTokens: number, outputTokens: number } }> {
   try {
     // Split text into individual questions first
     const questionChunks = splitIntoQuestions(text);
     if (questionChunks.length === 0) {
-      throw new Error("No questions found in the text. Please check the format.");
+      throw new ClientError("No questions found in the text. Please check the format.");
     }
     // Process in batches of 5 questions to avoid token limits
     const BATCH_SIZE = 5;
-    const allQuestions: any[] = [];
+    const allQuestions: unknown[] = [];
     let totalPromptTokens = 0;
     let totalCandidateTokens = 0;
 

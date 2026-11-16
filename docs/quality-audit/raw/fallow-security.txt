@@ -1,0 +1,162 @@
+Security review: 15 items to check.
+These are unverified security candidates, not confirmed vulnerabilities. Check whether the listed code can run with unsafe input, secrets, or settings, and whether anything blocks the risk.
+
+[H] high Secret or PII logged (CWE-532)  functions/src/index.ts:35
+    evidence: Untrusted source reaches this sink (an argument traces to http request input). Source-backed value passed to console.log(). Candidate for verification: confirm no secret or PII reaches logs, observability pipelines, or telemetry.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      functions/src/index.ts:23 (untrusted source)
+      functions/src/index.ts:35 (sink site)
+    import trace:
+      functions/src/index.ts:35 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[H] high Secret or PII logged (CWE-532)  functions/src/index.ts:113
+    evidence: Untrusted source reaches this sink (an argument traces to http request input). Source-backed value passed to console.log(). Candidate for verification: confirm no secret or PII reaches logs, observability pipelines, or telemetry.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      functions/src/index.ts:113 (untrusted source)
+      functions/src/index.ts:113 (sink site)
+    import trace:
+      functions/src/index.ts:113 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Server-side request forgery sink (CWE-918)  src/lib/authenticated-fetch.ts:8
+    evidence: Non-literal URL passed to fetch(). Candidate for verification: confirm the destination host is not attacker-controlled (allowlist outbound targets).
+    code path: reachable from a runtime entry point (blast radius 22)
+    input path: this module is reachable from a module that receives untrusted input via 1 import hop
+    input import trace:
+      src/app/student/assignment-view/page.tsx:3 (source module)
+      src/lib/authenticated-fetch.ts:8 (sink site)
+    import trace:
+      src/lib/authenticated-fetch.ts:8 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Server-side request forgery sink (CWE-918)  src/lib/ai/config.ts:64
+    evidence: Non-literal URL passed to fetch(). Candidate for verification: confirm the destination host is not attacker-controlled (allowlist outbound targets).
+    code path: reachable from a runtime entry point (blast radius 21)
+    input path: this module is reachable from a module that receives untrusted input via 1 import hop
+    input import trace:
+      src/app/api/chat/landing/route.ts:5 (source module)
+      src/lib/ai/config.ts:64 (sink site)
+    import trace:
+      src/lib/ai/config.ts:64 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Dangerous HTML sink (CWE-79)  src/components/math-input.tsx:180
+    evidence: Non-literal value assigned to div.innerHTML. Candidate for verification: confirm the value is not attacker-controlled, or is sanitized, before it reaches the DOM.
+    code path: reachable from a runtime entry point (blast radius 5)
+    input path: this module is reachable from a module that receives untrusted input via 1 import hop
+    input import trace:
+      src/app/student/assignment-view/page.tsx:34 (source module)
+      src/components/math-input.tsx:180 (sink site)
+    import trace:
+      src/components/math-input.tsx:180 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/app/login/page.tsx:80
+    evidence: Non-literal navigation target assigned to window.location.href. Candidate for verification: confirm the target is a relative path or allowlisted host and cannot be a javascript URL.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/app/login/page.tsx:1 (source module)
+      src/app/login/page.tsx:80 (sink site)
+    import trace:
+      src/app/login/page.tsx:80 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/app/teacher/network/billing/page.tsx:79
+    evidence: Non-literal navigation target assigned to window.location.href. Candidate for verification: confirm the target is a relative path or allowlisted host and cannot be a javascript URL.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/app/teacher/network/billing/page.tsx:1 (source module)
+      src/app/teacher/network/billing/page.tsx:79 (sink site)
+    import trace:
+      src/app/teacher/network/billing/page.tsx:79 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/app/teacher/vault/page.tsx:179
+    evidence: Non-literal navigation target assigned to window.location.href. Candidate for verification: confirm the target is a relative path or allowlisted host and cannot be a javascript URL.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/app/teacher/vault/page.tsx:1 (source module)
+      src/app/teacher/vault/page.tsx:179 (sink site)
+    import trace:
+      src/app/teacher/vault/page.tsx:179 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/proxy.ts:9
+    evidence: Non-literal redirect target passed to NextResponse.redirect(). Candidate for verification: confirm the target is a relative path or allowlisted host.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/proxy.ts:1 (source module)
+      src/proxy.ts:9 (sink site)
+    import trace:
+      src/proxy.ts:9 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/proxy.ts:11
+    evidence: Non-literal redirect target passed to NextResponse.redirect(). Candidate for verification: confirm the target is a relative path or allowlisted host.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/proxy.ts:1 (source module)
+      src/proxy.ts:11 (sink site)
+    import trace:
+      src/proxy.ts:11 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Open redirect sink (CWE-601)  src/proxy.ts:14
+    evidence: Non-literal redirect target passed to NextResponse.redirect(). Candidate for verification: confirm the target is a relative path or allowlisted host.
+    code path: reachable from a runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      src/proxy.ts:1 (source module)
+      src/proxy.ts:14 (sink site)
+    import trace:
+      src/proxy.ts:14 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[M] medium Secret or PII logged (CWE-532)  tools/migrate-school-security.cjs:30
+    evidence: Untrusted source reaches this sink (an argument traces to environment secret). Source-backed value passed to console.log(). Candidate for verification: confirm no secret or PII reaches logs, observability pipelines, or telemetry.
+    dead-code: also reported as unused-file; delete this file instead of hardening the sink
+    code path: not reached from any runtime entry point (blast radius 0)
+    input path: this module is reachable from a module that receives untrusted input via 0 import hops
+    input import trace:
+      tools/migrate-school-security.cjs:3 (untrusted source)
+      tools/migrate-school-security.cjs:30 (sink site)
+    import trace:
+      tools/migrate-school-security.cjs:30 (sink site)
+    Next: first verify the dead-code finding. If the code is safe to remove, delete it. Otherwise check and harden the risky call.
+
+[L] low Open redirect sink (CWE-601)  src/app/join/invite-actions.tsx:81
+    evidence: Non-literal navigation target passed to window.location.assign(). Candidate for verification: confirm the target is a relative path or allowlisted host and cannot be a javascript URL.
+    code path: reachable from a runtime entry point (blast radius 2)
+    import trace:
+      src/app/join/invite-actions.tsx:81 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[L] low Dangerous HTML sink (CWE-79)  src/components/loading-screen.tsx:89
+    evidence: Non-literal value bound to dangerouslySetInnerHTML. Candidate for verification: confirm the HTML is sanitized (e.g. via DOMPurify) before render.
+    code path: reachable from a runtime entry point (blast radius 1)
+    import trace:
+      src/components/loading-screen.tsx:89 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[L] low Dangerous HTML sink (CWE-79)  src/app/layout.tsx:150
+    evidence: Non-literal value bound to dangerouslySetInnerHTML. Candidate for verification: confirm the HTML is sanitized (e.g. via DOMPurify) before render.
+    code path: reachable from a runtime entry point (blast radius 0)
+    import trace:
+      src/app/layout.tsx:150 (sink site)
+    Next: check whether unsafe input, secrets, or settings can reach this risky call without a safe guard. If not, mark it as a false positive.
+
+[I] Blind spot: 1228 call sites use code patterns that fallow could not resolve, such as dynamic dispatch, computed members, or aliased bindings.
+    Most unresolved callees: dynamic-dispatch in tests/security/full-student-teacher-workflow.test.ts.
+
+Result: 15 security items to check. Review the listed evidence and trace before changing code.
+

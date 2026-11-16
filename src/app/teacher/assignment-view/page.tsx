@@ -19,7 +19,7 @@ interface Assignment {
   id: string;
   title: string;
   description: string;
-  dueDate: any;
+  dueDate: { toDate?: () => Date } | string | number | Date;
 }
 
 interface Submission {
@@ -27,8 +27,8 @@ interface Submission {
   studentId: string;
   studentName?: string; // We might need to fetch this or store it in submission
   studentEmail?: string;
-  submittedAt: any;
-  answers: any;
+  submittedAt: Date;
+  answers: unknown;
   score?: number | null;
 }
 
@@ -126,7 +126,9 @@ function AssignmentDetailsContent() {
   const gradedCount = scores.length;
   const averageScore = gradedCount ? Math.round(scores.reduce((total, score) => total + score, 0) / gradedCount) : 0;
 
-  const dueDate = new Date(assignment.dueDate?.toDate?.() || assignment.dueDate);
+  const dueDate = new Date(
+    (assignment.dueDate as { toDate?: () => Date } | undefined)?.toDate?.() || (assignment.dueDate as string | number | Date)
+  );
 
   return (
     <div className="space-y-6">

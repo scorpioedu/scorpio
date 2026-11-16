@@ -1,7 +1,7 @@
 "use client";
 
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -25,6 +25,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Organization } from "@/lib/types";
+import { errorMessage } from "@/lib/error-utils";
 
 export default function BillingPage() {
   const { user, profile, loading: authLoading } = useAuth();
@@ -33,16 +34,7 @@ export default function BillingPage() {
   const [loading, setLoading] = useState(true);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
-  useEffect(() => {
-    if (authLoading) return;
-    if (user && profile?.organizationId) {
-      fetchOrg();
-    } else {
-      setLoading(false);
-    }
-  }, [user, profile, authLoading]);
-
-  async function fetchOrg() {
+  const fetchOrg = useCallback(async () => {
     try {
       const orgRef = doc(db, "organizations", profile!.organizationId!);
       const orgSnap = await getDoc(orgRef);
@@ -55,7 +47,17 @@ export default function BillingPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [profile]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (user && profile?.organizationId) {
+      fetchOrg();
+    } else {
+      setLoading(false);
+    }
+  }, [user, profile, authLoading, fetchOrg]);
+
 
   const handleUpgrade = async (planId: string) => {
     if (!user || !organization) return;
@@ -80,9 +82,9 @@ export default function BillingPage() {
       } else {
         throw new Error("No checkout URL returned.");
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      toast.error(e.message || "Failed to start upgrade process.");
+      toast.error(errorMessage(e) || "Failed to start upgrade process.");
     } finally {
       setUpgrading(false);
     }

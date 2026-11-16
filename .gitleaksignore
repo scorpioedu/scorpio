@@ -1,0 +1,5 @@
+# Placeholders, not secrets. Fingerprints come from `gitleaks detect -f json`.
+# Regex example in the RT-01 runbook (a pattern for scrubbing history, no key).
+8f76777790ed250f428efca48389fa3a5b61b528:docs/quality-audit/remediation/RT-01-runbook.md:private-key:159
+# Fake "abc" PEM body used as a test fixture.
+eb961cb11bbbe82a4c972228e68c037ba894451d:__tests__/firebase-emulator.test.ts:private-key:108

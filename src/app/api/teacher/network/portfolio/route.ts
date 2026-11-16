@@ -1,18 +1,19 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb, adminFieldWithValue } from "@/lib/firebase-admin";
 import { generateStudentPortfolio } from "@/lib/ai/network";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { portfolioBody } from "@/lib/schemas/api-bodies";
 
 
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { teacherId, studentId, organizationId } = await req.json();
-
-    if (!teacherId || !studentId || !organizationId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, portfolioBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { teacherId, studentId, organizationId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -57,8 +58,8 @@ async function handlePost(req: NextRequest) {
     const sessions = sessionsSnapshot.docs.reverse();
     
     for (const sessionDoc of sessions) {
-      const messages = sessionDoc.data().messages || [];
-      const formattedMessages = messages.map((m: any) => ({
+      const messages: { role: string; content: string }[] = sessionDoc.data().messages || [];
+      const formattedMessages = messages.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content
       }));
@@ -107,10 +108,9 @@ async function handlePost(req: NextRequest) {
         lastUpdated: new Date() // Send client-friendly date format
       } 
     });
-  } catch (error: any) {
-    console.error("Student Portfolio Generation Error:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "portfolio", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "teacherId", "teacher": true, "resource": "portfolio"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "teacherId", "teacher": true, "resource": "portfolio", "rateLimit": "portfolio"});

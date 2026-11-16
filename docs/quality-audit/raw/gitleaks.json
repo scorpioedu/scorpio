@@ -1,0 +1,30 @@
+{
+  "tool": "git-log-secret-scan (fallback; gitleaks binary not installed on host and npm package 'gitleaks' has no bin executable)",
+  "scannedAt": "2026-11-11T19:55:00-08:00",
+  "envLocalGitignored": true,
+  "envLocalInGitHistory": false,
+  "findings": [
+    {
+      "ruleId": "gcp-service-account-private-key",
+      "severity": "Critical",
+      "description": "Firebase Admin SDK service account RSA private key (firebase-adminsdk-p19st@scorpio-srs.iam.gserviceaccount.com) committed in git history",
+      "file": "src/lib/firebase-admin.ts",
+      "introducedInCommit": "dea0862",
+      "removedFromHeadInCommit": "65737a2",
+      "presentInWorkingTree": false,
+      "presentInGitHistory": true
+    },
+    {
+      "ruleId": "public-personal-pii-artifact",
+      "severity": "Low",
+      "description": "Personal resume PDF and high-resolution headshot exposed in public/ directory",
+      "files": [
+        "public/Rushil_Mahadevu_Resume_2026.pdf",
+        "public/headshot-sage.jpg",
+        "public/plan.jpg",
+        "public/mission-control(outdated).png"
+      ],
+      "presentInWorkingTree": true
+    }
+  ]
+}

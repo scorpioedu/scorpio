@@ -1,22 +1,25 @@
 import { mergeAnswerKey } from "@/lib/assignment-security";
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { gradeResponse } from '@/lib/ai/grading';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { gradeBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+interface GradableQuestion { id: string; text: string; type?: string; points?: number; correctAnswer?: string }
+
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     console.error("Firebase Admin not initialized");
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
   }
 
   try {
-    const { submissionId } = await req.json();
-
-    if (!submissionId) {
-      return NextResponse.json({ error: 'Missing submissionId' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, gradeBody, { message: 'Missing submissionId' });
+    if (!parsed.ok) return parsed.response;
+    const { submissionId } = parsed.data;
 
     // 1. Fetch Submission
     const submissionRef = adminDb.collection('submissions').doc(submissionId);
@@ -87,7 +90,7 @@ async function handlePost(req: NextRequest) {
 
     const key = (await adminDb.collection("assignment_keys").doc(assignmentId).get()).data();
     const assignmentData = mergeAnswerKey(assignmentSnap.data()!, key);
-    const questions = assignmentData?.questions || [];
+    const questions: GradableQuestion[] = assignmentData?.questions || [];
     const answers = submissionData?.answers || []; 
     const globalRubric = assignmentData?.rubric || "";
 
@@ -105,7 +108,7 @@ async function handlePost(req: NextRequest) {
     let totalCandidateTokens = 0;
 
     for (const ans of answers) {
-      const question = questions.find((q: any) => q.id === ans.questionId);
+      const question = questions.find((q) => q.id === ans.questionId);
       if (!question) {
         gradedAnswers.push(ans);
         continue;
@@ -127,15 +130,24 @@ async function handlePost(req: NextRequest) {
             // Combine question-specific rubric (correctAnswer) with global rubric
             const combinedRubric = [question.correctAnswer, globalRubric].filter(Boolean).join("\n\nGlobal Assignment Rubric:\n");
             const result = await gradeResponse(question.text, ans.answer, combinedRubric, studentNames);
-            feedback = result.feedback;
-            reasoning = result.reasoning || "";
-            
-            // Track usage
+            // Track usage (the call was made and billed even if the result needs review)
             if (result.usage) {
                 totalPromptTokens += result.usage.inputTokens;
                 totalCandidateTokens += result.usage.outputTokens;
             }
-            
+
+            if (result.needsReview) {
+                // Suspected prompt injection or implausible full marks: never auto-finalise.
+                if (totalPromptTokens > 0 || totalCandidateTokens > 0) {
+                    await recordUsage(organizationId, "grading", totalPromptTokens, totalCandidateTokens);
+                }
+                if (!submissionData?.graded) await submissionRef.update({ status: "pending_review", gradingError: result.reviewReason || "Teacher review required", graded: false });
+                return NextResponse.json({ success: false, pendingReview: true, reason: result.reviewReason }, { status: 200 });
+            }
+
+            feedback = result.feedback;
+            reasoning = result.reasoning || "";
+
             // Calculate score based on points
             // result.score is out of 10
             const rawScore = result.score; // 0-10
@@ -188,10 +200,9 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ success: true, score: finalScore });
 
-  } catch (error: any) {
-    console.error("Error in grading API:", error);
-    return NextResponse.json({ error: error?.message || 'Internal Server Error' }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "grade", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": undefined, "teacher": true, "resource": "submission"});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": undefined, "teacher": true, "resource": "submission", "rateLimit": "grade"});

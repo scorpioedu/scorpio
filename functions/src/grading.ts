@@ -3,6 +3,11 @@ import * as admin from "firebase-admin";
 import { onDocumentUpdated, onDocumentCreated } from "firebase-functions/v2/firestore";
 import { GoogleGenAI } from "@google/genai";
 import { defineSecret } from "firebase-functions/params";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import * as logger from "firebase-functions/logger";
+import { scrubPII } from "./pii";
+import { gradeWithModel, GradeResult } from "./grading-schema";
+import { GRADING_CONCURRENCY, GRADING_MEMORY, GRADING_TIMEOUT_SECONDS, mapWithConcurrency, processGradingWith, sweepStuckSubmissions } from "./grading-runner";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
@@ -14,51 +19,6 @@ const client = new GoogleGenAI({
 });
 
 /**
- * SCRUB PII - Ported from src/lib/gemini.ts
- */
-function scrubPII(text: string, studentNames: string[] = []): string {
-  if (!text) return text;
-
-  let scrubbed = text
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[EMAIL]")
-    .replace(/(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g, "[PHONE]")
-    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[ID]")
-    .replace(/\b(ID|Student\s?#?|ID\s?#?):?\s?\d{5,9}\b/gi, "[STUDENT_ID]")
-    .replace(/\b\d+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Ter|Terrace|Way)\.?\b/gi, "[ADDRESS]")
-    .replace(/(?:DOB|Birth|Born)(?:\s+on)?\s*[:\-]?\s*(\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b|\b[A-Z][a-z]{2,8}\s+\d{1,2},?\s+\d{4}\b)/gi, "[BIRTH_DATE]")
-    .replace(/\b(19|20)\d{2}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/g, "[DATE]")
-    .replace(/\b\d{1,2}[\/\-]\d{1,2}[\/\-](19|20)\d{2}\b/g, "[DATE]")
-    .replace(/\b(?:\d[ -]*?){13,16}\b/g, "[SENSITIVE]");
-
-  if (studentNames.length > 0) {
-    const nameParts = new Set<string>();
-    studentNames.forEach(fullName => {
-      if (!fullName) return;
-      nameParts.add(fullName);
-      const split = fullName.split(/\s+/);
-      if (split.length > 1) {
-        split.forEach(part => {
-          if (part.length > 2 && !['and', 'the', 'with'].includes(part.toLowerCase())) {
-            nameParts.add(part);
-          }
-        });
-      }
-    });
-
-    const sortedParts = Array.from(nameParts).sort((a, b) => b.length - a.length);
-
-    sortedParts.forEach((name) => {
-      if (name && name.length > 2) {
-        const nameRegex = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-        scrubbed = scrubbed.replace(nameRegex, "[NAME]");
-      }
-    });
-  }
-
-  return scrubbed;
-}
-
-/**
  * GRADE RESPONSE - Re-implemented using modern @google/genai SDK
  */
 async function gradeResponseAI(
@@ -67,115 +27,62 @@ async function gradeResponseAI(
   rubric?: string,
   studentNames: string[] = [],
   organizationId: string = ""
-): Promise<{
-  score: number,
-  feedback: string,
-  reasoning?: string,
-  usage?: { inputTokens: number, outputTokens: number }
-}> {
+): Promise<GradeResult> {
   try {
     if (!question || !answer) {
-      return { score: 0, feedback: "Missing question or answer text for grading." };
+      return { score: 0, feedback: "Missing question or answer text for grading.", reasoning: "", needsReview: false };
     }
 
-    const prompt = `You are an expert Physics professor and evaluator.
-    Your goal is to grade student responses with scientific rigor.
+    return await gradeWithModel(
+      { question, answer, rubric },
+      async (request) => {
+        // Same choke-point rule as callGeminiDirect: nothing leaves unscrubbed (patterns only; roster names
+        // were already masked in the inputs and must not hit our own template words). Idempotent, so the
+        // already-scrubbed question/answer/rubric inside the prompt are unchanged.
+        const systemInstruction = scrubPII(request.systemInstruction);
+        const userPrompt = scrubPII(request.userPrompt);
+        const promptBytes = Buffer.byteLength(systemInstruction) + Buffer.byteLength(userPrompt);
+        if (promptBytes > 100000) throw new Error('Submission is too long for AI grading');
+        const reservation = await reserveBudget(admin.firestore(), organizationId, 'grading', undefined, estimateMaximumCost(promptBytes, 1024));
+        // Modern @google/genai syntax
+        const result = await client.models.generateContent({
+          model: "gemini-3.8-flash",
+          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+          config: {
+            systemInstruction,
+            maxOutputTokens: 1024,
+            thinkingConfig: { thinkingBudget: 0 },
+            temperature: 0.1,
+            responseMimeType: "application/json",
+          }
+        });
 
-    QUESTION:
-    "${scrubPII(question, studentNames)}"
-
-    ${rubric ? `GRADING RUBRIC / CORRECT REFERENCE:\n"${scrubPII(rubric, studentNames)}"` : ''}
-
-    STUDENT SUBMISSION:
-    "${scrubPII(answer, studentNames)}"
-
-    INSTRUCTIONS:
-    1. UNIT SENSITIVITY: In physics, numbers without units are meaningless. If the numerical value is correct but units are missing or incorrect (e.g., Joules instead of Watts), penalize the score by 10-20%.
-    2. VECTOR QUANTITIES: For vectors (Force, Velocity, Acceleration, Momentum), ensure the direction is identified if the question requires it.
-    3. SIGNIFICANT FIGURES: Check if the precision of the answer is reasonable given the inputs.
-    4. ERROR CARRIED FORWARD: If a student uses an incorrect answer from a previous part correctly in the current part, award full credit for the current part's logic.
-    5. CALCULATION ERRORS: If the student shows correct logical derivation but makes a minor math error, award 50-70% partial credit.
-    6. Provide a score from 0.0 to 10.0 (decimals allowed).
-    7. Generate "technical_reasoning": Explain precisely why the score was given, citing units, vectors, or logic.
-    8. Generate "student_feedback": Provide instructional feedback that helps correct physics misconceptions.
-    9. Identify "misconceptions": List specific physics misunderstandings (e.g., "confusing mass with weight").
-
-    Return ONLY a JSON object:
-    {
-      "score": number,
-      "technical_reasoning": string,
-      "student_feedback": string,
-      "misconceptions": string[]
-    }`;
-
-    if (Buffer.byteLength(prompt) > 100000) throw new Error('Submission is too long for AI grading');
-    const reservation = await reserveBudget(admin.firestore(), organizationId, 'grading', undefined, estimateMaximumCost(Buffer.byteLength(prompt), 1024));
-    // Modern @google/genai syntax
-    const result = await client.models.generateContent({
-      model: "gemini-3.8-flash",
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      config: {
-        maxOutputTokens: 1024,
-        thinkingConfig: { thinkingBudget: 0 },
-        temperature: 0.1,
-        responseMimeType: "application/json",
-      }
-    });
-
-    if (!result.usageMetadata) throw new Error('Provider usage missing; reservation retained');
-    await settleBudget(admin.firestore(), reservation, result.usageMetadata.promptTokenCount || 0,
-      (result.usageMetadata.candidatesTokenCount || 0) + (result.usageMetadata.thoughtsTokenCount || 0));
-    // Modern @google/genai response parsing
-    const text = result.text || "";
-
-    if (!text) {
-        throw new Error("Empty response from @google/genai");
-    }
-
-    const startIdx = text.indexOf('{');
-    const endIdx = text.lastIndexOf('}');
-    if (startIdx === -1 || endIdx === -1) {
-        throw new Error("Invalid response format: No JSON object found in AI output.");
-    }
-
-    const data = JSON.parse(text.substring(startIdx, endIdx + 1));
-
-    if (!data || typeof data !== 'object') {
-        throw new Error("Invalid response format from @google/genai");
-    }
-
-    if (typeof data.score !== "number" || !Number.isFinite(data.score)) throw new Error("Invalid score");
-    let score = 0;
-    if (typeof data.score === 'number') {
-        score = Math.min(10, Math.max(0, data.score));
-    } else if (typeof data.score === 'string') {
-        if (data.score.includes('/')) {
-            const parts = data.score.split('/');
-            score = (parseFloat(parts[0]) / (parseFloat(parts[1]) || 10)) * 10;
-        } else {
-            score = parseFloat(data.score) || 0;
-        }
-    }
-
-    return {
-        score,
-        feedback: data.student_feedback || data.feedback || "Submission received and pending final review.",
-        reasoning: data.technical_reasoning || data.reasoning || "",
-        usage: {
-            inputTokens: result.usageMetadata?.promptTokenCount || 0,
-            outputTokens: result.usageMetadata?.candidatesTokenCount || 0
-        }
-    };
-  } catch (error: any) {
-    console.error("Error in gradeResponseAI (Modern GenAI):", error);
+        if (!result.usageMetadata) throw new Error('Provider usage missing; reservation retained');
+        await settleBudget(admin.firestore(), reservation, result.usageMetadata.promptTokenCount || 0,
+          (result.usageMetadata.candidatesTokenCount || 0) + (result.usageMetadata.thoughtsTokenCount || 0));
+        return {
+          text: result.text || "",
+          usage: {
+            inputTokens: result.usageMetadata.promptTokenCount || 0,
+            outputTokens: result.usageMetadata.candidatesTokenCount || 0
+          }
+        };
+      },
+      { scrub: (text) => scrubPII(text, studentNames), defaultFeedback: "Submission received and pending final review." }
+    );
+  } catch (error: unknown) {
+    logger.error("Error in gradeResponseAI", { error: error instanceof Error ? error.message : String(error) });
     throw new Error("AI grading unavailable; manual review required");
   }
 }
 
+interface GradableQuestion { id: string; text: string; type?: string; points?: number; correctAnswer?: string }
+interface SubmittedAnswer { questionId: string; answer: string; [field: string]: unknown }
+
 /**
  * MAIN GRADING PROCESSOR
  */
-async function gradeSubmission(submissionId: string, submissionData: any) {
+async function gradeSubmission(submissionId: string, submissionData: admin.firestore.DocumentData) {
     const db = admin.firestore();
     const assignmentId = submissionData.assignmentId;
     const studentId = submissionData.studentId;
@@ -190,7 +97,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     }
 
     if (!organizationId) {
-        console.error("No organization found for grading budget.");
+        logger.error("No organization found for grading budget", { submissionId });
         return;
     }
 
@@ -206,7 +113,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         }
         const currentName = studentData?.displayName || studentData?.name;
         if (currentName && !studentNames.includes(currentName)) studentNames.push(currentName);
-    } catch (e) { console.error("Error resolving student names:", e); }
+    } catch (e) { logger.error("Error resolving student names", { submissionId, error: e instanceof Error ? e.message : String(e) }); }
 
     const assignmentSnap = await db.collection('assignments').doc(assignmentId).get();
     if (!assignmentSnap.exists) return;
@@ -218,7 +125,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
       return;
     }
     const key = (await db.collection('assignment_keys').doc(assignmentId).get()).data();
-    const questions = (assignmentData?.questions || []).map((q: any) => ({ ...q, correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer }));
+    const questions = ((assignmentData?.questions || []) as GradableQuestion[]).map((q) => ({ ...q, correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer }));
     const answers = submissionData?.answers || [];
     const globalRubric = key?.rubric || assignmentData?.rubric || "";
 
@@ -226,16 +133,13 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
     let maxScore = 0;
     for (const q of questions) maxScore += (q.points || 10);
 
-    const gradedAnswers = [];
     let totalPromptTokens = 0;
     let totalCandidateTokens = 0;
+    const reviewReasons: string[] = [];
 
-    for (const ans of answers) {
-        const question = questions.find((q: any) => q.id === ans.questionId);
-        if (!question) {
-            gradedAnswers.push(ans);
-            continue;
-        }
+    const gradedAnswers = await mapWithConcurrency(answers, GRADING_CONCURRENCY, async (ans: SubmittedAnswer) => {
+        const question = questions.find((q) => q.id === ans.questionId);
+        if (!question) return ans;
 
         const points = question.points || 10;
         let score = 0;
@@ -245,12 +149,17 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         if ((question.type === "text" || question.type === "short-answer") && ans.answer) {
             const combinedRubric = [question.correctAnswer, globalRubric].filter(Boolean).join("\n\nGlobal Assignment Rubric:\n");
             const result = await gradeResponseAI(question.text, ans.answer, combinedRubric, studentNames, organizationId);
-            feedback = result.feedback;
-            reasoning = result.reasoning || "";
             if (result.usage) {
                 totalPromptTokens += result.usage.inputTokens;
                 totalCandidateTokens += result.usage.outputTokens;
             }
+            if (result.needsReview) {
+                // Suspected injection / implausible full marks: no score is recorded, a teacher decides.
+                reviewReasons.push(result.reviewReason || "Teacher review required");
+                return { ...ans, reviewFlag: result.reviewReason || "Teacher review required", aiSuggestedScore: (result.score / 10) * points, maxPoints: points };
+            }
+            feedback = result.feedback;
+            reasoning = result.reasoning || "";
             score = (result.score / 10) * points;
         } else if (question.correctAnswer && (question.type === "multiple-choice" || question.type === "true-false")) {
             const isCorrect = ans.answer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
@@ -259,10 +168,19 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         }
 
         totalScore += score;
-        gradedAnswers.push({ ...ans, feedback, reasoning, score, maxPoints: points });
+        return { ...ans, feedback, reasoning, score, maxPoints: points };
+    });
+
+    if (reviewReasons.length > 0) {
+        await db.collection('submissions').doc(submissionId).update({
+            answers: gradedAnswers,
+            graded: false,
+            status: 'pending_review',
+            gradingError: reviewReasons[0]
+        });
+        logger.warn("Submission routed to teacher review", { submissionId, flaggedAnswers: reviewReasons.length });
+        return;
     }
-
-
 
     const finalScore = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
 
@@ -276,7 +194,7 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
         gradedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    console.log(`Successfully graded submission ${submissionId} (Modern GenAI)`);
+    logger.info("Successfully graded submission", { submissionId });
 
     // --- EMAIL NOTIFICATION (DISABLED) ---
     // if (studentData?.email && finalScore !== undefined) {
@@ -305,42 +223,44 @@ async function gradeSubmission(submissionId: string, submissionData: any) {
 /**
  * FIRESTORE TRIGGERS
  */
-async function processGrading(submissionId: string, submissionData: any) {
-  const db = admin.firestore();
-  const ref = db.collection('submissions').doc(submissionId);
-  const lease = db.collection('grading_locks').doc(submissionId);
-  const acquired = await db.runTransaction(async tx => {
-    const current = (await tx.get(ref)).data();
-    const lock = (await tx.get(lease)).data();
-    if (!current || current.graded || (lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
-    tx.set(lease, { expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 15 * 60 * 1000) });
-    return true;
-  });
-  if (!acquired) return;
-  try { await gradeSubmission(submissionId, submissionData); }
-  catch {
-    await ref.update({ graded: false, status: 'pending_review', gradingError: 'AI grading unavailable; teacher review required' });
-  } finally { await lease.delete(); }
+async function processGrading(submissionId: string) {
+  await processGradingWith(admin.firestore(), submissionId, gradeSubmission);
 }
 
 export const onSubmissionCreated = onDocumentCreated({
     document: "submissions/{submissionId}",
-    secrets: [resendApiKey]
+    secrets: [resendApiKey],
+    timeoutSeconds: GRADING_TIMEOUT_SECONDS,
+    memory: GRADING_MEMORY
 }, async (event) => {
     const submissionData = event.data?.data();
     if (submissionData && submissionData.status === 'submitted' && !submissionData.graded) {
-        await processGrading(event.params.submissionId, submissionData);
+        await processGrading(event.params.submissionId);
     }
 });
 
 export const onSubmissionUpdated = onDocumentUpdated({
     document: "submissions/{submissionId}",
-    secrets: [resendApiKey]
+    secrets: [resendApiKey],
+    timeoutSeconds: GRADING_TIMEOUT_SECONDS,
+    memory: GRADING_MEMORY
 }, async (event) => {
     const beforeData = event.data?.before.data();
     const afterData = event.data?.after.data();
 
     if (afterData && afterData.status === 'submitted' && beforeData?.status !== 'submitted' && !afterData.graded) {
-        await processGrading(event.params.submissionId, afterData);
+        await processGrading(event.params.submissionId);
     }
+});
+
+/**
+ * Safety net: a platform timeout or crash skips the trigger's catch block, so periodically move
+ * AI submissions stuck in `submitted` to `pending_review` for teacher attention.
+ */
+export const sweepStuckGrading = onSchedule({
+    schedule: "every 15 minutes",
+    timeoutSeconds: 120,
+    memory: "256MiB"
+}, async () => {
+    await sweepStuckSubmissions(admin.firestore());
 });

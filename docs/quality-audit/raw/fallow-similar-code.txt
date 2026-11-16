@@ -1,0 +1,2 @@
+fallow: similar-code inference runs locally and offline. The first run may take minutes; subsequent runs reuse the user-local project cache.
+Error: the local model is not installed; run `fallow similar-code setup --local`

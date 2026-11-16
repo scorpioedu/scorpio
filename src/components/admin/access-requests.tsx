@@ -1,5 +1,6 @@
 "use client";
 
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Metadata } from "next";
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -44,6 +45,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { errorMessage } from "@/lib/error-utils";
 
 interface AccessRequest {
   id: string;
@@ -68,16 +70,12 @@ const ROLE_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-interface AccessRequestsProps {
-  adminSecret: string;
-}
-
 export const metadata: Metadata = {
   title: "Access Request • Scorpio",
   description: "Apply for institutional access to Scorpio",
 };
 
-export function AccessRequests({ adminSecret }: AccessRequestsProps) {
+export function AccessRequests() {
   const [requests, setRequests] = useState<AccessRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
@@ -90,23 +88,22 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "list" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to load requests");
       setRequests(data.requests ?? []);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setLoading(false);
     }
-  }, [adminSecret]);
+  }, []);
 
   useEffect(() => {
     fetchRequests();
@@ -116,11 +113,10 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setProcessing(req.id);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "approve", id: req.id }),
       });
@@ -129,8 +125,8 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
       setJustApproved({ id: req.id, code: data.code });
       setDetailRequest(null);
       await fetchRequests();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setProcessing(null);
     }
@@ -140,11 +136,10 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
     setProcessing(req.id);
     setError(null);
     try {
-      const res = await fetch("/api/auth/request-access", {
+      const res = await authenticatedFetch("/api/auth/request-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "reject", id: req.id }),
       });
@@ -152,8 +147,8 @@ export function AccessRequests({ adminSecret }: AccessRequestsProps) {
       if (!res.ok) throw new Error(data.error ?? "Failed to reject request");
       setDetailRequest(null);
       await fetchRequests();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setProcessing(null);
     }

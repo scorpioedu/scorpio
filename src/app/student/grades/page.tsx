@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { assignmentIdsOf, buildSubmissionRows, loadAssignments, type AssignmentInfo, type RawSubmission } from "@/lib/student-submissions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { WorkspaceHeader, WorkspaceSummary } from "@/components/ui/workspace";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -29,8 +30,17 @@ interface Submission {
   score: number | null;
   graded: boolean;
   feedback?: string;
-  answers?: any;
+  answers?: GradedAnswer[];
   status?: string;
+}
+
+/** One graded answer as stored on a submission. */
+interface GradedAnswer {
+  questionId?: string;
+  questionText: string;
+  answer?: string;
+  feedback?: string;
+  score?: number;
 }
 
 export default function StudentGradesPage() {
@@ -73,58 +83,22 @@ export default function StudentGradesPage() {
 
         const q = query(collection(db, "submissions"), where("studentId", "==", user.uid));
         const snapshot = await getDocs(q);
+        const raw: RawSubmission[] = snapshot.docs.map((d) => ({ id: d.id, data: d.data() }));
 
-        const submissionsData: (Submission | null)[] = await Promise.all(
-          snapshot.docs.map(async (docSnapshot) => {
-            const data = docSnapshot.data();
-
-            let assignmentTitle = "Unknown Assignment";
-            let assignmentExists = false;
-            let assignmentTeacherId = null;
-            let assignmentCourseId = null;
-
-            if (data.assignmentId) {
-              const assignmentDoc = await getDoc(doc(db, "assignments", data.assignmentId));
-              if (assignmentDoc.exists()) {
-                const assignData = assignmentDoc.data();
-                assignmentTitle = assignData.title;
-                assignmentTeacherId = assignData.teacherId;
-                assignmentCourseId = assignData.courseId;
-                assignmentExists = true;
-              }
-            }
-
-            if (!assignmentExists) return null;
-
-            if (studentCourseId) {
-              if (assignmentCourseId !== studentCourseId) return null;
-            } else if (studentTeacherId && assignmentTeacherId && studentTeacherId !== assignmentTeacherId) {
-              return null;
-            }
-
-            return {
-              id: docSnapshot.id,
-              assignmentId: data.assignmentId,
-              assignmentTitle,
-              submittedAt: data.submittedAt?.toDate?.() || (data.submittedAt ? new Date(data.submittedAt) : null),
-              score: typeof data.score === "number" ? data.score : null,
-              graded: data.graded,
-              feedback: data.feedback,
-              answers: data.answers,
-              status: data.status || (data.graded ? "graded" : "submitted"),
-            } satisfies Submission;
-          })
+        // An assignment the student cannot read (rules deny legacy, deleted or other-class ones) is skipped on
+        // its own; it used to reject the whole load and leave the page showing no grades at all.
+        const assignments = await loadAssignments(
+          assignmentIdsOf(raw),
+          async (id) => {
+            const assignmentDoc = await getDoc(doc(db, "assignments", id));
+            return assignmentDoc.exists() ? (assignmentDoc.data() as AssignmentInfo) : null;
+          },
+          (id, e) => console.error("Could not read assignment", id, e),
         );
-
-        const filteredSubmissions = submissionsData.filter(
-          (s): s is Submission => s !== null && s.status !== "draft"
-        );
-        
-        filteredSubmissions.sort((a, b) => {
-          const dateA = a.submittedAt?.getTime() || 0;
-          const dateB = b.submittedAt?.getTime() || 0;
-          return dateB - dateA; // Sort newest first for the history list
-        });
+        const filteredSubmissions = buildSubmissionRows(raw, assignments, {
+          courseId: studentCourseId,
+          teacherId: studentTeacherId,
+        }) as Submission[]; // newest first; answers are GradedAnswer[] for graded submissions
 
         setSubmissions(filteredSubmissions);
       } catch (error) {
@@ -246,7 +220,7 @@ export default function StudentGradesPage() {
                               {/* Graded Copy Section */}
                               {submission.graded && Array.isArray(submission.answers) && submission.answers.length > 0 ? (
                                 <div className="space-y-6">
-                                  {submission.answers.map((q: any, idx: number) => (
+                                  {submission.answers.map((q, idx) => (
                                     <div
                                       key={q.questionId || idx}
                                       className="space-y-4 border-b border-border pb-5 last:border-0 last:pb-0"

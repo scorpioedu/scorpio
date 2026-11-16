@@ -80,13 +80,20 @@ import { NetworkTutorial } from "@/components/network-tutorial";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
+interface NetworkMember {
+  uid: string;
+  displayName?: string;
+  name?: string;
+  email?: string;
+}
+
 export default function NetworkPage() {
   const router = useRouter();
   const { user, profile, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState<Organization | null>(null);
-  const [networkMembers, setNetworkMembers] = useState<any[]>([]);
+  const [networkMembers, setNetworkMembers] = useState<NetworkMember[]>([]);
   const [newOrgName, setNewOrgName] = useState("");
   const [memberToKick, setMemberToKick] = useState<{ id: string, name: string } | null>(null);
   const [ownerToTransfer, setOwnerToTransfer] = useState<{ id: string, name: string } | null>(null);
@@ -215,7 +222,7 @@ export default function NetworkPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to get response");
       setLimitsMessages(prev => [...prev, { role: "assistant", content: data.text }]);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLimitsMessages(prev => [...prev, { role: "assistant", content: "Sorry, I couldn't process that right now. Please try again." }]);
     } finally {
       setLimitsLoading(false);
@@ -387,7 +394,7 @@ export default function NetworkPage() {
         where("organizationId", "==", profile.organizationId),
         where("role", "==", "teacher")
       ));
-      const members = membersSnap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      const members = membersSnap.docs.map(d => ({ uid: d.id, ...d.data() } as NetworkMember));
       setNetworkMembers(members);
 
       const teacherIds = members.map(m => m.uid);
@@ -736,7 +743,7 @@ export default function NetworkPage() {
                     Join Existing Department
                   </CardTitle>
                   <CardDescription>
-                    Joining your school's team? Enter the code provided by your lead.
+                    Joining your school&apos;s team? Enter the code provided by your lead.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -811,7 +818,7 @@ export default function NetworkPage() {
                         Department Teachers ({networkMembers.length})
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        All educators sharing this network's curriculum and AI pool.
+                        All educators sharing this network&apos;s curriculum and AI pool.
                       </CardDescription>
                     </div>
                     {isOwner && (

@@ -1,17 +1,18 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import { getNetworkLimitsHelp } from '@/lib/ai/network';
 import type { NetworkLimitsContext } from '@/lib/ai/network';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { limitsChatBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, chatHistory, userId } = await req.json();
-
-    if (!message || !userId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, limitsChatBody, { message: 'Missing required fields' });
+    if (!parsed.ok) return parsed.response;
+    const { message, chatHistory, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
@@ -82,10 +83,9 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ text: result.text });
-  } catch (error: any) {
-    console.error('Limits assistant error:', error);
-    return NextResponse.json({ error: error?.message || 'Internal server error' }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'limits-chat', requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "feature": "navigation", "rateLimit": "limitsChat"});

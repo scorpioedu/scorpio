@@ -1,0 +1,135 @@
+PASS __tests__/waypoints-plan-limits.test.ts
+PASS __tests__/due-date.test.ts
+PASS __tests__/session.test.ts
+PASS __tests__/assignment-validation.test.ts
+PASS __tests__/assignment-security.test.ts
+PASS src/lib/utils.test.ts
+PASS __tests__/auth-verify.test.ts
+PASS __tests__/grading-failure.test.ts
+  ● Console
+
+    console.error
+      Error in gradeResponse: Error: offline
+          at Object.<anonymous> (/Users/pradeepmahdevu/source/learn/scorpio/__tests__/grading-failure.test.ts:6:89)
+          at Promise.finally.completed (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at run (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/Users/pradeepmahdevu/source/learn/scorpio/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at error (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:6:111)
+
+    console.error
+      Error parsing AI response. Raw text: {invalid}
+
+      117 |         };
+      118 |     } catch (parseError) {
+    > 119 |         console.error("Error parsing AI response. Raw text:", text);
+          |                 ^
+      120 |         throw new Error("Invalid grading response; manual review required");
+      121 |     }
+      122 |
+
+      at error (src/lib/ai/grading.ts:119:17)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:7:163)
+
+    console.error
+      Error in gradeResponse: Error: Invalid grading response; manual review required
+          at gradeResponse (/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/grading.ts:120:15)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.<anonymous> (/Users/pradeepmahdevu/source/learn/scorpio/__tests__/grading-failure.test.ts:7:163)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at error (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:7:163)
+
+    console.error
+      Error parsing AI response. Raw text: {"student_feedback":"ok"}
+
+      117 |         };
+      118 |     } catch (parseError) {
+    > 119 |         console.error("Error parsing AI response. Raw text:", text);
+          |                 ^
+      120 |         throw new Error("Invalid grading response; manual review required");
+      121 |     }
+      122 |
+
+      at error (src/lib/ai/grading.ts:119:17)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:8:191)
+
+    console.error
+      Error in gradeResponse: Error: Invalid grading response; manual review required
+          at gradeResponse (/Users/pradeepmahdevu/source/learn/scorpio/src/lib/ai/grading.ts:120:15)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.<anonymous> (/Users/pradeepmahdevu/source/learn/scorpio/__tests__/grading-failure.test.ts:8:191)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at error (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:8:191)
+
+PASS __tests__/landing-chat.test.ts
+PASS __tests__/department-banner.test.ts
+---------------------------|---------|----------|---------|---------|------------------------------------------
+File                       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                        
+---------------------------|---------|----------|---------|---------|------------------------------------------
+All files                  |   45.64 |    36.98 |   43.93 |    46.9 |                                          
+ functions/src             |   14.81 |     1.51 |   14.28 |   17.77 |                                          
+  metering.ts              |   14.81 |     1.51 |   14.28 |   17.77 | 17-18,21-43,46-59                        
+ src/app/api/auth/session  |   80.95 |     87.5 |      50 |   84.21 |                                          
+  route.ts                 |   80.95 |     87.5 |      50 |   84.21 | 21,25-26                                 
+ src/app/api/chat/landing  |   84.61 |    63.88 |     100 |   86.48 |                                          
+  route.ts                 |   84.61 |    63.88 |     100 |   86.48 | 66,80,100,114-115                        
+ src/components            |   33.84 |    16.12 |    12.5 |   31.66 |                                          
+  department-banner.tsx    |   33.84 |    16.12 |    12.5 |   31.66 | 29-109                                   
+ src/components/ui         |      70 |        0 |       0 |   66.66 |                                          
+  raise-logo.tsx           |      70 |        0 |       0 |   66.66 | 17-20                                    
+ src/lib                   |      60 |     51.8 |   78.94 |   61.84 |                                          
+  assignment-security.ts   |   84.21 |    81.48 |     100 |     100 | 20-22,29                                 
+  assignment-validation.ts |     100 |       92 |     100 |     100 | 21,31                                    
+  auth-verify.ts           |   55.26 |    33.33 |   85.71 |   56.71 | 50-57,61-69,75-77,82-95,99               
+  billing-context.ts       |     100 |      100 |     100 |     100 |                                          
+  rate-limit.ts            |   64.51 |       50 |     100 |   66.66 | 26,44-46,52-53,57-58,71-73               
+  utils.ts                 |      20 |        0 |      25 |   20.83 | 9-32                                     
+ src/lib/ai                |   34.51 |    33.69 |   30.76 |   35.54 |                                          
+  config.ts                |   59.09 |    51.61 |   66.66 |   63.79 | 27-28,55-60,75-76,81,83,107-123          
+  grading.ts               |   45.45 |    34.56 |   33.33 |   44.61 | 18,65-70,74,82-83,96-106,130-163,173-197 
+  utils.ts                 |    9.57 |      2.7 |    7.14 |   10.22 | 41-62,72-109,114-122,126-178,182-208     
+---------------------------|---------|----------|---------|---------|------------------------------------------
+
+Test Suites: 10 passed, 10 total
+Tests:       39 passed, 39 total
+Snapshots:   0 total
+Time:        0.899 s
+Ran all test suites.

@@ -3,8 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { classInvitePath, inviteAuthPath, networkInvitePath } from "@/lib/onboarding-links";
-import { login, logout, db, auth } from "@/lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { login, logout } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { AuthPageNav } from "@/components/landing/auth-page-nav";
 import { Button } from "@/components/ui/button";
@@ -17,10 +16,41 @@ import Link from "next/link";
 import { GraduationCap, Presentation, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { errorMessage } from "@/lib/error-utils";
 
 export default function LoginPage() {
-  return <Suspense fallback={<LoadingSpinner fullPage />}><LoginForm /></Suspense>;
+  return <Suspense fallback={<LoginShell />}><LoginForm /></Suspense>;
+}
+
+/**
+ * Server-rendered placeholder shown until `useSearchParams` can resolve on the client.
+ * It carries the real heading, so the LCP text is in the first HTML instead of a spinner. (I-020)
+ */
+function LoginShell() {
+  return (
+    <div className="min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative">
+      <SpaceBackground />
+      <AuthPageNav />
+      <div className="w-full max-w-md">
+        <Card>
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Logo size={48} className="text-primary" />
+            </div>
+            <CardTitle className="text-2xl font-inter font-black tracking-tighter">Welcome Back</CardTitle>
+            <CardDescription>Sign in to Scorpio</CardDescription>
+          </CardHeader>
+          {/* min-h matches the real form so swapping it in does not shift the card */}
+          <CardContent className="min-h-[300px] space-y-4" aria-busy="true">
+            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-9 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 function LoginForm() {
@@ -78,9 +108,9 @@ function LoginForm() {
         ? teacherInvite ? networkInvitePath(teacherInvite) : "/teacher"
         : classCode ? classInvitePath(classCode) : "/student";
       window.location.href = target;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("[Login] Detailed Error:", err);
-      setError(err?.message === "Failed to create session"
+      setError(errorMessage(err) === "Failed to create session"
         ? "Session creation failed. Please try again."
         : "Invalid email or password");
       setLoading(false);
@@ -99,10 +129,6 @@ function LoginForm() {
 
     setError("For account recovery, contact rushil@scorpioedu.org. Roles cannot be restored from this browser.");
   };
-  if (authLoading) {
-    return <LoadingSpinner fullPage />;
-  }
-
   if (user && role === null) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-background px-4 pt-20 pb-8 relative">
@@ -207,8 +233,8 @@ function LoginForm() {
       <SpaceBackground />
       <AuthPageNav />
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ y: 20 }}
+        animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
         className="w-full max-w-md"
       >
@@ -316,9 +342,9 @@ function LoginForm() {
                     <Button
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                       onClick={() => handleLogin("student")}
-                      disabled={loading}
+                      disabled={loading || authLoading}
                     >
-                      {loading ? "Signing in..." : "Sign in as Student"}
+                      {loading ? "Signing in..." : authLoading ? "Preparing..." : "Sign in as Student"}
                     </Button>
                   </motion.div>
                 </motion.div>
@@ -402,9 +428,9 @@ function LoginForm() {
                     <Button
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                       onClick={() => handleLogin("teacher")}
-                      disabled={loading}
+                      disabled={loading || authLoading}
                     >
-                      {loading ? "Signing in..." : "Sign in as Teacher"}
+                      {loading ? "Signing in..." : authLoading ? "Preparing..." : "Sign in as Teacher"}
                     </Button>
                   </motion.div>
                 </motion.div>

@@ -1,0 +1,17 @@
+22466865 public/demos/scorpio-demo.mp4
+21012546 public/demos/scorpio-demo.webm
+20210123 public/demos/scorpio-demo-orig.mp4
+17812647 public/demos/landing-demo-v2.webm
+9276419 public/demos/landing-demo-v2.mp4
+3100804 public/headshot-sage.jpg
+2645443 public/og-image.png
+1450639 public/plan.jpg
+1246831 public/og-image-pink.png
+671112 public/waypoints.png
+634339 public/vault-controls.png
+608472 public/equation-vault.png
+587330 public/network-previews/notebook.png
+584163 public/mission-control.png
+575589 public/faculty-network.png
+565269 public/Rushil_Mahadevu_Resume_2026.pdf
+549616 public/network-previews/practice.png

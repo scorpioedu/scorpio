@@ -17,7 +17,7 @@ import {
   Compass,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { MarkdownRenderer } from './markdown-renderer';
+import { LazyMarkdownRenderer as MarkdownRenderer } from './lazy-markdown-renderer';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 

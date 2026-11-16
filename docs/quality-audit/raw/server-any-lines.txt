@@ -1,0 +1,63 @@
+src/lib/assignment-parser.ts:1:export function parseQuestionsManually(text: string): any[] {
+src/lib/assignment-parser.ts:2:  const questions: any[] = [];
+src/lib/assignment-parser.ts:4:  let currentQuestion: any = null;
+src/lib/firebase-admin.ts:47:  } catch (e: any) {
+src/lib/firebase-admin.ts:64:    const value = (service as any)[prop];
+src/lib/firebase-admin.ts:74:    const value = (service as any)[prop];
+src/lib/firebase-admin.ts:84:    const value = (FV as any)[prop];
+functions/src/grading.ts:169:  } catch (error: any) {
+functions/src/grading.ts:178:async function gradeSubmission(submissionId: string, submissionData: any) {
+functions/src/grading.ts:221:    const questions = (assignmentData?.questions || []).map((q: any) => ({ ...q, correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer }));
+functions/src/grading.ts:234:        const question = questions.find((q: any) => q.id === ans.questionId);
+functions/src/grading.ts:308:async function processGrading(submissionId: string, submissionData: any) {
+src/lib/types.ts:68:  questions: any[]; // Consider more specific type later
+src/lib/ai/config.ts:14:async function callGeminiDirect(request: any) {
+src/lib/ai/config.ts:19:  let contents: any[] = [];
+src/lib/ai/config.ts:23:    contents = request.contents.map((c: any) => {
+src/lib/ai/config.ts:31:  const payload: any = {
+src/lib/ai/config.ts:87:  const text = candidate?.content?.parts?.map((p: any) => p.text).join("") || "";
+src/lib/ai/config.ts:105:  generateContent: (request: any) => callGeminiDirect(request),
+src/lib/ai/config.ts:106:  startChat: (options?: any) => {
+src/lib/ai/config.ts:126:} as any;
+src/lib/ai/assignment.ts:5:async function parseSingleBatch(batchText: string, startNumber: number, model: any): Promise<{ questions: any[], usage: { inputTokens: number, outputTokens: number } }> {
+src/lib/ai/assignment.ts:76:): Promise<{ questions: any[], usage?: { inputTokens: number, outputTokens: number } }> {
+src/lib/ai/assignment.ts:120:    // @ts-ignore
+src/lib/ai/assignment.ts:141:        (err as any).rawText = text;
+src/lib/ai/assignment.ts:147:    let parsedData: any;
+src/lib/ai/assignment.ts:194:            const isTruncated = (response as any).candidates?.[0]?.finishReason === 'MAX_TOKENS';
+src/lib/ai/assignment.ts:201:            (err as any).rawText = text;
+src/lib/ai/assignment.ts:224:export async function parseQuestionsFromText(text: string): Promise<{ questions: any[], usage?: { inputTokens: number, outputTokens: number } }> {
+src/lib/ai/assignment.ts:233:    const allQuestions: any[] = [];
+src/app/api/checkout/route.ts:60:      const checkoutOptions: any = {
+src/app/api/checkout/route.ts:82:    } catch (polarError: any) {
+src/app/api/checkout/route.ts:90:  } catch (error: any) {
+src/lib/ai/utils.ts:75:  // @ts-ignore
+src/lib/ai/utils.ts:125:export function validateAndNormalizeQuestions(data: any): any[] {
+src/lib/ai/utils.ts:126:  let questions: any[] = [];
+src/lib/ai/utils.ts:153:  const validatedQuestions = questions.map((q: any, index: number) => {
+src/lib/ai/grading.ts:123:  } catch (error: any) {
+src/lib/ai/network.ts:172:    let parsed: any;
+src/lib/ai/network.ts:201:        masteryLevel: masteryLevel as any,
+src/app/api/teacher/network/portfolio/route.ts:61:      const formattedMessages = messages.map((m: any) => ({
+src/app/api/teacher/network/portfolio/route.ts:110:  } catch (error: any) {
+src/app/api/grade/route.ts:108:      const question = questions.find((q: any) => q.id === ans.questionId);
+src/app/api/grade/route.ts:191:  } catch (error: any) {
+src/lib/firebase.ts:22:let appCheck: any = null;
+src/lib/firebase.ts:25:    // @ts-ignore
+src/lib/firebase.ts:66:let _genAI: any = null;
+src/app/api/chat/route.ts:76:        ? (chatbotConfig as any).teacherSuggestedPrompts 
+src/app/api/chat/route.ts:77:        : (chatbotConfig as any).studentSuggestedPrompts
+src/app/api/chat/route.ts:80:  } catch (error: any) {
+src/app/api/chat/landing/route.ts:73:    let visitorRef: any = null;
+src/app/api/chat/landing/route.ts:113:  } catch (error: any) {
+src/app/api/admin/firestore/route.ts:72:      const docs = snapshot.docs.map((doc: any) => ({
+src/app/api/admin/firestore/route.ts:98:  } catch (err: any) {
+src/app/api/ai/parse/route.ts:53:  } catch (error: any) {
+src/app/api/chat/limits/route.ts:85:  } catch (error: any) {
+src/app/api/ai/synthesize-rubric/route.ts:48:  } catch (error: any) {
+src/app/api/notebook/chat/route.ts:83:  } catch (error: any) {
+src/app/api/auth/request-access/route.ts:32:      const requests = snapshot.docs.map((d: any) => {
+src/app/api/auth/teacher-code/route.ts:59:    const codes = snapshot.docs.map((doc: any) => {
+src/app/api/auth/teacher-code/route.ts:130:  } catch (err: any) {
+src/app/api/github/stats/route.ts:36:    const formattedCommits = recentCommits.map((c: any) => ({
+src/app/api/ai/generate/route.ts:62:  } catch (error: any) {

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import * as admin from 'firebase-admin';
 jest.mock('../../src/lib/firebase-admin',()=>{
- const admin=require('firebase-admin');
+ const admin=jest.requireActual<typeof import('firebase-admin')>('firebase-admin');
  if(!process.env.FIRESTORE_EMULATOR_HOST)throw new Error('Emulator required');
  if(!admin.apps.length)admin.initializeApp({projectId:'demo-scorpio-security'});
  return {adminDb:admin.firestore(),adminFieldWithValue:admin.firestore.FieldValue,adminAuth:{verifyIdToken:async(token:string)=>({uid:token,email:`${token}@example.test`,auth_time:Math.floor(Date.now()/1000)}),deleteUser:jest.fn(async()=>undefined)}};
@@ -15,7 +15,7 @@ import { POST as changeMembership } from '../../src/app/api/teacher/network/memb
 import { POST as createCourse } from '../../src/app/api/courses/route';
 import { findClassByCode } from '../../src/lib/class-enrollment';
 import { POST as enroll } from '../../src/app/api/student/enrollment/route';
-import { reserveBudget,settleBudget } from '../../functions/src/metering';
+import { reserveBudget,settleBudget,getActiveTokenRates } from '../../functions/src/metering';
 import { adminDb } from '../../src/lib/firebase-admin';
 const req=(path:string,user:string,body:unknown)=>new NextRequest(`http://localhost/api/${path}`,{method:'POST',headers:{Authorization:`Bearer ${user}`},body:JSON.stringify(body)});
 beforeAll(async()=>{
@@ -57,7 +57,7 @@ test('concurrent budget reservations cannot exceed the cap; settlement is idempo
  expect(results.filter(r=>r.status==='fulfilled')).toHaveLength(1);
  const id=(results.find(r=>r.status==='fulfilled') as PromiseFulfilledResult<string>).value;
  await settleBudget(adminDb,id,1000,1000);await settleBudget(adminDb,id,1000,1000);
- const org=(await adminDb.collection('organizations').doc('budget').get()).data()!;expect(org.aiUsageReserved).toBe(0);expect(org.aiUsageCurrent).toBeCloseTo(0.28);
+ const org=(await adminDb.collection('organizations').doc('budget').get()).data()!;expect(org.aiUsageReserved).toBe(0);const rates=getActiveTokenRates();expect(org.aiUsageCurrent).toBeCloseTo(1000*rates.input+1000*rates.output);
 });
 test('monthly student allowance rolls over and is reserved atomically',async()=>{
  await adminDb.collection('organizations').doc('allowance').set({planId:'free',subscriptionStatus:'active',aiBudgetLimit:50,aiTutorLimitPerStudent:1});

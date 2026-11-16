@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { collection, query, where, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { assignmentIdsOf, buildSubmissionRows, type AssignmentInfo, type RawSubmission } from "@/lib/student-submissions";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,77 +12,49 @@ import { WorkspaceHeader } from "@/components/ui/workspace";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-interface Submission {
-  id: string;
-  assignmentId: string;
-  assignmentTitle: string;
-  answers: any[];
-  submittedAt: Date | null;
-  graded: boolean;
-  score: number | null;
-  feedback?: string;
-  status?: string;
-}
-
 export default function SubmissionsPage() {
   const { user, profile } = useAuth();
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [rawSubmissions, setRawSubmissions] = useState<RawSubmission[] | null>(null);
+  // assignmentId -> assignment (null = missing/unreadable). Kept across snapshots so each assignment is read once.
+  const [assignments, setAssignments] = useState<ReadonlyMap<string, AssignmentInfo | null>>(new Map());
+  const requestedAssignments = useRef<Set<string>>(new Set());
 
+  // 1. Listen for submissions in real time. The listener only stores raw data: no reads happen in the callback.
   useEffect(() => {
     if (!user) return;
-
-    // 1. Listen for new submissions in real-time
     const q = query(collection(db, "submissions"), where("studentId", "==", user.uid));
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const submissionsData: (Submission | null)[] = await Promise.all(
-        snapshot.docs.map(async (submissionDoc) => {
-          const data = submissionDoc.data();
-          try {
-            // Fetch Assignment Details (Cache these maybe? For now just fetch)
-            const assignmentDoc = await getDoc(doc(db, "assignments", data.assignmentId));
-            if (!assignmentDoc.exists()) return null;
-
-            const assignData = assignmentDoc.data();
-            
-            // Filter logic
-            if (profile?.courseId) {
-                if (assignData.courseId !== profile.courseId) return null;
-            } else if (profile?.teacherId && assignData.teacherId && profile.teacherId !== assignData.teacherId) {
-                return null;
-            }
-            
-            return {
-              id: submissionDoc.id,
-              assignmentId: data.assignmentId,
-              assignmentTitle: assignData.title,
-              answers: data.answers || [],
-              submittedAt: data.submittedAt?.toDate?.() || (data.submittedAt ? new Date(data.submittedAt) : null),
-              graded: data.graded || false,
-              score: data.score ?? null,
-              feedback: data.feedback ?? "",
-              status: data.status || (data.graded ? 'graded' : 'submitted'),
-            } satisfies Submission;
-          } catch (e) {
-            console.error("Error fetching assignment for submission:", e);
-            return null;
-          }
-        })
-      );
-
-      const filteredSubmissions = submissionsData.filter((s): s is Submission => s !== null && s.status !== 'draft');
-      // Sort by submittedAt descending
-      filteredSubmissions.sort((a, b) => {
-        const dateA = a.submittedAt ? new Date(a.submittedAt).getTime() : 0;
-        const dateB = b.submittedAt ? new Date(b.submittedAt).getTime() : 0;
-        return dateB - dateA;
-      });
-      setSubmissions(filteredSubmissions);
-      setLoading(false);
+    return onSnapshot(q, (snapshot) => {
+      setRawSubmissions(snapshot.docs.map((d) => ({ id: d.id, data: d.data() })));
     });
-
-    return () => unsubscribe();
   }, [user]);
+
+  // 2. Fetch each distinct assignment once, however many snapshots arrive.
+  useEffect(() => {
+    if (!rawSubmissions) return;
+    const missing = assignmentIdsOf(rawSubmissions).filter((id) => !requestedAssignments.current.has(id));
+    if (missing.length === 0) return;
+    missing.forEach((id) => requestedAssignments.current.add(id));
+    Promise.all(missing.map(async (id): Promise<[string, AssignmentInfo | null]> => {
+      try {
+        const snap = await getDoc(doc(db, "assignments", id));
+        return [id, snap.exists() ? (snap.data() as AssignmentInfo) : null];
+      } catch (e) {
+        console.error("Error fetching assignment for submission:", e);
+        requestedAssignments.current.delete(id); // retry on a later snapshot
+        return [id, null];
+      }
+    })).then((entries) => {
+      // Not gated on effect cleanup: a newer snapshot must not discard results already requested.
+      setAssignments((current) => new Map([...current, ...entries]));
+    });
+  }, [rawSubmissions]);
+
+  const pendingAssignments = rawSubmissions !== null && assignmentIdsOf(rawSubmissions).some((id) => !assignments.has(id));
+  const loading = rawSubmissions === null || pendingAssignments;
+  const submissions = useMemo(
+    () => buildSubmissionRows(rawSubmissions ?? [], assignments, { courseId: profile?.courseId, teacherId: profile?.teacherId }),
+    [rawSubmissions, assignments, profile?.courseId, profile?.teacherId],
+  );
 
   return (
     <div className="space-y-6">

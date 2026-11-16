@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Lock, Binary, Cpu, Network } from "lucide-react";
+import { ShieldCheck, Lock, Binary, Cpu, Network, type LucideIcon } from "lucide-react";
 
 interface ConstraintBadgeProps {
   label: string;
-  icon: any;
+  icon: LucideIcon;
   delay: number;
   initialX: string;
   initialY: string;

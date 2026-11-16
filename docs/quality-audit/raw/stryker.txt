@@ -1,0 +1,1505 @@
+[32m20:26:51 (96325) INFO ProjectReader[39m Found 3 of 482 file(s) to be mutated.
+Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[32m20:26:51 (96325) INFO Instrumenter[39m Instrumented 3 source file(s) with 448 mutant(s)
+[32m20:26:52 (96325) INFO ConcurrencyTokenProvider[39m Creating 5 checker process(es) and 4 test runner process(es).
+[32m20:27:26 (96325) INFO DryRunExecutor[39m Starting initial test run (jest test runner with "perTest" coverage analysis). This may take a while.
+[32m20:27:30 (96325) INFO DryRunExecutor[39m Initial test run succeeded. Ran 18 tests in 3 seconds (net 22 ms, overhead 3150 ms).
+
+All tests
+  assignment-validation.test.ts
+    ✓ validateQuestionAnswers allows questions with all valid selected answers [line 4] (killed 17)
+    ✓ validateQuestionAnswers rejects multiple choice questions with no correct answer selected [line 38] (killed 10)
+    ✓ validateQuestionAnswers rejects multiple choice questions where correctAnswer is not in options [line 55] (killed 5)
+    ✓ validateQuestionAnswers rejects true-false questions without True or False selected [line 71] (killed 6)
+    ✓ validateQuestionAnswers rejects short-answer questions with empty correctAnswer [line 87] (killed 6)
+    ~ validateQuestionAnswers allows text questions with or without grading rubric [line 102] (covered 21)
+  auth-verify.test.ts
+    ✓ missing credentials fail closed [line 10] (killed 3)
+    ✓ invalid bearer fails closed [line 11] (killed 1)
+    ✓ valid credentials cannot impersonate another account [line 12] (killed 2)
+    ✓ checks revocation for bearer and session tokens [line 13] (killed 10)
+    ~ legacy packed cookies are supported but their claimed role is not used [line 17] (covered 22)
+    ✓ guard rejects unauthenticated and wrong-account requests before handler [line 20] (killed 6)
+    ✓ student cannot call teacher-only endpoints [line 25] (killed 3)
+    ✓ authorized student request reaches handler [line 28] (killed 8)
+  landing-chat.test.ts
+    ✘ Landing Chat & Try AI Guest Access non-exempt AI request without organizationId throws network auth error [line 48] (covered 0)
+    ✘ Landing Chat & Try AI Guest Access landing page AI request without organizationId succeeds for guests [line 56] (covered 0)
+    ✘ Landing Chat & Try AI Guest Access /api/chat/landing returns 200 with AI response for guest visitor [line 64] (covered 0)
+    ✘ Landing Chat & Try AI Guest Access /api/chat/landing returns 429 when visitor demo limit is reached [line 78] (covered 0)
+
+[Survived] MethodExpression
+src/lib/assignment-validation.ts:21:51
+-           q.correctAnswer && q.options?.some(opt => opt.trim() && opt === q.correctAnswer)
++           q.correctAnswer && q.options?.some(opt => opt && opt === q.correctAnswer)
+Tests ran:
+    validateQuestionAnswers allows questions with all valid selected answers
+    validateQuestionAnswers rejects multiple choice questions where correctAnswer is not in options
+
+
+[Survived] LogicalOperator
+src/lib/assignment-validation.ts:31:11
+-         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "False")) {
++         if (!q.correctAnswer && q.correctAnswer !== "True" && q.correctAnswer !== "False") {
+Tests ran:
+    validateQuestionAnswers allows questions with all valid selected answers
+    validateQuestionAnswers rejects true-false questions without True or False selected
+
+
+[Survived] ConditionalExpression
+src/lib/assignment-validation.ts:31:32
+-         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "False")) {
++         if (!q.correctAnswer || (false)) {
+Tests ran:
+    validateQuestionAnswers allows questions with all valid selected answers
+
+
+[NoCoverage] ConditionalExpression
+src/lib/assignment-validation.ts:31:62
+-         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "False")) {
++         if (!q.correctAnswer || (q.correctAnswer !== "True" && true)) {
+
+[NoCoverage] EqualityOperator
+src/lib/assignment-validation.ts:31:62
+-         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "False")) {
++         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer === "False")) {
+
+[NoCoverage] StringLiteral
+src/lib/assignment-validation.ts:31:82
+-         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "False")) {
++         if (!q.correctAnswer || (q.correctAnswer !== "True" && q.correctAnswer !== "")) {
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:9:28
+-       if (bearer?.startsWith("Bearer ")) {
++       if (bearer?.startsWith("")) {
+Tests ran:
+    invalid bearer fails closed
+    valid credentials cannot impersonate another account
+    checks revocation for bearer and session tokens
+  and 3 more tests!
+
+
+[Survived] MethodExpression
+src/lib/auth-verify.ts:14:19
+-       const token = session.startsWith("{") ? JSON.parse(session).token : session;
++       const token = session.endsWith("{") ? JSON.parse(session).token : session;
+Tests ran:
+    checks revocation for bearer and session tokens
+    legacy packed cookies are supported but their claimed role is not used
+
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:15:9
+-       if (typeof token !== "string" || !token) return null;
++       if (false) return null;
+Tests ran:
+    checks revocation for bearer and session tokens
+    legacy packed cookies are supported but their claimed role is not used
+
+
+[Survived] LogicalOperator
+src/lib/auth-verify.ts:15:9
+-       if (typeof token !== "string" || !token) return null;
++       if (typeof token !== "string" && !token) return null;
+Tests ran:
+    checks revocation for bearer and session tokens
+    legacy packed cookies are supported but their claimed role is not used
+
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:15:9
+-       if (typeof token !== "string" || !token) return null;
++       if (false || !token) return null;
+Tests ran:
+    checks revocation for bearer and session tokens
+    legacy packed cookies are supported but their claimed role is not used
+
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:24:10
+-     return caller && caller.uid === expectedUid
++     return false
+Tests ran:
+    missing credentials fail closed
+    valid credentials cannot impersonate another account
+
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:25:7
+-       ? { authorized: true }
++       ? {}
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:25:21
+-       ? { authorized: true }
++       ? { authorized: false }
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:26:35
+-       : { authorized: false, error: "Valid authentication for this account is required" };
++       : { authorized: false, error: "" };
+Tests ran:
+    missing credentials fail closed
+    valid credentials cannot impersonate another account
+
+
+[Survived] ObjectLiteral
+src/lib/auth-verify.ts:37:43
+-       if (!caller) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
++       if (!caller) return NextResponse.json({}, { status: 401 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:37:52
+-       if (!caller) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
++       if (!caller) return NextResponse.json({ error: "" }, { status: 401 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:40:11
+-         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
++         if (false) return NextResponse.json({ error: "Request too large" }, { status: 413 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+    student cannot call teacher-only endpoints
+    authorized student request reaches handler
+
+
+[Survived] EqualityOperator
+src/lib/auth-verify.ts:40:11
+-         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
++         if (Buffer.byteLength(raw) >= 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+    student cannot call teacher-only endpoints
+    authorized student request reaches handler
+
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:40:69
+-         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
++         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({}, { status: 413 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:40:78
+-         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
++         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "" }, { status: 413 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:40:101
+-         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
++         if (Buffer.byteLength(raw) > 500000) return NextResponse.json({ error: "Request too large" }, {});
+
+[Survived] ObjectLiteral
+src/lib/auth-verify.ts:43:34
+-           return NextResponse.json({ error: "Account mismatch" }, { status: 403 });
++           return NextResponse.json({}, { status: 403 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:43:43
+-           return NextResponse.json({ error: "Account mismatch" }, { status: 403 });
++           return NextResponse.json({ error: "" }, { status: 403 });
+Tests ran:
+    guard rejects unauthenticated and wrong-account requests before handler
+
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:45:49
+-         const profile = (await adminDb.collection("users").doc(caller.uid).get()).data();
++         const profile = (await adminDb.collection("").doc(caller.uid).get()).data();
+Tests ran:
+    student cannot call teacher-only endpoints
+    authorized student request reaches handler
+
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:46:43
+-         if (!profile || (options.teacher && profile.role !== "teacher")) {
++         if (!profile || (options.teacher && true)) {
+Tests ran:
+    student cannot call teacher-only endpoints
+
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:46:60
+-         if (!profile || (options.teacher && profile.role !== "teacher")) {
++         if (!profile || (options.teacher && profile.role !== "")) {
+Tests ran:
+    student cannot call teacher-only endpoints
+
+
+[Survived] ObjectLiteral
+src/lib/auth-verify.ts:47:34
+-           return NextResponse.json({ error: "Access denied" }, { status: 403 });
++           return NextResponse.json({}, { status: 403 });
+Tests ran:
+    student cannot call teacher-only endpoints
+
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:47:43
+-           return NextResponse.json({ error: "Access denied" }, { status: 403 });
++           return NextResponse.json({ error: "" }, { status: 403 });
+Tests ran:
+    student cannot call teacher-only endpoints
+
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:49:46
+-         if (options.resource === "submission") {
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
+-             return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
+-           }
+-           const submission = (await adminDb.collection("submissions").doc(body.submissionId).get()).data();
+-           const assignment = submission?.assignmentId
+-             ? (await adminDb.collection("assignments").doc(submission.assignmentId).get()).data() : null;
+-           if (!assignment || assignment.teacherId !== caller.uid) {
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
+-           }
+-         }
++         if (options.resource === "submission") {}
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:50:13
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
++           if (false) {
+
+[NoCoverage] LogicalOperator
+src/lib/auth-verify.ts:50:13
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
++           if (typeof body.submissionId !== "string" && body.submissionId.includes("/")) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:50:13
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
++           if (false || body.submissionId.includes("/")) {
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:50:13
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
++           if (typeof body.submissionId === "string" || body.submissionId.includes("/")) {
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:50:81
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
++           if (typeof body.submissionId !== "string" || body.submissionId.includes("")) {
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:50:87
+-           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {
+-             return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
+-           }
++           if (typeof body.submissionId !== "string" || body.submissionId.includes("/")) {}
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:51:36
+-             return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
++             return NextResponse.json({}, { status: 400 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:51:45
+-             return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
++             return NextResponse.json({ error: "" }, { status: 400 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:51:69
+-             return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
++             return NextResponse.json({ error: "Invalid submission" }, {});
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:53:54
+-           const submission = (await adminDb.collection("submissions").doc(body.submissionId).get()).data();
++           const submission = (await adminDb.collection("").doc(body.submissionId).get()).data();
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:55:39
+-             ? (await adminDb.collection("assignments").doc(submission.assignmentId).get()).data() : null;
++             ? (await adminDb.collection("").doc(submission.assignmentId).get()).data() : null;
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:56:13
+-           if (!assignment || assignment.teacherId !== caller.uid) {
++           if (false) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:56:28
+-           if (!assignment || assignment.teacherId !== caller.uid) {
++           if (!assignment || false) {
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:56:28
+-           if (!assignment || assignment.teacherId !== caller.uid) {
++           if (!assignment || assignment.teacherId === caller.uid) {
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:56:65
+-           if (!assignment || assignment.teacherId !== caller.uid) {
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
+-           }
++           if (!assignment || assignment.teacherId !== caller.uid) {}
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:57:36
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({}, { status: 403 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:57:45
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({ error: "" }, { status: 403 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:57:64
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({ error: "Access denied" }, {});
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:60:45
+-         if (options.resource === "portfolio") {
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
+-             return NextResponse.json({ error: "Invalid student" }, { status: 400 });
+-           }
+-           const student = (await adminDb.collection("users").doc(body.studentId).get()).data();
+-           const teacher = student?.teacherId
+-             ? (await adminDb.collection("users").doc(student.teacherId).get()).data() : null;
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
+-           }
+-         }
++         if (options.resource === "portfolio") {}
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:61:13
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
++           if (false) {
+
+[NoCoverage] LogicalOperator
+src/lib/auth-verify.ts:61:13
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
++           if (typeof body.studentId !== "string" && body.studentId.includes("/")) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:61:13
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
++           if (false || body.studentId.includes("/")) {
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:61:13
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
++           if (typeof body.studentId === "string" || body.studentId.includes("/")) {
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:61:75
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
++           if (typeof body.studentId !== "string" || body.studentId.includes("")) {
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:61:81
+-           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {
+-             return NextResponse.json({ error: "Invalid student" }, { status: 400 });
+-           }
++           if (typeof body.studentId !== "string" || body.studentId.includes("/")) {}
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:62:45
+-             return NextResponse.json({ error: "Invalid student" }, { status: 400 });
++             return NextResponse.json({ error: "" }, { status: 400 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:62:36
+-             return NextResponse.json({ error: "Invalid student" }, { status: 400 });
++             return NextResponse.json({}, { status: 400 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:62:66
+-             return NextResponse.json({ error: "Invalid student" }, { status: 400 });
++             return NextResponse.json({ error: "Invalid student" }, {});
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:64:51
+-           const student = (await adminDb.collection("users").doc(body.studentId).get()).data();
++           const student = (await adminDb.collection("").doc(body.studentId).get()).data();
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:66:39
+-             ? (await adminDb.collection("users").doc(student.teacherId).get()).data() : null;
++             ? (await adminDb.collection("").doc(student.teacherId).get()).data() : null;
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:67:13
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++           if (true) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:67:13
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++           if (false) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:67:13
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
++           if (false ||
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:67:13
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
++           if (profile.organizationId || body.organizationId !== profile.organizationId ||
+
+[NoCoverage] LogicalOperator
+src/lib/auth-verify.ts:67:13
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
++           if (!profile.organizationId && body.organizationId !== profile.organizationId ||
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:67:40
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
++           if (!profile.organizationId || false ||
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:67:40
+-           if (!profile.organizationId || body.organizationId !== profile.organizationId ||
++           if (!profile.organizationId || body.organizationId === profile.organizationId ||
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:68:26
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (false)) {
+
+[NoCoverage] LogicalOperator
+src/lib/auth-verify.ts:68:26
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (student.teacherId !== caller.uid || teacher?.organizationId !== profile.organizationId)) {
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:68:26
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (student.teacherId === caller.uid && teacher?.organizationId !== profile.organizationId)) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:68:26
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (true && teacher?.organizationId !== profile.organizationId)) {
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:68:62
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (student.teacherId !== caller.uid && true)) {
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:68:62
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
++               !student || (student.teacherId !== caller.uid && teacher?.organizationId === profile.organizationId)) {
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:68:115
+-               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
+-           }
++               !student || (student.teacherId !== caller.uid && teacher?.organizationId !== profile.organizationId)) {}
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:69:36
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({}, { status: 403 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:69:45
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({ error: "" }, { status: 403 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:69:64
+-             return NextResponse.json({ error: "Access denied" }, { status: 403 });
++             return NextResponse.json({ error: "Access denied" }, {});
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:72:53
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes("") ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+Tests ran:
+    authorized student request reaches handler
+
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:72:113
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes("") ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+
+[Survived] StringLiteral
+src/lib/auth-verify.ts:72:73
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? "" : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+Tests ran:
+    authorized student request reaches handler
+
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:72:129
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? "" : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:72:142
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : true ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:72:142
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : false ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:72:178
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? "" : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:72:190
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : true ? 'portfolio' : 'navigation';
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:72:190
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : false ? 'portfolio' : 'navigation';
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:72:190
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource !== 'portfolio' ? 'portfolio' : 'navigation';
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:72:225
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? "" : 'navigation';
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:72:239
+-         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : 'navigation';
++         const feature = req.nextUrl.pathname.includes('/student/tutor') ? 'tutor' : req.nextUrl.pathname.includes('/notebook/') ? 'notebook' : options.resource === 'submission' ? 'grading' : options.resource === 'portfolio' ? 'portfolio' : "";
+
+[Survived] ConditionalExpression
+src/lib/auth-verify.ts:74:11
+-         if (!effectiveOrgId && profile.teacherId) {
++         if (true) {
+Tests ran:
+    authorized student request reaches handler
+
+
+[Survived] BooleanLiteral
+src/lib/auth-verify.ts:74:11
+-         if (!effectiveOrgId && profile.teacherId) {
++         if (effectiveOrgId && profile.teacherId) {
+Tests ran:
+    authorized student request reaches handler
+
+
+[Survived] LogicalOperator
+src/lib/auth-verify.ts:74:11
+-         if (!effectiveOrgId && profile.teacherId) {
++         if (!effectiveOrgId || profile.teacherId) {
+Tests ran:
+    authorized student request reaches handler
+
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:74:49
+-         if (!effectiveOrgId && profile.teacherId) {
+-           const teacher = (await adminDb.collection("users").doc(profile.teacherId).get()).data();
+-           if (teacher?.organizationId) {
+-             effectiveOrgId = teacher.organizationId;
+-           }
+-         }
++         if (!effectiveOrgId && profile.teacherId) {}
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:75:51
+-           const teacher = (await adminDb.collection("users").doc(profile.teacherId).get()).data();
++           const teacher = (await adminDb.collection("").doc(profile.teacherId).get()).data();
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:76:38
+-           if (teacher?.organizationId) {
+-             effectiveOrgId = teacher.organizationId;
+-           }
++           if (teacher?.organizationId) {}
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:80:84
+-         const execute = () => billingContext.run({ organizationId: effectiveOrgId || '', userId: caller.uid, type: feature }, () => handler(req));
++         const execute = () => billingContext.run({ organizationId: effectiveOrgId || "Stryker was here!", userId: caller.uid, type: feature }, () => handler(req));
+
+[Survived] LogicalOperator
+src/lib/auth-verify.ts:80:66
+-         const execute = () => billingContext.run({ organizationId: effectiveOrgId || '', userId: caller.uid, type: feature }, () => handler(req));
++         const execute = () => billingContext.run({ organizationId: effectiveOrgId && '', userId: caller.uid, type: feature }, () => handler(req));
+Tests ran:
+    authorized student request reaches handler
+
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:81:46
+-         if (options.resource === "submission") {
+-           const ref = adminDb.collection("submissions").doc(body.submissionId);
+-           const lockRef = adminDb.collection("grading_locks").doc(body.submissionId);
+-           const acquired = await adminDb.runTransaction(async tx => {
+-             const lock = (await tx.get(lockRef)).data();
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
+-             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
+-             return true;
+-           });
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
+-           try {
+-             const current = (await ref.get()).data();
+-             if (current?.graded) return NextResponse.json({ success: true, score: current.score });
+-             return await execute();
+-           } finally { await lockRef.delete(); }
+-         }
++         if (options.resource === "submission") {}
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:82:40
+-           const ref = adminDb.collection("submissions").doc(body.submissionId);
++           const ref = adminDb.collection("").doc(body.submissionId);
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:83:44
+-           const lockRef = adminDb.collection("grading_locks").doc(body.submissionId);
++           const lockRef = adminDb.collection("").doc(body.submissionId);
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:86:15
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if (true) return false;
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:86:15
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if (false) return false;
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:86:15
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if ((lock?.expiresAt?.toMillis() || 0) >= Date.now()) return false;
+
+[NoCoverage] EqualityOperator
+src/lib/auth-verify.ts:86:15
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if ((lock?.expiresAt?.toMillis() || 0) <= Date.now()) return false;
+
+[NoCoverage] LogicalOperator
+src/lib/auth-verify.ts:86:16
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if ((lock?.expiresAt?.toMillis() && 0) > Date.now()) return false;
+
+[NoCoverage] OptionalChaining
+src/lib/auth-verify.ts:86:16
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if ((lock?.expiresAt.toMillis() || 0) > Date.now()) return false;
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:86:71
+-             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return false;
++             if ((lock?.expiresAt?.toMillis() || 0) > Date.now()) return true;
+
+[NoCoverage] ArithmeticOperator
+src/lib/auth-verify.ts:87:49
+-             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
++             tx.set(lockRef, { expiresAt: new Date(Date.now() - 15 * 60 * 1000) });
+
+[NoCoverage] ArithmeticOperator
+src/lib/auth-verify.ts:87:62
+-             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
++             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 / 1000) });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:87:27
+-             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
++             tx.set(lockRef, {});
+
+[NoCoverage] ArithmeticOperator
+src/lib/auth-verify.ts:87:62
+-             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
++             tx.set(lockRef, { expiresAt: new Date(Date.now() + 15 / 60 * 1000) });
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:88:18
+-             return true;
++             return false;
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:90:13
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
++           if (acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
+
+[NoCoverage] ConditionalExpression
+src/lib/auth-verify.ts:90:13
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
++           if (false) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:90:49
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
++           if (!acquired) return NextResponse.json({}, { status: 409 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:90:58
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
++           if (!acquired) return NextResponse.json({ error: "" }, { status: 409 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:90:94
+-           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, { status: 409 });
++           if (!acquired) return NextResponse.json({ error: "Grading is already in progress" }, {});
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:91:13
+-           try {
+-             const current = (await ref.get()).data();
+-             if (current?.graded) return NextResponse.json({ success: true, score: current.score });
+-             return await execute();
+-           } finally { await lockRef.delete(); }
++           try {} finally { await lockRef.delete(); }
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:93:57
+-             if (current?.graded) return NextResponse.json({ success: true, score: current.score });
++             if (current?.graded) return NextResponse.json({});
+
+[NoCoverage] BooleanLiteral
+src/lib/auth-verify.ts:93:68
+-             if (current?.graded) return NextResponse.json({ success: true, score: current.score });
++             if (current?.graded) return NextResponse.json({ success: false, score: current.score });
+
+[NoCoverage] BlockStatement
+src/lib/auth-verify.ts:95:19
+-           } finally { await lockRef.delete(); }
++           } finally {}
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:99:32
+-         return NextResponse.json({ error: "Unable to authorize request" }, { status: 400 });
++         return NextResponse.json({}, { status: 400 });
+
+[NoCoverage] StringLiteral
+src/lib/auth-verify.ts:99:41
+-         return NextResponse.json({ error: "Unable to authorize request" }, { status: 400 });
++         return NextResponse.json({ error: "" }, { status: 400 });
+
+[NoCoverage] ObjectLiteral
+src/lib/auth-verify.ts:99:74
+-         return NextResponse.json({ error: "Unable to authorize request" }, { status: 400 });
++         return NextResponse.json({ error: "Unable to authorize request" }, {});
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:13:23
+-       return { allowed: false, error: "AI Features require a Department License." };
++       return { allowed: true, error: "AI Features require a Department License." };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:13:37
+-       return { allowed: false, error: "AI Features require a Department License." };
++       return { allowed: false, error: "" };
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:16:7
+-     if (!adminDb) return { allowed: false, error: "Database not initialized" };
++     if (false) return { allowed: false, error: "Database not initialized" };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:16:49
+-     if (!adminDb) return { allowed: false, error: "Database not initialized" };
++     if (!adminDb) return { allowed: false, error: "" };
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:16:35
+-     if (!adminDb) return { allowed: false, error: "Database not initialized" };
++     if (!adminDb) return { allowed: true, error: "Database not initialized" };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:19:45
+-       const orgDoc = await adminDb.collection("organizations").doc(organizationId).get();
++       const orgDoc = await adminDb.collection("").doc(organizationId).get();
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:20:9
+-       if (!orgDoc.exists) return { allowed: false, error: "Scorpio Network not found." };
++       if (orgDoc.exists) return { allowed: false, error: "Scorpio Network not found." };
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:20:9
+-       if (!orgDoc.exists) return { allowed: false, error: "Scorpio Network not found." };
++       if (false) return { allowed: false, error: "Scorpio Network not found." };
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:20:43
+-       if (!orgDoc.exists) return { allowed: false, error: "Scorpio Network not found." };
++       if (!orgDoc.exists) return { allowed: true, error: "Scorpio Network not found." };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:20:57
+-       if (!orgDoc.exists) return { allowed: false, error: "Scorpio Network not found." };
++       if (!orgDoc.exists) return { allowed: false, error: "" };
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:25:9
+-       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {
++       if (false) {
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:25:18
+-       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {
++       if (!data || ["active", "trialing"].includes(data.subscriptionStatus)) {
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:25:30
+-       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {
++       if (!data || !["active", ""].includes(data.subscriptionStatus)) {
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:25:20
+-       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {
++       if (!data || !["", "trialing"].includes(data.subscriptionStatus)) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:25:77
+-       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {
+-         return { allowed: false, error: "Your subscription is no longer active." };
+-       }
++       if (!data || !["active", "trialing"].includes(data.subscriptionStatus)) {}
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:26:25
+-         return { allowed: false, error: "Your subscription is no longer active." };
++         return { allowed: true, error: "Your subscription is no longer active." };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:26:39
+-         return { allowed: false, error: "Your subscription is no longer active." };
++         return { allowed: false, error: "" };
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:30:25
+-       const budgetLimit = data?.aiBudgetLimit || 0;
++       const budgetLimit = data?.aiBudgetLimit && 0;
+
+[NoCoverage] ArithmeticOperator
+src/lib/usage-limit.ts:31:26
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent || 0) - (data?.aiUsageReserved || 0);
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:30:25
+-       const budgetLimit = data?.aiBudgetLimit || 0;
++       const budgetLimit = data.aiBudgetLimit || 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:31:27
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (true) + (data?.aiUsageReserved || 0);
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:31:27
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (false) + (data?.aiUsageReserved || 0);
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:31:27
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent && 0) + (data?.aiUsageReserved || 0);
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:31:27
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:31:57
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent || 0) + (true);
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:31:57
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved && 0);
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:31:57
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent || 0) + (false);
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:31:57
+-       const currentUsage = (data?.aiUsageCurrent || 0) + (data?.aiUsageReserved || 0);
++       const currentUsage = (data?.aiUsageCurrent || 0) + (data.aiUsageReserved || 0);
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:34:9
+-       if (!data?.planId || data.planId === "free") {
++       if (true) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:34:9
+-       if (!data?.planId || data.planId === "free") {
++       if (false) {
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:34:9
+-       if (!data?.planId || data.planId === "free") {
++       if (!data?.planId && data.planId === "free") {
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:34:9
+-       if (!data?.planId || data.planId === "free") {
++       if (data?.planId || data.planId === "free") {
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:34:10
+-       if (!data?.planId || data.planId === "free") {
++       if (!data.planId || data.planId === "free") {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:34:26
+-       if (!data?.planId || data.planId === "free") {
++       if (!data?.planId || false) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:34:26
+-       if (!data?.planId || data.planId === "free") {
++       if (!data?.planId || data.planId !== "free") {
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:34:42
+-       if (!data?.planId || data.planId === "free") {
++       if (!data?.planId || data.planId === "") {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (true) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:34:50
+-       if (!data?.planId || data.planId === "free") {
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
+-           return { 
+-             allowed: false, 
+-             error: "Free starter AI budget reached. Upgrade to a Department License in Network settings for unlimited AI access." 
+-           };
+-         }
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       if (!data?.planId || data.planId === "free") {} else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit <= 0 && currentUsage >= budgetLimit) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (false) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (false || currentUsage >= budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit < 0 || currentUsage >= budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:35:11
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit > 0 || currentUsage >= budgetLimit) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:35:31
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit <= 0 || false) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:35:31
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit <= 0 || currentUsage > budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:35:31
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
++         if (budgetLimit <= 0 || currentUsage < budgetLimit) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:35:60
+-         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {
+-           return { 
+-             allowed: false, 
+-             error: "Free starter AI budget reached. Upgrade to a Department License in Network settings for unlimited AI access." 
+-           };
+-         }
++         if (budgetLimit <= 0 || currentUsage >= budgetLimit) {}
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:37:20
+-             allowed: false, 
++             allowed: true, 
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:38:18
+-             error: "Free starter AI budget reached. Upgrade to a Department License in Network settings for unlimited AI access." 
++             error: "" 
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (true) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (false) {
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit > 0 || currentUsage >= budgetLimit) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (true && currentUsage >= budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit >= 0 && currentUsage >= budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:41:16
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit <= 0 && currentUsage >= budgetLimit) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:41:35
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit > 0 && true) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:41:35
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit > 0 && currentUsage > budgetLimit) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:41:35
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
++       } else if (budgetLimit > 0 && currentUsage < budgetLimit) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:41:64
+-       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {
+-         return { 
+-           allowed: false, 
+-           error: `Monthly AI budget ($${(budgetLimit / 100).toFixed(2)}) reached. Please increase your limit in Network settings.` 
+-         };
+-       }
++       } else if (budgetLimit > 0 && currentUsage >= budgetLimit) {}
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:43:18
+-           allowed: false, 
++           allowed: true, 
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:44:16
+-           error: `Monthly AI budget ($${(budgetLimit / 100).toFixed(2)}) reached. Please increase your limit in Network settings.` 
++           error: `` 
+
+[NoCoverage] ArithmeticOperator
+src/lib/usage-limit.ts:44:40
+-           error: `Monthly AI budget ($${(budgetLimit / 100).toFixed(2)}) reached. Please increase your limit in Network settings.` 
++           error: `Monthly AI budget ($${(budgetLimit * 100).toFixed(2)}) reached. Please increase your limit in Network settings.` 
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:49:17
+-       if (userId) {
+-         const userDoc = await adminDb.collection("users").doc(userId).get();
+-         const userData = userDoc.data();
+-         // Tutor Limit
+-         if (type === "tutor") {
+-           const teacherAllowance = data?.aiTutorLimitPerStudent || 0;
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have used all ${teacherAllowance} of your Raise messages for this period. Contact your teacher to increase your allowance.`
+-             };
+-           }
+-         }
+-         // Notebook Limit
+-         if (type === "notebook") {
+-           const notebookAllowance = data?.aiNotebookLimitPerStudent || 0;
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have reached your limit of ${notebookAllowance} AI notebook interactions for this period.` 
+-             };
+-           }
+-         }
+-       }
++       if (userId) {}
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:50:48
+-         const userDoc = await adminDb.collection("users").doc(userId).get();
++         const userDoc = await adminDb.collection("").doc(userId).get();
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:54:11
+-         if (type === "tutor") {
++         if (true) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:54:11
+-         if (type === "tutor") {
++         if (false) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:54:11
+-         if (type === "tutor") {
++         if (type !== "tutor") {
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:54:20
+-         if (type === "tutor") {
++         if (type === "") {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:54:29
+-         if (type === "tutor") {
+-           const teacherAllowance = data?.aiTutorLimitPerStudent || 0;
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have used all ${teacherAllowance} of your Raise messages for this period. Contact your teacher to increase your allowance.`
+-             };
+-           }
+-         }
++         if (type === "tutor") {}
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:55:34
+-           const teacherAllowance = data?.aiTutorLimitPerStudent || 0;
++           const teacherAllowance = data?.aiTutorLimitPerStudent && 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:56:30
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = true ? (userData?.tutorUsageCurrent || 0) : 0;
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:55:34
+-           const teacherAllowance = data?.aiTutorLimitPerStudent || 0;
++           const teacherAllowance = data.aiTutorLimitPerStudent || 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:56:30
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = false ? (userData?.tutorUsageCurrent || 0) : 0;
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:56:30
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth !== new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
+
+[NoCoverage] MethodExpression
+src/lib/usage-limit.ts:56:55
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth === new Date().toISOString() ? (userData?.tutorUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:56:95
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (true) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:56:95
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (false) : 0;
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:56:95
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent && 0) : 0;
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:56:95
+-           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.tutorUsageCurrent || 0) : 0;
++           const studentUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData.tutorUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (true) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (false) {
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance > 0 || studentUsage >= teacherAllowance) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (true && studentUsage >= teacherAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance >= 0 && studentUsage >= teacherAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:58:13
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance <= 0 && studentUsage >= teacherAllowance) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:58:37
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance > 0 && true) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:58:37
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance > 0 && studentUsage > teacherAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:58:37
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
++           if (teacherAllowance > 0 && studentUsage < teacherAllowance) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:58:71
+-           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have used all ${teacherAllowance} of your Raise messages for this period. Contact your teacher to increase your allowance.`
+-             };
+-           }
++           if (teacherAllowance > 0 && studentUsage >= teacherAllowance) {}
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:60:22
+-               allowed: false, 
++               allowed: true, 
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:61:20
+-               error: `You have used all ${teacherAllowance} of your Raise messages for this period. Contact your teacher to increase your allowance.`
++               error: ``
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:67:11
+-         if (type === "notebook") {
++         if (true) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:67:11
+-         if (type === "notebook") {
++         if (type !== "notebook") {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:67:11
+-         if (type === "notebook") {
++         if (false) {
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:67:20
+-         if (type === "notebook") {
++         if (type === "") {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:67:32
+-         if (type === "notebook") {
+-           const notebookAllowance = data?.aiNotebookLimitPerStudent || 0;
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have reached your limit of ${notebookAllowance} AI notebook interactions for this period.` 
+-             };
+-           }
+-         }
++         if (type === "notebook") {}
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:68:35
+-           const notebookAllowance = data?.aiNotebookLimitPerStudent || 0;
++           const notebookAllowance = data?.aiNotebookLimitPerStudent && 0;
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:68:35
+-           const notebookAllowance = data?.aiNotebookLimitPerStudent || 0;
++           const notebookAllowance = data.aiNotebookLimitPerStudent || 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:69:31
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = true ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:69:31
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = false ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:69:31
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth !== new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:69:96
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (true) : 0;
+
+[NoCoverage] MethodExpression
+src/lib/usage-limit.ts:69:56
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth === new Date().toISOString() ? (userData?.aiNotebookUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:69:96
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (false) : 0;
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:69:96
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent && 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (true) {
+
+[NoCoverage] OptionalChaining
+src/lib/usage-limit.ts:69:96
+-           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData?.aiNotebookUsageCurrent || 0) : 0;
++           const notebookUsage = userData?.usageMonth === new Date().toISOString().slice(0, 7) ? (userData.aiNotebookUsageCurrent || 0) : 0;
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (false) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (true && notebookUsage >= notebookAllowance) {
+
+[NoCoverage] LogicalOperator
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance > 0 || notebookUsage >= notebookAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance >= 0 && notebookUsage >= notebookAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:71:13
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance <= 0 && notebookUsage >= notebookAllowance) {
+
+[NoCoverage] ConditionalExpression
+src/lib/usage-limit.ts:71:38
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance > 0 && true) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:71:38
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance > 0 && notebookUsage > notebookAllowance) {
+
+[NoCoverage] EqualityOperator
+src/lib/usage-limit.ts:71:38
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
++           if (notebookAllowance > 0 && notebookUsage < notebookAllowance) {
+
+[NoCoverage] BlockStatement
+src/lib/usage-limit.ts:71:74
+-           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {
+-             return { 
+-               allowed: false, 
+-               error: `You have reached your limit of ${notebookAllowance} AI notebook interactions for this period.` 
+-             };
+-           }
++           if (notebookAllowance > 0 && notebookUsage >= notebookAllowance) {}
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:73:22
+-               allowed: false, 
++               allowed: true, 
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:74:20
+-               error: `You have reached your limit of ${notebookAllowance} AI notebook interactions for this period.` 
++               error: `` 
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:80:23
+-       return { allowed: true };
++       return { allowed: false };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:82:19
+-       console.error("Error in checkBudget:", error);
++       console.error("", error);
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:83:23
+-       return { allowed: false, error: "System check failed" };
++       return { allowed: true, error: "System check failed" };
+
+[NoCoverage] StringLiteral
+src/lib/usage-limit.ts:83:37
+-       return { allowed: false, error: "System check failed" };
++       return { allowed: false, error: "" };
+
+[NoCoverage] BooleanLiteral
+src/lib/usage-limit.ts:96:21
+-     return { success: true };
++     return { success: false };
+
+Ran 0.53 tests per mutant on average.
+--------------------------|------------------|----------|-----------|------------|----------|----------|
+                          | % Mutation score |          |           |            |          |          |
+File                      |  total | covered | # killed | # timeout | # survived | # no cov | # errors |
+--------------------------|--------|---------|----------|-----------|------------|----------|----------|
+All files                 |  23.77 |   74.04 |       77 |         0 |         27 |      220 |      124 |
+ assignment-validation.ts |  88.00 |   93.62 |       44 |         0 |          3 |        3 |       19 |
+ auth-verify.ts           |  21.85 |   57.89 |       33 |         0 |         24 |       94 |       68 |
+ usage-limit.ts           |   0.00 |    0.00 |        0 |         0 |          0 |      123 |       37 |
+--------------------------|--------|---------|----------|-----------|------------|----------|----------|
+[32m20:29:00 (96325) INFO JsonReporter[39m Your report can be found at: file:///private/tmp/scorpio-scratch/reports/mutation/mutation.json
+[32m20:29:00 (96325) INFO MutationTestExecutor[39m Done in 2 minutes and 9 seconds.

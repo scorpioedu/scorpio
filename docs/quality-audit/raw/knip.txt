@@ -1,0 +1,172 @@
+Unused files (47)
+check_portfolios.ts                               
+docs/quality-audit/tmp/eslint.complexity.mjs      
+functions/src/billing.ts                          
+functions/src/grading.ts                          
+functions/src/index.ts                            
+functions/src/lib/email.ts                        
+functions/src/templates/AssignmentCreatedEmail.tsx
+functions/src/templates/GradeAvailableEmail.tsx   
+jest.security.config.cjs                          
+src/components/cobe-globe.tsx                     
+src/components/feature-section.tsx                
+src/components/hero-section.tsx                   
+src/components/kokonutui/spotlight-cards.tsx      
+src/components/landing/efficacy.tsx               
+src/components/landing/header.tsx                 
+src/components/landing/landing-cta.tsx            
+src/components/landing/LandingFooter.tsx          
+src/components/landing/layer-efficacy-chart.tsx   
+src/components/landing/logo-cloud.tsx             
+src/components/landing/MathematicalFidelity.tsx   
+src/components/landing/MissionControl.tsx         
+src/components/landing/pricing.tsx                
+src/components/landing/solution-flowchart.tsx     
+src/components/landing/system-demos.tsx           
+src/components/landing/TheChallenge.tsx           
+src/components/landing/waypoints-network.tsx      
+src/components/landing/workflow.tsx               
+src/components/scorpio-globe.tsx                  
+src/components/theme-provider.tsx                 
+src/components/ui/back-button.tsx                 
+src/components/ui/card-3d.tsx                     
+src/components/ui/chart.tsx                       
+src/components/ui/constraint-engine.tsx           
+src/components/ui/container-scroll-animation.tsx  
+src/components/ui/crux-logo.tsx                   
+src/components/ui/dot-flow.tsx                    
+src/components/ui/floating-prompts.tsx            
+src/components/ui/form.tsx                        
+src/components/ui/macbook-scroll.tsx              
+src/components/ui/separator.tsx                   
+src/components/ui/sidebar.tsx                     
+src/components/ui/spotlight-cards.tsx             
+src/components/ui/text-animate.tsx                
+src/components/ui/typing-animation.tsx            
+src/hooks/use-window-size.ts                      
+src/lib/gemini.ts                                 
+tools/migrate-school-security.cjs                 
+Unused dependencies (29)
+@hookform/resolvers             package.json:15:6
+@lucide/lab                     package.json:16:6
+@polar-sh/nextjs                package.json:17:6
+@radix-ui/react-icons           package.json:22:6
+@radix-ui/react-separator       package.json:29:6
+@tiptap/extension-blockquote    package.json:33:6
+@tiptap/extension-bold          package.json:34:6
+@tiptap/extension-bullet-list   package.json:35:6
+@tiptap/extension-code-block    package.json:36:6
+@tiptap/extension-heading       package.json:37:6
+@tiptap/extension-history       package.json:38:6
+@tiptap/extension-italic        package.json:39:6
+@tiptap/extension-link          package.json:40:6
+@tiptap/extension-list-item     package.json:41:6
+@tiptap/extension-ordered-list  package.json:42:6
+@tiptap/extension-strike        package.json:44:6
+@vercel/analytics               package.json:50:6
+@vercel/speed-insights          package.json:51:6
+baseline-browser-mapping        package.json:52:6
+cobe                            package.json:56:6
+firebase-functions              package.json:60:6
+mathjs                          package.json:64:6
+mathlive                        package.json:65:6
+react-globe.gl                  package.json:73:6
+react-hook-form                 package.json:74:6
+sib-api-v3-sdk                  package.json:84:6
+three                           package.json:87:6
+vercel                          package.json:90:6
+zod                             package.json:91:6
+Unused devDependencies (3)
+@fontsource-variable/alan-sans  package.json:95:6 
+@google-cloud/vertexai          package.json:96:6 
+node-mocks-http                 package.json:110:6
+Unlisted binaries (1)
+firebase  package.json
+Unused exports (71)
+getActiveTokenRates           function  functions/src/metering.ts:7:17                            
+TOKEN_RATES                             functions/src/metering.ts:14:14                           
+metadata                                src/components/admin/access-requests.tsx:75:14            
+PHYSICS_CONSTANTS                       src/components/calculator/scientific-calculator.tsx:34:14 
+default                       function  src/components/department-banner.tsx:150:16               
+totalPoints                             src/components/landing/workspace-preview-data.ts:793:14   
+GradingTerminalView           function  src/components/landing/workspace-preview-pages.tsx:116:17 
+AssignmentDetailsView         function  src/components/landing/workspace-preview-pages.tsx:1088:17
+AnimatedSidebarInset                    src/components/motion/animated-sidebar.tsx:706:14         
+AnimatedSidebarMenuSub                  src/components/motion/animated-sidebar.tsx:874:14         
+AnimatedSidebarMenuSubItem              src/components/motion/animated-sidebar.tsx:909:14         
+AnimatedSidebarMenuSubButton  function  src/components/motion/animated-sidebar.tsx:940:17         
+usePromptInput                function  src/components/prompt-kit/prompt-input.tsx:24:17          
+badgeVariants                           src/components/ui/badge.tsx:46:17                         
+CardAction                              src/components/ui/card.tsx:89:3                           
+DialogOverlay                           src/components/ui/dialog.tsx:139:3                        
+DialogPortal                            src/components/ui/dialog.tsx:140:3                        
+DropdownMenuPortal                      src/components/ui/dropdown-menu.tsx:243:3                 
+DropdownMenuGroup                       src/components/ui/dropdown-menu.tsx:246:3                 
+DropdownMenuCheckboxItem                src/components/ui/dropdown-menu.tsx:249:3                 
+DropdownMenuRadioGroup                  src/components/ui/dropdown-menu.tsx:250:3                 
+DropdownMenuRadioItem                   src/components/ui/dropdown-menu.tsx:251:3                 
+DropdownMenuShortcut                    src/components/ui/dropdown-menu.tsx:253:3                 
+DropdownMenuSub                         src/components/ui/dropdown-menu.tsx:254:3                 
+DropdownMenuSubTrigger                  src/components/ui/dropdown-menu.tsx:255:3                 
+DropdownMenuSubContent                  src/components/ui/dropdown-menu.tsx:256:3                 
+PopoverAnchor                           src/components/ui/popover.tsx:48:51                       
+default                       variable  src/components/ui/raise-logo.tsx:36:16                    
+ScrollBar                               src/components/ui/scroll-area.tsx:58:22                   
+SelectGroup                             src/components/ui/select.tsx:182:3                        
+SelectLabel                             src/components/ui/select.tsx:184:3                        
+SelectScrollDownButton                  src/components/ui/select.tsx:185:3                        
+SelectScrollUpButton                    src/components/ui/select.tsx:186:3                        
+SelectSeparator                         src/components/ui/select.tsx:187:3                        
+SheetClose                              src/components/ui/sheet.tsx:137:3                         
+SheetHeader                             src/components/ui/sheet.tsx:139:3                         
+SheetFooter                             src/components/ui/sheet.tsx:140:3                         
+SheetDescription                        src/components/ui/sheet.tsx:142:3                         
+TableFooter                             src/components/ui/table.tsx:111:3                         
+TableCaption                            src/components/ui/table.tsx:115:3                         
+isOnDepartmentPlan            function  src/hooks/use-department-plan.ts:9:17                     
+parseQuestionsManually                  src/lib/ai/assignment.ts:68:10                            
+getLandingChatbotResponse     function  src/lib/ai/chatbot.ts:47:23                               
+DOMAIN_CONSTRAINT                       src/lib/ai/constants.ts:4:14                              
+PEDAGOGICAL_CONSTRAINT                  src/lib/ai/constants.ts:10:14                             
+NOTATION_CONSTRAINT                     src/lib/ai/constants.ts:26:14                             
+SOCRATIC_CONSTRAINT                     src/lib/ai/constants.ts:29:14                             
+CONTACT_CONSTRAINT                      src/lib/ai/constants.ts:32:14                             
+STRICT_CONCISE_CONSTRAINT               src/lib/ai/constants.ts:35:14                             
+validateResponse              function  src/lib/ai/grading.ts:172:17                              
+COMPREHENSIVE_TEST_BATTERY              src/lib/ai/research.ts:40:14                              
+analyzeResponse               function  src/lib/ai/research.ts:266:17                             
+runAblationStudy              function  src/lib/ai/research.ts:540:23                             
+repairIncompleteJson          function  src/lib/ai/utils.ts:113:17                                
+EASE_IN                                 src/lib/ease.ts:7:14                                      
+EASE_IN_OUT                             src/lib/ease.ts:8:14                                      
+EASE_OUT_CSS                            src/lib/ease.ts:12:14                                     
+SPRING_SWAP                             src/lib/ease.ts:23:14                                     
+SPRING_PANEL                            src/lib/ease.ts:31:14                                     
+SPRING_MOUSE                            src/lib/ease.ts:47:14                                     
+SPRING_GLIDE                            src/lib/ease.ts:55:14                                     
+getGenAIInstance              function  src/lib/firebase.ts:67:17                                 
+compressImage                 function  src/lib/firebase.ts:105:23                                
+convertFilesToBase64          function  src/lib/firebase.ts:255:23                                
+changePassword                          src/lib/firebase.ts:344:14                                
+signInWithGoogleForTeacher              src/lib/firebase.ts:368:14                                
+storage                                 src/lib/firebase.ts:381:20                                
+genAI                                   src/lib/firebase.ts:381:29                                
+appCheck                                src/lib/firebase.ts:381:36                                
+default                       variable  src/lib/firebase.ts:382:16                                
+checkAndIncrementUsage        function  src/lib/usage-limit.ts:100:23                             
+Unused exported types (12)
+AnimatedSidebarInsetProps          interface  src/components/motion/animated-sidebar.tsx:703:18
+AnimatedSidebarMenuSubProps        interface  src/components/motion/animated-sidebar.tsx:868:18
+AnimatedSidebarMenuSubButtonProps  interface  src/components/motion/animated-sidebar.tsx:927:18
+CalendarProps                      type       src/components/ui/calendar.tsx:10:13             
+ValidationResult                   interface  src/lib/ai/grading.ts:167:18                     
+TestQuestion                       interface  src/lib/ai/research.ts:10:18                     
+DetailedMetrics                    interface  src/lib/ai/research.ts:19:18                     
+AblationResult                     interface  src/lib/ai/research.ts:534:18                    
+auth                               type       src/lib/firebase-admin.ts:5:26                   
+app                                type       src/lib/firebase-admin.ts:5:32                   
+UserPreferences                    interface  src/lib/types.ts:5:18                            
+PhysicsAssignment                  interface  src/lib/types.ts:60:18                           
+Duplicate exports (2)
+DepartmentBanner|default  src/components/department-banner.tsx
+RaiseLogo|default         src/components/ui/raise-logo.tsx    

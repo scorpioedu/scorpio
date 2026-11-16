@@ -1,28 +1,23 @@
 import { scrubPII } from "@/lib/ai/utils";
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminFieldWithValue } from '@/lib/firebase-admin';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
 import { getNotebookAssistantResponse } from "@/lib/ai/notebook";
-import { checkRateLimit } from '@/lib/rate-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { notebookChatBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
   }
 
   try {
-    const { messages, notebookContent, studentId } = await req.json();
-
-    if (!messages || !studentId) {
-      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
-    }
-
-    // 1. Check Rate Limit
-    const rateLimitCheck = await checkRateLimit(req, studentId, "notebook", { windowMs: 60000, maxRequests: 20 });
-    if (!rateLimitCheck.allowed) {
-      return NextResponse.json({ error: rateLimitCheck.error }, { status: 429 });
-    }
+    const parsed = await parseJsonBody(req, notebookChatBody, { message: 'Missing required parameters' });
+    if (!parsed.ok) return parsed.response;
+    const { messages, studentId } = parsed.data;
+    const notebookContent = parsed.data.notebookContent ?? undefined;
 
     // 1. Resolve Organization for budget
     const studentDoc = await adminDb.collection("users").doc(studentId).get();
@@ -57,7 +52,7 @@ async function handlePost(req: NextRequest) {
     const budgetCheck = await checkBudget(organizationId, "notebook", studentId);
     if (budgetCheck.allowed) {
         // 3. Generate AI Response using centralized gemini helper
-        const result = await getNotebookAssistantResponse(messages.map((m: { role: "user" | "assistant"; content: string }) => ({ ...m, content: scrubPII(m.content, [studentData?.displayName || ""]) })), scrubPII(notebookContent, [studentData?.displayName || ""]));
+        const result = await getNotebookAssistantResponse(messages.map(m => ({ ...m, content: scrubPII(m.content, [studentData?.displayName || ""]) })), scrubPII(notebookContent as string, [studentData?.displayName || ""]));
         const responseText = result.content;
 
         // 4. Record Usage and Increment Notebook Count
@@ -80,12 +75,9 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
 
-  } catch (error: any) {
-    console.error('Notebook Copilot API Error:', error);
-    return NextResponse.json({ 
-      error: error?.message || 'Digital resonance failure. Copilot is offline.' 
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'notebook-chat', requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "studentId", "teacher": false});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "studentId", "teacher": false, "feature": "notebook", "rateLimit": "notebook"});

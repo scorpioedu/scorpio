@@ -8,12 +8,14 @@ import {
   motion,
   useReducedMotion,
   type Variants,
-} from "motion/react";
+} from "framer-motion";
 import {
   type ButtonHTMLAttributes,
+  type ComponentProps,
   type CSSProperties,
   createContext,
   forwardRef,
+  type ForwardedRef,
   type HTMLAttributes,
   type ReactNode,
   useCallback,
@@ -592,8 +594,7 @@ export const AnimatedSidebar = forwardRef<HTMLElement, AnimatedSidebarProps>(
   },
 );
 
-export interface AnimatedSidebarTriggerProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type AnimatedSidebarTriggerProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AnimatedSidebarTrigger = forwardRef<
   HTMLButtonElement,
@@ -631,8 +632,7 @@ export const AnimatedSidebarTrigger = forwardRef<
   );
 });
 
-export interface AnimatedSidebarCloseProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type AnimatedSidebarCloseProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AnimatedSidebarClose = forwardRef<
   HTMLButtonElement,
@@ -664,8 +664,7 @@ export const AnimatedSidebarClose = forwardRef<
   );
 });
 
-export interface AnimatedSidebarRailProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type AnimatedSidebarRailProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AnimatedSidebarRail = forwardRef<
   HTMLButtonElement,
@@ -700,8 +699,7 @@ export const AnimatedSidebarRail = forwardRef<
   );
 });
 
-export interface AnimatedSidebarInsetProps
-  extends HTMLMotionProps<"main"> {}
+export type AnimatedSidebarInsetProps = HTMLMotionProps<"main">;
 
 export const AnimatedSidebarInset = forwardRef<
   HTMLElement,
@@ -1153,8 +1151,8 @@ export const AnimatedSidebarMenuButton = forwardRef<
 
   return href ? (
     <MotionLink
-      {...(props as any)}
-      ref={forwardedRef as any}
+      {...(props as unknown as ComponentProps<typeof MotionLink>)}
+      ref={forwardedRef as ForwardedRef<HTMLAnchorElement>}
       href={href}
       target={target}
       rel={
@@ -1177,7 +1175,7 @@ export const AnimatedSidebarMenuButton = forwardRef<
   ) : (
     <motion.button
       {...props}
-      ref={forwardedRef as any}
+      ref={forwardedRef as ForwardedRef<HTMLButtonElement>}
       type={props.type ?? "button"}
       disabled={disabled}
       aria-current={isActive ? "page" : undefined}

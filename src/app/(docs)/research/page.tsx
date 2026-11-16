@@ -128,7 +128,7 @@ export default function ResearchPage() {
           </div>
         </div>
         <p className="text-xl text-muted-foreground max-w-4xl leading-relaxed">
-          Investigating the shift from "Answer Engines" to "Socratic Scaffolding".
+          Investigating the shift from &quot;Answer Engines&quot; to &quot;Socratic Scaffolding&quot;.
           Our research formalizes a four-layer architecture to structure verifiable AI behavior
           at inference-time, achieving a 0% Direct Answer Rate and significant pedagogical gains.
         </p>
@@ -292,7 +292,7 @@ export default function ResearchPage() {
                       <TableHead className="text-right">Domain Adh.</TableHead>
                       <TableHead className="text-right">DAR</TableHead>
                       <TableHead className="text-right">LaTeX %</TableHead>
-                      <TableHead className="text-right">Avg Q's</TableHead>
+                      <TableHead className="text-right">Avg Q&apos;s</TableHead>
                       <TableHead className="text-right">Quality</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -372,7 +372,7 @@ export default function ResearchPage() {
                   <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Expert Agreement</CardTitle>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold">0.51</span>
-                    <span className="text-xs text-muted-foreground">Cohen's Kappa (κ)</span>
+                    <span className="text-xs text-muted-foreground">Cohen&apos;s Kappa (κ)</span>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -493,7 +493,7 @@ export default function ResearchPage() {
           </Card>
           <div className="flex justify-center py-4">
             <p className="text-sm text-muted-foreground italic">
-              Can't see the preview? <a href="/Scorpio_Verifiable_Physics_Tutoring_LLM.pdf" className="text-primary underline">Download the PDF</a>.
+              Can&apos;t see the preview? <a href="/Scorpio_Verifiable_Physics_Tutoring_LLM.pdf" className="text-primary underline">Download the PDF</a>.
             </p>
           </div>
         </TabsContent>

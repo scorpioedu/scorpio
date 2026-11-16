@@ -3,10 +3,16 @@
 import { ProtectedRoute } from "@/components/protected-route";
 import { TeacherSidebar } from "@/components/teacher-sidebar";
 import { SpaceBackground } from "@/components/ui/space-background";
-import { NavigationChatbot } from "@/components/navigation-chatbot";
+import dynamic from "next/dynamic";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { PageTransition } from "@/components/page-transition";
 import { DepartmentBanner } from "@/components/department-banner";
+
+// Client-only floating widget; keep it (and its chat dependencies) out of the layout's initial JS. (I-018)
+const NavigationChatbot = dynamic(
+  () => import("@/components/navigation-chatbot").then((m) => m.NavigationChatbot),
+  { ssr: false }
+);
 
 export default function TeacherLayout({
   children,

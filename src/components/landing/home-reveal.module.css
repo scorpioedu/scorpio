@@ -25,10 +25,6 @@
     animation: reveal-preview 1s ease-out 185ms backwards;
   }
 
-  .scope :global(#scorpio-intro[open]) ~ * :is(.enter, .preview, [data-scroll-reveal]) {
-    animation-play-state: paused;
-  }
-
   .scope:has(:target) :is(.enter, .preview),
   .scope [data-scroll-reveal]:is(:target, :has(:target)),
   .scope :target [data-scroll-reveal] {

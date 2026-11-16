@@ -30,6 +30,10 @@ function AnimatedNumber({ value, decimals = 2 }: { value: number; decimals?: num
   return <span>{display}</span>;
 }
 
+// Gemini 3.8 Flash Rates in Dollars per 1M tokens
+const INPUT_RATE_USD = 0.75 / 1_000_000;
+const OUTPUT_RATE_USD = 3.75 / 1_000_000;
+
 export function AICostCalculator() {
   const [students, setStudents] = useState<number>(150);
   const [queriesPerStudent, setQueriesPerStudent] = useState<number>(45);
@@ -37,10 +41,6 @@ export function AICostCalculator() {
   const [avgOutputTokens, setAvgOutputTokens] = useState<number>(400);
   const [planType, setPlanType] = useState<"monthly" | "yearly">("yearly");
 
-  // Gemini 3.8 Flash Rates in Dollars per 1M tokens
-  const INPUT_RATE_USD = 0.75 / 1_000_000;
-  const OUTPUT_RATE_USD = 3.75 / 1_000_000;
-  
   const BASE_FEE = planType === "monthly" ? 10 : 8.33; 
 
   const results = useMemo(() => {
@@ -58,7 +58,7 @@ export function AICostCalculator() {
       totalQueries,
       costPerStudent: (aiUsageCost + BASE_FEE) / Math.max(students, 1)
     };
-  }, [students, queriesPerStudent, avgPromptTokens, avgOutputTokens, planType]);
+  }, [students, queriesPerStudent, avgPromptTokens, avgOutputTokens, BASE_FEE]);
 
   return (
     <Card className="border border-zinc-200 dark:border-zinc-800 bg-card shadow-sm overflow-hidden transition-all duration-300">

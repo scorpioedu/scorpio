@@ -6,6 +6,8 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testPathIgnorePatterns: ["/node_modules/", "/tests/security/", "/.firebase/"],
+  setupFiles: ["<rootDir>/jest.env.cjs"],
+  testPathIgnorePatterns: ["/node_modules/", "/tests/security/", "/.firebase/", "/.claude/"],
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/.next-gate/", "<rootDir>/.claude/"],
   moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
 };

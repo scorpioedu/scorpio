@@ -1,0 +1,305 @@
+[@next/next/no-img-element] src/app/(docs)/about/about-client.tsx:L229 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[@next/next/no-img-element] src/app/request-access/page.tsx:L341 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[react-hooks/exhaustive-deps] src/app/student/assignment-view/page.tsx:L359 -> React Hook useEffect has a missing dependency: 'handleSubmit'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/student/notebook/page.tsx:L238 -> React Hook useEffect has a missing dependency: 'activeNotebookId'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/student/notebook/page.tsx:L263 -> React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/student/notebook/page.tsx:L274 -> React Hook useEffect has a missing dependency: 'saveNotebook'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/student/submissions/page.tsx:L84 -> React Hook useEffect has missing dependencies: 'profile.courseId' and 'profile.teacherId'. Either include them or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/teacher/assignments/page.tsx:L61 -> React Hook useEffect has a missing dependency: 'fetchAssignments'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/teacher/network/billing/page.tsx:L43 -> React Hook useEffect has a missing dependency: 'fetchOrg'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/teacher/network/page.tsx:L370 -> React Hook useEffect has a missing dependency: 'fetchNetworkInfo'. Either include it or remove the dependency array.
+[@next/next/no-img-element] src/app/teacher/submission/grade/page.tsx:L557 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[react-hooks/exhaustive-deps] src/app/teacher/uploads/page.tsx:L52 -> React Hook useEffect has missing dependencies: 'fetchCourses' and 'fetchResources'. Either include them or remove the dependency array.
+[react-hooks/exhaustive-deps] src/app/teacher/waypoints/page.tsx:L68 -> React Hook useEffect has a missing dependency: 'fetchWaypoints'. Either include it or remove the dependency array.
+[react-hooks/exhaustive-deps] src/components/admin/ai-cost-calculator.tsx:L61 -> React Hook useMemo has missing dependencies: 'BASE_FEE', 'INPUT_RATE_USD', and 'OUTPUT_RATE_USD'. Either include them or remove the dependency array.
+[react-hooks/set-state-in-effect] src/components/admin/usage-analytics.tsx:L83 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/admin/usage-analytics.tsx:83:5
+  81 |   useEffect(() => {
+  82 |     if (!organizationId) return;
+> 83 |     setError(null);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  84 |     setLoading(true);
+  85 |
+  86 |     const q = query(
+[react-hooks/exhaustive-deps] src/components/demo-carousel.tsx:L47 -> React Hook useEffect has missing dependencies: 'next' and 'prev'. Either include them or remove the dependency array.
+[react-hooks/exhaustive-deps] src/components/demo-carousel.tsx:L81 -> React Hook useEffect has missing dependencies: 'isVideoPaused', 'isVideoVisible', 'next', and 'unavailable'. Either include them or remove the dependency array.
+[react-hooks/exhaustive-deps] src/components/demo-carousel.tsx:L107 -> React Hook useEffect has a missing dependency: 'next'. Either include it or remove the dependency array.
+[@next/next/no-img-element] src/components/feature-section.tsx:L237 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[@next/next/no-img-element] src/components/feature-section.tsx:L276 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[react-hooks/purity] src/components/landing/solution-flowchart.tsx:L326 -> Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/solution-flowchart.tsx:326:45
+  324 |                           }}
+  325 |                           transition={{
+> 326 |                             duration: 1.5 + Math.random(),
+      |                                             ^^^^^^^^^^^^^ Cannot call impure function
+  327 |                             repeat: Infinity,
+  328 |                             ease: "easeInOut"
+  329 |                           }}
+[react-hooks/immutability] src/components/landing/workspace-preview-pages.tsx:L1642 -> Error: Cannot access variable before it is declared
+
+`setGradingRubric` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/workspace-preview-pages.tsx:1642:9
+  1640 |       }
+  1641 |       if (initialDraft.gradingRubric) {
+> 1642 |         setGradingRubric(initialDraft.gradingRubric);
+       |         ^^^^^^^^^^^^^^^^ `setGradingRubric` accessed before it is declared
+  1643 |       }
+  1644 |       onClearDraft?.();
+  1645 |     }
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/landing/workspace-preview-pages.tsx:1654:25
+  1652 |   const [lockdownMode, setLockdownMode] = React.useState(false);
+  1653 |   const [stealthAssessment, setStealthAssessment] = React.useState(false);
+> 1654 |   const [gradingRubric, setGradingRubric] = React.useState(
+       |                         ^^^^^^^^^^^^^^^^ `setGradingRubric` is declared here
+  1655 |     initialDraft?.gradingRubric ||
+  1656 |       "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
+  1657 |   );
+[react-hooks/refs] src/components/math-input.tsx:L487 -> Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/math-input.tsx:487:20
+  485 |                 </p>
+  486 |                 <div className="flex flex-wrap gap-1.5">
+> 487 |                   {[
+      |                    ^
+> 488 |                     { icon: <Bold className="h-4 w-4" />, label: "Bold", action: () => applyFormat("bold") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 489 |                     { icon: <Italic className="h-4 w-4" />, label: "Italic", action: () => applyFormat("italic") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 490 |                     { icon: <List className="h-4 w-4" />, label: "Bullets", action: () => applyList("unordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 491 |                     { icon: <ListOrdered className="h-4 w-4" />, label: "Numbered", action: () => applyList("ordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 492 |                   ].map((b, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  493 |                     <button key={i} type="button"
+  494 |                       onMouseDown={(e) => { e.preventDefault(); b.action(); }}
+  495 |                       className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">
+[react-hooks/refs] src/components/math-input.tsx:L487 -> Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/math-input.tsx:487:20
+  485 |                 </p>
+  486 |                 <div className="flex flex-wrap gap-1.5">
+> 487 |                   {[
+      |                    ^
+> 488 |                     { icon: <Bold className="h-4 w-4" />, label: "Bold", action: () => applyFormat("bold") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 489 |                     { icon: <Italic className="h-4 w-4" />, label: "Italic", action: () => applyFormat("italic") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 490 |                     { icon: <List className="h-4 w-4" />, label: "Bullets", action: () => applyList("unordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 491 |                     { icon: <ListOrdered className="h-4 w-4" />, label: "Numbered", action: () => applyList("ordered") },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 492 |                   ].map((b, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  493 |                     <button key={i} type="button"
+  494 |                       onMouseDown={(e) => { e.preventDefault(); b.action(); }}
+  495 |                       className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">
+[react-hooks/set-state-in-effect] src/components/motion/animated-sidebar.tsx:L336 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:336:19
+  334 |   const openMobileRef = useRef(context.openMobile);
+  335 |
+> 336 |   useEffect(() => setMounted(true), []);
+      |                   ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  337 |
+  338 |   useEffect(() => {
+  339 |     openMobileRef.current = context.openMobile;
+[react-hooks/set-state-in-effect] src/components/motion/animated-sidebar.tsx:L340 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:340:29
+  338 |   useEffect(() => {
+  339 |     openMobileRef.current = context.openMobile;
+> 340 |     if (context.openMobile) setHidden(false);
+      |                             ^^^^^^^^^ Avoid calling setState() directly within an effect
+  341 |   }, [context.openMobile]);
+  342 |
+  343 |   useEffect(() => {
+[react-hooks/immutability] src/components/motion/animated-sidebar.tsx:L612 -> Error: This value cannot be modified
+
+Modifying a value returned from a hook is not allowed. Consider moving the modification into the hook where the value is constructed.
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/animated-sidebar.tsx:612:9
+  610 |       {...props}
+  611 |       ref={(node) => {
+> 612 |         context.triggerRef.current = node;
+      |         ^^^^^^^^^^^^^^^^^^ `context` cannot be modified
+  613 |         if (typeof forwardedRef === "function") forwardedRef(node);
+  614 |         else if (forwardedRef) forwardedRef.current = node;
+  615 |       }}
+[react-hooks/refs] src/components/motion/shared-layout-bg.tsx:L78 -> Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/motion/shared-layout-bg.tsx:78:12
+   76 |     const renderedChildren = Children.toArray(children)
+   77 |       .filter(isValidElement)
+>  78 |       .map((child, index) => {
+      |            ^^^^^^^^^^^^^^^^^^^
+>  79 |         const el = child as ReactElement<{
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  80 |           className?: string;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 133 |         );
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |       });
+      | ^^^^^^^^ Passing a ref to a function may read its value during render
+  135 |
+  136 |     const handleMouseLeave = (event: MouseEvent<HTMLElement>) => {
+  137 |       hovering.current = false;
+[react-hooks/set-state-in-effect] src/components/route-progress-bar.tsx:L14 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/route-progress-bar.tsx:14:5
+  12 |   // When pathname or searchParams change, flash a subtle, sleek progress indicator
+  13 |   useEffect(() => {
+> 14 |     setIsNavigating(true);
+     |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     const timeout = setTimeout(() => {
+  16 |       setIsNavigating(false);
+  17 |     }, 280);
+[react-hooks/set-state-in-effect] src/components/scorpio-globe.tsx:L14 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/scorpio-globe.tsx:14:3
+  12 |
+  13 | 	useEffect(() => {
+> 14 | 		setMounted(true);
+     | 		^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 | 	}, []);
+  16 |
+  17 | 	if (!mounted) return null;
+[react-hooks/set-state-in-effect] src/components/ui/macbook-scroll.tsx:L47 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/macbook-scroll.tsx:47:7
+  45 |   useEffect(() => {
+  46 |     if (window && window.innerWidth < 768) {
+> 47 |       setIsMobile(true);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  48 |     }
+  49 |   }, []);
+  50 |
+[@next/next/no-img-element] src/components/ui/macbook-scroll.tsx:L166 -> Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element
+[react-hooks/purity] src/components/ui/sidebar.tsx:L611 -> Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, [])
+  613 |
+  614 |   return (
+[react-hooks/set-state-in-effect] src/components/ui/smart-datetime-picker.tsx:L46 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/smart-datetime-picker.tsx:46:9
+  44 |       const d = new Date(initialValue)
+  45 |       if (!isNaN(d.getTime())) {
+> 46 |         setDate(d)
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  47 |         // If we're not currently typing, update the input value too
+  48 |         // but normally we want the input value to be natural language
+  49 |       }
+[react-hooks/set-state-in-effect] src/components/ui/space-background.tsx:L20 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/space-background.tsx:20:5
+  18 |   useEffect(() => {
+  19 |     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+> 20 |     setReducedMotion(mq.matches);
+     |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+  22 |     mq.addEventListener("change", handler);
+  23 |     return () => mq.removeEventListener("change", handler);
+[react-hooks/set-state-in-effect] src/components/ui/typing-animation.tsx:L109 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/components/ui/typing-animation.tsx:109:5
+  107 |
+  108 |   useEffect(() => {
+> 109 |     setDisplayedText("")
+      |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  110 |     setCurrentWordIndex(0)
+  111 |     setCurrentCharIndex(0)
+  112 |     setPhase("typing")
+[react-hooks/set-state-in-effect] src/hooks/use-sidebar-state.ts:L17 -> Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/pradeepmahdevu/source/learn/scorpio/src/hooks/use-sidebar-state.ts:17:7
+  15 |     
+  16 |     if (saved !== null) {
+> 17 |       setIsCollapsedState(saved === "true");
+     |       ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |     }
+  19 |     
+  20 |     setIsLoaded(true);
+[@typescript-eslint/ban-ts-comment] src/lib/ai/assignment.ts:L120 -> Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free.
+[@typescript-eslint/ban-ts-comment] src/lib/ai/utils.ts:L75 -> Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free.
+[@typescript-eslint/ban-ts-comment] src/lib/firebase.ts:L25 -> Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free.

@@ -57,6 +57,20 @@ export interface Organization {
   baseMonthlyFee: number; // Flat fee for storage/base features
 }
 
+/**
+ * Loose shape of a question as produced by the AI parser / manual parser and stored on assignments.
+ * Unknown extra fields are preserved (index signature) because teachers' stored data varies.
+ */
+export interface AssignmentQuestion {
+  id?: string;
+  text: string;
+  type: "text" | "multiple-choice" | "true-false" | "short-answer";
+  options?: string[];
+  correctAnswer?: string;
+  points?: number;
+  [key: string]: unknown;
+}
+
 export interface PhysicsAssignment {
   id: string;
   title: string;
@@ -65,7 +79,7 @@ export interface PhysicsAssignment {
   organizationId?: string;
   courseId: string;
   visibility: "private" | "network" | "global";
-  questions: any[]; // Consider more specific type later
+  questions: AssignmentQuestion[];
   createdAt: Timestamp | Date;
 }
 

@@ -1,0 +1,149 @@
+  134 entry points detected (132 plugin, 2 package.json)
+
+── Unused Code ─────────────────────────────────────
+
+● Unused files (40)
+  check_portfolios.ts
+  functions/src/templates/GradeAvailableEmail.tsx
+  src/components/cobe-globe.tsx
+  src/components/feature-section.tsx
+  src/components/hero-section.tsx
+  src/components/kokonutui/spotlight-cards.tsx
+  src/components/landing/LandingFooter.tsx
+  src/components/landing/MathematicalFidelity.tsx
+  src/components/landing/MissionControl.tsx
+  src/components/landing/TheChallenge.tsx
+  ... and 30 more (--format json for full list)
+  Files not reachable from any entry point
+  https://fallow.tools/docs/explanations/dead-code/#unused-files
+  To suppress: // fallow-ignore-file unused-file
+
+● Unused exports (63)
+  src/components/ui/dropdown-menu.tsx (9)
+    :243 DropdownMenuPortal
+    :246 DropdownMenuGroup
+    :249 DropdownMenuCheckboxItem
+    :250 DropdownMenuRadioGroup
+    :251 DropdownMenuRadioItem
+    ... and 4 more (--format json for full list)
+  src/lib/firebase.ts (9)
+    :67 getGenAIInstance
+    :105 compressImage
+    :255 convertFilesToBase64 (marked @deprecated)
+    :344 changePassword
+    :368 signInWithGoogleForTeacher
+    ... and 4 more (--format json for full list)
+  src/lib/ease.ts (7)
+    :7 EASE_IN
+    :8 EASE_IN_OUT
+    :12 EASE_OUT_CSS
+    :23 SPRING_SWAP
+    :31 SPRING_PANEL
+    ... and 2 more (--format json for full list)
+  src/lib/ai/constants.ts (6)
+    :4 DOMAIN_CONSTRAINT
+    :10 PEDAGOGICAL_CONSTRAINT
+    :26 NOTATION_CONSTRAINT
+    :29 SOCRATIC_CONSTRAINT
+    :32 CONTACT_CONSTRAINT
+    ... and 1 more (--format json for full list)
+  src/components/ui/select.tsx (5)
+    :182 SelectGroup
+    :184 SelectLabel
+    :185 SelectScrollDownButton
+    :186 SelectScrollUpButton
+    :187 SelectSeparator
+  src/components/motion/animated-sidebar.tsx (4)
+    :706 AnimatedSidebarInset
+    :874 AnimatedSidebarMenuSub
+    :909 AnimatedSidebarMenuSubItem
+    :940 AnimatedSidebarMenuSubButton
+  functions/src/metering.ts (2)
+    :7 getActiveTokenRates
+    :14 TOKEN_RATES
+  src/components/landing/workspace-preview-pages.tsx (2)
+    :116 GradingTerminalView
+    :1088 AssignmentDetailsView
+  src/components/ui/dialog.tsx (2)
+    :139 DialogOverlay
+    :140 DialogPortal
+  src/components/ui/sheet.tsx (2)
+    :137 SheetClose
+    :140 SheetFooter
+  ... and 15 more in 14 files (--format json for full list)
+  Exported symbols with no known consumers
+  https://fallow.tools/docs/explanations/dead-code/#unused-exports
+  To auto-fix: fallow fix --dry-run
+  To suppress: // fallow-ignore-next-line unused-export
+
+● Unused type exports (8)
+  src/components/motion/animated-sidebar.tsx (3)
+    :703 AnimatedSidebarInsetProps
+    :868 AnimatedSidebarMenuSubProps
+    :927 AnimatedSidebarMenuSubButtonProps
+  src/components/calculator/scientific-calculator.tsx (2)
+    :25 PhysicsConstant
+    :56 CalculatorMode
+  src/components/landing/workspace-preview.tsx
+    :81 PreviewPathname
+  src/lib/firebase-admin.ts
+    :5 app
+  src/lib/types.ts
+    :60 PhysicsAssignment
+  Type exports with no known consumers
+  https://fallow.tools/docs/explanations/dead-code/#unused-types
+  To auto-fix: fallow fix --dry-run
+  To suppress: // fallow-ignore-next-line unused-type
+
+── Dependencies ─────────────────────────────────────
+
+● Unused dependencies (24)
+  @hookform/resolvers
+  @lucide/lab
+  @polar-sh/nextjs
+  @radix-ui/react-icons
+  @tiptap/extension-blockquote
+  @tiptap/extension-bold
+  @tiptap/extension-bullet-list
+  @tiptap/extension-code-block
+  @tiptap/extension-heading
+  @tiptap/extension-history
+  ... and 14 more (--format json for full list)
+  Listed in dependencies but never imported
+  https://fallow.tools/docs/explanations/dead-code/#unused-dependencies
+
+● Unused devDependencies (4)
+  firebase-functions-test (functions/package.json)
+  @fontsource-variable/alan-sans
+  @google-cloud/vertexai
+  node-mocks-http
+  Listed in devDependencies but never imported or referenced
+  https://fallow.tools/docs/explanations/dead-code/#unused-dependencies
+
+● Dev dependencies used in production (consider moving to dependencies) (1)
+  @tailwindcss/typography
+  A runtime entry point imports these devDependencies; for a tool script, use a
+  support entry
+  https://fallow.tools/docs/explanations/dead-code/#dev-dependencies-in-production
+
+── Structure ─────────────────────────────────────
+
+● Duplicate export aliases (3)
+  functions/src/templates/AssignmentCreatedEmail.tsx
+    :22 AssignmentCreatedEmail is exported as AssignmentCreatedEmail, default
+  src/components/department-banner.tsx
+    :28 DepartmentBanner is exported as DepartmentBanner, default
+  src/components/ui/raise-logo.tsx
+    :14 RaiseLogo is exported as RaiseLogo, default
+
+── Policy ─────────────────────────────────────
+
+● Invalid client exports (1)
+  src/components/admin/access-requests.tsx
+    :75 metadata (from "use client")
+  Server-only or route-config exports in a "use client" file (Next.js rejects
+  this at build time)
+  https://fallow.tools/docs/explanations/dead-code/#invalid-client-exports
+
+✗ 40 files · 63 exports · 8 types · 24 unused dependencies · 4 dev/optional dependencies · 1 dev dependency in production · 3 duplicate export aliases · 1 invalid client export (0.08s)
+  8 findings in unused files are hidden · --show-cascade shows them

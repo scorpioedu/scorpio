@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, where } from "firebase/firestore";
 import { db, uploadFilesToStorage } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
@@ -23,13 +23,13 @@ interface Resource {
   url: string;
   type?: "video" | "document" | "link";
   courseId?: string;
-  createdAt: any;
+  createdAt?: { toDate?: () => Date } | null;
 }
 
 export default function ResourcesPage() {
   const { user } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -44,23 +44,16 @@ export default function ResourcesPage() {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchResources();
-      fetchCourses();
-    }
-  }, [user]);
-
-  async function fetchCourses() {
+  const fetchCourses = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
       const snap = await getDocs(q);
-      setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string })));
     } catch (e) { console.error(e); }
-  }
+  }, [user]);
 
-  async function fetchResources() {
+  const fetchResources = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(
@@ -79,7 +72,16 @@ export default function ResourcesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchResources();
+      fetchCourses();
+    }
+  }, [user, fetchResources, fetchCourses]);
+
+
 
   async function handleAddResource(e: React.FormEvent) {
     e.preventDefault();
@@ -94,7 +96,7 @@ export default function ResourcesPage() {
         setUploadProgress(10);
         const uploadedFiles = await uploadFilesToStorage([file], user.uid, (_, progress) => {
           setUploadProgress(progress);
-        });
+        }, "resources");
         if (uploadedFiles.length > 0) {
           finalUrl = uploadedFiles[0].url;
           // Auto-assign type if it's a file

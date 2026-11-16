@@ -6,7 +6,6 @@ export async function getNavigationResponse(
   featuresContext: string,
   systemPrompt: string
 ): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const fullPrompt = `${systemPrompt}
 
 ${userRole.toUpperCase()} FEATURES:
@@ -36,19 +35,12 @@ Formatting & Markdown Instructions:
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
       }
     };
-  } catch (error) {
-    console.error("Error getting navigation response:", error);
-    return { 
-      text: "I'm sorry, I'm having trouble processing your request right now." 
-    };
-  }
 }
 
 export async function getLandingChatbotResponse(
   message: string,
   systemPrompt: string
 ): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nVisitor question: ${message}` }] }],
       generationConfig: {
@@ -64,8 +56,4 @@ export async function getLandingChatbotResponse(
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
       }
     };
-  } catch (error) {
-    console.error("Error getting landing chatbot response:", error);
-    return { text: "I'm having trouble processing your request right now. Please try again." };
-  }
 }

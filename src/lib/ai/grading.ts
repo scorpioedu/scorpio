@@ -1,16 +1,20 @@
 import { model } from "./config";
 import { scrubPII, classifyQuestion } from "./utils";
+import { gradeWithModel } from "../../../functions/src/grading-schema";
 
 export async function gradeResponse(
-  question: string, 
-  answer: string, 
+  question: string,
+  answer: string,
   rubric?: string,
   studentNames: string[] = []
-): Promise<{ 
-  score: number, 
-  feedback: string, 
+): Promise<{
+  score: number,
+  feedback: string,
   reasoning?: string,
-  usage?: { inputTokens: number, outputTokens: number } 
+  usage?: { inputTokens: number, outputTokens: number },
+  /** True when the reply must not be auto-finalised (suspected injection, implausible full marks). */
+  needsReview?: boolean,
+  reviewReason?: string
 }> {
   try {
     // Basic verification of inputs
@@ -18,116 +22,47 @@ export async function gradeResponse(
       return { score: 0, feedback: "Missing question or answer text for grading." };
     }
 
-    const prompt = `You are an expert Physics professor and evaluator. 
-    Your goal is to grade student responses with scientific rigor.
-
-    QUESTION:
-    "${scrubPII(question, studentNames)}"
-
-    ${rubric ? `GRADING RUBRIC / CORRECT REFERENCE:\n"${scrubPII(rubric, studentNames)}"` : ''}
-
-    STUDENT SUBMISSION:
-    "${scrubPII(answer, studentNames)}"
-    
-    INSTRUCTIONS:
-    1. UNIT SENSITIVITY: In physics, numbers without units are meaningless. If the numerical value is correct but units are missing or incorrect (e.g., Joules instead of Watts), penalize the score by 10-20%.
-    2. VECTOR QUANTITIES: For vectors (Force, Velocity, Acceleration, Momentum), ensure the direction is identified if the question requires it.
-    3. SIGNIFICANT FIGURES: Check if the precision of the answer is reasonable given the inputs.
-    4. ERROR CARRIED FORWARD: If a student uses an incorrect answer from a previous part correctly in the current part, award full credit for the current part's logic.
-    5. CALCULATION ERRORS: If the student shows correct logical derivation but makes a minor math error, award 50-70% partial credit.
-    6. Provide a score from 0.0 to 10.0 (decimals allowed).
-    7. Generate "technical_reasoning": Explain precisely why the score was given, citing units, vectors, or logic.
-    8. Generate "student_feedback": Provide instructional feedback that helps correct physics misconceptions.
-    9. Identify "misconceptions": List specific physics misunderstandings (e.g., "confusing mass with weight").
-
-    Return ONLY a JSON object:
-    {
-      "score": number,
-      "technical_reasoning": string,
-      "student_feedback": string,
-      "misconceptions": string[]
-    }`;
-    
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        maxOutputTokens: 1024,
-        temperature: 0.1,
-        responseMimeType: "application/json",
-      }
-    });
-    const response = await result.response;
-    
-    let text = "";
-    try {
-        text = response.text();
-    } catch (textError) {
-        console.error("Failed to get text from AI response:", textError);
-        // Check if it's a safety block
-        if (response.candidates && response.candidates[0]?.finishReason === 'SAFETY') {
+    return await gradeWithModel(
+      { question, answer, rubric },
+      async ({ systemInstruction, userPrompt }) => {
+        const result = await model.generateContent({
+          scrubLevel: "full",
+          systemInstruction,
+          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+          generationConfig: {
+            maxOutputTokens: 1024,
+            temperature: 0.1,
+            responseMimeType: "application/json",
+          }
+        });
+        const response = await result.response;
+        let text = "";
+        try {
+          text = response.text();
+        } catch (textError) {
+          // Check if it's a safety block
+          if (response.candidates && response.candidates[0]?.finishReason === 'SAFETY') {
             throw new Error("Response blocked; manual review required");
+          }
+          throw textError;
         }
-        throw textError;
-    }
-    
-    if (!text) {
-        throw new Error("AI returned empty response");
-    }
-
-    // Robust JSON extraction: Find the first '{' and last '}'
-    const startIdx = text.indexOf('{');
-    const endIdx = text.lastIndexOf('}');
-    
-    if (startIdx === -1 || endIdx === -1) {
-      console.error("No JSON found in AI response. Raw text:", text);
-      throw new Error("Invalid format from AI grader");
-    }
-    
-    const jsonStr = text.substring(startIdx, endIdx + 1).trim();
-    
-    try {
-        const data = JSON.parse(jsonStr);
-        
-        if (typeof data.score !== "number" || !Number.isFinite(data.score)) throw new Error("Invalid score");
-        // Ensure score is a number and capped
-        let score = 0;
-        if (typeof data.score === 'number') {
-            score = Math.min(10, Math.max(0, data.score));
-        } else if (typeof data.score === 'string') {
-            // Handle cases like "8/10"
-            if (data.score.includes('/')) {
-                const parts = data.score.split('/');
-                const num = parseFloat(parts[0]);
-                const den = parseFloat(parts[1]) || 10;
-                score = (num / den) * 10;
-            } else {
-                score = parseFloat(data.score) || 0;
-            }
-            score = Math.min(10, Math.max(0, score));
-        }
-
         return {
-            score,
-            feedback: data.student_feedback || data.feedback || "No feedback provided.",
-            reasoning: data.technical_reasoning || data.reasoning || "",
-            usage: {
-                inputTokens: response.usageMetadata?.promptTokenCount || 0,
-                outputTokens: response.usageMetadata?.candidatesTokenCount || 0
-            }
+          text,
+          usage: {
+            inputTokens: response.usageMetadata?.promptTokenCount || 0,
+            outputTokens: response.usageMetadata?.candidatesTokenCount || 0
+          }
         };
-    } catch (parseError) {
-        console.error("Error parsing AI response. Raw text:", text);
-        throw new Error("Invalid grading response; manual review required");
-    }
-
-  } catch (error: any) {
-    console.error("Error in gradeResponse:", error);
+      },
+      { scrub: (text) => scrubPII(text, studentNames), defaultFeedback: "No feedback provided." }
+    );
+  } catch (error: unknown) {
+    console.error("Error in gradeResponse:", error instanceof Error ? error.message : String(error));
     throw new Error("AI grading unavailable; manual review required");
   }
 }
 
 export async function synthesizeRubric(questionText: string, topic: string): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
     const prompt = `
       You are an academic curriculum assistant.
       Your task is to create a detailed Scoring Guide for a question about "${topic}".
@@ -158,10 +93,6 @@ export async function synthesizeRubric(questionText: string, topic: string): Pro
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
       }
     };
-  } catch (error) {
-    console.error("Error synthesizing rubric:", error);
-    return { text: "Failed to synthesize rubric. Please provide manual guidelines." };
-  }
 }
 
 export interface ValidationResult {

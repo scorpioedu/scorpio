@@ -1,5 +1,6 @@
 "use client";
 
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import {
 import { Plus, RefreshCw, Copy, Check, ShieldX, KeyRound, User, Clock, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { errorMessage } from "@/lib/error-utils";
 
 interface InviteCode {
   code: string;
@@ -41,11 +43,7 @@ interface InviteCode {
   usedByEmail: string | null;
 }
 
-interface TeacherInviteCodesProps {
-  adminSecret: string;
-}
-
-export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
+export function TeacherInviteCodes() {
   const [codes, setCodes] = useState<InviteCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -60,23 +58,22 @@ export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/teacher-code", {
+      const res = await authenticatedFetch("/api/auth/teacher-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "list" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to load codes");
       setCodes(data.codes ?? []);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setLoading(false);
     }
-  }, [adminSecret]);
+  }, []);
 
   useEffect(() => {
     fetchCodes();
@@ -86,11 +83,10 @@ export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/teacher-code", {
+      const res = await authenticatedFetch("/api/auth/teacher-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "generate", label: label.trim() || null }),
       });
@@ -100,8 +96,8 @@ export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
       setLabel("");
       setDialogOpen(false);
       await fetchCodes();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setGenerating(false);
     }
@@ -111,19 +107,18 @@ export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
     setRevoking(code);
     setError(null);
     try {
-      const res = await fetch("/api/auth/teacher-code", {
+      const res = await authenticatedFetch("/api/auth/teacher-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-secret": adminSecret,
         },
         body: JSON.stringify({ action: "revoke", code }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to revoke code");
       await fetchCodes();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(errorMessage(e) ?? null);
     } finally {
       setRevoking(null);
     }
@@ -187,7 +182,7 @@ export function TeacherInviteCodes({ adminSecret }: TeacherInviteCodesProps) {
                 <DialogHeader>
                   <DialogTitle>Generate Teacher Invite Code</DialogTitle>
                   <DialogDescription>
-                    Add an optional label (e.g. the teacher's name or school) to keep track of who you gave this to.
+                    Add an optional label (e.g. the teacher&apos;s name or school) to keep track of who you gave this to.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-2">

@@ -1,0 +1,574 @@
+=== STEP 0: Versions ===
+v24.12.0
+11.6.2
+openjdk version "24.0.2" 2025-07-15
+OpenJDK Runtime Environment Homebrew (build 24.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 24.0.2, mixed mode, sharing)
+15.5.1
+
+=== STEP 1: git clone & npm install (README Quick Start step 1) ===
+Cloning into '/tmp/scorpio-clean-clone'...
+done.
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated querystring@0.2.0: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+npm warn deprecated formidable@1.2.6: Please upgrade to latest, formidable@v2 or formidable@v3! Check these notes: https://bit.ly/2ZEqIau
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated superagent@3.7.0: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
+npm warn deprecated tar@7.5.7: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated sib-api-v3-sdk@8.5.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 1535 packages, and audited 1536 packages in 15s
+
+367 packages are looking for funding
+  run `npm fund` for details
+
+97 vulnerabilities (8 low, 44 moderate, 39 high, 6 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+
+=== STEP 2: Copy .env.example to .env.local (with dummy values) ===
+Copied .env.example -> .env.local
+
+=== STEP 3: npm test ===
+
+> scorpio@0.1.0 test
+> jest
+
+PASS __tests__/waypoints-plan-limits.test.ts
+PASS __tests__/due-date.test.ts
+PASS __tests__/assignment-validation.test.ts
+PASS __tests__/assignment-security.test.ts
+PASS src/lib/utils.test.ts
+PASS __tests__/session.test.ts
+PASS __tests__/grading-failure.test.ts
+  ● Console
+
+    console.error
+      Error in gradeResponse: Error: offline
+          at Object.<anonymous> (/private/tmp/scorpio-clean-clone/__tests__/grading-failure.test.ts:6:89)
+          at Promise.finally.completed (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at run (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/private/tmp/scorpio-clean-clone/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/private/tmp/scorpio-clean-clone/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/private/tmp/scorpio-clean-clone/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/private/tmp/scorpio-clean-clone/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at gradeResponse (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:6:111)
+
+    console.error
+      Error parsing AI response. Raw text: {invalid}
+
+      117 |         };
+      118 |     } catch (parseError) {
+    > 119 |         console.error("Error parsing AI response. Raw text:", text);
+          |                 ^
+      120 |         throw new Error("Invalid grading response; manual review required");
+      121 |     }
+      122 |
+
+      at gradeResponse (src/lib/ai/grading.ts:119:17)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:7:163)
+
+    console.error
+      Error in gradeResponse: Error: Invalid grading response; manual review required
+          at gradeResponse (/private/tmp/scorpio-clean-clone/src/lib/ai/grading.ts:120:15)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.<anonymous> (/private/tmp/scorpio-clean-clone/__tests__/grading-failure.test.ts:7:163)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at gradeResponse (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:7:163)
+
+    console.error
+      Error parsing AI response. Raw text: {"student_feedback":"ok"}
+
+      117 |         };
+      118 |     } catch (parseError) {
+    > 119 |         console.error("Error parsing AI response. Raw text:", text);
+          |                 ^
+      120 |         throw new Error("Invalid grading response; manual review required");
+      121 |     }
+      122 |
+
+      at gradeResponse (src/lib/ai/grading.ts:119:17)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:8:191)
+
+    console.error
+      Error in gradeResponse: Error: Invalid grading response; manual review required
+          at gradeResponse (/private/tmp/scorpio-clean-clone/src/lib/ai/grading.ts:120:15)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.<anonymous> (/private/tmp/scorpio-clean-clone/__tests__/grading-failure.test.ts:8:191)
+
+      122 |
+      123 |   } catch (error: any) {
+    > 124 |     console.error("Error in gradeResponse:", error);
+          |             ^
+      125 |     throw new Error("AI grading unavailable; manual review required");
+      126 |   }
+      127 | }
+
+      at gradeResponse (src/lib/ai/grading.ts:124:13)
+      at Object.<anonymous> (__tests__/grading-failure.test.ts:8:191)
+
+PASS __tests__/auth-verify.test.ts
+PASS __tests__/landing-chat.test.ts
+PASS __tests__/department-banner.test.ts
+
+Test Suites: 10 passed, 10 total
+Tests:       39 passed, 39 total
+Snapshots:   0 total
+Time:        1.023 s
+Ran all test suites.
+npm test exit code: 0
+
+=== STEP 4: npm run test:security ===
+
+> scorpio@0.1.0 test:security
+> firebase emulators:exec --only firestore,storage --project demo-scorpio-security --config firebase.test.json 'jest --config jest.security.config.cjs --runInBand'
+
+i  emulators: Starting emulators: firestore, storage
+i  emulators: Detected demo project ID "demo-scorpio-security", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+⚠  Unexpected rules runtime error: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/Users/pradeepmahdevu/.cache/firebase/emulators/cloud-storage-rules-runtime-v1.1.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+i  Running script: jest --config jest.security.config.cjs --runInBand
+PASS tests/security/full-student-teacher-workflow.test.ts (5.024 s)
+  ● Console
+
+    console.warn
+      [2026-11-12T04:27:14.481Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x3a221157 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L55:24 for 'update' @ L55, false for 'update' @ L55
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+FAIL tests/security/workflows.test.ts (6.962 s)
+  ● concurrent budget reservations cannot exceed the cap; settlement is idempotent
+
+    expect(received).toBeCloseTo(expected)
+
+    Expected: 0.28
+    Received: 0.45
+
+    Expected precision:    2
+    Expected difference: < 0.005
+    Received difference:   0.16999999999999998
+
+      58 |  const id=(results.find(r=>r.status==='fulfilled') as PromiseFulfilledResult<string>).value;
+      59 |  await settleBudget(adminDb,id,1000,1000);await settleBudget(adminDb,id,1000,1000);
+    > 60 |  const org=(await adminDb.collection('organizations').doc('budget').get()).data()!;expect(org.aiUsageReserved).toBe(0);expect(org.aiUsageCurrent).toBeCloseTo(0.28);
+         |                                                                                                                                                   ^
+      61 | });
+      62 | test('monthly student allowance rolls over and is reserved atomically',async()=>{
+      63 |  await adminDb.collection('organizations').doc('allowance').set({planId:'free',subscriptionStatus:'active',aiBudgetLimit:50,aiTutorLimitPerStudent:1});
+
+      at Object.<anonymous> (tests/security/workflows.test.ts:60:147)
+
+PASS tests/security/rules.test.cjs
+  ● Console
+
+    console.warn
+      [2026-11-12T04:27:22.743Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f7898 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      false for 'create' @ L28, evaluation error at L31:24 for 'update' @ L31, false for 'create' @ L28
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:22.767Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f7899 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L31:24 for 'update' @ L31, false for 'update' @ L31
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:22.784Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f789a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L31:24 for 'update' @ L31, false for 'update' @ L31
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:22.803Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f789b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L31:24 for 'update' @ L31, false for 'update' @ L31
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:22.820Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f789c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L31:24 for 'update' @ L31, false for 'update' @ L31
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:22.972Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78a5 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L62:24 for 'update' @ L62, false for 'update' @ L62
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:23.057Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78a9 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L55:24 for 'update' @ L55, false for 'update' @ L55
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:23.073Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78aa error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L55:24 for 'update' @ L55
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:23.090Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78ab error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      false for 'create' @ L78, evaluation error at L79:24 for 'update' @ L79, false for 'update' @ L79
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:23.106Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78ac error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      false for 'create' @ L83, evaluation error at L84:24 for 'update' @ L84, false for 'update' @ L84
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+    console.warn
+      [2026-11-12T04:27:23.144Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Write' stream 0x630f78ae error. Code: 7 Message: 7 PERMISSION_DENIED: 
+      evaluation error at L88:24 for 'update' @ L88, false for 'update' @ L88
+
+      at Logger.defaultLogHandler [as _logHandler] (node_modules/@firebase/logger/src/logger.ts:115:57)
+      at Logger.warn (node_modules/@firebase/logger/src/logger.ts:206:10)
+      at logWarn (node_modules/@firebase/firestore/src/util/log.ts:69:15)
+      at ClientDuplexStreamImpl.<anonymous> (node_modules/@firebase/firestore/src/platform/node/grpc_connection.ts:310:9)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client.ts:705:18)
+      at Object.onReceiveStatus (node_modules/@grpc/grpc-js/src/client-interceptors.ts:419:48)
+      at node_modules/@grpc/grpc-js/src/resolving-call.ts:132:24
+
+PASS tests/security/webhooks.test.ts
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       1 failed, 33 passed, 34 total
+Snapshots:   0 total
+Time:        13.385 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "jest --config jest.security.config.cjs --runInBand" exited with code 1
+npm run test:security exit code: 1
+
+=== STEP 5: npm run build ===
+
+> scorpio@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.2.1 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+read ETIMEDOUT
+
+Retrying 1/3...
+✓ Compiled successfully in 59s
+  Running TypeScript ...
+  Finished TypeScript in 12.8s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/72) ...
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+  Generating static pages using 9 workers (18/72) 
+  Generating static pages using 9 workers (36/72) 
+  Generating static pages using 9 workers (54/72) 
+✓ Generating static pages using 9 workers (72/72) in 692ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /admin
+├ ○ /ai
+├ ƒ /api/account
+├ ƒ /api/admin/firestore
+├ ƒ /api/ai/generate
+├ ƒ /api/ai/generate-title
+├ ƒ /api/ai/parse
+├ ƒ /api/ai/synthesize-rubric
+├ ƒ /api/assignments
+├ ƒ /api/auth/register
+├ ƒ /api/auth/request-access
+├ ƒ /api/auth/session
+├ ƒ /api/auth/teacher-code
+├ ƒ /api/chat
+├ ƒ /api/chat/landing
+├ ƒ /api/chat/limits
+├ ƒ /api/checkout
+├ ƒ /api/courses
+├ ƒ /api/github/stats
+├ ƒ /api/grade
+├ ƒ /api/notebook/chat
+├ ƒ /api/research/respond
+├ ƒ /api/student/enrollment
+├ ƒ /api/student/tutor
+├ ƒ /api/submissions
+├ ƒ /api/support/report
+├ ƒ /api/teacher/network/invites
+├ ƒ /api/teacher/network/membership
+├ ƒ /api/teacher/network/portfolio
+├ ƒ /api/teacher/students/cleanup
+├ ƒ /api/webhooks/polar
+├ ○ /contact
+├ ○ /demos
+├ ○ /demos/sticky-banner
+├ ○ /demos/teacher
+├ ○ /features
+├ ○ /forgot-password
+├ ƒ /join/[id]
+├ ƒ /join/class/[code]
+├ ƒ /join/network/[code]
+├ ○ /login
+├ ○ /pricing
+├ ○ /privacy
+├ ○ /request-access
+├ ○ /research
+├ ○ /research/admin
+├ ○ /signup
+├ ○ /student
+├ ○ /student/assignment-view
+├ ○ /student/assignments
+├ ○ /student/grades
+├ ○ /student/notebook
+├ ○ /student/resources
+├ ○ /student/submissions
+├ ○ /student/tutor
+├ ○ /student/vault
+├ ○ /sustainability
+├ ○ /teacher
+├ ○ /teacher/assignment-view
+├ ○ /teacher/assignments
+├ ○ /teacher/create
+├ ○ /teacher/grades
+├ ○ /teacher/grades/student
+├ ○ /teacher/network
+├ ○ /teacher/network/billing
+├ ○ /teacher/network/investment
+├ ○ /teacher/students
+├ ○ /teacher/submission/grade
+├ ○ /teacher/uploads
+├ ○ /teacher/vault
+├ ○ /teacher/waypoints
+└ ○ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+npm run build exit code: 0
+
+=== STEP 6: firebase deploy dry-run / functions check (from README Deployment section) ===
+
+> build
+> tsc
+
+src/grading.ts(4,29): error TS2307: Cannot find module '@google/genai' or its corresponding type declarations.
+src/lib/email.ts(1,24): error TS2307: Cannot find module 'resend' or its corresponding type declarations.
+src/templates/AssignmentCreatedEmail.tsx(13,8): error TS2307: Cannot find module '@react-email/components' or its corresponding type declarations.
+src/templates/GradeAvailableEmail.tsx(13,8): error TS2307: Cannot find module '@react-email/components' or its corresponding type declarations.
+functions build without install exit code: 2
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: undefined,
+npm warn EBADENGINE   required: { node: '22' },
+npm warn EBADENGINE   current: { node: 'v24.12.0', npm: '11.6.2' }
+npm warn EBADENGINE }
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 584 packages, and audited 585 packages in 4s
+
+89 packages are looking for funding
+  run `npm fund` for details
+
+48 vulnerabilities (8 low, 24 moderate, 13 high, 3 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+functions npm ci exit code: 0
+
+> build
+> tsc
+
+functions build after npm ci exit code: 0

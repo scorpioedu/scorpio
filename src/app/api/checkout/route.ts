@@ -1,15 +1,16 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { polar } from "@/lib/polar";
 import { adminDb } from "@/lib/firebase-admin";
+import { parseJsonBody } from "@/lib/api-schema";
+import { checkoutBody } from "@/lib/schemas/api-bodies";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { userId, organizationId, planId } = await req.json();
-
-    if (!userId || !organizationId || !planId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, checkoutBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { userId, organizationId, planId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Server configuration error: database unavailable" }, { status: 500 });
@@ -43,10 +44,8 @@ async function handlePost(req: NextRequest) {
     const productId = products[planId];
     if (!productId) {
       console.error(`Missing Polar ID for plan: ${planId}. Check .env.local.`);
-      return NextResponse.json({ 
-        error: "Configuration Error", 
-        message: `Plan ID '${planId}' is not mapped to a Polar Price ID in the environment variables.` 
-      }, { status: 400 });
+      // `error` is pinned by a characterization test; `message` (read first by the billing page) no longer echoes env/plan details.
+      return NextResponse.json({ error: "Configuration Error", message: "This plan is not available for checkout right now.", requestId }, { status: 400 });
     }
 
     // 3. Create Polar Checkout Session
@@ -57,7 +56,13 @@ async function handlePost(req: NextRequest) {
 
       // In @polar-sh/sdk v0.44.0, you must use the `products` array with Price IDs
       // Ensure POLAR_PRODUCT_ID in .env.local is a Price ID (starts with pri_)
-      const checkoutOptions: any = {
+      const checkoutOptions: {
+        products: string[];
+        successUrl: string;
+        includeConfirmationEmail: boolean;
+        metadata: Record<string, string>;
+        customerEmail?: string;
+      } = {
         products: [productId], 
         successUrl: `${process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin}/teacher/network?success=true`,
         includeConfirmationEmail: true,
@@ -79,21 +84,14 @@ async function handlePost(req: NextRequest) {
       }
 
       return NextResponse.json({ url: result.url });
-    } catch (polarError: any) {
-      console.error("Polar API error details:", polarError);
-      return NextResponse.json({ 
-        error: "Polar Checkout Error", 
-        message: polarError.message || "Unknown error",
-        details: polarError.body || "No additional details"
-      }, { status: 500 });
+    } catch (polarError: unknown) {
+      // Upstream message and body stay in the log; the billing page shows `error` (RT-17, C-009).
+      console.error(`[checkout] Polar checkout failed (requestId=${requestId}):`, polarError instanceof Error ? polarError.name : "unknown");
+      return NextResponse.json({ error: "We could not start checkout. Please try again.", requestId }, { status: 502 });
     }
-  } catch (error: any) {
-    console.error("Checkout route error:", error);
-    return NextResponse.json({ 
-      error: "Internal Server Error",
-      message: error?.message || "An unexpected error occurred"
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "checkout", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "rateLimit": "checkout"});

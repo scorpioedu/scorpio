@@ -1,16 +1,17 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { parseQuestionsFromText } from "@/lib/ai/assignment";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { aiParseBody } from "@/lib/schemas/api-bodies";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { text, userId } = await req.json();
-
-    if (!text || !userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, aiParseBody, { message: "Missing required fields" });
+    if (!parsed.ok) return parsed.response;
+    const { text, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -22,7 +23,7 @@ async function handlePost(req: NextRequest) {
       return NextResponse.json({ error: "User profile not found" }, { status: 404 });
     }
     const userData = userDoc.data();
-    let organizationId = userData?.organizationId;
+    const organizationId = userData?.organizationId;
 
     if (!organizationId) {
       return NextResponse.json({ error: "No organization found for user" }, { status: 403 });
@@ -50,13 +51,9 @@ async function handlePost(req: NextRequest) {
     }
 
     return NextResponse.json({ questions: result.questions });
-  } catch (error: any) {
-    console.error("AI Parse API Error:", error);
-    return NextResponse.json({ 
-      error: error?.message || "Internal server error",
-      details: process.env.NODE_ENV === "development" ? error?.stack : undefined
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, "ai-parse", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": true, "feature": "ai-parse", "rateLimit": "parse"});

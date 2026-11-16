@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { collection, getDocs, deleteDoc, doc, query, where, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -54,13 +54,7 @@ export default function AssignmentsPage() {
     fetchCourses();
   }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      fetchAssignments();
-    }
-  }, [user]);
-
-  async function fetchAssignments() {
+  const fetchAssignments = useCallback(async () => {
     if (!user) return;
     try {
       // 1. Fetch courses to map names
@@ -87,7 +81,14 @@ export default function AssignmentsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchAssignments();
+    }
+  }, [user, fetchAssignments]);
+
 
   async function handleDuplicate(assignment: Assignment) {
     if (!user) return;
@@ -131,6 +132,7 @@ export default function AssignmentsPage() {
       setAssignments(assignments.map(a => a.id === id ? { ...a, visibility } : a));
     } catch (error) {
       console.error("Error updating visibility:", error);
+      toast.error("Failed to update sharing. Please try again.");
     }
   }
 

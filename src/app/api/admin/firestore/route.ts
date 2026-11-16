@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { withAuthorizedRequest, type AuthorizedContext } from '@/lib/auth-verify';
+import { errorResponse } from '@/lib/api-errors';
+import { parseJsonBody } from '@/lib/api-schema';
+import { adminFirestoreBody } from '@/lib/schemas/api-bodies';
 
 // List of allowed collections we expose in the Explorer.
 const ALLOWED_COLLECTIONS = [
@@ -18,7 +22,7 @@ const ALLOWED_COLLECTIONS = [
   'landing_visitors',
 ];
 
-export async function POST(req: NextRequest) {
+async function handleAdminFirestore(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     if (!adminDb) {
       return NextResponse.json(
@@ -27,13 +31,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const adminSecret = req.headers.get('x-admin-secret');
-    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const { action, collectionName, limit = 50, lastDocId, filterField, filterValue } = body;
+    const parsed = await parseJsonBody(req, adminFirestoreBody);
+    if (!parsed.ok) return parsed.response;
+    const { action, collectionName, limit, lastDocId, filterField, filterValue } = parsed.data;
 
     // ─── LIST COLLECTIONS ────────────────────────────────────────────────────
     if (action === 'listCollections') {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
       const snapshot = await query.limit(Math.min(limit, 100)).get();
 
-      const docs = snapshot.docs.map((doc: any) => ({
+      const docs = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         // We ensure any Firestore Timestamps are serialized safely
@@ -95,11 +95,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
-  } catch (err: any) {
-    console.error('[admin-firestore] Error:', err);
-    return NextResponse.json(
-      { error: err?.message || 'Internal error' },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    return errorResponse(err, 'admin-firestore', requestId);
   }
 }
+
+// Requires a verified ID token carrying the `admin: true` claim; every call is written to admin_audit.
+export const POST = withAuthorizedRequest(handleAdminFirestore, { admin: true, rateLimit: "write" });

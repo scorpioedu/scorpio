@@ -9,7 +9,7 @@ global.fetch = mockFetch;
 const mockVisitorDoc = { exists: false, data: () => ({ messageCount: 0 }) };
 const mockDocSet = jest.fn(async () => {});
 const mockDocGet = jest.fn(async () => mockVisitorDoc);
-const mockCollection = jest.fn((..._args: any[]) => ({
+const mockCollection = jest.fn((..._args: unknown[]) => ({
   doc: jest.fn(() => ({
     get: mockDocGet,
     set: mockDocSet,
@@ -18,8 +18,8 @@ const mockCollection = jest.fn((..._args: any[]) => ({
 
 jest.mock('../src/lib/firebase-admin', () => ({
   adminDb: {
-    collection: (...args: any[]) => mockCollection(...args),
-    runTransaction: jest.fn(async (cb: any) =>
+    collection: (...args: unknown[]) => mockCollection(...args),
+    runTransaction: jest.fn(async (cb: (tx: unknown) => unknown) =>
       cb({
         get: jest.fn(async () => ({ exists: false, data: () => null })),
         set: jest.fn(),
@@ -28,7 +28,16 @@ jest.mock('../src/lib/firebase-admin', () => ({
   },
 }));
 
+// Budget accounting is covered by tests/security/landing-spend.test.ts (emulator); stub it here.
+jest.mock('../functions/src/metering', () => ({
+  reserveBudget: jest.fn(async () => 'res-1'),
+  settleBudget: jest.fn(async () => {}),
+  estimateMaximumCost: jest.fn(() => 0.01),
+}));
+
 process.env.GEMINI_API_KEY = 'test-gemini-key';
+process.env.LANDING_ORG_ID = 'landing-test-org';
+process.env.LANDING_VISITOR_COOKIE_SECRET = 'test-only-landing-cookie-secret-0123456789';
 
 import { model } from '../src/lib/ai/config';
 import { POST as landingChatPost } from '../src/app/api/chat/landing/route';
@@ -53,8 +62,18 @@ describe('Landing Chat & Try AI Guest Access', () => {
     ).rejects.toThrow('An authenticated network is required for AI');
   });
 
-  test('landing page AI request without organizationId succeeds for guests', async () => {
-    const res = await billingContext.run({ organizationId: '', type: 'landing' }, () =>
+  // RT-03 (F-002): landing is no longer exempt from the organization requirement; research still is.
+  test('landing page AI request without organizationId is rejected (fail closed)', async () => {
+    await expect(
+      billingContext.run({ organizationId: '', type: 'landing' }, () =>
+        model.generateContent('How much does Scorpio cost?')
+      )
+    ).rejects.toThrow('An authenticated network is required for AI');
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  test('research AI request without organizationId still succeeds', async () => {
+    const res = await billingContext.run({ organizationId: '', type: 'research' }, () =>
       model.generateContent('How much does Scorpio cost?')
     );
     const respObj = await res.response;
@@ -76,10 +95,14 @@ describe('Landing Chat & Try AI Guest Access', () => {
   });
 
   test('/api/chat/landing returns 429 when visitor demo limit is reached', async () => {
-    mockDocGet.mockResolvedValueOnce({
-      exists: true,
-      data: () => ({ messageCount: 10 }),
-    } as any);
+    // The visitor counter is now read inside a transaction.
+    const { adminDb } = jest.requireMock('../src/lib/firebase-admin');
+    adminDb.runTransaction.mockImplementationOnce(async (cb: (tx: unknown) => unknown) =>
+      cb({
+        get: jest.fn(async () => ({ exists: true, data: () => ({ messageCount: 10 }) })),
+        set: jest.fn(),
+      })
+    );
 
     const req = new NextRequest('https://scorpio.test/api/chat/landing', {
       method: 'POST',

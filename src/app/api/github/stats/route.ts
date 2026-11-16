@@ -1,9 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { enforceRateLimit } from '@/lib/rate-limit';
+
+/** Fields of the commits API response that this route reads. */
+interface RemoteCommit {
+  sha: string;
+  html_url: string;
+  commit: { message: string; author: { name: string; date: string } };
+}
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Cache for 1 hour
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const limited = await enforceRateLimit(req, 'githubStats');
+  if (limited) return limited;
   // Works for both local (.env.local) and Firebase Functions secrets
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
@@ -24,16 +34,15 @@ export async function GET() {
     ]);
 
     if (!commitsRes.ok || !recentRes.ok) {
-      const text = await commitsRes.text();
-      console.error("GitHub API error:", commitsRes.status, text);
-      return Response.json({ error: "GitHub API error", details: text }, { status: 502 });
+      console.error("GitHub API error:", commitsRes.status, recentRes.status);
+      return Response.json({ error: "GitHub is unavailable right now" }, { status: 502 });
     }
 
     const linkHeader = commitsRes.headers.get('link');
     const totalCommits = linkHeader?.match(/&page=(\d+)>; rel="last"/)?.[1] || "130";
-    const recentCommits = await recentRes.json();
+    const recentCommits: RemoteCommit[] = await recentRes.json();
 
-    const formattedCommits = recentCommits.map((c: any) => ({
+    const formattedCommits = recentCommits.map((c) => ({
       sha: c.sha,
       message: c.commit.message,
       date: c.commit.author.date,

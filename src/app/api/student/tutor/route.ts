@@ -1,13 +1,18 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { explainPhysicsConcept, helpSolveProblem } from "@/lib/ai/tutor";
 import { adminDb } from "@/lib/firebase-admin";
 import { checkBudget, recordUsage } from "@/lib/usage-limit";
 import { verifyCallerIdentity } from "@/lib/auth-verify";
+import { parseJsonBody } from "@/lib/api-schema";
+import { tutorBody } from "@/lib/schemas/api-bodies";
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, userId, role, mode, chatHistory, assignmentContext } = await req.json();
+    const parsed = await parseJsonBody(req, tutorBody, { message: "Invalid request body" });
+    if (!parsed.ok) return parsed.response;
+    const { message, userId, role, mode, chatHistory, assignmentContext } = parsed.data;
 
     if (!message || !userId || role !== "student") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -69,7 +74,7 @@ async function handlePost(req: NextRequest) {
     // 3. Perform AI Operation
     const result = mode === "concept" 
       ? await explainPhysicsConcept(message, chatHistory, "FULL", studentNames)
-      : await helpSolveProblem(message, chatHistory, "STRICT_CONCISE", assignmentContext, studentNames);
+      : await helpSolveProblem(message, chatHistory, "STRICT_CONCISE", assignmentContext ?? undefined, studentNames);
 
     // 4. Record usage if possible
     if (result.usage) {
@@ -84,9 +89,9 @@ async function handlePost(req: NextRequest) {
 
     return NextResponse.json({ response: result.text });
   } catch (error) {
-    console.error("Student AI Tutor Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // AiProviderError/AiBudgetError -> 502/503 with generic text; the client shows a retry state and stores nothing.
+    return errorResponse(error, "tutor", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false, "feature": "tutor", "rateLimit": "tutor"});

@@ -2,26 +2,34 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateRequest, withAuthorizedRequest } from '@/lib/auth-verify';
 import { adminDb } from '@/lib/firebase-admin';
 import { splitAssignmentQuestions, mergeAnswerKey } from '@/lib/assignment-security';
+import { parseJsonBody } from '@/lib/api-schema';
+import { createAssignmentBody } from '@/lib/schemas/api-bodies';
+import { errorResponse } from '@/lib/api-errors';
 
-export const POST = withAuthorizedRequest(async (req) => {
+export const POST = withAuthorizedRequest(async (req, { requestId }) => {
   const caller = (await authenticateRequest(req))!;
-  const data = await req.json();
+  const parsed = await parseJsonBody(req, createAssignmentBody, { message: 'Invalid assignment' });
+  if (!parsed.ok) return parsed.response;
+  const data = parsed.data;
   const profile = (await adminDb.collection('users').doc(caller.uid).get()).data()!;
-  if (!Array.isArray(data.questions) || data.questions.length > 100 || !data.title) return NextResponse.json({ error: 'Invalid assignment' }, { status: 400 });
   if (data.courseId) {
     const course = (await adminDb.collection('courses').doc(data.courseId).get()).data();
     if (course?.teacherId !== caller.uid) return NextResponse.json({ error: 'Invalid class' }, { status: 403 });
   }
-  const { publicQuestions, answers } = splitAssignmentQuestions(data.questions);
+  const { rubric, dueDate, questions, ...fields } = data;
+  let split: ReturnType<typeof splitAssignmentQuestions>;
+  try { split = splitAssignmentQuestions(questions); }
+  catch (error) { return errorResponse(error, 'assignments', requestId); }
+  const { publicQuestions, answers } = split;
   const ref = adminDb.collection('assignments').doc();
   const batch = adminDb.batch();
-  batch.set(ref, { ...data, teacherId: caller.uid, organizationId: profile.organizationId || null,
+  batch.set(ref, { ...fields, teacherId: caller.uid, organizationId: profile.organizationId || null,
     questions: publicQuestions, rubric: null, answerKeySeparated: true,
-    dueDate: data.dueDate ? new Date(data.dueDate) : null, createdAt: new Date() });
-  batch.set(adminDb.collection('assignment_keys').doc(ref.id), { answers, rubric: data.rubric || '', teacherId: caller.uid });
+    dueDate: dueDate ? new Date(dueDate) : null, createdAt: new Date() });
+  batch.set(adminDb.collection('assignment_keys').doc(ref.id), { answers, rubric: rubric || '', teacherId: caller.uid });
   await batch.commit();
   return NextResponse.json({ id: ref.id });
-}, { teacher: true });
+}, { teacher: true, rateLimit: "write" });
 
 export async function GET(req: NextRequest) {
   const caller = await authenticateRequest(req);

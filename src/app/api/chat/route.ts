@@ -1,18 +1,18 @@
-import { withAuthorizedRequest } from "@/lib/auth-verify";
+import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
+import { errorResponse } from "@/lib/api-errors";
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
 import chatbotConfig from '@/lib/chatbot-config.json';
 import { getNavigationResponse } from '@/lib/ai/chatbot';
 import { checkBudget, recordUsage } from '@/lib/usage-limit';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { parseJsonBody } from '@/lib/api-schema';
+import { navigationChatBody } from '@/lib/schemas/api-bodies';
 
-async function handlePost(req: NextRequest) {
+async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
-    const { message, userRole, userId } = await req.json();
-
-    if (!message || !userRole || !userId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = await parseJsonBody(req, navigationChatBody, { message: 'Missing required fields' });
+    if (!parsed.ok) return parsed.response;
+    const { message, userRole, userId } = parsed.data;
 
     if (!adminDb) {
       return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
@@ -44,16 +44,6 @@ async function handlePost(req: NextRequest) {
       return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
     }
 
-    // --- Rate Limiting ---
-    const { windowMs, maxRequests } = chatbotConfig.rateLimit;
-    const rateLimitCheck = await checkRateLimit(req, userId, "chat", { windowMs, maxRequests });
-    
-    if (!rateLimitCheck.allowed) {
-      return NextResponse.json({ 
-        error: rateLimitCheck.error || `Rate limit exceeded. Max ${maxRequests} requests allowed.` 
-      }, { status: 429 });
-    }
-
     // AI Response using centralized logic in gemini.ts ---
     const features = userRole === 'teacher' ? chatbotConfig.teacherFeatures : chatbotConfig.studentFeatures;
     const featuresContext = features.map(f => `- ${f.label} (${f.path}) - ${f.description}`).join('\n');
@@ -73,17 +63,13 @@ async function handlePost(req: NextRequest) {
     return NextResponse.json({ 
       text: result.text,
       suggestedPrompts: userRole === 'teacher' 
-        ? (chatbotConfig as any).teacherSuggestedPrompts 
-        : (chatbotConfig as any).studentSuggestedPrompts
+        ? chatbotConfig.teacherSuggestedPrompts 
+        : chatbotConfig.studentSuggestedPrompts
     });
 
-  } catch (error: any) {
-    console.error('Chat API Error:', error);
-    return NextResponse.json({ 
-      error: error?.message || 'Internal server error',
-      details: process.env.NODE_ENV === "development" ? error?.stack : undefined
-    }, { status: 500 });
+  } catch (error: unknown) {
+    return errorResponse(error, 'chat', requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false});
+export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false, "feature": "navigation", "rateLimit": "chat"});
