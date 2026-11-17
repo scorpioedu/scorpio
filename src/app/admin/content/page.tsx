@@ -474,7 +474,13 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
 export default function ContentReviewPage() {
   const access = useAdminAccess();
   const [status, setStatus] = useState<DraftStatus>("draft");
-  const [showSets, setShowSets] = useState(false);
+  // /teacher/courses links here with ?tab=sets. Nothing below renders until the admin check
+  // finishes in the browser, so reading the URL here cannot cause a hydration mismatch.
+  const [showSets, setShowSets] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("tab") === "sets",
+  );
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(false);
   const [unit, setUnit] = useState("4");
@@ -500,6 +506,8 @@ export default function ContentReviewPage() {
   }, [status]);
 
   useEffect(() => {
+    // Loads the drafts for the chosen tab once the admin check passes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (access === "admin") load();
   }, [access, load]);
 

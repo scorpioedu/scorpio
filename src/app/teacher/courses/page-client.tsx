@@ -17,7 +17,13 @@ import {
   runAssignments,
   type AssignableSet,
 } from "@/lib/assign-sets";
-import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
+import {
+  AVAILABILITY_LABEL,
+  deriveRoadmap,
+  nextUnit,
+  type RoadmapUnit,
+} from "@/lib/curriculum-roadmap";
+import { useAdminAccess } from "@/lib/use-admin-access";
 import {
   loadClassAssignments,
   loadPublishedSets,
@@ -48,6 +54,7 @@ const shortDate = (d: Date) =>
 
 export default function CoursesClient() {
   const { user } = useAuth();
+  const isAdmin = useAdminAccess() === "admin";
   const [curriculum, setCurriculum] = useState<Curriculum>(CURRICULA[0]);
   const [classes, setClasses] = useState<ClassOption[] | null>(null);
   const [classId, setClassId] = useState("");
@@ -210,7 +217,7 @@ export default function CoursesClient() {
               <span>
                 {published === null || c.id !== curriculum.id
                   ? "Loading…"
-                  : `${publishedCount} of ${c.sets.length} planned sets ready`}
+                  : `${publishedCount} of ${c.sets.length} sets published`}
               </span>
               {c.id !== curriculum.id && (
                 <Button variant="outline" size="sm" onClick={() => setCurriculum(c)}>
@@ -221,6 +228,34 @@ export default function CoursesClient() {
           </Card>
         ))}
       </div>
+
+      {published !== null && !loadError && publishedCount < curriculum.sets.length && (
+        <Card className="shadow-none" role="status">
+          <CardHeader>
+            <CardTitle>
+              {publishedCount === 0
+                ? "This course is not published here yet"
+                : `${curriculum.sets.length - publishedCount} sets are not published here yet`}
+            </CardTitle>
+            <CardDescription>
+              {publishedCount === 0
+                ? `All ${curriculum.sets.length} sets are written. You can browse the roadmap now; sets can be assigned once they have been reviewed and published in this workspace.`
+                : "Sets marked \u201cNot published yet\u201d are written and can be assigned once they have been reviewed and published in this workspace."}
+            </CardDescription>
+          </CardHeader>
+          {isAdmin && (
+            <CardContent className="space-y-2 text-sm">
+              <p>
+                You are an admin. To publish: import the drafts into this project, approve each
+                problem, then press <strong>Publish set</strong> on the Sets tab.
+              </p>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/admin/content?tab=sets">Open Admin · Content · Sets</Link>
+              </Button>
+            </CardContent>
+          )}
+        </Card>
+      )}
 
       <Card className="shadow-none">
         <CardHeader>
@@ -364,7 +399,7 @@ export default function CoursesClient() {
                 </CardHeader>
                 <CardContent>
                   {u.sets.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Coming soon</p>
+                    <p className="text-sm text-muted-foreground">Planned</p>
                   ) : (
                     <ul className="divide-y divide-border rounded-xl border border-border">
                       {u.sets.map((s) => (
@@ -385,7 +420,7 @@ export default function CoursesClient() {
                           </div>
                           <span className="flex items-center gap-2 text-xs text-muted-foreground">
                             {!s.published ? (
-                              "Coming soon"
+                              AVAILABILITY_LABEL[s.availability]
                             ) : s.assigned ? (
                               <>
                                 <Check className="size-4 text-green-600" aria-hidden />

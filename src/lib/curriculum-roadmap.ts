@@ -41,9 +41,27 @@ export interface ClassAssignment {
   dueDate?: Date | null;
 }
 
+/**
+ * Whether a teacher can assign a set here. "awaiting": the problems are written (the definition lists
+ * them) but the set is not published in this Firebase project. "planned": nothing is written yet.
+ */
+export type SetAvailability = "ready" | "awaiting" | "planned";
+
+export function setAvailability(set: CurriculumSet, published: unknown): SetAvailability {
+  if (published) return "ready";
+  return set.draftIds.length > 0 ? "awaiting" : "planned";
+}
+
+export const AVAILABILITY_LABEL: Record<SetAvailability, string> = {
+  ready: "Ready",
+  awaiting: "Not published yet",
+  planned: "Planned",
+};
+
 export interface RoadmapSet {
   set: CurriculumSet;
   published: PublishedSet | null;
+  availability: SetAvailability;
   assigned: boolean;
   dueDate: Date | null;
 }
@@ -70,6 +88,7 @@ export function deriveRoadmap(
     const sets = u.sets.map((set) => ({
       set,
       published: byKey.get(set.key) ?? null,
+      availability: setAvailability(set, byKey.get(set.key)),
       assigned: assignedByKey.has(set.key),
       dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
     }));

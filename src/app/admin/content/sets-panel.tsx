@@ -81,6 +81,14 @@ export function SetsPanel() {
   if (sets === null)
     return <p className="py-10 text-center text-sm text-muted-foreground">Loading…</p>;
 
+  const allDrafts = curriculum.sets.flatMap(
+    (def) =>
+      sets.find((x) => x.key === def.key)?.drafts ??
+      def.draftIds.map((id) => ({ id, state: "missing" as const })),
+  );
+  const missing = allDrafts.filter((d) => d.state === "missing").length;
+  const aiOnly = allDrafts.filter((d) => d.state === "ai-reviewed").length;
+
   return (
     <Card className="gap-0 py-0">
       <CardHeader className="px-5 py-4">
@@ -92,6 +100,35 @@ export function SetsPanel() {
         </CardDescription>
       </CardHeader>
       <CardContent className="px-0">
+        {(missing > 0 || aiOnly > 0) && (
+          <div
+            role="status"
+            className="space-y-2 border-t border-border bg-muted/40 px-5 py-4 text-sm"
+          >
+            {missing > 0 && (
+              <>
+                <p className="font-medium">
+                  {missing} of {allDrafts.length} problems are not in this project yet.
+                </p>
+                <p className="text-muted-foreground">
+                  Teachers see these sets as “Not published yet”. Import the reviewed drafts from
+                  the repo (a dry run unless you add <code>--apply</code>; it never publishes):
+                </p>
+                <pre className="overflow-x-auto rounded-lg border border-border bg-background p-3 text-xs">
+                  {`node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-1-3-7-8.json
+node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json`}
+                </pre>
+              </>
+            )}
+            {aiOnly > 0 && (
+              <p className="text-muted-foreground">
+                {aiOnly} problems are AI-reviewed only. Open each on the Approved tab, check the
+                answer key and the misconception tags, and approve it yourself; then Publish set
+                works here.
+              </p>
+            )}
+          </div>
+        )}
         <ul className="divide-y divide-border border-t border-border">
           {curriculum.sets.map((def) => {
             const s = sets.find((x) => x.key === def.key);
