@@ -1,14 +1,14 @@
 // Class progress on the roadmap and the rule-based re-teach suggestions.
 import fs from "fs";
 import path from "path";
-import { getCurriculum } from "../src/data/curricula";
+import { CURRICULA, getCurriculum } from "../src/data/curricula";
 import {
   curriculumProfile,
   setProfile,
   setsTargeting,
   typeSummary,
 } from "../src/data/curricula/profiles";
-import { misconceptionTag } from "../src/data/ap";
+import { misconceptionTag, misconceptionsForCourse } from "../src/data/ap";
 import {
   buildSetProgress,
   buildUnitInsights,
@@ -22,15 +22,29 @@ const tool = require("../tools/curriculum-profile.cjs");
 const ID = "ap-physics-1";
 
 describe("set profiles", () => {
-  test("the committed profile matches the content files", () => {
-    const fresh = tool.buildProfile(getCurriculum(ID), tool.loadDrafts(ID));
-    const committed = JSON.parse(
-      fs.readFileSync(
-        path.join(__dirname, "../src/data/curricula/profiles/ap-physics-1.json"),
-        "utf8",
-      ),
-    );
-    expect(committed).toEqual(fresh);
+  test("the committed profiles match the content files, for every course", () => {
+    for (const { id } of CURRICULA) {
+      const fresh = tool.buildProfile(getCurriculum(id), tool.loadDrafts(id));
+      const committed = JSON.parse(
+        fs.readFileSync(path.join(__dirname, `../src/data/curricula/profiles/${id}.json`), "utf8"),
+      );
+      expect([id, committed]).toEqual([id, fresh]);
+    }
+  });
+
+  test("every written set of the newer courses has a profile whose tags belong to the course", () => {
+    for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
+      const curriculum = getCurriculum(id)!;
+      const own = new Set(misconceptionsForCourse(curriculum.apCourse).map((t) => t.id));
+      for (const set of curriculum.sets.filter((s) => s.draftIds.length)) {
+        const p = setProfile(id, set.key)!;
+        expect([id, set.key, p.problems]).toEqual([id, set.key, 5]);
+        expect(p.minutes).toBeGreaterThanOrEqual(5);
+        expect(p.minutes).toBeLessThanOrEqual(30);
+        for (const m of p.misconceptions)
+          expect([set.key, m.tag, own.has(m.tag)]).toEqual([set.key, m.tag, true]);
+      }
+    }
   });
 
   test("every set has a profile with known tags and a sensible time", () => {

@@ -1,0 +1,114 @@
+{
+  "9A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "gas-variable-in-isolation",
+        "problems": 1
+      }
+    ]
+  },
+  "9B": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 3,
+      "numeric": 2
+    },
+    "misconceptions": [
+      {
+        "tag": "conduction-rate-factors",
+        "problems": 2
+      },
+      {
+        "tag": "specific-heat-ignored",
+        "problems": 2
+      },
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 1
+      },
+      {
+        "tag": "heat-temperature-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "9C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 1,
+      "medium": 3,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "thermal-work-sign",
+        "problems": 5
+      },
+      {
+        "tag": "isothermal-adiabatic-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 1
+      }
+    ]
+  },
+  "9D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "engine-converts-all-heat",
+        "problems": 2
+      },
+      {
+        "tag": "entropy-never-decreases-locally",
+        "problems": 1
+      },
+      {
+        "tag": "thermal-work-sign",
+        "problems": 1
+      }
+    ]
+  }
+}

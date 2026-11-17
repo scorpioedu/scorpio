@@ -66,6 +66,21 @@ describe("validateDraftProblem", () => {
     expect(v.warnings).toContain("Some wrong options have no misconception tag");
   });
 
+  test("a distractor written as { option } is read like { answer }", () => {
+    const v = validateDraftProblem(
+      {
+        ...mc,
+        distractors: [
+          { option: "The truck's force is larger", misconception: "third-law-unequal-forces" },
+        ],
+      },
+      "2.3",
+    );
+    expect(v.problem?.distractors).toEqual([
+      { answer: "The truck's force is larger", misconception: "third-law-unequal-forces" },
+    ]);
+  });
+
   test("fatal errors", () => {
     const cases: [unknown, string, RegExp][] = [
       [null, "4.3", /Not an object/],

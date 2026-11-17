@@ -9,10 +9,7 @@
       "unit": 1,
       "title": "Vectors and the calculus of motion",
       "description": "Vector components, and velocity and acceleration as derivatives and integrals.",
-      "topics": [
-        "1.1",
-        "1.2"
-      ],
+      "topics": ["1.1", "1.2"],
       "draftIds": []
     },
     {
@@ -20,9 +17,7 @@
       "unit": 1,
       "title": "Representing motion",
       "description": "Motion graphs and equations for constant and changing acceleration.",
-      "topics": [
-        "1.3"
-      ],
+      "topics": ["1.3"],
       "draftIds": []
     },
     {
@@ -30,9 +25,7 @@
       "unit": 1,
       "title": "Reference frames and relative motion",
       "description": "Velocities measured from frames that move relative to each other.",
-      "topics": [
-        "1.4"
-      ],
+      "topics": ["1.4"],
       "draftIds": []
     },
     {
@@ -40,9 +33,7 @@
       "unit": 1,
       "title": "Motion in two and three dimensions",
       "description": "Projectiles and vector kinematics with independent components.",
-      "topics": [
-        "1.5"
-      ],
+      "topics": ["1.5"],
       "draftIds": []
     },
     {
@@ -50,10 +41,7 @@
       "unit": 2,
       "title": "Systems, center of mass and free-body diagrams",
       "description": "Choosing a system, locating its center of mass and drawing its forces.",
-      "topics": [
-        "2.1",
-        "2.2"
-      ],
+      "topics": ["2.1", "2.2"],
       "draftIds": []
     },
     {
@@ -61,11 +49,7 @@
       "unit": 2,
       "title": "Newton's laws",
       "description": "Third-law pairs, equilibrium and net force with acceleration.",
-      "topics": [
-        "2.3",
-        "2.4",
-        "2.5"
-      ],
+      "topics": ["2.3", "2.4", "2.5"],
       "draftIds": []
     },
     {
@@ -73,11 +57,7 @@
       "unit": 2,
       "title": "Gravity, friction and springs",
       "description": "Universal gravitation, friction models and Hooke's law.",
-      "topics": [
-        "2.6",
-        "2.7",
-        "2.8"
-      ],
+      "topics": ["2.6", "2.7", "2.8"],
       "draftIds": []
     },
     {
@@ -85,10 +65,7 @@
       "unit": 2,
       "title": "Drag and circular motion",
       "description": "Velocity-dependent resistive forces, terminal velocity and centripetal acceleration.",
-      "topics": [
-        "2.9",
-        "2.10"
-      ],
+      "topics": ["2.9", "2.10"],
       "draftIds": []
     },
     {
@@ -96,10 +73,7 @@
       "unit": 3,
       "title": "Kinetic energy and work",
       "description": "Work as an integral of force and the work-energy theorem.",
-      "topics": [
-        "3.1",
-        "3.2"
-      ],
+      "topics": ["3.1", "3.2"],
       "draftIds": []
     },
     {
@@ -107,9 +81,7 @@
       "unit": 3,
       "title": "Potential energy",
       "description": "Conservative forces and potential energy functions U(x).",
-      "topics": [
-        "3.3"
-      ],
+      "topics": ["3.3"],
       "draftIds": []
     },
     {
@@ -117,9 +89,7 @@
       "unit": 3,
       "title": "Conservation of energy",
       "description": "Energy accounting with and without nonconservative forces.",
-      "topics": [
-        "3.4"
-      ],
+      "topics": ["3.4"],
       "draftIds": []
     },
     {
@@ -127,9 +97,7 @@
       "unit": 3,
       "title": "Power",
       "description": "Rate of energy transfer, including P = F dot v.",
-      "topics": [
-        "3.5"
-      ],
+      "topics": ["3.5"],
       "draftIds": []
     },
     {
@@ -137,9 +105,7 @@
       "unit": 4,
       "title": "Momentum of objects and systems",
       "description": "Momentum as a vector for single objects and systems.",
-      "topics": [
-        "4.1"
-      ],
+      "topics": ["4.1"],
       "draftIds": []
     },
     {
@@ -147,9 +113,7 @@
       "unit": 4,
       "title": "Impulse",
       "description": "Impulse as the integral of force over time and force-time graphs.",
-      "topics": [
-        "4.2"
-      ],
+      "topics": ["4.2"],
       "draftIds": []
     },
     {
@@ -157,9 +121,7 @@
       "unit": 4,
       "title": "Conservation of momentum",
       "description": "Isolated systems, center-of-mass velocity and explosions.",
-      "topics": [
-        "4.3"
-      ],
+      "topics": ["4.3"],
       "draftIds": []
     },
     {
@@ -167,9 +129,7 @@
       "unit": 4,
       "title": "Collisions",
       "description": "Elastic and inelastic collisions in one and two dimensions.",
-      "topics": [
-        "4.4"
-      ],
+      "topics": ["4.4"],
       "draftIds": []
     },
     {
@@ -177,10 +137,7 @@
       "unit": 5,
       "title": "Rotational kinematics",
       "description": "Angular quantities with calculus, and their link to linear motion.",
-      "topics": [
-        "5.1",
-        "5.2"
-      ],
+      "topics": ["5.1", "5.2"],
       "draftIds": []
     },
     {
@@ -188,9 +145,7 @@
       "unit": 5,
       "title": "Torque",
       "description": "Torque as a cross product: lever arms and direction.",
-      "topics": [
-        "5.3"
-      ],
+      "topics": ["5.3"],
       "draftIds": []
     },
     {
@@ -198,10 +153,7 @@
       "unit": 5,
       "title": "Rotational inertia and equilibrium",
       "description": "Moments of inertia by integration, the parallel-axis theorem and balanced torques.",
-      "topics": [
-        "5.4",
-        "5.5"
-      ],
+      "topics": ["5.4", "5.5"],
       "draftIds": []
     },
     {
@@ -209,9 +161,7 @@
       "unit": 5,
       "title": "Newton's second law for rotation",
       "description": "Net torque and angular acceleration, with translation.",
-      "topics": [
-        "5.6"
-      ],
+      "topics": ["5.6"],
       "draftIds": []
     },
     {
@@ -219,10 +169,7 @@
       "unit": 6,
       "title": "Rotational kinetic energy and work",
       "description": "Energy of rotation and work done by torques.",
-      "topics": [
-        "6.1",
-        "6.2"
-      ],
+      "topics": ["6.1", "6.2"],
       "draftIds": []
     },
     {
@@ -230,9 +177,7 @@
       "unit": 6,
       "title": "Angular momentum and angular impulse",
       "description": "Angular momentum of particles and rigid bodies and how torque changes it.",
-      "topics": [
-        "6.3"
-      ],
+      "topics": ["6.3"],
       "draftIds": []
     },
     {
@@ -240,9 +185,7 @@
       "unit": 6,
       "title": "Conservation of angular momentum",
       "description": "Systems with no net external torque.",
-      "topics": [
-        "6.4"
-      ],
+      "topics": ["6.4"],
       "draftIds": []
     },
     {
@@ -250,10 +193,7 @@
       "unit": 6,
       "title": "Rolling and orbits",
       "description": "Rolling with and without slipping, satellite energy and escape speed.",
-      "topics": [
-        "6.5",
-        "6.6"
-      ],
+      "topics": ["6.5", "6.6"],
       "draftIds": []
     },
     {
@@ -261,9 +201,7 @@
       "unit": 7,
       "title": "Restoring forces and the SHM equation",
       "description": "Forces proportional to displacement and the differential equation they give.",
-      "topics": [
-        "7.1"
-      ],
+      "topics": ["7.1"],
       "draftIds": []
     },
     {
@@ -271,9 +209,7 @@
       "unit": 7,
       "title": "Period and frequency",
       "description": "What sets the period of springs and other oscillators.",
-      "topics": [
-        "7.2"
-      ],
+      "topics": ["7.2"],
       "draftIds": []
     },
     {
@@ -281,9 +217,7 @@
       "unit": 7,
       "title": "Analysing SHM",
       "description": "Sinusoidal position, velocity and acceleration, amplitude and phase.",
-      "topics": [
-        "7.3"
-      ],
+      "topics": ["7.3"],
       "draftIds": []
     },
     {
@@ -291,10 +225,7 @@
       "unit": 7,
       "title": "Energy and pendulums",
       "description": "Energy over a cycle, and simple and physical pendulums.",
-      "topics": [
-        "7.4",
-        "7.5"
-      ],
+      "topics": ["7.4", "7.5"],
       "draftIds": []
     }
   ]

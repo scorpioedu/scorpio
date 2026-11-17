@@ -31,11 +31,14 @@ function problemMinutes(problem) {
 /**
  * @param {{ sets: { key: string, draftIds: string[] }[] }} curriculum
  * @param {Map<string, { problem: any }>} drafts by id
- * @returns {Record<string, object>} profile by set key; a set with a missing draft throws
+ * @returns {Record<string, object>} profile by set key (planned sets are left out); a set with a
+ *   missing draft throws
  */
 function buildProfile(curriculum, drafts) {
   const out = {};
   for (const set of curriculum.sets) {
+    // A planned set (no problems written yet) has no profile.
+    if (!set.draftIds.length) continue;
     const difficulty = { easy: 0, medium: 0, hard: 0 };
     const types = {};
     const tags = new Map();
@@ -67,6 +70,7 @@ function buildProfile(curriculum, drafts) {
 function loadDrafts(curriculumId) {
   const dir = path.join(ROOT, "content", curriculumId);
   const drafts = new Map();
+  if (!fs.existsSync(dir)) return drafts;
   for (const file of fs
     .readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
@@ -89,7 +93,9 @@ function main(argv) {
   const file = profilePath(id);
   if (argv.includes("--write")) {
     fs.writeFileSync(file, next);
-    console.log(`Wrote ${path.relative(ROOT, file)} (${curriculum.sets.length} sets)`);
+    console.log(
+      `Wrote ${path.relative(ROOT, file)} (${Object.keys(JSON.parse(next)).length} of ${curriculum.sets.length} sets)`,
+    );
     return 0;
   }
   const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";

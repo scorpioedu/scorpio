@@ -37,7 +37,7 @@ const COURSE_METHODS: Record<ApCourseId, string> = {
   "physics-1":
     "Every problem must be solvable with AP Physics 1 methods (algebra and trigonometry, no calculus) and must test the given topic.",
   "physics-2":
-    "Every problem must be solvable with AP Physics 2 methods (algebra and trigonometry, no calculus) and must test the given topic. Give any constant a student needs that is not g (for example k = 8.99 x 10^9 N*m^2/C^2, e = 1.60 x 10^-19 C, h = 6.63 x 10^-34 J*s, c = 3.00 x 10^8 m/s, R = 8.31 J/(mol*K), k_B = 1.38 x 10^-23 J/K, specific heats, indices of refraction).",
+    'Every problem must be solvable with AP Physics 2 methods (algebra and trigonometry, no calculus) and must test the given topic. Give any constant a student needs that is not g (for example k = 8.99 x 10^9 N*m^2/C^2, e = 1.60 x 10^-19 C, h = 6.63 x 10^-34 J*s, c = 3.00 x 10^8 m/s, R = 8.31 J/(mol*K), k_B = 1.38 x 10^-23 J/K, specific heats, indices of refraction). The answer checker cannot read degrees Celsius as a unit: when a numeric answer is a temperature in degrees Celsius, end the question with "Give your answer in degrees Celsius." and make "correctAnswer" the number alone (for example "59"); a temperature in kelvins or a temperature change keeps its unit ("332 K").',
   "physics-c-mech":
     "Every problem must be at the level of AP Physics C: Mechanics and must test the given topic. The course is calculus-based: where the topic calls for it, use derivatives and integrals (forces, velocities or potential energies given as functions, non-constant acceleration, moments of inertia by integration, differential equations for drag and oscillation). Do not write problems that only need AP Physics 1 algebra when the topic is about a calculus idea.",
 };

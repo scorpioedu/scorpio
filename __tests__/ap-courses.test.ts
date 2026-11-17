@@ -98,7 +98,7 @@ describe("AP course data", () => {
 });
 
 describe("course definitions", () => {
-  test("three courses; the two new ones are valid outlines with no problems yet", () => {
+  test("three courses; every set of the two newer ones is either written (5 problems) or planned", () => {
     expect(CURRICULA.map((c) => c.id)).toEqual([
       "ap-physics-1",
       "ap-physics-2",
@@ -108,14 +108,18 @@ describe("course definitions", () => {
     expect(hasContent(getCurriculum("ap-physics-1")!)).toBe(true);
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
-      expect(hasContent(c)).toBe(false);
+      expect(hasContent(c)).toBe(c.sets.some((s) => s.draftIds.length > 0));
       expect(c.sets).toHaveLength(28);
+      // A set is planned (no problems) or complete; only written sets have a profile.
+      for (const s of c.sets) {
+        expect([s.key, [0, 5].includes(s.draftIds.length)]).toEqual([s.key, true]);
+        expect([s.key, !!setProfile(id, s.key)]).toEqual([s.key, s.draftIds.length > 0]);
+      }
       // Every topic of the course is covered by some set.
       const covered = new Set(c.sets.flatMap((s) => s.topics));
       const all = apUnits(c.apCourse).flatMap((u) => u.topics.map((t) => t.id));
       expect(all.filter((t) => !covered.has(t))).toEqual([]);
       expect(curriculumUnits(id).every((u) => u.sets.length === 4 && !!u.info)).toBe(true);
-      expect(setProfile(id, c.sets[0].key)).toBeUndefined();
     }
     expect(getCurriculum("ap-physics-2")!.sets[0].key).toBe("9A");
     expect(defaultOrder("ap-physics-2").slice(-1)).toEqual(["15D"]);
@@ -134,12 +138,23 @@ describe("course definitions", () => {
     );
   });
 
-  test("a planned course: every set is 'planned', nothing is assignable, plans still work", () => {
+  test("a course with nothing published: sets are 'planned' or 'awaiting', nothing is assignable, plans still work", () => {
     const road = deriveRoadmap("ap-physics-2", [], []);
     expect(road.map((u) => u.unit)).toEqual([9, 10, 11, 12, 13, 14, 15]);
     expect(road[0].info?.title).toBe("Thermodynamics");
-    expect(road.flatMap((u) => u.sets).every((s) => s.availability === "planned")).toBe(true);
+    // Written but not published in this project is "awaiting"; not written at all is "planned".
+    for (const s of road.flatMap((u) => u.sets))
+      expect([s.set.key, s.availability]).toEqual([
+        s.set.key,
+        s.set.draftIds.length ? "awaiting" : "planned",
+      ]);
     expect(nextUnit(road)).toBeUndefined();
+    const outline: Curriculum = {
+      ...getCurriculum("ap-physics-2")!,
+      sets: getCurriculum("ap-physics-2")!.sets.map((s) => ({ ...s, draftIds: [] })),
+    };
+    expect(hasContent(outline)).toBe(false);
+    expect(validateCurriculum(outline)).toEqual([]);
     const order = moveUnit(defaultOrder("ap-physics-2"), 10, -1);
     expect(unitOrder(order).slice(0, 2)).toEqual([10, 9]);
     expect(parsePlan("ap-physics-2", { order, skipped: ["15D"] }).ok).toBe(true);

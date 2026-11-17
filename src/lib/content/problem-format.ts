@@ -107,7 +107,9 @@ export function validateDraftProblem(
   const distractors: DraftProblem["distractors"] = [];
   if (Array.isArray(r.distractors)) {
     for (const d of r.distractors.slice(0, 10)) {
-      const answer = str((d as Record<string, unknown>)?.answer, 300);
+      // The model sometimes names a multiple-choice distractor "option" instead of "answer".
+      const entry = (d ?? {}) as Record<string, unknown>;
+      const answer = str(entry.answer ?? entry.option, 300);
       const misconception = str((d as Record<string, unknown>)?.misconception, 80);
       if (!answer || !MISCONCEPTION_IDS.has(misconception) || misconception === "other") {
         warnings.push(
