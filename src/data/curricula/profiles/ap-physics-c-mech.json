@@ -230,5 +230,109 @@
         "problems": 1
       }
     ]
+  },
+  "3A": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "3B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "energy-force-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "potential-energy-reference",
+        "problems": 1
+      }
+    ]
+  },
+  "3C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "work-sign",
+        "problems": 3
+      },
+      {
+        "tag": "potential-energy-reference",
+        "problems": 1
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "3D": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "energy-force-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      }
+    ]
   }
 }

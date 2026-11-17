@@ -122,7 +122,13 @@
       "title": "Kinetic energy and work",
       "description": "Work as an integral of force and the work-energy theorem.",
       "topics": ["3.1", "3.2"],
-      "draftIds": []
+      "draftIds": [
+        "uvUylPp2F0nfbdcWXZ76",
+        "dZYtrgsbpk5JFfmZBoNN",
+        "2mgVYMMNd53mLBeSp6wV",
+        "0Xyt4da08oT5kzYDmv05",
+        "q1mUIKnChQxGcwo7dDyf"
+      ]
     },
     {
       "key": "3B",
@@ -130,7 +136,13 @@
       "title": "Potential energy",
       "description": "Conservative forces and potential energy functions U(x).",
       "topics": ["3.3"],
-      "draftIds": []
+      "draftIds": [
+        "RVvwkUcSANsHwdSzOzdr",
+        "ZWD7bi9tydrAhP0n1XEz",
+        "Il2rB11w9CCsL5ctnqOL",
+        "jxE7ufNpZTNWYOU8YuP2",
+        "krhRLhMRzza2Y2PRQAM8"
+      ]
     },
     {
       "key": "3C",
@@ -138,7 +150,13 @@
       "title": "Conservation of energy",
       "description": "Energy accounting with and without nonconservative forces.",
       "topics": ["3.4"],
-      "draftIds": []
+      "draftIds": [
+        "pd6h0Vp1s8YE0DRCw9s2",
+        "c2H4GDZfLwC7FTWhYwtd",
+        "9fDGpPhrvWcnpUiaMK6a",
+        "4AEM0C5u8ugJTBErDTt9",
+        "mSWWlGAwNMIqEmAI9pWW"
+      ]
     },
     {
       "key": "3D",
@@ -146,7 +164,13 @@
       "title": "Power",
       "description": "Rate of energy transfer, including P = F dot v.",
       "topics": ["3.5"],
-      "draftIds": []
+      "draftIds": [
+        "veeVDTzq0Qb7Hu2twHE9",
+        "kyhyb3Prs3MA989ZTR7K",
+        "KewSrOpl55MtTQK3mtZd",
+        "YssPkVCWkFfcPvw2xcQs",
+        "IjY22bk2kWKDrDFZUQSg"
+      ]
     },
     {
       "key": "4A",

@@ -346,7 +346,13 @@
       "title": "Photons and the photoelectric effect",
       "description": "Photon energy, wave-particle duality, threshold frequency and work function.",
       "topics": ["15.1", "15.5"],
-      "draftIds": []
+      "draftIds": [
+        "U94FBkzR2AdB1OBpimkh",
+        "WVZMjGAqnwMR8yVttQv5",
+        "AGh0CamhB4wH9zpUuNIU",
+        "w2LJD2YjyPAvSyCvfgOf",
+        "JpR1u4JEnNE4fkKZ6LH6"
+      ]
     },
     {
       "key": "15B",
@@ -354,7 +360,13 @@
       "title": "Atoms and spectra",
       "description": "Energy levels in the Bohr model and emission and absorption lines.",
       "topics": ["15.2", "15.3"],
-      "draftIds": []
+      "draftIds": [
+        "TdpxCc7QwK4RqJld3Nqr",
+        "tdfNqEtGMFy2rxaXn5WC",
+        "AgbEt7ANY9NkXQvzzAD5",
+        "RSD3Aux3qI9IC0AZ1ot4",
+        "7eWZUUBIcjQ5nwy448JD"
+      ]
     },
     {
       "key": "15C",
@@ -362,7 +374,13 @@
       "title": "Blackbody radiation and Compton scattering",
       "description": "Thermal radiation from hot objects and photon momentum in scattering.",
       "topics": ["15.4", "15.6"],
-      "draftIds": []
+      "draftIds": [
+        "Lhu6i3PQMliPgGQ2gzwL",
+        "PEdGmemfpRHGzxKedT2T",
+        "8GUUVKcvkgtuRrm6oKNS",
+        "A4jaF0Rdx9Q4trDxZP2w",
+        "txEi7gCFbG4KLsAdAQVD"
+      ]
     },
     {
       "key": "15D",
@@ -370,7 +388,13 @@
       "title": "Nuclear physics",
       "description": "Mass-energy, fission and fusion, radioactive decay and half-life.",
       "topics": ["15.7", "15.8"],
-      "draftIds": []
+      "draftIds": [
+        "AbYdTMVDAypt4ixFGhpN",
+        "TgTlarMInIxJkctHwJOT",
+        "IonuQLo8C81iLWAlolPD",
+        "LTkkWFgP24tV0iWtBnb8",
+        "rVaOythIMwzE1zWpUzcY"
+      ]
     }
   ]
 }

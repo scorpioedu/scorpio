@@ -666,5 +666,101 @@
         "problems": 1
       }
     ]
+  },
+  "15A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "intensity-sets-photon-energy",
+        "problems": 2
+      }
+    ]
+  },
+  "15B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "photon-energy-is-level-energy",
+        "problems": 3
+      },
+      {
+        "tag": "emission-absorption-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "15C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "blackbody-peak-wrong-way",
+        "problems": 2
+      },
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "photon-slows-when-losing-energy",
+        "problems": 2
+      }
+    ]
+  },
+  "15D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "mass-conserved-in-nuclear-reactions",
+        "problems": 2
+      },
+      {
+        "tag": "nucleon-charge-bookkeeping",
+        "problems": 2
+      },
+      {
+        "tag": "half-life-linear",
+        "problems": 1
+      }
+    ]
   }
 }
