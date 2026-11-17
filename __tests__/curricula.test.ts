@@ -182,6 +182,14 @@ describe("student grouping", () => {
     expect(groupByUnit([a("x", "6A", 8, "2027-01-02")]).map((g) => g.id)).toEqual(["unit-6"]);
   });
 
+  test("work with no due date sorts after dated work, not first", () => {
+    const groups = groupByUnit([
+      { id: "undated", title: "u", dueDate: null },
+      { id: "dated", title: "d", dueDate: new Date("2027-01-02") },
+    ]);
+    expect(groups[0].items.map((x) => x.id)).toEqual(["dated", "undated"]);
+  });
+
   test("a malformed key is treated as other", () => {
     expect(groupByUnit([a("x", "zz", 1, "2027-01-02")]).map((g) => g.id)).toEqual(["other"]);
   });

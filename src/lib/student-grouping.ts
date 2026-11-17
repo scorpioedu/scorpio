@@ -4,7 +4,7 @@ import { apUnitLabel } from "@/data/ap";
 export interface GroupableAssignment {
   id: string;
   title: string;
-  dueDate: Date;
+  dueDate: Date | null;
   curriculumSetKey?: unknown;
   curriculumSequence?: unknown;
 }
@@ -24,7 +24,8 @@ function keyUnit(key: unknown): number | null {
   return n ? Number(n[1]) : null;
 }
 
-const time = (d: Date) => {
+const time = (d: Date | null) => {
+  if (!d) return Number.MAX_SAFE_INTEGER; // no due date: after everything dated
   const t = new Date(d).getTime();
   return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t;
 };

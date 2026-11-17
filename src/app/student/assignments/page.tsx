@@ -8,15 +8,34 @@ import { useAuth } from "@/contexts/auth-context";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { groupByUnit } from "@/lib/student-grouping";
+
+/** A stored due date (Timestamp, ISO string or epoch ms) as a Date, or null when there is none. */
+function toDueDate(v: unknown): Date | null {
+  if (!v) return null;
+  const d =
+    typeof (v as { toDate?: unknown }).toDate === "function"
+      ? (v as { toDate: () => Date }).toDate()
+      : new Date(v as string | number);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Sort key that puts assignments with no due date last in either direction. */
+const dueTime = (d: Date | null, dir: 1 | -1) => (d ? d.getTime() : dir * Number.MAX_SAFE_INTEGER);
 
 interface Assignment {
   id: string;
   title: string;
   description: string;
-  dueDate: Date;
+  /** null when the teacher set no due date (shown as "No due date", never past due). */
+  dueDate: Date | null;
   questions?: unknown[];
   courseId: string;
   teacherId: string;
@@ -50,10 +69,10 @@ export default function StudentAssignmentsPage() {
               teacherId = teacherId || studentData.teacherId;
               courseId = courseId || studentData.courseId;
             }
-          } catch (e) { console.error("Could not fetch legacy student profile", e); }
+          } catch (e) {
+            console.error("Could not fetch legacy student profile", e);
+          }
         }
-
-
 
         let data: Assignment[] = [];
         if (courseId) {
@@ -65,33 +84,42 @@ export default function StudentAssignmentsPage() {
           }
           // New system: filter by specific course
           const assignmentsSnap = await getDocs(
-            query(collection(db, "assignments"), where("answerKeySeparated", "==", true), where("courseId", "==", courseId))
+            query(
+              collection(db, "assignments"),
+              where("answerKeySeparated", "==", true),
+              where("courseId", "==", courseId),
+            ),
           );
           data = assignmentsSnap.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-            dueDate: doc.data().dueDate?.toDate?.() || (doc.data().dueDate ? new Date(doc.data().dueDate) : new Date()),
+            dueDate: toDueDate(doc.data().dueDate),
           })) as Assignment[];
         } else if (teacherId) {
           // Fallback for legacy connections
           const assignmentsSnap = await getDocs(
-            query(collection(db, "assignments"), where("answerKeySeparated", "==", true), where("teacherId", "==", teacherId), where("courseId", "==", null))
+            query(
+              collection(db, "assignments"),
+              where("answerKeySeparated", "==", true),
+              where("teacherId", "==", teacherId),
+              where("courseId", "==", null),
+            ),
           );
           data = assignmentsSnap.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-            dueDate: doc.data().dueDate?.toDate?.() || new Date(doc.data().dueDate),
+            dueDate: toDueDate(doc.data().dueDate),
           })) as Assignment[];
         }
         setAssignments(data);
 
         const submissionsSnap = await getDocs(
-          query(collection(db, "submissions"), where("studentId", "==", user.uid))
+          query(collection(db, "submissions"), where("studentId", "==", user.uid)),
         );
         const submittedIds = new Set(
           submissionsSnap.docs
-            .filter(doc => doc.data().status !== 'draft')
-            .map((doc) => doc.data().assignmentId)
+            .filter((doc) => doc.data().status !== "draft")
+            .map((doc) => doc.data().assignmentId),
         );
         setSubmissions(submittedIds);
       } catch (error) {
@@ -103,7 +131,7 @@ export default function StudentAssignmentsPage() {
     fetchData();
   }, [user, profile]);
 
-  const isPastDue = (date: Date) => new Date(date) < new Date();
+  const isPastDue = (date: Date | null) => !!date && new Date(date) < new Date();
 
   function formatDueDate(dueDate: Date | null | undefined, isSubmitted: boolean) {
     if (!dueDate || isNaN(new Date(dueDate).getTime())) {
@@ -176,9 +204,9 @@ export default function StudentAssignmentsPage() {
   // Sorting
   filteredAssignments = filteredAssignments.sort((a, b) => {
     if (sort === "dueDateAsc") {
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      return dueTime(a.dueDate, 1) - dueTime(b.dueDate, 1);
     } else if (sort === "dueDateDesc") {
-      return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      return dueTime(b.dueDate, -1) - dueTime(a.dueDate, -1);
     } else if (sort === "titleAsc") {
       return a.title.localeCompare(b.title);
     } else if (sort === "titleDesc") {
@@ -188,74 +216,74 @@ export default function StudentAssignmentsPage() {
   });
 
   const renderItem = (assignment: Assignment) => {
-              const isSubmitted = submissions.has(assignment.id);
-              const pastDue = !isSubmitted && isPastDue(assignment.dueDate);
-              const dateInfo = formatDueDate(assignment.dueDate, isSubmitted);
+    const isSubmitted = submissions.has(assignment.id);
+    const pastDue = !isSubmitted && isPastDue(assignment.dueDate);
+    const dateInfo = formatDueDate(assignment.dueDate, isSubmitted);
 
-              return (
-                <li
-                  key={assignment.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-muted/20"
-                >
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="break-words text-sm font-semibold text-foreground">
-                        {assignment.title}
-                      </h2>
-                      {isSubmitted && (
-                        <Badge variant="secondary" className="text-[10px] h-4.5 px-1.5 font-normal">
-                          Submitted
-                        </Badge>
-                      )}
-                    </div>
-                    {assignment.description && (
-                      <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                        {assignment.description}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted-foreground/80">
-                      {assignment.questions?.length || 0}{" "}
-                      {assignment.questions?.length === 1 ? "question" : "questions"}
-                    </p>
-                  </div>
+    return (
+      <li
+        key={assignment.id}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-muted/20"
+      >
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="break-words text-sm font-semibold text-foreground">
+              {assignment.title}
+            </h2>
+            {isSubmitted && (
+              <Badge variant="secondary" className="text-[10px] h-4.5 px-1.5 font-normal">
+                Submitted
+              </Badge>
+            )}
+          </div>
+          {assignment.description && (
+            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+              {assignment.description}
+            </p>
+          )}
+          <p className="text-xs text-muted-foreground/80">
+            {assignment.questions?.length || 0}{" "}
+            {assignment.questions?.length === 1 ? "question" : "questions"}
+          </p>
+        </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-border/60">
-                    <div className="text-left sm:text-right space-y-0.5 min-w-[110px]">
-                      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                        Due Date
-                      </p>
-                      <p className="text-sm font-semibold tabular-nums text-foreground">
-                        {dateInfo.formattedDate}
-                      </p>
-                      <p
-                        className={`text-xs tabular-nums ${
-                          dateInfo.urgency === "urgent"
-                            ? "font-medium text-primary"
-                            : dateInfo.urgency === "past"
-                            ? "font-medium text-destructive"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {dateInfo.relativeText}
-                      </p>
-                    </div>
+        <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-border/60">
+          <div className="text-left sm:text-right space-y-0.5 min-w-[110px]">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Due Date
+            </p>
+            <p className="text-sm font-semibold tabular-nums text-foreground">
+              {dateInfo.formattedDate}
+            </p>
+            <p
+              className={`text-xs tabular-nums ${
+                dateInfo.urgency === "urgent"
+                  ? "font-medium text-primary"
+                  : dateInfo.urgency === "past"
+                    ? "font-medium text-destructive"
+                    : "text-muted-foreground"
+              }`}
+            >
+              {dateInfo.relativeText}
+            </p>
+          </div>
 
-                    <Button
-                      asChild
-                      size="sm"
-                      variant={isSubmitted ? "outline" : "default"}
-                      className="shrink-0 h-9 px-4 text-xs font-medium"
-                    >
-                      <Link
-                        href={`/student/assignment-view?id=${assignment.id}`}
-                        aria-label={`${isSubmitted ? "View" : "Start"} ${assignment.title}`}
-                      >
-                        {isSubmitted ? "View" : "Start"}
-                      </Link>
-                    </Button>
-                  </div>
-                </li>
-              );
+          <Button
+            asChild
+            size="sm"
+            variant={isSubmitted ? "outline" : "default"}
+            className="shrink-0 h-9 px-4 text-xs font-medium"
+          >
+            <Link
+              href={`/student/assignment-view?id=${assignment.id}`}
+              aria-label={`${isSubmitted ? "View" : "Start"} ${assignment.title}`}
+            >
+              {isSubmitted ? "View" : "Start"}
+            </Link>
+          </Button>
+        </div>
+      </li>
+    );
   };
 
   const groups = followsCourse ? groupByUnit(filteredAssignments) : null;
@@ -267,13 +295,15 @@ export default function StudentAssignmentsPage() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="h-9">
-              Status: {(() => {
+              Status:{" "}
+              {(() => {
                 if (filter === "all") return `All (${counts.all})`;
                 if (filter === "submitted") return `Submitted (${counts.submitted})`;
                 if (filter === "pending") return `Pending (${counts.pending})`;
                 if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
                 return "All";
-              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+              })()}{" "}
+              <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
@@ -292,25 +322,33 @@ export default function StudentAssignmentsPage() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {!followsCourse && <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-9">
-              Sort by: {(() => {
-                if (sort === "dueDateAsc") return "Due Date (Earliest)";
-                if (sort === "dueDateDesc") return "Due Date (Latest)";
-                if (sort === "titleAsc") return "Title (A–Z)";
-                if (sort === "titleDesc") return "Title (Z–A)";
-                return "Due Date (Earliest)";
-              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>Due Date (Earliest)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>Due Date (Latest)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("titleAsc")}>Title (A–Z)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("titleDesc")}>Title (Z–A)</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>}
+        {!followsCourse && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-9">
+                Sort by:{" "}
+                {(() => {
+                  if (sort === "dueDateAsc") return "Due Date (Earliest)";
+                  if (sort === "dueDateDesc") return "Due Date (Latest)";
+                  if (sort === "titleAsc") return "Title (A–Z)";
+                  if (sort === "titleDesc") return "Title (Z–A)";
+                  return "Due Date (Earliest)";
+                })()}{" "}
+                <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>
+                Due Date (Earliest)
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>
+                Due Date (Latest)
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setSort("titleAsc")}>Title (A–Z)</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setSort("titleDesc")}>Title (Z–A)</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -322,17 +360,19 @@ export default function StudentAssignmentsPage() {
             {followsCourse
               ? "By unit, in course order"
               : sort === "dueDateAsc"
-              ? "Earliest due first"
-              : sort === "dueDateDesc"
-              ? "Latest due first"
-              : sort === "titleAsc"
-              ? "Alphabetical (A–Z)"
-              : "Alphabetical (Z–A)"}
+                ? "Earliest due first"
+                : sort === "dueDateDesc"
+                  ? "Latest due first"
+                  : sort === "titleAsc"
+                    ? "Alphabetical (A–Z)"
+                    : "Alphabetical (Z–A)"}
           </span>
         </div>
 
         {loading ? (
-          <p role="status" className="p-6 text-sm text-muted-foreground">Loading assignments…</p>
+          <p role="status" className="p-6 text-sm text-muted-foreground">
+            Loading assignments…
+          </p>
         ) : filteredAssignments.length === 0 ? (
           <p className="p-6 text-sm text-muted-foreground">No assignments match this view.</p>
         ) : groups ? (
@@ -352,9 +392,7 @@ export default function StudentAssignmentsPage() {
             ))}
           </div>
         ) : (
-          <ul className="divide-y divide-border">
-            {filteredAssignments.map(renderItem)}
-          </ul>
+          <ul className="divide-y divide-border">{filteredAssignments.map(renderItem)}</ul>
         )}
       </div>
     </div>
