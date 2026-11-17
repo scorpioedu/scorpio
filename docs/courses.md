@@ -109,8 +109,9 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 **One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it on a highlighted **course button** beside the class picker; there is no way to look at a different course from the one the class follows, so a teacher never looks at one course while a class follows another. Where the course is set:
 
-- **A class with no course** opens the page on **Choose a course for {class}**: one card per course with **Use this course**. Nothing else is offered until one is chosen (a class may also stay without a course and keep working as a plain class).
-- **The course button** ("AP Physics 2 ▾", tinted in the primary colour so the course on screen is obvious) opens a small dialog: pick another course, or **No course**.
+- **A class with no course** opens the page on **Which course is {class} taking?**: one card per course with its icon, whether it is algebra- or calculus-based, what it covers, its units as chips, its size ("8 units · 32 sets · 160 problems") and **Start {course}**. A course whose name appears in the class's name is marked "Matches the class name" and gets the filled button. Nothing else is offered until one is chosen (a class may also stay without a course and keep working as a plain class).
+- **The course button** ("AP Physics 2 ▾", tinted in the primary colour so the course on screen is obvious) opens a small dialog with one row per course (icon, level, size; the class's course is marked **Current** and the choice is ticked) and a **No course** row.
+- **Course icons.** Each course has its own hand-drawn icon (`src/components/teacher/course-icon.tsx`), used on the course button, the chooser, the dialog and the dropdowns: a ball in flight for AP Physics 1 (algebra-based mechanics), an atom for AP Physics 2 (electricity through modern physics), and an integral sign beside a moving ball for AP Physics C: Mechanics (mechanics with calculus). A new course needs a drawing and a `LOOKS` entry there; without one it shows the plain route icon.
 - **Dashboard → class → Settings** has a **Course** dropdown (saves at once, with Undo), and **Create Class** has an optional one.
 - `/teacher/welcome` still creates its class on AP Physics 1 only.
 

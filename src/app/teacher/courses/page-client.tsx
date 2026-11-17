@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
+  ArrowRight,
   CalendarDays,
   CalendarRange,
   ChevronDown,
@@ -16,10 +17,15 @@ import {
   ListOrdered,
   MoreHorizontal,
   Plus,
-  Route as RouteIcon,
 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
+import {
+  CURRICULA,
+  curriculumUnits,
+  getCurriculum,
+  hasContent,
+  type Curriculum,
+} from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import { normalisePlan, type CurriculumPlan } from "@/lib/curriculum-plan";
@@ -29,7 +35,8 @@ import { apiError, undoToast } from "@/lib/undo-toast";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
 import { ClassPicker } from "@/components/teacher/class-picker";
-import { CourseSelect } from "@/components/teacher/course-select";
+import { CourseOptionList } from "@/components/teacher/course-select";
+import { CourseBadge, CourseIcon, courseLook, courseSize } from "@/components/teacher/course-icon";
 import { useSelectedClass } from "@/contexts/selected-class-context";
 import {
   Dialog,
@@ -146,6 +153,13 @@ export default function CoursesClient() {
   const follows = !!selected && !!classCourse;
   /** The class has no course yet: the page asks for one instead of showing a roadmap. */
   const needsCourse = !!selected && !classCourse;
+  // A class called "AP Physics 2 - Period 3" is most likely taking AP Physics 2 (longest name wins,
+  // so "AP Physics C: Mechanics" is not mistaken for a shorter one).
+  const suggested = needsCourse
+    ? [...CURRICULA]
+        .sort((a, b) => b.name.length - a.name.length)
+        .find((c) => selected.name.toLowerCase().includes(c.name.toLowerCase()))?.id
+    : undefined;
   const plan = useMemo(
     () => (follows ? normalisePlan(curriculum.id, selected?.curriculumPlan) : null),
     [follows, curriculum.id, selected?.curriculumPlan],
@@ -324,7 +338,7 @@ export default function CoursesClient() {
             title={`${selected.name} follows ${curriculum.name}. Press to change the course.`}
             onClick={() => setCourseDraft(selected.curriculumId)}
           >
-            <RouteIcon aria-hidden className="text-primary" /> {curriculum.name}
+            <CourseIcon curriculumId={curriculum.id} className="text-primary" /> {curriculum.name}
             <ChevronDown aria-hidden className="opacity-60" />
           </Button>
         )}
@@ -408,39 +422,86 @@ export default function CoursesClient() {
         </p>
       )}
       {needsCourse && selected ? (
-        <section aria-labelledby="choose-course" className="space-y-4">
-          <div className="space-y-1">
-            <h2 id="choose-course" className="text-lg font-semibold">
-              Choose a course for {selected.name}
+        <section aria-labelledby="choose-course" className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wider text-primary">
+              One step to set up
+            </p>
+            <h2 id="choose-course" className="text-2xl font-semibold tracking-tight">
+              Which course is {selected.name} taking?
             </h2>
-            <p className="max-w-2xl text-sm text-muted-foreground">
-              The class then gets that course&apos;s roadmap, calendar and board, and students see
-              their work by unit. You can change it later from the ⋯ menu or the class settings;
-              assignments are never removed. A class can also stay without a course.
+            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              Pick one and the class gets its whole year laid out: every unit in a teaching order,
+              each with short auto-graded sets you can assign in a click, a calendar, and a board of
+              what is out and what needs you.
             </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {CURRICULA.map((c) => (
-              <Card key={c.id} className="shadow-none">
-                <CardHeader>
-                  <CardTitle>{c.name}</CardTitle>
-                  <CardDescription>{c.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="text-sm text-muted-foreground">
-                    {hasContent(c) ? `${c.sets.length} sets` : "Planned"}
-                  </span>
-                  <Button
-                    size="sm"
-                    disabled={busy !== null || !hasContent(c)}
-                    onClick={() => void setClassCourse(c.id)}
-                  >
-                    Use this course
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <ul className="grid gap-4 lg:grid-cols-3">
+            {CURRICULA.map((c) => {
+              const look = courseLook(c.id);
+              const units = curriculumUnits(c.id).filter((u) => u.sets.length > 0);
+              const ready = hasContent(c);
+              return (
+                <li
+                  key={c.id}
+                  className="group flex flex-col gap-4 rounded-3xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg"
+                >
+                  <div className="flex items-start gap-4">
+                    <CourseBadge
+                      curriculumId={c.id}
+                      className="size-14 rounded-2xl transition-transform group-hover:scale-105"
+                      iconClassName="size-8"
+                    />
+                    <div className="min-w-0 space-y-1">
+                      <h3 className="text-lg font-semibold leading-tight">{c.name}</h3>
+                      <p className="flex flex-wrap items-center gap-1.5 text-xs">
+                        {look.level && (
+                          <span className={`rounded-full px-2 py-0.5 font-medium ${look.tint}`}>
+                            {look.level}
+                          </span>
+                        )}
+                        {c.id === suggested && (
+                          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
+                            Matches the class name
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{look.covers}</p>
+                  <ol className="flex flex-wrap gap-1.5" aria-label={`Units of ${c.name}`}>
+                    {units.map((u) => (
+                      <li
+                        key={u.unit}
+                        className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground"
+                      >
+                        <span className="tabular-nums text-foreground">{u.unit}</span>{" "}
+                        {u.info?.title}
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+                    <span className="text-xs text-muted-foreground">{courseSize(c)}</span>
+                    <Button
+                      variant={c.id === suggested || !suggested ? "default" : "outline"}
+                      disabled={busy !== null || !ready}
+                      onClick={() => void setClassCourse(c.id)}
+                    >
+                      {ready ? `Start ${c.name}` : "Not ready yet"}
+                      {ready && <ArrowRight aria-hidden />}
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="text-sm text-muted-foreground">
+            Not teaching one of these? {selected.name} can stay without a course and keep using{" "}
+            <Link className="underline underline-offset-2" href="/teacher/assignments">
+              My Assignments
+            </Link>
+            . You can change the course at any time; assignments are never removed.
+          </p>
         </section>
       ) : classes === null ? null : (
         <>
@@ -669,7 +730,11 @@ export default function CoursesClient() {
                 skipped sets belong to the old course and are dropped.
               </DialogDescription>
             </DialogHeader>
-            <CourseSelect value={courseDraft ?? null} onChange={setCourseDraft} />
+            <CourseOptionList
+              value={courseDraft ?? null}
+              current={selected.curriculumId}
+              onChange={setCourseDraft}
+            />
             <DialogFooter>
               <Button variant="outline" onClick={() => setCourseDraft(undefined)}>
                 Cancel
