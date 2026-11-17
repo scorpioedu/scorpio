@@ -20,7 +20,7 @@ Goal: **it is easy for a teacher to make changes.** Every screen follows the sam
 | A problem's wording, answer key, choices or points; add, remove or reorder problems | Assignment → **Problems** (also ⋯ → Edit problems, or Preview → Edit problems on Courses) | Draft + save bar. If students have handed it in, saving asks first and re-grades (below). |
 | Title | Assignment header, My Assignments row | Pencil, Enter to save, Escape to cancel. Undo. |
 | Student instructions, time limit, tools, lockdown, grading, AP unit | Assignment → **Settings** | Draft + save bar. Sharing stays on the My Assignments row. |
-| One due date | Assignment header, My Assignments row, Courses roadmap row, Courses board card (Assigned) | Due-date chip: pick a day (time of day is kept; new dates are 11:59 PM) or Clear. Undo. |
+| One due date | Assignment header, My Assignments row, Courses roadmap row, Courses board card (Assigned), Courses calendar (click a set, or drag it to another school day) | Due-date chip: pick a day (time of day is kept; new dates are 11:59 PM) or Clear. Undo. |
 | Several due dates | My Assignments: tick rows → *Move due dates* by days; Courses → Schedule: *Move due dates* by school days, re-space, or off days off | Listed before saving (Schedule), Undo. |
 | Assign / unassign | Courses: Assign next N, a unit, or one set; ⋯ → Archive to take it back | Archived course sets show "Archived · assign to restore it"; Restore brings the same copy back with its work. |
 | Assign one set by dragging | Courses → **Board**: drag an Up next card to Assigned (or press Assign on it) | Assigned at once on the next free date in the pacing guide, shown on the drop zone. Undo archives it again. |
@@ -63,4 +63,4 @@ Question ids are kept when editing, so grades stay attached to their questions.
 
 ## Tests
 
-`__tests__/assignment-update.test.ts` (edit route, re-grading, AP tags, archive), `__tests__/course-settings-routes.test.ts` (class routes), `__tests__/assignment-editor.test.ts` (editor helpers), `__tests__/teacher-edit.test.ts` (due dates, class choice), `__tests__/course-editing.test.ts` (drag placement, re-dating, archived sets on the roadmap), `__tests__/course-board.test.ts` (the Status board's columns, stats, drops and Up next reordering), and the class rules in `tests/security/rules-rt14.test.ts`.
+`__tests__/assignment-update.test.ts` (edit route, re-grading, AP tags, archive), `__tests__/course-settings-routes.test.ts` (class routes), `__tests__/assignment-editor.test.ts` (editor helpers), `__tests__/teacher-edit.test.ts` (due dates, class choice), `__tests__/course-editing.test.ts` (drag placement, re-dating, archived sets on the roadmap), `__tests__/course-board.test.ts` (the Status board's columns, stats, drops and Up next reordering), `__tests__/course-calendar.test.ts` (the Calendar's days, month grid and due-date moves), and the class rules in `tests/security/rules-rt14.test.ts`.

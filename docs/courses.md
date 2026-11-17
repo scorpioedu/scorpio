@@ -25,6 +25,7 @@ A planned course shows on `/teacher/courses` with a "Planned" badge; its roadmap
 | Pacing guide, bulk due-date moves | `src/lib/course-pacing.ts` |
 | Class progress, re-teach suggestions | `src/lib/course-progress.ts` |
 | Status board: columns, stats, what a drop means | `src/lib/course-board.ts` |
+| Calendar: sets on days, the month grid, moving a due date | `src/lib/course-calendar.ts` |
 | Student dashboard roadmap | `src/lib/student-roadmap.ts` |
 | Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `tools/curriculum-profile.cjs` |
 | Copy sets into a class with due dates | `src/lib/assign-sets.ts` (used by `/teacher/welcome` and `/teacher/courses`) |
@@ -98,18 +99,19 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=list`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
+"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=calendar`, `?view=list`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
-The page has two views of the same class and course, switched with **Board | List** under the class card:
+The page has three views of the same class and course, switched with **Board | Calendar | List** under the class card:
 
 - **Board** (the default): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
-- **List** (`?view=list`): the roadmap, unit by unit, with the Schedule tab. An old link to `?tab=schedule` opens the List on that tab. A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a board).
+- **Calendar** (`?view=calendar`): a month at a time, every set on the day it is due. See [Calendar](#calendar) below.
+- **List** (`?view=list`): the roadmap, unit by unit, with the Schedule tab. An old link to `?tab=schedule` opens the List on that tab. A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a board or a calendar).
 
 **Header** (both views): the class picker; **Schedule & days off**, which opens the Schedule tab's content in a side sheet; **Reorder or skip** (a class that follows the course), which swaps the view for the plan editor until it is saved or discarded; and **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any.
 
-- **Class card.** Follow or stop following the course. On the List it also has a summary strip (sets assigned, students, average score, the date the course finishes at the current pace) and **Assign next**; on the Board those numbers are in the strip above the columns.
+- **Class card.** Follow or stop following the course. On the List it also has a summary strip (sets assigned, students, average score, the date the course finishes at the current pace) and **Assign next**; on the Board and the Calendar those numbers are in the strip at the top.
 - **Roadmap tab (List).** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
   - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Duplicate, Archive, and Skip / Stop skipping for a class that follows the course);
   - a published set that is not assigned has **Assign** (just that set) and, for a following class, **Skip** / **Unskip**;
@@ -119,7 +121,7 @@ The page has two views of the same class and course, switched with **Board | Lis
 - **Assign dialog.** Lists exactly which sets will be copied and each due date before anything is created. First due date and spacing (every 1, 2 or 3 school days, or weekly) can be changed there; for a single set it asks only for the due date. Sets already in the class are skipped, so nothing is duplicated. A class that does not follow the course can still have units assigned.
 - **Schedule and days off** (a tab on the List, a side sheet from the header). The pacing guide, bulk due-date moves and the class's days off (below).
 
-Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `use-set-actions.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`) and `src/app/teacher/courses/board/` (`course-board.tsx`, `board-column.tsx`, `board-card.tsx`, `board-stats.tsx`, `unit-filter.tsx`, `board-dnd.tsx`). `use-set-actions.ts` holds what can be done to one set (assign, change the due date, skip, archive, move in the plan); List rows and Board cards call the same functions, so a change behaves the same in both.
+Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `use-set-actions.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`) `src/app/teacher/courses/calendar/course-calendar.tsx`, and `src/app/teacher/courses/board/` (`course-board.tsx`, `board-column.tsx`, `board-card.tsx`, `board-stats.tsx`, `unit-filter.tsx`, `board-dnd.tsx`). `use-set-actions.ts` holds what can be done to one set (assign, change the due date, skip, archive, move in the plan); List rows and Board cards call the same functions, so a change behaves the same in both.
 
 ### Status board
 
@@ -159,6 +161,21 @@ Needs you and Done take no drops, and their cards cannot be dragged. Reordering 
 **Phone width.** The columns become one row that scrolls sideways, one column per swipe, with a switcher above it (Up next 15 · Assigned 3 · Needs you 2 · Done 12) that jumps to a column.
 
 The board adds no Firestore rules and makes no AI calls: assigning uses `POST /api/assignments/clone` (every global set is free to copy), archiving and due dates use `PATCH /api/assignments/{id}`, and reordering uses `PATCH /api/courses/{id}/plan`.
+
+### Calendar
+
+One month at a time (`src/lib/course-calendar.ts`, tested in `__tests__/course-calendar.test.ts`). It opens on the current month; the arrows step a month, **Today** comes back, and **Last set** jumps to the month the course finishes in. The same strip of numbers and the same unit chips (`?unit=`) as the Board sit above it.
+
+- **Assigned sets** sit on their real due date, coloured by their Board column: Assigned (purple), Needs you (amber), Done (green).
+- **Sets still to come** (the Board's Up next) are dashed, on the date the pacing guide gives them at the current pace. They move when the pace, the plan or the days off change. Skipped and unpublished sets are not shown.
+- **Days off** are shaded and named (weekends, the default holidays, the class's own days off); today is marked.
+- An assigned set with **no due date** has no day to sit on, so it is listed under the calendar with a link.
+
+Click a set for its unit, where it stands ("8 of 13 handed in · 3 overdue") and its actions: an assigned set has the **due-date chip**, **Results** (or **Review** when something waits) and **Preview**; a planned set has **Assign** (the one-set dialog) and **Preview**.
+
+**Drag an assigned set to another day** to move its due date there; the time of day is kept and the message has Undo (the same `PATCH /api/assignments/{id}` as the due-date chip). Only school days take a drop: a weekend or a day off is refused with a message, and the due-date chip in the popover can still set any date. Planned sets cannot be dragged, because their dates come from the pacing guide (change the pace in **Schedule & days off**, or the order in **Reorder or skip**). Dragging works with a mouse, and with press-and-hold on touch; with a keyboard, open the set and use the due-date chip.
+
+**Phone width.** The grid becomes a list of the month's days that have sets, each with its sets; everything else works the same (no dragging on the list, use the due-date chip).
 
 **Follow / stop following.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
 

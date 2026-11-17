@@ -7,7 +7,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { CalendarDays, Columns3, List as ListIcon, ListOrdered, Plus } from "lucide-react";
+import {
+  CalendarDays,
+  CalendarRange,
+  Columns3,
+  List as ListIcon,
+  ListOrdered,
+  Plus,
+} from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
@@ -32,6 +39,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssignDialog } from "./assign-dialog";
 import { CourseBoard } from "./board/course-board";
+import { CourseCalendar } from "./calendar/course-calendar";
 import { PlanEditor } from "./plan-editor";
 import { RoadmapTab } from "./roadmap-tab";
 import { ScheduleTab } from "./schedule-tab";
@@ -40,8 +48,11 @@ import { shortDate, useCourseData } from "./use-course-data";
 import { useSetActions, type Assigning } from "./use-set-actions";
 
 type Tab = "roadmap" | "schedule";
-/** Board: every set by where it stands (the default). List: the roadmap, unit by unit. */
-type View = "board" | "list";
+/**
+ * Board: every set by where it stands (the default). Calendar: every set on the day it is due.
+ * List: the roadmap, unit by unit.
+ */
+type View = "board" | "calendar" | "list";
 
 /** Keep ?course=, ?view=, ?unit= and ?tab= in the address bar without a navigation. */
 function setParam(name: string, value: string | null) {
@@ -62,7 +73,11 @@ export default function CoursesClient() {
   );
   // An old link to the Schedule tab (?tab=schedule) still opens it, on the List.
   const [view, setViewState] = useState<View>(
-    params?.get("view") === "list" || params?.get("tab") === "schedule" ? "list" : "board",
+    params?.get("view") === "list" || params?.get("tab") === "schedule"
+      ? "list"
+      : params?.get("view") === "calendar"
+        ? "calendar"
+        : "board",
   );
   const [unit, setUnitState] = useState<number | null>(() => Number(params?.get("unit")) || null);
   const [showDone, setShowDone] = useState(false);
@@ -87,7 +102,7 @@ export default function CoursesClient() {
   const setView = (v: View) => {
     setViewState(v);
     setParam("view", v === "board" ? null : v);
-    if (v === "board") setTab("roadmap");
+    if (v !== "list") setTab("roadmap");
   };
   const setUnit = (u: number | null) => {
     setUnitState(u);
@@ -147,6 +162,7 @@ export default function CoursesClient() {
   // there is only the roadmap to browse.
   const canBoard = !!selected && written && published !== null && !loadError;
   const onBoard = canBoard && view === "board";
+  const onCalendar = canBoard && view === "calendar";
   const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
   const assignedCount = wanted.filter((s) => s.assigned).length;
   const averages = Object.values(progress?.sets ?? {})
@@ -241,7 +257,9 @@ export default function CoursesClient() {
         description={
           onBoard
             ? `Every set in ${curriculum.name}, by where it is. Drag a card to Assigned to hand it out, or press Assign.`
-            : "A ready-made path through the year: units in order, each with short auto-graded sets. Assign, re-date, skip or reorder right on the roadmap."
+            : onCalendar
+              ? `Every set in ${curriculum.name} on the day it is due. Drag an assigned set to another day to move its due date, or click it.`
+              : "A ready-made path through the year: units in order, each with short auto-graded sets. Assign, re-date, skip or reorder right on the roadmap."
         }
       >
         <ClassPicker
@@ -404,7 +422,7 @@ export default function CoursesClient() {
                 {error}
               </p>
             )}
-            {!onBoard && (
+            {!onBoard && !onCalendar && (
               <>
                 {selected && published !== null && (
                   <TeacherSummary
@@ -454,6 +472,7 @@ export default function CoursesClient() {
           {(
             [
               ["board", "Board", Columns3],
+              ["calendar", "Calendar", CalendarRange],
               ["list", "List", ListIcon],
             ] as const
           ).map(([value, label, Icon]) => (
@@ -512,6 +531,21 @@ export default function CoursesClient() {
               ? (order, done) => void actions.reorder!(order, done)
               : undefined,
           }}
+        />
+      ) : onCalendar && selected && rowActions ? (
+        <CourseCalendar
+          key={`${selected.id}-${curriculum.id}`}
+          curriculum={curriculum}
+          roadmap={roadmap}
+          progress={progress}
+          pacing={pacing}
+          daysOff={calendar}
+          isSchoolDay={isSchoolDay}
+          unit={unit}
+          onUnit={setUnit}
+          busy={busy !== null}
+          onPreview={setPreview}
+          actions={rowActions}
         />
       ) : (
         <Tabs
