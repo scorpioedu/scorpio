@@ -44,6 +44,8 @@ export interface ClassAssignment {
   curriculumId?: unknown;
   curriculumSetKey?: unknown;
   dueDate?: Date | null;
+  /** Archived copies are hidden from students and count as not assigned; assigning restores them. */
+  archived?: boolean;
 }
 
 /**
@@ -73,6 +75,10 @@ export interface RoadmapSet {
   dueDate: Date | null;
   /** The class leaves this set out (its plan); it is never offered for assigning. */
   skipped: boolean;
+  /** The class copy's own title when assigned (the teacher may have renamed it). */
+  copyTitle?: string | null;
+  /** An archived copy of this set in the class: assigning restores it instead of copying again. */
+  archivedId?: string | null;
 }
 export interface RoadmapUnit {
   unit: number;
@@ -95,13 +101,15 @@ export function deriveRoadmap(
 ): RoadmapUnit[] {
   const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
   const assignedByKey = new Map<string, ClassAssignment>();
+  const archivedByKey = new Map<string, ClassAssignment>();
   for (const a of classAssignments)
     if (
       (a.curriculumId === undefined || a.curriculumId === curriculumId) &&
-      typeof a.curriculumSetKey === "string" &&
-      !assignedByKey.has(a.curriculumSetKey)
-    )
-      assignedByKey.set(a.curriculumSetKey, a);
+      typeof a.curriculumSetKey === "string"
+    ) {
+      const into = a.archived ? archivedByKey : assignedByKey;
+      if (!into.has(a.curriculumSetKey)) into.set(a.curriculumSetKey, a);
+    }
   const { order, skipped } = normalisePlan(curriculumId, plan);
   const position = new Map(order.map((key, i) => [key, i]));
   const at = (key: string) => position.get(key) ?? Number.MAX_SAFE_INTEGER;
@@ -123,6 +131,12 @@ export function deriveRoadmap(
           assignmentId: assignedByKey.get(set.key)?.id ?? null,
           dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
           skipped: skipped.includes(set.key),
+          ...(assignedByKey.get(set.key)?.title
+            ? { copyTitle: assignedByKey.get(set.key)!.title }
+            : {}),
+          ...(!assignedByKey.has(set.key) && archivedByKey.get(set.key)?.id
+            ? { archivedId: archivedByKey.get(set.key)!.id }
+            : {}),
         }));
       const wanted = sets.filter((s) => s.published && !s.skipped);
       const assignable = wanted.filter((s) => !s.assigned);

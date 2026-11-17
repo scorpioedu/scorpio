@@ -12,6 +12,9 @@ import { getCurriculum, type CurriculumSet } from "@/data/curricula";
 import { setProfile, typeSummary } from "@/data/curricula/profiles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Pencil, Plus } from "lucide-react";
+import { assignmentHref } from "@/lib/assignment-actions";
 import {
   Dialog,
   DialogContent,
@@ -43,9 +46,12 @@ const TYPE: Record<string, string> = { "multiple-choice": "Multiple choice", num
 export function SetPreviewDialog({
   target,
   onClose,
+  onAssign,
 }: {
   target: PreviewTarget | null;
   onClose: () => void;
+  /** Assign this set to the chosen class (shown when it is published and not assigned yet). */
+  onAssign?: () => void;
 }) {
   const [questions, setQuestions] = useState<PreviewQuestion[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -108,6 +114,27 @@ export function SetPreviewDialog({
           </DialogTitle>
           <DialogDescription>{set.description}</DialogDescription>
         </DialogHeader>
+        <div className="flex flex-wrap gap-2">
+          {target.assignmentId ? (
+            <>
+              <Button size="sm" asChild>
+                <Link href={assignmentHref(target.assignmentId, "problems")}>
+                  <Pencil aria-hidden /> Edit problems
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <Link href={assignmentHref(target.assignmentId)}>Results</Link>
+              </Button>
+            </>
+          ) : (
+            target.publishedId &&
+            onAssign && (
+              <Button size="sm" onClick={onAssign}>
+                <Plus aria-hidden /> Assign this set
+              </Button>
+            )
+          )}
+        </div>
 
         <div className="space-y-4 text-sm">
           <p className="text-muted-foreground">

@@ -124,3 +124,26 @@ export function toggleSkipped(plan: CurriculumPlan, key: string): CurriculumPlan
     : [...plan.skipped, key];
   return { order: plan.order, skipped: plan.order.filter((k) => skipped.includes(k)) };
 }
+
+/** Put a whole unit at position `to` among the units (drag and drop). Out of range is clamped. */
+export function placeUnit(order: readonly string[], unit: number, to: number): string[] {
+  const units = unitOrder(order);
+  const at = units.indexOf(unit);
+  if (at < 0) return [...order];
+  units.splice(at, 1);
+  units.splice(Math.max(0, Math.min(units.length, to)), 0, unit);
+  const byUnit = grouped(order);
+  return units.flatMap((u) => byUnit.get(u) ?? []);
+}
+
+/** Put a set at position `to` inside its own unit (drag and drop). Out of range is clamped. */
+export function placeSet(order: readonly string[], key: string, to: number): string[] {
+  const unit = keyUnit(key);
+  const inUnit = order.filter((k) => keyUnit(k) === unit);
+  const at = inUnit.indexOf(key);
+  if (at < 0) return [...order];
+  inUnit.splice(at, 1);
+  inUnit.splice(Math.max(0, Math.min(inUnit.length, to)), 0, key);
+  let i = 0;
+  return order.map((k) => (keyUnit(k) === unit ? inUnit[i++] : k));
+}

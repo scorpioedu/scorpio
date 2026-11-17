@@ -7,9 +7,13 @@ import { Trash2 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apUnitLabel, type ApCourseId } from "@/data/ap";
 import { parseDateInput } from "@/lib/first-run";
-import type { RoadmapUnit } from "@/lib/curriculum-roadmap";
+import type { ClassAssignment, RoadmapUnit } from "@/lib/curriculum-roadmap";
+import { apiError, undoToast } from "@/lib/undo-toast";
+import { sameDay } from "@/lib/teacher-edit";
 import { respaceDueDates, shiftDueDates, type DatedItem, type Pacing } from "@/lib/course-pacing";
 import {
+  classCalendar,
+  schoolDays,
   defaultCalendar,
   formatDayOff,
   parseDaysOff,
@@ -29,6 +33,18 @@ import {
 } from "@/components/ui/select";
 import { SpacingSelect } from "./assign-dialog";
 import { shortDate } from "./use-course-data";
+
+/** POST /api/courses/{id}/due-dates for the given changes. */
+async function postDueDates(classId: string, changes: DatedItem[]) {
+  const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(classId)}/due-dates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      updates: changes.map((c) => ({ assignmentId: c.id, dueDate: c.due.toISOString() })),
+    }),
+  });
+  if (!res.ok) throw new Error(await apiError(res, "Could not move the due dates."));
+}
 
 const range = (a: Date, b: Date) =>
   a.toDateString() === b.toDateString() ? shortDate(a) : `${shortDate(a)} – ${shortDate(b)}`;
@@ -107,7 +123,7 @@ function PacingCard({
         {pacing.afterExams && (
           <p role="status" className="text-sm text-amber-700 dark:text-amber-400">
             That is after AP exams begin in early May. Tighten the spacing, start sooner, or skip
-            sets on the Customize tab.
+            sets with “Reorder or skip” on the roadmap.
           </p>
         )}
       </CardContent>
@@ -119,6 +135,7 @@ function MoveDatesCard({
   course,
   classId,
   roadmap,
+  classAssignments,
   start,
   spacing,
   isSchoolDay,
@@ -127,6 +144,7 @@ function MoveDatesCard({
   course: ApCourseId;
   classId: string;
   roadmap: RoadmapUnit[];
+  classAssignments: ClassAssignment[];
   start: string;
   spacing: string;
   isSchoolDay: SchoolDayTest;
@@ -139,17 +157,30 @@ function MoveDatesCard({
   const [error, setError] = useState("");
   const [now] = useState(() => new Date());
 
-  const dated = useMemo(
-    () =>
+  // Every assignment in the class with a due date: course sets by unit, anything else as "other".
+  const dated = useMemo(() => {
+    const unitOf = new Map(
       roadmap.flatMap((u) =>
-        u.sets
-          .filter((s) => s.assignmentId && s.dueDate)
-          .map((s) => ({ unit: u.unit, key: s.set.key, id: s.assignmentId!, due: s.dueDate! })),
+        u.sets.filter((x) => x.assignmentId).map((x) => [x.assignmentId!, u.unit] as const),
       ),
-    [roadmap],
-  );
+    );
+    return classAssignments
+      .filter((a) => a.id && a.dueDate && !a.archived)
+      .map((a) => ({
+        unit: unitOf.get(a.id!) ?? null,
+        key: typeof a.curriculumSetKey === "string" && unitOf.has(a.id!) ? a.curriculumSetKey : "",
+        title: a.title ?? "Untitled",
+        id: a.id!,
+        due: a.dueDate!,
+      }))
+      .sort((a, b) => a.due.getTime() - b.due.getTime());
+  }, [roadmap, classAssignments]);
   const inScope = dated.filter((d) =>
-    scope === "upcoming" ? d.due >= now : String(d.unit) === scope,
+    scope === "upcoming"
+      ? d.due >= now
+      : scope === "other"
+        ? d.unit === null
+        : String(d.unit) === scope,
   );
   const items: DatedItem[] = inScope.map(({ id, due }) => ({ id, due }));
   const startDate = parseDateInput(start);
@@ -163,27 +194,23 @@ function MoveDatesCard({
           action === "tidy" ? 0 : (action === "earlier" ? -1 : 1) * Number(days),
           isSchoolDay,
         );
-  const keyOf = new Map(inScope.map((d) => [d.id, d.key]));
-  const units = [...new Set(dated.map((d) => d.unit))];
+  const labelOf = new Map(
+    inScope.map((d) => [d.id, d.key ? `${d.key} · ${d.title.split(" · ").at(-1)}` : d.title]),
+  );
+  const units = [...new Set(dated.map((d) => d.unit))].filter((u): u is number => u !== null);
+  const hasOther = dated.some((d) => d.unit === null);
 
   async function apply() {
     setBusy(true);
     setError("");
     try {
-      const res = await authenticatedFetch(
-        `/api/courses/${encodeURIComponent(classId)}/due-dates`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            updates: changes.map((c) => ({ assignmentId: c.id, dueDate: c.due.toISOString() })),
-          }),
-        },
-      );
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || "Could not move the due dates.");
-      toast.success(`${changes.length} due date${changes.length === 1 ? "" : "s"} moved.`);
+      await postDueDates(classId, changes);
+      const before = changes.map((c) => ({ id: c.id, due: items.find((i) => i.id === c.id)!.due }));
       await onDone();
+      undoToast(`${changes.length} due date${changes.length === 1 ? "" : "s"} moved`, async () => {
+        await postDueDates(classId, before);
+        await onDone();
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not move the due dates.");
     } finally {
@@ -196,20 +223,20 @@ function MoveDatesCard({
       <CardHeader>
         <CardTitle>Move due dates</CardTitle>
         <CardDescription>
-          Change several due dates at once, for example after a snow day. Only assigned course sets
-          are moved; you see every change before it is saved.
+          Change several due dates at once, for example after a snow day. Every assignment in this
+          class with a due date can be moved; you see every change before it is saved.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {dated.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No course sets with due dates in this class yet.
+            No assignments with due dates in this class yet.
           </p>
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="move-scope">Which sets</Label>
+                <Label htmlFor="move-scope">Which assignments</Label>
                 <Select value={scope} onValueChange={setScope}>
                   <SelectTrigger id="move-scope" className="w-full">
                     <SelectValue />
@@ -221,6 +248,9 @@ function MoveDatesCard({
                         {apUnitLabel(u, course)}
                       </SelectItem>
                     ))}
+                    {hasOther && (
+                      <SelectItem value="other">Assignments outside the course</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -270,7 +300,7 @@ function MoveDatesCard({
                     key={c.id}
                     className="flex flex-wrap items-center justify-between gap-2 px-4 py-2"
                   >
-                    <span className="font-medium">{keyOf.get(c.id)}</span>
+                    <span className="min-w-0 break-words font-medium">{labelOf.get(c.id)}</span>
                     <span className="text-muted-foreground">
                       {shortDate(items.find((i) => i.id === c.id)!.due)} → {shortDate(c.due)}
                     </span>
@@ -299,13 +329,17 @@ function DaysOffCard({
   classId,
   calendar,
   custom,
+  classAssignments,
   onSaved,
+  onMoved,
 }: {
   classId: string;
   calendar: DayOff[];
   /** True when the class has its own list (otherwise these are the defaults). */
   custom: boolean;
+  classAssignments: ClassAssignment[];
   onSaved: (daysOff: DayOff[] | null) => void;
+  onMoved: () => Promise<void>;
 }) {
   const [list, setList] = useState<DayOff[]>(calendar);
   const [dirty, setDirty] = useState(false);
@@ -345,6 +379,32 @@ function DaysOffCard({
       setList(body.daysOff ?? defaultCalendar());
       setDirty(false);
       toast.success(daysOff === null ? "Back to the default calendar." : "Days off saved.");
+      // Due dates that now fall on a day off: offer to move each to the next school day.
+      const now = new Date();
+      const items: DatedItem[] = classAssignments
+        .filter((a) => a.id && a.dueDate && !a.archived && a.dueDate >= now)
+        .map((a) => ({ id: a.id!, due: a.dueDate! }));
+      const fixes = shiftDueDates(items, 0, schoolDays(classCalendar(body.daysOff ?? null))).filter(
+        (f) => !sameDay(f.due, items.find((i) => i.id === f.id)!.due),
+      );
+      if (fixes.length) {
+        toast(`${fixes.length} due date${fixes.length === 1 ? " falls" : "s fall"} on a day off`, {
+          description: "Move each to the next school day?",
+          duration: 15000,
+          action: {
+            label: "Move them",
+            onClick: async () => {
+              try {
+                await postDueDates(classId, fixes);
+                await onMoved();
+                toast.success(`${fixes.length} due date${fixes.length === 1 ? "" : "s"} moved`);
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : "Could not move the due dates.");
+              }
+            },
+          },
+        });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the days off.");
     } finally {
@@ -445,8 +505,7 @@ function DaysOffCard({
           )}
         </div>
         <p className="text-xs text-muted-foreground">
-          Saving does not move due dates that are already set. Use “Only move dates off days off”
-          above to tidy them.
+          After saving you are offered to move any due date that now lands on a day off.
         </p>
       </CardContent>
     </Card>
@@ -457,6 +516,7 @@ export function ScheduleTab(props: {
   course: ApCourseId;
   classId: string;
   roadmap: RoadmapUnit[];
+  classAssignments: ClassAssignment[];
   pacing: Pacing;
   start: string;
   spacing: string;
@@ -482,6 +542,7 @@ export function ScheduleTab(props: {
         course={props.course}
         classId={props.classId}
         roadmap={props.roadmap}
+        classAssignments={props.classAssignments}
         start={props.start}
         spacing={props.spacing}
         isSchoolDay={props.isSchoolDay}
@@ -492,7 +553,9 @@ export function ScheduleTab(props: {
         classId={props.classId}
         calendar={props.calendar}
         custom={props.customCalendar}
+        classAssignments={props.classAssignments}
         onSaved={props.onDaysOffSaved}
+        onMoved={props.onMoved}
       />
     </div>
   );

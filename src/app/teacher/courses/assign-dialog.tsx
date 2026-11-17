@@ -97,7 +97,7 @@ export function AssignDialog({
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="assign-start">First due date</Label>
+            <Label htmlFor="assign-start">{sets.length > 1 ? "First due date" : "Due date"}</Label>
             <Input
               id="assign-start"
               type="date"
@@ -105,10 +105,12 @@ export function AssignDialog({
               onChange={(e) => onStart(e.target.value)}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="assign-spacing">Then one</Label>
-            <SpacingSelect id="assign-spacing" value={spacing} onChange={onSpacing} />
-          </div>
+          {sets.length > 1 && (
+            <div className="space-y-2">
+              <Label htmlFor="assign-spacing">Then one</Label>
+              <SpacingSelect id="assign-spacing" value={spacing} onChange={onSpacing} />
+            </div>
+          )}
         </div>
         {startDate ? (
           <ul className="divide-y divide-border rounded-xl border border-border text-sm">

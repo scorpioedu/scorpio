@@ -132,3 +132,21 @@ export function respaceDueDates(
     .map((item, i) => ({ id: item.id, due: dates[i] }))
     .filter((next, i) => next.due.getTime() !== items[i].due.getTime());
 }
+
+/**
+ * After the class's order changes, give its assigned sets the same due dates in the new order: the
+ * earliest date goes to the first set in the order, and so on. Only sets whose date changes are returned.
+ */
+export function redateToOrder(
+  orderedKeys: string[],
+  assigned: { key: string; id: string; due: Date }[],
+): DatedItem[] {
+  const position = new Map(orderedKeys.map((k, i) => [k, i]));
+  const inOrder = [...assigned].sort(
+    (a, b) => (position.get(a.key) ?? Infinity) - (position.get(b.key) ?? Infinity),
+  );
+  const dates = assigned.map((a) => a.due).sort((a, b) => a.getTime() - b.getTime());
+  return inOrder
+    .map((a, i) => ({ id: a.id, due: dates[i] }))
+    .filter((c, i) => c.due.getTime() !== inOrder[i].due.getTime());
+}

@@ -54,5 +54,6 @@ export async function loadClassAssignments(
     curriculumId: d.data().curriculumId,
     curriculumSetKey: d.data().curriculumSetKey,
     dueDate: toDate(d.data().dueDate),
+    archived: d.data().archivedAt != null,
   }));
 }

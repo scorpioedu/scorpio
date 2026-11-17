@@ -3,13 +3,17 @@
 // The roadmap: one section per unit, in the class's order. Each set shows what it is, whether it is
 // assigned, how the class did, and a Preview button; each unit shows what students got wrong.
 import Link from "next/link";
-import { Check, ChevronRight, Eye } from "lucide-react";
-import type { Curriculum } from "@/data/curricula";
+import { Check, ChevronRight, Eye, EyeOff, Plus } from "lucide-react";
+import { getCurriculum, type Curriculum } from "@/data/curricula";
 import { setProfile } from "@/data/curricula/profiles";
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DueDateChip } from "@/components/teacher/due-date-chip";
+import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
+import { assignmentHref } from "@/lib/assignment-actions";
 import {
   Accordion,
   AccordionContent,
@@ -71,6 +75,17 @@ function unitState(
   return { label: "Not assigned", tone: "plain" };
 }
 
+export interface SetRowActions {
+  /** Assign this one set (opens the assign dialog with just it). */
+  onAssignSet?: (s: RoadmapSet) => void;
+  /** Skip or un-skip the set for this class (only for classes that follow the course). */
+  onToggleSkip?: (s: RoadmapSet) => void;
+  /** Change the class copy's due date. Throw to keep the picker open. */
+  onChangeDue?: (s: RoadmapSet, due: Date | null) => Promise<void>;
+  /** The class copy was archived or restored from its menu. */
+  onCopyChanged?: () => void;
+}
+
 export function SetRow({
   curriculumId,
   s,
@@ -78,6 +93,7 @@ export function SetRow({
   students,
   progress,
   onPreview,
+  actions = {},
 }: {
   curriculumId: string;
   s: RoadmapSet;
@@ -85,16 +101,37 @@ export function SetRow({
   students: number;
   progress: ClassProgress | null;
   onPreview: (t: PreviewTarget) => void;
+  actions?: SetRowActions;
 }) {
   const profile = setProfile(curriculumId, s.set.key);
   const p = progress?.sets[s.set.key];
+  // A copy still carrying the published title ("AP Physics 1 · Unit 3A · …") reads as the set's own
+  // title; one the teacher renamed shows the new name.
+  const published = getCurriculum(curriculumId)?.name;
+  const title =
+    s.copyTitle && !(published && s.copyTitle.startsWith(`${published} · Unit `))
+      ? s.copyTitle
+      : s.set.title;
+  const canAssign = hasClass && !!s.published && !s.assigned && !s.skipped && !!actions.onAssignSet;
   return (
     <li
-      className={`flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3 text-sm ${s.skipped ? "opacity-60" : ""}`}
+      className={`flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3 text-sm ${s.skipped && !s.assigned ? "opacity-60" : ""}`}
     >
       <div className="min-w-0 flex-1 basis-64 space-y-0.5">
-        <p className="break-words font-medium">
-          {s.set.key} · {s.set.title}
+        <p className="flex flex-wrap items-baseline gap-x-2 break-words font-medium">
+          <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
+            {s.set.key}
+          </span>
+          {s.assignmentId ? (
+            <Link
+              href={assignmentHref(s.assignmentId)}
+              className="hover:text-primary hover:underline"
+            >
+              {title}
+            </Link>
+          ) : (
+            <span>{title}</span>
+          )}
         </p>
         <p className="break-words text-muted-foreground">{s.set.description}</p>
         {profile && (
@@ -105,17 +142,29 @@ export function SetRow({
       </div>
       <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
         <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          {s.skipped && !s.assigned ? (
+          {s.assigned ? (
+            actions.onChangeDue ? (
+              <>
+                <Check className="size-4 text-green-600" aria-hidden />
+                <span className="sr-only">Assigned.</span>
+                <DueDateChip due={s.dueDate} onChange={(d) => actions.onChangeDue!(s, d)} />
+              </>
+            ) : (
+              <>
+                <Check className="size-4 text-green-600" aria-hidden />
+                Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}
+              </>
+            )
+          ) : s.skipped ? (
             "Skipped for this class"
-          ) : s.assigned ? (
-            <>
-              <Check className="size-4 text-green-600" aria-hidden />
-              Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}
-            </>
           ) : !s.published ? (
             AVAILABILITY_LABEL[s.availability]
           ) : hasClass ? (
-            "Not assigned yet"
+            s.archivedId ? (
+              "Archived · assign to restore it"
+            ) : (
+              "Not assigned yet"
+            )
           ) : (
             "Ready to assign"
           )}
@@ -127,7 +176,12 @@ export function SetRow({
             {p.pending ? ` · ${p.pending} to review` : ""}
           </span>
         )}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {canAssign && (
+            <Button size="sm" onClick={() => actions.onAssignSet!(s)}>
+              <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -142,12 +196,35 @@ export function SetRow({
           >
             <Eye aria-hidden /> Preview
           </Button>
-          {s.assignmentId && (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href={`/teacher/assignment-view?id=${encodeURIComponent(s.assignmentId)}`}>
-                Results <ChevronRight aria-hidden />
-              </Link>
-            </Button>
+          {s.assignmentId ? (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href={assignmentHref(s.assignmentId)}>
+                  Results <ChevronRight aria-hidden />
+                </Link>
+              </Button>
+              {actions.onCopyChanged && (
+                <AssignmentActionsMenu
+                  id={s.assignmentId}
+                  title={title}
+                  hideOpen
+                  onChanged={actions.onCopyChanged}
+                  extraItems={
+                    actions.onToggleSkip ? (
+                      <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
+                        <EyeOff /> {s.skipped ? "Stop skipping" : "Skip in this class's plan"}
+                      </DropdownMenuItem>
+                    ) : null
+                  }
+                />
+              )}
+            </>
+          ) : (
+            actions.onToggleSkip && (
+              <Button variant="ghost" size="sm" onClick={() => actions.onToggleSkip!(s)}>
+                {s.skipped ? "Unskip" : "Skip"}
+              </Button>
+            )
           )}
         </div>
       </div>
@@ -164,6 +241,7 @@ export function RoadmapTab({
   busy,
   onAssign,
   onPreview,
+  actions,
 }: {
   curriculum: Curriculum;
   roadmap: RoadmapUnit[];
@@ -174,6 +252,7 @@ export function RoadmapTab({
   busy: boolean;
   onAssign: (u: RoadmapUnit) => void;
   onPreview: (t: PreviewTarget) => void;
+  actions?: SetRowActions;
 }) {
   const hasClass = className !== null;
   const open = String(
@@ -248,6 +327,7 @@ export function RoadmapTab({
                     students={progress?.students ?? 0}
                     progress={progress}
                     onPreview={onPreview}
+                    actions={actions}
                   />
                 ))}
               </ul>

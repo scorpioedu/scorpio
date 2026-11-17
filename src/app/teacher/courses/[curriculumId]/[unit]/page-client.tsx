@@ -3,22 +3,16 @@
 // The unit guide: what a unit covers, what each set contains, and how the chosen class did on it.
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { apTopic, misconceptionTag } from "@/data/ap";
-import { getCurriculum, hasContent } from "@/data/curricula";
+import { CURRICULA, getCurriculum, hasContent } from "@/data/curricula";
 import { setProfile, typeSummary } from "@/data/curricula/profiles";
 import { deriveRoadmap } from "@/lib/curriculum-roadmap";
 import { normalisePlan } from "@/lib/curriculum-plan";
 import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { ClassPicker } from "@/components/teacher/class-picker";
 import { MisconceptionList, SetRow } from "../../roadmap-tab";
 import { SetPreviewDialog, type PreviewTarget } from "../../set-preview-dialog";
 import { useCourseData } from "../../use-course-data";
@@ -33,7 +27,7 @@ export default function UnitGuideClient({
   const curriculum = getCurriculum(curriculumId)!;
   const written = hasContent(curriculum);
   const data = useCourseData(curriculumId);
-  const { classes, classId, selected, published, classAssignments, progress } = data;
+  const { classes, selected, published, classAssignments, progress } = data;
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
 
   const follows = selected?.curriculumId === curriculumId;
@@ -66,31 +60,23 @@ export default function UnitGuideClient({
   return (
     <div className="space-y-6 md:pb-16 md:pr-28">
       <Link
-        href="/teacher/courses"
+        href={`/teacher/courses${curriculumId === CURRICULA[0].id ? "" : `?course=${encodeURIComponent(curriculumId)}`}`}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden /> {curriculum.name} roadmap
       </Link>
 
       <TeacherPageHeader title={`Unit ${unit}: ${info?.title ?? ""}`} description={info?.summary}>
-        {written && classes && classes.length > 0 && (
-          <div className="w-64 max-w-full space-y-1.5">
-            <Label htmlFor="guide-class" className="text-xs text-muted-foreground">
-              Show progress for
-            </Label>
-            <Select value={classId} onValueChange={data.setClassId}>
-              <SelectTrigger id="guide-class" className="w-full">
-                <SelectValue placeholder="Choose a class" />
-              </SelectTrigger>
-              <SelectContent>
-                {classes.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        {written && classes && classes.length > 0 && <ClassPicker />}
+        {written && selected && roadmapUnit.assignable.length > 0 && (
+          <Button asChild>
+            <Link
+              href={`/teacher/courses?course=${encodeURIComponent(curriculumId)}&assign=${unit}`}
+            >
+              <Plus aria-hidden /> Assign {roadmapUnit.assignable.length} set
+              {roadmapUnit.assignable.length === 1 ? "" : "s"}
+            </Link>
+          </Button>
         )}
       </TeacherPageHeader>
 
