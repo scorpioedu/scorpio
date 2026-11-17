@@ -172,6 +172,16 @@ export const courseBody = z.object({
   /** Optional: the class follows this course roadmap (a known id from src/data/curricula). */
   curriculumId: z.string().trim().min(1).max(64).optional(),
 });
+// PATCH /api/courses/{id}: the owner edits a class. Only what is sent changes.
+export const updateCourseBody = z
+  .object({
+    name: z.string().trim().min(1).max(120),
+    period: z.string().trim().max(40).nullable(),
+    description: z.string().trim().max(2000).nullable(),
+    archived: z.boolean(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to change");
 export const courseCurriculumBody = z.object({
   curriculumId: z.string().trim().min(1).max(64).nullable(),
 });

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Lightbulb, RefreshCw } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
+import { useSelectedClass } from "@/contexts/selected-class-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -178,7 +179,9 @@ function GroupCard({ title, rows, empty }: { title: string; rows: GroupRow[]; em
 
 export default function TeacherInsightsPage() {
   const { user } = useAuth();
-  const [courseId, setCourseId] = useState(ALL);
+  // The class is shared with the other teacher pages (remembered, and in the URL as ?class=).
+  const { classId, setClassId: setCourseId } = useSelectedClass({ allowAll: true });
+  const courseId = classId || ALL;
   const [assignmentId, setAssignmentId] = useState(ALL);
   const [apUnit, setApUnit] = useState(ALL);
   const [includePending, setIncludePending] = useState(true);

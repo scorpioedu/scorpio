@@ -151,5 +151,10 @@ describe('courses follow a curriculum only through the server', () => {
   await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumPlan:deleteField()}));
   await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumPlan:deleteField(),daysOff:deleteField()}); });
  });
+ test('owner cannot change the join code or archive a class directly (routes keep course_codes in step)', async () => {
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{code:'NEWCODE1'}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{archivedAt:'2026-11-17T00:00:00.000Z'}));
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f4']}));
+ });
  test('a student can read their own class (to group assignments by unit)', async () => assertSucceeds(getDoc(doc(db('sa'),'courses/ca'))));
 });

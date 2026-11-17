@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/auth-context";
+import { useSelectedClass } from "@/contexts/selected-class-context";
 import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Latex } from "@/components/latex";
@@ -104,7 +105,8 @@ export default function TeacherVault() {
   const { user } = useAuth();
   const { isFreePlan, hasNoOrg } = useDepartmentPlan();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  // The class is shared with the other teacher pages; switching still asks first when there are unsaved changes.
+  const { classId: selectedCourseId, setClassId: setSelectedCourseId } = useSelectedClass();
   const [restrictedIds, setRestrictedIds] = useState<string[]>([]);
   const [customFormulas, setCustomFormulas] = useState<Formula[]>([]);
   const [search, setSearch] = useState("");
@@ -191,11 +193,6 @@ export default function TeacherVault() {
         const querySnapshot = await getDocs(q);
         const coursesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
         setCourses(coursesList);
-        if (coursesList.length > 0) {
-          setSelectedCourseId(coursesList[0].id);
-          setRestrictedIds(coursesList[0].restrictedFormulaIds || []);
-          setCustomFormulas(coursesList[0].customFormulas || []);
-        }
       } catch (error) {
         console.error("Error fetching courses:", error);
         toast.error("Failed to load classes");
