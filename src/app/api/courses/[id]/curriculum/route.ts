@@ -8,8 +8,11 @@ import { getCurriculum } from "@/data/curricula";
 
 /**
  * PATCH /api/courses/{id}/curriculum { curriculumId: string | null } -> { id, curriculumId }
- * The class's owner makes the class follow a course roadmap, or stops it following one (null).
- * Following only changes how the class is shown to teacher and students; no assignments are touched.
+ * The class's owner sets the one course the class follows, or takes it away (null). A class has at
+ * most one course. This only changes how the class is shown to teacher and students: no assignments
+ * are touched, so sets already assigned from the old course stay in the class with their work.
+ * The class's own plan (order and skipped sets) belongs to the old course, whose set keys can repeat
+ * in the new one ("1A"), so it is removed when the course changes.
  * Clients cannot write `curriculumId` themselves (firestore.rules), so this route is the only way.
  */
 export const PATCH = withAuthorizedRequest(
@@ -28,7 +31,8 @@ export const PATCH = withAuthorizedRequest(
       const course = (await ref.get()).data();
       if (!course || course.teacherId !== caller.uid)
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
-      await ref.update({ curriculumId });
+      const changed = (course.curriculumId ?? null) !== curriculumId;
+      await ref.update({ curriculumId, ...(changed ? { curriculumPlan: null } : {}) });
       return NextResponse.json({ id, curriculumId });
     } catch (error) {
       return errorResponse(error, "courses/curriculum", requestId);

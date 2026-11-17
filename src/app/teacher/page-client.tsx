@@ -21,6 +21,7 @@ import { chunk, summarizeSubmissionCounts, unionCount, type SubmissionCountParts
 import { classInvitePath } from "@/lib/onboarding-links";
 import { TeacherDashboardContent, type TeacherDashboardStats } from "@/components/teacher/dashboard-content";
 import { ClassSettingsDialog } from "@/components/teacher/class-settings-dialog";
+import { CourseSelect } from "@/components/teacher/course-select";
 import { useSelectedClass } from "@/contexts/selected-class-context";
 
 interface Submission {
@@ -42,6 +43,8 @@ interface Course {
   period?: string;
   description?: string;
   archivedAt?: string | null;
+  /** The one course (roadmap) the class follows, if any. */
+  curriculumId?: string | null;
 }
 
 interface RecentAssignment {
@@ -154,6 +157,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
   const [courses, setCourses] = useState<Course[]>([]);
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseCode, setNewCourseCode] = useState("");
+  const [newCourseCurriculum, setNewCourseCurriculum] = useState<string | null>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [settingsFor, setSettingsFor] = useState<string | null>(null);
@@ -277,15 +281,16 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
     const code = newCourseCode.trim();
     try {
       const response = await authenticatedFetch('/api/courses', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newCourseName, code }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newCourseName, code, ...(newCourseCurriculum ? { curriculumId: newCourseCurriculum } : {}) }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not create the class.");
 
-      const course = { id: result.id, name: newCourseName.trim().slice(0, 120), code, teacherId: user.uid };
+      const course = { id: result.id, name: newCourseName.trim().slice(0, 120), code, teacherId: user.uid, curriculumId: newCourseCurriculum };
       setCourses(current => [course, ...current]);
       setNewCourseName("");
       setNewCourseCode("");
+      setNewCourseCurriculum(null);
       toast.success("Class created successfully!");
       refreshClasses().catch(() => undefined);
       setDialogOpen(false);
@@ -539,6 +544,11 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                       Generate Code
                     </Button>
                     <p className="text-xs text-muted-foreground">Use 6–64 letters, numbers, dashes, or underscores.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-class-course">Course</Label>
+                    <CourseSelect id="new-class-course" value={newCourseCurriculum} onChange={setNewCourseCurriculum} />
+                    <p className="text-xs text-muted-foreground">Optional. A class follows one course; you can change it later in the class settings.</p>
                   </div>
                 </div>
                 {courseError && <p role="alert" className="text-sm text-destructive">{courseError}</p>}

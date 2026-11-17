@@ -105,7 +105,16 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=calendar`, `?view=board`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
+"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`, `?view=board`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
+
+**One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it under the title; there is no course picker, so a teacher never looks at one course while a class follows another. Where the course is set:
+
+- **A class with no course** opens the page on **Choose a course for {class}**: one card per course with **Use this course**. Nothing else is offered until one is chosen (a class may also stay without a course and keep working as a plain class).
+- **⋯ → Change course…** on the Courses page opens a small dialog: pick another course, or **No course**.
+- **Dashboard → class → Settings** has a **Course** dropdown (saves at once, with Undo), and **Create Class** has an optional one.
+- `/teacher/welcome` still creates its class on AP Physics 1 only.
+
+Changing a class's course never touches assignments: sets already assigned from the old course stay in the class with students' work, and show under "Other assignments" for students and outside the roadmap for the teacher. The class's own plan (order and skipped sets) belongs to the old course, whose set keys can repeat in the new one ("1A" exists in both AP Physics 1 and C: Mechanics), so `PATCH /api/courses/{id}/curriculum` clears `curriculumPlan` whenever the course changes; the page's Undo puts both back. A teacher with no class yet can still browse the courses (`?course=`) from a dropdown in the header.
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
@@ -115,9 +124,9 @@ The page has three views of the same class and course, switched with **List | Ca
 - **Calendar** (`?view=calendar`): a month at a time, every set on the day it is due. See [Calendar](#calendar) below.
 - **Board** (`?view=board`): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
 
-**Header** (every view), kept to four controls: the **class** picker; the **course** picker (a dropdown: "AP Physics 1 · 32 sets · followed", "AP Physics 2 · Planned"), which changes the course being looked at, not the one the class follows; **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any; and **⋯ More**, a menu with **Schedule & days off** (opens the Schedule tab's content in a side sheet), **Reorder or skip sets** (a class that follows the course; swaps the view for the plan editor until it is saved or discarded), a line saying which course the class follows, and **Stop following** (or **Follow / Switch to**). A class that does not follow the course being looked at also gets one line under the header with a **Follow** button and what following changes.
+**Header** (every view), kept to three controls: the **class** picker; **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any; and **⋯ More**, a menu with **Schedule & days off** (opens the Schedule tab's content in a side sheet), **Reorder or skip sets** (swaps the view for the plan editor until it is saved or discarded), a line naming the class's course, and **Change course…**.
 
-- **No class card and no row of course chips.** Following lives in the ⋯ menu and the course is a dropdown (above). On the List a summary strip sits under the header: sets assigned, students, average score and the date the course finishes at the current pace; on the Board and the Calendar those numbers are in the strip at the top. **Assign next N** in the header is the only "assign next" button, in every view.
+- **No class card and no row of course chips.** On the List a summary strip sits under the header: sets assigned, students, average score and the date the course finishes at the current pace; on the Board and the Calendar those numbers are in the strip at the top. **Assign next N** in the header is the only "assign next" button, in every view.
 - **Roadmap tab (List).** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
   - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Duplicate, Archive, and Skip / Stop skipping for a class that follows the course);
   - a published set that is not assigned has **Assign** (just that set) and, for a following class, **Skip** / **Unskip**;
@@ -183,7 +192,7 @@ Click a set for its unit, where it stands ("8 of 13 handed in · 3 overdue") and
 
 **Phone width.** The grid becomes a list of the month's days that have sets, each with its sets; everything else works the same (no dragging on the list, use the due-date chip).
 
-**Follow / stop following.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
+**Setting a class's course.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
 
 The first-run page (`/teacher/welcome`) lists sets from the definition, ordered by roadmap, and creates the class following AP Physics 1 unless the box is unticked.
 

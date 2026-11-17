@@ -7,6 +7,8 @@ import { Archive, ArchiveRestore, Loader2, RotateCcw, Trash2 } from "lucide-reac
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apiError, undoToast } from "@/lib/undo-toast";
+import { getCurriculum } from "@/data/curricula";
+import { CourseSelect } from "@/components/teacher/course-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +30,8 @@ export interface ClassSettingsValue {
   description?: string;
   code: string;
   archived?: boolean;
+  /** The one course the class follows, or null. */
+  curriculumId?: string | null;
 }
 
 async function call(path: string, method: string, body?: unknown) {
@@ -56,7 +60,7 @@ export function ClassSettingsDialog({
   const [name, setName] = useState(value.name);
   const [period, setPeriod] = useState(value.period ?? "");
   const [description, setDescription] = useState(value.description ?? "");
-  const [busy, setBusy] = useState<"" | "save" | "code" | "archive">("");
+  const [busy, setBusy] = useState<"" | "save" | "code" | "archive" | "course">("");
   const [confirm, setConfirm] = useState<"" | "code" | "delete">("");
   const path = `/api/courses/${encodeURIComponent(value.id)}`;
   const dirty =
@@ -92,6 +96,31 @@ export function ClassSettingsDialog({
       onOpenChange(false);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  /** The course saves at once (like the join code), with Undo. */
+  const setCourse = async (curriculumId: string | null) => {
+    const before = value.curriculumId ?? null;
+    if (curriculumId === before) return;
+    const change = async (next: string | null) => {
+      await call(`${path}/curriculum`, "PATCH", { curriculumId: next });
+      onChanged({ curriculumId: next });
+    };
+    const label = (id: string | null) => getCurriculum(id)?.name ?? "no course";
+    setBusy("course");
+    try {
+      await change(curriculumId);
+      undoToast(
+        curriculumId
+          ? `"${value.name}" now follows ${label(curriculumId)}. Sets already assigned are kept.`
+          : `"${value.name}" follows no course now. Its assignments are unchanged.`,
+        () => change(before),
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not change the course");
     } finally {
       setBusy("");
     }
@@ -181,6 +210,19 @@ export function ClassSettingsDialog({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="class-course">Course</Label>
+              <CourseSelect
+                id="class-course"
+                value={value.curriculumId ?? null}
+                onChange={(id) => void setCourse(id)}
+                disabled={busy !== ""}
+              />
+              <p className="text-xs text-muted-foreground">
+                A class follows one course, or none. Changing it saves at once and keeps every
+                assignment; sets from the old course show under Other assignments.
+              </p>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-muted/30 px-3 py-2.5">
               <div>

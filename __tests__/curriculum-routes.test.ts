@@ -267,6 +267,29 @@ describe("class follows a course", () => {
     expect(mockDocs.get("courses/c1")!.curriculumId).toBeNull();
   });
 
+  test("a class has one course: changing it replaces the old one and drops its plan", async () => {
+    const plan = { order: ["1B", "1A"], skipped: ["1C"] };
+    mockDocs.set("courses/c1", {
+      teacherId: "t1",
+      name: "P3",
+      curriculumId: "ap-physics-1",
+      curriculumPlan: plan,
+    });
+    // Setting the same course again keeps the plan.
+    expect((await patch("c1", { curriculumId: "ap-physics-1" })).status).toBe(200);
+    expect(mockDocs.get("courses/c1")!.curriculumPlan).toEqual(plan);
+    // Another course: "1A" means a different set there, so the plan cannot carry over.
+    expect((await patch("c1", { curriculumId: "ap-physics-c-mech" })).status).toBe(200);
+    expect(mockDocs.get("courses/c1")).toMatchObject({
+      curriculumId: "ap-physics-c-mech",
+      curriculumPlan: null,
+    });
+    // Taking the course away also leaves no plan behind.
+    mockDocs.set("courses/c1", { ...mockDocs.get("courses/c1"), curriculumPlan: plan });
+    expect((await patch("c1", { curriculumId: null })).status).toBe(200);
+    expect(mockDocs.get("courses/c1")).toMatchObject({ curriculumId: null, curriculumPlan: null });
+  });
+
   test("unknown course 400, bad body 400, nothing written", async () => {
     expect((await patch("c1", { curriculumId: "nope" })).status).toBe(400);
     expect((await patch("c1", {})).status).toBe(400);
