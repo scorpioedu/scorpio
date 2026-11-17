@@ -28,7 +28,7 @@ import {
 } from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
-import { normalisePlan, type CurriculumPlan } from "@/lib/curriculum-plan";
+import { normalisePlan, planStartingAt, type CurriculumPlan } from "@/lib/curriculum-plan";
 import { paceCourse } from "@/lib/course-pacing";
 import { classCalendar, schoolDays } from "@/lib/school-calendar";
 import { apiError, undoToast } from "@/lib/undo-toast";
@@ -76,6 +76,7 @@ import { CourseCalendar } from "./calendar/course-calendar";
 import { PlanEditor } from "./plan-editor";
 import { RoadmapTab } from "./roadmap-tab";
 import { ScheduleTab } from "./schedule-tab";
+import { StartPointPicker } from "./start-point";
 import { SetPreviewDialog, type PreviewTarget } from "./set-preview-dialog";
 import { shortDate, useCourseData } from "./use-course-data";
 import { useSetActions, type Assigning } from "./use-set-actions";
@@ -126,7 +127,14 @@ export default function CoursesClient() {
   const [startInput, setStartInput] = useState("");
   const [followBusy, setFollowBusy] = useState(false);
   /** The "Change course" dialog: the course picked in it, or undefined while it is closed. */
-  const [courseDraft, setCourseDraft] = useState<string | null | undefined>(undefined);
+  const [courseDraft, setCourseDraftState] = useState<string | null | undefined>(undefined);
+  /** In that dialog: the set the class starts the picked course at (null = from the beginning). */
+  const [startKey, setStartKey] = useState<string | null>(null);
+  const setCourseDraft = (next: string | null | undefined) => {
+    setCourseDraftState(next);
+    // The start point belongs to the course it was picked for.
+    setStartKey(null);
+  };
   const [assigning, setAssigning] = useState<Assigning | null>(null);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const [editing, setEditing] = useState(false);
@@ -241,8 +249,10 @@ export default function CoursesClient() {
   );
 
   /** Give the class its course, change it, or take it away (null). Assignments are never touched. */
-  async function setClassCourse(next: string | null) {
+  async function setClassCourse(next: string | null, startKey: string | null = null) {
     if (!selected || next === selected.curriculumId) return;
+    // Starting part-way through skips the earlier sets in the class's plan.
+    const startPlan = next ? planStartingAt(next, startKey) : null;
     const before = selected.curriculumId;
     // The plan belongs to the old course and is dropped with it; Undo puts it back.
     const planBefore = (selected.curriculumPlan ?? null) as CurriculumPlan | null;
@@ -259,12 +269,17 @@ export default function CoursesClient() {
     setError("");
     try {
       await change(next);
+      if (next && startPlan && startPlan.skipped.length > 0) await actions.savePlan(startPlan);
       setEditing(false);
       // Units are numbered per course, so the filter does not carry over.
       setUnit(null);
       undoToast(
         next
-          ? `${selected.name} now follows ${getCurriculum(next)?.name}. Sets already assigned are kept.`
+          ? `${selected.name} now follows ${getCurriculum(next)?.name}${
+              startPlan?.skipped.length
+                ? `, starting at ${startKey} (${startPlan.skipped.length} earlier sets skipped)`
+                : ""
+            }.`
           : `${selected.name} follows no course now. Its assignments are unchanged.`,
         async () => {
           await change(before);
@@ -510,7 +525,7 @@ export default function CoursesClient() {
                     <Button
                       variant={c.id === suggested || !suggested ? "default" : "outline"}
                       disabled={busy !== null || !ready}
-                      onClick={() => void setClassCourse(c.id)}
+                      onClick={() => setCourseDraft(c.id)}
                     >
                       {ready ? `Start ${c.name}` : "Not ready yet"}
                       {ready && <ArrowRight aria-hidden />}
@@ -746,13 +761,13 @@ export default function CoursesClient() {
           open={courseDraft !== undefined}
           onOpenChange={(open) => !open && setCourseDraft(undefined)}
         >
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Course for {selected.name}</DialogTitle>
               <DialogDescription>
-                A class follows one course, or none. Sets already assigned stay in the class with
-                students&apos; work and show under Other assignments; the class&apos;s own order and
-                skipped sets belong to the old course and are dropped.
+                {selected.curriculumId
+                  ? "A class follows one course, or none. Sets already assigned stay in the class with students’ work and show under Other assignments; the class’s own order and skipped sets belong to the old course and are dropped."
+                  : "A class follows one course. Pick it, and where the class starts; both can be changed later."}
               </DialogDescription>
             </DialogHeader>
             <CourseOptionList
@@ -760,6 +775,14 @@ export default function CoursesClient() {
               current={selected.curriculumId}
               onChange={setCourseDraft}
             />
+            {courseDraft && courseDraft !== selected.curriculumId && (
+              <StartPointPicker
+                key={courseDraft}
+                curriculumId={courseDraft}
+                value={startKey}
+                onChange={setStartKey}
+              />
+            )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setCourseDraft(undefined)}>
                 Cancel
@@ -768,11 +791,16 @@ export default function CoursesClient() {
                 disabled={busy !== null || (courseDraft ?? null) === selected.curriculumId}
                 onClick={() => {
                   const next = courseDraft ?? null;
+                  const start = startKey;
                   setCourseDraft(undefined);
-                  void setClassCourse(next);
+                  void setClassCourse(next, start);
                 }}
               >
-                {courseDraft ? "Change course" : "Remove course"}
+                {!courseDraft
+                  ? "Remove course"
+                  : selected.curriculumId
+                    ? "Change course"
+                    : `Start ${getCurriculum(courseDraft)?.name ?? "course"}`}
               </Button>
             </DialogFooter>
           </DialogContent>

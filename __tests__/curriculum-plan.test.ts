@@ -7,6 +7,7 @@ import {
   moveUnit,
   normalisePlan,
   parsePlan,
+  planStartingAt,
   toggleSkipped,
   unitOrder,
 } from "../src/lib/curriculum-plan";
@@ -218,5 +219,33 @@ describe("moving due dates in bulk", () => {
       ["b", "2026-12-17"],
       ["c", "2026-12-18"],
     ]);
+  });
+});
+
+describe("starting a course part-way through", () => {
+  test("every set before the start is skipped, in the course's usual order", () => {
+    const plan = planStartingAt(ID, "4B");
+    expect(plan.order).toEqual(all);
+    expect(plan.skipped).toEqual(all.slice(0, all.indexOf("4B")));
+    expect(plan.skipped).toHaveLength(13);
+    expect(plan.skipped).not.toContain("4B");
+    expect(parsePlan(ID, plan).ok).toBe(true);
+    // The roadmap then offers 4B first and counts only what is left.
+    const roadmap = deriveRoadmap(ID, published, [], plan);
+    expect(nextUnit(roadmap)?.unit).toBe(4);
+    expect(nextUnit(roadmap)?.assignable[0].set.key).toBe("4B");
+  });
+
+  test("the first set, no start, or an unknown set is the course as written", () => {
+    for (const start of ["1A", null, "9Z"])
+      expect(isDefaultPlan(ID, planStartingAt(ID, start))).toBe(true);
+  });
+
+  test("a unit's first set skips exactly the units before it", () => {
+    expect(planStartingAt(ID, "3A").skipped).toEqual(all.slice(0, 8));
+    // Units of another course are numbered differently; the rule is the same.
+    const p2 = planStartingAt("ap-physics-2", "10A");
+    expect(p2.skipped).toEqual(["9A", "9B", "9C", "9D"]);
+    expect(parsePlan("ap-physics-2", p2).ok).toBe(true);
   });
 });

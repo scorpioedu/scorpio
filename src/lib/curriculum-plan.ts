@@ -147,3 +147,15 @@ export function placeSet(order: readonly string[], key: string, to: number): str
   let i = 0;
   return order.map((k) => (keyUnit(k) === unit ? inUnit[i++] : k));
 }
+
+/**
+ * The plan for a class that joins a course part-way through: the course's usual order, with every
+ * set before `startKey` skipped (the class has already covered them, so they are not offered, paced
+ * or counted; any of them can be un-skipped later). The first set, or an unknown key, gives the
+ * course as written.
+ */
+export function planStartingAt(curriculumId: string, startKey: string | null): CurriculumPlan {
+  const order = defaultOrder(curriculumId);
+  const at = startKey === null ? 0 : order.indexOf(startKey);
+  return { order, skipped: at > 0 ? order.slice(0, at) : [] };
+}
