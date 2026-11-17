@@ -110,5 +110,125 @@
         "problems": 1
       }
     ]
+  },
+  "10A": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "charging-moves-positive-charge",
+        "problems": 1
+      },
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "10B": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 2
+      },
+      {
+        "tag": "conductor-interior-field",
+        "problems": 1
+      },
+      {
+        "tag": "field-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 1
+      }
+    ]
+  },
+  "10C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-potential-zero-together",
+        "problems": 2
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 2
+      },
+      {
+        "tag": "potential-energy-potential-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "vector-scalar-superposition",
+        "problems": 1
+      }
+    ]
+  },
+  "10D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "capacitor-wrong-quantity-fixed",
+        "problems": 2
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 1
+      },
+      {
+        "tag": "potential-energy-potential-confusion",
+        "problems": 1
+      }
+    ]
   }
 }

@@ -66,7 +66,13 @@
       "title": "Charge and Coulomb's law",
       "description": "Charging objects, conservation of charge and forces between point charges.",
       "topics": ["10.1", "10.2"],
-      "draftIds": []
+      "draftIds": [
+        "RrSXcAJCjVAA71hQ1Bk4",
+        "JAg7hf7MYqA5t6ziNS3p",
+        "BhKbeVJwZhjRJtqflbHi",
+        "Lkfm4T4757kN46cMd8lR",
+        "8zT0fteUHwzdlqVKUUoi"
+      ]
     },
     {
       "key": "10B",
@@ -74,7 +80,13 @@
       "title": "Electric fields",
       "description": "Field vectors and field lines for point charges, plates and conductors.",
       "topics": ["10.3"],
-      "draftIds": []
+      "draftIds": [
+        "LMtrfTECZiVpjsCXvUAp",
+        "NYwMNQYNtaApLTfsqxJI",
+        "UT8nzdX5J9EjtzuoGf6j",
+        "kUPg5RkS4mpS0FPMCLzS",
+        "W25OpmMiYDOoE3xWneNI"
+      ]
     },
     {
       "key": "10C",
@@ -82,7 +94,13 @@
       "title": "Potential energy and potential",
       "description": "Electric potential energy of charge systems, potential and equipotentials.",
       "topics": ["10.4", "10.5"],
-      "draftIds": []
+      "draftIds": [
+        "F6yqeNRPGY26ALP3ZnDk",
+        "8lYCRmKu5o3Xt26fRjuD",
+        "0M1JotPIRvRvKSk9Dhax",
+        "cuAcWpZdH2GeQ62yamvn",
+        "03RH4iS8WNRiAEdap5aN"
+      ]
     },
     {
       "key": "10D",
@@ -90,7 +108,13 @@
       "title": "Capacitors and energy",
       "description": "Parallel-plate capacitors, stored energy and energy conservation for moving charges.",
       "topics": ["10.6", "10.7"],
-      "draftIds": []
+      "draftIds": [
+        "ItV5TRgOWCfnQCN62wQe",
+        "khvAcZZZ6qtC61oQQJpL",
+        "DpqB6RsvhdD3mX5fctVa",
+        "wGavZDamMcg4W9Gkg3OI",
+        "InFJ2RuJDmrpV7tcp2s4"
+      ]
     },
     {
       "key": "11A",
