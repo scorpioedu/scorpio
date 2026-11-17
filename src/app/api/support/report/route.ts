@@ -21,6 +21,9 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       userName = null,
       userAgent = '',
       screenshots = [],
+      source = 'navigation-chatbot',
+      context = null,
+      appContext = null,
     } = parsed.data;
 
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
@@ -40,6 +43,9 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       userName,
       screenshots: screenshots.slice(0, 3),
       userAgent: userAgent || req.headers.get('user-agent') || 'Unknown',
+      source,
+      context,
+      appContext,
       status: 'open',
       createdAt: new Date().toISOString(),
     };

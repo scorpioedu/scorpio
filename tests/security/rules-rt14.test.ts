@@ -21,7 +21,7 @@ beforeAll(async () => {
    'notebooks/sb':{studentId:'sa',title:'squat',content:'payload'},
    'tutor_sessions/seeded':{studentId:'sa',title:'x',messages:[]},
    'tutor_sessions/sb':{studentId:'sa',title:'squat',messages:[]},
-   'admin_audit/x':{a:1}, 'landing_daily/x':{a:1}, 'landing_visitors/x':{a:1}, 'ai_reservations/x':{a:1}, 'grading_locks/x':{a:1}
+   'admin_audit/x':{a:1}, 'landing_daily/x':{a:1}, 'landing_visitors/x':{a:1}, 'ai_reservations/x':{a:1}, 'grading_locks/x':{a:1}, 'support_tickets/x':{a:1}
   };
   await Promise.all(Object.entries(docs).map(([p,d])=>setDoc(doc(db,p),d)));
  });
@@ -120,7 +120,7 @@ describe('storage (D-006)', () => {
 });
 
 describe('server-only collections are client-inaccessible', () => {
- test.each(['admin_audit','landing_daily','landing_visitors','ai_reservations','grading_locks'])('%s denies read and write to teachers and students', async (c) => {
+ test.each(['admin_audit','landing_daily','landing_visitors','ai_reservations','grading_locks','support_tickets'])('%s denies read and write to teachers and students', async (c) => {
   for (const who of ['ta','sa']) {
    await assertFails(getDoc(doc(db(who),`${c}/x`)));
    await assertFails(setDoc(doc(db(who),`${c}/y`),{a:1}));

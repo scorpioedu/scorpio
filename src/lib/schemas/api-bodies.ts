@@ -195,7 +195,24 @@ export const supportReportBody = z.object({
   userName: z.string().max(512).nullish(),
   userAgent: z.string().max(1024).optional(),
   screenshots: z.array(z.string()).max(10).optional(),
+  // Where the report came from. The in-app feedback widget also sends what the user was trying to do
+  // and the app area (teacher / student / admin) so triage does not need to guess.
+  source: z.enum(["navigation-chatbot", "feedback-widget"]).optional(),
+  context: z.string().trim().max(2000).nullish(),
+  appContext: z.enum(["teacher", "student", "admin"]).optional(),
 });
+
+// ─── PATCH /api/admin/support ──────────────────────────────────────────────
+export const SUPPORT_TICKET_STATUSES = ["open", "triaged", "done"] as const;
+export const supportTicketUpdateBody = z
+  .object({
+    id: z.string().min(1).max(100).regex(/^[A-Za-z0-9_-]+$/),
+    status: z.enum(SUPPORT_TICKET_STATUSES).optional(),
+    note: z.string().trim().max(5000).optional(),
+  })
+  .refine((b) => b.status !== undefined || b.note !== undefined, {
+    message: "Provide a status or a note",
+  });
 
 // ─── AI and chat routes ────────────────────────────────────────────────────
 // These feed text to the model, so every string has a ceiling. The 500 KB body cap still applies.

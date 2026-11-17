@@ -13,7 +13,7 @@ import { TeacherInviteCodes } from "@/components/admin/teacher-invite-codes";
 import { FirestoreExplorer } from "@/components/admin/firestore-explorer";
 import { GlobalAnalytics } from "@/components/admin/global-analytics";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShieldCheck, Lock, Database, BarChart3, BookCheck } from "lucide-react";
+import { ShieldCheck, Lock, Database, BarChart3, BookCheck, MessageSquarePlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminPage() {
@@ -109,6 +109,12 @@ export default function AdminPage() {
             <Link href="/admin/content">
               <BookCheck className="mr-2 h-4 w-4" />
               Content Review
+            </Link>
+          </Button>
+          <Button variant="ghost" className="w-full justify-start font-medium" asChild>
+            <Link href="/admin/feedback">
+              <MessageSquarePlus className="mr-2 h-4 w-4" />
+              Feedback
             </Link>
           </Button>
         </nav>
