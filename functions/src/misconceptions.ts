@@ -374,10 +374,10 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
     id: "constant-acceleration-assumed",
     label: "Uses constant-acceleration equations when acceleration changes",
     description:
-      "Applies v = v0 + at or x = ½at² (or F·d, F·t with a single force value) when the acceleration or force varies with time or position and an integral is needed.",
+      "Applies v = v0 + at or x = ½at² (or F·d, F·t, ω = αt with a single value) when the acceleration or force varies with time or position and an integral is needed.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-c-mech": [1, 2, 3, 4, 7] },
+    courseUnits: { "physics-c-mech": [1, 2, 3, 4, 5, 7] },
   },
   {
     id: "derivative-integral-confusion",

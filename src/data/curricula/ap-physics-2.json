@@ -2,7 +2,7 @@
   "id": "ap-physics-2",
   "apCourse": "physics-2",
   "name": "AP Physics 2",
-  "description": "Scorpio's roadmap through the seven AP Physics 2 units, from thermodynamics to modern physics. The sets are planned; their problems are not written yet.",
+  "description": "Scorpio's roadmap through the seven AP Physics 2 units, from thermodynamics to modern physics: ready-made, auto-graded sets in a teaching order.",
   "sets": [
     {
       "key": "9A",

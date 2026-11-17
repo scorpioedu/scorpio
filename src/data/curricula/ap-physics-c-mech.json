@@ -2,7 +2,7 @@
   "id": "ap-physics-c-mech",
   "apCourse": "physics-c-mech",
   "name": "AP Physics C: Mechanics",
-  "description": "Scorpio's roadmap through the seven AP Physics C: Mechanics units, with calculus throughout. The sets are planned; their problems are not written yet.",
+  "description": "Scorpio's roadmap through the seven AP Physics C: Mechanics units, with calculus throughout: ready-made, auto-graded sets in a teaching order.",
   "sets": [
     {
       "key": "1A",
@@ -234,7 +234,13 @@
       "title": "Rotational kinematics",
       "description": "Angular quantities with calculus, and their link to linear motion.",
       "topics": ["5.1", "5.2"],
-      "draftIds": []
+      "draftIds": [
+        "pkCkWmbnW6mMlRhnifmB",
+        "7FnaxU0u5iEqJAds399Z",
+        "J9AfaRCNjteJIJeGstAR",
+        "mWXTMkZ0EEUVlXtleHzi",
+        "X0vrGEe5dBOBWLKMdivK"
+      ]
     },
     {
       "key": "5B",
@@ -242,7 +248,13 @@
       "title": "Torque",
       "description": "Torque as a cross product: lever arms and direction.",
       "topics": ["5.3"],
-      "draftIds": []
+      "draftIds": [
+        "7ML8li60pccHuq58MgyC",
+        "eGtPtdzILv24BdE31T3b",
+        "NvqSzbkUipSpBUqCWvQM",
+        "pxEIAquVZmCc4lgNVSlu",
+        "7PghA9tY5kGMnP16DwGq"
+      ]
     },
     {
       "key": "5C",
@@ -250,7 +262,13 @@
       "title": "Rotational inertia and equilibrium",
       "description": "Moments of inertia by integration, the parallel-axis theorem and balanced torques.",
       "topics": ["5.4", "5.5"],
-      "draftIds": []
+      "draftIds": [
+        "8vlNxiOdLP7JG89O2lm0",
+        "kZM00LUZBRUTiycS0aNb",
+        "EMW2Li2hqVxfTqQJgQjy",
+        "Y8DS8FnXiKiD7N2xIEy3",
+        "ucGFjVviT9bhNp5epkEq"
+      ]
     },
     {
       "key": "5D",
@@ -258,7 +276,13 @@
       "title": "Newton's second law for rotation",
       "description": "Net torque and angular acceleration, with translation.",
       "topics": ["5.6"],
-      "draftIds": []
+      "draftIds": [
+        "vQ7isKq8j65Ujnq6mQfZ",
+        "9dOUmgSUy6gWQoa7JMl5",
+        "NEVYrkgWPxMyDSnQOyFp",
+        "XUO2rDsVFvu2sewbZWt0",
+        "ZkmMbjma6zStpZ9DGEMe"
+      ]
     },
     {
       "key": "6A",
