@@ -537,10 +537,10 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
     id: "field-direction-ignores-sign",
     label: "Ignores the sign of the charge for direction",
     description:
-      "Sends a negative charge along the field, or points the field toward positive charges.",
+      "Sends a negative charge along the field (electrons drifting from high to low potential in a wire), or points the field toward positive charges.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10, 12] },
+    courseUnits: { "physics-2": [10, 11, 12] },
   },
   {
     id: "field-potential-zero-together",

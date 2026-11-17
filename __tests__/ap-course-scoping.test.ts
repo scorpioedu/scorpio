@@ -375,6 +375,7 @@ describe("content generator per course", () => {
     expect(mech).toContain("You write AP Physics C: Mechanics homework problems");
     expect(mech).toContain("calculus-based");
     expect(mech).not.toContain("no calculus");
+    expect(mech).toContain("Never use LaTeX");
     expect(solverSystemInstruction("physics-c-mech")).toContain("AP Physics C: Mechanics problem");
     // Same output format for every course.
     for (const text of [p2, mech]) expect(text).toContain('Return ONLY JSON: {"problems"');

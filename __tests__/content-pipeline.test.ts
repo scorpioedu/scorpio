@@ -81,6 +81,14 @@ describe("validateDraftProblem", () => {
     ]);
   });
 
+  test("LaTeX in the text or an option is flagged: students see it as written", () => {
+    const text = "A cart has velocity \\vec{v} = (3.0\\hat{i}) m/s. " + numeric.text;
+    expect(validateDraftProblem({ ...numeric, text }, "4.3").warnings).toContain(
+      "The text or an option contains LaTeX; write the mathematics as plain text",
+    );
+    expect(validateDraftProblem(numeric, "4.3").warnings.join()).not.toMatch(/LaTeX/);
+  });
+
   test("fatal errors", () => {
     const cases: [unknown, string, RegExp][] = [
       [null, "4.3", /Not an object/],

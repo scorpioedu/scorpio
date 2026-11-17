@@ -230,5 +230,133 @@
         "problems": 1
       }
     ]
+  },
+  "11A": {
+    "problems": 5,
+    "minutes": 11,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "current-used-up",
+        "problems": 2
+      },
+      {
+        "tag": "sequential-circuit-reasoning",
+        "problems": 2
+      },
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "terminal-voltage-equals-emf",
+        "problems": 2
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "voltage-current-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "battery-constant-current",
+        "problems": 1
+      },
+      {
+        "tag": "current-used-up",
+        "problems": 1
+      },
+      {
+        "tag": "junction-rule-ignored",
+        "problems": 1
+      },
+      {
+        "tag": "sequential-circuit-reasoning",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "capacitor-steady-current",
+        "problems": 2
+      },
+      {
+        "tag": "battery-constant-current",
+        "problems": 1
+      },
+      {
+        "tag": "rc-linear-change",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
   }
 }

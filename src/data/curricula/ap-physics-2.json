@@ -122,7 +122,13 @@
       "title": "Current, resistance and Ohm's law",
       "description": "Charge flow in simple circuits, resistivity and ohmic behaviour.",
       "topics": ["11.1", "11.2", "11.3"],
-      "draftIds": []
+      "draftIds": [
+        "ErBDqyhx5vohYFVSckbr",
+        "YXGhA6GyQEJip44ZZHIB",
+        "jJoMO19GiE1J3ZOJFDXc",
+        "3OYsAn627sgkJ1mjzH9Z",
+        "bHGnC6jTsV4gJfdv8kgk"
+      ]
     },
     {
       "key": "11B",
@@ -130,7 +136,13 @@
       "title": "Power and series-parallel circuits",
       "description": "Power in circuit elements and equivalent resistance of combined circuits.",
       "topics": ["11.4", "11.5"],
-      "draftIds": []
+      "draftIds": [
+        "upWvJMOWX9ZIlKrV2tMR",
+        "kOij3ASc3ln5kuY6Xe5d",
+        "hWLKK0db5eDJydlqtjrh",
+        "Jb1v1zvt2iMZuzzEveVL",
+        "Hno0odpGSncHVIkxw8ae"
+      ]
     },
     {
       "key": "11C",
@@ -138,7 +150,13 @@
       "title": "Kirchhoff's rules",
       "description": "Loop and junction rules for circuits with more than one branch or battery.",
       "topics": ["11.6", "11.7"],
-      "draftIds": []
+      "draftIds": [
+        "w1jBQxXFj2mQi78ztLS1",
+        "DnNdlGdJC5JYB6nW6WzU",
+        "ag33cmExvC2GFLuvkjcR",
+        "mGaOEHrp7cFCCi0Z30Se",
+        "mMDu8HcRNBCbUZ864V3N"
+      ]
     },
     {
       "key": "11D",
@@ -146,7 +164,13 @@
       "title": "RC circuits",
       "description": "Charging and discharging capacitors: initial, steady-state and time-constant behaviour.",
       "topics": ["11.8"],
-      "draftIds": []
+      "draftIds": [
+        "G4TCkltk2yT72eZSmamT",
+        "YE8cm3lZQzlqDpjpzwMv",
+        "COfRbZiirkrvdJ6GccD2",
+        "iIGvmA4zd7vD5bZ4SvtY",
+        "C1mNLGgNHUrVAXcGPZFo"
+      ]
     },
     {
       "key": "12A",

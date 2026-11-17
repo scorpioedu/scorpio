@@ -120,6 +120,9 @@ export function validateDraftProblem(
       distractors.push({ answer, misconception });
     }
   }
+  // Problem text and options reach students as written; LaTeX commands would show as backslashes.
+  if ([text, ...(options ?? [])].some((t) => /\\[a-zA-Z]+/.test(t)))
+    warnings.push("The text or an option contains LaTeX; write the mathematics as plain text");
   if (errors.length || !type) return { errors, warnings };
 
   const question: GradableQuestion = {
