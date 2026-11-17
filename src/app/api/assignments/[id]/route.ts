@@ -6,7 +6,7 @@ import { parseJsonBody } from "@/lib/api-schema";
 import { updateAssignmentBody } from "@/lib/schemas/api-bodies";
 import { mergeAnswerKey, splitAssignmentQuestions } from "@/lib/assignment-security";
 import { assertValidAnswerKeys } from "@/lib/answer-key-access";
-import { isApTopicId } from "@/data/ap";
+import { isApTopicId, normaliseApTags } from "@/data/ap";
 import { changedQuestionIds, regradeSubmission } from "@/lib/regrade";
 import { pointsOf, type GradableQuestion } from "../../../../../functions/src/grading-core";
 
@@ -24,7 +24,16 @@ export const PATCH = withAuthorizedRequest(
     const id = decodeURIComponent(req.nextUrl.pathname.split("/").filter(Boolean).at(-1) ?? "");
     if (!id || id.includes("/"))
       return NextResponse.json({ error: "Invalid assignment" }, { status: 400 });
-    const { questions: rawQuestions, archived, dueDate, title, rubric, ...fields } = parsed.data;
+    const {
+      questions: rawQuestions,
+      archived,
+      dueDate,
+      title,
+      rubric,
+      apUnit,
+      apTopics,
+      ...fields
+    } = parsed.data;
     try {
       const ref = adminDb.collection("assignments").doc(id);
       const keyRef = adminDb.collection("assignment_keys").doc(id);
@@ -36,6 +45,15 @@ export const PATCH = withAuthorizedRequest(
       if (title !== undefined) update.title = title;
       if (dueDate !== undefined) update.dueDate = dueDate == null ? null : new Date(dueDate);
       if (archived !== undefined) update.archivedAt = archived ? new Date() : null;
+      if (apUnit !== undefined || apTopics !== undefined)
+        Object.assign(
+          update,
+          normaliseApTags({
+            apCourse: current.apCourse,
+            apUnit: apUnit === undefined ? current.apUnit : apUnit,
+            apTopics: apTopics === undefined ? current.apTopics : apTopics,
+          }),
+        );
 
       const keyUpdate: Record<string, unknown> = {};
       if (rubric !== undefined) keyUpdate.rubric = rubric ?? "";

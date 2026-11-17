@@ -177,6 +177,15 @@ describe("PATCH /api/assignments/{id}", () => {
     expect(sub).toMatchObject({ earnedPoints: 10, totalPoints: 20, score: 50 });
   });
 
+  test("AP tags are checked against the AP course", async () => {
+    await patch("a1", { apUnit: 2, apTopics: ["2.1", "9.9"] });
+    expect(updates("assignments/a1")[0]).toMatchObject({
+      apCourse: "physics-1",
+      apUnit: 2,
+      apTopics: ["2.1"],
+    });
+  });
+
   test("only the owner, and nothing is written otherwise", async () => {
     mockUid = "t2";
     expect((await patch("a1", { title: "Mine now" })).status).toBe(403);

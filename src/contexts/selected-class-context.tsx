@@ -56,7 +56,7 @@ function mirrorToUrl(id: string) {
   if (url.searchParams.get("class") === id) return;
   if (id) url.searchParams.set("class", id);
   else url.searchParams.delete("class");
-  window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+  window.history.replaceState(null, "", url.pathname + url.search + url.hash);
 }
 
 export function toTeacherClass(id: string, d: Record<string, unknown>): TeacherClass {
@@ -132,7 +132,6 @@ export function SelectedClassProvider({ children }: { children: ReactNode }) {
   const setChoice = useCallback((id: string) => {
     setChoiceState(id);
     store(id);
-    mirrorToUrl(id);
   }, []);
 
   const patchClass = useCallback((id: string, patch: Partial<TeacherClass>) => {
@@ -157,7 +156,13 @@ export function SelectedClassProvider({ children }: { children: ReactNode }) {
  * The selected class for this page. With `allowAll`, "All classes" is a valid choice (classId = "all");
  * without it, "All" falls back to the first class.
  */
-export function useSelectedClass({ allowAll = false }: { allowAll?: boolean } = {}) {
+export function useSelectedClass({
+  allowAll = false,
+  mirror = true,
+}: {
+  allowAll?: boolean;
+  /** Keep `?class=` in the address bar (off for pages about one assignment). */ mirror?: boolean;
+} = {}) {
   const ctx = useContext(SelectedClassContext);
   if (!ctx) throw new Error("useSelectedClass must be used inside SelectedClassProvider");
   const { classes, choice } = ctx;
@@ -169,8 +174,8 @@ export function useSelectedClass({ allowAll = false }: { allowAll?: boolean } = 
   }
   // Keep the address bar in step with what the page shows.
   useEffect(() => {
-    if (classes && classId) mirrorToUrl(classId);
-  }, [classes, classId]);
+    if (mirror && classes && classId) mirrorToUrl(classId);
+  }, [mirror, classes, classId]);
   return {
     ...ctx,
     classId,

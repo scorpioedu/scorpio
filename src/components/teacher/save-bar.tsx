@@ -32,7 +32,7 @@ export function SaveBar({
       role="region"
       aria-label="Unsaved changes"
       className={cn(
-        "sticky bottom-4 z-30 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-lg backdrop-blur",
+        "sticky bottom-20 z-30 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-lg backdrop-blur",
         className,
       )}
     >

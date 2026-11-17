@@ -76,6 +76,9 @@ export const updateAssignmentBody = z
     rubric: z.string().max(100000).nullable(),
     questions: z.array(assignmentQuestionSchema).min(1).max(100),
     archived: z.boolean(),
+    // AP tags, checked against the assignment's own AP course by the route (normaliseApTags).
+    apUnit: z.number().int().min(1).max(20).nullable(),
+    apTopics: z.array(z.string().max(16)).max(40),
   })
   .partial()
   .refine((v) => Object.keys(v).length > 0, "Nothing to change");
