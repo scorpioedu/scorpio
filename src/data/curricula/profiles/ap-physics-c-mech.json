@@ -1,1 +1,33 @@
-{}
+{
+  "1A": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "acceleration-sign-means-slowing",
+        "problems": 1
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 1
+      }
+    ]
+  }
+}
