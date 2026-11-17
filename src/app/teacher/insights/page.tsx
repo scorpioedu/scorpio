@@ -238,7 +238,7 @@ export default function TeacherInsightsPage() {
 
       <Card className="min-w-0 gap-0 py-0">
         <CardHeader className="flex flex-wrap items-end gap-4 px-4 py-4 sm:px-5">
-          <div className="grid w-full gap-3 sm:w-auto sm:grid-cols-3">
+          <div className="grid w-full gap-3 sm:grid-cols-3">
             <div className="min-w-0 space-y-1.5">
               <label
                 htmlFor="insights-class"
@@ -253,7 +253,7 @@ export default function TeacherInsightsPage() {
                   setAssignmentId(ALL);
                 }}
               >
-                <SelectTrigger id="insights-class" className="w-full cursor-pointer sm:w-44">
+                <SelectTrigger id="insights-class" className="w-full min-w-0 cursor-pointer">
                   <SelectValue placeholder="All classes" />
                 </SelectTrigger>
                 <SelectContent>
@@ -280,7 +280,7 @@ export default function TeacherInsightsPage() {
                   setAssignmentId(ALL);
                 }}
               >
-                <SelectTrigger id="insights-unit" className="w-full cursor-pointer sm:w-56">
+                <SelectTrigger id="insights-unit" className="w-full min-w-0 cursor-pointer">
                   <SelectValue placeholder="All units" />
                 </SelectTrigger>
                 <SelectContent>
@@ -301,7 +301,7 @@ export default function TeacherInsightsPage() {
                 Assignment
               </label>
               <Select value={assignmentId} onValueChange={setAssignmentId}>
-                <SelectTrigger id="insights-assignment" className="w-full cursor-pointer sm:w-56">
+                <SelectTrigger id="insights-assignment" className="w-full min-w-0 cursor-pointer">
                   <SelectValue placeholder="All assignments" />
                 </SelectTrigger>
                 <SelectContent>

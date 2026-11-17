@@ -12,6 +12,9 @@ One grading core, `functions/src/grading-core.ts`, is used by both the Cloud Fun
 
 Feedback never reveals the answer key.
 
+## Misconceptions
+Each graded answer carries `misconceptions`: tag ids from `functions/src/misconceptions.ts`. Wrong multiple-choice options and common wrong numeric values can be tagged in the key (`distractors`, stored with the answer key). The AI grader picks tags for written answers. Every grade also writes rows to the server-only `misconception_events` collection, which feeds the class report at `/teacher/insights`. See [content-pipeline.md](content-pipeline.md).
+
 ## Numeric answers
 The key is a number with its unit, for example `12.5 m/s`. Students may write `45 km/h`, `1250 cm/s`, `1.25 x 10^1 m/s`, `v = 100/8 = 12.5 m/s`, or LaTeX from the math chips.
 

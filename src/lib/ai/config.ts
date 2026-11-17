@@ -1,8 +1,8 @@
-import { billingContext } from '../billing-context';
-import { adminDb } from '../firebase-admin';
-import { scrubPII, type ScrubLevel } from '../../../functions/src/pii';
-import { AiBudgetError, AiInputError, AiProviderError } from './errors';
-import { reserveBudget, settleBudget, estimateMaximumCost } from '../../../functions/src/metering';
+import { billingContext } from "../billing-context";
+import { adminDb } from "../firebase-admin";
+import { scrubPII, type ScrubLevel } from "../../../functions/src/pii";
+import { AiBudgetError, AiInputError, AiProviderError } from "./errors";
+import { reserveBudget, settleBudget, estimateMaximumCost } from "../../../functions/src/metering";
 /**
  * Direct Gemini API configuration for Scorpio AI.
  * Uses a server-only key, bounded requests, and transactional budget reservations.
@@ -72,7 +72,9 @@ function scrubParts<T>(content: T, names: string[], level: ScrubLevel): T {
 
 /** Message of anything thrown, including DOMException (not an Error in every realm). Log-only. */
 function errText(e: unknown): string {
-  return e && typeof e === 'object' && 'message' in e ? String((e as { message: unknown }).message) : 'unknown';
+  return e && typeof e === "object" && "message" in e
+    ? String((e as { message: unknown }).message)
+    : "unknown";
 }
 
 async function callGeminiDirect(request: string | GeminiRequest) {
@@ -100,8 +102,8 @@ async function callGeminiDirect(request: string | GeminiRequest) {
   const scrubNames = billingContext.getStore()?.scrubNames ?? [];
   // Callers that always scrubbed (student-authored text) opt into 'full'; everything else, notably
   // teacher-authored assignment text, only loses emails and supplied names so dates and long decimals survive.
-  const scrubLevel: ScrubLevel = req?.scrubLevel === 'full' ? 'full' : 'contact';
-  contents = contents.map(c => scrubParts(c, scrubNames, scrubLevel));
+  const scrubLevel: ScrubLevel = req?.scrubLevel === "full" ? "full" : "contact";
+  contents = contents.map((c) => scrubParts(c, scrubNames, scrubLevel));
 
   const payload: {
     contents: GeminiContent[];
@@ -136,21 +138,32 @@ async function callGeminiDirect(request: string | GeminiRequest) {
   }
 
   const context = billingContext.getStore();
-  // Only the admin-only research route is exempt; public landing traffic must always be capped by a budget.
-  const isExempt = context?.type === 'research';
-  if (!context?.organizationId && !isExempt) throw new Error('An authenticated network is required for AI');
+  // Only the admin-only research and content-pipeline routes are exempt; public landing traffic must
+  // always be capped by a budget.
+  const isExempt = context?.type === "research" || context?.type === "content";
+  if (!context?.organizationId && !isExempt)
+    throw new Error("An authenticated network is required for AI");
   const payloadText = JSON.stringify(payload);
   const inputBytes = Buffer.byteLength(payloadText);
-  if (inputBytes > 100000) throw new AiInputError('Conversation is too long; start a new conversation');
+  if (inputBytes > 100000)
+    throw new AiInputError("Conversation is too long; start a new conversation");
   let reservation: string | null = null;
   if (context?.organizationId) {
     try {
-      reservation = await reserveBudget(adminDb, context.organizationId, context.type, context.userId,
-        estimateMaximumCost(inputBytes, payload.generationConfig.maxOutputTokens));
+      reservation = await reserveBudget(
+        adminDb,
+        context.organizationId,
+        context.type,
+        context.userId,
+        estimateMaximumCost(inputBytes, payload.generationConfig.maxOutputTokens),
+      );
     } catch (budgetErr) {
       const detail = budgetErr instanceof Error ? budgetErr.message : String(budgetErr);
       if (!isExempt) throw new AiBudgetError(detail);
-      console.error(`[AI] ${context.type} reservation skipped (exempt type, proceeding uncapped):`, detail);
+      console.error(
+        `[AI] ${context.type} reservation skipped (exempt type, proceeding uncapped):`,
+        detail,
+      );
     }
   }
   // Any failure after the hold is taken must release it: charge the input estimate, never leave it pending.
@@ -159,7 +172,10 @@ async function callGeminiDirect(request: string | GeminiRequest) {
     try {
       await settleBudget(adminDb, reservation, Math.ceil(inputBytes / 4), 0);
     } catch (settleErr) {
-      console.error('[AI] failed to settle reservation after provider failure:', settleErr instanceof Error ? settleErr.message : settleErr);
+      console.error(
+        "[AI] failed to settle reservation after provider failure:",
+        settleErr instanceof Error ? settleErr.message : settleErr,
+      );
     }
   };
 
@@ -170,7 +186,7 @@ async function callGeminiDirect(request: string | GeminiRequest) {
       signal: AbortSignal.timeout(60000),
       headers: {
         "Content-Type": "application/json",
-        "Referer": process.env.NEXT_PUBLIC_APP_URL || "https://scorpioedu.org",
+        Referer: process.env.NEXT_PUBLIC_APP_URL || "https://scorpioedu.org",
       },
       body: payloadText,
     });
@@ -194,12 +210,18 @@ async function callGeminiDirect(request: string | GeminiRequest) {
   }
   if (!data.usageMetadata) {
     if (reservation) {
-      console.warn('[AI] provider returned no usageMetadata; settling with the input-size estimate');
+      console.warn(
+        "[AI] provider returned no usageMetadata; settling with the input-size estimate",
+      );
       await settleEstimate();
     }
   } else if (reservation) {
-    await settleBudget(adminDb, reservation, data.usageMetadata.promptTokenCount || 0,
-      (data.usageMetadata.candidatesTokenCount || 0) + (data.usageMetadata.thoughtsTokenCount || 0));
+    await settleBudget(
+      adminDb,
+      reservation,
+      data.usageMetadata.promptTokenCount || 0,
+      (data.usageMetadata.candidatesTokenCount || 0) + (data.usageMetadata.thoughtsTokenCount || 0),
+    );
   }
   const candidate = data.candidates?.[0];
   const text = candidate?.content?.parts?.map((p) => p.text).join("") || "";
@@ -225,7 +247,8 @@ export const model = {
     const history: GeminiContent[] = [...(options?.history || [])];
     return {
       async sendMessage(prompt: string | GeminiContent) {
-        const userMsg: GeminiContent = typeof prompt === "string" ? { role: "user", parts: [{ text: prompt }] } : prompt;
+        const userMsg: GeminiContent =
+          typeof prompt === "string" ? { role: "user", parts: [{ text: prompt }] } : prompt;
         const currentContents = [...history, userMsg];
         const res = await callGeminiDirect({
           contents: currentContents,
@@ -247,4 +270,3 @@ export const model = {
 export type GeminiModel = typeof model;
 
 export const CONTEXT_WINDOW_SIZE = 10;
-

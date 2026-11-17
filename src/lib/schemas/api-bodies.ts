@@ -291,3 +291,23 @@ export const portfolioBody = z.object({
   studentId: docId,
   organizationId: docId,
 });
+
+// ─── /api/admin/content (AI-drafted AP problems, reviewed by a person) ─────
+const apTopicId = z.string().regex(/^[1-8]\.\d{1,2}$/, "must be an AP topic id like 4.2");
+export const contentGenerateBody = z.object({
+  apTopic: apTopicId,
+  count: z.number().int().min(1).max(5),
+  difficulty: z.enum(["easy", "medium", "hard"]).optional(),
+});
+export const contentReviewBody = z.object({
+  id: docId,
+  action: z.enum(["save", "approve", "reject", "reopen"]),
+  /** The reviewer's edited problem; checked again by validateDraftProblem. */
+  problem: z.looseObject({}).optional(),
+  note: z.string().max(2000).optional(),
+});
+export const contentPublishBody = z.object({
+  draftIds: z.array(docId).min(1).max(30),
+  title: z.string().trim().min(1).max(200),
+  description: z.string().max(5000).optional(),
+});
