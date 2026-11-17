@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "functions",
+    ".firebase",
+    "scripts",
+    ".next/dev",
+    "__tests__",
+    "tests",
+    "tools",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}
