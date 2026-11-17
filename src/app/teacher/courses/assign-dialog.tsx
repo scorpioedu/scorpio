@@ -17,38 +17,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SpacingSelect } from "@/components/teacher/spacing-select";
 import { shortDate } from "./use-course-data";
 
-export function SpacingSelect({
-  id,
-  value,
-  onChange,
-}: {
-  id: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger id={id} className="w-full">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="1">Every school day</SelectItem>
-        <SelectItem value="2">Every 2 school days</SelectItem>
-        <SelectItem value="3">Every 3 school days</SelectItem>
-        <SelectItem value="5">Once a week</SelectItem>
-      </SelectContent>
-    </Select>
-  );
-}
+export { SpacingSelect };
 
 export function AssignDialog({
   unitLabel,

@@ -124,3 +124,11 @@ export function studentMessage(opts: {
   }
   return lines.join("\n");
 }
+
+/** The default first due date when assigning: two school days from today, as a date input value. */
+export function defaultFirstDue(
+  isSchoolDay: SchoolDayTest = isWeekday,
+  today: Date = new Date(),
+): string {
+  return toDateInput(addSchoolDays(today, 2, isSchoolDay));
+}

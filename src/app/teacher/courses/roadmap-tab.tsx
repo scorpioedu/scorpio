@@ -262,80 +262,89 @@ export function RoadmapTab({
       "",
   );
   return (
-    <Accordion
-      type="multiple"
-      defaultValue={open ? [open] : []}
-      // Re-open the right unit when the class changes.
-      key={`${className}-${open}`}
-      className="rounded-2xl border border-border bg-card"
-    >
-      {roadmap.map((u, i) => {
-        const state = unitState(u, u.unit === nextUnitNumber);
-        const wanted = u.sets.filter((s) => !s.skipped);
-        const assigned = wanted.filter((s) => s.assigned).length;
-        const insight = progress?.units.find((x) => x.unit === u.unit);
-        return (
-          <AccordionItem key={u.unit} value={String(u.unit)} className="px-4 sm:px-5">
-            <AccordionTrigger className="gap-3 py-4 hover:no-underline">
-              <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1 text-left">
-                <span className="min-w-0">
-                  <span className="block break-words text-base font-semibold">
-                    <span className="text-muted-foreground">{i + 1}.</span> Unit {u.unit}:{" "}
-                    {u.info?.title}
+    <div className="space-y-2">
+      {hasClass && actions && (
+        <p className="text-xs text-muted-foreground">
+          Click a due date to change it. Assign or skip one set from its row; use ⋯ on an assigned
+          set to edit its problems or archive it. Every change can be undone from the message that
+          follows.
+        </p>
+      )}
+      <Accordion
+        type="multiple"
+        defaultValue={open ? [open] : []}
+        // Re-open the right unit when the class changes.
+        key={`${className}-${open}`}
+        className="rounded-2xl border border-border bg-card"
+      >
+        {roadmap.map((u, i) => {
+          const state = unitState(u, u.unit === nextUnitNumber);
+          const wanted = u.sets.filter((s) => !s.skipped);
+          const assigned = wanted.filter((s) => s.assigned).length;
+          const insight = progress?.units.find((x) => x.unit === u.unit);
+          return (
+            <AccordionItem key={u.unit} value={String(u.unit)} className="px-4 sm:px-5">
+              <AccordionTrigger className="gap-3 py-4 hover:no-underline">
+                <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1 text-left">
+                  <span className="min-w-0">
+                    <span className="block break-words text-base font-semibold">
+                      <span className="text-muted-foreground">{i + 1}.</span> Unit {u.unit}:{" "}
+                      {u.info?.title}
+                    </span>
+                    <span className="block text-xs font-normal text-muted-foreground">
+                      {hasClass
+                        ? `${assigned} of ${wanted.length} sets assigned`
+                        : `${u.sets.length} sets`}
+                      {u.sets.length !== wanted.length
+                        ? ` · ${u.sets.length - wanted.length} skipped`
+                        : ""}
+                    </span>
                   </span>
-                  <span className="block text-xs font-normal text-muted-foreground">
-                    {hasClass
-                      ? `${assigned} of ${wanted.length} sets assigned`
-                      : `${u.sets.length} sets`}
-                    {u.sets.length !== wanted.length
-                      ? ` · ${u.sets.length - wanted.length} skipped`
-                      : ""}
-                  </span>
+                  {hasClass && (
+                    <Badge
+                      variant={state.tone === "next" ? "default" : "secondary"}
+                      className={state.tone === "done" ? "text-green-700 dark:text-green-400" : ""}
+                    >
+                      {state.label}
+                    </Badge>
+                  )}
                 </span>
-                {hasClass && (
-                  <Badge
-                    variant={state.tone === "next" ? "default" : "secondary"}
-                    className={state.tone === "done" ? "text-green-700 dark:text-green-400" : ""}
-                  >
-                    {state.label}
-                  </Badge>
-                )}
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
-              <div className="flex flex-wrap items-center gap-2">
-                {hasClass && u.assignable.length > 0 && (
-                  <Button size="sm" onClick={() => onAssign(u)} disabled={busy}>
-                    Assign {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
-                    {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4">
+                {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
+                <div className="flex flex-wrap items-center gap-2">
+                  {hasClass && u.assignable.length > 0 && (
+                    <Button size="sm" onClick={() => onAssign(u)} disabled={busy}>
+                      Assign {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
+                      {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
+                      Unit guide <ChevronRight aria-hidden />
+                    </Link>
                   </Button>
-                )}
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
-                    Unit guide <ChevronRight aria-hidden />
-                  </Link>
-                </Button>
-              </div>
-              <ul className="divide-y divide-border rounded-xl border border-border">
-                {u.sets.map((s) => (
-                  <SetRow
-                    key={s.set.key}
-                    curriculumId={curriculum.id}
-                    s={s}
-                    hasClass={hasClass}
-                    students={progress?.students ?? 0}
-                    progress={progress}
-                    onPreview={onPreview}
-                    actions={actions}
-                  />
-                ))}
-              </ul>
-              {insight && insight.top.length > 0 && <MisconceptionList insight={insight} />}
-            </AccordionContent>
-          </AccordionItem>
-        );
-      })}
-    </Accordion>
+                </div>
+                <ul className="divide-y divide-border rounded-xl border border-border">
+                  {u.sets.map((s) => (
+                    <SetRow
+                      key={s.set.key}
+                      curriculumId={curriculum.id}
+                      s={s}
+                      hasClass={hasClass}
+                      students={progress?.students ?? 0}
+                      progress={progress}
+                      onPreview={onPreview}
+                      actions={actions}
+                    />
+                  ))}
+                </ul>
+                {insight && insight.top.length > 0 && <MisconceptionList insight={insight} />}
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+    </div>
   );
 }

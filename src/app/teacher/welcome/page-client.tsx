@@ -23,11 +23,11 @@ import {
   formatClassName,
   parseDateInput,
   randomClassCode,
-  addSchoolDays,
+  defaultFirstDue,
   studentMessage,
-  toDateInput,
 } from "@/lib/first-run";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { SpacingSelect } from "@/components/teacher/spacing-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,7 +78,7 @@ export default function WelcomeClient() {
   const [unit, setUnit] = useState("");
   // A new class has no calendar of its own yet: US default holidays and winter break are skipped.
   const [isSchoolDay] = useState(() => schoolDays(defaultCalendar()));
-  const [start, setStart] = useState(() => toDateInput(addSchoolDays(new Date(), 2, isSchoolDay)));
+  const [start, setStart] = useState(() => defaultFirstDue(isSchoolDay));
   const [spacing, setSpacing] = useState("2");
   const [assigning, setAssigning] = useState(false);
   const [assignError, setAssignError] = useState("");
@@ -398,20 +398,12 @@ export default function WelcomeClient() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="spacing">Spacing</Label>
-                  <Select
+                  <SpacingSelect
+                    id="spacing"
                     value={spacing}
-                    onValueChange={setSpacing}
+                    onChange={setSpacing}
                     disabled={!course || assigning || done.length > 0}
-                  >
-                    <SelectTrigger id="spacing" className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Every school day</SelectItem>
-                      <SelectItem value="2">Every 2 school days</SelectItem>
-                      <SelectItem value="3">Every 3 school days</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
               </div>
 

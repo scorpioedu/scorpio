@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { ListOrdered } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
-import { addSchoolDays, parseDateInput, toDateInput } from "@/lib/first-run";
+import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import {
   cloneSetToClass,
   planAssignments,
@@ -106,7 +106,7 @@ export default function CoursesClient() {
   const calendar = useMemo(() => classCalendar(selected?.daysOff), [selected?.daysOff]);
   const isSchoolDay = useMemo(() => schoolDays(calendar), [calendar]);
   // Until the teacher picks a date, the next set is due two school days from today.
-  const start = startInput || toDateInput(addSchoolDays(new Date(), 2, isSchoolDay));
+  const start = startInput || defaultFirstDue(isSchoolDay);
   const startDate = parseDateInput(start);
 
   const roadmap = useMemo(
