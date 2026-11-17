@@ -188,3 +188,37 @@ export function nudgeInUpNext(
   if (!queue.includes(key) || !neighbour) return { ok: false, reason: "none" };
   return dropInUpNext(order, key, neighbour);
 }
+
+/** Ids of the two places a dragged card can be dropped besides another Up next card. */
+export const DROP_ASSIGNED = "drop:assigned";
+export const DROP_UP_NEXT = "drop:upNext";
+
+export type BoardDrop =
+  /** An Up next card dropped on Assigned: assign it. */
+  | { type: "assign" }
+  /** An Assigned card dropped on Up next: archive its copy. */
+  | { type: "archive" }
+  /** An Up next card dropped on another: take its place in the plan. */
+  | { type: "reorder"; overKey: string };
+
+/**
+ * What dropping a card means. `over` is the id under it: one of the two drop places (an id that
+ * starts with DROP_ASSIGNED or DROP_UP_NEXT) or the key of an Up next card. Needs you and Done take
+ * no drops, and only Up next and Assigned cards can be dragged; everything else is null (no change).
+ */
+export function boardDrop(
+  from: BoardColumnId,
+  key: string,
+  over: string | null,
+  upNextKeys: readonly string[],
+): BoardDrop | null {
+  if (over === null) return null;
+  const onAssigned = over.startsWith(DROP_ASSIGNED);
+  const onUpNext = over.startsWith(DROP_UP_NEXT) || upNextKeys.includes(over);
+  if (from === "upNext") {
+    if (onAssigned) return { type: "assign" };
+    return upNextKeys.includes(over) && over !== key ? { type: "reorder", overKey: over } : null;
+  }
+  if (from === "assigned") return onUpNext ? { type: "archive" } : null;
+  return null;
+}

@@ -64,6 +64,7 @@ function Shell({
   className,
   title,
   menu,
+  handle,
   children,
 }: {
   card: Card;
@@ -72,6 +73,8 @@ function Shell({
   /** The title as a link or button. */
   title: ReactNode;
   menu?: ReactNode;
+  /** The drag handle, for cards that can be moved. */
+  handle?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -86,7 +89,12 @@ function Shell({
           </p>
           <h3 className="break-words font-semibold leading-snug">{title}</h3>
         </div>
-        {menu && <div className="-mr-2 -mt-1.5 shrink-0">{menu}</div>}
+        {(menu || handle) && (
+          <div className="-mr-2 -mt-1.5 flex shrink-0 items-center">
+            {handle}
+            {menu}
+          </div>
+        )}
       </div>
       {children}
     </article>
@@ -163,7 +171,15 @@ function CopyMenu({ card, ctx }: { card: Card; ctx: BoardCardContext }) {
   );
 }
 
-function UpNextCard({ card, ctx }: { card: Card; ctx: BoardCardContext }) {
+function UpNextCard({
+  card,
+  ctx,
+  handle,
+}: {
+  card: Card;
+  ctx: BoardCardContext;
+  handle?: ReactNode;
+}) {
   const planned = ctx.planned.get(card.key);
   const { onAssignSet, onToggleSkip } = ctx.actions;
   const count = problems(card, ctx);
@@ -171,6 +187,7 @@ function UpNextCard({ card, ctx }: { card: Card; ctx: BoardCardContext }) {
     <Shell
       card={card}
       ctx={ctx}
+      handle={handle}
       title={<Title card={card} ctx={ctx} />}
       menu={
         <DropdownMenu>
@@ -275,7 +292,15 @@ function Parked({ card, ctx }: { card: ParkedCard; ctx: BoardCardContext }) {
   );
 }
 
-function AssignedCard({ card, ctx }: { card: Card; ctx: BoardCardContext }) {
+function AssignedCard({
+  card,
+  ctx,
+  handle,
+}: {
+  card: Card;
+  ctx: BoardCardContext;
+  handle?: ReactNode;
+}) {
   const { submitted, of, text } = handedIn(card, ctx);
   const overdue = card.progress?.overdue ?? 0;
   const full = of > 0 && submitted >= of;
@@ -284,6 +309,7 @@ function AssignedCard({ card, ctx }: { card: Card; ctx: BoardCardContext }) {
     <Shell
       card={card}
       ctx={ctx}
+      handle={handle}
       title={<Title card={card} ctx={ctx} />}
       menu={<CopyMenu card={card} ctx={ctx} />}
     >
@@ -390,13 +416,16 @@ export function BoardCard({
   column,
   card,
   ctx,
+  handle,
 }: {
   column: BoardColumnId;
   card: Card;
   ctx: BoardCardContext;
+  /** The drag handle (Up next and Assigned cards can be moved). */
+  handle?: ReactNode;
 }) {
-  if (column === "upNext") return <UpNextCard card={card} ctx={ctx} />;
-  if (column === "assigned") return <AssignedCard card={card} ctx={ctx} />;
+  if (column === "upNext") return <UpNextCard card={card} ctx={ctx} handle={handle} />;
+  if (column === "assigned") return <AssignedCard card={card} ctx={ctx} handle={handle} />;
   if (column === "needsYou") return <NeedsYouCard card={card} ctx={ctx} />;
   return <DoneCard card={card} ctx={ctx} />;
 }

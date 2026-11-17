@@ -2,7 +2,10 @@
 // and reordering inside Up next.
 import { getCurriculum } from "../src/data/curricula";
 import {
+  DROP_ASSIGNED,
+  DROP_UP_NEXT,
   boardColumns,
+  boardDrop,
   boardStats,
   dropInUpNext,
   filterBoard,
@@ -310,5 +313,35 @@ describe("reordering Up next", () => {
     expect(nudgeInUpNext(all, all, "4A", -1)).toEqual({ ok: false, reason: "none" });
     expect(nudgeInUpNext(all, all, "4D", 1)).toEqual({ ok: false, reason: "none" });
     expect(nudgeInUpNext(all, ["4A"], "4B", 1)).toEqual({ ok: false, reason: "none" });
+  });
+});
+
+describe("what a drop means", () => {
+  const queue = ["4C", "4D", "5A"];
+  test("Up next on Assigned assigns; on another Up next card reorders", () => {
+    expect(boardDrop("upNext", "4C", DROP_ASSIGNED, queue)).toEqual({ type: "assign" });
+    expect(boardDrop("upNext", "4C", `${DROP_ASSIGNED}:column`, queue)).toEqual({ type: "assign" });
+    expect(boardDrop("upNext", "4C", "4D", queue)).toEqual({ type: "reorder", overKey: "4D" });
+    // Another unit's card is still a reorder here; dropInUpNext refuses it with the reason.
+    expect(boardDrop("upNext", "4C", "5A", queue)).toEqual({ type: "reorder", overKey: "5A" });
+  });
+
+  test("Assigned on Up next (the column or any of its cards) archives", () => {
+    expect(boardDrop("assigned", "4A", DROP_UP_NEXT, queue)).toEqual({ type: "archive" });
+    expect(boardDrop("assigned", "4A", `${DROP_UP_NEXT}:column`, queue)).toEqual({
+      type: "archive",
+    });
+    expect(boardDrop("assigned", "4A", "4D", queue)).toEqual({ type: "archive" });
+  });
+
+  test("everything else changes nothing", () => {
+    expect(boardDrop("upNext", "4C", null, queue)).toBeNull();
+    expect(boardDrop("upNext", "4C", "4C", queue)).toBeNull();
+    expect(boardDrop("upNext", "4C", DROP_UP_NEXT, queue)).toBeNull();
+    expect(boardDrop("upNext", "4C", "4A", queue)).toBeNull(); // not an Up next card
+    expect(boardDrop("assigned", "4A", DROP_ASSIGNED, queue)).toBeNull();
+    expect(boardDrop("assigned", "4A", null, queue)).toBeNull();
+    expect(boardDrop("needsYou", "3D", DROP_UP_NEXT, queue)).toBeNull();
+    expect(boardDrop("done", "3A", DROP_ASSIGNED, queue)).toBeNull();
   });
 });

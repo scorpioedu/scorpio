@@ -16,6 +16,9 @@ export function BoardColumn({
   empty,
   children,
   footer,
+  top,
+  dropRef,
+  highlight = false,
   className,
 }: {
   id: BoardColumnId;
@@ -26,15 +29,23 @@ export function BoardColumn({
   children?: ReactNode;
   /** Under the cards: "+8 more", parked sets. */
   footer?: ReactNode;
+  /** Above the cards: the dashed "Drop to assign" box while a card is dragged. */
+  top?: ReactNode;
+  /** Makes the whole column a place to drop a dragged card. */
+  dropRef?: (el: HTMLElement | null) => void;
+  /** A dragged card is over the column. */
+  highlight?: boolean;
   className?: string;
 }) {
   const heading = `board-${id}`;
   return (
     <section
       id={`column-${id}`}
+      ref={dropRef}
       aria-labelledby={heading}
       className={cn(
-        "flex min-h-56 min-w-0 flex-col gap-3 rounded-3xl border border-border bg-muted/30 p-3",
+        "flex min-h-56 min-w-0 flex-col gap-3 rounded-3xl border border-border bg-muted/30 p-3 transition-colors",
+        highlight && "border-primary/60 bg-primary/5",
         className,
       )}
     >
@@ -52,9 +63,10 @@ export function BoardColumn({
           <span className="sr-only"> {count === 1 ? "set" : "sets"}</span>
         </span>
       </h2>
+      {top}
       {count > 0 ? (
         <ul className="space-y-3">{children}</ul>
-      ) : (
+      ) : top ? null : (
         <p className="px-3 py-6 text-center text-sm text-muted-foreground">{empty}</p>
       )}
       {footer}
