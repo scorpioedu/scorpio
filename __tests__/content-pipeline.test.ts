@@ -327,6 +327,45 @@ describe("PATCH /api/admin/content", () => {
   });
 });
 
+describe("AI review", () => {
+  const saved = process.env.FIRESTORE_EMULATOR_HOST;
+  afterEach(() => {
+    if (saved === undefined) delete process.env.FIRESTORE_EMULATOR_HOST;
+    else process.env.FIRESTORE_EMULATOR_HOST = saved;
+  });
+
+  test("an AI approval is marked and can't be published until a person approves it", async () => {
+    delete process.env.FIRESTORE_EMULATOR_HOST;
+    await PATCH(req({ id: "d1", action: "approve", reviewer: "ai", note: "AI solved" }, "PATCH"));
+    expect(mockDocs.get("content_drafts/d1")).toMatchObject({
+      status: "approved",
+      reviewKind: "ai",
+    });
+
+    const blocked = await publish(req({ draftIds: ["d1", "d2"], title: "T" }));
+    expect(blocked.status).toBe(409);
+    expect((await blocked.json()).ids).toEqual(["d1"]);
+    expect(mockWrites.filter((w) => w.op !== "update")).toEqual([]);
+
+    await PATCH(req({ id: "d1", action: "approve" }, "PATCH"));
+    expect(mockDocs.get("content_drafts/d1")!.reviewKind).toBe("human");
+    expect((await publish(req({ draftIds: ["d1", "d2"], title: "T" }))).status).toBe(200);
+  });
+
+  test("the local emulator may publish AI-reviewed sets; reopening clears the mark", async () => {
+    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
+    await PATCH(req({ id: "d1", action: "approve", reviewer: "ai" }, "PATCH"));
+    expect((await publish(req({ draftIds: ["d1", "d2"], title: "T" }))).status).toBe(200);
+
+    mockDocs.set("content_drafts/d1", { ...mockDocs.get("content_drafts/d1"), status: "approved" });
+    await PATCH(req({ id: "d1", action: "reopen" }, "PATCH"));
+    expect(mockDocs.get("content_drafts/d1")).toMatchObject({ status: "draft", reviewKind: null });
+    expect(
+      (await PATCH(req({ id: "d1", action: "approve", reviewer: "bot" }, "PATCH"))).status,
+    ).toBe(400);
+  });
+});
+
 describe("POST /api/admin/content/publish", () => {
   test("only approved drafts from one unit", async () => {
     expect((await publish(req({ draftIds: ["d1", "d2"], title: "T" }))).status).toBe(409);

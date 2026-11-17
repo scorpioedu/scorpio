@@ -305,6 +305,8 @@ export const contentReviewBody = z.object({
   /** The reviewer's edited problem; checked again by validateDraftProblem. */
   problem: z.looseObject({}).optional(),
   note: z.string().max(2000).optional(),
+  /** Who checked the answer. "ai" approvals still need a person before they can be published. */
+  reviewer: z.enum(["human", "ai"]).optional(),
 });
 export const contentPublishBody = z.object({
   draftIds: z.array(docId).min(1).max(30),

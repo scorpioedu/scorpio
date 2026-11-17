@@ -45,6 +45,17 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
         { error: "Only approved problems can be published", ids: notApproved.map((d) => d.id) },
         { status: 409 },
       );
+    // An AI may approve a draft to save a person time, but only a person's approval can go live.
+    // The local emulator is the exception, so AI-reviewed sets can be tried end to end there.
+    const aiOnly = drafts.filter((d) => d.data?.reviewKind === "ai");
+    if (aiOnly.length && !process.env.FIRESTORE_EMULATOR_HOST)
+      return NextResponse.json(
+        {
+          error: "These problems were only checked by AI. A person must approve them first.",
+          ids: aiOnly.map((d) => d.id),
+        },
+        { status: 409 },
+      );
     const units = new Set(drafts.map((d) => d.data!.apUnit));
     if (units.size !== 1)
       return NextResponse.json({ error: "Publish one AP unit at a time" }, { status: 400 });

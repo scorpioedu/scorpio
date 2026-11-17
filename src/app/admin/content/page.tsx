@@ -48,6 +48,7 @@ interface Draft {
   edited: boolean;
   createdAt: string | null;
   reviewNote?: string | null;
+  reviewKind?: "human" | "ai" | null;
   assignmentId?: string | null;
 }
 
@@ -132,6 +133,14 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
               {draft.status}
             </Badge>
             {draft.edited && <Badge variant="secondary">edited</Badge>}
+            {draft.reviewKind === "ai" && draft.status === "approved" && (
+              <Badge
+                variant="outline"
+                className="border-amber-500/50 text-amber-700 dark:text-amber-400"
+              >
+                AI-reviewed: needs your check
+              </Badge>
+            )}
             <span className="text-muted-foreground">{draft.id}</span>
           </CardDescription>
         </div>

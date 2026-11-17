@@ -28,6 +28,8 @@ export interface ContentDraft {
   reviewedBy?: string | null;
   reviewedAt?: Date | null;
   reviewNote?: string | null;
+  /** "ai": an AI solved and approved it; a person must approve it again before it can go live. */
+  reviewKind?: "human" | "ai" | null;
   assignmentId?: string | null;
 }
 

@@ -45,7 +45,7 @@ async function handleReview(req: NextRequest, { caller, requestId }: AuthorizedC
   try {
     const parsed = await parseJsonBody(req, contentReviewBody, { message: "Invalid review" });
     if (!parsed.ok) return parsed.response;
-    const { id, action, problem, note } = parsed.data;
+    const { id, action, problem, note, reviewer = "human" } = parsed.data;
     const ref = adminDb.collection(CONTENT_DRAFTS).doc(id);
     const current = (await ref.get()).data();
     if (!current) return NextResponse.json({ error: "Draft not found" }, { status: 404 });
@@ -77,11 +77,13 @@ async function handleReview(req: NextRequest, { caller, requestId }: AuthorizedC
           );
         update.problem = v.problem;
         update.status = "approved";
+        update.reviewKind = reviewer;
       }
     } else if (action === "reject") {
       update.status = "rejected";
     } else if (action === "reopen") {
       update.status = "draft";
+      update.reviewKind = null;
     }
     await ref.update(update);
     return NextResponse.json({ draft: serialiseDraft(id, { ...current, ...update }) });
