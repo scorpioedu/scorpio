@@ -7,40 +7,34 @@ import dynamic from "next/dynamic";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { PageTransition } from "@/components/page-transition";
 import { DepartmentBanner } from "@/components/department-banner";
+import { SelectedClassProvider } from "@/contexts/selected-class-context";
 
 // Client-only floating widget; keep it (and its chat dependencies) out of the layout's initial JS. (I-018)
 const NavigationChatbot = dynamic(
   () => import("@/components/navigation-chatbot").then((m) => m.NavigationChatbot),
-  { ssr: false }
+  { ssr: false },
 );
 
-export default function TeacherLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function TeacherLayout({ children }: { children: React.ReactNode }) {
   const { isCollapsed, setIsCollapsed } = useSidebarState("teacher");
 
   return (
     <ProtectedRoute allowedRole="teacher">
-      <SpaceBackground />
-      <div className="flex h-dvh flex-col md:flex-row">
-        <TeacherSidebar
-          isCollapsed={isCollapsed}
-          onToggle={() => setIsCollapsed(!isCollapsed)}
-        />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-background/50">
-          <DepartmentBanner />
-          <div className="w-full px-4 pb-24 sm:px-6 md:p-8">
-            <div className="max-w-7xl mx-auto">
-              <PageTransition>
-                {children}
-              </PageTransition>
+      <SelectedClassProvider>
+        <SpaceBackground />
+        <div className="flex h-dvh flex-col md:flex-row">
+          <TeacherSidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
+          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-background/50">
+            <DepartmentBanner />
+            <div className="w-full px-4 pb-24 sm:px-6 md:p-8">
+              <div className="max-w-7xl mx-auto">
+                <PageTransition>{children}</PageTransition>
+              </div>
             </div>
-          </div>
-        </main>
-        <NavigationChatbot userRole="teacher" />
-      </div>
+          </main>
+          <NavigationChatbot userRole="teacher" />
+        </div>
+      </SelectedClassProvider>
     </ProtectedRoute>
   );
 }
