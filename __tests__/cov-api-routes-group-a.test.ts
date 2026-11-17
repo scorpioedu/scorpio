@@ -654,6 +654,25 @@ describe('POST /api/auth/register', () => {
       }));
     });
 
+    test('redeeming a contact invite records attribution on the server-managed profile', async () => {
+      mockDb.seed('teacherInviteCodes/ATT1', { contactEmail: 'ann@school.test', label: 'Dec outreach', isUsed: false, expiresAt: future() });
+      expect((await call({ role: 'teacher', name: 'Ann', code: 'att1' })).status).toBe(200);
+      for (const path of ['users/u1', 'teachers/u1']) {
+        expect(mockDb.docs.get(path)).toEqual(expect.objectContaining({
+          invite: { code: 'ATT1', contactEmail: 'ann@school.test', label: 'Dec outreach', redeemedAt: expect.any(Date) },
+        }));
+      }
+      expect(mockDb.docs.get('teacherInviteCodes/ATT1')).toEqual(expect.objectContaining({ isUsed: true, usedByEmail: 'u1@school.test' }));
+    });
+
+    test('an invite without contact data records null attribution fields, and students get none', async () => {
+      mockDb.seed('teacherInviteCodes/PLAIN1', { isUsed: false, expiresAt: future() });
+      await call({ role: 'teacher', name: 'Tia', code: 'PLAIN1' });
+      expect(mockDb.docs.get('users/u1')).toEqual(expect.objectContaining({
+        invite: expect.objectContaining({ code: 'PLAIN1', contactEmail: null, label: null }),
+      }));
+    });
+
     test('a network-linked invite joins that network without creating a new one', async () => {
       mockDb.seed('organizations/org1', { ownerId: 'o1' });
       mockDb.seed('teacherInviteCodes/INV2', { organizationId: 'org1', isUsed: false, expiresAt: future() });

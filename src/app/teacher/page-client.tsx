@@ -13,6 +13,8 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { ArrowRight, FileText, RotateCcw, Users, PlusCircle, Upload, GraduationCap, Trash2, Copy, Link2, Building2, Waypoints, PackageCheck, LayoutDashboard, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { WELCOME_SKIPPED_KEY } from "@/lib/first-run";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -129,6 +131,7 @@ function assignmentDueLabel(dueDate: RecentAssignment["dueDate"]) {
 
 export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }) {
   const { user, profile } = useAuth();
+  const router = useRouter();
   const networkId = profile?.organizationId;
   const [network, setNetwork] = useState<{ id: string; name: string } | null>(null);
   const [networkError, setNetworkError] = useState(false);
@@ -252,6 +255,14 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
     fetchStats();
     return () => { active = false; };
   }, [user, retry]);
+
+  // A teacher with no classes goes to the guided first-run page (unless they skipped it before).
+  useEffect(() => {
+    if (!dataReady || setupError || !networkId || courses.length > 0) return;
+    let skipped = false;
+    try { skipped = localStorage.getItem(WELCOME_SKIPPED_KEY) === "1"; } catch { /* storage unavailable */ }
+    if (!skipped) router.replace("/teacher/welcome");
+  }, [dataReady, setupError, networkId, courses.length, router]);
 
   const handleCreateCourse = async () => {
     if (!user || !newCourseName.trim() || !newCourseCode.trim()) return;
@@ -432,7 +443,12 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                 <Button variant="outline" onClick={() => copyClassInvite(firstClass, true)}>Copy student invite link</Button>
                 <Button variant="outline" onClick={() => copyClassInvite(firstClass, false)}>Copy class code</Button>
               </>
-            ) : <Button onClick={() => changeClassDialog(true)}>Create your first class</Button>}
+            ) : (
+              <>
+                <Button asChild><Link href="/teacher/welcome">Guided setup (5 minutes)</Link></Button>
+                <Button variant="outline" onClick={() => changeClassDialog(true)}>Create your first class</Button>
+              </>
+            )}
           </CardContent>
         </Card>
       ) : null}
