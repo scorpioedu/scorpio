@@ -39,3 +39,8 @@ A teacher with a Network and no classes is sent here from the dashboard. "Skip f
 3. **Invite students.** Shows the class code and a copyable message with the join link and the first due date.
 
 Due dates are 23:59 local time and do not know about holidays; teachers can edit them afterwards. Tests: `__tests__/first-run.test.ts` (scheduling and message helpers), `__tests__/assignment-clone.test.ts` (due date).
+
+## End-to-end check (16 Nov 2026, Firenook emulator)
+`scripts/generate-teacher-code.mjs --csv` made a code for a test contact; its link opened signup on the Teacher tab with the code filled in. Signup → `/teacher/welcome` → class created → Unit 5 (4 sets) assigned with due dates took **73 seconds** of browser time. Firestore showed `invite { code, contactEmail, label }` on the profile, the code marked used, four copies with their keys in `assignment_keys`, and auto-grading set.
+Emulator-only test account from that run: `pilot.teacher@demo.test` / `demo-pilot-pass` (in `.firenook/` kept data).
+Fixed after the run: the copies were titled "… (Copy)" (students see that) and the first due date defaulted to today; it is now two school days out. Holidays are not known (a 2-day spacing can land on Thanksgiving); teachers can edit dates afterwards.
