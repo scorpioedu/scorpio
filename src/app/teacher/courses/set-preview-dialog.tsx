@@ -1,0 +1,200 @@
+"use client";
+
+// Shows a course set's problems before (or after) it is assigned. Students' view of the questions:
+// the published set is read straight from Firestore, which never holds the answer key. For the
+// class's own copy the teacher can also load the key through the API.
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import { apTopicLabel, misconceptionTag } from "@/data/ap";
+import type { CurriculumSet } from "@/data/curricula";
+import { setProfile, typeSummary } from "@/data/curricula/profiles";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+interface PreviewQuestion {
+  id: string;
+  text?: string;
+  type?: string;
+  options?: string[];
+  points?: number;
+  correctAnswer?: string;
+}
+
+export interface PreviewTarget {
+  curriculumId: string;
+  set: CurriculumSet;
+  /** The published global set, if it is published in this project. */
+  publishedId: string | null;
+  /** The class's own copy, if assigned: its answer key can be shown. */
+  assignmentId: string | null;
+}
+
+const TYPE: Record<string, string> = { "multiple-choice": "Multiple choice", numeric: "Numeric" };
+
+export function SetPreviewDialog({
+  target,
+  onClose,
+}: {
+  target: PreviewTarget | null;
+  onClose: () => void;
+}) {
+  const [questions, setQuestions] = useState<PreviewQuestion[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [showKey, setShowKey] = useState(false);
+  const [keyBusy, setKeyBusy] = useState(false);
+  const sourceId = target?.assignmentId ?? target?.publishedId ?? null;
+
+  useEffect(() => {
+    if (!sourceId) return;
+    let active = true;
+    getDoc(doc(db, "assignments", sourceId))
+      .then((snap) => {
+        if (!active) return;
+        const list = snap.data()?.questions;
+        setQuestions(Array.isArray(list) ? (list as PreviewQuestion[]) : []);
+      })
+      .catch(() => active && setFailed(true));
+    return () => {
+      active = false;
+    };
+  }, [sourceId]);
+
+  function close() {
+    setQuestions(null);
+    setFailed(false);
+    setShowKey(false);
+    onClose();
+  }
+
+  async function loadKey() {
+    if (!target?.assignmentId) return;
+    setKeyBusy(true);
+    try {
+      const res = await authenticatedFetch(
+        `/api/assignments?id=${encodeURIComponent(target.assignmentId)}`,
+      );
+      const body = await res.json();
+      if (!res.ok || !Array.isArray(body.questions)) throw new Error();
+      setQuestions(body.questions as PreviewQuestion[]);
+      setShowKey(true);
+    } catch {
+      setFailed(true);
+    } finally {
+      setKeyBusy(false);
+    }
+  }
+
+  if (!target) return null;
+  const { set } = target;
+  const profile = setProfile(target.curriculumId, set.key);
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && close()}>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="break-words">
+            {set.key} · {set.title}
+          </DialogTitle>
+          <DialogDescription>{set.description}</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 text-sm">
+          <p className="text-muted-foreground">
+            {set.topics.map(apTopicLabel).join(" · ")}
+            {profile
+              ? ` · ${profile.problems} problems (${typeSummary(profile)}) · about ${profile.minutes} min`
+              : ""}
+          </p>
+          {profile && profile.misconceptions.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="font-medium">Misconceptions the wrong answers catch</p>
+              <ul className="flex flex-wrap gap-1.5">
+                {profile.misconceptions.map((m) => (
+                  <li key={m.tag}>
+                    <Badge variant="outline" className="whitespace-normal text-left font-normal">
+                      {misconceptionTag(m.tag)?.label ?? m.tag}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {!sourceId ? (
+            <p className="rounded-xl border border-border bg-muted/40 p-4 text-muted-foreground">
+              This set is not published in this workspace yet, so its problems cannot be shown here.
+            </p>
+          ) : failed ? (
+            <p role="alert" className="text-destructive">
+              Could not load the problems. Close this and try again.
+            </p>
+          ) : questions === null ? (
+            <p role="status" className="text-muted-foreground">
+              Loading problems…
+            </p>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-medium">What students see</p>
+                {target.assignmentId ? (
+                  !showKey && (
+                    <Button variant="outline" size="sm" onClick={loadKey} disabled={keyBusy}>
+                      {keyBusy ? "Loading…" : "Show answers"}
+                    </Button>
+                  )
+                ) : (
+                  <span className="text-xs text-muted-foreground">
+                    Answers are shown once the set is assigned to your class.
+                  </span>
+                )}
+              </div>
+              <ol className="space-y-3">
+                {questions.map((q, i) => (
+                  <li key={q.id ?? i} className="space-y-2 rounded-xl border border-border p-4">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Problem {i + 1}</span>
+                      <span>{TYPE[q.type ?? ""] ?? q.type ?? "Question"}</span>
+                      {typeof q.points === "number" && <span>{q.points} pts</span>}
+                    </div>
+                    <p className="whitespace-pre-wrap break-words leading-relaxed">{q.text}</p>
+                    {Array.isArray(q.options) && q.options.length > 0 && (
+                      <ol className="space-y-1 pl-1">
+                        {q.options.map((option, j) => (
+                          <li
+                            key={j}
+                            className={
+                              showKey && option === q.correctAnswer
+                                ? "font-medium text-green-700 dark:text-green-400"
+                                : ""
+                            }
+                          >
+                            {String.fromCharCode(65 + j)}. {option}
+                            {showKey && option === q.correctAnswer ? " (correct)" : ""}
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                    {showKey && !(Array.isArray(q.options) && q.options.length > 0) && (
+                      <p className="font-medium text-green-700 dark:text-green-400">
+                        Answer: {q.correctAnswer || "not set"}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

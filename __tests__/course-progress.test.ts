@@ -189,4 +189,21 @@ describe("unit insights and re-teach suggestions", () => {
     expect(skipped[0].top[0].practice.map((p) => p.key)).toEqual(keys.slice(1));
     expect(buildUnitInsights(ID, [], { studentsByUnit: {}, assignedKeys: [] })).toEqual([]);
   });
+
+  test("new practice comes only from the same unit; other units only when already assigned", () => {
+    // "motion-graph-as-picture" style tags can be targeted by later units too.
+    const tag = "distance-displacement-confusion";
+    const events = ["s1", "s2", "s3"].map((s) => event(s, tag, 1, "1.3"));
+    const none = buildUnitInsights(ID, events, { studentsByUnit: { 1: 3 }, assignedKeys: [] });
+    expect(none[0].top[0].practice.length).toBeGreaterThan(0);
+    expect(none[0].top[0].practice.every((p) => p.key.startsWith("1"))).toBe(true);
+    const other = setsTargeting(ID, tag).find((s) => !s.key.startsWith("1"));
+    if (other) {
+      const withOther = buildUnitInsights(ID, events, {
+        studentsByUnit: { 1: 3 },
+        assignedKeys: [other.key],
+      });
+      expect(withOther[0].top[0].practice.find((p) => p.key === other.key)?.assigned).toBe(true);
+    }
+  });
 });

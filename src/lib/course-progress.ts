@@ -105,7 +105,7 @@ export interface UnitMisconception {
   studentShare: number;
   topics: { id: string; label: string }[];
   action: ReteachAction;
-  /** Course sets that target it: unassigned ones first (new practice), then assigned ones (to go over). */
+  /** Sets that target it: unassigned ones from this unit first (new practice), then assigned ones (to go over). */
   practice: ReteachPractice[];
   suggestion: string;
 }
@@ -188,14 +188,16 @@ export function buildUnitInsights(
     );
     const top = report.top.slice(0, TOP_PER_UNIT).map((row) => {
       const practice = setsTargeting(curriculumId, row.tag)
-        .filter((s) => !skipped.has(s.key) || assigned.has(s.key))
+        // New practice comes only from this unit: a set from a unit the class has not reached
+        // would need material it has not been taught. Sets already assigned can be gone over.
+        .filter((s) => assigned.has(s.key) || (keyUnit(s.key) === unit && !skipped.has(s.key)))
         .map((s) => ({
           key: s.key,
           title: curriculumSet(curriculumId, s.key)?.title ?? s.key,
           problems: s.problems,
           assigned: assigned.has(s.key),
         }))
-        // New practice first; within each group, sets from this unit before others.
+        // New practice first; among assigned sets, this unit's before others.
         .sort(
           (a, b) =>
             Number(a.assigned) - Number(b.assigned) ||

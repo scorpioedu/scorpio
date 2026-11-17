@@ -1,14 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { Check } from "lucide-react";
 import { toast } from "sonner";
-import { db } from "@/lib/firebase";
-import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { apTopicLabel } from "@/data/ap";
 import { CURRICULA, type Curriculum } from "@/data/curricula";
 import { addSchoolDays, parseDateInput, toDateInput } from "@/lib/first-run";
 import {
@@ -16,23 +11,17 @@ import {
   planAssignments,
   runAssignments,
   type AssignableSet,
+  type PlannedAssignment,
 } from "@/lib/assign-sets";
-import {
-  AVAILABILITY_LABEL,
-  deriveRoadmap,
-  nextUnit,
-  type RoadmapUnit,
-} from "@/lib/curriculum-roadmap";
+import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
+import { normalisePlan } from "@/lib/curriculum-plan";
+import { paceCourse } from "@/lib/course-pacing";
+import { classCalendar, schoolDays } from "@/lib/school-calendar";
+import { loadClassAssignments } from "@/lib/curriculum-client";
 import { useAdminAccess } from "@/lib/use-admin-access";
-import {
-  loadClassAssignments,
-  loadPublishedSets,
-  type PublishedSetInfo,
-} from "@/lib/curriculum-client";
-import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -42,95 +31,69 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface ClassOption {
-  id: string;
-  name: string;
-  curriculumId: string | null;
-}
-
-const shortDate = (d: Date) =>
-  d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AssignDialog } from "./assign-dialog";
+import { CustomizeTab } from "./customize-tab";
+import { RoadmapTab } from "./roadmap-tab";
+import { ScheduleTab } from "./schedule-tab";
+import { SetPreviewDialog, type PreviewTarget } from "./set-preview-dialog";
+import { shortDate, useCourseData } from "./use-course-data";
 
 export default function CoursesClient() {
-  const { user } = useAuth();
   const isAdmin = useAdminAccess() === "admin";
   const [curriculum, setCurriculum] = useState<Curriculum>(CURRICULA[0]);
-  const [classes, setClasses] = useState<ClassOption[] | null>(null);
-  const [classId, setClassId] = useState("");
-  const [published, setPublished] = useState<PublishedSetInfo[] | null>(null);
-  const [loadError, setLoadError] = useState(false);
-  const [classAssignments, setClassAssignments] = useState<
-    Awaited<ReturnType<typeof loadClassAssignments>>
-  >([]);
-  const [start, setStart] = useState(() => toDateInput(addSchoolDays(new Date(), 2)));
+  const data = useCourseData(curriculum.id);
+  const { user, classes, classId, selected, published, loadError, classAssignments, progress } =
+    data;
+
   const [spacing, setSpacing] = useState("2");
+  const [startInput, setStartInput] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [assigning, setAssigning] = useState<RoadmapUnit | null>(null);
+  const [preview, setPreview] = useState<PreviewTarget | null>(null);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)))
-      .then((snap) => {
-        if (!active) return;
-        const list = snap.docs
-          .map((d) => ({
-            id: d.id,
-            name: String(d.data().name || "Untitled class"),
-            curriculumId: typeof d.data().curriculumId === "string" ? d.data().curriculumId : null,
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name));
-        setClasses(list);
-        setClassId(
-          (cur) =>
-            cur || list.find((c) => c.curriculumId === CURRICULA[0].id)?.id || list[0]?.id || "",
-        );
-      })
-      .catch(() => active && setClasses([]));
-    return () => {
-      active = false;
-    };
-  }, [user]);
-
-  useEffect(() => {
-    let active = true;
-    loadPublishedSets(curriculum.id)
-      .then((p) => active && setPublished(p))
-      .catch(() => active && setLoadError(true));
-    return () => {
-      active = false;
-    };
-  }, [curriculum.id]);
-
-  const refreshClass = useCallback(async () => {
-    if (!user || !classId) return;
-    try {
-      setClassAssignments(await loadClassAssignments(user.uid, classId));
-    } catch {
-      setClassAssignments([]);
-    }
-  }, [user, classId]);
-  useEffect(() => {
-    if (!user || !classId) return;
-    let active = true;
-    loadClassAssignments(user.uid, classId)
-      .then((a) => active && setClassAssignments(a))
-      .catch(() => active && setClassAssignments([]));
-    return () => {
-      active = false;
-    };
-  }, [user, classId]);
-
-  const selected = classes?.find((c) => c.id === classId) ?? null;
   const follows = selected?.curriculumId === curriculum.id;
+  const plan = useMemo(
+    () => (follows ? normalisePlan(curriculum.id, selected?.curriculumPlan) : null),
+    [follows, curriculum.id, selected?.curriculumPlan],
+  );
+  const calendar = useMemo(() => classCalendar(selected?.daysOff), [selected?.daysOff]);
+  const isSchoolDay = useMemo(() => schoolDays(calendar), [calendar]);
+  // Until the teacher picks a date, the next set is due two school days from today.
+  const start = startInput || toDateInput(addSchoolDays(new Date(), 2, isSchoolDay));
+  const startDate = parseDateInput(start);
+
   const roadmap = useMemo(
-    () => deriveRoadmap(curriculum.id, published ?? [], selected ? classAssignments : []),
-    [curriculum.id, published, classAssignments, selected],
+    () => deriveRoadmap(curriculum.id, published ?? [], selected ? classAssignments : [], plan),
+    [curriculum.id, published, classAssignments, selected, plan],
   );
   const next = selected ? nextUnit(roadmap) : undefined;
-  const startDate = parseDateInput(start);
+  const pacing = useMemo(
+    () =>
+      paceCourse(roadmap, {
+        start: startDate ?? new Date(),
+        spacing: Number(spacing),
+        isSchoolDay,
+      }),
+    // startDate is derived from `start`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [roadmap, start, spacing, isSchoolDay],
+  );
+
   const publishedCount = published?.length ?? 0;
+  const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
+  const assignedCount = wanted.filter((s) => s.assigned).length;
+  const averages = Object.values(progress?.sets ?? {})
+    .map((s) => s.averageScore)
+    .filter((n): n is number => n !== null);
+  const classAverage = averages.length
+    ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
+    : null;
+  const assignedKeys = useMemo(
+    () => new Set(roadmap.flatMap((u) => u.sets.filter((s) => s.assigned).map((s) => s.set.key))),
+    [roadmap],
+  );
 
   async function setFollowing(on: boolean) {
     if (!selected) return;
@@ -144,15 +107,11 @@ export default function CoursesClient() {
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || "Could not update the class.");
-      setClasses((cur) =>
-        (cur ?? []).map((c) =>
-          c.id === selected.id ? { ...c, curriculumId: on ? curriculum.id : null } : c,
-        ),
-      );
+      data.patchClass(selected.id, { curriculumId: on ? curriculum.id : null });
       toast.success(
         on
           ? `${selected.name} now follows ${curriculum.name}.`
-          : "Class no longer follows this course.",
+          : `${selected.name} no longer follows this course. Its assignments are unchanged.`,
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not update the class.");
@@ -161,86 +120,80 @@ export default function CoursesClient() {
     }
   }
 
-  async function assign(unit: RoadmapUnit) {
-    if (!selected || !startDate) return;
-    setBusy(`unit-${unit.unit}`);
+  const assignableSets = (unit: RoadmapUnit): AssignableSet[] =>
+    unit.assignable.map((s) => ({
+      sourceId: s.published!.id,
+      key: s.set.key,
+      title: (published ?? []).find((p) => p.id === s.published!.id)?.title ?? s.set.title,
+    }));
+
+  async function assign(unit: RoadmapUnit, planned: PlannedAssignment[]) {
+    if (!selected || !user || !startDate) return;
+    setBusy("assign");
     setError("");
     // Fresh read, so a set assigned elsewhere (or in another tab) is not copied twice.
-    let fresh = classAssignments;
+    let todo = planned;
     try {
-      fresh = await loadClassAssignments(user!.uid, selected.id);
+      const fresh = await loadClassAssignments(user.uid, selected.id);
+      const have = new Set(fresh.map((a) => String(a.curriculumSetKey)));
+      if (planned.some((p) => have.has(p.key)))
+        todo = planAssignments(assignableSets(unit), have, startDate, Number(spacing), isSchoolDay);
     } catch {
-      /* keep what we have */
+      /* keep the plan the teacher confirmed */
     }
-    const have = new Set(fresh.map((a) => String(a.curriculumSetKey)));
-    const sets: AssignableSet[] = unit.sets
-      .filter((s) => s.published)
-      .map((s) => ({
-        sourceId: s.published!.id,
-        key: s.set.key,
-        title: (published ?? []).find((p) => p.id === s.published!.id)?.title ?? s.set.title,
-      }));
-    const plan = planAssignments(sets, have, startDate, Number(spacing));
     try {
-      await runAssignments(plan, (item) => cloneSetToClass(authenticatedFetch, selected.id, item));
+      await runAssignments(todo, (item) => cloneSetToClass(authenticatedFetch, selected.id, item));
       toast.success(
-        plan.length ? `Unit ${unit.unit} assigned to ${selected.name}.` : "Nothing new to assign.",
+        todo.length ? `Unit ${unit.unit} assigned to ${selected.name}.` : "Nothing new to assign.",
       );
+      setAssigning(null);
     } catch (e) {
+      setAssigning(null);
       setError(
         `${e instanceof Error ? e.message : "Could not assign this unit."} Press assign again to continue; copies already made are kept.`,
       );
     } finally {
-      await refreshClass();
+      await data.refreshClass();
       setBusy(null);
     }
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:pb-16 md:pr-28">
       <TeacherPageHeader
         title="Courses"
-        description="Ready-made roadmaps: units in order, each with auto-graded sets. Attach one to a class, or assign a unit at a time."
+        description="A ready-made path through the year: units in order, each with short auto-graded sets. Preview any set, assign a unit at a time, and see how the class is doing."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {CURRICULA.map((c) => (
-          <Card
-            key={c.id}
-            className={`shadow-none ${c.id === curriculum.id ? "border-primary" : ""}`}
-          >
-            <CardHeader>
-              <CardTitle>{c.name}</CardTitle>
-              <CardDescription>{c.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <span>
-                {published === null || c.id !== curriculum.id
-                  ? "Loading…"
-                  : `${publishedCount} of ${c.sets.length} sets published`}
-              </span>
-              {c.id !== curriculum.id && (
-                <Button variant="outline" size="sm" onClick={() => setCurriculum(c)}>
-                  View roadmap
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {CURRICULA.length > 1 && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {CURRICULA.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCurriculum(c)}
+              aria-pressed={c.id === curriculum.id}
+              className={`rounded-2xl border bg-card p-4 text-left transition-colors hover:border-primary/60 ${c.id === curriculum.id ? "border-primary" : "border-border"}`}
+            >
+              <span className="block font-semibold">{c.name}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">{c.description}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {published !== null && !loadError && publishedCount < curriculum.sets.length && (
         <Card className="shadow-none" role="status">
           <CardHeader>
             <CardTitle>
               {publishedCount === 0
-                ? "This course is not published here yet"
+                ? `${curriculum.name} is not published here yet`
                 : `${curriculum.sets.length - publishedCount} sets are not published here yet`}
             </CardTitle>
             <CardDescription>
               {publishedCount === 0
                 ? `All ${curriculum.sets.length} sets are written. You can browse the roadmap now; sets can be assigned once they have been reviewed and published in this workspace.`
-                : "Sets marked \u201cNot published yet\u201d are written and can be assigned once they have been reviewed and published in this workspace."}
+                : "Sets marked “Not published yet” are written and can be assigned once they have been reviewed and published in this workspace."}
             </CardDescription>
           </CardHeader>
           {isAdmin && (
@@ -258,12 +211,6 @@ export default function CoursesClient() {
       )}
 
       <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>Assign to a class</CardTitle>
-          <CardDescription>
-            Classes that do not follow a course keep working as they do now.
-          </CardDescription>
-        </CardHeader>
         <CardContent className="space-y-4">
           {classes === null ? (
             <p role="status" className="text-sm text-muted-foreground">
@@ -275,89 +222,88 @@ export default function CoursesClient() {
               <Link className="underline" href="/teacher/welcome">
                 Create one
               </Link>{" "}
-              to assign units.
+              to assign units. You can still browse and preview every set below.
             </p>
           ) : (
-            <>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="class">Class</Label>
-                  <Select value={classId} onValueChange={setClassId}>
-                    <SelectTrigger id="class" className="w-full">
-                      <SelectValue placeholder="Choose a class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {classes.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.name}
-                          {c.curriculumId === curriculum.id ? " (follows this course)" : ""}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="start">First due date</Label>
-                  <Input
-                    id="start"
-                    type="date"
-                    value={start}
-                    onChange={(e) => setStart(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="spacing">Spacing</Label>
-                  <Select value={spacing} onValueChange={setSpacing}>
-                    <SelectTrigger id="spacing" className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Every school day</SelectItem>
-                      <SelectItem value="2">Every 2 school days</SelectItem>
-                      <SelectItem value="3">Every 3 school days</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+              <div className="min-w-56 flex-1 space-y-2 sm:max-w-sm">
+                <Label htmlFor="class">Class</Label>
+                <Select value={classId} onValueChange={data.setClassId}>
+                  <SelectTrigger id="class" className="w-full">
+                    <SelectValue placeholder="Choose a class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classes.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              {selected && (
-                <div className="flex flex-wrap items-center gap-2">
-                  {follows ? (
-                    <>
-                      <Badge variant="secondary">Follows {curriculum.name}</Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setFollowing(false)}
-                        disabled={busy !== null}
-                      >
-                        Stop following
-                      </Button>
-                    </>
-                  ) : (
-                    <Button onClick={() => setFollowing(true)} disabled={busy !== null}>
-                      {busy === "follow" ? "Saving…" : "Follow this course"}
+              {selected &&
+                (follows ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="secondary">Follows {curriculum.name}</Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setFollowing(false)}
+                      disabled={busy !== null}
+                    >
+                      Stop following
                     </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    onClick={() => next && assign(next)}
-                    disabled={!next || !startDate || busy !== null}
-                  >
-                    {next ? `Assign next unit (Unit ${next.unit})` : "Assign next unit"}
-                  </Button>
-                  {!next && published && (
-                    <span className="text-xs text-muted-foreground">
-                      Every published set is already assigned to this class.
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button onClick={() => setFollowing(true)} disabled={busy !== null}>
+                      {busy === "follow" ? "Saving…" : `Follow ${curriculum.name}`}
+                    </Button>
+                    <span className="max-w-xs text-xs text-muted-foreground">
+                      Following groups students&apos; work by unit and lets you reorder or skip
+                      sets. You can assign units either way.
                     </span>
-                  )}
-                </div>
-              )}
-              {error && (
-                <p role="alert" className="text-sm text-destructive">
-                  {error}
-                </p>
-              )}
-            </>
+                  </div>
+                ))}
+            </div>
+          )}
+          {error && (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          )}
+          {selected && published !== null && (
+            <TeacherSummary
+              label="Class progress"
+              items={[
+                { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
+                { label: "Students", value: progress ? progress.students : "…" },
+                {
+                  label: "Average score",
+                  value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
+                },
+                {
+                  label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
+                  value: pacing.finish ? shortDate(pacing.finish) : "—",
+                },
+              ]}
+            />
+          )}
+          {selected && next && (
+            <div className="flex flex-wrap items-center gap-3">
+              <Button onClick={() => setAssigning(next)} disabled={busy !== null}>
+                Assign next: Unit {next.unit}
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                {next.info?.title} · {next.assignable.length} set
+                {next.assignable.length === 1 ? "" : "s"} to assign
+              </span>
+            </div>
+          )}
+          {selected && !next && published !== null && publishedCount > 0 && (
+            <p className="text-sm text-muted-foreground">
+              Every published set is assigned to this class.
+            </p>
           )}
         </CardContent>
       </Card>
@@ -371,77 +317,93 @@ export default function CoursesClient() {
           Loading roadmap…
         </p>
       ) : (
-        <ol className="space-y-4">
-          {roadmap.map((u) => (
-            <li key={u.unit}>
-              <Card className="shadow-none">
-                <CardHeader className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0 space-y-1">
-                    <CardTitle className="break-words">
-                      Unit {u.unit}: {u.info?.title}
-                    </CardTitle>
-                    {u.info?.summary && <CardDescription>{u.info.summary}</CardDescription>}
-                  </div>
-                  {selected && u.sets.some((s) => s.published) && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => assign(u)}
-                      disabled={u.allAssigned || !startDate || busy !== null}
-                    >
-                      {u.allAssigned
-                        ? "Unit assigned"
-                        : busy === `unit-${u.unit}`
-                          ? "Assigning…"
-                          : `Assign unit (${u.assignable.length})`}
+        <Tabs defaultValue="roadmap" className="gap-4">
+          {selected && (
+            <TabsList>
+              <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+              <TabsTrigger value="schedule">Schedule</TabsTrigger>
+              <TabsTrigger value="customize">Customize</TabsTrigger>
+            </TabsList>
+          )}
+          <TabsContent value="roadmap">
+            <RoadmapTab
+              curriculum={curriculum}
+              roadmap={roadmap}
+              className={selected?.name ?? null}
+              progress={progress}
+              nextUnitNumber={next?.unit}
+              busy={busy !== null}
+              onAssign={setAssigning}
+              onPreview={setPreview}
+            />
+          </TabsContent>
+          {selected && (
+            <TabsContent value="schedule">
+              <ScheduleTab
+                classId={selected.id}
+                roadmap={roadmap}
+                pacing={pacing}
+                start={start}
+                spacing={spacing}
+                calendar={calendar}
+                customCalendar={selected.daysOff != null}
+                isSchoolDay={isSchoolDay}
+                onStart={setStartInput}
+                onSpacing={setSpacing}
+                onMoved={() => data.refreshClass()}
+                onDaysOffSaved={(daysOff) => data.patchClass(selected.id, { daysOff })}
+              />
+            </TabsContent>
+          )}
+          {selected && (
+            <TabsContent value="customize">
+              {follows && plan ? (
+                <CustomizeTab
+                  key={selected.id}
+                  classId={selected.id}
+                  className={selected.name}
+                  curriculumId={curriculum.id}
+                  saved={plan}
+                  assignedKeys={assignedKeys}
+                  onSaved={(saved) => data.patchClass(selected.id, { curriculumPlan: saved })}
+                />
+              ) : (
+                <Card className="shadow-none">
+                  <CardHeader>
+                    <CardTitle>Follow the course to customize it</CardTitle>
+                    <CardDescription>
+                      Reordering units and skipping sets is saved per class, for classes that follow{" "}
+                      {curriculum.name}.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button onClick={() => setFollowing(true)} disabled={busy !== null}>
+                      Follow {curriculum.name}
                     </Button>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  {u.sets.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Planned</p>
-                  ) : (
-                    <ul className="divide-y divide-border rounded-xl border border-border">
-                      {u.sets.map((s) => (
-                        <li
-                          key={s.set.key}
-                          className="flex flex-wrap items-start justify-between gap-2 px-4 py-3 text-sm"
-                        >
-                          <div className="min-w-0 space-y-0.5">
-                            <p className="break-words font-medium">
-                              {s.set.key} · {s.set.title}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {s.set.topics.map(apTopicLabel).join(" · ")}
-                              {s.published
-                                ? ` · ${s.published.questionCount} problem${s.published.questionCount === 1 ? "" : "s"}`
-                                : ""}
-                            </p>
-                          </div>
-                          <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                            {!s.published ? (
-                              AVAILABILITY_LABEL[s.availability]
-                            ) : s.assigned ? (
-                              <>
-                                <Check className="size-4 text-green-600" aria-hidden />
-                                Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}
-                              </>
-                            ) : selected ? (
-                              "Not assigned"
-                            ) : (
-                              "Ready"
-                            )}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </CardContent>
-              </Card>
-            </li>
-          ))}
-        </ol>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          )}
+        </Tabs>
       )}
+
+      {assigning && selected && (
+        <AssignDialog
+          unitLabel={`Unit ${assigning.unit}: ${assigning.info?.title ?? ""}`}
+          className={selected.name}
+          sets={assignableSets(assigning)}
+          start={start}
+          spacing={spacing}
+          isSchoolDay={isSchoolDay}
+          busy={busy === "assign"}
+          onStart={setStartInput}
+          onSpacing={setSpacing}
+          onConfirm={(planned) => assign(assigning, planned)}
+          onClose={() => setAssigning(null)}
+        />
+      )}
+      <SetPreviewDialog target={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }
