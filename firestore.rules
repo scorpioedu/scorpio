@@ -66,7 +66,9 @@ service cloud.firestore {
     match /courses/{id} {
       allow read: if signedIn() && (resource.data.teacherId == request.auth.uid || me().get('courseId', null) == id || (teacher() && teaches(resource.data.teacherId)));
 
-      allow update: if ownsCourse(id) && request.resource.data.teacherId == resource.data.teacherId && request.resource.data.get('organizationId', null) == resource.data.get('organizationId', null) && request.resource.data.get('curriculumId', null) == resource.data.get('curriculumId', null);
+      allow update: if ownsCourse(id) && request.resource.data.teacherId == resource.data.teacherId && request.resource.data.get('organizationId', null) == resource.data.get('organizationId', null) && request.resource.data.get('curriculumId', null) == resource.data.get('curriculumId', null) &&
+        // The course plan and school calendar are validated by PATCH /api/courses/{id}/plan.
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['curriculumPlan', 'daysOff']);
       allow delete: if ownsCourse(id);
     }
     match /resources/{id} {

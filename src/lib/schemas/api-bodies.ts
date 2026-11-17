@@ -64,7 +64,10 @@ export const cloneAssignmentBody = z.object({
   dueDate: z
     .union([z.string(), z.number()])
     .nullish()
-    .refine((v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
+    .refine(
+      (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
+      "must be a valid date",
+    ),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────
@@ -142,6 +145,34 @@ export const courseBody = z.object({
 export const courseCurriculumBody = z.object({
   curriculumId: z.string().trim().min(1).max(64).nullable(),
 });
+// ─── PATCH /api/courses/{id}/plan ──────────────────────────────────────────
+// Shapes only; curriculum-plan.ts and school-calendar.ts do the real checks and give the reasons.
+export const coursePlanBody = z.object({
+  plan: z
+    .object({
+      order: z.array(z.string().max(8)).max(200),
+      skipped: z.array(z.string().max(8)).max(200),
+    })
+    .nullable()
+    .optional(),
+  daysOff: z.array(z.unknown()).max(200).nullable().optional(),
+});
+
+// ─── POST /api/courses/{id}/due-dates ──────────────────────────────────────
+export const courseDueDatesBody = z.object({
+  updates: z
+    .array(
+      z.object({
+        assignmentId: docId,
+        dueDate: z
+          .union([z.string().min(1), z.number()])
+          .nullable()
+          .refine((v) => v == null || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
+      }),
+    )
+    .min(1)
+    .max(100),
+});
 export const courseBodyMessage = (issues: { path: string }[]) =>
   issues[0]?.path === "name"
     ? "Enter a class name"
@@ -218,7 +249,11 @@ export const supportReportBody = z.object({
 export const SUPPORT_TICKET_STATUSES = ["open", "triaged", "done"] as const;
 export const supportTicketUpdateBody = z
   .object({
-    id: z.string().min(1).max(100).regex(/^[A-Za-z0-9_-]+$/),
+    id: z
+      .string()
+      .min(1)
+      .max(100)
+      .regex(/^[A-Za-z0-9_-]+$/),
     status: z.enum(SUPPORT_TICKET_STATUSES).optional(),
     note: z.string().trim().max(5000).optional(),
   })

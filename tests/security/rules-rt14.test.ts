@@ -1,7 +1,7 @@
 // RT-14 (D-002, D-003, D-005, D-006): characterization of operations the client performs
 // (must keep working) plus abuse cases the rules must deny. Also pins default-deny collections.
 import { initializeTestEnvironment, assertFails, assertSucceeds, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, deleteField, addDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes } from 'firebase/storage';
 import fs from 'node:fs';
 let env: RulesTestEnvironment;
@@ -140,6 +140,16 @@ describe('courses follow a curriculum only through the server', () => {
   await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:'other'}));
   await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:null}));
   await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumId:null}); });
+ });
+ test('owner cannot write the course plan or the school calendar directly', async () => {
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumPlan:{order:['1A'],skipped:[]}}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{daysOff:[]}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumPlan:{order:['1A'],skipped:[]},daysOff:[{start:'2027-03-22',end:'2027-03-26',label:'Spring break'}]}); });
+  // Other settings still save while a plan and calendar are stored; the stored values cannot be changed or removed.
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f3']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{daysOff:[]}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumPlan:deleteField()}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumPlan:deleteField(),daysOff:deleteField()}); });
  });
  test('a student can read their own class (to group assignments by unit)', async () => assertSucceeds(getDoc(doc(db('sa'),'courses/ca'))));
 });
