@@ -296,6 +296,8 @@ describe("GET /api/teacher/courses/progress", () => {
         graded: 2,
         pending: 0,
         averageScore: 70,
+        overdue: 0,
+        needsReview: 0,
       },
       "4B": {
         key: "4B",
@@ -304,6 +306,8 @@ describe("GET /api/teacher/courses/progress", () => {
         graded: 0,
         pending: 1,
         averageScore: null,
+        overdue: 0,
+        needsReview: 0,
       },
     });
     expect(body.units).toHaveLength(1);
@@ -316,6 +320,25 @@ describe("GET /api/teacher/courses/progress", () => {
     expect(body.units[0].top[0].suggestion).toMatch(/revisit 4\.1/);
   });
 
+  test("overdue and needsReview for the Status board", async () => {
+    // 4A was due last week and only s1 handed 4B in; 4B is due next week. s2's 4A work has an
+    // answer to check after a key change.
+    const week = 7 * 24 * 60 * 60 * 1000;
+    mockDocs.set("assignments/a4A", {
+      ...mockDocs.get("assignments/a4A"),
+      dueDate: { toDate: () => new Date(Date.now() - week) },
+    });
+    mockDocs.set("assignments/a4B", {
+      ...mockDocs.get("assignments/a4B"),
+      dueDate: new Date(Date.now() + week).toISOString(),
+    });
+    mockDocs.set("submissions/x2", { ...mockDocs.get("submissions/x2"), reviewQuestions: ["q1"] });
+    mockDocs.delete("submissions/x1");
+    const body = await (await get("?courseId=c1")).json();
+    // s1 has nothing in for 4A and it is past due; 4B is not due yet although s2 has not started.
+    expect(body.sets["4A"]).toMatchObject({ submitted: 1, overdue: 1, needsReview: 1 });
+    expect(body.sets["4B"]).toMatchObject({ submitted: 1, overdue: 0, needsReview: 0 });
+  });
   test("a class that follows nothing still reports sets assigned from a course", async () => {
     const body = await (await get("?courseId=plain")).json();
     expect(body.curriculumId).toBe("ap-physics-1");

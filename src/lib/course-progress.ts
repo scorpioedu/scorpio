@@ -11,6 +11,8 @@ import { keyUnit } from "@/lib/curriculum-plan";
 export interface ProgressAssignment {
   id: string;
   curriculumSetKey?: unknown;
+  /** The copy's due date; without one nothing is ever overdue. */
+  dueDate?: Date | null;
 }
 
 export interface ProgressSubmission {
@@ -19,6 +21,8 @@ export interface ProgressSubmission {
   status?: unknown;
   graded?: unknown;
   score?: unknown;
+  /** Answers the teacher must check after an answer-key change (see regrade.ts). */
+  reviewQuestions?: unknown;
 }
 
 export interface SetProgress {
@@ -31,6 +35,16 @@ export interface SetProgress {
   pending: number;
   /** Mean percent over graded submissions, or null when none is graded. */
   averageScore: number | null;
+  /** Students on the roster with nothing handed in after the due date has passed. */
+  overdue: number;
+  /** Students whose handed-in work has answers to check after an answer-key change. */
+  needsReview: number;
+}
+
+/** Who is in the class and what time it is, for `overdue`. Without a roster nothing is overdue. */
+export interface ProgressContext {
+  roster?: readonly string[];
+  now?: Date;
 }
 
 const isGraded = (s: ProgressSubmission) => s.status === "graded" || s.graded === true;
@@ -39,7 +53,10 @@ const isGraded = (s: ProgressSubmission) => s.status === "graded" || s.graded ==
 export function buildSetProgress(
   assignments: ProgressAssignment[],
   submissions: ProgressSubmission[],
+  context: ProgressContext = {},
 ): Record<string, SetProgress> {
+  const roster = context.roster ?? [];
+  const now = (context.now ?? new Date()).getTime();
   const byAssignment = new Map<string, ProgressSubmission[]>();
   for (const s of submissions) {
     if (s.status === "draft") continue;
@@ -53,16 +70,24 @@ export function buildSetProgress(
     const scores = subs
       .filter((s) => isGraded(s) && typeof s.score === "number" && Number.isFinite(s.score))
       .map((s) => s.score as number);
+    const handedIn = new Set(subs.map((s) => s.studentId));
+    const pastDue = a.dueDate instanceof Date && a.dueDate.getTime() < now;
     out[key] = {
       key,
       assignmentId: a.id,
-      submitted: new Set(subs.map((s) => s.studentId)).size,
+      submitted: handedIn.size,
       graded: new Set(subs.filter(isGraded).map((s) => s.studentId)).size,
       pending: new Set(subs.filter((s) => s.status === "pending_review").map((s) => s.studentId))
         .size,
       averageScore: scores.length
         ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
         : null,
+      overdue: pastDue ? roster.filter((id) => !handedIn.has(id)).length : 0,
+      needsReview: new Set(
+        subs
+          .filter((s) => Array.isArray(s.reviewQuestions) && s.reviewQuestions.length > 0)
+          .map((s) => s.studentId),
+      ).size,
     };
   }
   return out;

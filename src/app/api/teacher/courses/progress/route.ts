@@ -20,10 +20,20 @@ const MAX_EVENTS = 20000;
 const MAX_ASSIGNMENTS = 300;
 const ID = /^[A-Za-z0-9_-]{1,128}$/;
 
+/** A Firestore Timestamp, ISO string or millisecond number as a Date (null when absent or invalid). */
+function toDate(v: unknown): Date | null {
+  if (v == null) return null;
+  const t = v as { toDate?: () => Date };
+  const d = typeof t.toDate === "function" ? t.toDate() : new Date(v as string | number);
+  return d instanceof Date && !Number.isNaN(d.getTime()) ? d : null;
+}
+
 /**
  * GET /api/teacher/courses/progress?courseId=&curriculumId= ->
  *   { courseId, curriculumId, students, sets: { [setKey]: SetProgress }, units: UnitInsight[], truncated }
- * `students` is the class roster size. `sets` has one entry per course set assigned to the class.
+ * `students` is the class roster size. `sets` has one entry per course set assigned to the class;
+ * each carries `overdue` (students with nothing handed in after the due date) and `needsReview`
+ * (students whose work has answers to check after a key change), which the Status board sorts by.
  * `units` lists up to three misconceptions per unit with a re-teach suggestion. The class does not
  * have to follow a course: sets assigned from one still count. `curriculumId` picks the course to
  * report on; without it, it is the course the class follows, else the one its sets came from.
@@ -57,6 +67,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         id: d.id,
         curriculumId: d.data().curriculumId,
         curriculumSetKey: d.data().curriculumSetKey,
+        dueDate: toDate(d.data().dueDate),
       }))
       .filter((a) => typeof a.curriculumSetKey === "string");
     const asked = req.nextUrl.searchParams.get("curriculumId");
@@ -82,6 +93,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
             status: d.status,
             graded: d.graded,
             score: d.score,
+            reviewQuestions: d.reviewQuestions,
           });
       }
     }
@@ -90,13 +102,13 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
     const events = eventSnap.docs
       .map((d) => d.data() as InsightEvent)
       .filter((e) => e.courseId === courseId && setIds.has(e.assignmentId));
-    const students = rosterSnap.docs.filter((d) => d.data().role === "student").length;
+    const roster = rosterSnap.docs.filter((d) => d.data().role === "student").map((d) => d.id);
 
     return NextResponse.json({
       courseId,
       curriculumId,
-      students,
-      sets: buildSetProgress(courseSets, submissions),
+      students: roster.length,
+      sets: buildSetProgress(courseSets, submissions, { roster }),
       units:
         curriculumId && getCurriculum(curriculumId)
           ? buildUnitInsights(curriculumId, events, {

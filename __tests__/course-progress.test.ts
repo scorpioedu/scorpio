@@ -99,8 +99,48 @@ describe("set progress", () => {
       graded: 2,
       pending: 1,
       averageScore: 71,
+      overdue: 0,
+      needsReview: 0,
     });
     expect(p["4B"]).toMatchObject({ submitted: 0, graded: 0, averageScore: null });
+  });
+
+  test("overdue counts roster students with nothing handed in once the due date has passed", () => {
+    const now = new Date("2026-11-17T12:00:00");
+    const roster = ["s1", "s2", "s3", "s4"];
+    const dated = [
+      { id: "a4A", curriculumSetKey: "4A", dueDate: new Date("2026-11-10T23:59:00") },
+      { id: "a4B", curriculumSetKey: "4B", dueDate: new Date("2026-11-20T23:59:00") },
+      { id: "a4C", curriculumSetKey: "4C", dueDate: null },
+      { id: "a4D", curriculumSetKey: "4D", dueDate: new Date("2026-11-10T23:59:00") },
+    ];
+    const subs = [
+      sub("a4A", "s1", "graded", 80),
+      // A draft is not a hand-in; a student who left the class is not on the roster.
+      sub("a4A", "s2", "draft"),
+      sub("a4A", "gone", "graded", 70),
+      ...roster.map((id) => sub("a4D", id, "graded", 90)),
+    ];
+    const p = buildSetProgress(dated, subs, { roster, now });
+    expect(p["4A"].overdue).toBe(3);
+    expect(p["4B"].overdue).toBe(0); // not due yet
+    expect(p["4C"].overdue).toBe(0); // no due date
+    expect(p["4D"].overdue).toBe(0); // everyone handed it in
+    // Without a roster nothing is overdue.
+    expect(buildSetProgress(dated, subs, { now })["4A"].overdue).toBe(0);
+  });
+
+  test("needsReview counts students with answers flagged after a key change", () => {
+    const p = buildSetProgress(assignments, [
+      { ...sub("a4A", "s1", "graded", 80), reviewQuestions: ["q1", "q2"] },
+      { ...sub("a4A", "s2", "graded", 80), reviewQuestions: [] },
+      { ...sub("a4A", "s3", "graded", 80), reviewQuestions: "q1" },
+      { ...sub("a4A", "s4", "draft"), reviewQuestions: ["q1"] },
+      { ...sub("a4B", "s1", "graded", 80), reviewQuestions: ["q9"] },
+      sub("a4B", "s2", "graded", 80),
+    ]);
+    expect(p["4A"].needsReview).toBe(1);
+    expect(p["4B"].needsReview).toBe(1);
   });
 
   test("students per unit count graded and pending work only", () => {
