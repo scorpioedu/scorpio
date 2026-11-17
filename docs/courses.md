@@ -98,7 +98,7 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" in the sidebar, next to Waypoints. The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=list`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
+"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=list`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
