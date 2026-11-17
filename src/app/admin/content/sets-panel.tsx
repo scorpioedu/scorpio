@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, displayTitle } from "@/data/curricula";
+import { CONTENT_FILES } from "@/data/curricula/content-files";
 import { setReadyToPublish, type DraftState } from "@/lib/curriculum-roadmap";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,16 +45,6 @@ function summary(drafts: SetStatus["drafts"]) {
     .map((s) => `${counts.get(s)} ${LABEL[s].toLowerCase()}`)
     .join(", ");
 }
-
-/** The exported draft files of a course, for the import hint (kept in step by a test). */
-export const CONTENT_FILES: Record<string, string[]> = {
-  "ap-physics-1": [
-    "content/ap-physics-1/units-1-3-7-8.json",
-    "content/ap-physics-1/units-4-6.json",
-  ],
-  "ap-physics-2": ["content/ap-physics-2/units-9-15.json"],
-  "ap-physics-c-mech": ["content/ap-physics-c-mech/units-1-7.json"],
-};
 
 export function SetsPanel() {
   // /admin/content?tab=sets&course=ap-physics-2 opens on that course.

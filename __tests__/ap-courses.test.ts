@@ -26,6 +26,11 @@ import { paceCourse } from "../src/lib/course-pacing";
 import { buildStudentRoadmap } from "../src/lib/student-roadmap";
 import { groupByUnit } from "../src/lib/student-grouping";
 import { setProfile } from "../src/data/curricula/profiles";
+import { CONTENT_FILES } from "../src/data/curricula/content-files";
+import { validateDraftProblem } from "../src/lib/content/problem-format";
+import { misconceptionTag, misconceptionUnits } from "../functions/src/misconceptions";
+import fs from "fs";
+import path from "path";
 
 describe("AP course data", () => {
   test("three courses, each with well-formed units and topics", () => {
@@ -191,5 +196,92 @@ describe("course definitions", () => {
     const items = [{ id: "i", title: "t", dueDate: null, curriculumSetKey: "9A" }];
     expect(groupByUnit(items, undefined, "physics-2")[0].label).toBe("Unit 9: Thermodynamics");
     expect(groupByUnit(items)[0].label).toBe("Unit 9");
+  });
+});
+
+describe("reviewed content of every course", () => {
+  type Record_ = {
+    id: string;
+    course?: string;
+    apUnit: number;
+    apTopic: string;
+    status: string;
+    reviewKind: string | null;
+    reviewNote: string | null;
+    problem: { distractors: { misconception: string }[]; text: string; options?: string[] };
+  };
+  const load = (id: string) =>
+    new Map<string, Record_>(
+      (CONTENT_FILES[id] ?? []).flatMap((file) =>
+        (
+          JSON.parse(fs.readFileSync(path.join(__dirname, "..", file), "utf8")).drafts as Record_[]
+        ).map((d) => [d.id, d] as [string, Record_]),
+      ),
+    );
+
+  test("every course lists its content files, and they hold every problem of every set", () => {
+    expect(Object.keys(CONTENT_FILES)).toEqual(CURRICULA.map((c) => c.id));
+    for (const c of CURRICULA) {
+      const drafts = load(c.id);
+      const ids = c.sets.flatMap((s) => s.draftIds);
+      expect([c.id, ids.filter((id) => !drafts.has(id))]).toEqual([c.id, []]);
+      // Nothing in the files that no set uses.
+      expect([c.id, drafts.size]).toEqual([c.id, ids.length]);
+    }
+  });
+
+  test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5, 140 problems each", () => {
+    for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
+      const c = getCurriculum(id)!;
+      expect(hasContent(c)).toBe(true);
+      expect(c.sets.map((s) => s.draftIds.length)).toEqual(Array(28).fill(5));
+      expect(c.description).not.toMatch(/planned|not written/i);
+    }
+  });
+
+  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed", () => {
+    for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
+      const c = getCurriculum(id)!;
+      const drafts = load(id);
+      for (const set of c.sets)
+        for (const draftId of set.draftIds) {
+          const d = drafts.get(draftId)!;
+          const where = `${id} ${set.key} ${draftId}`;
+          expect([where, d.course]).toEqual([where, c.apCourse]);
+          expect([where, d.apUnit]).toEqual([where, set.unit]);
+          expect([where, set.topics.includes(d.apTopic)]).toEqual([where, true]);
+          expect([where, d.reviewKind]).toEqual([where, "ai"]);
+          expect([where, /a person still needs to check/.test(d.reviewNote ?? "")]).toEqual([
+            where,
+            true,
+          ]);
+          const v = validateDraftProblem(d.problem, d.apTopic, c.apCourse);
+          expect([where, v.errors]).toEqual([where, []]);
+          // Students see the text as written: no LaTeX commands.
+          expect([
+            where,
+            /\\[a-zA-Z]+/.test([d.problem.text, ...(d.problem.options ?? [])].join(" ")),
+          ]).toEqual([where, false]);
+          // Every distractor tag is one of the course's tags for this unit (or an any-unit one).
+          for (const x of d.problem.distractors) {
+            const units = misconceptionUnits(misconceptionTag(x.misconception)!, c.apCourse);
+            expect([
+              where,
+              x.misconception,
+              units !== null && (!units.length || units.includes(set.unit)),
+            ]).toEqual([where, x.misconception, true]);
+          }
+        }
+    }
+  });
+
+  test("every topic of the two courses has at least one problem", () => {
+    for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
+      const c = getCurriculum(id)!;
+      const drafts = load(id);
+      const used = new Set(c.sets.flatMap((s) => s.draftIds.map((d) => drafts.get(d)!.apTopic)));
+      const all = apUnits(c.apCourse).flatMap((u) => u.topics.map((t) => t.id));
+      expect([id, all.filter((t) => !used.has(t))]).toEqual([id, []]);
+    }
   });
 });
