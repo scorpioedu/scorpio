@@ -346,7 +346,13 @@
       "title": "Restoring forces and the SHM equation",
       "description": "Forces proportional to displacement and the differential equation they give.",
       "topics": ["7.1"],
-      "draftIds": []
+      "draftIds": [
+        "ZTMi9RPpujBol4n6DU8g",
+        "JeX0y08EJImPdAujsALg",
+        "hLC3fl2OUlXoo7o2YGRk",
+        "YRTBEPemNtjUT1d6pQbh",
+        "O6dTnmN645qJCnWa1rBo"
+      ]
     },
     {
       "key": "7B",
@@ -354,7 +360,13 @@
       "title": "Period and frequency",
       "description": "What sets the period of springs and other oscillators.",
       "topics": ["7.2"],
-      "draftIds": []
+      "draftIds": [
+        "3NxVOl1ncf9YG7xfRZnW",
+        "eRPR98sEJE96LDmQkEI7",
+        "qxqVgySNt46rihqUDwNG",
+        "j0trjyuhsCMc0hkdwdc3",
+        "p9tulv6j6DcK8NMh91EU"
+      ]
     },
     {
       "key": "7C",
@@ -362,7 +374,13 @@
       "title": "Analysing SHM",
       "description": "Sinusoidal position, velocity and acceleration, amplitude and phase.",
       "topics": ["7.3"],
-      "draftIds": []
+      "draftIds": [
+        "45Pmxhbsqn9R1uKc5f74",
+        "u5kmRhLpLUHDAXEk01oG",
+        "1qfT1I0iCYJOjUQEJe5v",
+        "r48Uz7xvbBsjEfMOYGbL",
+        "Ag1NRLu7UfMzVr7R0v51"
+      ]
     },
     {
       "key": "7D",
@@ -370,7 +388,13 @@
       "title": "Energy and pendulums",
       "description": "Energy over a cycle, and simple and physical pendulums.",
       "topics": ["7.4", "7.5"],
-      "draftIds": []
+      "draftIds": [
+        "R8TFwdLlntfIbvmjR8TV",
+        "0QoxFplGjQhlUX2jtr5I",
+        "0T3FEr9EB1MlyE9VDkDP",
+        "Cvbv2AjYzKyUyDgQw7ON",
+        "jSftCo154OA6JhLoMRDT"
+      ]
     }
   ]
 }

@@ -294,6 +294,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Ignores how mass is distributed about the axis (a hoop vs a disk of the same mass).",
     category: "conceptual",
     units: [5, 6],
+    courseUnits: { "physics-c-mech": [5, 6, 7] },
   },
   {
     id: "linear-angular-confusion",
