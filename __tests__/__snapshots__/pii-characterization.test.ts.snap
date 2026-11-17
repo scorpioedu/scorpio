@@ -235,14 +235,54 @@ GRADING INSTRUCTIONS:
 6. Provide a score from 0.0 to 10.0 (decimals allowed).
 7. Generate "technical_reasoning": Explain precisely why the score was given, citing units, vectors, or logic.
 8. Generate "student_feedback": Provide instructional feedback that helps correct physics misconceptions.
-9. Identify "misconceptions": List specific physics misunderstandings (e.g., "confusing mass with weight").
+9. Identify "misconceptions": the physics misunderstandings the submission shows, as tag ids from the MISCONCEPTION TAGS list below. Use only ids from the list. Leave the array empty when the answer is correct or the error is not a misconception (e.g. a blank or off-topic answer). If a clear misconception fits no tag, write one short phrase describing it instead of an id. At most 3 entries.
+
+MISCONCEPTION TAGS (id: what the student seems to believe):
+- velocity-acceleration-confusion: Treats velocity and acceleration as the same thing
+- acceleration-sign-means-slowing: Thinks negative acceleration always means slowing down
+- distance-displacement-confusion: Mixes up distance and displacement
+- graph-as-picture: Reads a motion graph as a picture of the path
+- projectile-components-coupled: Couples horizontal and vertical motion of a projectile
+- heavier-falls-faster: Thinks heavier objects fall faster
+- force-implies-motion: Velocity is in the direction of the net force
+- motion-requires-force: Thinks constant motion needs a constant force
+- impetus-force: Adds a 'force of motion' that stays with the object
+- third-law-unequal-forces: Thinks the bigger or faster object pushes harder
+- third-law-pair-same-object: Puts a third-law pair on the same object
+- normal-force-equals-weight: Assumes the normal force always equals mg
+- mass-weight-confusion: Confuses mass and weight
+- friction-always-opposes-motion: Thinks friction always points against the motion
+- centrifugal-force: Adds an outward 'centrifugal' force in circular motion
+- no-gravity-in-orbit: Thinks there is no gravity in orbit
+- net-force-vector-addition: Adds forces as numbers instead of vectors
+- system-boundary: Includes internal forces or leaves out external ones
+- energy-force-confusion: Uses force and energy interchangeably
+- work-sign: Gets the sign of work wrong
+- energy-not-conserved: Loses or creates energy without a cause
+- potential-energy-reference: Thinks potential energy has one true zero
+- power-energy-confusion: Confuses power with energy
+- momentum-kinetic-energy-confusion: Treats momentum and kinetic energy as interchangeable
+- momentum-not-vector: Ignores the direction of momentum
+- impulse-force-confusion: Confuses impulse with force
+- torque-ignores-lever-arm: Ignores the lever arm or angle in torque
+- rotational-inertia-mass-only: Thinks rotational inertia depends only on mass
+- linear-angular-confusion: Mixes up linear and angular quantities
+- equilibrium-forces-only: Checks only forces for equilibrium
+- angular-momentum-not-conserved: Misses conservation of angular momentum
+- period-depends-on-amplitude: Thinks the period depends on amplitude
+- pendulum-period-depends-on-mass: Thinks a pendulum's period depends on its mass
+- shm-max-at-wrong-point: Puts maximum speed or acceleration at the wrong point
+- buoyancy-depends-on-object-weight: Thinks buoyant force depends on the object's weight or depth
+- pressure-force-confusion: Confuses pressure with force
+- faster-fluid-higher-pressure: Thinks faster fluid has higher pressure
+- algebra-error: Algebra or arithmetic slip
 
 Return ONLY a JSON object:
 {
   "score": number,
   "technical_reasoning": string,
   "student_feedback": string,
-  "misconceptions": string[]
+  "misconceptions": string[]  // tag ids, e.g. ["force-implies-motion"]
 }",
         },
       ],

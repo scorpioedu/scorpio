@@ -1,0 +1,106 @@
+{
+  "course": "physics-1",
+  "name": "AP Physics 1",
+  "note": "Unit and topic structure follows the College Board AP Physics 1 course framework (2024 revision). Titles and descriptions are written in Scorpio's own words; they are not College Board text.",
+  "units": [
+    {
+      "unit": 1,
+      "title": "Kinematics",
+      "summary": "Describing motion in one and two dimensions with words, graphs, equations and vectors.",
+      "topics": [
+        { "id": "1.1", "title": "Scalars and vectors in one dimension", "summary": "Telling magnitude-only quantities from ones with direction, and using signs for direction along a line." },
+        { "id": "1.2", "title": "Displacement, velocity and acceleration", "summary": "Defining change in position, rate of change of position and rate of change of velocity; average versus instantaneous values." },
+        { "id": "1.3", "title": "Representing motion", "summary": "Moving between motion diagrams, position-time and velocity-time graphs and the constant-acceleration equations; slopes and areas." },
+        { "id": "1.4", "title": "Reference frames and relative motion", "summary": "How measured velocity depends on the observer, and adding velocities between frames." },
+        { "id": "1.5", "title": "Vectors and motion in two dimensions", "summary": "Splitting vectors into components and analysing projectiles with independent horizontal and vertical motion." }
+      ]
+    },
+    {
+      "unit": 2,
+      "title": "Force and translational dynamics",
+      "summary": "Systems, forces and Newton's laws, including friction, springs, gravity and circular motion.",
+      "topics": [
+        { "id": "2.1", "title": "Systems and center of mass", "summary": "Choosing a system, telling internal from external forces, and locating the center of mass." },
+        { "id": "2.2", "title": "Forces and free-body diagrams", "summary": "Forces as interactions, and drawing every force on an object with correct direction and relative size." },
+        { "id": "2.3", "title": "Newton's third law", "summary": "Interaction pairs: equal in size, opposite in direction, acting on different objects." },
+        { "id": "2.4", "title": "Newton's first law", "summary": "Zero net force means constant velocity; inertia and equilibrium." },
+        { "id": "2.5", "title": "Newton's second law", "summary": "Net force equals mass times acceleration, applied to single objects and connected systems." },
+        { "id": "2.6", "title": "Gravitational force", "summary": "Universal gravitation, the gravitational field near a surface, and weight versus apparent weight." },
+        { "id": "2.7", "title": "Kinetic and static friction", "summary": "Sliding friction, the range of static friction up to its maximum, and coefficients of friction." },
+        { "id": "2.8", "title": "Spring forces", "summary": "Hooke's law: the restoring force of an ideal spring grows with stretch or compression." },
+        { "id": "2.9", "title": "Circular motion", "summary": "Centripetal acceleration and the real forces that provide it, including vertical circles and orbits." }
+      ]
+    },
+    {
+      "unit": 3,
+      "title": "Work, energy and power",
+      "summary": "Energy stored and transferred in systems, work by forces, conservation of energy and power.",
+      "topics": [
+        { "id": "3.1", "title": "Translational kinetic energy", "summary": "Energy of motion, and how it depends on mass and the square of speed." },
+        { "id": "3.2", "title": "Work", "summary": "Energy transferred by a force over a displacement; sign of work, and work from force-displacement graphs." },
+        { "id": "3.3", "title": "Potential energy", "summary": "Energy stored in gravitational and spring interactions within a system, and the choice of zero." },
+        { "id": "3.4", "title": "Conservation of energy", "summary": "Total energy stays constant unless external work is done; tracking transfers with bar charts." },
+        { "id": "3.5", "title": "Power", "summary": "The rate of energy transfer, average and instantaneous." }
+      ]
+    },
+    {
+      "unit": 4,
+      "title": "Linear momentum",
+      "summary": "Momentum, impulse, conservation of momentum and collisions.",
+      "topics": [
+        { "id": "4.1", "title": "Linear momentum", "summary": "Momentum as mass times velocity, a vector, for objects and systems." },
+        { "id": "4.2", "title": "Change in momentum and impulse", "summary": "Impulse equals change in momentum; average force over a time interval and force-time graphs." },
+        { "id": "4.3", "title": "Conservation of linear momentum", "summary": "With no net external force, a system's total momentum stays the same; center-of-mass velocity." },
+        { "id": "4.4", "title": "Elastic and inelastic collisions", "summary": "When kinetic energy is or is not conserved in a collision, and perfectly inelastic collisions." }
+      ]
+    },
+    {
+      "unit": 5,
+      "title": "Torque and rotational dynamics",
+      "summary": "Rotational motion, torque, rotational inertia and Newton's laws for rotation.",
+      "topics": [
+        { "id": "5.1", "title": "Rotational kinematics", "summary": "Angular position, velocity and acceleration, and the constant angular acceleration equations." },
+        { "id": "5.2", "title": "Connecting linear and rotational motion", "summary": "Relating arc length, tangential speed and tangential acceleration to angular quantities through the radius." },
+        { "id": "5.3", "title": "Torque", "summary": "How a force's size, direction and lever arm about an axis produce a turning effect." },
+        { "id": "5.4", "title": "Rotational inertia", "summary": "Resistance to angular acceleration and its dependence on how mass is distributed; parallel-axis idea." },
+        { "id": "5.5", "title": "Rotational equilibrium and Newton's first law in rotational form", "summary": "Zero net torque and zero net force for objects at rest or rotating steadily." },
+        { "id": "5.6", "title": "Newton's second law in rotational form", "summary": "Net torque equals rotational inertia times angular acceleration, including pulleys with mass." }
+      ]
+    },
+    {
+      "unit": 6,
+      "title": "Energy and momentum of rotating systems",
+      "summary": "Rotational kinetic energy, angular momentum and its conservation, rolling and orbits.",
+      "topics": [
+        { "id": "6.1", "title": "Rotational kinetic energy", "summary": "Energy of rotation and how it depends on rotational inertia and angular speed." },
+        { "id": "6.2", "title": "Torque and work", "summary": "Work done by a torque through an angular displacement." },
+        { "id": "6.3", "title": "Angular momentum and angular impulse", "summary": "Angular momentum of rigid bodies and point objects; angular impulse changes angular momentum." },
+        { "id": "6.4", "title": "Conservation of angular momentum", "summary": "With no net external torque, angular momentum stays the same as rotational inertia changes." },
+        { "id": "6.5", "title": "Rolling", "summary": "Rolling without slipping, splitting kinetic energy into translational and rotational parts." },
+        { "id": "6.6", "title": "Motion of orbiting satellites", "summary": "Circular and elliptical orbits, conservation of energy and angular momentum in orbits, and escape speed." }
+      ]
+    },
+    {
+      "unit": 7,
+      "title": "Oscillations",
+      "summary": "Simple harmonic motion of springs and pendulums: period, graphs and energy.",
+      "topics": [
+        { "id": "7.1", "title": "Defining simple harmonic motion", "summary": "A restoring force proportional to displacement from equilibrium produces SHM." },
+        { "id": "7.2", "title": "Frequency and period of SHM", "summary": "What sets the period of a mass on a spring and of a simple pendulum, and what does not." },
+        { "id": "7.3", "title": "Representing and analyzing SHM", "summary": "Position, velocity and acceleration graphs and equations over a cycle." },
+        { "id": "7.4", "title": "Energy of simple harmonic oscillators", "summary": "Exchanges between kinetic and potential energy during an oscillation, and total energy versus amplitude." }
+      ]
+    },
+    {
+      "unit": 8,
+      "title": "Fluids",
+      "summary": "Density, pressure, buoyancy and fluid flow.",
+      "topics": [
+        { "id": "8.1", "title": "Internal structure and density", "summary": "Density as mass per volume and ideal fluid assumptions." },
+        { "id": "8.2", "title": "Pressure", "summary": "Pressure as force per area, and how fluid pressure grows with depth; absolute and gauge pressure." },
+        { "id": "8.3", "title": "Fluids and Newton's laws", "summary": "Buoyant force from displaced fluid, floating and sinking, and free-body diagrams in fluids." },
+        { "id": "8.4", "title": "Fluids and conservation of energy", "summary": "The continuity equation and Bernoulli's equation for flowing fluids." }
+      ]
+    }
+  ]
+}

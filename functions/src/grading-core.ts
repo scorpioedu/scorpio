@@ -12,6 +12,7 @@ import {
   type ParsedQuantity,
   type Unit,
 } from "./units";
+import { MISCONCEPTION_IDS, normaliseMisconceptions } from "./misconceptions";
 
 export type QuestionType = "text" | "short-answer" | "multiple-choice" | "true-false" | "numeric";
 
@@ -28,7 +29,18 @@ export interface GradableQuestion {
   tolerance?: number;
   /** Numeric only: expected significant figures. Unset means sig figs are not checked. */
   sigFigs?: number;
+  /**
+   * Known wrong answers and the misconception each one points to (from the answer key, never sent to
+   * students). MC: the option text. Numeric: a quantity such as "-12.5 m/s", matched within tolerance.
+   */
+  distractors?: Distractor[];
   [field: string]: unknown;
+}
+
+export interface Distractor {
+  answer: string;
+  /** A tag id from functions/src/misconceptions.ts. */
+  misconception: string;
 }
 
 export interface SubmittedAnswer {
@@ -120,11 +132,34 @@ export function checkChoice(answer: string, question: GradableQuestion): CheckRe
       ? normaliseBool(answer)
       : resolveChoice(answer, question.options);
   const correct = given.trim().toLowerCase() === key.trim().toLowerCase();
+  const distractor = correct
+    ? undefined
+    : validDistractors(question).find(
+        (d) =>
+          (question.type === "true-false"
+            ? normaliseBool(d.answer)
+            : resolveChoice(d.answer, question.options)
+          )
+            .trim()
+            .toLowerCase() === given.trim().toLowerCase(),
+      );
   return {
     fraction: correct ? 1 : 0,
     feedback: correct ? "Correct." : "Incorrect.",
-    misconceptions: [],
+    misconceptions: distractor ? [distractor.misconception] : [],
   };
+}
+
+/** Distractors with a known tag only; anything malformed is ignored rather than failing the grade. */
+function validDistractors(question: GradableQuestion): Distractor[] {
+  if (!Array.isArray(question.distractors)) return [];
+  return question.distractors.filter(
+    (d): d is Distractor =>
+      !!d &&
+      typeof d.answer === "string" &&
+      typeof d.misconception === "string" &&
+      MISCONCEPTION_IDS.has(d.misconception),
+  );
 }
 
 function normaliseBool(s: string): string {
@@ -258,6 +293,25 @@ export function checkNumeric(answer: string, question: GradableQuestion): CheckR
   }
 
   const compare = inKeyUnit ?? given.value;
+  const distractor = validDistractors(question).find((d) => {
+    const q = parseQuantity(d.answer);
+    if (!q || q.trailingText) return false;
+    const dUnit = q.unit && !isDimensionless(q.unit) ? q.unit : undefined;
+    let value = q.value;
+    if (keyUnit && dUnit) {
+      if (!sameDims(keyUnit.dims, dUnit.dims)) return false;
+      value = convert(q.value, dUnit, keyUnit);
+    }
+    return close(compare, value, tolerance, slack);
+  });
+  if (distractor) {
+    return {
+      fraction: 0,
+      feedback:
+        "Incorrect. This is a common wrong answer for this problem: recheck the physics of your setup, not just the arithmetic.",
+      misconceptions: [distractor.misconception],
+    };
+  }
   if (key.value !== 0 && close(-compare, key.value, tolerance, slack)) {
     return {
       fraction: 0,
@@ -328,6 +382,8 @@ export interface GradedAnswer extends SubmittedAnswer {
   reasoning: string;
   method: GradingMethod;
   misconceptions: string[];
+  /** The grader's own words for misconceptions that matched no tag (stored under "other"). */
+  misconceptionNotes?: string[];
   /** Set when this answer needs a teacher; no score is final until they decide. */
   reviewFlag?: string;
   aiSuggestedScore?: number;
@@ -489,13 +545,18 @@ export async function gradeSubmissionAnswers(
       usage.outputTokens += result.usage.outputTokens;
     }
     const suggested = round2((result.score / 10) * maxPoints);
+    const tagged = normaliseMisconceptions(result.misconceptions);
+    const misconceptionFields = {
+      misconceptions: tagged.tags,
+      ...(tagged.notes.length ? { misconceptionNotes: tagged.notes } : {}),
+    };
     if (result.needsReview) {
       return {
         ...base,
         score: 0,
         feedback: "",
         method: "ai",
-        misconceptions: result.misconceptions || [],
+        ...misconceptionFields,
         reviewFlag: result.reviewReason || "Teacher review required",
         aiSuggestedScore: suggested,
       };
@@ -505,7 +566,7 @@ export async function gradeSubmissionAnswers(
       score: suggested,
       feedback: result.feedback || options.defaultFeedback || "No feedback provided.",
       reasoning: result.reasoning || "",
-      misconceptions: result.misconceptions || [],
+      ...misconceptionFields,
       method: "ai",
     };
   };

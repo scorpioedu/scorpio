@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
+import { AP_UNITS, apUnitLabel } from "@/data/ap";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
 import {
   STARTER_WAYPOINT_COUNT,
@@ -74,6 +75,8 @@ interface Waypoint {
   createdAt: Date;
   topic?: string;
   forkCount?: number;
+  apUnit?: number | null;
+  apTopics?: string[];
 }
 
 export default function WaypointsPage() {
@@ -87,6 +90,8 @@ export default function WaypointsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("global");
   const [topicFilter, setTopicFilter] = useState("all");
+  // Filtered in the browser: no composite index needed next to the visibility/topic queries.
+  const [apUnitFilter, setApUnitFilter] = useState("all");
 
   // Upgrade modal state
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
@@ -211,6 +216,7 @@ export default function WaypointsPage() {
       (a.description || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     if (activeTab === "network" && !a.organizationId) return false;
+    if (apUnitFilter !== "all" && a.apUnit !== Number(apUnitFilter)) return false;
 
     return matchesSearch;
   });
@@ -340,6 +346,28 @@ export default function WaypointsPage() {
           </TabsList>
         </Tabs>
 
+        <Select value={apUnitFilter} onValueChange={setApUnitFilter}>
+          <SelectTrigger
+            aria-label="AP Physics 1 unit"
+            className="cursor-pointer w-full sm:w-56 data-[size=default]:h-12 bg-background dark:bg-background border-border"
+          >
+            <div className="flex min-w-0 items-center gap-2">
+              <Filter className="h-4 w-4 shrink-0" />
+              <SelectValue placeholder="All AP units" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="cursor-pointer">
+              All AP units
+            </SelectItem>
+            {AP_UNITS.map((u) => (
+              <SelectItem key={u.unit} value={String(u.unit)} className="cursor-pointer">
+                Unit {u.unit}: {u.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Select value={topicFilter} onValueChange={setTopicFilter}>
           <SelectTrigger
             aria-label="Topic"
@@ -439,7 +467,9 @@ export default function WaypointsPage() {
             <p className="text-muted-foreground max-w-sm px-4">
               {activeTab === "network" && !profile?.organizationId
                 ? "Switch to the Global tab or join a department network to see shared waypoints."
-                : "Try another search or topic."}
+                : apUnitFilter !== "all"
+                  ? "No templates are tagged with this AP unit yet. Try another unit or All AP units."
+                  : "Try another search or topic."}
             </p>
           </motion.div>
         ) : (
@@ -476,6 +506,11 @@ export default function WaypointsPage() {
                               <Clock className="h-3 w-3 mr-1" />
                               {waypoint.questions?.length || 0} Components
                             </Badge>
+                            {typeof waypoint.apUnit === "number" && (
+                              <Badge variant="outline" className="text-[10px]">
+                                AP 1 · {apUnitLabel(waypoint.apUnit)}
+                              </Badge>
+                            )}
                             {waypoint.topic && (
                               <Badge className="bg-primary/10 text-primary border-primary/20 capitalize font-mono text-[10px]">
                                 {waypoint.topic}

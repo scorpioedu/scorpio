@@ -32,6 +32,9 @@ const COPIED_FIELDS = [
   "totalPoints",
   "type",
   "googleFormLink",
+  "apCourse",
+  "apUnit",
+  "apTopics",
 ] as const;
 
 /**
@@ -80,6 +83,7 @@ export const POST = withAuthorizedRequest(
           id: randomUUID(),
           correctAnswer: answer,
         };
+        if (Array.isArray(question.distractors)) copy.distractors = question.distractors;
         if (type !== undefined) copy.type = type;
         if (copy.points === undefined) copy.points = 10;
         return copy;
@@ -117,6 +121,7 @@ export const POST = withAuthorizedRequest(
     });
     batch.set(adminDb.collection("assignment_keys").doc(ref.id), {
       answers: split.answers,
+      ...(Object.keys(split.distractors).length ? { distractors: split.distractors } : {}),
       rubric,
       teacherId: caller.uid,
     });

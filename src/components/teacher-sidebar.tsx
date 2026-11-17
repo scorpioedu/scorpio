@@ -11,6 +11,7 @@ import {
   Waypoints,
   PackageCheck,
   Presentation,
+  Lightbulb,
 } from "lucide-react";
 import { AppSidebar, type AppSidebarProps, type NavSection } from "./app-sidebar";
 
@@ -30,6 +31,7 @@ const navSections: NavSection[] = [
     label: "Assessments",
     items: [
       { href: "/teacher/grades", label: "Gradebook", icon: ChartColumnBig },
+      { href: "/teacher/insights", label: "Misconceptions", icon: Lightbulb },
       { href: "/teacher/assignments", label: "My Assignments", icon: FileText },
       { href: "/teacher/create", label: "Create Assignment", icon: PlusCircle },
     ],
@@ -44,9 +46,7 @@ const navSections: NavSection[] = [
   },
   {
     label: "Impact",
-    items: [
-      { dialog: "sustainability", label: "Sustainability" },
-    ],
+    items: [{ dialog: "sustainability", label: "Sustainability" }],
   },
 ];
 

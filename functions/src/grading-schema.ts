@@ -1,4 +1,5 @@
 import { randomBytes } from "crypto";
+import { misconceptionPromptList } from "./misconceptions";
 
 // Shared by src/lib/ai/grading.ts (Next.js) and functions/src/grading.ts (Cloud Functions).
 // Deliberately dependency-free (Node built-ins only): `functions/` does not depend on zod, and
@@ -112,14 +113,17 @@ GRADING INSTRUCTIONS:
 6. Provide a score from 0.0 to ${GRADER_MAX_SCORE}.0 (decimals allowed).
 7. Generate "technical_reasoning": Explain precisely why the score was given, citing units, vectors, or logic.
 8. Generate "student_feedback": Provide instructional feedback that helps correct physics misconceptions.
-9. Identify "misconceptions": List specific physics misunderstandings (e.g., "confusing mass with weight").
+9. Identify "misconceptions": the physics misunderstandings the submission shows, as tag ids from the MISCONCEPTION TAGS list below. Use only ids from the list. Leave the array empty when the answer is correct or the error is not a misconception (e.g. a blank or off-topic answer). If a clear misconception fits no tag, write one short phrase describing it instead of an id. At most 3 entries.
+
+MISCONCEPTION TAGS (id: what the student seems to believe):
+${misconceptionPromptList()}
 
 Return ONLY a JSON object:
 {
   "score": number,
   "technical_reasoning": string,
   "student_feedback": string,
-  "misconceptions": string[]
+  "misconceptions": string[]  // tag ids, e.g. ["force-implies-motion"]
 }`;
 
 export interface GradingInputs {

@@ -52,6 +52,7 @@ import { Organization } from "@/lib/types";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { MathInputField } from "@/components/math-input";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { AP_UNITS, apUnit as findApUnit } from "@/data/ap";
 import { SmartDateTimePicker } from "@/components/ui/smart-datetime-picker";
 
 function AdvancedSettings({ children }: { children: React.ReactNode }) {
@@ -233,6 +234,8 @@ function CreateAssignmentForm() {
   const [timeLimit, setTimeLimit] = useState<number | "">("");
   const [visibility, setVisibility] = useState<"private" | "network" | "global">("private");
   const [topic, setTopic] = useState<string>("other");
+  const [apUnit, setApUnit] = useState<number | null>(null);
+  const [apTopics, setApTopics] = useState<string[]>([]);
   const [requireWorkSubmission, setRequireWorkSubmission] = useState(false);
   const [allowAIHelp, setAllowAIHelp] = useState(false);
   const [allowCalculator, setAllowCalculator] = useState(false);
@@ -291,6 +294,9 @@ function CreateAssignmentForm() {
         setTitle(assignment.title || "");
         setDescription(assignment.description || "");
         setVisibility("private"); // Default to private for copies
+        if (typeof assignment.apUnit === "number") setApUnit(assignment.apUnit);
+        if (Array.isArray(assignment.apTopics)) setApTopics(assignment.apTopics);
+        if (typeof assignment.topic === "string" && assignment.topic) setTopic(assignment.topic);
         if (assignment.gradingType === "manual" || assignment.gradingType === "ai")
           setGradingType(assignment.gradingType);
         if (assignment.allowCalculator !== undefined) {
@@ -673,6 +679,9 @@ function CreateAssignmentForm() {
           title,
           description,
           topic,
+          apCourse: apUnit ? "physics-1" : null,
+          apUnit,
+          apTopics: apUnit ? apTopics : [],
           teacherId: user?.uid,
           organizationId: profile?.organizationId || null,
           visibility,
@@ -1274,6 +1283,57 @@ function CreateAssignmentForm() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ap-unit">AP Physics 1 unit</Label>
+                  <Select
+                    value={apUnit ? String(apUnit) : "none"}
+                    onValueChange={(value) => {
+                      setApUnit(value === "none" ? null : Number(value));
+                      setApTopics([]);
+                    }}
+                  >
+                    <SelectTrigger id="ap-unit" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Not an AP assignment</SelectItem>
+                      {AP_UNITS.map((u) => (
+                        <SelectItem key={u.unit} value={String(u.unit)}>
+                          Unit {u.unit}: {u.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {apUnit && (
+                  <fieldset className="space-y-2 sm:col-span-2">
+                    <legend className="text-sm font-medium">AP topics covered</legend>
+                    <p className="text-xs text-muted-foreground">
+                      Used by the misconception report and the Waypoints library filter.
+                    </p>
+                    <div className="grid gap-2 pt-1 sm:grid-cols-2">
+                      {findApUnit(apUnit)?.topics.map((t) => (
+                        <label key={t.id} className="flex cursor-pointer items-start gap-2 text-sm">
+                          <Checkbox
+                            className="mt-0.5"
+                            checked={apTopics.includes(t.id)}
+                            onCheckedChange={(checked) =>
+                              setApTopics((current) =>
+                                checked === true
+                                  ? [...current, t.id]
+                                  : current.filter((id) => id !== t.id),
+                              )
+                            }
+                          />
+                          <span>
+                            <span className="tabular-nums text-muted-foreground">{t.id}</span>{" "}
+                            {t.title}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="timeLimit">Time limit (minutes)</Label>
                   <Input

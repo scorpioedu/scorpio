@@ -46,6 +46,10 @@ export const createAssignmentBody = z.object({
   type: z.string().max(64).optional(),
   googleFormLink: z.string().max(2048).nullish(),
   rubric: z.string().max(100000).nullish(),
+  // AP tags, checked against src/data/ap by the route (normaliseApTags).
+  apCourse: z.enum(["physics-1"]).nullish(),
+  apUnit: z.number().int().min(1).max(8).nullish(),
+  apTopics: z.array(z.string().max(16)).max(40).nullish(),
   questions: z.array(assignmentQuestionSchema).max(100),
 });
 
