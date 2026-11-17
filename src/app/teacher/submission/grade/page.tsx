@@ -21,6 +21,9 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { toast } from "sonner";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { errorMessage } from "@/lib/error-utils";
+import { useUnsavedGuard } from "@/hooks/use-unsaved-guard";
+import { SaveBar } from "@/components/teacher/save-bar";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface Question {
   id: string;
@@ -57,6 +60,8 @@ interface Submission {
   graded: boolean;
   workFiles?: WorkFile[];
   unfocusCount?: number;
+  /** Questions whose score the teacher set by hand (kept when an answer key changes). */
+  teacherGraded?: string[];
 }
 
 interface Assignment {
@@ -77,6 +82,12 @@ export default function GradeSubmissionPage() {
   const [grades, setGrades] = useState<Record<string, number>>({});
   const [feedback, setFeedback] = useState<Record<string, string>>({});
   const [aiReasoning, setAiReasoning] = useState<Record<string, string>>({});
+  // What is saved, to tell unsaved edits apart (save bar, leave warning, re-grade confirm).
+  const [baseline, setBaseline] = useState<{ grades: Record<string, number>; feedback: Record<string, string> }>({
+    grades: {},
+    feedback: {},
+  });
+  const [confirmRegrade, setConfirmRegrade] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -115,6 +126,7 @@ export default function GradeSubmissionPage() {
           setGrades(initialGrades);
           setFeedback(initialFeedback);
           setAiReasoning(initialReasoning);
+          setBaseline({ grades: initialGrades, feedback: initialFeedback });
         }
       } catch (error) {
         console.error("Error fetching submission:", error);
@@ -161,7 +173,8 @@ export default function GradeSubmissionPage() {
           setGrades(initialGrades);
           setFeedback(initialFeedback);
           setAiReasoning(initialReasoning);
-          setSubmission({ ...submission, answers: updatedSub.answers });
+          setBaseline({ grades: initialGrades, feedback: initialFeedback });
+          setSubmission({ ...submission, ...updatedSub, answers: updatedSub.answers });
           toast.success("AI grading complete!");
         }
       } else {
@@ -188,6 +201,20 @@ export default function GradeSubmissionPage() {
     ? Math.round((totalEarnedPoints / totalPossiblePoints) * 100)
     : 0;
 
+  const sameRecord = (a: Record<string, unknown>, b: Record<string, unknown>) =>
+    Object.keys({ ...a, ...b }).every((k) => (a[k] ?? "") === (b[k] ?? ""));
+  const dirty = !sameRecord(grades, baseline.grades) || !sameRecord(feedback, baseline.feedback);
+  const { guardDialog } = useUnsavedGuard(dirty);
+  // Questions whose score was set by hand: kept when the teacher later changes the answer key.
+  const handGraded = [
+    ...new Set([
+      ...(submission?.teacherGraded ?? []),
+      ...(submission?.answers ?? [])
+        .filter((ans) => grades[ans.questionId] !== undefined && grades[ans.questionId] !== ans.score)
+        .map((ans) => ans.questionId),
+    ]),
+  ];
+
   const handleSave = async () => {
     if (!submission || !id || !assignment) return;
     setSaving(true);
@@ -209,12 +236,19 @@ export default function GradeSubmissionPage() {
         totalEarnedPoints,
         totalPossiblePoints,
         graded: true,
-        gradedAt: new Date()
+        gradedAt: new Date(),
+        teacherGraded: handGraded,
+        // The teacher has looked at the whole submission, so nothing is waiting for review.
+        reviewQuestions: [],
       });
 
+      setBaseline({ grades, feedback });
+      setSubmission({ ...submission, answers: updatedAnswers, teacherGraded: handGraded });
+      toast.success("Grades saved");
       router.back();
     } catch (error) {
       console.error("Error saving grades:", error);
+      toast.error("Could not save the grades. Your changes are still here; try again.");
     } finally {
       setSaving(false);
     }
@@ -299,7 +333,7 @@ export default function GradeSubmissionPage() {
 
         <div className="flex flex-col sm:flex-row gap-3">
           <Button 
-            onClick={() => handleAiGrade('all')} 
+            onClick={() => (dirty || handGraded.length ? setConfirmRegrade(true) : handleAiGrade('all'))} 
             variant="outline"
             disabled={gradingQuestion === 'all'}
             size="sm"
@@ -566,6 +600,31 @@ export default function GradeSubmissionPage() {
           </div>
         </div>
       </div>
+      <div className="px-4">
+        <SaveBar
+          dirty={dirty}
+          saving={saving}
+          saveLabel="Save grades"
+          onSave={handleSave}
+          onDiscard={() => {
+            setGrades(baseline.grades);
+            setFeedback(baseline.feedback);
+          }}
+        />
+      </div>
+      <ConfirmDialog
+        open={confirmRegrade}
+        onOpenChange={setConfirmRegrade}
+        variant="default"
+        title="Re-grade the whole submission?"
+        description={`Raise grades every answer again and replaces the scores and feedback on this page${
+          handGraded.length ? `, including ${handGraded.length} you set by hand` : ""
+        }${dirty ? " and your unsaved changes" : ""}.`}
+        confirmText="Re-grade"
+        cancelText="Keep my grades"
+        onConfirm={() => handleAiGrade("all")}
+      />
+      {guardDialog}
     </div>
   );
 }
