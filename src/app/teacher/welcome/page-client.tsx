@@ -8,7 +8,14 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apUnitLabel } from "@/data/ap";
-import { getCurriculum, curriculumUnits, setSequence } from "@/data/curricula";
+import {
+  CURRICULA,
+  curriculumUnits,
+  getCurriculum,
+  hasContent,
+  setSequence,
+} from "@/data/curricula";
+import { CourseIcon, courseLook } from "@/components/teacher/course-icon";
 import { loadPublishedSets, type PublishedSetInfo } from "@/lib/curriculum-client";
 import { defaultCalendar, schoolDays } from "@/lib/school-calendar";
 import {
@@ -42,8 +49,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const CURRICULUM_ID = "ap-physics-1";
-
 interface UnitSet {
   id: string;
   key: string;
@@ -66,7 +71,10 @@ export default function WelcomeClient() {
   const { user, profile } = useAuth();
   const router = useRouter();
 
-  const [className, setClassName] = useState("AP Physics 1");
+  // The course the first class takes: its sets fill step 2. Fixed once the class exists.
+  const [curriculumId, setCurriculumId] = useState(CURRICULA[0].id);
+  const courseName = getCurriculum(curriculumId)?.name ?? "";
+  const [className, setClassName] = useState(CURRICULA[0].name);
   const [period, setPeriod] = useState("");
   const [follow, setFollow] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -91,13 +99,13 @@ export default function WelcomeClient() {
 
   useEffect(() => {
     let active = true;
-    loadPublishedSets(CURRICULUM_ID)
+    loadPublishedSets(curriculumId)
       .then((published: PublishedSetInfo[]) => {
         if (!active) return;
         const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
         // Roadmap order comes from the course definition, not from when sets were published.
         setSets(
-          curriculumUnits(CURRICULUM_ID)
+          curriculumUnits(curriculumId)
             .flatMap((u) =>
               u.sets.flatMap((def) => {
                 const p = byKey.get(def.key);
@@ -114,7 +122,7 @@ export default function WelcomeClient() {
                   : [];
               }),
             )
-            .sort((a, b) => setSequence(CURRICULUM_ID, a.key) - setSequence(CURRICULUM_ID, b.key)),
+            .sort((a, b) => setSequence(curriculumId, a.key) - setSequence(curriculumId, b.key)),
         );
       })
       .catch(() => {
@@ -123,14 +131,25 @@ export default function WelcomeClient() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [curriculumId]);
+
+  const chooseCourse = (id: string) => {
+    const next = getCurriculum(id);
+    if (!next || id === curriculumId) return;
+    // A class still called after the old course is renamed with it; a name the teacher typed stays.
+    if (className.trim() === courseName) setClassName(next.name);
+    setCurriculumId(id);
+    setSets(null);
+    setSetsError(false);
+    setUnit("");
+  };
 
   const counts = useMemo(() => {
     const m = new Map<number, number>();
     for (const s of sets ?? []) m.set(s.apUnit, (m.get(s.apUnit) ?? 0) + 1);
     return m;
   }, [sets]);
-  const units = getCurriculum(CURRICULUM_ID) ? curriculumUnits(CURRICULUM_ID) : [];
+  const units = getCurriculum(curriculumId) ? curriculumUnits(curriculumId) : [];
   const unitsWithSets = units.filter((u) => counts.has(u.unit));
   const unitSets = useMemo(
     () => (sets ?? []).filter((s) => String(s.apUnit) === unit),
@@ -186,7 +205,7 @@ export default function WelcomeClient() {
         const res = await authenticatedFetch("/api/courses", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, code, ...(follow ? { curriculumId: CURRICULUM_ID } : {}) }),
+          body: JSON.stringify({ name, code, ...(follow ? { curriculumId: curriculumId } : {}) }),
         });
         const body = await res.json().catch(() => ({}));
         if (res.ok) {
@@ -248,7 +267,7 @@ export default function WelcomeClient() {
     <div className="space-y-6">
       <TeacherPageHeader
         title="Get started"
-        description="Create a class, assign an AP Physics 1 unit, and share the join code. It takes about five minutes."
+        description="Create a class, assign its first unit, and share the join code. It takes about five minutes."
       >
         <Button variant="ghost" onClick={skip}>
           Skip for now
@@ -312,6 +331,25 @@ export default function WelcomeClient() {
               <Button type="submit" disabled={creating || noOrg || !className.trim()}>
                 {creating ? "Creating…" : "Create class"}
               </Button>
+              <div className="space-y-2 sm:col-span-3">
+                <Label htmlFor="class-course">Course</Label>
+                <Select value={curriculumId} onValueChange={chooseCourse}>
+                  <SelectTrigger id="class-course" className="w-full sm:w-80">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CURRICULA.filter(hasContent).map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        <CourseIcon curriculumId={c.id} />
+                        {c.name}
+                        <span className="text-xs text-muted-foreground">
+                          {courseLook(c.id).level} · {c.sets.length} sets
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex items-center gap-2 sm:col-span-3">
                 <Checkbox
                   id="follow-course"
@@ -319,7 +357,7 @@ export default function WelcomeClient() {
                   onCheckedChange={(c) => setFollow(c === true)}
                 />
                 <Label htmlFor="follow-course" className="font-normal">
-                  Follow the AP Physics 1 course (students see assignments grouped by unit)
+                  Follow the {courseName} course (students see assignments grouped by unit)
                 </Label>
               </div>
               {classError && (
@@ -334,7 +372,7 @@ export default function WelcomeClient() {
 
       <Card className={`shadow-none ${course ? "" : "opacity-60"}`}>
         <CardHeader>
-          <CardTitle>2. Assign an AP Physics 1 unit</CardTitle>
+          <CardTitle>2. Assign a {courseName} unit</CardTitle>
           <CardDescription>
             Ready-made, auto-graded, answer keys included. Each assignment gets a due date.
           </CardDescription>
