@@ -1,0 +1,758 @@
+{
+  "1A": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "acceleration-sign-means-slowing",
+        "problems": 1
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "1B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "acceleration-sign-means-slowing",
+        "problems": 1
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "1C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "1D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "graph-as-picture",
+        "problems": 1
+      },
+      {
+        "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
+        "tag": "projectile-components-coupled",
+        "problems": 1
+      }
+    ]
+  },
+  "2A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "force-implies-motion",
+        "problems": 1
+      },
+      {
+        "tag": "impetus-force",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "2B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "third-law-pair-same-object",
+        "problems": 1
+      }
+    ]
+  },
+  "2C": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "friction-always-opposes-motion",
+        "problems": 2
+      },
+      {
+        "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
+        "tag": "no-gravity-in-orbit",
+        "problems": 1
+      }
+    ]
+  },
+  "2D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "centrifugal-force",
+        "problems": 1
+      },
+      {
+        "tag": "force-implies-motion",
+        "problems": 1
+      },
+      {
+        "tag": "mass-weight-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "normal-force-equals-weight",
+        "problems": 1
+      }
+    ]
+  },
+  "3A": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "3B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "energy-force-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "potential-energy-reference",
+        "problems": 1
+      }
+    ]
+  },
+  "3C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "work-sign",
+        "problems": 3
+      },
+      {
+        "tag": "potential-energy-reference",
+        "problems": 1
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "3D": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "energy-force-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "4A": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "momentum-not-vector",
+        "problems": 3
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "impulse-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      }
+    ]
+  },
+  "4B": {
+    "problems": 5,
+    "minutes": 14,
+    "difficulty": {
+      "easy": 1,
+      "medium": 3,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "4C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "4D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "5A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "linear-angular-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "5B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "torque-ignores-lever-arm",
+        "problems": 3
+      },
+      {
+        "tag": "equilibrium-forces-only",
+        "problems": 1
+      }
+    ]
+  },
+  "5C": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 3
+      },
+      {
+        "tag": "equilibrium-forces-only",
+        "problems": 1
+      }
+    ]
+  },
+  "5D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "torque-ignores-lever-arm",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 1
+      }
+    ]
+  },
+  "6A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "6B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 1
+      }
+    ]
+  },
+  "6C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "angular-momentum-not-conserved",
+        "problems": 3
+      }
+    ]
+  },
+  "6D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 2
+      },
+      {
+        "tag": "angular-momentum-not-conserved",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "7A": {
+    "problems": 5,
+    "minutes": 14,
+    "difficulty": {
+      "easy": 2,
+      "medium": 1,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "period-depends-on-amplitude",
+        "problems": 1
+      }
+    ]
+  },
+  "7B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "pendulum-period-depends-on-mass",
+        "problems": 1
+      },
+      {
+        "tag": "period-depends-on-amplitude",
+        "problems": 1
+      },
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 1
+      }
+    ]
+  },
+  "7C": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "shm-max-at-wrong-point",
+        "problems": 1
+      }
+    ]
+  },
+  "7D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "period-depends-on-amplitude",
+        "problems": 2
+      },
+      {
+        "tag": "pendulum-period-depends-on-mass",
+        "problems": 1
+      },
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 1
+      },
+      {
+        "tag": "shm-max-at-wrong-point",
+        "problems": 1
+      }
+    ]
+  }
+}

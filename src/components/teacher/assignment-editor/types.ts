@@ -1,6 +1,7 @@
 // Shared types and helpers for the assignment editor (create page and the assignment's Problems tab).
 import { getAssignmentPoints, splitAssignmentPoints } from "@/lib/assignment-points";
 import { parseNumericKey } from "../../../../functions/src/grading-core";
+import { DEFAULT_AP_COURSE, apCourseOf, type ApCourseId } from "@/data/ap";
 
 export type QuestionType = "text" | "multiple-choice" | "true-false" | "short-answer" | "numeric";
 
@@ -179,6 +180,8 @@ export function removeChoice(question: Question, index: number): Partial<Questio
 
 export interface AssignmentSettingsValue {
   topic: string;
+  /** Which AP course `apUnit` and `apTopics` belong to (only meaningful when a unit is set). */
+  apCourse: ApCourseId;
   apUnit: number | null;
   apTopics: string[];
   timeLimit: number | "";
@@ -193,6 +196,7 @@ export interface AssignmentSettingsValue {
 
 export const DEFAULT_SETTINGS: AssignmentSettingsValue = {
   topic: "other",
+  apCourse: DEFAULT_AP_COURSE,
   apUnit: null,
   apTopics: [],
   timeLimit: "",
@@ -211,6 +215,7 @@ export function settingsFrom(a: Record<string, unknown>): AssignmentSettingsValu
     typeof a[k] === "boolean" ? (a[k] as boolean) : (DEFAULT_SETTINGS[k] as boolean);
   return {
     topic: typeof a.topic === "string" && a.topic ? a.topic : DEFAULT_SETTINGS.topic,
+    apCourse: apCourseOf(a.apCourse),
     apUnit: typeof a.apUnit === "number" ? a.apUnit : null,
     apTopics: Array.isArray(a.apTopics) ? (a.apTopics as string[]) : [],
     timeLimit: typeof a.timeLimit === "number" ? a.timeLimit : "",

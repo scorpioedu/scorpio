@@ -12,7 +12,7 @@ import {
   type ParsedQuantity,
   type Unit,
 } from "./units";
-import { MISCONCEPTION_IDS, normaliseMisconceptions } from "./misconceptions";
+import { MISCONCEPTION_IDS, normaliseMisconceptions, type ApCourseKey } from "./misconceptions";
 
 export type QuestionType = "text" | "short-answer" | "multiple-choice" | "true-false" | "numeric";
 
@@ -58,6 +58,8 @@ export interface AiGradeInput {
   reference?: string;
   /** The assignment-wide rubric, when there is one. */
   rubric?: string;
+  /** Set for assignments of an AP course other than AP Physics 1 (picks the grader's tag list). */
+  apCourse?: ApCourseKey;
 }
 
 export interface AiGradeOutput {
@@ -404,6 +406,8 @@ export interface GradeOptions {
   /** Absent when AI grading is unavailable (no budget): AI-needing answers are flagged for review. */
   aiGrader?: AiGrader;
   globalRubric?: string;
+  /** The assignment's AP course when it is not AP Physics 1; passed on to the AI grader. */
+  apCourse?: ApCourseKey;
   concurrency?: number;
   /** Feedback for AI answers that came back without any. */
   defaultFeedback?: string;
@@ -539,6 +543,7 @@ export async function gradeSubmissionAnswers(
       answer: text,
       reference,
       rubric: options.globalRubric || undefined,
+      ...(options.apCourse ? { apCourse: options.apCourse } : {}),
     });
     if (result.usage) {
       usage.inputTokens += result.usage.inputTokens;

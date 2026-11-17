@@ -23,6 +23,7 @@ import {
   type SubmittedAnswer,
 } from "./grading-core";
 import { recordMisconceptionEvents } from "./misconception-events";
+import { nonDefaultApCourse, type ApCourseKey } from "./misconceptions";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
@@ -43,6 +44,7 @@ async function gradeResponseAI(
   studentNames: string[] = [],
   organizationId: string = "",
   reference?: string,
+  apCourse?: ApCourseKey,
 ): Promise<GradeResult> {
   try {
     if (!question || !answer) {
@@ -56,7 +58,7 @@ async function gradeResponseAI(
     }
 
     return await gradeWithModel(
-      { question, answer, rubric, reference },
+      { question, answer, rubric, reference, apCourse },
       async (request) => {
         // Same choke-point rule as callGeminiDirect: nothing leaves unscrubbed (patterns only; roster names
         // were already masked in the inputs and must not hit our own template words). Idempotent, so the
@@ -164,6 +166,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
           studentNames,
           organizationId,
           input.reference,
+          input.apCourse,
         );
     }
   }
@@ -171,6 +174,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
   const result = await gradeSubmissionAnswers(questions, answers, {
     aiGrader,
     globalRubric,
+    apCourse: nonDefaultApCourse(assignmentData?.apCourse),
     concurrency: GRADING_CONCURRENCY,
     defaultFeedback: "Submission received and pending final review.",
   });

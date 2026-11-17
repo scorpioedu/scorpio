@@ -250,3 +250,78 @@ describe("GET /api/teacher/insights", () => {
     }
   });
 });
+
+describe("GET /api/teacher/insights with more than one AP course", () => {
+  beforeEach(() => {
+    // A second class works through AP Physics C: Mechanics; its unit 2 is not AP Physics 1's unit 2.
+    mockStore.misconception_events.push({
+      id: "m1",
+      data: {
+        ...ev({
+          studentId: "st8",
+          submissionId: "s8",
+          assignmentId: "a3",
+          assignmentTitle: "C Mech forces",
+          courseId: "c2",
+          tag: "constant-acceleration-assumed",
+          apCourse: "physics-c-mech",
+          apUnit: 2,
+          apTopic: "2.9",
+        }),
+        teacherId: "t1",
+      },
+    });
+    mockStore.assignments.push({
+      id: "a3",
+      data: {
+        teacherId: "t1",
+        title: "C Mech forces",
+        courseId: "c2",
+        apCourse: "physics-c-mech",
+        apUnit: 2,
+      },
+    });
+    mockStore.submissions.push({
+      id: "sub-st8",
+      data: { assignmentId: "a3", studentId: "st8", status: "graded" },
+    });
+  });
+
+  test("a unit is read with its course; without one it is AP Physics 1", async () => {
+    const p1 = await (await call("?apUnit=2")).json();
+    expect(p1.top.map((t: { tag: string }) => t.tag)).toEqual(["force-implies-motion"]);
+    expect(p1.totals.studentsInScope).toBe(1);
+    const mech = await (await call("?apUnit=2&apCourse=physics-c-mech")).json();
+    expect(mech.filters).toMatchObject({ apUnit: 2, apCourse: "physics-c-mech" });
+    expect(mech.top.map((t: { tag: string }) => t.tag)).toEqual(["constant-acceleration-assumed"]);
+    expect(mech.totals.studentsInScope).toBe(1);
+    expect(mech.byUnit.map((g: { id: string; label: string }) => [g.id, g.label])).toEqual([
+      ["physics-c-mech:2", "AP Physics C: Mechanics · Unit 2: Force and translational dynamics"],
+    ]);
+    const all = await (await call()).json();
+    expect(all.byUnit.map((g: { id: string }) => g.id).sort()).toEqual([
+      "2",
+      "4",
+      "physics-c-mech:2",
+    ]);
+    expect(
+      all.assignments.map((a: { id: string; apCourse: string }) => [a.id, a.apCourse]).sort(),
+    ).toEqual([
+      ["a1", "physics-1"],
+      ["a2", "physics-1"],
+      ["a3", "physics-c-mech"],
+    ]);
+  });
+
+  test("a unit must exist in the course named", async () => {
+    expect((await call("?apUnit=9&apCourse=physics-2")).status).toBe(200);
+    expect((await call("?apCourse=physics-2")).status).toBe(200);
+    for (const q of [
+      "?apUnit=8&apCourse=physics-c-mech",
+      "?apUnit=4&apCourse=physics-2",
+      "?apUnit=2&apCourse=chemistry",
+      "?apCourse=x",
+    ])
+      expect((await call(q)).status).toBe(400);
+  });
+});

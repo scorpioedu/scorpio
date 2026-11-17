@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AP_UNITS, apUnit as findApUnit } from "@/data/ap";
+import { DEFAULT_AP_COURSE, apUnit as findApUnit, apUnitKey, parseApUnitKey } from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import type { AssignmentSettingsValue } from "./types";
 
 export function SettingsFields({
@@ -55,11 +56,16 @@ export function SettingsFields({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="ap-unit">AP Physics 1 unit</Label>
+            <Label htmlFor="ap-unit">AP unit</Label>
             <Select
-              value={value.apUnit ? String(value.apUnit) : "none"}
+              value={value.apUnit ? apUnitKey(value.apCourse, value.apUnit) : "none"}
               onValueChange={(v) => {
-                set({ apUnit: v === "none" ? null : Number(v), apTopics: [] });
+                const chosen = parseApUnitKey(v);
+                set({
+                  apCourse: chosen?.course ?? DEFAULT_AP_COURSE,
+                  apUnit: chosen?.unit ?? null,
+                  apTopics: [],
+                });
               }}
             >
               <SelectTrigger id="ap-unit" className="w-full">
@@ -67,11 +73,7 @@ export function SettingsFields({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Not an AP assignment</SelectItem>
-                {AP_UNITS.map((u) => (
-                  <SelectItem key={u.unit} value={String(u.unit)}>
-                    Unit {u.unit}: {u.title}
-                  </SelectItem>
-                ))}
+                <ApUnitSelectItems />
               </SelectContent>
             </Select>
           </div>
@@ -82,7 +84,7 @@ export function SettingsFields({
                 Used by the misconception report and the Waypoints library filter.
               </p>
               <div className="grid gap-2 pt-1 sm:grid-cols-2">
-                {findApUnit(value.apUnit)?.topics.map((t) => (
+                {findApUnit(value.apUnit, value.apCourse)?.topics.map((t) => (
                   <label key={t.id} className="flex cursor-pointer items-start gap-2 text-sm">
                     <Checkbox
                       className="mt-0.5"

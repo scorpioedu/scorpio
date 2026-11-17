@@ -223,7 +223,7 @@ function CreateAssignmentForm() {
           title,
           description,
           topic: settings.topic,
-          apCourse: settings.apUnit ? "physics-1" : null,
+          apCourse: settings.apUnit ? settings.apCourse : null,
           apUnit: settings.apUnit,
           apTopics: settings.apUnit ? settings.apTopics : [],
           teacherId: user?.uid,

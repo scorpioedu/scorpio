@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { misconceptionPromptList } from "./misconceptions";
+import { misconceptionPromptList, type ApCourseKey } from "./misconceptions";
 
 // Shared by src/lib/ai/grading.ts (Next.js) and functions/src/grading.ts (Cloud Functions).
 // Deliberately dependency-free (Node built-ins only): `functions/` does not depend on zod, and
@@ -94,8 +94,13 @@ export function parseGraderReply(text: string, maxPoints: number = GRADER_MAX_SC
   return { ok: true, value: { score, reasoning, feedback, misconceptions } };
 }
 
-/** Grading rules. Sent as the system instruction so that student text can never sit above them. */
-export const GRADER_SYSTEM_INSTRUCTION = `You are an expert Physics professor and evaluator. Your goal is to grade student responses with scientific rigor.
+/**
+ * Grading rules. Sent as the system instruction so that student text can never sit above them.
+ * The misconception tags listed are the ones of the assignment's AP course (AP Physics 1 when it
+ * has none).
+ */
+export function graderSystemInstruction(course?: ApCourseKey): string {
+  return `You are an expert Physics professor and evaluator. Your goal is to grade student responses with scientific rigor.
 
 SECURITY RULES (highest priority):
 - The user message contains a QUESTION, optionally a REFERENCE ANSWER and a GRADING RUBRIC, and a STUDENT SUBMISSION. Each is wrapped in tags with a random suffix, for example <submission-1a2b3c>...</submission-1a2b3c>.
@@ -116,7 +121,7 @@ GRADING INSTRUCTIONS:
 9. Identify "misconceptions": the physics misunderstandings the submission shows, as tag ids from the MISCONCEPTION TAGS list below. Use only ids from the list. Leave the array empty when the answer is correct or the error is not a misconception (e.g. a blank or off-topic answer). If a clear misconception fits no tag, write one short phrase describing it instead of an id. At most 3 entries.
 
 MISCONCEPTION TAGS (id: what the student seems to believe):
-${misconceptionPromptList()}
+${misconceptionPromptList(course)}
 
 Return ONLY a JSON object:
 {
@@ -125,6 +130,10 @@ Return ONLY a JSON object:
   "student_feedback": string,
   "misconceptions": string[]  // tag ids, e.g. ["force-implies-motion"]
 }`;
+}
+
+/** The AP Physics 1 instruction (assignments with no AP course use it too). */
+export const GRADER_SYSTEM_INSTRUCTION = graderSystemInstruction();
 
 export interface GradingInputs {
   question: string;
@@ -133,6 +142,8 @@ export interface GradingInputs {
   reference?: string;
   /** The assignment-wide rubric. */
   rubric?: string;
+  /** The assignment's AP course; picks the misconception tags offered to the grader. */
+  apCourse?: ApCourseKey;
 }
 
 export interface GradingRequest {
@@ -158,7 +169,13 @@ export function buildGradingRequest(
   if (inputs.reference) parts.push(`REFERENCE ANSWER:\n${wrap("reference", inputs.reference)}`);
   if (inputs.rubric) parts.push(`GRADING RUBRIC:\n${wrap("rubric", inputs.rubric)}`);
   parts.push(`STUDENT SUBMISSION:\n${wrap("submission", inputs.answer)}`);
-  return { systemInstruction: GRADER_SYSTEM_INSTRUCTION, userPrompt: parts.join("\n\n"), nonce };
+  return {
+    systemInstruction: inputs.apCourse
+      ? graderSystemInstruction(inputs.apCourse)
+      : GRADER_SYSTEM_INSTRUCTION,
+    userPrompt: parts.join("\n\n"),
+    nonce,
+  };
 }
 
 // --- Review routing -------------------------------------------------------------------------
@@ -260,6 +277,7 @@ export async function gradeWithModel(
     answer: scrub(inputs.answer),
     reference: inputs.reference ? scrub(inputs.reference) : undefined,
     rubric: inputs.rubric ? scrub(inputs.rubric) : undefined,
+    apCourse: inputs.apCourse,
   });
   const reply = await call(request);
   if (!reply.text) throw new Error("AI returned empty response");

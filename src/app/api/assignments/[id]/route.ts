@@ -30,6 +30,7 @@ export const PATCH = withAuthorizedRequest(
       dueDate,
       title,
       rubric,
+      apCourse,
       apUnit,
       apTopics,
       ...fields
@@ -45,11 +46,11 @@ export const PATCH = withAuthorizedRequest(
       if (title !== undefined) update.title = title;
       if (dueDate !== undefined) update.dueDate = dueDate == null ? null : new Date(dueDate);
       if (archived !== undefined) update.archivedAt = archived ? new Date() : null;
-      if (apUnit !== undefined || apTopics !== undefined)
+      if (apCourse !== undefined || apUnit !== undefined || apTopics !== undefined)
         Object.assign(
           update,
           normaliseApTags({
-            apCourse: current.apCourse,
+            apCourse: apCourse === undefined ? current.apCourse : apCourse,
             apUnit: apUnit === undefined ? current.apUnit : apUnit,
             apTopics: apTopics === undefined ? current.apTopics : apTopics,
           }),

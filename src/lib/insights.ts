@@ -1,7 +1,15 @@
 // Aggregates misconception events (functions/src/misconception-events.ts) into the class
 // misconception report shown at /teacher/insights. Pure: the API route loads the events.
 
-import { apUnitLabel, apTopicLabel, misconceptionTag } from "@/data/ap";
+import {
+  DEFAULT_AP_COURSE,
+  apCourseName,
+  apTopicLabel,
+  apUnitLabel,
+  isApCourseId,
+  misconceptionTag,
+  type ApCourseId,
+} from "@/data/ap";
 
 export interface InsightEvent {
   submissionId: string;
@@ -11,15 +19,40 @@ export interface InsightEvent {
   courseId: string | null;
   questionId: string;
   tag: string;
+  /** The AP course of `apUnit` and `apTopic`. Missing on older events: AP Physics 1. */
+  apCourse?: string | null;
   apUnit: number | null;
   apTopic: string | null;
   final?: boolean;
+}
+
+/** The AP course an event's unit and topic belong to. Events stored without one are AP Physics 1. */
+export function eventCourse(e: Pick<InsightEvent, "apCourse">): ApCourseId {
+  return isApCourseId(e.apCourse) ? e.apCourse : DEFAULT_AP_COURSE;
+}
+
+/**
+ * Id of a unit or topic row. AP Physics 1 keeps the bare number ("4", "4.2"), as before there were
+ * other courses; the others are prefixed ("physics-2:9") so equal numbers never merge.
+ */
+export function courseScopedId(course: ApCourseId, id: string | number): string {
+  return course === DEFAULT_AP_COURSE ? String(id) : `${course}:${id}`;
+}
+
+export function parseCourseScopedId(id: string): { course: ApCourseId; id: string } {
+  const at = id.indexOf(":");
+  const course = at > 0 ? id.slice(0, at) : DEFAULT_AP_COURSE;
+  return isApCourseId(course) && at > 0
+    ? { course, id: id.slice(at + 1) }
+    : { course: DEFAULT_AP_COURSE, id };
 }
 
 export interface InsightFilters {
   courseId?: string;
   assignmentId?: string;
   apUnit?: number;
+  /** The course `apUnit` is a unit of (default AP Physics 1). Alone, it keeps that course's events. */
+  apCourse?: ApCourseId;
   /** Include submissions still waiting for teacher review. Default true. */
   includePending?: boolean;
 }
@@ -74,7 +107,11 @@ export function filterEvents(events: InsightEvent[], f: InsightFilters): Insight
     (e) =>
       (!f.courseId || e.courseId === f.courseId) &&
       (!f.assignmentId || e.assignmentId === f.assignmentId) &&
-      (f.apUnit === undefined || e.apUnit === f.apUnit) &&
+      (f.apUnit === undefined ||
+        (e.apUnit === f.apUnit && eventCourse(e) === (f.apCourse ?? DEFAULT_AP_COURSE))) &&
+      (f.apCourse === undefined ||
+        f.apUnit !== undefined ||
+        (e.apUnit != null && eventCourse(e) === f.apCourse)) &&
       (f.includePending !== false || e.final !== false),
   );
 }
@@ -128,6 +165,11 @@ export function buildInsightsReport(
   const students = new Set(events.map((e) => e.studentId));
   const denominator = Math.max(context.studentsInScope ?? 0, students.size);
 
+  // With more than one AP course in view, every unit and topic says which course it is.
+  const courses = new Set(events.filter((e) => e.apUnit != null).map(eventCourse));
+  const named = (course: ApCourseId, text: string) =>
+    courses.size > 1 || course !== DEFAULT_AP_COURSE ? `${apCourseName(course)} · ${text}` : text;
+
   const byTag = new Map<string, InsightEvent[]>();
   for (const e of events) {
     if (!byTag.has(e.tag)) byTag.set(e.tag, []);
@@ -147,8 +189,9 @@ export function buildInsightsReport(
       a.students.add(e.studentId);
       perAssignment.set(e.assignmentId, a);
       if (e.apTopic) {
-        if (!perTopic.has(e.apTopic)) perTopic.set(e.apTopic, new Set());
-        perTopic.get(e.apTopic)!.add(e.studentId);
+        const topicKey = courseScopedId(eventCourse(e), e.apTopic);
+        if (!perTopic.has(topicKey)) perTopic.set(topicKey, new Set());
+        perTopic.get(topicKey)!.add(e.studentId);
       }
     }
     return {
@@ -167,7 +210,15 @@ export function buildInsightsReport(
         .map(([id, a]) => ({ id, title: a.title, studentCount: a.students.size }))
         .sort((a, b) => b.studentCount - a.studentCount),
       topics: [...perTopic.entries()]
-        .map(([id, s]) => ({ id, label: apTopicLabel(id), studentCount: s.size }))
+        .map(([id, s]) => {
+          const topic = parseCourseScopedId(id);
+          const text = apTopicLabel(topic.id, topic.course);
+          return {
+            id,
+            label: courses.size > 1 ? `${text} (${apCourseName(topic.course)})` : text,
+            studentCount: s.size,
+          };
+        })
         .sort((a, b) => b.studentCount - a.studentCount || a.id.localeCompare(b.id)),
     };
   });
@@ -196,8 +247,11 @@ export function buildInsightsReport(
     ),
     byUnit: groups(
       events,
-      (e) => (e.apUnit ? String(e.apUnit) : null),
-      (id) => apUnitLabel(Number(id)),
+      (e) => (e.apUnit ? courseScopedId(eventCourse(e), e.apUnit) : null),
+      (id) => {
+        const unit = parseCourseScopedId(id);
+        return named(unit.course, apUnitLabel(Number(unit.id), unit.course));
+      },
     ),
     byClass: groups(
       events,

@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
 import { adminDb } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
-import { buildInsightsReport, type InsightEvent, type InsightFilters } from "@/lib/insights";
+import {
+  buildInsightsReport,
+  filterEvents,
+  type InsightEvent,
+  type InsightFilters,
+} from "@/lib/insights";
+import { DEFAULT_AP_COURSE, apUnit, isApCourseId } from "@/data/ap";
 import { MISCONCEPTION_EVENTS } from "../../../../../functions/src/misconception-events";
 
 // The class misconception report. Events are server-only (no Firestore rule exposes them), so
@@ -29,9 +35,17 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         return NextResponse.json({ error: "Invalid assignment" }, { status: 400 });
       filters.assignmentId = assignmentId;
     }
+    // Unit numbers repeat between AP courses, so a unit is read with its course (AP Physics 1 when
+    // none is sent, which is what every link saved before there were other courses means).
+    const course = params.get("apCourse");
+    if (course) {
+      if (!isApCourseId(course))
+        return NextResponse.json({ error: "Invalid AP course" }, { status: 400 });
+      filters.apCourse = course;
+    }
     if (unit) {
       const n = Number(unit);
-      if (!Number.isInteger(n) || n < 1 || n > 8)
+      if (!Number.isInteger(n) || !apUnit(n, filters.apCourse ?? DEFAULT_AP_COURSE))
         return NextResponse.json({ error: "Invalid AP unit" }, { status: 400 });
       filters.apUnit = n;
     }
@@ -47,7 +61,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
       adminDb
         .collection("assignments")
         .where("teacherId", "==", caller.uid)
-        .select("title", "courseId", "apUnit", "apTopics", "createdAt")
+        .select("title", "courseId", "apCourse", "apUnit", "apTopics", "createdAt")
         .get(),
     ]);
 
@@ -63,10 +77,19 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         id: d.id,
         title: typeof a.title === "string" ? a.title : "Untitled assignment",
         courseId: typeof a.courseId === "string" ? a.courseId : null,
+        apCourse:
+          typeof a.apUnit === "number"
+            ? isApCourseId(a.apCourse)
+              ? a.apCourse
+              : DEFAULT_AP_COURSE
+            : null,
         apUnit: typeof a.apUnit === "number" ? a.apUnit : null,
         createdAt: a.createdAt?.toMillis?.() ?? 0,
       };
     });
+
+    // Events of the chosen unit or course, whatever the class or assignment.
+    const inUnit = filterEvents(events, { apUnit: filters.apUnit, apCourse: filters.apCourse });
 
     // Denominator: students with graded work in scope, so "8 of 24 students" is honest.
     const scopeAssignments = assignments
@@ -74,9 +97,10 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         (a) =>
           (!filters.courseId || a.courseId === filters.courseId) &&
           (!filters.assignmentId || a.id === filters.assignmentId) &&
-          (filters.apUnit === undefined ||
-            a.apUnit === filters.apUnit ||
-            events.some((e) => e.assignmentId === a.id && e.apUnit === filters.apUnit)),
+          ((filters.apUnit === undefined && filters.apCourse === undefined) ||
+            ((filters.apUnit === undefined || a.apUnit === filters.apUnit) &&
+              a.apCourse === (filters.apCourse ?? DEFAULT_AP_COURSE)) ||
+            inUnit.some((e) => e.assignmentId === a.id)),
       )
       .sort((x, y) => y.createdAt - x.createdAt)
       .slice(0, MAX_SCOPE_ASSIGNMENTS);
@@ -101,14 +125,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
     // Names only for the students the report will list.
     const filteredStudentIds = [
       ...new Set(
-        events
-          .filter(
-            (e) =>
-              (!filters.courseId || e.courseId === filters.courseId) &&
-              (!filters.assignmentId || e.assignmentId === filters.assignmentId) &&
-              (filters.apUnit === undefined || e.apUnit === filters.apUnit),
-          )
-          .map((e) => e.studentId),
+        filterEvents(events, { ...filters, includePending: true }).map((e) => e.studentId),
       ),
     ].slice(0, MAX_NAMED_STUDENTS);
     const names: Record<string, string> = {};

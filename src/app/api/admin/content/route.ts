@@ -5,11 +5,21 @@ import { errorResponse } from "@/lib/api-errors";
 import { parseJsonBody } from "@/lib/api-schema";
 import { contentReviewBody } from "@/lib/schemas/api-bodies";
 import { validateDraftProblem } from "@/lib/content/problem-format";
-import { CONTENT_DRAFTS, serialiseDraft, type DraftStatus } from "@/lib/content/drafts";
+import {
+  CONTENT_DRAFTS,
+  draftCourse,
+  serialiseDraft,
+  type DraftStatus,
+} from "@/lib/content/drafts";
+import { DEFAULT_AP_COURSE, apUnit, isApCourseId } from "@/data/ap";
 
 const STATUSES: DraftStatus[] = ["draft", "approved", "rejected", "published"];
 
-/** GET /api/admin/content?status=&apUnit= : drafts for the review screen, newest first. */
+/**
+ * GET /api/admin/content?status=&apUnit=&apCourse= : drafts for the review screen, newest first.
+ * A unit is read with its course (AP Physics 1 when none is sent); drafts stored without a course
+ * are AP Physics 1.
+ */
 async function handleList(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const status = req.nextUrl.searchParams.get("status");
@@ -20,14 +30,20 @@ async function handleList(req: NextRequest, { requestId }: AuthorizedContext) {
         return NextResponse.json({ error: "Invalid status" }, { status: 400 });
       q = q.where("status", "==", status);
     }
+    const courseParam = req.nextUrl.searchParams.get("apCourse");
+    if (courseParam && !isApCourseId(courseParam))
+      return NextResponse.json({ error: "Invalid AP course" }, { status: 400 });
+    const course = isApCourseId(courseParam) ? courseParam : null;
     if (unit) {
       const n = Number(unit);
-      if (!Number.isInteger(n) || n < 1 || n > 8)
+      if (!Number.isInteger(n) || !apUnit(n, course ?? DEFAULT_AP_COURSE))
         return NextResponse.json({ error: "Invalid AP unit" }, { status: 400 });
       q = q.where("apUnit", "==", n);
     }
-    const snap = await q.limit(500).get();
+    const snap = await q.limit(2000).get();
+    const wanted = course ?? (unit ? DEFAULT_AP_COURSE : null);
     const drafts = snap.docs
+      .filter((d) => !wanted || draftCourse(d.data()) === wanted)
       .map((d) => serialiseDraft(d.id, d.data()))
       .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
     return NextResponse.json({ drafts });
@@ -62,7 +78,7 @@ async function handleReview(req: NextRequest, { caller, requestId }: AuthorizedC
     };
     if (action === "save" || action === "approve") {
       const candidate = problem ?? current.problem;
-      const v = validateDraftProblem(candidate, current.apTopic);
+      const v = validateDraftProblem(candidate, current.apTopic, draftCourse(current));
       if (problem) {
         update.edited = true;
         update.errors = v.errors;

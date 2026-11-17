@@ -15,7 +15,19 @@ import {
 } from "lucide-react";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { AP_UNITS, apTopicLabel, apUnit as findUnit, MISCONCEPTION_TAGS } from "@/data/ap";
+import {
+  DEFAULT_AP_COURSE,
+  apCourseName,
+  apCourseOf,
+  apTopicLabel,
+  apUnit as findUnit,
+  apUnitKey,
+  misconceptionTag,
+  misconceptionsForCourse,
+  parseApUnitKey,
+  type ApCourseId,
+} from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import type { DraftProblem } from "@/lib/content/problem-format";
 import type { DraftStatus } from "@/lib/content/drafts";
 import { Button } from "@/components/ui/button";
@@ -38,6 +50,8 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 
 interface Draft {
   id: string;
+  /** The AP course of `apUnit` and `apTopic`; drafts stored without one are AP Physics 1. */
+  course?: string;
   apUnit: number;
   apTopic: string;
   status: DraftStatus;
@@ -53,9 +67,20 @@ interface Draft {
   assignmentId?: string | null;
 }
 
-const TAG_OPTIONS = MISCONCEPTION_TAGS.filter(
-  (t) => t.category === "conceptual" && t.id !== "other",
-);
+/**
+ * The misconceptions a reviewer can pick for a draft: the conceptual tags of its course, plus any
+ * tag already on the draft (so one from another course still shows and can be changed).
+ */
+function tagOptions(course: ApCourseId, used: string[]) {
+  const own = misconceptionsForCourse(course).filter(
+    (t) => t.category === "conceptual" && t.id !== "other",
+  );
+  const extra = [...new Set(used)]
+    .filter((id) => !own.some((t) => t.id === id))
+    .map((id) => misconceptionTag(id))
+    .filter((t) => !!t);
+  return [...own, ...extra];
+}
 
 function emptyProblem(d: Draft): DraftProblem {
   return {
@@ -72,6 +97,11 @@ function emptyProblem(d: Draft): DraftProblem {
 
 function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) => void }) {
   const [p, setP] = useState<DraftProblem>(draft.problem ?? emptyProblem(draft));
+  const course = apCourseOf(draft.course);
+  const TAG_OPTIONS = tagOptions(
+    course,
+    p.distractors.map((d) => d.misconception),
+  );
   const [note, setNote] = useState(draft.reviewNote ?? "");
   const [busy, setBusy] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>(draft.errors);
@@ -120,7 +150,10 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
     <Card className="gap-0 py-0">
       <CardHeader className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
         <div className="space-y-1">
-          <CardTitle className="text-base">{apTopicLabel(draft.apTopic)}</CardTitle>
+          <CardTitle className="text-base">
+            {course !== DEFAULT_AP_COURSE && `${apCourseName(course)} · `}
+            {apTopicLabel(draft.apTopic, course)}
+          </CardTitle>
           <CardDescription className="flex flex-wrap items-center gap-2 text-xs">
             <Badge variant="outline">{p.type === "numeric" ? "Numeric" : "Multiple choice"}</Badge>
             <Badge variant="outline">{p.difficulty}</Badge>
@@ -483,7 +516,9 @@ export default function ContentReviewPage() {
   );
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(false);
+  // "4" is AP Physics 1 Unit 4; other courses are prefixed ("physics-2:9").
   const [unit, setUnit] = useState("4");
+  const chosen = parseApUnitKey(unit) ?? { course: DEFAULT_AP_COURSE, unit: 4 };
   const [topic, setTopic] = useState("4.1");
   const [count, setCount] = useState(3);
   const [generating, setGenerating] = useState(false);
@@ -517,7 +552,7 @@ export default function ContentReviewPage() {
       const res = await authenticatedFetch("/api/admin/content/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apTopic: topic, count }),
+        body: JSON.stringify({ apCourse: chosen.course, apTopic: topic, count }),
       });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Generation failed");
@@ -556,7 +591,12 @@ export default function ContentReviewPage() {
   };
 
   const selectedUnits = useMemo(
-    () => new Set(drafts.filter((d) => selected.includes(d.id)).map((d) => d.apUnit)),
+    () =>
+      new Set(
+        drafts
+          .filter((d) => selected.includes(d.id))
+          .map((d) => apUnitKey(apCourseOf(d.course), d.apUnit)),
+      ),
     [drafts, selected],
   );
 
@@ -593,18 +633,14 @@ export default function ContentReviewPage() {
               value={unit}
               onValueChange={(v) => {
                 setUnit(v);
-                setTopic(`${v}.1`);
+                setTopic(`${parseApUnitKey(v)?.unit ?? 4}.1`);
               }}
             >
               <SelectTrigger id="gen-unit" className="w-60">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {AP_UNITS.map((u) => (
-                  <SelectItem key={u.unit} value={String(u.unit)}>
-                    Unit {u.unit}: {u.title}
-                  </SelectItem>
-                ))}
+                <ApUnitSelectItems />
               </SelectContent>
             </Select>
           </div>
@@ -615,7 +651,7 @@ export default function ContentReviewPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {findUnit(Number(unit))?.topics.map((t) => (
+                {findUnit(chosen.unit, chosen.course)?.topics.map((t) => (
                   <SelectItem key={t.id} value={t.id}>
                     {t.id} {t.title}
                   </SelectItem>

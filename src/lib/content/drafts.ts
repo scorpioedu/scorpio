@@ -2,6 +2,7 @@
 // rule exposes it). Shared by the admin content API routes.
 
 import { model } from "@/lib/ai/config";
+import { DEFAULT_AP_COURSE, isApCourseId, type ApCourseId } from "@/data/ap";
 import type { ModelCall } from "./problem-generator";
 import type { DraftProblem } from "./problem-format";
 
@@ -10,7 +11,8 @@ export const CONTENT_DRAFTS = "content_drafts";
 export type DraftStatus = "draft" | "approved" | "rejected" | "published";
 
 export interface ContentDraft {
-  course: "physics-1";
+  /** The AP course `apUnit` and `apTopic` belong to. */
+  course: ApCourseId;
   apUnit: number;
   apTopic: string;
   status: DraftStatus;
@@ -31,6 +33,11 @@ export interface ContentDraft {
   /** "ai": an AI solved and approved it; a person must approve it again before it can go live. */
   reviewKind?: "human" | "ai" | null;
   assignmentId?: string | null;
+}
+
+/** The AP course a stored draft belongs to. Drafts written before there were other courses: AP Physics 1. */
+export function draftCourse(draft: { course?: unknown } | undefined | null): ApCourseId {
+  return isApCourseId(draft?.course) ? draft.course : DEFAULT_AP_COURSE;
 }
 
 /** Gemini through the app's single provider choke point (PII scrub, budget, timeouts). */

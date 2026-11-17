@@ -1,8 +1,12 @@
 // The format AI-drafted AP problems take, and the server-side checks every draft must pass before a
 // person can approve it. Pure (no AI, no Firestore) so the review API and tests share it.
 
-import { apTopic, isApTopicId } from "@/data/ap";
-import { MISCONCEPTION_IDS, misconceptionTag } from "../../../functions/src/misconceptions";
+import { DEFAULT_AP_COURSE, apTopic, isApTopicId, type ApCourseId } from "@/data/ap";
+import {
+  MISCONCEPTION_IDS,
+  misconceptionTag,
+  misconceptionUnits,
+} from "../../../functions/src/misconceptions";
 import {
   checkChoice,
   checkNumeric,
@@ -48,12 +52,16 @@ const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice
  * Checks a drafted (or reviewer-edited) problem. Distractors with unknown tags, or that the grader
  * would mark correct, are dropped with a warning rather than failing the whole draft.
  */
-export function validateDraftProblem(raw: unknown, topicId: string): ValidationResult {
+export function validateDraftProblem(
+  raw: unknown,
+  topicId: string,
+  course: ApCourseId = DEFAULT_AP_COURSE,
+): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   if (!raw || typeof raw !== "object") return { errors: ["Not an object"], warnings };
   const r = raw as Record<string, unknown>;
-  if (!isApTopicId(topicId)) errors.push(`Unknown AP topic ${topicId}`);
+  if (!isApTopicId(topicId, course)) errors.push(`Unknown AP topic ${topicId}`);
 
   const text = str(r.text, MAX_TEXT);
   if (text.length < 20) errors.push("Problem text is missing or too short");
@@ -99,7 +107,9 @@ export function validateDraftProblem(raw: unknown, topicId: string): ValidationR
   const distractors: DraftProblem["distractors"] = [];
   if (Array.isArray(r.distractors)) {
     for (const d of r.distractors.slice(0, 10)) {
-      const answer = str((d as Record<string, unknown>)?.answer, 300);
+      // The model sometimes names a multiple-choice distractor "option" instead of "answer".
+      const entry = (d ?? {}) as Record<string, unknown>;
+      const answer = str(entry.answer ?? entry.option, 300);
       const misconception = str((d as Record<string, unknown>)?.misconception, 80);
       if (!answer || !MISCONCEPTION_IDS.has(misconception) || misconception === "other") {
         warnings.push(
@@ -110,6 +120,9 @@ export function validateDraftProblem(raw: unknown, topicId: string): ValidationR
       distractors.push({ answer, misconception });
     }
   }
+  // Problem text and options reach students as written; LaTeX commands would show as backslashes.
+  if ([text, ...(options ?? [])].some((t) => /\\[a-zA-Z]+/.test(t)))
+    warnings.push("The text or an option contains LaTeX; write the mathematics as plain text");
   if (errors.length || !type) return { errors, warnings };
 
   const question: GradableQuestion = {
@@ -141,10 +154,12 @@ export function validateDraftProblem(raw: unknown, topicId: string): ValidationR
   if (type === "multiple-choice" && kept.length < options!.length - 1)
     warnings.push("Some wrong options have no misconception tag");
 
-  const unit = apTopic(topicId)?.unit;
+  const unit = apTopic(topicId, course)?.unit;
   for (const d of kept) {
-    const tagUnits = misconceptionTag(d.misconception)?.units ?? [];
-    if (unit && tagUnits.length && !tagUnits.includes(unit))
+    const tag = misconceptionTag(d.misconception);
+    // null: the tag belongs to another course altogether; it is flagged like a wrong unit.
+    const tagUnits = tag ? misconceptionUnits(tag, course) : [];
+    if (unit && (tagUnits === null || (tagUnits.length && !tagUnits.includes(unit))))
       warnings.push(
         `"${d.misconception}" is not usually a Unit ${unit} misconception; check it fits`,
       );

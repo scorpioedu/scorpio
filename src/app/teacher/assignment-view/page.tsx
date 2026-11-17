@@ -315,7 +315,8 @@ function AssignmentHub() {
       "allowCalculator",
     ] as const)
       if (s[key] !== o[key]) (patch as Record<string, unknown>)[key] = s[key];
-    if (s.apUnit !== o.apUnit || !sameJson(s.apTopics, o.apTopics)) {
+    if (s.apUnit !== o.apUnit || s.apCourse !== o.apCourse || !sameJson(s.apTopics, o.apTopics)) {
+      (patch as Record<string, unknown>).apCourse = s.apCourse;
       (patch as Record<string, unknown>).apUnit = s.apUnit;
       (patch as Record<string, unknown>).apTopics = s.apUnit ? s.apTopics : [];
     }

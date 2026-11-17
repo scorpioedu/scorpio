@@ -44,7 +44,8 @@ import {
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
-import { AP_UNITS, apUnitLabel } from "@/data/ap";
+import { apCourseName, apCourseOf, apUnitLabel, parseApUnitKey } from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
 import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
 
@@ -72,6 +73,7 @@ interface Waypoint {
   createdAt: Date;
   topic?: string;
   forkCount?: number;
+  apCourse?: string | null;
   apUnit?: number | null;
   apTopics?: string[];
 }
@@ -93,6 +95,8 @@ export default function WaypointsPage() {
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<"network-share">("network-share");
 
+  // The compiler cannot keep this callback's memoization (it reads profile?.organizationId).
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const fetchWaypoints = useCallback(async () => {
     if (!user || authLoading) return;
     setLoading(true);
@@ -158,6 +162,8 @@ export default function WaypointsPage() {
 
   useEffect(() => {
     if (user && !authLoading) {
+      // Loads the library for the chosen tab and topic once the account is known.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchWaypoints();
     }
   }, [user, authLoading, fetchWaypoints]);
@@ -205,7 +211,10 @@ export default function WaypointsPage() {
       (a.description || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     if (activeTab === "network" && !a.organizationId) return false;
-    if (apUnitFilter !== "all" && a.apUnit !== Number(apUnitFilter)) return false;
+    // A unit filter names a course too: Unit 2 of AP Physics 1 is not Unit 2 of C: Mechanics.
+    const wanted = apUnitFilter === "all" ? null : parseApUnitKey(apUnitFilter);
+    if (wanted && (a.apUnit !== wanted.unit || apCourseOf(a.apCourse) !== wanted.course))
+      return false;
 
     return matchesSearch;
   });
@@ -222,9 +231,9 @@ export default function WaypointsPage() {
             <div>
               <span className="font-semibold text-foreground">Free Plan:</span>
               <span className="text-muted-foreground ml-1.5">
-                Every global waypoint, auto-grading and the misconception report are free.
-                A Department License adds department waypoints, sharing across your school and
-                higher AI limits.
+                Every global waypoint, auto-grading and the misconception report are free. A
+                Department License adds department waypoints, sharing across your school and higher
+                AI limits.
               </span>
             </div>
           </div>
@@ -338,7 +347,7 @@ export default function WaypointsPage() {
 
         <Select value={apUnitFilter} onValueChange={setApUnitFilter}>
           <SelectTrigger
-            aria-label="AP Physics 1 unit"
+            aria-label="AP unit"
             className="cursor-pointer w-full sm:w-56 data-[size=default]:h-12 bg-background dark:bg-background border-border"
           >
             <div className="flex min-w-0 items-center gap-2">
@@ -350,11 +359,7 @@ export default function WaypointsPage() {
             <SelectItem value="all" className="cursor-pointer">
               All AP units
             </SelectItem>
-            {AP_UNITS.map((u) => (
-              <SelectItem key={u.unit} value={String(u.unit)} className="cursor-pointer">
-                Unit {u.unit}: {u.title}
-              </SelectItem>
-            ))}
+            <ApUnitSelectItems itemClassName="cursor-pointer" />
           </SelectContent>
         </Select>
 
@@ -498,7 +503,10 @@ export default function WaypointsPage() {
                             </Badge>
                             {typeof waypoint.apUnit === "number" && (
                               <Badge variant="outline" className="text-[10px]">
-                                AP 1 · {apUnitLabel(waypoint.apUnit)}
+                                {apCourseOf(waypoint.apCourse) === "physics-1"
+                                  ? "AP 1"
+                                  : apCourseName(apCourseOf(waypoint.apCourse))}{" "}
+                                · {apUnitLabel(waypoint.apUnit, apCourseOf(waypoint.apCourse))}
                               </Badge>
                             )}
                             {waypoint.topic && (

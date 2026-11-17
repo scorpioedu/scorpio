@@ -8,6 +8,9 @@ export {
   MISCONCEPTION_TAGS,
   MISCONCEPTION_IDS,
   misconceptionTag,
+  misconceptionUnits,
+  misconceptionsForCourse,
+  misconceptionsForUnit,
   type MisconceptionTag,
 } from "../../../functions/src/misconceptions";
 
@@ -98,6 +101,27 @@ export function apUnitLabel(unit: number, course: ApCourseId = DEFAULT_AP_COURSE
 export function apTopicLabel(id: string, course: ApCourseId = DEFAULT_AP_COURSE): string {
   const t = apTopic(id, course);
   return t ? `${t.id} ${t.title}` : id;
+}
+
+/**
+ * One value for "a unit of a course", for pickers and filters that list every course's units.
+ * AP Physics 1 keeps the bare number ("4"), so values saved before there were other courses still
+ * work; the others are prefixed ("physics-2:9").
+ */
+export function apUnitKey(course: ApCourseId, unit: number): string {
+  return course === DEFAULT_AP_COURSE ? String(unit) : `${course}:${unit}`;
+}
+
+export function parseApUnitKey(key: string): { course: ApCourseId; unit: number } | null {
+  const at = key.indexOf(":");
+  const course = at < 0 ? DEFAULT_AP_COURSE : key.slice(0, at);
+  const unit = Number(at < 0 ? key : key.slice(at + 1));
+  return isApCourseId(course) && apUnit(unit, course) ? { course, unit } : null;
+}
+
+/** What a stored assignment's `apCourse` means: anything unknown or missing is AP Physics 1. */
+export function apCourseOf(value: unknown): ApCourseId {
+  return isApCourseId(value) ? value : DEFAULT_AP_COURSE;
 }
 
 export interface ApTags {
