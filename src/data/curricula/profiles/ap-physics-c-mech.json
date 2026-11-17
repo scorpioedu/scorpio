@@ -562,5 +562,93 @@
         "problems": 1
       }
     ]
+  },
+  "6A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "6B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 1
+      }
+    ]
+  },
+  "6C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "angular-momentum-not-conserved",
+        "problems": 3
+      }
+    ]
+  },
+  "6D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "rolling-ignores-rotation",
+        "problems": 2
+      },
+      {
+        "tag": "angular-momentum-not-conserved",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
+        "problems": 1
+      }
+    ]
   }
 }

@@ -7,10 +7,10 @@ Sprint 3. **Waypoints** is still the library of single sets (global, department,
 | Course | `curriculumId` | State |
 |---|---|---|
 | AP Physics 1 | `ap-physics-1` | Complete: 8 units × 4 sets × 5 problems = 32 sets, 160 problems (1A–8D). All are AI-reviewed only and need a person's approval before they can go live; see [units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md) and [units-1-3-7-8-review.md](../content/ap-physics-1/units-1-3-7-8-review.md). In the Firenook emulator all 32 sets are published and tagged. |
-| AP Physics 2 | `ap-physics-2` | **Planned.** Outline only: units 9–15, 28 sets (9A–15D), no problems written. |
-| AP Physics C: Mechanics | `ap-physics-c-mech` | **Planned.** Outline only: units 1–7, 28 sets (1A–7D), no problems written. |
+| AP Physics 2 | `ap-physics-2` | Complete: 7 units (9–15) × 4 sets × 5 problems = 28 sets, 140 problems (9A–15D). AI-reviewed only; see [units-9-15-review.md](../content/ap-physics-2/units-9-15-review.md). Published and tagged in the Firenook emulator. |
+| AP Physics C: Mechanics | `ap-physics-c-mech` | Complete: 7 units (1–7) × 4 sets × 5 problems = 28 sets, 140 problems (1A–7D), calculus-based. AI-reviewed only; see [units-1-7-review.md](../content/ap-physics-c-mech/units-1-7-review.md). Published and tagged in the Firenook emulator. |
 
-A planned course shows on `/teacher/courses` with a "Planned" badge; its roadmap and unit guides can be read, but nothing can be previewed, assigned or followed until sets are published. AP Physics C: Electricity and Magnetism is not outlined yet.
+Every problem in all three courses still needs a person's check before it can go live: the AI review found wrong keys in each course (the review logs list them), and it can miss others. A course whose sets have no problems yet would show on `/teacher/courses` with a "Planned" badge (none does now). AP Physics C: Electricity and Magnetism is not outlined yet.
 
 **Naming.** In code, "course" already means a *class* (`courses` collection, `courseId`, `ownsCourse`) and `apCourse` is the AP subject. The new concept is `curriculum` / `curriculumId` in code and "Courses" in the UI.
 
@@ -18,14 +18,16 @@ A planned course shows on `/teacher/courses` with a "Planned" badge; its roadmap
 
 | What | Where |
 |---|---|
-| Course definition | `src/data/curricula/ap-physics-1.json`, helpers in `src/data/curricula/index.ts` |
+| Course definition | `src/data/curricula/<id>.json` (`ap-physics-1`, `ap-physics-2`, `ap-physics-c-mech`), helpers in `src/data/curricula/index.ts` |
 | Roadmap state (availability, assigned, next unit, draft states) | `src/lib/curriculum-roadmap.ts` |
 | A class's order and skipped sets | `src/lib/curriculum-plan.ts` |
 | Days off and school-day tests | `src/lib/school-calendar.ts` |
 | Pacing guide, bulk due-date moves | `src/lib/course-pacing.ts` |
 | Class progress, re-teach suggestions | `src/lib/course-progress.ts` |
 | Student dashboard roadmap | `src/lib/student-roadmap.ts` |
-| Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `tools/curriculum-profile.cjs` |
+| Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `src/data/curricula/profiles/<id>.json`, `tools/curriculum-profile.cjs` |
+| Reviewed problems (exported drafts) and review logs | `content/<id>/` |
+| Misconception tags per course | `functions/src/misconceptions.ts` (`misconceptionUnits`, `misconceptionsForUnit`) |
 | Copy sets into a class with due dates | `src/lib/assign-sets.ts` (used by `/teacher/welcome` and `/teacher/courses`) |
 | Browser reads | `src/lib/curriculum-client.ts` |
 | Student grouping | `src/lib/student-grouping.ts` |
@@ -55,27 +57,29 @@ Unit numbers and topic ids repeat between courses: AP Physics 1 and AP Physics C
 - **A set key only means something with its `curriculumId`.** The roadmap, class progress and the student views ignore a class assignment whose `curriculumId` is another course (older copies without one still count). `GET /api/teacher/courses/progress` takes an optional `curriculumId`.
 - **A class follows one course at a time.** Viewing another course offers "Switch to …"; switching keeps every assignment.
 
-**Adding a course:** add `src/data/ap/<course>.json` and register it in `AP_COURSES`; add `src/data/curricula/<id>.json` with its `apCourse` and register it in `CURRICULA` (and its profile in `profiles.ts` once it has content).
+- **Misconception tags belong to courses.** `functions/src/misconceptions.ts` keeps one list. A tag's `units` are its AP Physics 1 units; `courseUnits` holds the other courses; `misconceptionUnits(tag, course)` is the only place that reads them (`[]` = any unit, `null` = not a tag of that course). AP Physics 2 has 66 tags of its own for units 9–15 (thermodynamics, electricity, circuits, magnetism, optics, waves, modern physics) and borrows four mechanics ideas that carry over. AP Physics C: Mechanics reuses the mechanics tags under the same unit numbers (its units 1–7 match Physics 1 units 1–7; the fluids tags are left out) and adds three that only show up with calculus (`constant-acceleration-assumed`, `derivative-integral-confusion`, `rolling-ignores-rotation`). The AI grader is offered the tags of the assignment's course.
+- **Misconception events carry the course.** Each row in `misconception_events` stores `apCourse` with its `apUnit` and `apTopic` (null when there is no unit). Rows written before this have no `apCourse` and mean AP Physics 1. `/teacher/insights` groups "By AP unit" per course ("AP Physics C: Mechanics · Unit 2: …" never merges with Physics 1's Unit 2; a report with only Physics 1 work reads as before), the unit filter lists every course's units, and `GET /api/teacher/insights` takes `apCourse` with `apUnit` (no course = AP Physics 1). A class's unit insights on `/teacher/courses` count only events of the course it follows.
+- **The content pipeline takes the course.** `POST /api/admin/content/generate { apCourse?, apTopic, count }` (default AP Physics 1); drafts store `course`; the prompts name the course, and only C: Mechanics is told to use calculus; a draft is validated against its own course's topics and tags; publish sets the assignment's `apCourse` from the course definition and refuses drafts written for another course. See [content-pipeline.md](content-pipeline.md).
+- **Unit pickers list every course.** The create page, the Waypoints filter, the insights filter and the admin content page use one grouped picker (`src/components/ap-unit-select-items.tsx`). Its values are `apUnitKey(course, unit)`: the bare number for AP Physics 1 ("4"), prefixed otherwise ("physics-2:9").
 
-**Still AP Physics 1 only.** These must be generalised before problems can be written or published for the two planned courses (none of them affects AP Physics 1):
+**Adding a course:** add `src/data/ap/<course>.json` and register it in `AP_COURSES` and in `AP_COURSE_KEYS` / `AP_COURSE_UNIT_RANGE` (`functions/src/misconceptions.ts`; a test keeps the two in step); give its units misconception tags (`courseUnits`); add a line for it in `COURSE_METHODS` (`src/lib/content/problem-generator.ts`); add `src/data/curricula/<id>.json` with its `apCourse` and register it in `CURRICULA`; once it has content, export the drafts to `content/<id>/`, run `node tools/curriculum-profile.cjs --id <id> --write` and register the profile in `profiles.ts`, and list the export file in `CONTENT_FILES` (`src/app/admin/content/sets-panel.tsx`).
+
+**Still AP Physics 1 only.** None of these blocks the other courses; each is a place where a teacher of another course gets less:
 
 | Where | What is fixed to Physics 1 |
 |---|---|
-| `functions/src/misconceptions.ts` | The 37 conceptual tags are mechanics, mapped to Physics 1 unit numbers. Physics 2 needs its own tags (thermodynamics, electricity, magnetism, optics, waves, modern physics); C: Mechanics can reuse the mechanics tags but its unit numbers differ |
-| `functions/src/misconception-events.ts` | Events store `apUnit` (1–8) and `apTopic` with no course, so unit 2 of two courses would merge in `/teacher/insights`. Add `apCourse` to events, then label and filter by it in `src/lib/insights.ts` and the insights route (`apUnit` 1–8 check) |
-| `src/lib/content/problem-generator.ts`, `/api/admin/content/generate`, `src/lib/content/drafts.ts` | Prompts say "AP Physics 1 … no calculus"; drafts are typed `course: "physics-1"`; the admin page lists Physics 1 units |
-| `src/lib/schemas/api-bodies.ts` | `apCourse` enum is `["physics-1"]`, `apUnit` max 8, topic id regex `[1-8].n` |
-| `/api/admin/content/publish` | Does not set `apCourse` from the course definition |
-| `src/app/teacher/create/page.tsx`, `/teacher/waypoints`, `/teacher/welcome` | Unit pickers and filters list Physics 1 units; the first-run page offers only AP Physics 1 |
-| `src/app/admin/content/sets-panel.tsx` | Shows the first course only |
+| `/teacher/welcome` (`src/app/teacher/welcome/page-client.tsx`, `countByUnit` in `src/lib/first-run.ts`) | The first-run page offers only AP Physics 1 sets and creates the class following AP Physics 1. A teacher of another course picks it on `/teacher/courses` afterwards |
+| `src/app/features/page.tsx` | The marketing page lists AP Physics 1 units |
+| `tools/grading-eval/cases.json` | The 50 labelled grading cases are AP Physics 1 answers; free-response grading of Physics 2 or C: Mechanics answers has not been measured |
+| Answer units | The numeric checker has no Celsius unit and does not know spelled-out prefixes ("micrograms"). Such answers are keyed as a plain number with "Give your answer in …" in the question (the Physics 2 generator prompt says so) |
 
 ## Admin: publish by set
 
-`/admin/content` has a **Sets** tab. For each set it shows every draft's state (draft, AI-reviewed, human-approved, published, rejected, missing) from `GET /api/admin/content/sets?curriculumId=` (admin only, read-only). **Publish set** is enabled when every draft is approved and calls `POST /api/admin/content/publish { curriculumId, setKey }`. The title, description, draft list and question order then come from the definition. Every existing check still applies (approved, one unit, re-validation, and AI-reviewed drafts are refused outside the emulator; the tab shows that error). Publishing a set that already exists as a global waypoint returns 409; an unknown set returns 400. `{ draftIds, title }` still works for ad-hoc sets.
+`/admin/content` has a **Sets** tab with a course picker (`?tab=sets&course=ap-physics-2` opens on a course). For each set it shows every draft's state (draft, AI-reviewed, human-approved, published, rejected, missing) from `GET /api/admin/content/sets?curriculumId=` (admin only, read-only). **Publish set** is enabled when every draft is approved and calls `POST /api/admin/content/publish { curriculumId, setKey }`. The title, description, draft list and question order then come from the definition. Every existing check still applies (approved, one unit, re-validation, and AI-reviewed drafts are refused outside the emulator; the tab shows that error). Publishing a set that already exists as a global waypoint returns 409; an unknown set returns 400. `{ draftIds, title }` still works for ad-hoc sets.
 
 ## Why a teacher may see "Not published yet" on every set
 
-The roadmap lists every set in the definition, but a set can only be assigned once it exists as a published global waypoint **in the Firebase project the app is running against**. The 160 AP Physics 1 problems were published only in the local Firenook emulator, so `npm run dev` against a real project shows every set as "Not published yet" (this used to read "Coming soon"). Three states (`setAvailability` in `src/lib/curriculum-roadmap.ts`):
+The roadmap lists every set in the definition, but a set can only be assigned once it exists as a published global waypoint **in the Firebase project the app is running against**. The 440 problems of the three courses were published only in the local Firenook emulator, so `npm run dev` against a real project shows every set as "Not published yet" (this used to read "Coming soon"). Three states (`setAvailability` in `src/lib/curriculum-roadmap.ts`):
 
 | State | Meaning |
 |---|---|
@@ -91,8 +95,10 @@ The page explains this in a notice, and admins get a link to **Admin → Content
    ```bash
    node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-1-3-7-8.json
    node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json
+   node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-2/units-9-15.json
+   node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-c-mech/units-1-7.json
    ```
-2. At `/admin/content` → **Approved**, open each problem, solve it, check the key and the misconception tags, and approve it yourself. Imported drafts are `reviewKind: "ai"` and publish refuses those outside the emulator. The review logs in `content/ap-physics-1/*-review.md` list what the AI review changed.
+2. At `/admin/content` → **Approved**, open each problem, solve it, check the key and the misconception tags, and approve it yourself. Imported drafts are `reviewKind: "ai"` and publish refuses those outside the emulator. The review logs in `content/<id>/*-review.md` list what the AI review changed, problem by problem.
 3. On the **Sets** tab, press **Publish set** for each set. `/teacher/courses` then shows it as ready.
 
 ## Teachers: `/teacher/courses`
@@ -117,10 +123,10 @@ One page per unit (linked from each unit on the roadmap): sets, problems, estima
 
 The per-set facts come from `src/data/curricula/profiles/<id>.json` (`setProfile` in `src/data/curricula/profiles.ts`), generated from the reviewed drafts in `content/<id>/`:
 ```bash
-node tools/curriculum-profile.cjs            # check; exits 1 when the committed file is stale
-node tools/curriculum-profile.cjs --write    # after changing a set's draftIds or re-exporting drafts
+node tools/curriculum-profile.cjs                              # check AP Physics 1; exits 1 when the committed file is stale
+node tools/curriculum-profile.cjs --id ap-physics-2 --write    # after changing a set's draftIds or re-exporting drafts
 ```
-`npx jest course-progress` fails when the committed profile no longer matches the content. Minutes are an estimate from question type and difficulty (see `MINUTES` in the tool).
+`npx jest course-progress` fails when any course's committed profile no longer matches its content. A planned set (no problems) has no profile. Minutes are an estimate from question type and difficulty (see `MINUTES` in the tool).
 
 ### School calendar and due dates
 

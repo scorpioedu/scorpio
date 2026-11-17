@@ -390,9 +390,9 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
   },
   {
     id: "rolling-ignores-rotation",
-    label: "Leaves rotation out of a rolling object's energy",
+    label: "Treats a rolling object as if it only slides",
     description:
-      "Treats a rolling object as if it only slides (v = √(2gh)), so all the potential energy becomes translational kinetic energy.",
+      "Leaves the rotation out of a rolling object's energy or angular momentum (v = √(2gh) at the bottom of a ramp, L = MvR with no spin term), or ignores the spin-up when a sliding ball starts to roll.",
     category: "conceptual",
     units: [],
     courseUnits: { "physics-c-mech": [6] },

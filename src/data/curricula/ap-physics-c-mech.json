@@ -290,7 +290,13 @@
       "title": "Rotational kinetic energy and work",
       "description": "Energy of rotation and work done by torques.",
       "topics": ["6.1", "6.2"],
-      "draftIds": []
+      "draftIds": [
+        "S9oIw2DOkSDvUVkEB9Xo",
+        "7afAbp9cohA3SulOi5ZZ",
+        "JGNCVWdBKFZExbW4qiWC",
+        "caowwvwkDvDVGgX3pE7W",
+        "rlnXhIlvRdCor9wX5MZW"
+      ]
     },
     {
       "key": "6B",
@@ -298,7 +304,13 @@
       "title": "Angular momentum and angular impulse",
       "description": "Angular momentum of particles and rigid bodies and how torque changes it.",
       "topics": ["6.3"],
-      "draftIds": []
+      "draftIds": [
+        "4Fyg8VAyt93gEaSc0oWG",
+        "2DI7tqCfq0QmkRaaltpD",
+        "semPnrKk889RGXoO9kI7",
+        "IlPinPSlGM9IOVUODDFR",
+        "R6AMWtYusvhab5rPWzo6"
+      ]
     },
     {
       "key": "6C",
@@ -306,7 +318,13 @@
       "title": "Conservation of angular momentum",
       "description": "Systems with no net external torque.",
       "topics": ["6.4"],
-      "draftIds": []
+      "draftIds": [
+        "r5q8jivDYIZLOQ0HY6PJ",
+        "Z0YZsIlmJew6y0HDG1UG",
+        "w8cgl8vrR4O7Fy6wV36w",
+        "mJrYodgwrktKctBfpkeF",
+        "Dqbqv2UpjyK007fNRIoh"
+      ]
     },
     {
       "key": "6D",
@@ -314,7 +332,13 @@
       "title": "Rolling and orbits",
       "description": "Rolling with and without slipping, satellite energy and escape speed.",
       "topics": ["6.5", "6.6"],
-      "draftIds": []
+      "draftIds": [
+        "jH1KCb380miK1gsFfGFC",
+        "7tMPgywwAR9cXROUKWya",
+        "nFbmwjkCRmCUoclNzPfy",
+        "1vLWh0lDFrlm4v9arfds",
+        "xfzO6pOzvvVRoXU5V5lG"
+      ]
     },
     {
       "key": "7A",
