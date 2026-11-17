@@ -193,7 +193,7 @@ export default function WaypointsPage() {
         return;
       }
       if (!res.ok || typeof data.id !== "string") {
-        toast.error(data.error || "Could not copy this waypoint. Please try again.");
+        toast.error(data.error || "Could not add this waypoint. Please try again.");
         return;
       }
       setWaypoints((prev) =>
@@ -201,7 +201,7 @@ export default function WaypointsPage() {
       );
       router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
     } catch {
-      toast.error("Could not copy this waypoint. Please try again.");
+      toast.error("Could not add this waypoint. Please try again.");
     }
   };
 
@@ -278,7 +278,7 @@ export default function WaypointsPage() {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-sm leading-relaxed"
             >
-              Find a shared assignment and copy it into your class.
+              Find a shared assignment and use it with your class.
             </motion.p>
 
             {isDepartmentPlan ? (

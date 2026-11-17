@@ -104,9 +104,9 @@ export const POST = withAuthorizedRequest(
     const batch = adminDb.batch();
     batch.set(ref, {
       ...copied,
+      // The source's own title: students see it, and a "(Copy)" suffix means nothing to them.
       title:
-        title ??
-        `${typeof source.title === "string" && source.title ? source.title : "Untitled"} (Copy)`,
+        title ?? (typeof source.title === "string" && source.title ? source.title : "Untitled"),
       gradingType:
         typeof source.gradingType === "string" && source.gradingType ? source.gradingType : "ai",
       teacherId: caller.uid,

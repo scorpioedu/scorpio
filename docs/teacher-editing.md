@@ -46,6 +46,10 @@ When `questions` changes, every handed-in submission is checked (`src/lib/regrad
 
 Question ids are kept when editing, so grades stay attached to their questions.
 
+## Wording: assign, not copy
+
+Assigning a set makes the class its own assignment behind the scenes, but teachers and students never read the word "copy" for it: the assign dialog says "will be assigned to", and `POST /api/assignments/clone` keeps the source's own title (no "(Copy)" suffix), which also covers ⋯ → Duplicate.
+
 ## Archive
 
 - Assignments: `PATCH /api/assignments/{id} { archived: true | false }` sets or clears `archivedAt`. Student pages (`/student`, `/student/assignments`) and the class progress route skip archived assignments; the Courses roadmap counts them as not assigned and restores them on assign. My Assignments has an **Archived** view with Restore and Delete permanently.

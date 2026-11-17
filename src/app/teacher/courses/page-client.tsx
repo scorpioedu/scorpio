@@ -153,6 +153,19 @@ export default function CoursesClient() {
   const follows = !!selected && !!classCourse;
   /** The class has no course yet: the page asks for one instead of showing a roadmap. */
   const needsCourse = !!selected && !classCourse;
+  // Sets the class was assigned from a course it no longer follows: kept, but not on this roadmap.
+  const elsewhere = follows
+    ? classAssignments.filter(
+        (a) =>
+          !a.archived &&
+          typeof a.curriculumSetKey === "string" &&
+          typeof a.curriculumId === "string" &&
+          a.curriculumId !== curriculum.id,
+      )
+    : [];
+  const elsewhereCourses = [
+    ...new Set(elsewhere.map((a) => getCurriculum(a.curriculumId)?.name ?? "another course")),
+  ];
   // A class called "AP Physics 2 - Period 3" is most likely taking AP Physics 2 (longest name wins,
   // so "AP Physics C: Mechanics" is not mistaken for a shorter one).
   const suggested = needsCourse
@@ -419,6 +432,18 @@ export default function CoursesClient() {
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
+        </p>
+      )}
+      {selected && elsewhere.length > 0 && (
+        <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
+          {selected.name} also has {elsewhere.length} assigned set
+          {elsewhere.length === 1 ? "" : "s"} from {elsewhereCourses.join(" and ")}, from before its
+          course changed. Students still see {elsewhere.length === 1 ? "it" : "them"}, with their
+          work, under Other assignments; you will find {elsewhere.length === 1 ? "it" : "them"} in{" "}
+          <Link className="underline underline-offset-2" href="/teacher/assignments">
+            My Assignments
+          </Link>
+          .
         </p>
       )}
       {needsCourse && selected ? (

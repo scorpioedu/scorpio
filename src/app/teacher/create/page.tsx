@@ -164,10 +164,10 @@ function CreateAssignmentForm() {
           setAssignmentPoints(assignment.totalPoints ?? getAssignmentPoints(copiedQuestions));
           setCustomPoints(true);
         }
-        toast.success("Assignment copied! Choose a class to assign it.");
+        toast.success("Ready to edit. Choose a class to assign it.");
       } catch (e) {
         console.error("Error loading forked assignment", e);
-        if (!cancelled) toast.error("Could not load the copied assignment.");
+        if (!cancelled) toast.error("Could not load that assignment.");
       }
     })();
     return () => {

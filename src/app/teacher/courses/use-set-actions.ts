@@ -137,7 +137,7 @@ export function useSetActions({
     } catch (e) {
       closeAssign();
       setError(
-        `${message(e, "Could not assign.")} Press assign again to continue; copies already made are kept.`,
+        `${message(e, "Could not assign.")} Press assign again to continue; sets already assigned are kept.`,
       );
     } finally {
       await data.refreshClass();

@@ -230,7 +230,7 @@ function UpNextCard({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-muted-foreground">
-          {card.s.archivedId ? "Archived copy" : count}
+          {card.s.archivedId ? "Archived · Restore brings it back" : count}
         </span>
         {planned && (
           <span

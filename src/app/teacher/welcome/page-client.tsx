@@ -225,7 +225,7 @@ export default function WelcomeClient() {
       toast.success("Unit assigned.");
     } catch (e) {
       setAssignError(
-        `${e instanceof Error ? e.message : "Could not assign this unit."} Press Assign again to continue; copies already made are kept.`,
+        `${e instanceof Error ? e.message : "Could not assign this unit."} Press Assign again to continue; sets already assigned are kept.`,
       );
     } finally {
       setAssigning(false);

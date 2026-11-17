@@ -63,7 +63,7 @@ export function AssignDialog({
         <DialogHeader>
           <DialogTitle className="break-words">Assign {unitLabel}</DialogTitle>
           <DialogDescription>
-            {sets.length} set{sets.length === 1 ? "" : "s"} will be copied into {className}. Due
+            {sets.length} set{sets.length === 1 ? "" : "s"} will be assigned to {className}. Due
             dates skip weekends and the class&apos;s days off.
           </DialogDescription>
         </DialogHeader>

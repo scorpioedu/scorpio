@@ -167,7 +167,7 @@ describe("POST /api/assignments/clone", () => {
       answerKeySeparated: true,
       forkedFrom: "src1",
       gradingType: "manual",
-      title: "Kinematics (Copy)",
+      title: "Kinematics",
       description: "d",
       allowCalculator: true,
       rubric: null,
