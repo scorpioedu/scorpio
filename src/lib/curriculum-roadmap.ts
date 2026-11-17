@@ -5,6 +5,7 @@ import {
   type CurriculumSet,
   type CurriculumUnit,
 } from "@/data/curricula";
+import { keyUnit, normalisePlan, type CurriculumPlan } from "@/lib/curriculum-plan";
 
 /** What an admin sees for one draft of a set. */
 export type DraftState =
@@ -37,6 +38,8 @@ export interface PublishedSet {
 
 /** A class's own assignment that came from a set. */
 export interface ClassAssignment {
+  id?: string;
+  title?: string;
   curriculumSetKey?: unknown;
   dueDate?: Date | null;
 }
@@ -63,7 +66,11 @@ export interface RoadmapSet {
   published: PublishedSet | null;
   availability: SetAvailability;
   assigned: boolean;
+  /** The class's own copy, when assigned. */
+  assignmentId: string | null;
   dueDate: Date | null;
+  /** The class leaves this set out (its plan); it is never offered for assigning. */
+  skipped: boolean;
 }
 export interface RoadmapUnit {
   unit: number;
@@ -74,33 +81,53 @@ export interface RoadmapUnit {
   allAssigned: boolean;
 }
 
+/**
+ * The roadmap for one class. With a `plan` (the class's own order and skipped sets) units and sets
+ * come in that order and skipped sets are not assignable; without one it is the course as written.
+ */
 export function deriveRoadmap(
   curriculumId: string,
   published: PublishedSet[],
   classAssignments: ClassAssignment[],
+  plan?: CurriculumPlan | null,
 ): RoadmapUnit[] {
   const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
   const assignedByKey = new Map<string, ClassAssignment>();
   for (const a of classAssignments)
     if (typeof a.curriculumSetKey === "string" && !assignedByKey.has(a.curriculumSetKey))
       assignedByKey.set(a.curriculumSetKey, a);
-  return curriculumUnits(curriculumId).map((u) => {
-    const sets = u.sets.map((set) => ({
-      set,
-      published: byKey.get(set.key) ?? null,
-      availability: setAvailability(set, byKey.get(set.key)),
-      assigned: assignedByKey.has(set.key),
-      dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
-    }));
-    const assignable = sets.filter((s) => s.published && !s.assigned);
-    return {
-      unit: u.unit,
-      info: u.info,
-      sets,
-      assignable,
-      allAssigned: sets.some((s) => s.published) && assignable.length === 0,
-    };
+  const { order, skipped } = normalisePlan(curriculumId, plan);
+  const position = new Map(order.map((key, i) => [key, i]));
+  const at = (key: string) => position.get(key) ?? Number.MAX_SAFE_INTEGER;
+  const firstOfUnit = new Map<number, number>();
+  order.forEach((key, i) => {
+    if (!firstOfUnit.has(keyUnit(key))) firstOfUnit.set(keyUnit(key), i);
   });
+  const unitAt = (unit: number) => firstOfUnit.get(unit) ?? Number.MAX_SAFE_INTEGER;
+  return curriculumUnits(curriculumId)
+    .sort((a, b) => unitAt(a.unit) - unitAt(b.unit) || a.unit - b.unit)
+    .map((u) => {
+      const sets = [...u.sets]
+        .sort((a, b) => at(a.key) - at(b.key))
+        .map((set) => ({
+          set,
+          published: byKey.get(set.key) ?? null,
+          availability: setAvailability(set, byKey.get(set.key)),
+          assigned: assignedByKey.has(set.key),
+          assignmentId: assignedByKey.get(set.key)?.id ?? null,
+          dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
+          skipped: skipped.includes(set.key),
+        }));
+      const wanted = sets.filter((s) => s.published && !s.skipped);
+      const assignable = wanted.filter((s) => !s.assigned);
+      return {
+        unit: u.unit,
+        info: u.info,
+        sets,
+        assignable,
+        allAssigned: wanted.length > 0 && assignable.length === 0,
+      };
+    });
 }
 
 /** The first unit that still has published, unassigned sets. */

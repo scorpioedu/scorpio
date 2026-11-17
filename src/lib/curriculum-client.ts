@@ -49,6 +49,8 @@ export async function loadClassAssignments(
     ),
   );
   return snap.docs.map((d) => ({
+    id: d.id,
+    title: String(d.data().title || "Untitled"),
     curriculumSetKey: d.data().curriculumSetKey,
     dueDate: toDate(d.data().dueDate),
   }));
