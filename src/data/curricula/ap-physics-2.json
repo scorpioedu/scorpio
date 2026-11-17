@@ -234,7 +234,13 @@
       "title": "Reflection and plane mirrors",
       "description": "The law of reflection and images in flat mirrors.",
       "topics": ["13.1"],
-      "draftIds": []
+      "draftIds": [
+        "P6w4IeVVmRHEqPwTepkK",
+        "TCqVSFZZNtvEiJEp9fWl",
+        "rIqwd5YuFkzrKWvqbXLx",
+        "X5Jja2dJX9CjmXVNzxAf",
+        "K5RMm8xyPkaOsErmFChP"
+      ]
     },
     {
       "key": "13B",
@@ -242,7 +248,13 @@
       "title": "Curved mirrors",
       "description": "Ray diagrams and the mirror equation for concave and convex mirrors.",
       "topics": ["13.2"],
-      "draftIds": []
+      "draftIds": [
+        "ulbajkykIKEFLOyrk87g",
+        "7PJtsnwAiX4rGek9Ar8T",
+        "BjyXpjHXcKpZf7og4hPH",
+        "S4JezfTMpqAJ07Dm2IaI",
+        "WxKOF5L4L64PPStjCG5m"
+      ]
     },
     {
       "key": "13C",
@@ -250,7 +262,13 @@
       "title": "Refraction",
       "description": "Snell's law, index of refraction and total internal reflection.",
       "topics": ["13.3"],
-      "draftIds": []
+      "draftIds": [
+        "mskGxuNNyA0VeL4OSgG6",
+        "CVC7bPe7VzvtWSJc4KV4",
+        "DsJYFWkcV61Eny72sa5g",
+        "XT8lJozsH86b38l1ETue",
+        "gj0sAKv7lMHFfMDE67sf"
+      ]
     },
     {
       "key": "13D",
@@ -258,7 +276,13 @@
       "title": "Lenses",
       "description": "Ray diagrams, the thin-lens equation and magnification.",
       "topics": ["13.4"],
-      "draftIds": []
+      "draftIds": [
+        "bNn4V4MrNdAGiiVNmRCT",
+        "YDh7gRVdGqVeYmb53MEp",
+        "RE3DjmWhtmuuFqUC21dn",
+        "toFzCxixyXztBoqofOmh",
+        "qWwaAj3phAR2i9sHOZjY"
+      ]
     },
     {
       "key": "14A",

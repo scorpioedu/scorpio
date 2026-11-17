@@ -462,5 +462,105 @@
         "problems": 1
       }
     ]
+  },
+  "13A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "plane-mirror-image-location",
+        "problems": 2
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "13B": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "optics-sign-convention",
+        "problems": 4
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "13C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "refraction-wrong-way",
+        "problems": 4
+      },
+      {
+        "tag": "frequency-changes-in-medium",
+        "problems": 2
+      },
+      {
+        "tag": "total-internal-reflection-direction",
+        "problems": 2
+      }
+    ]
+  },
+  "13D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "optics-sign-convention",
+        "problems": 3
+      },
+      {
+        "tag": "partial-lens-partial-image",
+        "problems": 1
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 1
+      }
+    ]
   }
 }
