@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { groupByUnit } from "@/lib/student-grouping";
+import { normalisePlan } from "@/lib/curriculum-plan";
 
 /** A stored due date (Timestamp, ISO string or epoch ms) as a Date, or null when there is none. */
 function toDueDate(v: unknown): Date | null {
@@ -50,6 +51,8 @@ export default function StudentAssignmentsPage() {
   const [loading, setLoading] = useState(true);
   // Set when the student's class follows a course roadmap; then assignments are grouped by unit.
   const [followsCourse, setFollowsCourse] = useState(false);
+  // The class's own order of sets, when its teacher changed it.
+  const [setOrder, setSetOrder] = useState<string[] | undefined>(undefined);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("dueDateAsc");
 
@@ -78,7 +81,13 @@ export default function StudentAssignmentsPage() {
         if (courseId) {
           try {
             const classDoc = await getDoc(doc(db, "courses", courseId));
-            setFollowsCourse(typeof classDoc.data()?.curriculumId === "string");
+            const curriculumId = classDoc.data()?.curriculumId;
+            setFollowsCourse(typeof curriculumId === "string");
+            setSetOrder(
+              typeof curriculumId === "string" && classDoc.data()?.curriculumPlan
+                ? normalisePlan(curriculumId, classDoc.data()?.curriculumPlan).order
+                : undefined,
+            );
           } catch {
             setFollowsCourse(false);
           }
@@ -286,7 +295,7 @@ export default function StudentAssignmentsPage() {
     );
   };
 
-  const groups = followsCourse ? groupByUnit(filteredAssignments) : null;
+  const groups = followsCourse ? groupByUnit(filteredAssignments, setOrder) : null;
 
   return (
     <div className="space-y-6">

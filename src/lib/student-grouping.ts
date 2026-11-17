@@ -31,10 +31,22 @@ const time = (d: Date | null) => {
 };
 
 /**
- * Roadmap order: units ascending, each unit's sets by `curriculumSequence` then due date; everything
+ * Roadmap order: units ascending (or in the class's own `order`), each unit's sets by their place in
+ * `order`, else `curriculumSequence`, then due date; everything
  * without a course set key goes last under "Other assignments". Empty groups are left out.
  */
-export function groupByUnit<T extends GroupableAssignment>(items: T[]): AssignmentGroup<T>[] {
+export function groupByUnit<T extends GroupableAssignment>(
+  items: T[],
+  /** The class's own order of set keys (its plan), when it has one. */
+  order?: readonly string[],
+): AssignmentGroup<T>[] {
+  const position = new Map((order ?? []).map((key, i) => [key, i]));
+  const firstOfUnit = new Map<number, number>();
+  (order ?? []).forEach((key, i) => {
+    const unit = keyUnit(key);
+    if (unit !== null && !firstOfUnit.has(unit)) firstOfUnit.set(unit, i);
+  });
+  const unitAt = (unit: number) => firstOfUnit.get(unit) ?? Number.MAX_SAFE_INTEGER;
   const units = new Map<number, T[]>();
   const other: T[] = [];
   for (const a of items) {
@@ -43,11 +55,12 @@ export function groupByUnit<T extends GroupableAssignment>(items: T[]): Assignme
     else units.set(unit, [...(units.get(unit) ?? []), a]);
   }
   const seq = (a: T) =>
-    typeof a.curriculumSequence === "number" ? a.curriculumSequence : Number.MAX_SAFE_INTEGER;
+    position.get(a.curriculumSetKey as string) ??
+    (typeof a.curriculumSequence === "number" ? a.curriculumSequence : Number.MAX_SAFE_INTEGER);
   const bySequence = (a: T, b: T) =>
     seq(a) - seq(b) || time(a.dueDate) - time(b.dueDate) || a.title.localeCompare(b.title);
   const groups: AssignmentGroup<T>[] = [...units.entries()]
-    .sort(([a], [b]) => a - b)
+    .sort(([a], [b]) => unitAt(a) - unitAt(b) || a - b)
     .map(([unit, list]) => ({
       id: `unit-${unit}`,
       label: apUnitLabel(unit),
