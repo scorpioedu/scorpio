@@ -11,10 +11,11 @@ import {
   CalendarDays,
   CalendarRange,
   Check,
-  ChevronDown,
+  CircleOff,
   Columns3,
   List as ListIcon,
   ListOrdered,
+  MoreHorizontal,
   Plus,
 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
@@ -45,6 +46,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssignDialog } from "./assign-dialog";
 import { CourseBoard } from "./board/course-board";
@@ -59,10 +67,10 @@ import { useSetActions, type Assigning } from "./use-set-actions";
 
 type Tab = "roadmap" | "schedule";
 /**
- * Board: every set by where it stands (the default). Calendar: every set on the day it is due.
- * List: the roadmap, unit by unit.
+ * List: the roadmap, unit by unit (the default). Calendar: every set on the day it is due.
+ * Board: every set by where it stands.
  */
-type View = "board" | "calendar" | "list";
+type View = "list" | "calendar" | "board";
 
 /** Keep ?course=, ?view=, ?unit= and ?tab= in the address bar without a navigation. */
 function setParam(name: string, value: string | null) {
@@ -81,14 +89,11 @@ export default function CoursesClient() {
   const [tab, setTabState] = useState<Tab>(
     params?.get("tab") === "schedule" ? "schedule" : "roadmap",
   );
-  // An old link to the Schedule tab (?tab=schedule) still opens it, on the List.
-  const [view, setViewState] = useState<View>(
-    params?.get("view") === "list" || params?.get("tab") === "schedule"
-      ? "list"
-      : params?.get("view") === "calendar"
-        ? "calendar"
-        : "board",
-  );
+  // The List is where the page opens; ?view=calendar and ?view=board open the other two.
+  const [view, setViewState] = useState<View>(() => {
+    const asked = params?.get("view");
+    return asked === "calendar" || asked === "board" ? asked : "list";
+  });
   const [unit, setUnitState] = useState<number | null>(() => Number(params?.get("unit")) || null);
   const [showDone, setShowDone] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
@@ -111,7 +116,7 @@ export default function CoursesClient() {
   };
   const setView = (v: View) => {
     setViewState(v);
-    setParam("view", v === "board" ? null : v);
+    setParam("view", v === "list" ? null : v);
     if (v !== "list") setTab("roadmap");
   };
   const setUnit = (u: number | null) => {
@@ -173,6 +178,8 @@ export default function CoursesClient() {
   const canBoard = !!selected && written && published !== null && !loadError;
   const onBoard = canBoard && view === "board";
   const onCalendar = canBoard && view === "calendar";
+  /** The class's course is loaded, so its actions can be offered. */
+  const ready = canBoard;
   const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
   const assignedCount = wanted.filter((s) => s.assigned).length;
   const averages = Object.values(progress?.sets ?? {})
@@ -266,10 +273,10 @@ export default function CoursesClient() {
         title="Courses"
         description={
           onBoard
-            ? `Every set in ${curriculum.name}, by where it is. Drag a card to Assigned to hand it out, or press Assign.`
+            ? "Every set by where it stands. Drag a card to Assigned, or press Assign."
             : onCalendar
-              ? `Every set in ${curriculum.name} on the day it is due. Drag an assigned set to another day to move its due date, or click it.`
-              : "A ready-made path through the year: units in order, each with short auto-graded sets. Assign, re-date, skip or reorder right on the roadmap."
+              ? "Every set on the day it is due. Drag an assigned set to another day, or click it."
+              : "Units in order, each with short auto-graded sets. Assign, re-date or skip right on the roadmap."
         }
       >
         <ClassPicker
@@ -277,101 +284,89 @@ export default function CoursesClient() {
             editing ? toast.info("Save or discard the new order first.") : change()
           }
         />
-        {selected &&
-          written &&
-          (follows ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  disabled={busy !== null}
-                  aria-label={`${selected.name} follows ${curriculum.name}. Change`}
-                >
-                  <Check aria-hidden className="text-green-600 dark:text-green-400" /> Following
-                  <ChevronDown aria-hidden className="opacity-60" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-72">
-                <DropdownMenuLabel className="font-normal text-muted-foreground">
-                  {selected.name} follows {curriculum.name}: students see their work by unit, and
-                  you can reorder or skip sets.
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => void setFollowing(false)}>
-                  Stop following
+        {CURRICULA.length > 1 && (
+          <Select
+            value={curriculum.id}
+            onValueChange={(id) => {
+              const c = getCurriculum(id);
+              if (!c) return;
+              if (editing) toast.info("Save or discard the new order first.");
+              else setCurriculum(c);
+            }}
+          >
+            <SelectTrigger aria-label="Course" className="w-64 max-w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {CURRICULA.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                  <span className="text-xs text-muted-foreground">
+                    {hasContent(c) ? `${c.sets.length} sets` : "Planned"}
+                    {selected?.curriculumId === c.id ? " · followed" : ""}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+        {ready && next && !editing && (
+          <Button
+            onClick={() => openUnit(next)}
+            disabled={busy !== null}
+            title={`Unit ${next.unit}: ${next.info?.title ?? ""}`}
+          >
+            <Plus aria-hidden /> Assign next {next.assignable.length}
+            <span className="sr-only">
+              {next.assignable.length === 1 ? " set" : " sets"}, from Unit {next.unit}
+            </span>
+          </Button>
+        )}
+        {/* Everything a teacher does now and then, behind one button. */}
+        {selected && written && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="More course actions">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-72">
+              {ready && (
+                <DropdownMenuItem onSelect={() => setScheduleOpen(true)}>
+                  <CalendarDays /> Schedule &amp; days off
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button
-              variant="outline"
-              className="border-primary/60"
-              onClick={() => setFollowing(true)}
-              disabled={busy !== null}
-            >
-              {busy === "follow"
-                ? "Saving…"
-                : followsOther
-                  ? `Switch to ${curriculum.name}`
-                  : `Follow ${curriculum.name}`}
-            </Button>
-          ))}
-        {selected && written && published !== null && !loadError && (
-          <>
-            <Button variant="outline" onClick={() => setScheduleOpen(true)}>
-              <CalendarDays aria-hidden /> Schedule &amp; days off
-            </Button>
-            {follows && plan && !editing && (
-              <Button variant="outline" onClick={() => setEditing(true)}>
-                <ListOrdered aria-hidden /> Reorder or skip
-              </Button>
-            )}
-            {next && !editing && (
-              <Button
-                onClick={() => openUnit(next)}
+              )}
+              {ready && follows && plan && !editing && (
+                <DropdownMenuItem onSelect={() => setEditing(true)}>
+                  <ListOrdered /> Reorder or skip sets
+                </DropdownMenuItem>
+              )}
+              {ready && <DropdownMenuSeparator />}
+              <DropdownMenuLabel className="font-normal text-muted-foreground">
+                {follows
+                  ? `${selected.name} follows ${curriculum.name}: students see their work by unit, and you can reorder or skip sets.`
+                  : followsOther
+                    ? `${selected.name} follows ${followsOther.name}.`
+                    : `${selected.name} does not follow a course.`}
+              </DropdownMenuLabel>
+              <DropdownMenuItem
                 disabled={busy !== null}
-                title={`Unit ${next.unit}: ${next.info?.title ?? ""}`}
+                onSelect={() => void setFollowing(!follows)}
               >
-                <Plus aria-hidden /> Assign next {next.assignable.length}
-                <span className="sr-only">
-                  {next.assignable.length === 1 ? " set" : " sets"}, from Unit {next.unit}
-                </span>
-              </Button>
-            )}
-          </>
+                {follows ? (
+                  <>
+                    <CircleOff /> Stop following
+                  </>
+                ) : (
+                  <>
+                    <Check /> {followsOther ? "Switch to" : "Follow"} {curriculum.name}
+                  </>
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </TeacherPageHeader>
-
-      {CURRICULA.length > 1 && (
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Course">
-          {CURRICULA.map((c) => {
-            const on = c.id === curriculum.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() =>
-                  editing ? toast.info("Save or discard the new order first.") : setCurriculum(c)
-                }
-                aria-pressed={on}
-                title={c.description}
-                className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-ring ${on ? "border-primary bg-primary/10 font-medium text-foreground" : "border-border text-muted-foreground"}`}
-              >
-                {c.name}
-                <span className="text-xs text-muted-foreground">
-                  {hasContent(c) ? `${c.sets.length} sets` : "Planned"}
-                </span>
-                {selected?.curriculumId === c.id && (
-                  <span
-                    className="size-1.5 rounded-full bg-primary"
-                    aria-label="this class follows it"
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {!written ? (
         <Card className="shadow-none" role="status">
@@ -432,11 +427,25 @@ export default function CoursesClient() {
         </p>
       )}
       {written && selected && !follows && (
-        <p className="text-sm text-muted-foreground">
-          {followsOther
-            ? `${selected.name} follows ${followsOther.name}. A class follows one course at a time; switching keeps every assignment.`
-            : `${selected.name} does not follow ${curriculum.name}. Following groups students’ work by unit and lets you reorder or skip sets. You can assign either way.`}
-        </p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setFollowing(true)}
+            disabled={busy !== null}
+          >
+            {busy === "follow"
+              ? "Saving…"
+              : followsOther
+                ? `Switch to ${curriculum.name}`
+                : `Follow ${curriculum.name}`}
+          </Button>
+          <span className="min-w-0 flex-1 basis-64">
+            {followsOther
+              ? `${selected.name} follows ${followsOther.name}. A class follows one course at a time; switching keeps every assignment.`
+              : `${selected.name} does not follow ${curriculum.name}. Following groups students’ work by unit and lets you reorder or skip sets. You can assign either way.`}
+          </span>
+        </div>
       )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
@@ -479,9 +488,9 @@ export default function CoursesClient() {
           >
             {(
               [
-                ["board", "Board", Columns3],
-                ["calendar", "Calendar", CalendarRange],
                 ["list", "List", ListIcon],
+                ["calendar", "Calendar", CalendarRange],
+                ["board", "Board", Columns3],
               ] as const
             ).map(([value, label, Icon]) => (
               <button
