@@ -97,15 +97,21 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" in the sidebar, next to Waypoints. The page is built around one class (the choice is remembered in the browser):
+"Courses" in the sidebar, next to Waypoints. The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`) and tab (`?tab=schedule`) are kept in the address bar.
 
-- **Class card.** Pick a class, follow or stop following the course, and see a summary strip: sets assigned, students, average score, and the date the course finishes at the current pace. **Assign next** opens the assign dialog for the first unit that still has sets to assign.
-- **Roadmap tab.** Units in the class's order, as collapsible sections; the next unit is open. Each set shows its description, problem count and time estimate, its status (assigned with due date, not assigned, not published, skipped) and, once assigned, "9 of 13 submitted · average 71%". **Preview** shows the problems as students see them, the topics and the misconceptions the wrong answers catch; for the class's own copy, **Show answers** loads the key through `GET /api/assignments?id=`. **Results** opens the assignment. Under the sets, **What students got wrong** lists up to three misconceptions for the unit with a re-teach suggestion.
-- **Assign dialog.** Lists exactly which sets will be copied and each due date before anything is created. First due date and spacing (every 1, 2 or 3 school days, or weekly) can be changed there. Sets already in the class are skipped, so nothing is duplicated. A class that does not follow the course can still have units assigned.
-- **Schedule tab.** The pacing guide, bulk due-date moves and the class's days off (below).
-- **Customize tab.** The class's own order and skipped sets (below). Needs the class to follow the course.
+Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
-Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `roadmap-tab.tsx`, `schedule-tab.tsx`, `customize-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`).
+- **Class card.** Follow or stop following the course, and a summary strip: sets assigned, students, average score, and the date the course finishes at the current pace. **Assign next** opens the assign dialog for the first unit that still has sets to assign.
+- **Roadmap tab.** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
+  - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Duplicate, Archive, and Skip / Stop skipping for a class that follows the course);
+  - a published set that is not assigned has **Assign** (just that set) and, for a following class, **Skip** / **Unskip**;
+  - a set whose class copy was archived shows "Archived · assign to restore it", and **Restore** brings the same copy back (with its students' work) instead of copying it again.
+  **Preview** shows the problems as students see them, the topics and the misconceptions the wrong answers catch; for the class's own copy it has **Edit problems** and **Results**, and **Show answers** loads the key through `GET /api/assignments?id=`; for an unassigned set it has **Assign this set**. Under the sets, **What students got wrong** lists up to three misconceptions for the unit with a re-teach suggestion.
+- **Reorder or skip** (above the roadmap, for a class that follows the course) turns the roadmap into an editor: drag a unit or a set by its handle (or focus the handle and use the arrow keys), or use the arrows; tick Skip. Changes are a draft with a save bar (Save order / Discard) and a warning before leaving. After saving, if assigned sets are now out of date order, a message offers **Re-date**: the same due dates handed out again in the new order (`redateToOrder` in `src/lib/course-pacing.ts`), with Undo. This replaces the old Customize tab.
+- **Assign dialog.** Lists exactly which sets will be copied and each due date before anything is created. First due date and spacing (every 1, 2 or 3 school days, or weekly) can be changed there; for a single set it asks only for the due date. Sets already in the class are skipped, so nothing is duplicated. A class that does not follow the course can still have units assigned.
+- **Schedule and days off tab.** The pacing guide, bulk due-date moves and the class's days off (below).
+
+Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`).
 
 **Follow / stop following.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
 
@@ -113,7 +119,7 @@ The first-run page (`/teacher/welcome`) lists sets from the definition, ordered 
 
 ### Unit guides: `/teacher/courses/{curriculumId}/{unit}`
 
-One page per unit (linked from each unit on the roadmap): sets, problems, estimated student time and topics; each set with its topics, question types, difficulty mix and the misconceptions it catches; the AP topics with their summaries; and every misconception the unit targets with the sets that target it. With a class chosen it also shows that class's status, results and re-teach suggestions for the unit.
+One page per unit (linked from each unit on the roadmap): sets, problems, estimated student time and topics; each set with its topics, question types, difficulty mix and the misconceptions it catches; the AP topics with their summaries; and every misconception the unit targets with the sets that target it. With a class chosen it also shows that class's status, results and re-teach suggestions for the unit, and **Assign N sets** opens the assign dialog for the unit on `/teacher/courses` (`?assign={unit}`).
 
 The per-set facts come from `src/data/curricula/profiles/<id>.json` (`setProfile` in `src/data/curricula/profiles.ts`), generated from the reviewed drafts in `content/<id>/`:
 ```bash
@@ -124,7 +130,7 @@ node tools/curriculum-profile.cjs --write    # after changing a set's draftIds o
 
 ### School calendar and due dates
 
-`src/lib/school-calendar.ts`. Due dates skip weekends and the class's days off. Without its own list a class uses the US defaults for the current and next school year: Labor Day, Indigenous Peoples' Day, Veterans Day, Thanksgiving Thursday and Friday, winter break 19 Dec–4 Jan, Martin Luther King Jr. Day, Presidents' Day, Memorial Day and Juneteenth. Spring break is not included because it differs by district. On the Schedule tab a teacher removes days their school works through, adds their own days or breaks, and saves; the list is stored as `daysOff` on the class (`[{ start, end, label }]`, local `YYYY-MM-DD`, both ends inclusive, at most 80). "Reset to the default calendar" removes it. An empty saved list means weekends only. Saving the calendar does not move existing due dates.
+`src/lib/school-calendar.ts`. Due dates skip weekends and the class's days off. Without its own list a class uses the US defaults for the current and next school year: Labor Day, Indigenous Peoples' Day, Veterans Day, Thanksgiving Thursday and Friday, winter break 19 Dec–4 Jan, Martin Luther King Jr. Day, Presidents' Day, Memorial Day and Juneteenth. Spring break is not included because it differs by district. On the Schedule tab a teacher removes days their school works through, adds their own days or breaks, and saves; the list is stored as `daysOff` on the class (`[{ start, end, label }]`, local `YYYY-MM-DD`, both ends inclusive, at most 80). "Reset to the default calendar" removes it. An empty saved list means weekends only. Saving the calendar does not move due dates by itself: if any upcoming due date now falls on a day off, a message offers **Move them** (each to the next school day).
 
 `addSchoolDays`, `nextSchoolDay`, `scheduleDueDates` (`src/lib/first-run.ts`) and `planAssignments` take an optional school-day test; `schoolDays(calendar)` builds one. `/teacher/welcome` uses the defaults.
 
@@ -132,7 +138,7 @@ node tools/curriculum-profile.cjs --write    # after changing a set's draftIds o
 
 `src/lib/course-pacing.ts`. `paceCourse` gives every set the class will do a date: sets already assigned keep their real due dates; the rest are spaced from "Next set due", or from one step after the latest real due date when that is later. The tab shows each unit's date range and the finish date, and warns when the course would finish in May or later (AP exams start in early May).
 
-**Move due dates** changes several at once: everything not yet due, or one unit; later or earlier by 1–10 school days, re-spaced from the pacing guide's date and spacing, or only moved off days off (useful after editing the calendar). Every change is listed before saving. `POST /api/courses/{id}/due-dates { updates: [{ assignmentId, dueDate }] }` (owner only, at most 100) writes only `dueDate`, and refuses the whole request if any assignment is not in that class.
+**Move due dates** changes several at once: everything not yet due, one unit, or the class's assignments that are not course sets (every assignment in the class with a due date can be moved, listed by title); later or earlier by 1–10 school days, re-spaced from the pacing guide's date and spacing, or only moved off days off (useful after editing the calendar). Every change is listed before saving, and the message after saving has Undo. One due date is changed on its row instead. `POST /api/courses/{id}/due-dates { updates: [{ assignmentId, dueDate }] }` (owner only, at most 100) writes only `dueDate`, and refuses the whole request if any assignment is not in that class.
 
 ### A class's own plan: order and skipped sets
 
