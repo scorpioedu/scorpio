@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { ListOrdered } from "lucide-react";
+import { CalendarDays, Columns3, List as ListIcon, ListOrdered, Plus } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
@@ -22,8 +22,16 @@ import { ClassPicker } from "@/components/teacher/class-picker";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssignDialog } from "./assign-dialog";
+import { CourseBoard } from "./board/course-board";
 import { PlanEditor } from "./plan-editor";
 import { RoadmapTab } from "./roadmap-tab";
 import { ScheduleTab } from "./schedule-tab";
@@ -32,8 +40,10 @@ import { shortDate, useCourseData } from "./use-course-data";
 import { useSetActions, type Assigning } from "./use-set-actions";
 
 type Tab = "roadmap" | "schedule";
+/** Board: every set by where it stands (the default). List: the roadmap, unit by unit. */
+type View = "board" | "list";
 
-/** Keep ?course= and ?tab= in the address bar without a navigation. */
+/** Keep ?course=, ?view=, ?unit= and ?tab= in the address bar without a navigation. */
 function setParam(name: string, value: string | null) {
   const url = new URL(window.location.href);
   if (value) url.searchParams.set(name, value);
@@ -50,6 +60,13 @@ export default function CoursesClient() {
   const [tab, setTabState] = useState<Tab>(
     params?.get("tab") === "schedule" ? "schedule" : "roadmap",
   );
+  // An old link to the Schedule tab (?tab=schedule) still opens it, on the List.
+  const [view, setViewState] = useState<View>(
+    params?.get("view") === "list" || params?.get("tab") === "schedule" ? "list" : "board",
+  );
+  const [unit, setUnitState] = useState<number | null>(() => Number(params?.get("unit")) || null);
+  const [showDone, setShowDone] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
   const data = useCourseData(curriculum.id);
   const { classes, selected, published, loadError, classAssignments, progress } = data;
 
@@ -64,6 +81,17 @@ export default function CoursesClient() {
     setCurriculumState(c);
     setEditing(false);
     setParam("course", c.id === CURRICULA[0].id ? null : c.id);
+    // Units are numbered per course, so the filter does not carry over.
+    setUnit(null);
+  };
+  const setView = (v: View) => {
+    setViewState(v);
+    setParam("view", v === "board" ? null : v);
+    if (v === "board") setTab("roadmap");
+  };
+  const setUnit = (u: number | null) => {
+    setUnitState(u);
+    setParam("unit", u === null ? null : String(u));
   };
   const setTab = (t: Tab) => {
     setTabState(t);
@@ -115,6 +143,10 @@ export default function CoursesClient() {
 
   const publishedCount = published?.length ?? 0;
   const written = hasContent(curriculum);
+  // The board is a class's view of a course: without a class (or before the course is written)
+  // there is only the roadmap to browse.
+  const canBoard = !!selected && written && published !== null && !loadError;
+  const onBoard = canBoard && view === "board";
   const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
   const assignedCount = wanted.filter((s) => s.assigned).length;
   const averages = Object.values(progress?.sets ?? {})
@@ -183,17 +215,64 @@ export default function CoursesClient() {
     if (unit && unit.assignable.length) openUnit(unit);
   }, [roadmap, selected, published, openUnit]);
 
+  const schedule = selected && (
+    <ScheduleTab
+      course={curriculum.apCourse}
+      classId={selected.id}
+      roadmap={roadmap}
+      classAssignments={classAssignments}
+      pacing={pacing}
+      start={start}
+      spacing={spacing}
+      calendar={calendar}
+      customCalendar={selected.daysOff != null}
+      isSchoolDay={isSchoolDay}
+      onStart={setStartInput}
+      onSpacing={setSpacing}
+      onMoved={() => data.refreshClass()}
+      onDaysOffSaved={(daysOff) => data.patchClass(selected.id, { daysOff })}
+    />
+  );
+
   return (
     <div className="space-y-6 md:pb-16">
       <TeacherPageHeader
         title="Courses"
-        description="A ready-made path through the year: units in order, each with short auto-graded sets. Assign, re-date, skip or reorder right on the roadmap."
+        description={
+          onBoard
+            ? `Every set in ${curriculum.name}, by where it is. Drag a card to Assigned to hand it out, or press Assign.`
+            : "A ready-made path through the year: units in order, each with short auto-graded sets. Assign, re-date, skip or reorder right on the roadmap."
+        }
       >
         <ClassPicker
           onBeforeChange={(change) =>
             editing ? toast.info("Save or discard the new order first.") : change()
           }
         />
+        {selected && written && published !== null && !loadError && (
+          <>
+            <Button variant="outline" onClick={() => setScheduleOpen(true)}>
+              <CalendarDays aria-hidden /> Schedule &amp; days off
+            </Button>
+            {follows && plan && !editing && (
+              <Button variant="outline" onClick={() => setEditing(true)}>
+                <ListOrdered aria-hidden /> Reorder or skip
+              </Button>
+            )}
+            {next && !editing && (
+              <Button
+                onClick={() => openUnit(next)}
+                disabled={busy !== null}
+                title={`Unit ${next.unit}: ${next.info?.title ?? ""}`}
+              >
+                <Plus aria-hidden /> Assign next {next.assignable.length}
+                <span className="sr-only">
+                  {next.assignable.length === 1 ? " set" : " sets"}, from Unit {next.unit}
+                </span>
+              </Button>
+            )}
+          </>
+        )}
       </TeacherPageHeader>
 
       {CURRICULA.length > 1 && (
@@ -325,41 +404,70 @@ export default function CoursesClient() {
                 {error}
               </p>
             )}
-            {selected && published !== null && (
-              <TeacherSummary
-                label="Class progress"
-                items={[
-                  { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
-                  { label: "Students", value: progress ? progress.students : "…" },
-                  {
-                    label: "Average score",
-                    value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
-                  },
-                  {
-                    label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
-                    value: pacing.finish ? shortDate(pacing.finish) : "—",
-                  },
-                ]}
-              />
-            )}
-            {selected && next && (
-              <div className="flex flex-wrap items-center gap-3">
-                <Button onClick={() => openUnit(next)} disabled={busy !== null}>
-                  Assign next: Unit {next.unit}
-                </Button>
-                <span className="text-sm text-muted-foreground">
-                  {next.info?.title} · {next.assignable.length} set
-                  {next.assignable.length === 1 ? "" : "s"} to assign
-                </span>
-              </div>
-            )}
-            {selected && !next && published !== null && publishedCount > 0 && (
-              <p className="text-sm text-muted-foreground">
-                Every published set is assigned to this class.
-              </p>
+            {!onBoard && (
+              <>
+                {selected && published !== null && (
+                  <TeacherSummary
+                    label="Class progress"
+                    items={[
+                      { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
+                      { label: "Students", value: progress ? progress.students : "…" },
+                      {
+                        label: "Average score",
+                        value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
+                      },
+                      {
+                        label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
+                        value: pacing.finish ? shortDate(pacing.finish) : "—",
+                      },
+                    ]}
+                  />
+                )}
+                {selected && next && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button onClick={() => openUnit(next)} disabled={busy !== null}>
+                      Assign next: Unit {next.unit}
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      {next.info?.title} · {next.assignable.length} set
+                      {next.assignable.length === 1 ? "" : "s"} to assign
+                    </span>
+                  </div>
+                )}
+                {selected && !next && published !== null && publishedCount > 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    Every published set is assigned to this class.
+                  </p>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
+      )}
+
+      {canBoard && !editing && (
+        <div
+          role="group"
+          aria-label="View"
+          className="inline-flex rounded-full border border-border bg-muted/40 p-1"
+        >
+          {(
+            [
+              ["board", "Board", Columns3],
+              ["list", "List", ListIcon],
+            ] as const
+          ).map(([value, label, Icon]) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={view === value}
+              onClick={() => setView(value)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring ${view === value ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <Icon className="size-4" aria-hidden /> {label}
+            </button>
+          ))}
+        </div>
       )}
 
       {loadError ? (
@@ -370,6 +478,41 @@ export default function CoursesClient() {
         <p role="status" className="text-sm text-muted-foreground">
           Loading roadmap…
         </p>
+      ) : editing && selected && follows && plan ? (
+        <PlanEditor
+          key={selected.id}
+          classId={selected.id}
+          className={selected.name}
+          curriculumId={curriculum.id}
+          saved={plan}
+          assigned={assignedDated}
+          onSaved={(saved) => data.patchClass(selected.id, { curriculumPlan: saved })}
+          onDatesMoved={() => data.refreshClass()}
+          onDone={() => setEditing(false)}
+        />
+      ) : onBoard && selected && rowActions ? (
+        <CourseBoard
+          key={`${selected.id}-${curriculum.id}`}
+          curriculum={curriculum}
+          roadmap={roadmap}
+          progress={progress}
+          pacing={pacing}
+          planOrder={plan?.order ?? null}
+          unit={unit}
+          onUnit={setUnit}
+          showDone={showDone}
+          onShowDone={setShowDone}
+          busy={busy !== null}
+          onPreview={setPreview}
+          actions={{
+            ...rowActions,
+            onAssignNow: (s, due) => void actions.assignNow(s, due),
+            onArchive: (s) => void actions.archiveCopy(s),
+            onReorder: actions.reorder
+              ? (order, done) => void actions.reorder!(order, done)
+              : undefined,
+          }}
+        />
       ) : (
         <Tabs
           value={selected && written ? tab : "roadmap"}
@@ -385,68 +528,42 @@ export default function CoursesClient() {
             ) : (
               <span />
             )}
-            {selected &&
-              written &&
-              tab === "roadmap" &&
-              !editing &&
-              (follows ? (
-                <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                  <ListOrdered aria-hidden /> Reorder or skip
-                </Button>
-              ) : (
-                <span className="text-xs text-muted-foreground">
-                  Follow the course to reorder units or skip sets.
-                </span>
-              ))}
+            {selected && written && tab === "roadmap" && !follows && (
+              <span className="text-xs text-muted-foreground">
+                Follow the course to reorder units or skip sets.
+              </span>
+            )}
           </div>
           <TabsContent value="roadmap">
-            {editing && selected && follows && plan ? (
-              <PlanEditor
-                key={selected.id}
-                classId={selected.id}
-                className={selected.name}
-                curriculumId={curriculum.id}
-                saved={plan}
-                assigned={assignedDated}
-                onSaved={(saved) => data.patchClass(selected.id, { curriculumPlan: saved })}
-                onDatesMoved={() => data.refreshClass()}
-                onDone={() => setEditing(false)}
-              />
-            ) : (
-              <RoadmapTab
-                curriculum={curriculum}
-                roadmap={roadmap}
-                className={written ? (selected?.name ?? null) : null}
-                progress={progress}
-                nextUnitNumber={next?.unit}
-                busy={busy !== null}
-                onAssign={openUnit}
-                onPreview={setPreview}
-                actions={rowActions}
-              />
-            )}
+            <RoadmapTab
+              curriculum={curriculum}
+              roadmap={roadmap}
+              className={written ? (selected?.name ?? null) : null}
+              progress={progress}
+              nextUnitNumber={next?.unit}
+              busy={busy !== null}
+              onAssign={openUnit}
+              onPreview={setPreview}
+              actions={rowActions}
+            />
           </TabsContent>
-          {selected && (
-            <TabsContent value="schedule">
-              <ScheduleTab
-                course={curriculum.apCourse}
-                classId={selected.id}
-                roadmap={roadmap}
-                classAssignments={classAssignments}
-                pacing={pacing}
-                start={start}
-                spacing={spacing}
-                calendar={calendar}
-                customCalendar={selected.daysOff != null}
-                isSchoolDay={isSchoolDay}
-                onStart={setStartInput}
-                onSpacing={setSpacing}
-                onMoved={() => data.refreshClass()}
-                onDaysOffSaved={(daysOff) => data.patchClass(selected.id, { daysOff })}
-              />
-            </TabsContent>
-          )}
+          {selected && <TabsContent value="schedule">{schedule}</TabsContent>}
         </Tabs>
+      )}
+
+      {selected && (
+        <Sheet open={scheduleOpen} onOpenChange={setScheduleOpen}>
+          <SheetContent className="w-full gap-0 overflow-y-auto sm:max-w-2xl">
+            <SheetHeader>
+              <SheetTitle>Schedule and days off</SheetTitle>
+              <SheetDescription>
+                The pacing guide, moving due dates together, and the days {selected.name} does not
+                meet.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="px-4 pb-6">{schedule}</div>
+          </SheetContent>
+        </Sheet>
       )}
 
       {assigning && selected && (

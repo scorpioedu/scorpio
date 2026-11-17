@@ -5,7 +5,7 @@
 // numbers, a unit filter and Show done. Cards can be dragged: Up next to Assigned assigns the set,
 // Assigned to Up next archives its copy, and Up next cards can be reordered inside their unit.
 // Each drag has a button that does the same (Assign, ⋯ Archive, ⋯ Move up / Move down).
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DndContext, DragOverlay, type Announcements, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -33,7 +33,7 @@ import type { PreviewTarget } from "../set-preview-dialog";
 import { shortDate, type ClassProgress } from "../use-course-data";
 import { setDisplayTitle, type SetRowActions } from "../use-set-actions";
 import { BoardCard, ParkedBoardCard, type BoardCardContext } from "./board-card";
-import { BoardColumn } from "./board-column";
+import { BoardColumn, COLUMN_TITLE } from "./board-column";
 import {
   boardCollision,
   DraggableCard,
@@ -49,6 +49,10 @@ import { UnitFilter } from "./unit-filter";
 /** Cards shown before "+n more" in Up next and Done. */
 const UP_NEXT_SHOWN = 6;
 const DONE_SHOWN = 4;
+
+const COLUMN_IDS: BoardColumnId[] = ["upNext", "assigned", "needsYou", "done"];
+/** On a phone each column is this wide and the row scrolls sideways, one column at a time. */
+const COLUMN_WIDTH = "w-[86%] shrink-0 snap-center md:w-auto md:shrink";
 
 const OTHER_UNIT = "Sets stay inside their unit. Use Reorder or skip to move a whole unit.";
 
@@ -109,6 +113,9 @@ export function CourseBoard({
   const [allUpNext, setAllUpNext] = useState(false);
   const [dragging, setDragging] = useState<{ card: Card; column: BoardColumnId } | null>(null);
   const [confirmArchive, setConfirmArchive] = useState<Card | null>(null);
+  // Phone width: which column the sideways row is showing.
+  const [current, setCurrent] = useState<BoardColumnId>("upNext");
+  const row = useRef<HTMLDivElement>(null);
   const sensors = useBoardSensors();
   const students = progress?.students ?? 0;
   const all = useMemo(
@@ -198,6 +205,7 @@ export function CourseBoard({
       return canReorder && dropInUpNext(planOrder, card.key, what.overKey).ok
         ? `Over ${what.overKey}. Drop to put ${card.key} in its place.`
         : `Over ${what.overKey}. ${card.key} cannot move there.`;
+    if (String(over) === card.key) return `${card.key} is where it started.`;
     return `${card.key} is not over a place to drop.`;
   };
   const column = (active: { data: { current?: unknown } }) =>
@@ -224,6 +232,33 @@ export function CourseBoard({
   const fromAssigned = dragging?.column === "assigned";
   const assignedDrop = useColumnDrop(`${DROP_ASSIGNED}:column`, fromUpNext);
   const upNextDrop = useColumnDrop(`${DROP_UP_NEXT}:column`, fromAssigned);
+
+  const showColumn = (id: BoardColumnId) => {
+    const el = row.current?.querySelector<HTMLElement>(`#column-${id}`);
+    if (!row.current || !el) return;
+    row.current.scrollTo({
+      left: el.offsetLeft - (row.current.clientWidth - el.clientWidth) / 2,
+      behavior: "smooth",
+    });
+  };
+  const onRowScroll = () => {
+    const el = row.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    const middle = el.scrollLeft + el.clientWidth / 2;
+    const nearest = COLUMN_IDS.reduce((best, id) => {
+      const col = el.querySelector<HTMLElement>(`#column-${id}`);
+      const from = (c: HTMLElement | null) =>
+        c ? Math.abs(c.offsetLeft + c.clientWidth / 2 - middle) : Infinity;
+      return from(col) < from(el.querySelector<HTMLElement>(`#column-${best}`)) ? id : best;
+    }, current);
+    if (nearest !== current) setCurrent(nearest);
+  };
+  const counts: Record<BoardColumnId, number> = {
+    upNext: columns.upNext.length,
+    assigned: columns.assigned.length,
+    needsYou: columns.needsYou.length,
+    done: columns.done.length,
+  };
 
   const plain = (id: "needsYou" | "done", list: Card[]) =>
     list.map((card) => (
@@ -253,6 +288,23 @@ export function CourseBoard({
           </Button>
         )}
       </div>
+      <div
+        role="group"
+        aria-label="Jump to a column"
+        className="grid grid-cols-4 gap-1 rounded-full border border-border bg-muted/40 p-1 md:hidden"
+      >
+        {COLUMN_IDS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={current === id}
+            onClick={() => showColumn(id)}
+            className={`truncate rounded-full px-1 py-1.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-ring ${current === id ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground"}`}
+          >
+            {COLUMN_TITLE[id]} <span className="tabular-nums">{counts[id]}</span>
+          </button>
+        ))}
+      </div>
       <DndContext
         sensors={sensors}
         collisionDetection={boardCollision}
@@ -271,9 +323,15 @@ export function CourseBoard({
         onDragEnd={drop}
         onDragCancel={() => setDragging(null)}
       >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div
+          ref={row}
+          onScroll={onRowScroll}
+          // Snapping is off while a card is carried, so the row can scroll under it.
+          className={`relative flex items-start gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:items-stretch md:gap-4 md:overflow-visible md:pb-0 xl:grid-cols-4 ${dragging ? "" : "snap-x snap-mandatory"}`}
+        >
           <BoardColumn
             id="upNext"
+            className={COLUMN_WIDTH}
             count={columns.upNext.length}
             dropRef={upNextDrop.setNodeRef}
             highlight={upNextDrop.isOver}
@@ -325,6 +383,7 @@ export function CourseBoard({
           </BoardColumn>
           <BoardColumn
             id="assigned"
+            className={COLUMN_WIDTH}
             count={columns.assigned.length}
             dropRef={assignedDrop.setNodeRef}
             highlight={assignedDrop.isOver}
@@ -350,6 +409,7 @@ export function CourseBoard({
           </BoardColumn>
           <BoardColumn
             id="needsYou"
+            className={COLUMN_WIDTH}
             count={columns.needsYou.length}
             empty="Written answers and changed answer keys land here."
           >
@@ -357,6 +417,7 @@ export function CourseBoard({
           </BoardColumn>
           <BoardColumn
             id="done"
+            className={COLUMN_WIDTH}
             count={columns.done.length}
             empty="Sets move here once everyone has handed them in, or the due date has passed with nobody missing."
             footer={
