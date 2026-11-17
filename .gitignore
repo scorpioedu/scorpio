@@ -79,3 +79,6 @@ firestore-debug.log
 # remediation gate build output
 /.next-gate/
 .next-*/
+
+# Firenook local emulator data (npm run dev:firenook --keep-data)
+.firenook/
