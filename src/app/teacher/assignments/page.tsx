@@ -5,17 +5,45 @@ import Link from "next/link";
 import { collection, getDocs, deleteDoc, doc, query, where, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
-import { getTeacherAssignment } from "@/lib/authenticated-fetch";
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { getAssignmentPoints } from "@/lib/assignment-points";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, PlusCircle, Trash2, Globe, Lock, ShieldCheck, ShieldAlert, Copy, MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  ArrowUpRight,
+  PlusCircle,
+  Trash2,
+  Globe,
+  Lock,
+  ShieldCheck,
+  ShieldAlert,
+  Copy,
+  MoreHorizontal,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 
 interface Assignment {
@@ -37,7 +65,7 @@ export default function AssignmentsPage() {
   const router = useRouter();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [courses, setCourses] = useState<{id: string, name: string}[]>([]);
+  const [courses, setCourses] = useState<{ id: string; name: string }[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("dueDateDesc");
@@ -45,11 +73,15 @@ export default function AssignmentsPage() {
 
   useEffect(() => {
     async function fetchCourses() {
-       if (!user) return;
-       try {
-         const snap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)));
-         setCourses(snap.docs.map(d => ({ id: d.id, name: d.data().name })));
-       } catch (e) { console.error(e); }
+      if (!user) return;
+      try {
+        const snap = await getDocs(
+          query(collection(db, "courses"), where("teacherId", "==", user.uid)),
+        );
+        setCourses(snap.docs.map((d) => ({ id: d.id, name: d.data().name })));
+      } catch (e) {
+        console.error(e);
+      }
     }
     fetchCourses();
   }, [user]);
@@ -58,9 +90,11 @@ export default function AssignmentsPage() {
     if (!user) return;
     try {
       // 1. Fetch courses to map names
-      const coursesSnap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)));
+      const coursesSnap = await getDocs(
+        query(collection(db, "courses"), where("teacherId", "==", user.uid)),
+      );
       const courseMap: Record<string, string> = {};
-      coursesSnap.docs.forEach(d => courseMap[d.id] = d.data().name);
+      coursesSnap.docs.forEach((d) => (courseMap[d.id] = d.data().name));
 
       // 2. Fetch assignments
       const q = query(collection(db, "assignments"), where("teacherId", "==", user.uid));
@@ -72,7 +106,7 @@ export default function AssignmentsPage() {
           ...d,
           dueDate: d.dueDate?.toDate?.() || new Date(d.dueDate),
           createdAt: d.createdAt?.toDate?.() || new Date(d.createdAt),
-          courseName: d.courseId ? courseMap[d.courseId] : undefined
+          courseName: d.courseId ? courseMap[d.courseId] : undefined,
         };
       }) as Assignment[];
       setAssignments(data);
@@ -89,29 +123,23 @@ export default function AssignmentsPage() {
     }
   }, [user, fetchAssignments]);
 
-
   async function handleDuplicate(assignment: Assignment) {
     if (!user) return;
+    // The server copies the questions and answer key into a new private assignment, then the editor loads it.
     try {
-      const full = await getTeacherAssignment(assignment.id);
-      const fullData = full.data();
-      const waypointData = {
-        ...fullData,
-        title: `${assignment.title} (Copy)`,
-      };
-      sessionStorage.setItem("forked_assignment", JSON.stringify(waypointData));
-      router.push("/teacher/create?fork=true");
+      const res = await authenticatedFetch("/api/assignments/clone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sourceId: assignment.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || typeof data.id !== "string") {
+        toast.error(data.error || "Could not duplicate this assignment. Please try again.");
+        return;
+      }
+      router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
     } catch {
-      const waypointData = {
-        title: `${assignment.title} (Copy)`,
-        description: assignment.description,
-        dueDate: assignment.dueDate,
-        questions: assignment.questions,
-        visibility: assignment.visibility,
-        lockdownMode: assignment.lockdownMode,
-      };
-      sessionStorage.setItem("forked_assignment", JSON.stringify(waypointData));
-      router.push("/teacher/create?fork=true");
+      toast.error("Could not duplicate this assignment. Please try again.");
     }
   }
 
@@ -129,7 +157,7 @@ export default function AssignmentsPage() {
   async function updateVisibility(id: string, visibility: "private" | "network" | "global") {
     try {
       await updateDoc(doc(db, "assignments", id), { visibility });
-      setAssignments(assignments.map(a => a.id === id ? { ...a, visibility } : a));
+      setAssignments(assignments.map((a) => (a.id === id ? { ...a, visibility } : a)));
     } catch (error) {
       console.error("Error updating visibility:", error);
       toast.error("Failed to update sharing. Please try again.");
@@ -164,9 +192,14 @@ export default function AssignmentsPage() {
 
   return (
     <div className="space-y-6">
-      <TeacherPageHeader title="Assignments" description="Review deadlines, manage sharing, and open student submissions.">
+      <TeacherPageHeader
+        title="Assignments"
+        description="Review deadlines, manage sharing, and open student submissions."
+      >
         <Button asChild>
-          <Link href="/teacher/create"><PlusCircle /> Create Assignment</Link>
+          <Link href="/teacher/create">
+            <PlusCircle /> Create Assignment
+          </Link>
         </Button>
       </TeacherPageHeader>
 
@@ -174,19 +207,33 @@ export default function AssignmentsPage() {
         <CardHeader className="flex flex-wrap items-end justify-between gap-3 px-4 py-4 sm:px-5">
           <div className="grid w-full max-w-xl gap-3 sm:grid-cols-3">
             <div className="min-w-0 space-y-1.5">
-              <label htmlFor="assignment-class" className="block text-xs font-medium text-muted-foreground">Class</label>
+              <label
+                htmlFor="assignment-class"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Class
+              </label>
               <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
                 <SelectTrigger id="assignment-class" className="w-full cursor-pointer">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Classes</SelectItem>
-                  {courses.map((course) => <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>)}
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="min-w-0 space-y-1.5">
-              <label htmlFor="assignment-status" className="block text-xs font-medium text-muted-foreground">Status</label>
+              <label
+                htmlFor="assignment-status"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Status
+              </label>
               <Select value={filter} onValueChange={setFilter}>
                 <SelectTrigger id="assignment-status" className="w-full cursor-pointer">
                   <SelectValue />
@@ -199,7 +246,12 @@ export default function AssignmentsPage() {
               </Select>
             </div>
             <div className="min-w-0 space-y-1.5">
-              <label htmlFor="assignment-sort" className="block text-xs font-medium text-muted-foreground">Sort by</label>
+              <label
+                htmlFor="assignment-sort"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Sort by
+              </label>
               <Select value={sort} onValueChange={setSort}>
                 <SelectTrigger id="assignment-sort" className="w-full cursor-pointer">
                   <SelectValue />
@@ -213,7 +265,11 @@ export default function AssignmentsPage() {
               </Select>
             </div>
           </div>
-          {!loading && <p className="text-sm text-muted-foreground">{filteredAssignments.length} assignments</p>}
+          {!loading && (
+            <p className="text-sm text-muted-foreground">
+              {filteredAssignments.length} assignments
+            </p>
+          )}
         </CardHeader>
         <CardContent className="border-t p-0">
           {loading || filteredAssignments.length === 0 ? (
@@ -227,7 +283,9 @@ export default function AssignmentsPage() {
                   <TableHead className="pl-4 sm:pl-5">Assignment</TableHead>
                   <TableHead>Deadline</TableHead>
                   <TableHead>Visibility</TableHead>
-                  <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
+                  <TableHead className="w-12">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -239,45 +297,83 @@ export default function AssignmentsPage() {
                         className="inline-flex items-baseline gap-1.5 break-words font-medium hover:text-primary hover:underline"
                       >
                         {assignment.title}
-                        <ArrowUpRight aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+                        <ArrowUpRight
+                          aria-hidden="true"
+                          className="size-3 shrink-0 text-muted-foreground"
+                        />
                       </Link>
                       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-                        <span>{assignment.courseName || (assignment.courseId ? "Unknown class" : "All classes")}</span>
-                        <span>{assignment.questions?.length || 0} questions · {getAssignmentPoints(assignment.questions)} pts</span>
+                        <span>
+                          {assignment.courseName ||
+                            (assignment.courseId ? "Unknown class" : "All classes")}
+                        </span>
+                        <span>
+                          {assignment.questions?.length || 0} questions ·{" "}
+                          {getAssignmentPoints(assignment.questions)} pts
+                        </span>
                         {assignment.lockdownMode && (
-                          <span className="inline-flex items-center gap-1"><ShieldAlert aria-hidden="true" className="size-3" /> Lockdown</span>
+                          <span className="inline-flex items-center gap-1">
+                            <ShieldAlert aria-hidden="true" className="size-3" /> Lockdown
+                          </span>
                         )}
                       </div>
                     </TableCell>
                     <TableCell className="text-xs">
-                      <p className="font-medium">{Number.isNaN(assignment.dueDate.getTime()) ? "No due date" : assignment.dueDate.toLocaleDateString()}</p>
-                      <p className="text-muted-foreground">{isPastDue(assignment.dueDate) ? "Past due" : "Active"}</p>
+                      <p className="font-medium">
+                        {Number.isNaN(assignment.dueDate.getTime())
+                          ? "No due date"
+                          : assignment.dueDate.toLocaleDateString()}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {isPastDue(assignment.dueDate) ? "Past due" : "Active"}
+                      </p>
                     </TableCell>
                     <TableCell>
                       <Select
                         value={assignment.visibility || "private"}
-                        onValueChange={(value: "private" | "network" | "global") => updateVisibility(assignment.id, value)}
+                        onValueChange={(value: "private" | "network" | "global") =>
+                          updateVisibility(assignment.id, value)
+                        }
                       >
-                        <SelectTrigger size="sm" aria-label={`Visibility for ${assignment.title}`} className="cursor-pointer text-xs">
+                        <SelectTrigger
+                          size="sm"
+                          aria-label={`Visibility for ${assignment.title}`}
+                          className="cursor-pointer text-xs"
+                        >
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="private"><Lock /> Private</SelectItem>
-                          <SelectItem value="network"><ShieldCheck /> Network</SelectItem>
-                          <SelectItem value="global"><Globe /> Global</SelectItem>
+                          <SelectItem value="private">
+                            <Lock /> Private
+                          </SelectItem>
+                          <SelectItem value="network">
+                            <ShieldCheck /> Network
+                          </SelectItem>
+                          <SelectItem value="global">
+                            <Globe /> Global
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
                     <TableCell className="pr-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${assignment.title}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label={`Actions for ${assignment.title}`}
+                          >
                             <MoreHorizontal />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onSelect={() => handleDuplicate(assignment)}><Copy /> Duplicate</DropdownMenuItem>
-                          <DropdownMenuItem variant="destructive" onSelect={() => setAssignmentToDelete(assignment.id)}>
+                          <DropdownMenuItem onSelect={() => handleDuplicate(assignment)}>
+                            <Copy /> Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={() => setAssignmentToDelete(assignment.id)}
+                          >
                             <Trash2 /> Delete assignment
                           </DropdownMenuItem>
                         </DropdownMenuContent>

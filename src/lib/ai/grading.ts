@@ -6,15 +6,18 @@ export async function gradeResponse(
   question: string,
   answer: string,
   rubric?: string,
-  studentNames: string[] = []
+  studentNames: string[] = [],
+  /** The teacher's expected answer for this question (kept apart from the assignment rubric). */
+  reference?: string,
 ): Promise<{
-  score: number,
-  feedback: string,
-  reasoning?: string,
-  usage?: { inputTokens: number, outputTokens: number },
+  score: number;
+  feedback: string;
+  reasoning?: string;
+  misconceptions?: string[];
+  usage?: { inputTokens: number; outputTokens: number };
   /** True when the reply must not be auto-finalised (suspected injection, implausible full marks). */
-  needsReview?: boolean,
-  reviewReason?: string
+  needsReview?: boolean;
+  reviewReason?: string;
 }> {
   try {
     // Basic verification of inputs
@@ -23,17 +26,17 @@ export async function gradeResponse(
     }
 
     return await gradeWithModel(
-      { question, answer, rubric },
+      { question, answer, rubric, reference },
       async ({ systemInstruction, userPrompt }) => {
         const result = await model.generateContent({
           scrubLevel: "full",
           systemInstruction,
-          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
           generationConfig: {
             maxOutputTokens: 1024,
             temperature: 0.1,
             responseMimeType: "application/json",
-          }
+          },
         });
         const response = await result.response;
         let text = "";
@@ -41,7 +44,7 @@ export async function gradeResponse(
           text = response.text();
         } catch (textError) {
           // Check if it's a safety block
-          if (response.candidates && response.candidates[0]?.finishReason === 'SAFETY') {
+          if (response.candidates && response.candidates[0]?.finishReason === "SAFETY") {
             throw new Error("Response blocked; manual review required");
           }
           throw textError;
@@ -50,20 +53,26 @@ export async function gradeResponse(
           text,
           usage: {
             inputTokens: response.usageMetadata?.promptTokenCount || 0,
-            outputTokens: response.usageMetadata?.candidatesTokenCount || 0
-          }
+            outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
+          },
         };
       },
-      { scrub: (text) => scrubPII(text, studentNames), defaultFeedback: "No feedback provided." }
+      { scrub: (text) => scrubPII(text, studentNames), defaultFeedback: "No feedback provided." },
     );
   } catch (error: unknown) {
-    console.error("Error in gradeResponse:", error instanceof Error ? error.message : String(error));
+    console.error(
+      "Error in gradeResponse:",
+      error instanceof Error ? error.message : String(error),
+    );
     throw new Error("AI grading unavailable; manual review required");
   }
 }
 
-export async function synthesizeRubric(questionText: string, topic: string): Promise<{ text: string, usage?: { inputTokens: number, outputTokens: number } }> {
-    const prompt = `
+export async function synthesizeRubric(
+  questionText: string,
+  topic: string,
+): Promise<{ text: string; usage?: { inputTokens: number; outputTokens: number } }> {
+  const prompt = `
       You are an academic curriculum assistant.
       Your task is to create a detailed Scoring Guide for a question about "${topic}".
 
@@ -78,21 +87,21 @@ export async function synthesizeRubric(questionText: string, topic: string): Pro
       Use clear Markdown. Be professional and constructive.
     `;
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        maxOutputTokens: 1024,
-        temperature: 0.7,
-      }
-    });
-    const response = await result.response;
-    return {
-      text: response.text(),
-      usage: {
-        inputTokens: response.usageMetadata?.promptTokenCount || 0,
-        outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
-      }
-    };
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: {
+      maxOutputTokens: 1024,
+      temperature: 0.7,
+    },
+  });
+  const response = await result.response;
+  return {
+    text: response.text(),
+    usage: {
+      inputTokens: response.usageMetadata?.promptTokenCount || 0,
+      outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
+    },
+  };
 }
 
 export interface ValidationResult {
@@ -102,10 +111,10 @@ export interface ValidationResult {
 
 export function validateResponse(response: string, question?: string): ValidationResult {
   const violations: string[] = [];
-  const questionType = question ? classifyQuestion(question) : 'declarative'; // Default if no question provided
+  const questionType = question ? classifyQuestion(question) : "declarative"; // Default if no question provided
 
   // Only check for direct answers in problem-solving contexts
-  if (questionType === 'problem-solving') {
+  if (questionType === "problem-solving") {
     // Check for direct numerical answers without guidance
     const hasNumbers = /\d+\.?\d*/.test(response);
     const hasGuidance = /step|explain|why|how|think|consider/i.test(response);

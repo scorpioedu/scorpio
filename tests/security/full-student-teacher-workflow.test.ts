@@ -45,6 +45,7 @@ import { POST as register } from '../../src/app/api/auth/register/route';
 import { POST as createCourse } from '../../src/app/api/courses/route';
 import { POST as enroll } from '../../src/app/api/student/enrollment/route';
 import { POST as createAssignment, GET as getTeacherAssignment } from '../../src/app/api/assignments/route';
+import { POST as cloneAssignment } from '../../src/app/api/assignments/clone/route';
 import { POST as submitAssignment } from '../../src/app/api/submissions/route';
 import { POST as gradeSubmission } from '../../src/app/api/grade/route';
 import { POST as tutorChat } from '../../src/app/api/student/tutor/route';
@@ -755,14 +756,21 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     );
     expect(networkWaypointsSnap.docs.map((d) => d.id)).toContain(assignmentId);
 
-    // Colleague can load the full template via GET /api/assignments for forking
+    // Colleague can load the public template via GET /api/assignments, but not its answer key (owner only)
     const forkFetchRes = await getTeacherAssignment(
       new NextRequest(`http://localhost/api/assignments?id=${assignmentId}`, {
         headers: { Authorization: `Bearer ${COLLEAGUE_UID}` },
       })
     );
     expect(forkFetchRes.status).toBe(200);
-    expect((await forkFetchRes.json()).questions[0].correctAnswer).toBe('First Law');
+    const forkFetched = await forkFetchRes.json();
+    for (const q of forkFetched.questions) expect(q).not.toHaveProperty('correctAnswer');
+    expect(forkFetched).not.toHaveProperty('rubric');
+
+    // Forking department waypoints is a Department License feature; this network is on the free plan
+    const cloneRes = await cloneAssignment(apiReq('assignments/clone', COLLEAGUE_UID, { sourceId: assignmentId }));
+    expect(cloneRes.status).toBe(403);
+    expect(await cloneRes.json()).toMatchObject({ code: 'plan_upgrade_required', feature: 'network-share' });
 
     // Teacher compiles an AI Learning Portfolio for Student 1 based on Raise tutor sessions
     const portfolioRes = await generatePortfolio(

@@ -1,24 +1,54 @@
 "use client";
-import { getTeacherAssignment } from "@/lib/authenticated-fetch";
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useCallback, useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Copy, Globe, Users, Lock, Loader2, Sparkles, Waypoints, Filter, ArrowUpRight, Clock, Star, MapPinned } from "lucide-react";
+import {
+  Search,
+  Copy,
+  Globe,
+  Users,
+  Lock,
+  Loader2,
+  Sparkles,
+  Waypoints,
+  Filter,
+  ArrowUpRight,
+  Clock,
+  Star,
+  MapPinned,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
-import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
+import {
+  STARTER_WAYPOINT_COUNT,
+  isWaypointLocked as isWaypointLockedByPlan,
+} from "@/lib/plan-limits";
 
 interface WaypointQuestion {
   id?: string;
@@ -70,9 +100,9 @@ export default function WaypointsPage() {
       if (activeTab === "global") {
         if (topicFilter !== "all") {
           q = query(
-            collection(db, "assignments"), 
+            collection(db, "assignments"),
             where("visibility", "==", "global"),
-            where("topic", "==", topicFilter)
+            where("topic", "==", topicFilter),
           );
         } else {
           q = query(collection(db, "assignments"), where("visibility", "==", "global"));
@@ -84,19 +114,19 @@ export default function WaypointsPage() {
           setLoading(false);
           return;
         }
-        
+
         if (topicFilter !== "all") {
           q = query(
-            collection(db, "assignments"), 
+            collection(db, "assignments"),
             where("visibility", "==", "network"),
             where("organizationId", "==", orgId),
-            where("topic", "==", topicFilter)
+            where("topic", "==", topicFilter),
           );
         } else {
           q = query(
-            collection(db, "assignments"), 
+            collection(db, "assignments"),
             where("visibility", "==", "network"),
-            where("organizationId", "==", orgId)
+            where("organizationId", "==", orgId),
           );
         }
       } else {
@@ -104,18 +134,20 @@ export default function WaypointsPage() {
       }
 
       const snap = await getDocs(q);
-      const docs = snap.docs.map(d => ({ 
-        id: d.id, 
+      const docs = snap.docs.map((d) => ({
+        id: d.id,
         ...d.data(),
         createdAt: d.data().createdAt?.toDate() || new Date(),
-        forkCount: d.data().forkCount || 0
+        forkCount: d.data().forkCount || 0,
       })) as Waypoint[];
-      
+
       setWaypoints(docs);
 
       // Track the first 3 global templates as starter waypoints for Free plan
       if (activeTab === "global") {
-        setStarterIds(prev => prev.length === 0 ? docs.slice(0, 3).map(d => d.id) : prev);
+        setStarterIds((prev) =>
+          prev.length === 0 ? docs.slice(0, STARTER_WAYPOINT_COUNT).map((d) => d.id) : prev,
+        );
       }
     } catch (e: unknown) {
       console.error("Waypoints fetch error:", e);
@@ -136,7 +168,6 @@ export default function WaypointsPage() {
     }
   }, [user, authLoading, fetchWaypoints]);
 
-
   const isWaypointLocked = (waypoint: Waypoint, index: number): boolean =>
     isWaypointLockedByPlan(waypoint.id, index, starterIds, isFreePlan, activeTab);
 
@@ -147,43 +178,40 @@ export default function WaypointsPage() {
       return;
     }
 
+    // The server copies the answer key into a private assignment the teacher owns (it never comes back
+    // in this response), then the editor loads that copy.
     try {
-      const full = await getTeacherAssignment(waypoint.id);
-      const fullData = full.data();
-      const mergedQuestions = (fullData.questions || waypoint.questions || []).map((q: WaypointQuestion) => ({
-        ...q,
-        correctAnswer: q.correctAnswer || q.answer || q.expectedAnswer || ""
-      }));
-
-      sessionStorage.setItem(
-        "forked_assignment",
-        JSON.stringify({
-          ...waypoint,
-          ...fullData,
-          questions: mergedQuestions
-        })
+      const res = await authenticatedFetch("/api/assignments/clone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sourceId: waypoint.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 403 && data.code === "plan_upgrade_required") {
+        setUpgradeFeature(data.feature === "network-share" ? "network-share" : "waypoints");
+        setIsUpgradeOpen(true);
+        return;
+      }
+      if (!res.ok || typeof data.id !== "string") {
+        toast.error(data.error || "Could not copy this waypoint. Please try again.");
+        return;
+      }
+      setWaypoints((prev) =>
+        prev.map((w) => (w.id === waypoint.id ? { ...w, forkCount: (w.forkCount || 0) + 1 } : w)),
       );
-      router.push("/teacher/create?fork=true");
+      router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
     } catch {
-      // Fallback using waypoint questions directly
-      const fallbackQuestions = (waypoint.questions || []).map((q: WaypointQuestion) => ({
-        ...q,
-        correctAnswer: q.correctAnswer || q.answer || q.expectedAnswer || ""
-      }));
-      sessionStorage.setItem(
-        "forked_assignment",
-        JSON.stringify({ ...waypoint, questions: fallbackQuestions })
-      );
-      router.push("/teacher/create?fork=true");
+      toast.error("Could not copy this waypoint. Please try again.");
     }
   };
 
-  const filteredWaypoints = waypoints.filter(a => {
-    const matchesSearch = a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredWaypoints = waypoints.filter((a) => {
+    const matchesSearch =
+      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (a.description || "").toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     if (activeTab === "network" && !a.organizationId) return false;
-    
+
     return matchesSearch;
   });
 
@@ -199,7 +227,8 @@ export default function WaypointsPage() {
             <div>
               <span className="font-semibold text-foreground">Free Plan:</span>
               <span className="text-muted-foreground ml-1.5">
-                You have access to 3 starter waypoints. Upgrade to a Department License to unlock all 20+ verified templates and department sharing.
+                You have access to 3 starter waypoints. Upgrade to a Department License to unlock
+                all 20+ verified templates and department sharing.
               </span>
             </div>
           </div>
@@ -219,10 +248,10 @@ export default function WaypointsPage() {
       <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-5 md:p-6 shadow-sm">
         <div className="absolute top-0 right-0 -mt-16 -mr-16 h-48 w-48 rounded-full bg-primary/10 blur-[60px]" />
         <div className="absolute bottom-0 left-0 -mb-16 -ml-16 h-32 w-32 rounded-full bg-gray-500/5 blur-[40px]" />
-        
+
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary border border-primary/20 dark:border-primary/30 uppercase tracking-widest"
@@ -230,7 +259,7 @@ export default function WaypointsPage() {
               <Sparkles className="h-3 w-3" />
               Template library
             </motion.div>
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -238,7 +267,7 @@ export default function WaypointsPage() {
             >
               Waypoints
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -246,9 +275,9 @@ export default function WaypointsPage() {
             >
               Find a shared assignment and copy it into your class.
             </motion.p>
-            
+
             {isDepartmentPlan ? (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -258,7 +287,7 @@ export default function WaypointsPage() {
                 Department License Active
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -269,11 +298,11 @@ export default function WaypointsPage() {
               </motion.div>
             )}
           </div>
-          
-          <motion.div 
-             initial={{ opacity: 0, scale: 0.9 }}
-             animate={{ opacity: 1, scale: 1 }}
-             className="hidden lg:block"
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="hidden lg:block"
           >
             <div className="h-24 w-24 rounded-full border-2 border-dashed border-border flex items-center justify-center relative bg-background/50 backdrop-blur-sm">
               <Waypoints className="h-10 w-10 text-muted-foreground" />
@@ -288,7 +317,7 @@ export default function WaypointsPage() {
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-3">
         <div className="relative w-full lg:min-w-48 lg:flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
+          <Input
             aria-label="Search templates"
             placeholder="Search templates…"
             className="pl-11 h-12 bg-background dark:bg-background border-border"
@@ -296,7 +325,7 @@ export default function WaypointsPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
           <TabsList className="h-auto w-full">
             <TabsTrigger value="global" className="min-h-9 gap-2 px-3">
@@ -312,23 +341,46 @@ export default function WaypointsPage() {
         </Tabs>
 
         <Select value={topicFilter} onValueChange={setTopicFilter}>
-          <SelectTrigger aria-label="Topic" className="cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border">
+          <SelectTrigger
+            aria-label="Topic"
+            className="cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border"
+          >
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               <SelectValue placeholder="All Topics" />
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">All Topics</SelectItem>
-            <SelectItem value="kinematics" className="cursor-pointer">Kinematics</SelectItem>
-            <SelectItem value="dynamics" className="cursor-pointer">Dynamics</SelectItem>
-            <SelectItem value="rotation" className="cursor-pointer">Rotational Physics</SelectItem>
-            <SelectItem value="thermodynamics" className="cursor-pointer">Thermodynamics</SelectItem>
-            <SelectItem value="em" className="cursor-pointer">Electromagnetism</SelectItem>
-            <SelectItem value="waves" className="cursor-pointer">Waves & Optics</SelectItem>
-            <SelectItem value="modern" className="cursor-pointer">Modern Physics</SelectItem>
-            <SelectItem value="fluids" className="cursor-pointer">Fluid Mechanics</SelectItem>
-            <SelectItem value="oscillations" className="cursor-pointer">Oscillations</SelectItem>
+            <SelectItem value="all" className="cursor-pointer">
+              All Topics
+            </SelectItem>
+            <SelectItem value="kinematics" className="cursor-pointer">
+              Kinematics
+            </SelectItem>
+            <SelectItem value="dynamics" className="cursor-pointer">
+              Dynamics
+            </SelectItem>
+            <SelectItem value="rotation" className="cursor-pointer">
+              Rotational Physics
+            </SelectItem>
+            <SelectItem value="thermodynamics" className="cursor-pointer">
+              Thermodynamics
+            </SelectItem>
+            <SelectItem value="em" className="cursor-pointer">
+              Electromagnetism
+            </SelectItem>
+            <SelectItem value="waves" className="cursor-pointer">
+              Waves & Optics
+            </SelectItem>
+            <SelectItem value="modern" className="cursor-pointer">
+              Modern Physics
+            </SelectItem>
+            <SelectItem value="fluids" className="cursor-pointer">
+              Fluid Mechanics
+            </SelectItem>
+            <SelectItem value="oscillations" className="cursor-pointer">
+              Oscillations
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -336,11 +388,11 @@ export default function WaypointsPage() {
       <div className="min-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
-             <div className="relative">
-               <Loader2 className="h-12 w-12 animate-spin text-primary" />
-               <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-             </div>
-             <p className="text-muted-foreground font-medium animate-pulse">Loading templates…</p>
+            <div className="relative">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
+            </div>
+            <p className="text-muted-foreground font-medium animate-pulse">Loading templates…</p>
           </div>
         ) : activeTab === "network" && isFreePlan ? (
           /* Locked Department Network Tab for Free Plan */
@@ -359,7 +411,8 @@ export default function WaypointsPage() {
               </div>
               <h3 className="text-xl font-bold text-foreground">Department Template Sharing</h3>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-                Collaborate with physics teachers across your school to share assignments, curriculum templates, and standardized rubrics.
+                Collaborate with physics teachers across your school to share assignments,
+                curriculum templates, and standardized rubrics.
               </p>
             </div>
             <Button
@@ -374,7 +427,7 @@ export default function WaypointsPage() {
             </Button>
           </motion.div>
         ) : filteredWaypoints.length === 0 ? (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex flex-col items-center justify-center py-32 text-center border-2 border-dashed border-border rounded-3xl bg-muted/30"
@@ -384,7 +437,7 @@ export default function WaypointsPage() {
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">No templates found</h3>
             <p className="text-muted-foreground max-w-sm px-4">
-              {activeTab === "network" && !profile?.organizationId 
+              {activeTab === "network" && !profile?.organizationId
                 ? "Switch to the Global tab or join a department network to see shared waypoints."
                 : "Try another search or topic."}
             </p>
@@ -403,13 +456,19 @@ export default function WaypointsPage() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.4, delay: idx * 0.05 }}
                   >
-                    <Card className={`group relative h-full flex flex-col overflow-hidden bg-card border transition-all duration-300 shadow-sm hover:shadow-md ${
-                      locked ? "border-purple-500/30 dark:border-purple-500/20" : "border-border hover:border-primary/40"
-                    }`}>
-                      <div className={`absolute top-0 right-0 h-24 w-24 rounded-bl-full blur-2xl transition-colors ${
-                        locked ? "bg-purple-500/10" : "bg-primary/5 group-hover:bg-primary/10"
-                      }`} />
-                      
+                    <Card
+                      className={`group relative h-full flex flex-col overflow-hidden bg-card border transition-all duration-300 shadow-sm hover:shadow-md ${
+                        locked
+                          ? "border-purple-500/30 dark:border-purple-500/20"
+                          : "border-border hover:border-primary/40"
+                      }`}
+                    >
+                      <div
+                        className={`absolute top-0 right-0 h-24 w-24 rounded-bl-full blur-2xl transition-colors ${
+                          locked ? "bg-purple-500/10" : "bg-primary/5 group-hover:bg-primary/10"
+                        }`}
+                      />
+
                       <CardHeader className="pb-4 relative z-10">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -435,11 +494,17 @@ export default function WaypointsPage() {
                             )}
                           </div>
                           {waypoint.visibility === "global" ? (
-                            <div title="Publicly Available" className="p-1.5 bg-blue-500/10 rounded-lg shrink-0">
+                            <div
+                              title="Publicly Available"
+                              className="p-1.5 bg-blue-500/10 rounded-lg shrink-0"
+                            >
                               <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                             </div>
                           ) : (
-                            <div title="Department Shared" className="p-1.5 bg-orange-500/10 rounded-lg shrink-0">
+                            <div
+                              title="Department Shared"
+                              className="p-1.5 bg-orange-500/10 rounded-lg shrink-0"
+                            >
                               <Users className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                             </div>
                           )}
@@ -451,20 +516,21 @@ export default function WaypointsPage() {
                           {waypoint.description || "No description provided."}
                         </CardDescription>
                       </CardHeader>
-                      
+
                       <CardContent className="pt-0 flex-grow relative z-10">
                         <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted px-3 py-2 rounded-xl">
                           <span className="flex items-center gap-2">
-                             <Star className="h-3 w-3 text-primary" />
-                             {waypoint.forkCount || 0} Active Fork{(waypoint.forkCount || 0) !== 1 ? 's' : ''}
+                            <Star className="h-3 w-3 text-primary" />
+                            {waypoint.forkCount || 0} Active Fork
+                            {(waypoint.forkCount || 0) !== 1 ? "s" : ""}
                           </span>
                           <span>v1</span>
                         </div>
                       </CardContent>
-                      
+
                       <CardFooter className="pt-2 pb-6 px-6 relative z-10 mt-auto">
                         {locked ? (
-                          <Button 
+                          <Button
                             onClick={() => {
                               setUpgradeFeature("waypoints");
                               setIsUpgradeOpen(true);
@@ -475,7 +541,7 @@ export default function WaypointsPage() {
                             Unlock with Department
                           </Button>
                         ) : (
-                          <Button 
+                          <Button
                             onClick={() => handleFork(waypoint, idx)}
                             className="w-full h-11 font-bold active:scale-[0.98] cursor-pointer"
                           >

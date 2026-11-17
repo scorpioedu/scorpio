@@ -1,32 +1,37 @@
 import { mergeAnswerKey } from "@/lib/assignment-security";
 import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
 import { errorResponse } from "@/lib/api-errors";
-import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
-import { gradeResponse } from '@/lib/ai/grading';
-import { checkBudget, recordUsage } from '@/lib/usage-limit';
-import { parseJsonBody } from '@/lib/api-schema';
-import { gradeBody } from '@/lib/schemas/api-bodies';
-
-interface GradableQuestion { id: string; text: string; type?: string; points?: number; correctAnswer?: string }
+import { NextRequest, NextResponse } from "next/server";
+import { adminDb } from "@/lib/firebase-admin";
+import { gradeResponse } from "@/lib/ai/grading";
+import { checkBudget, recordUsage } from "@/lib/usage-limit";
+import { parseJsonBody } from "@/lib/api-schema";
+import { gradeBody } from "@/lib/schemas/api-bodies";
+import {
+  gradeSubmissionAnswers,
+  needsAi,
+  type AiGrader,
+  type GradableQuestion,
+  type SubmittedAnswer,
+} from "../../../../functions/src/grading-core";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
     console.error("Firebase Admin not initialized");
-    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
   }
 
   try {
-    const parsed = await parseJsonBody(req, gradeBody, { message: 'Missing submissionId' });
+    const parsed = await parseJsonBody(req, gradeBody, { message: "Missing submissionId" });
     if (!parsed.ok) return parsed.response;
     const { submissionId } = parsed.data;
 
     // 1. Fetch Submission
-    const submissionRef = adminDb.collection('submissions').doc(submissionId);
+    const submissionRef = adminDb.collection("submissions").doc(submissionId);
     const submissionSnap = await submissionRef.get();
 
     if (!submissionSnap.exists) {
-      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+      return NextResponse.json({ error: "Submission not found" }, { status: 404 });
     }
 
     const submissionData = submissionSnap.data();
@@ -34,175 +39,145 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     const studentId = submissionData?.studentId;
 
     if (!assignmentId || !studentId) {
-      return NextResponse.json({ error: 'Invalid submission data' }, { status: 400 });
+      return NextResponse.json({ error: "Invalid submission data" }, { status: 400 });
     }
 
-    // --- Budget Check ---
-    const studentDoc = await adminDb.collection("users").doc(studentId).get();
-    const studentData = studentDoc.exists ? studentDoc.data() : null;
-    let organizationId = studentData?.organizationId;
-
-    // Fallback: If student doesn't have an organization, inherit from teacher
-    if (!organizationId && studentData?.role === "student" && studentData?.teacherId) {
-        const teacherDoc = await adminDb.collection("users").doc(studentData.teacherId).get();
-        if (teacherDoc.exists) {
-            organizationId = teacherDoc.data()?.organizationId;
-        }
-    }
-
-    if (!organizationId) {
-        return NextResponse.json({ error: "No organization found for grading budget." }, { status: 403 });
-    }
-
-    const budgetCheck = await checkBudget(organizationId, "grading");
-    if (!budgetCheck.allowed) {
-        return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
-    }
-
-    // 1.5 Resolve Student Names for PII Scrubbing
-    let studentNames: string[] = [];
-    try {
-      const teacherId = studentData?.teacherId;
-      if (teacherId) {
-        const studentsSnapshot = await adminDb.collection("users")
-          .where("teacherId", "==", teacherId)
-          .where("role", "==", "student")
-          .get();
-        
-        studentNames = studentsSnapshot.docs.map(doc => doc.data().displayName || doc.data().name).filter(Boolean);
-      }
-      
-      // Also include this student specifically
-      const currentName = studentData?.displayName || studentData?.name;
-      if (currentName && !studentNames.includes(currentName)) {
-        studentNames.push(currentName);
-      }
-    } catch (e) {
-      console.error("Error resolving student names for scrubbing:", e);
-    }
-
-    // 2. Fetch Assignment
-    const assignmentSnap = await adminDb.collection('assignments').doc(assignmentId).get();
-    
+    // 2. Fetch Assignment and its server-only answer key
+    const assignmentSnap = await adminDb.collection("assignments").doc(assignmentId).get();
     if (!assignmentSnap.exists) {
-      return NextResponse.json({ error: 'Assignment not found' }, { status: 404 });
+      return NextResponse.json({ error: "Assignment not found" }, { status: 404 });
     }
-
     const key = (await adminDb.collection("assignment_keys").doc(assignmentId).get()).data();
     const assignmentData = mergeAnswerKey(assignmentSnap.data()!, key);
-    const questions: GradableQuestion[] = assignmentData?.questions || [];
-    const answers = submissionData?.answers || []; 
-    const globalRubric = assignmentData?.rubric || "";
+    const questions = (assignmentData?.questions || []) as GradableQuestion[];
+    const answers: SubmittedAnswer[] = submissionData?.answers || [];
 
-    // 3. Grade
-    let totalScore = 0;
-    let maxScore = 0;
-    
-    // Calculate accurate maxScore from ALL questions in assignment
-    for (const q of questions) {
-      maxScore += (q.points || 10);
+    // 3. Only free-response answers reach the AI, so the budget and roster lookups are only needed then.
+    let aiGrader: AiGrader | undefined;
+    let organizationId: string | undefined;
+    if (needsAi(questions, answers)) {
+      const studentDoc = await adminDb.collection("users").doc(studentId).get();
+      const studentData = studentDoc.exists ? studentDoc.data() : null;
+      organizationId = studentData?.organizationId;
+      // Fallback: If student doesn't have an organization, inherit from teacher
+      if (!organizationId && studentData?.role === "student" && studentData?.teacherId) {
+        const teacherDoc = await adminDb.collection("users").doc(studentData.teacherId).get();
+        if (teacherDoc.exists) organizationId = teacherDoc.data()?.organizationId;
+      }
+      if (!organizationId) {
+        return NextResponse.json(
+          { error: "No organization found for grading budget." },
+          { status: 403 },
+        );
+      }
+      const budgetCheck = await checkBudget(organizationId, "grading");
+      if (!budgetCheck.allowed) {
+        return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
+      }
+      const studentNames = await rosterNames(studentData);
+      aiGrader = (input) =>
+        gradeResponse(
+          input.question,
+          input.answer,
+          input.rubric,
+          studentNames,
+          input.reference,
+        ).then((r) => ({ ...r, reasoning: r.reasoning || "" }));
     }
 
-    const gradedAnswers = [];
-    let totalPromptTokens = 0;
-    let totalCandidateTokens = 0;
-
-    for (const ans of answers) {
-      const question = questions.find((q) => q.id === ans.questionId);
-      if (!question) {
-        gradedAnswers.push(ans);
-        continue;
-      }
-
-      const points = question.points || 10;
-      // We already added points to maxScore above for all questions
-      
-      let score = 0;
-      let feedback = "";
-      let reasoning = "";
-
-      // Improved Grading Logic: 
-      // 1. Multiple Choice / True-False: Strict match
-      // 2. Text / Short Answer: AI Grading for nuance
-      if ((question.type === "text" || question.type === "short-answer") && ans.answer) {
-        // AI Grading
-        try {
-            // Combine question-specific rubric (correctAnswer) with global rubric
-            const combinedRubric = [question.correctAnswer, globalRubric].filter(Boolean).join("\n\nGlobal Assignment Rubric:\n");
-            const result = await gradeResponse(question.text, ans.answer, combinedRubric, studentNames);
-            // Track usage (the call was made and billed even if the result needs review)
-            if (result.usage) {
-                totalPromptTokens += result.usage.inputTokens;
-                totalCandidateTokens += result.usage.outputTokens;
-            }
-
-            if (result.needsReview) {
-                // Suspected prompt injection or implausible full marks: never auto-finalise.
-                if (totalPromptTokens > 0 || totalCandidateTokens > 0) {
-                    await recordUsage(organizationId, "grading", totalPromptTokens, totalCandidateTokens);
-                }
-                if (!submissionData?.graded) await submissionRef.update({ status: "pending_review", gradingError: result.reviewReason || "Teacher review required", graded: false });
-                return NextResponse.json({ success: false, pendingReview: true, reason: result.reviewReason }, { status: 200 });
-            }
-
-            feedback = result.feedback;
-            reasoning = result.reasoning || "";
-
-            // Calculate score based on points
-            // result.score is out of 10
-            const rawScore = result.score; // 0-10
-            score = (rawScore / 10) * points;
-            
-        } catch (e) {
-            console.error("AI Grading failed", e);
-            if (!submissionData?.graded) await submissionRef.update({ status: "pending_review", gradingError: "AI grading unavailable", graded: false });
-            return NextResponse.json({ error: "AI grading failed. The existing grade was preserved; review manually or retry." }, { status: 502 });
-        }
-      } else if (question.correctAnswer && (question.type === "multiple-choice" || question.type === "true-false")) {
-        // Strict match for objective questions
-        const isCorrect = ans.answer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
-        score = isCorrect ? points : 0;
-        feedback = isCorrect ? "Correct!" : `Incorrect. The correct answer was: ${question.correctAnswer}`;
-      } else if (question.correctAnswer) {
-        // Fallback exact match for other types just in case
-        const isCorrect = ans.answer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
-        score = isCorrect ? points : 0;
-        feedback = isCorrect ? "Correct!" : `Incorrect. Expected: ${question.correctAnswer}`;
-      }
-
-      totalScore += score;
-      gradedAnswers.push({
-        ...ans,
-        feedback,
-        reasoning,
-        score,
-        maxPoints: points
+    // 4. Grade (deterministic checks first, AI only where needed)
+    let result: Awaited<ReturnType<typeof gradeSubmissionAnswers>>;
+    try {
+      result = await gradeSubmissionAnswers(questions, answers, {
+        aiGrader,
+        globalRubric: assignmentData?.rubric || "",
       });
+    } catch (e) {
+      console.error("AI Grading failed", e instanceof Error ? e.message : String(e));
+      if (!submissionData?.graded)
+        await submissionRef.update({
+          status: "pending_review",
+          gradingError: "AI grading unavailable",
+          graded: false,
+        });
+      return NextResponse.json(
+        { error: "AI grading failed. The existing grade was preserved; review manually or retry." },
+        { status: 502 },
+      );
     }
 
-    // Record cumulative usage
-    if (totalPromptTokens > 0 || totalCandidateTokens > 0) {
-        await recordUsage(organizationId, "grading", totalPromptTokens, totalCandidateTokens);
+    if (organizationId && (result.usage.inputTokens > 0 || result.usage.outputTokens > 0)) {
+      await recordUsage(
+        organizationId,
+        "grading",
+        result.usage.inputTokens,
+        result.usage.outputTokens,
+      );
     }
 
-    const finalScore = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
+    if (result.reviewReasons.length > 0) {
+      // Suspected prompt injection, implausible full marks or a missing key: never auto-finalise.
+      if (!submissionData?.graded) {
+        await submissionRef.update({
+          answers: result.answers,
+          status: "pending_review",
+          gradingError: result.reviewReasons[0],
+          graded: false,
+        });
+      }
+      return NextResponse.json(
+        { success: false, pendingReview: true, reason: result.reviewReasons[0] },
+        { status: 200 },
+      );
+    }
 
-    // 4. Update Submission
+    // 5. Update Submission
     await submissionRef.update({
-      score: finalScore,
-      totalPoints: maxScore,
-      earnedPoints: totalScore,
-      answers: gradedAnswers,
+      score: result.score,
+      totalPoints: result.totalPoints,
+      earnedPoints: result.earnedPoints,
+      answers: result.answers,
       graded: true,
       status: "graded",
-      gradedAt: new Date()
+      gradedAt: new Date(),
     });
 
-    return NextResponse.json({ success: true, score: finalScore });
-
+    return NextResponse.json({ success: true, score: result.score });
   } catch (error: unknown) {
     return errorResponse(error, "grade", requestId);
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": undefined, "teacher": true, "resource": "submission", "rateLimit": "grade"});
+/** Names of the student's classmates and the student, masked before any text reaches the AI. */
+async function rosterNames(
+  studentData: FirebaseFirestore.DocumentData | null | undefined,
+): Promise<string[]> {
+  const names: string[] = [];
+  try {
+    const teacherId = studentData?.teacherId;
+    if (teacherId) {
+      const studentsSnapshot = await adminDb
+        .collection("users")
+        .where("teacherId", "==", teacherId)
+        .where("role", "==", "student")
+        .get();
+      names.push(
+        ...studentsSnapshot.docs
+          .map((doc) => doc.data().displayName || doc.data().name)
+          .filter(Boolean),
+      );
+    }
+    const currentName = studentData?.displayName || studentData?.name;
+    if (currentName && !names.includes(currentName)) names.push(currentName);
+  } catch (e) {
+    console.error("Error resolving student names for scrubbing:", e);
+  }
+  return names;
+}
+
+export const POST = withAuthorizedRequest(handlePost, {
+  identityField: undefined,
+  teacher: true,
+  resource: "submission",
+  rateLimit: "grade",
+});

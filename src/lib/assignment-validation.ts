@@ -1,9 +1,13 @@
+import { parseNumericKey } from "../../functions/src/grading-core";
+
 export interface ValidatableQuestion {
   id?: string;
-  type: "text" | "multiple-choice" | "true-false" | "short-answer";
+  type: "text" | "multiple-choice" | "true-false" | "short-answer" | "numeric";
   text?: string;
   options?: string[];
   correctAnswer?: string;
+  tolerance?: number;
+  sigFigs?: number;
 }
 
 export interface ValidationResult {
@@ -18,7 +22,7 @@ export function validateQuestionAnswers(questions: ValidatableQuestion[]): Valid
     const qNum = i + 1;
     if (q.type === "multiple-choice") {
       const hasValidSelected = Boolean(
-        q.correctAnswer && q.options?.some(opt => opt.trim() && opt === q.correctAnswer)
+        q.correctAnswer && q.options?.some((opt) => opt.trim() && opt === q.correctAnswer),
       );
       if (!hasValidSelected) {
         return {
@@ -32,6 +36,37 @@ export function validateQuestionAnswers(questions: ValidatableQuestion[]): Valid
         return {
           valid: false,
           error: `Question ${qNum} (True/False): please select whether True or False is the correct answer.`,
+          questionIndex: i,
+        };
+      }
+    } else if (q.type === "numeric") {
+      if (!parseNumericKey(q.correctAnswer)) {
+        return {
+          valid: false,
+          error: `Question ${qNum} (Numeric): enter the correct answer as a number with its unit, like 12.5 m/s.`,
+          questionIndex: i,
+        };
+      }
+      if (
+        q.tolerance !== undefined &&
+        (typeof q.tolerance !== "number" ||
+          !Number.isFinite(q.tolerance) ||
+          q.tolerance < 0 ||
+          q.tolerance > 100)
+      ) {
+        return {
+          valid: false,
+          error: `Question ${qNum} (Numeric): tolerance must be between 0 and 100%.`,
+          questionIndex: i,
+        };
+      }
+      if (
+        q.sigFigs !== undefined &&
+        (!Number.isInteger(q.sigFigs) || q.sigFigs < 1 || q.sigFigs > 15)
+      ) {
+        return {
+          valid: false,
+          error: `Question ${qNum} (Numeric): significant figures must be a whole number from 1 to 15.`,
           questionIndex: i,
         };
       }

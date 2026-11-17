@@ -25,13 +25,32 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ArrowLeft, Send, MessagesSquare, CheckCircle, Clock, AlertTriangle, Play, Upload, X, FileText, Image as ImageIcon, AlertCircle, Save, Lightbulb, User, ChevronRight, Lock, Hand, Calculator, Copy, Check, RotateCcw } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  MessagesSquare,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Play,
+  Upload,
+  X,
+  FileText,
+  Image as ImageIcon,
+  AlertCircle,
+  Save,
+  Lightbulb,
+  User,
+  ChevronRight,
+  Lock,
+  Hand,
+  Calculator,
+  Copy,
+  Check,
+  RotateCcw,
+} from "lucide-react";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { toast } from "sonner";
 import { MathInputField } from "@/components/math-input";
@@ -41,14 +60,20 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils";
 import { getAssignmentPoints } from "@/lib/assignment-points";
 import { ScientificCalculator } from "@/components/calculator/scientific-calculator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { errorMessage } from "@/lib/error-utils";
 
 interface Question {
   id: string;
   text: string;
-  type: "text" | "multiple-choice" | "true-false" | "short-answer";
+  type: "text" | "multiple-choice" | "true-false" | "short-answer" | "numeric";
   options?: string[];
   correctAnswer?: string;
   points?: number;
@@ -91,7 +116,6 @@ interface Assignment {
   courseId?: string;
 }
 
-
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -101,7 +125,7 @@ interface ChatMessage {
 function AssignmentDetailContent() {
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
-  const id = searchParams ? searchParams.get("id") ?? "" : "";
+  const id = searchParams ? (searchParams.get("id") ?? "") : "";
   const router = useRouter();
   const { user, profile } = useAuth();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
@@ -161,7 +185,7 @@ function AssignmentDetailContent() {
 
     const handleBlur = () => {
       if (!assignment?.enableTabDetection || !hasStarted || submitted) return;
-      
+
       if (ignoreNextBlurRef.current) {
         ignoreNextBlurRef.current = false;
         return;
@@ -174,7 +198,7 @@ function AssignmentDetailContent() {
         return;
       }
 
-      if (document.visibilityState === 'hidden' || !document.hasFocus()) {
+      if (document.visibilityState === "hidden" || !document.hasFocus()) {
         setUnfocusCount((count) => count + 1);
         setShowUnfocusPopup(true);
       }
@@ -184,33 +208,35 @@ function AssignmentDetailContent() {
     const handlePopState = (e: PopStateEvent) => {
       if (assignment?.lockdownMode && hasStarted && !submitted) {
         window.history.pushState(null, "", window.location.href);
-        toast.error("Navigation is locked. Please complete and submit your assignment before leaving.");
+        toast.error(
+          "Navigation is locked. Please complete and submit your assignment before leaving.",
+        );
       }
     };
 
     if (assignment?.lockdownMode && hasStarted && !submitted) {
       window.history.pushState(null, "", window.location.href);
-      window.addEventListener('popstate', handlePopState);
+      window.addEventListener("popstate", handlePopState);
     }
 
     if (assignment?.enableTabDetection && hasStarted && !submitted) {
-      window.addEventListener('blur', handleBlur);
-      document.addEventListener('visibilitychange', handleBlur);
+      window.addEventListener("blur", handleBlur);
+      document.addEventListener("visibilitychange", handleBlur);
     }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('copy', handleCopy);
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('copy', handleCopy);
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      window.removeEventListener('popstate', handlePopState);
-      window.removeEventListener('blur', handleBlur);
-      document.removeEventListener('visibilitychange', handleBlur);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("blur", handleBlur);
+      document.removeEventListener("visibilitychange", handleBlur);
     };
   }, [ignoreNextBlurRef, assignment, submitted, hasStarted]);
 
@@ -236,12 +262,16 @@ function AssignmentDetailContent() {
                 studentCourseId = studentCourseId || sData.courseId;
                 studentTeacherId = studentTeacherId || sData.teacherId;
               }
-            } catch (e) { console.error("Could not fetch legacy student profile", e); }
+            } catch (e) {
+              console.error("Could not fetch legacy student profile", e);
+            }
           }
 
           // --- LEGACY RESOLUTION START ---
           if (studentTeacherId && !studentCourseId) {
-            const codeMatch = await getDocs(query(collection(db, "courses"), where("code", "==", studentTeacherId.trim())));
+            const codeMatch = await getDocs(
+              query(collection(db, "courses"), where("code", "==", studentTeacherId.trim())),
+            );
             if (!codeMatch.empty) {
               const courseDoc = codeMatch.docs[0];
               const courseData = courseDoc.data();
@@ -291,14 +321,14 @@ function AssignmentDetailContent() {
           const submissionsQuery = query(
             collection(db, "submissions"),
             where("assignmentId", "==", id),
-            where("studentId", "==", user.uid)
+            where("studentId", "==", user.uid),
           );
           const submissionsSnap = await getDocs(submissionsQuery);
           if (!submissionsSnap.empty) {
             const existingData = submissionsSnap.docs[0].data();
             setExistingSubmission({ ...existingData, id: submissionsSnap.docs[0].id });
 
-            if (existingData.status === 'draft') {
+            if (existingData.status === "draft") {
               setSubmitted(false);
               setHasStarted(true);
             } else {
@@ -319,7 +349,7 @@ function AssignmentDetailContent() {
               if (storedStart) {
                 const startTime = parseInt(storedStart);
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                const remaining = (assignmentData.timeLimit * 60) - elapsed;
+                const remaining = assignmentData.timeLimit * 60 - elapsed;
 
                 if (remaining > 0) {
                   setTimeLeft(remaining);
@@ -394,7 +424,7 @@ function AssignmentDetailContent() {
     if (assignment.lockdownMode) {
       document.documentElement.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable fullscreen: ${err.message}`);
-        // If it fails (some browsers or if not user-triggered), we still continue, 
+        // If it fails (some browsers or if not user-triggered), we still continue,
         // but tab detection will catch them anyway
       });
     }
@@ -419,7 +449,7 @@ function AssignmentDetailContent() {
       if (container) {
         container.scrollTo({
           top: container.scrollHeight,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     }
@@ -441,7 +471,9 @@ function AssignmentDetailContent() {
   const askRaiseAboutQuestion = (questionIndex: number, customPrompt?: string) => {
     setFocusedQuestionIndex(questionIndex);
     setAiHelperOpen(true);
-    const prompt = customPrompt || `I'm working on Question ${questionIndex + 1}. Can you provide a conceptual hint to help me get started?`;
+    const prompt =
+      customPrompt ||
+      `I'm working on Question ${questionIndex + 1}. Can you provide a conceptual hint to help me get started?`;
     handleAiSendMessage(prompt);
   };
 
@@ -452,43 +484,51 @@ function AssignmentDetailContent() {
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
-      content: textToSend
+      content: textToSend,
     };
 
-    setAiMessages(prev => [...prev, userMessage]);
+    setAiMessages((prev) => [...prev, userMessage]);
     if (!customMessage) setAiInput("");
     setAiLoading(true);
 
     try {
       // Highlight focused question in the prompt context if one is selected
-      const focusedContext = focusedQuestionIndex !== null && assignment.questions[focusedQuestionIndex]
-        ? `\nCURRENT STUDENT FOCUS: Question ${focusedQuestionIndex + 1} (${assignment.questions[focusedQuestionIndex].points || 10} pts): "${assignment.questions[focusedQuestionIndex].text}"\n\n`
-        : "";
+      const focusedContext =
+        focusedQuestionIndex !== null && assignment.questions[focusedQuestionIndex]
+          ? `\nCURRENT STUDENT FOCUS: Question ${focusedQuestionIndex + 1} (${assignment.questions[focusedQuestionIndex].points || 10} pts): "${assignment.questions[focusedQuestionIndex].text}"\n\n`
+          : "";
 
       // Construct comprehensive context
       const assignmentContext = `${focusedContext}ASSIGNMENT TITLE: ${assignment.title}
 ASSIGNMENT DESCRIPTION: ${assignment.description}
 
 ASSIGNMENT QUESTIONS:
-${assignment.questions.map((q, i) => {
-        const optionsStr = (q.type === 'multiple-choice' && q.options)
-          ? `\nOptions: ${q.options.map((opt, idx) => `${String.fromCharCode(65 + idx)}) ${opt}`).join(", ")}`
-          : "";
-        const isFocused = i === focusedQuestionIndex ? " [CURRENTLY FOCUSED BY STUDENT]" : "";
-        return `QUESTION ${i + 1}${isFocused}:
+${assignment.questions
+  .map((q, i) => {
+    const optionsStr =
+      q.type === "multiple-choice" && q.options
+        ? `\nOptions: ${q.options.map((opt, idx) => `${String.fromCharCode(65 + idx)}) ${opt}`).join(", ")}`
+        : "";
+    const isFocused = i === focusedQuestionIndex ? " [CURRENTLY FOCUSED BY STUDENT]" : "";
+    return `QUESTION ${i + 1}${isFocused}:
 Type: ${q.type}
 Text: ${q.text || "[This question has no text description. Refer to the assignment title/description.]"}${optionsStr}`;
-      }).join("\n\n")}`;
+  })
+  .join("\n\n")}`;
 
       // Include current student answers in context if they exist
-      const studentAnswersContext = Object.keys(answers).length > 0
-        ? `\n\nSTUDENT'S CURRENT ANSWERS (DRAFT):\n${assignment.questions.map((q, i) => answers[q.id] ? `Question ${i + 1} Answer: ${answers[q.id]}` : "").filter(Boolean).join("\n")}`
-        : "";
+      const studentAnswersContext =
+        Object.keys(answers).length > 0
+          ? `\n\nSTUDENT'S CURRENT ANSWERS (DRAFT):\n${assignment.questions
+              .map((q, i) => (answers[q.id] ? `Question ${i + 1} Answer: ${answers[q.id]}` : ""))
+              .filter(Boolean)
+              .join("\n")}`
+          : "";
 
       const fullContext = assignmentContext + studentAnswersContext;
 
       // Map local ChatMessage to the format our API expects
-      const historyForAi = aiMessages.map(m => ({ role: m.role, content: m.content }));
+      const historyForAi = aiMessages.map((m) => ({ role: m.role, content: m.content }));
 
       const response = await authenticatedFetch("/api/student/tutor", {
         method: "POST",
@@ -499,8 +539,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           role: "student",
           mode: "tutor",
           chatHistory: historyForAi,
-          assignmentContext: fullContext
-        })
+          assignmentContext: fullContext,
+        }),
       });
 
       if (!response.ok) {
@@ -514,16 +554,20 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       const aiResponse: ChatMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: responseText
+        content: responseText,
       };
-      setAiMessages(prev => [...prev, aiResponse]);
+      setAiMessages((prev) => [...prev, aiResponse]);
     } catch (error: unknown) {
       console.error("AI Error:", error);
-      setAiMessages(prev => [...prev, {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: errorMessage(error) || "I'm having trouble connecting right now. Please try again."
-      }]);
+      setAiMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            errorMessage(error) || "I'm having trouble connecting right now. Please try again.",
+        },
+      ]);
     } finally {
       setAiLoading(false);
     }
@@ -534,7 +578,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
     const validFiles: File[] = [];
     const invalidFiles: string[] = [];
 
-    files.forEach(file => {
+    files.forEach((file) => {
       const isValidType = file.type === "application/pdf" || file.type.startsWith("image/");
       const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit (images will be compressed)
 
@@ -563,7 +607,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const calculateProgress = () => {
@@ -602,15 +646,15 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
         studentName: studentName,
         studentEmail: user.email,
         answers: answersArray,
-        status: 'draft',
+        status: "draft",
         teacherId: assignment.teacherId,
         courseId: assignment.courseId,
         updatedAt: new Date(),
       };
 
-
-      const response = await authenticatedFetch('/api/submissions', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const response = await authenticatedFetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...submissionData, submissionId: existingSubmission?.id }),
       });
       const result = await response.json();
@@ -642,7 +686,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
   };
 
   const handleSubmit = async () => {
-    console.log('handleSubmit called');
+    console.log("handleSubmit called");
     setSubmitError(null);
     if (!assignment || !user) return;
     ignoreNextBlurRef.current = true;
@@ -662,8 +706,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           uploadedFiles,
           user.uid,
           (fileIndex, progress) => {
-            setUploadProgress(prev => ({ ...prev, [fileIndex]: progress }));
-          }
+            setUploadProgress((prev) => ({ ...prev, [fileIndex]: progress }));
+          },
         );
       }
 
@@ -687,7 +731,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       }
 
       // Check due date enforcement
-      const isLate = isSubmissionLate(assignment.dueDate as DueDateLike | null | undefined, new Date());
+      const isLate = isSubmissionLate(
+        assignment.dueDate as DueDateLike | null | undefined,
+        new Date(),
+      );
 
       // Remove forbidden fields for student update
       const submissionData: Record<string, unknown> = {
@@ -703,7 +750,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
         earnedPoints: null,
         workFiles: workFilesData,
         unfocusCount,
-        status: 'submitted',
+        status: "submitted",
         teacherId: assignment.teacherId,
         courseId: assignment.courseId,
       };
@@ -713,11 +760,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       delete submissionData.feedback;
       delete submissionData.gradedAnswers;
 
-      const response = await authenticatedFetch('/api/submissions', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const response = await authenticatedFetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...submissionData, submissionId: existingSubmission?.id }),
       });
-      if (!response.ok) throw new Error((await response.json()).error || 'Submission failed');
+      if (!response.ok) throw new Error((await response.json()).error || "Submission failed");
 
       setSubmitted(true);
       router.push("/student/submissions");
@@ -738,7 +786,11 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
   }
 
   if (!assignment) {
-    return <div className="flex items-center justify-center min-h-[60vh] w-full text-destructive font-bold">Assignment not found</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] w-full text-destructive font-bold">
+        Assignment not found
+      </div>
+    );
   }
 
   if (!hasStarted && !submitted) {
@@ -750,23 +802,44 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           </Button>
           <WorkspaceHeader title={assignment.title} description={assignment.description} />
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{assignment.questions.length} {assignment.questions.length === 1 ? "question" : "questions"} · {totalPoints} points</Badge>
-            <Badge variant="outline">{assignment.timeLimit ? `${assignment.timeLimit} minute limit` : "No time limit"}</Badge>
-            {assignment.requireWorkSubmission && <Badge variant="outline">Work upload required</Badge>}
+            <Badge variant="secondary">
+              {assignment.questions.length}{" "}
+              {assignment.questions.length === 1 ? "question" : "questions"} · {totalPoints} points
+            </Badge>
+            <Badge variant="outline">
+              {assignment.timeLimit ? `${assignment.timeLimit} minute limit` : "No time limit"}
+            </Badge>
+            {assignment.requireWorkSubmission && (
+              <Badge variant="outline">Work upload required</Badge>
+            )}
           </div>
-          <section aria-labelledby="before-start" className="space-y-2 rounded-xl border border-border bg-card p-4 sm:p-5">
-            <h2 id="before-start" className="text-base font-semibold">Before you start</h2>
+          <section
+            aria-labelledby="before-start"
+            className="space-y-2 rounded-xl border border-border bg-card p-4 sm:p-5"
+          >
+            <h2 id="before-start" className="text-base font-semibold">
+              Before you start
+            </h2>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
               {assignment.timeLimit && <li>The timer starts immediately and cannot be paused.</li>}
-              {assignment.requireWorkSubmission && <li>Upload a PDF or images of your work before submitting.</li>}
-              {assignment.requireWorkSubmission && assignment.timeLimit && <li>After time expires, you have five minutes to upload your work.</li>}
+              {assignment.requireWorkSubmission && (
+                <li>Upload a PDF or images of your work before submitting.</li>
+              )}
+              {assignment.requireWorkSubmission && assignment.timeLimit && (
+                <li>After time expires, you have five minutes to upload your work.</li>
+              )}
               {assignment.lockdownMode && (
-                <li>Lockdown starts in fullscreen. Switching tabs, exiting fullscreen, or attempting to copy or paste may be logged. Right-click is disabled.</li>
+                <li>
+                  Lockdown starts in fullscreen. Switching tabs, exiting fullscreen, or attempting
+                  to copy or paste may be logged. Right-click is disabled.
+                </li>
               )}
               <li>Use a stable connection and keep this page open.</li>
             </ul>
           </section>
-          <Button onClick={handleStartAssignment}><Play /> Start Assignment</Button>
+          <Button onClick={handleStartAssignment}>
+            <Play /> Start Assignment
+          </Button>
         </div>
       </div>
     );
@@ -774,7 +847,6 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
   return (
     <div className="relative flex min-h-0 flex-1 w-full overflow-hidden bg-background">
-
       <Dialog open={showUnfocusPopup}>
         <DialogContent
           className={`sm:max-w-md border-2 ${unfocusCount <= 1 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950/30" : "border-red-500 bg-red-50 dark:bg-red-950/30"}`}
@@ -783,21 +855,37 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle className={`flex items-center gap-2 text-lg font-bold ${unfocusCount <= 1 ? "text-yellow-700 dark:text-yellow-500" : "text-red-600"}`}>
-              {unfocusCount <= 1 ? <AlertCircle className="h-6 w-6 text-yellow-600" /> : <AlertTriangle className="h-6 w-6 text-red-500" />}
+            <DialogTitle
+              className={`flex items-center gap-2 text-lg font-bold ${unfocusCount <= 1 ? "text-yellow-700 dark:text-yellow-500" : "text-red-600"}`}
+            >
+              {unfocusCount <= 1 ? (
+                <AlertCircle className="h-6 w-6 text-yellow-600" />
+              ) : (
+                <AlertTriangle className="h-6 w-6 text-red-500" />
+              )}
               {unfocusCount <= 1 ? "Tab Switch Detected" : "Academic Integrity Violation"}
             </DialogTitle>
-            <DialogDescription className={`pt-3 text-sm leading-relaxed ${unfocusCount <= 1 ? "text-yellow-800/80 dark:text-yellow-200/80" : "text-red-800/80 dark:text-red-200/80"}`}>
+            <DialogDescription
+              className={`pt-3 text-sm leading-relaxed ${unfocusCount <= 1 ? "text-yellow-800/80 dark:text-yellow-200/80" : "text-red-800/80 dark:text-red-200/80"}`}
+            >
               {unfocusCount <= 1 ? (
                 <div className="space-y-2 font-medium">
                   <p>It looks like you navigated away from the assignment tab.</p>
-                  <p>Please remain on this page to ensure your assessment is completed without interruption. This is your first warning.</p>
+                  <p>
+                    Please remain on this page to ensure your assessment is completed without
+                    interruption. This is your first warning.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2">
                   <p>Multiple instances of tab switching have been detected.</p>
-                  <p className="font-bold underline text-red-700 dark:text-red-400">This event has been logged and your instructor has been notified.</p>
-                  <p className="text-xs opacity-80 mt-2 italic">Continued violations may result in disciplinary action or a zero on this assessment.</p>
+                  <p className="font-bold underline text-red-700 dark:text-red-400">
+                    This event has been logged and your instructor has been notified.
+                  </p>
+                  <p className="text-xs opacity-80 mt-2 italic">
+                    Continued violations may result in disciplinary action or a zero on this
+                    assessment.
+                  </p>
                 </div>
               )}
             </DialogDescription>
@@ -844,7 +932,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
             <div className="mx-auto max-w-4xl space-y-5 px-4 pb-16 sm:px-6">
               <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 border-b border-border bg-background py-3">
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm" onClick={handleBackClick} className="px-2 text-sm text-muted-foreground hover:text-foreground">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleBackClick}
+                    className="px-2 text-sm text-muted-foreground hover:text-foreground"
+                  >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
                   </Button>
@@ -870,9 +963,13 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   {timeLeft !== null && !submitted && (
                     <div className="flex flex-col items-end gap-1">
                       {inGracePeriod && (
-                        <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">GRACE PERIOD</span>
+                        <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                          GRACE PERIOD
+                        </span>
                       )}
-                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md font-mono font-bold text-sm ${inGracePeriod ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400' : timeLeft < 60 ? 'bg-destructive/10 text-destructive' : 'bg-secondary'}`}>
+                      <div
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md font-mono font-bold text-sm ${inGracePeriod ? "bg-amber-500/10 text-amber-700 dark:text-amber-400" : timeLeft < 60 ? "bg-destructive/10 text-destructive" : "bg-secondary"}`}
+                      >
                         <Clock className="h-3.5 w-3.5" />
                         {formatTime(timeLeft)}
                       </div>
@@ -910,8 +1007,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               <section className="border-b border-border pb-4">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h1 className="break-words text-2xl font-semibold tracking-tight">{assignment.title}</h1>
-                    <CardDescription className="mt-2 max-w-2xl leading-relaxed">{assignment.description}</CardDescription>
+                    <h1 className="break-words text-2xl font-semibold tracking-tight">
+                      {assignment.title}
+                    </h1>
+                    <CardDescription className="mt-2 max-w-2xl leading-relaxed">
+                      {assignment.description}
+                    </CardDescription>
                   </div>
                   {submitted && (
                     <div className="flex shrink-0 flex-col items-end gap-2">
@@ -943,9 +1044,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </Badge>
                   <Badge variant="outline" className="bg-muted/50">
                     <FileText className="mr-1.5 h-3.5 w-3.5" />
-                    {assignment.questions.length} {assignment.questions.length === 1 ? "question" : "questions"}
+                    {assignment.questions.length}{" "}
+                    {assignment.questions.length === 1 ? "question" : "questions"}
                   </Badge>
-                  <Badge variant="outline" className="bg-muted/50">{totalPoints} points total</Badge>
+                  <Badge variant="outline" className="bg-muted/50">
+                    {totalPoints} points total
+                  </Badge>
                   {assignment.timeLimit && (
                     <Badge variant="outline" className="bg-muted/50">
                       {assignment.timeLimit} minute limit
@@ -956,14 +1060,19 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
               <div className="space-y-4">
                 {assignment.questions.map((question, index) => (
-                  <Card key={question.id} className="overflow-hidden gap-0 border-border py-0 shadow-none">
+                  <Card
+                    key={question.id}
+                    className="overflow-hidden gap-0 border-border py-0 shadow-none"
+                  >
                     <CardHeader className="bg-muted/20 border-b px-4 pt-3 [.border-b]:pb-3 sm:px-6">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <h2 className="text-sm font-semibold">Question {index + 1}</h2>
                           {existingSubmission?.graded && (
                             <Badge variant="secondary" className="text-[10px] font-bold">
-                              {existingSubmission.answers?.find((a) => a.questionId === question.id)?.score ?? 0} / {question.points ?? 10} PTS
+                              {existingSubmission.answers?.find((a) => a.questionId === question.id)
+                                ?.score ?? 0}{" "}
+                              / {question.points ?? 10} PTS
                             </Badge>
                           )}
                         </div>
@@ -993,12 +1102,17 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         {question.type === "multiple-choice" && question.options ? (
                           <RadioGroup
                             value={answers[question.id] || ""}
-                            onValueChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                            onValueChange={(value) =>
+                              setAnswers({ ...answers, [question.id]: value })
+                            }
                             disabled={submitted}
                           >
                             {question.options.map((option, optionIndex) => (
                               <div key={optionIndex} className="flex items-center space-x-2">
-                                <RadioGroupItem value={option} id={`${question.id}-${optionIndex}`} />
+                                <RadioGroupItem
+                                  value={option}
+                                  id={`${question.id}-${optionIndex}`}
+                                />
                                 <Label htmlFor={`${question.id}-${optionIndex}`}>{option}</Label>
                               </div>
                             ))}
@@ -1006,7 +1120,9 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         ) : question.type === "true-false" ? (
                           <RadioGroup
                             value={answers[question.id] || ""}
-                            onValueChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                            onValueChange={(value) =>
+                              setAnswers({ ...answers, [question.id]: value })
+                            }
                             disabled={submitted}
                           >
                             <div className="flex items-center space-x-2">
@@ -1018,6 +1134,15 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                               <Label htmlFor={`${question.id}-false`}>False</Label>
                             </div>
                           </RadioGroup>
+                        ) : question.type === "numeric" ? (
+                          <MathInputField
+                            value={answers[question.id] || ""}
+                            onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                            placeholder="Your answer with its unit, like 12.5 m/s"
+                            ariaLabel={`Answer to question ${index + 1}`}
+                            disabled={submitted}
+                            rows={1}
+                          />
                         ) : question.type === "short-answer" ? (
                           <MathInputField
                             value={answers[question.id] || ""}
@@ -1041,27 +1166,42 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
                       {existingSubmission?.graded && (
                         <div className="mt-8 pt-6 border-t space-y-4">
-                          {existingSubmission.answers?.find((a) => a.questionId === question.id)?.feedback && (
+                          {existingSubmission.answers?.find((a) => a.questionId === question.id)
+                            ?.feedback && (
                             <div className="bg-muted/30 rounded-xl p-5 border">
                               <div className="flex items-center gap-2 mb-2">
                                 <MessagesSquare className="h-4 w-4 text-primary" />
-                                <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Feedback</span>
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                                  Feedback
+                                </span>
                               </div>
                               <div className="text-sm leading-relaxed text-foreground italic">
-                                &quot;{existingSubmission.answers?.find((a) => a.questionId === question.id)?.feedback}&quot;
+                                &quot;
+                                {
+                                  existingSubmission.answers?.find(
+                                    (a) => a.questionId === question.id,
+                                  )?.feedback
+                                }
+                                &quot;
                               </div>
                             </div>
                           )}
 
                           {/* Correct Reference Section */}
-                          {(question.correctAnswer || (existingSubmission.answers?.find((a) => a.questionId === question.id)?.score as number) < (question.points || 10)) && (
+                          {(question.correctAnswer ||
+                            (existingSubmission.answers?.find((a) => a.questionId === question.id)
+                              ?.score as number) < (question.points || 10)) && (
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
                                 <CheckCircle className="h-4 w-4 text-emerald-600" />
-                                <p className="text-xs font-medium text-muted-foreground">Correct answer and explanation</p>
+                                <p className="text-xs font-medium text-muted-foreground">
+                                  Correct answer and explanation
+                                </p>
                               </div>
                               <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground bg-muted/20 p-4 rounded-lg border">
-                                <MarkdownRenderer>{question.correctAnswer || "No explanation provided."}</MarkdownRenderer>
+                                <MarkdownRenderer>
+                                  {question.correctAnswer || "No explanation provided."}
+                                </MarkdownRenderer>
                               </div>
                             </div>
                           )}
@@ -1077,13 +1217,13 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Upload className="h-5 w-5" />
-                      Upload Your Work {assignment.requireWorkSubmission && <span className="text-red-500">*</span>}
+                      Upload Your Work{" "}
+                      {assignment.requireWorkSubmission && <span className="text-red-500">*</span>}
                     </CardTitle>
                     <CardDescription>
                       {inGracePeriod
                         ? "Time's up! You have 5 minutes to upload your work before automatic submission."
-                        : "Upload PDFs or images of your work. Required to submit this assignment."
-                      }
+                        : "Upload PDFs or images of your work. Required to submit this assignment."}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1102,7 +1242,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         variant="outline"
                         onClick={() => {
                           lastUploadClickTime.current = Date.now();
-                          document.getElementById('workFiles')?.click();
+                          document.getElementById("workFiles")?.click();
                         }}
                         disabled={submitted}
                       >
@@ -1119,7 +1259,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         <Label>Uploaded Files ({uploadedFiles.length})</Label>
                         <div className="space-y-2">
                           {uploadedFiles.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between p-2 bg-secondary rounded-md">
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-2 bg-secondary rounded-md"
+                            >
                               <div className="flex items-center gap-2 flex-1">
                                 {file.type === "application/pdf" ? (
                                   <FileText className="h-4 w-4" />
@@ -1140,7 +1283,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                                         ></div>
                                       </div>
                                       <span className="text-xs text-muted-foreground mt-1">
-                                        {uploadProgress[index] < 100 ? 'Uploading...' : 'Complete'}
+                                        {uploadProgress[index] < 100 ? "Uploading..." : "Complete"}
                                       </span>
                                     </div>
                                   )}
@@ -1183,13 +1326,17 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   )}
                   <Button
                     onClick={handleSubmit}
-                    disabled={submitting || (assignment.requireWorkSubmission && uploadedFiles.length === 0)}
+                    disabled={
+                      submitting || (assignment.requireWorkSubmission && uploadedFiles.length === 0)
+                    }
                     className="w-full sm:w-auto"
                   >
                     {submitting ? (
-                      Object.keys(uploadProgress).length > 0 ?
-                        `Uploading... (${Math.round(Object.values(uploadProgress).reduce((a, b) => a + b, 0) / Object.keys(uploadProgress).length)}%)` :
+                      Object.keys(uploadProgress).length > 0 ? (
+                        `Uploading... (${Math.round(Object.values(uploadProgress).reduce((a, b) => a + b, 0) / Object.keys(uploadProgress).length)}%)`
+                      ) : (
                         "Submitting..."
+                      )
                     ) : (
                       <>
                         <Send className="h-4 w-4 mr-2" />
@@ -1205,7 +1352,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
         {!isMobile && aiHelperOpen && (
           <>
-            <ResizableHandle withHandle className="bg-border/60 hover:bg-primary/50 transition-colors" />
+            <ResizableHandle
+              withHandle
+              className="bg-border/60 hover:bg-primary/50 transition-colors"
+            />
             <ResizablePanel
               id="ai-tutor-panel"
               order={2}
@@ -1236,7 +1386,9 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   {/* Question Focus Selector */}
                   <Select
                     value={focusedQuestionIndex === null ? "all" : String(focusedQuestionIndex)}
-                    onValueChange={(val) => setFocusedQuestionIndex(val === "all" ? null : parseInt(val))}
+                    onValueChange={(val) =>
+                      setFocusedQuestionIndex(val === "all" ? null : parseInt(val))
+                    }
                   >
                     <SelectTrigger className="h-8 text-xs font-semibold px-2.5 rounded-lg border-border/80 bg-muted/30 max-w-[130px] truncate">
                       <SelectValue placeholder="All Questions" />
@@ -1257,7 +1409,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button aria-label="Clear chat history"
+                        <Button
+                          aria-label="Clear chat history"
                           variant="ghost"
                           size="icon"
                           onClick={handleResetChat}
@@ -1274,7 +1427,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </TooltipProvider>
 
                   {/* Close */}
-                  <Button aria-label="Close Raise AI helper"
+                  <Button
+                    aria-label="Close Raise AI helper"
                     variant="ghost"
                     size="icon"
                     onClick={() => setAiHelperOpen(false)}
@@ -1313,7 +1467,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     <div>
                       <h4 className="text-sm font-bold text-foreground">Raise is ready to help</h4>
                       <p className="text-xs text-muted-foreground max-w-[260px] mx-auto mt-1 leading-relaxed">
-                        Select a question below or ask a conceptual doubt. Raise guides your logic without giving away answers.
+                        Select a question below or ask a conceptual doubt. Raise guides your logic
+                        without giving away answers.
                       </p>
                     </div>
 
@@ -1331,12 +1486,14 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                               "w-full text-left p-2.5 rounded-xl border transition-all flex items-start justify-between gap-2 group cursor-pointer",
                               focusedQuestionIndex === i
                                 ? "border-primary bg-primary/5 shadow-xs"
-                                : "border-border/60 hover:border-border hover:bg-muted/40"
+                                : "border-border/60 hover:border-border hover:bg-muted/40",
                             )}
                           >
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-1.5">
-                                <span className="font-bold text-xs text-foreground">Question {i + 1}</span>
+                                <span className="font-bold text-xs text-foreground">
+                                  Question {i + 1}
+                                </span>
                                 <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
                                   {q.points || 10} pts
                                 </Badge>
@@ -1358,18 +1515,30 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}
-                      className={cn("flex flex-col", msg.role === "user" ? "items-end" : "items-start")}
+                      className={cn(
+                        "flex flex-col",
+                        msg.role === "user" ? "items-end" : "items-start",
+                      )}
                     >
-                      <div className={cn("flex items-start gap-2.5 max-w-[95%]", msg.role === "user" ? "flex-row-reverse" : "flex-row")}>
+                      <div
+                        className={cn(
+                          "flex items-start gap-2.5 max-w-[95%]",
+                          msg.role === "user" ? "flex-row-reverse" : "flex-row",
+                        )}
+                      >
                         <div
                           className={cn(
                             "h-7 w-7 rounded-xl shrink-0 flex items-center justify-center shadow-xs mt-0.5",
                             msg.role === "user"
                               ? "bg-primary text-primary-foreground"
-                              : "bg-primary/10 text-primary border border-primary/20"
+                              : "bg-primary/10 text-primary border border-primary/20",
                           )}
                         >
-                          {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <RaiseLogo className="h-4 w-4" />}
+                          {msg.role === "user" ? (
+                            <User className="h-3.5 w-3.5" />
+                          ) : (
+                            <RaiseLogo className="h-4 w-4" />
+                          )}
                         </div>
 
                         <div
@@ -1377,7 +1546,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                             "rounded-2xl px-4 py-3 text-sm shadow-xs border relative group",
                             msg.role === "user"
                               ? "bg-primary text-primary-foreground border-transparent rounded-tr-sm font-medium"
-                              : "bg-card/90 text-card-foreground border-border/80 rounded-tl-sm backdrop-blur-xs"
+                              : "bg-card/90 text-card-foreground border-border/80 rounded-tl-sm backdrop-blur-xs",
                           )}
                         >
                           {msg.role === "user" ? (
@@ -1393,7 +1562,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                                 "[&_strong]:font-bold text-foreground",
                                 "[&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs",
                                 "[&_ul]:my-1.5 [&_ul]:space-y-1",
-                                "[&_ol]:my-1.5 [&_ol]:space-y-1"
+                                "[&_ol]:my-1.5 [&_ol]:space-y-1",
                               )}
                             >
                               {msg.content}
@@ -1461,9 +1630,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
                   <button
                     onClick={() => {
-                      const prompt = focusedQuestionIndex !== null
-                        ? `What fundamental physics principles or laws apply to Question ${focusedQuestionIndex + 1}?`
-                        : "What physics principles should I look for here?";
+                      const prompt =
+                        focusedQuestionIndex !== null
+                          ? `What fundamental physics principles or laws apply to Question ${focusedQuestionIndex + 1}?`
+                          : "What physics principles should I look for here?";
                       handleAiSendMessage(prompt);
                     }}
                     disabled={aiLoading}
@@ -1473,9 +1643,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </button>
                   <button
                     onClick={() => {
-                      const prompt = focusedQuestionIndex !== null
-                        ? `Can you give me a first step hint for Question ${focusedQuestionIndex + 1}?`
-                        : "Can you give me a first step hint?";
+                      const prompt =
+                        focusedQuestionIndex !== null
+                          ? `Can you give me a first step hint for Question ${focusedQuestionIndex + 1}?`
+                          : "Can you give me a first step hint?";
                       handleAiSendMessage(prompt);
                     }}
                     disabled={aiLoading}
@@ -1485,9 +1656,10 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </button>
                   <button
                     onClick={() => {
-                      const prompt = focusedQuestionIndex !== null
-                        ? `How do I sanity-check my approach and units for Question ${focusedQuestionIndex + 1}?`
-                        : "How do I check my approach and units?";
+                      const prompt =
+                        focusedQuestionIndex !== null
+                          ? `How do I sanity-check my approach and units for Question ${focusedQuestionIndex + 1}?`
+                          : "How do I check my approach and units?";
                       handleAiSendMessage(prompt);
                     }}
                     disabled={aiLoading}
@@ -1511,13 +1683,14 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     rows={1}
                     className="min-h-[44px] max-h-[140px] pr-10 border-0 bg-transparent resize-none text-xs leading-relaxed focus-visible:ring-0 text-foreground placeholder:text-muted-foreground/50 p-2"
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         handleAiSendMessage();
                       }
                     }}
                   />
-                  <Button aria-label="Send message"
+                  <Button
+                    aria-label="Send message"
                     onClick={() => handleAiSendMessage()}
                     disabled={aiLoading || !aiInput.trim()}
                     size="icon"
@@ -1572,7 +1745,9 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-sm font-bold tracking-tight">Raise</h3>
-                    <p className="text-[11px] text-muted-foreground truncate">Hints and guidance, not answers</p>
+                    <p className="text-[11px] text-muted-foreground truncate">
+                      Hints and guidance, not answers
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -1586,7 +1761,13 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setAiHelperOpen(false)} className="h-8 w-8" aria-label="Close Raise AI helper">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setAiHelperOpen(false)}
+                    className="h-8 w-8"
+                    aria-label="Close Raise AI helper"
+                  >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -1620,13 +1801,19 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   </div>
                 ) : (
                   aiMessages.map((msg) => (
-                    <div key={msg.id} className={cn("flex flex-col", msg.role === "user" ? "items-end" : "items-start")}>
+                    <div
+                      key={msg.id}
+                      className={cn(
+                        "flex flex-col",
+                        msg.role === "user" ? "items-end" : "items-start",
+                      )}
+                    >
                       <div
                         className={cn(
                           "p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs border max-w-[92%]",
                           msg.role === "user"
                             ? "bg-primary text-primary-foreground border-transparent rounded-tr-xs font-medium"
-                            : "bg-card text-card-foreground rounded-tl-xs border-border/80"
+                            : "bg-card text-card-foreground rounded-tl-xs border-border/80",
                         )}
                       >
                         {msg.role === "user" ? (
@@ -1670,7 +1857,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         : "Ask Raise..."
                     }
                     className="rounded-xl bg-muted/30 text-xs px-3 py-2 text-foreground"
-                    onKeyDown={(e) => e.key === 'Enter' && handleAiSendMessage()}
+                    onKeyDown={(e) => e.key === "Enter" && handleAiSendMessage()}
                   />
                   <Button
                     onClick={() => handleAiSendMessage()}
@@ -1689,10 +1876,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
       {/* Scientific Calculator Floating Widget */}
       {assignment?.allowCalculator && (
-        <ScientificCalculator
-          isOpen={calculatorOpen}
-          onClose={() => setCalculatorOpen(false)}
-        />
+        <ScientificCalculator isOpen={calculatorOpen} onClose={() => setCalculatorOpen(false)} />
       )}
     </div>
   );
