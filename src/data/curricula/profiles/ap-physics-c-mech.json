@@ -334,5 +334,133 @@
         "problems": 1
       }
     ]
+  },
+  "4A": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "momentum-not-vector",
+        "problems": 3
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "impulse-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      }
+    ]
+  },
+  "4B": {
+    "problems": 5,
+    "minutes": 14,
+    "difficulty": {
+      "easy": 1,
+      "medium": 3,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "4C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "4D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
   }
 }
