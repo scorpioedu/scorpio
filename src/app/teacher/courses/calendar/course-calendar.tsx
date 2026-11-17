@@ -22,7 +22,7 @@ import {
 } from "@dnd-kit/core";
 import type { Curriculum } from "@/data/curricula";
 import { assignmentHref } from "@/lib/assignment-actions";
-import { boardColumns, boardStats, filterBoard, plannedDates, toCheck } from "@/lib/course-board";
+import { boardColumns, filterBoard, plannedDates, toCheck } from "@/lib/course-board";
 import {
   addMonths,
   calendarItems,
@@ -42,7 +42,6 @@ import { cn } from "@/lib/utils";
 import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { BoardStats } from "../board/board-stats";
 import type { PreviewTarget } from "../set-preview-dialog";
 import { shortDate, type ClassProgress } from "../use-course-data";
 import { setDisplayTitle, type SetRowActions } from "../use-set-actions";
@@ -290,7 +289,6 @@ export function CourseCalendar({
     () => boardColumns(roadmap, progress?.sets, students),
     [roadmap, progress, students],
   );
-  const stats = useMemo(() => boardStats(all), [all]);
   const units = useMemo(
     () => roadmap.map((u) => ({ unit: u.unit, title: u.info?.title ?? "" })),
     [roadmap],
@@ -337,12 +335,6 @@ export function CourseCalendar({
 
   return (
     <div className="space-y-4">
-      <BoardStats
-        stats={stats}
-        finish={pacing.finish}
-        remaining={pacing.remaining}
-        loading={progress === null}
-      />
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-1">
           <Button

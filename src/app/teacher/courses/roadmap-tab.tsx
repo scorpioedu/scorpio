@@ -3,14 +3,19 @@
 // The roadmap: one section per unit, in the class's order. Each set shows what it is, whether it is
 // assigned, how the class did, and a Preview button; each unit shows what students got wrong.
 import Link from "next/link";
-import { Check, ChevronRight, Eye, EyeOff, Plus } from "lucide-react";
+import { Check, ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
 import type { Curriculum } from "@/data/curricula";
 import { setProfile } from "@/data/curricula/profiles";
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
 import { assignmentHref } from "@/lib/assignment-actions";
@@ -97,6 +102,15 @@ export function SetRow({
   const p = progress?.sets[s.set.key];
   const title = setDisplayTitle(curriculumId, s);
   const canAssign = hasClass && !!s.published && !s.assigned && !s.skipped && !!actions.onAssignSet;
+  const preview = () =>
+    onPreview({
+      curriculumId,
+      set: s.set,
+      publishedId: s.published?.id ?? null,
+      assignmentId: s.assignmentId,
+    });
+  // Nobody is on the roster (or nobody had joined when this was handed in).
+  const outOf = p ? Math.max(students, p.submitted) : 0;
   return (
     <li
       className={`flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3 text-sm ${s.skipped && !s.assigned ? "opacity-60" : ""}`}
@@ -114,7 +128,14 @@ export function SetRow({
               {title}
             </Link>
           ) : (
-            <span>{title}</span>
+            // Not assigned yet: the title opens the preview, so the row needs no Preview button.
+            <button
+              type="button"
+              onClick={preview}
+              className="text-left hover:text-primary hover:underline"
+            >
+              {title}
+            </button>
           )}
         </p>
         <p className="break-words text-muted-foreground">{s.set.description}</p>
@@ -155,31 +176,17 @@ export function SetRow({
         </span>
         {s.assigned && p && (
           <span className="text-xs text-muted-foreground">
-            {p.submitted} of {Math.max(students, p.submitted)} submitted
+            {outOf === 0 ? "No students yet" : `${p.submitted} of ${outOf} submitted`}
             {p.averageScore !== null ? ` · average ${p.averageScore}%` : ""}
             {p.pending ? ` · ${p.pending} to review` : ""}
           </span>
         )}
         <div className="flex flex-wrap items-center gap-1.5">
           {canAssign && (
-            <Button size="sm" onClick={() => actions.onAssignSet!(s)}>
+            <Button size="sm" variant="outline" onClick={() => actions.onAssignSet!(s)}>
               <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
             </Button>
           )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              onPreview({
-                curriculumId,
-                set: s.set,
-                publishedId: s.published?.id ?? null,
-                assignmentId: s.assignmentId,
-              })
-            }
-          >
-            <Eye aria-hidden /> Preview
-          </Button>
           {s.assignmentId ? (
             <>
               <Button variant="ghost" size="sm" asChild>
@@ -187,28 +194,56 @@ export function SetRow({
                   Results <ChevronRight aria-hidden />
                 </Link>
               </Button>
-              {actions.onCopyChanged && (
+              {actions.onCopyChanged ? (
                 <AssignmentActionsMenu
                   id={s.assignmentId}
                   title={title}
                   hideOpen
                   onChanged={actions.onCopyChanged}
                   extraItems={
-                    actions.onToggleSkip ? (
-                      <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
-                        <EyeOff /> {s.skipped ? "Stop skipping" : "Skip in this class's plan"}
+                    <>
+                      <DropdownMenuItem onSelect={preview}>
+                        <Eye /> Preview
                       </DropdownMenuItem>
-                    ) : null
+                      {actions.onToggleSkip && (
+                        <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
+                          <EyeOff /> {s.skipped ? "Stop skipping" : "Skip in this class's plan"}
+                        </DropdownMenuItem>
+                      )}
+                    </>
                   }
                 />
+              ) : (
+                <Button variant="outline" size="sm" onClick={preview}>
+                  <Eye aria-hidden /> Preview
+                </Button>
               )}
             </>
+          ) : s.skipped && actions.onToggleSkip ? (
+            // A skipped set has one thing to do: bring it back.
+            <Button variant="outline" size="sm" onClick={() => actions.onToggleSkip!(s)}>
+              Unskip
+            </Button>
+          ) : actions.onToggleSkip ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${s.set.key}`}>
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuItem onSelect={preview}>
+                  <Eye /> Preview
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
+                  <EyeOff /> Skip for this class
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            actions.onToggleSkip && (
-              <Button variant="ghost" size="sm" onClick={() => actions.onToggleSkip!(s)}>
-                {s.skipped ? "Unskip" : "Skip"}
-              </Button>
-            )
+            <Button variant="outline" size="sm" onClick={preview}>
+              <Eye aria-hidden /> Preview
+            </Button>
           )}
         </div>
       </div>
@@ -249,9 +284,8 @@ export function RoadmapTab({
     <div className="space-y-2">
       {hasClass && actions && (
         <p className="text-xs text-muted-foreground">
-          Click a due date to change it. Assign or skip one set from its row; use ⋯ on an assigned
-          set to edit its problems or archive it. Every change can be undone from the message that
-          follows.
+          Click a set&apos;s name to preview it, or a due date to change it. Every change can be
+          undone.
         </p>
       )}
       <Accordion
@@ -298,7 +332,13 @@ export function RoadmapTab({
                 {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
                 <div className="flex flex-wrap items-center gap-2">
                   {hasClass && u.assignable.length > 0 && (
-                    <Button size="sm" onClick={() => onAssign(u)} disabled={busy}>
+                    <Button
+                      size="sm"
+                      // The unit that is up next is the one obvious thing to press.
+                      variant={u.unit === nextUnitNumber ? "default" : "outline"}
+                      onClick={() => onAssign(u)}
+                      disabled={busy}
+                    >
                       Assign {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
                       {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
                     </Button>

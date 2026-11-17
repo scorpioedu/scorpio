@@ -29,11 +29,12 @@ import {
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import { normalisePlan, planStartingAt, type CurriculumPlan } from "@/lib/curriculum-plan";
+import { boardColumns, boardStats } from "@/lib/course-board";
 import { paceCourse } from "@/lib/course-pacing";
 import { classCalendar, schoolDays } from "@/lib/school-calendar";
 import { apiError, undoToast } from "@/lib/undo-toast";
 import { useAdminAccess } from "@/lib/use-admin-access";
-import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
+import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { ClassPicker } from "@/components/teacher/class-picker";
 import { CourseOptionList } from "@/components/teacher/course-select";
 import { CourseBadge, CourseIcon, courseLook, courseSize } from "@/components/teacher/course-icon";
@@ -68,9 +69,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssignDialog } from "./assign-dialog";
 import { CourseBoard } from "./board/course-board";
+import { BoardStats } from "./board/board-stats";
 import { UnitFilter } from "./board/unit-filter";
 import { CourseCalendar } from "./calendar/course-calendar";
 import { PlanEditor } from "./plan-editor";
@@ -78,10 +79,9 @@ import { RoadmapTab } from "./roadmap-tab";
 import { ScheduleTab } from "./schedule-tab";
 import { StartPointPicker } from "./start-point";
 import { SetPreviewDialog, type PreviewTarget } from "./set-preview-dialog";
-import { shortDate, useCourseData } from "./use-course-data";
+import { useCourseData } from "./use-course-data";
 import { useSetActions, type Assigning } from "./use-set-actions";
 
-type Tab = "roadmap" | "schedule";
 /**
  * List: the roadmap, unit by unit (the default). Calendar: every set on the day it is due.
  * Board: every set by where it stands.
@@ -109,9 +109,6 @@ export default function CoursesClient() {
     chosen.classes?.find((c) => c.id === chosen.classId)?.curriculumId,
   );
   const curriculum = classCourse ?? browse;
-  const [tab, setTabState] = useState<Tab>(
-    params?.get("tab") === "schedule" ? "schedule" : "roadmap",
-  );
   // The List is where the page opens; ?view=calendar and ?view=board open the other two.
   const [view, setViewState] = useState<View>(() => {
     const asked = params?.get("view");
@@ -119,7 +116,8 @@ export default function CoursesClient() {
   });
   const [unit, setUnitState] = useState<number | null>(() => Number(params?.get("unit")) || null);
   const [showDone, setShowDone] = useState(false);
-  const [scheduleOpen, setScheduleOpen] = useState(false);
+  // Schedule and days off opens in a side sheet; an old ?tab=schedule link opens it straight away.
+  const [scheduleOpen, setScheduleOpen] = useState(() => params?.get("tab") === "schedule");
   const data = useCourseData(curriculum.id);
   const { classes, selected, published, loadError, classAssignments, progress } = data;
 
@@ -146,15 +144,10 @@ export default function CoursesClient() {
   const setView = (v: View) => {
     setViewState(v);
     setParam("view", v === "list" ? null : v);
-    if (v !== "list") setTab("roadmap");
   };
   const setUnit = (u: number | null) => {
     setUnitState(u);
     setParam("unit", u === null ? null : String(u));
-  };
-  const setTab = (t: Tab) => {
-    setTabState(t);
-    setParam("tab", t === "roadmap" ? null : t);
   };
 
   // The class on screen has a course, which is the one shown.
@@ -230,14 +223,11 @@ export default function CoursesClient() {
   const onCalendar = canBoard && view === "calendar";
   /** The class's course is loaded, so its actions can be offered. */
   const ready = canBoard;
-  const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
-  const assignedCount = wanted.filter((s) => s.assigned).length;
-  const averages = Object.values(progress?.sets ?? {})
-    .map((s) => s.averageScore)
-    .filter((n): n is number => n !== null);
-  const classAverage = averages.length
-    ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
-    : null;
+  // The same numbers above every view.
+  const stats = useMemo(
+    () => boardStats(boardColumns(roadmap, progress?.sets, progress?.students ?? 0)),
+    [roadmap, progress],
+  );
   const assignedDated = useMemo(
     () =>
       roadmap.flatMap((u) =>
@@ -393,7 +383,8 @@ export default function CoursesClient() {
             </SelectContent>
           </Select>
         )}
-        {ready && next && !editing && (
+        {/* On the List each unit has its own Assign button; the other views get this one. */}
+        {ready && next && !editing && (onBoard || onCalendar) && (
           <Button
             onClick={() => openUnit(next)}
             disabled={busy !== null}
@@ -588,33 +579,6 @@ export default function CoursesClient() {
             )
           )}
 
-          {written && !onBoard && !onCalendar && (
-            <>
-              {selected && published !== null && (
-                <TeacherSummary
-                  label="Class progress"
-                  items={[
-                    { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
-                    { label: "Students", value: progress ? progress.students : "…" },
-                    {
-                      label: "Average score",
-                      value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
-                    },
-                    {
-                      label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
-                      value: pacing.finish ? shortDate(pacing.finish) : "—",
-                    },
-                  ]}
-                />
-              )}
-              {selected && !next && published !== null && publishedCount > 0 && (
-                <p className="text-sm text-muted-foreground">
-                  Every published set is assigned to this class.
-                </p>
-              )}
-            </>
-          )}
-
           {canBoard && !editing && (
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
               <div
@@ -648,6 +612,27 @@ export default function CoursesClient() {
                 />
               )}
             </div>
+          )}
+
+          {canBoard && !editing && (
+            <BoardStats
+              stats={stats}
+              finish={pacing.finish}
+              remaining={pacing.remaining}
+              students={progress?.students ?? 0}
+              loading={progress === null}
+            />
+          )}
+          {canBoard && selected && progress?.students === 0 && (
+            <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
+              No students have joined {selected.name} yet. Share its join code{" "}
+              <span className="font-mono font-semibold text-foreground">{selected.code}</span> with
+              them, or copy an invite link from the{" "}
+              <Link className="underline underline-offset-2" href="/teacher">
+                Dashboard
+              </Link>
+              . You can assign sets now; they will be waiting.
+            </p>
           )}
 
           {loadError ? (
@@ -707,36 +692,17 @@ export default function CoursesClient() {
               actions={rowActions}
             />
           ) : (
-            <Tabs
-              value={selected && written ? tab : "roadmap"}
-              onValueChange={(v) => setTab(v as Tab)}
-              className="gap-4"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                {selected && written ? (
-                  <TabsList>
-                    <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
-                    <TabsTrigger value="schedule">Schedule and days off</TabsTrigger>
-                  </TabsList>
-                ) : (
-                  <span />
-                )}
-              </div>
-              <TabsContent value="roadmap">
-                <RoadmapTab
-                  curriculum={curriculum}
-                  roadmap={roadmap}
-                  className={written ? (selected?.name ?? null) : null}
-                  progress={progress}
-                  nextUnitNumber={next?.unit}
-                  busy={busy !== null}
-                  onAssign={openUnit}
-                  onPreview={setPreview}
-                  actions={rowActions}
-                />
-              </TabsContent>
-              {selected && <TabsContent value="schedule">{schedule}</TabsContent>}
-            </Tabs>
+            <RoadmapTab
+              curriculum={curriculum}
+              roadmap={roadmap}
+              className={written ? (selected?.name ?? null) : null}
+              progress={progress}
+              nextUnitNumber={next?.unit}
+              busy={busy !== null}
+              onAssign={openUnit}
+              onPreview={setPreview}
+              actions={rowActions}
+            />
           )}
         </>
       )}

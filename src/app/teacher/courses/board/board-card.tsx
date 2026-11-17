@@ -140,7 +140,8 @@ function problems(card: Card, ctx: BoardCardContext): string | null {
 function handedIn(card: Card, ctx: BoardCardContext) {
   const submitted = card.progress?.submitted ?? 0;
   const of = Math.max(ctx.students, submitted);
-  return { submitted, of, text: `${submitted} of ${of} handed in` };
+  // Nobody is on the roster yet, so there is nobody to hand anything in.
+  return { submitted, of, text: of === 0 ? "No students yet" : `${submitted} of ${of} handed in` };
 }
 
 /** Preview and Results, for the ⋯ menu of an assigned set. */

@@ -1,4 +1,4 @@
-// The strip above the board: how far through the course the class is, its average, and what is
+// The strip above the List, the Calendar and the Board: how far through the course the class is, its average, and what is
 // waiting (for the teacher, and from students).
 import { cn } from "@/lib/utils";
 import type { BoardStats as Stats } from "@/lib/course-board";
@@ -31,6 +31,7 @@ export function BoardStats({
   stats,
   finish,
   remaining,
+  students,
   loading,
 }: {
   stats: Stats;
@@ -38,6 +39,8 @@ export function BoardStats({
   finish: Date | null;
   /** Sets still to assign. */
   remaining: number;
+  /** Students on the class's roster. */
+  students: number;
   /** Progress is still loading, so scores and counts are not known yet. */
   loading: boolean;
 }) {
@@ -71,7 +74,8 @@ export function BoardStats({
           <div className="h-full rounded-full bg-primary" style={{ width: `${share * 100}%` }} />
         </div>
       </div>
-      <div className="flex items-start gap-8">
+      <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
+        <Figure label="Students" value={count(students)} />
         <Figure
           label="Average"
           value={loading ? "…" : stats.average === null ? "—" : `${stats.average}%`}

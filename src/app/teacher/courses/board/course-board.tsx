@@ -15,7 +15,6 @@ import {
   DROP_UP_NEXT,
   boardColumns,
   boardDrop,
-  boardStats,
   dropInUpNext,
   filterBoard,
   nextAssignDate,
@@ -43,7 +42,6 @@ import {
   useColumnDrop,
   type DragData,
 } from "./board-dnd";
-import { BoardStats } from "./board-stats";
 
 /** Cards shown before "+n more" in Up next and Done. */
 const UP_NEXT_SHOWN = 6;
@@ -119,7 +117,6 @@ export function CourseBoard({
     () => boardColumns(roadmap, progress?.sets, students),
     [roadmap, progress, students],
   );
-  const stats = useMemo(() => boardStats(all), [all]);
   const units = useMemo(
     () => roadmap.map((u) => ({ unit: u.unit, title: u.info?.title ?? "" })),
     [roadmap],
@@ -266,12 +263,6 @@ export function CourseBoard({
 
   return (
     <div className="space-y-4">
-      <BoardStats
-        stats={stats}
-        finish={pacing.finish}
-        remaining={pacing.remaining}
-        loading={progress === null}
-      />
       {columns.done.length > DONE_SHOWN && (
         <div className="flex justify-end">
           <Button
