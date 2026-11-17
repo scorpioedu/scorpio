@@ -34,35 +34,28 @@ describe("curriculum definitions", () => {
     for (const c of CURRICULA) expect(validateCurriculum(c)).toEqual([]);
   });
 
-  test("seeded from units-4-6: 12 sets, 4A-6D, titles round-trip to the published titles", () => {
-    expect(ap.sets.map((s) => s.key)).toEqual([
-      "4A",
-      "4B",
-      "4C",
-      "4D",
-      "5A",
-      "5B",
-      "5C",
-      "5D",
-      "6A",
-      "6B",
-      "6C",
-      "6D",
-    ]);
-    expect(ap.sets.map((s) => displayTitle(s))).toEqual(units46.sets.map((s) => s.title));
-    ap.sets.forEach((s, i) => {
+  test("the full course: 32 sets, 4 per unit, 1A-8D; 4A-6D round-trip to the Units 4-6 titles", () => {
+    const keys = [1, 2, 3, 4, 5, 6, 7, 8].flatMap((u) =>
+      ["A", "B", "C", "D"].map((l) => `${u}${l}`),
+    );
+    expect(ap.sets.map((s) => s.key)).toEqual(keys);
+    expect(ap.sets.every((s) => s.draftIds.length === 5)).toBe(true);
+    const mid = ap.sets.filter((s) => s.unit >= 4 && s.unit <= 6);
+    expect(mid.map((s) => displayTitle(s))).toEqual(units46.sets.map((s) => s.title));
+    mid.forEach((s, i) => {
       expect(s.draftIds).toEqual(units46.sets[i].draftIds);
       expect(s.topics).toEqual(units46.sets[i].topics);
     });
   });
 
-  test("units come in order with empty units included; sequence follows unit then letter", () => {
+  test("units come in order with their sets; sequence follows unit then letter", () => {
     const units = curriculumUnits("ap-physics-1");
     expect(units.map((u) => u.unit)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
-    expect(units[0].sets).toEqual([]);
+    expect(units.every((u) => u.sets.length === 4)).toBe(true);
     expect(units[3].sets.map((s) => s.key)).toEqual(["4A", "4B", "4C", "4D"]);
-    expect(setSequence("ap-physics-1", "4A")).toBe(0);
-    expect(setSequence("ap-physics-1", "6D")).toBe(11);
+    expect(setSequence("ap-physics-1", "1A")).toBe(0);
+    expect(setSequence("ap-physics-1", "4A")).toBe(12);
+    expect(setSequence("ap-physics-1", "8D")).toBe(31);
     expect(setSequence("ap-physics-1", "9Z")).toBe(-1);
     expect(setSequence("nope", "4A")).toBe(-1);
     expect(curriculumSet("ap-physics-1", "5B")?.title).toBeTruthy();
@@ -74,7 +67,7 @@ describe("curriculum definitions", () => {
 
   test("validation catches bad keys, units, topics and shared drafts", () => {
     const base = physics1 as Curriculum;
-    const [a, b, c, d] = base.sets;
+    const [a, b, c, d] = base.sets.filter((s) => s.unit === 4);
     const run = (sets: Curriculum["sets"]) => validateCurriculum({ ...base, sets }).join("\n");
     expect(run([a, { ...a }])).toMatch(/4A: duplicate key/);
     expect(run([a, { ...b, draftIds: [a.draftIds[0], "other"] }])).toMatch(

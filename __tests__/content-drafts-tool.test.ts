@@ -71,3 +71,43 @@ describe("Units 4–6 content file", () => {
     expect(disk.problem.correctAnswer).toBe("1");
   });
 });
+
+describe("Units 1–3, 7, 8 content file", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const rest = require("../content/ap-physics-1/units-1-3-7-8.json");
+  type D = { id: string; apUnit: number; apTopic: string; reviewKind: string; problem: unknown };
+
+  test("100 AI-reviewed problems in 20 sets of 5, one AP unit per set, every draft in exactly one set", () => {
+    const drafts = rest.drafts as D[];
+    expect(drafts).toHaveLength(100);
+    expect(rest.sets).toHaveLength(20);
+    const ids = (rest.sets as { draftIds: string[] }[]).flatMap((s) => s.draftIds);
+    expect(new Set(ids)).toEqual(new Set(drafts.map((d) => d.id)));
+    expect(ids).toHaveLength(100);
+    expect(new Set(drafts.map((d) => d.apUnit))).toEqual(new Set([1, 2, 3, 7, 8]));
+    expect(drafts.every((d) => d.reviewKind === "ai")).toBe(true);
+  });
+
+  test("every problem passes the pipeline's checks", () => {
+    for (const d of rest.drafts as D[]) {
+      const v = validateDraftProblem(d.problem, d.apTopic);
+      expect({ id: d.id, errors: v.errors }).toEqual({ id: d.id, errors: [] });
+    }
+  });
+
+  test("the course definition uses exactly these drafts for 1A–3D and 7A–8D", () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const course = require("../src/data/curricula/ap-physics-1.json");
+    const inCourse = (course.sets as { unit: number; draftIds: string[] }[])
+      .filter((s) => [1, 2, 3, 7, 8].includes(s.unit))
+      .flatMap((s) => s.draftIds);
+    expect(new Set(inCourse)).toEqual(new Set((rest.drafts as D[]).map((d) => d.id)));
+  });
+
+  test("the caught wrong key stays fixed", () => {
+    const loop = (rest.drafts as (D & { problem: { correctAnswer: string } })[]).find(
+      (d) => d.id === "21gN2Hr7A5JLXxtdanZu",
+    )!;
+    expect(loop.problem.correctAnswer).toBe("2.2 N");
+  });
+});
