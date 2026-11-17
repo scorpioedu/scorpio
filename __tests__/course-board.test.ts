@@ -235,6 +235,7 @@ describe("board stats", () => {
       // 32 sets, two skipped; unpublished ones still count as to come.
       total: 30,
       average: 80,
+      needsYou: 1,
       toCheck: 7,
       overdue: 3,
     });
@@ -245,6 +246,7 @@ describe("board stats", () => {
       assigned: 0,
       total: 32,
       average: null,
+      needsYou: 0,
       toCheck: 0,
       overdue: 0,
     });

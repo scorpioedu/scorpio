@@ -4,11 +4,25 @@ import { cn } from "@/lib/utils";
 import type { BoardStats as Stats } from "@/lib/course-board";
 import { shortDate } from "../use-course-data";
 
-function Figure({ label, value, tone }: { label: string; value: string; tone?: string }) {
+function Figure({
+  label,
+  value,
+  tone,
+  note,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+  /** A few words under the number saying what it adds up to. */
+  note?: string;
+}) {
   return (
     <div className="min-w-0">
       <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
-      <dd className={cn("text-2xl font-semibold tabular-nums", tone)}>{value}</dd>
+      <dd className={cn("text-2xl font-semibold tabular-nums", tone)}>
+        {value}
+        {note && <span className="block text-xs font-normal text-muted-foreground">{note}</span>}
+      </dd>
     </div>
   );
 }
@@ -57,20 +71,33 @@ export function BoardStats({
           <div className="h-full rounded-full bg-primary" style={{ width: `${share * 100}%` }} />
         </div>
       </div>
-      <div className="flex gap-8">
+      <div className="flex items-start gap-8">
         <Figure
           label="Average"
           value={loading ? "…" : stats.average === null ? "—" : `${stats.average}%`}
         />
         <Figure
           label="Needs you"
-          value={count(stats.toCheck)}
-          tone={stats.toCheck > 0 ? "text-amber-600 dark:text-amber-400" : undefined}
+          // Sets, like the Needs you column's count; the answers inside them are the note.
+          value={count(stats.needsYou)}
+          tone={stats.needsYou > 0 ? "text-amber-600 dark:text-amber-400" : undefined}
+          note={
+            loading || stats.needsYou === 0
+              ? undefined
+              : `${stats.needsYou === 1 ? "set" : "sets"} · ${stats.toCheck} ${stats.toCheck === 1 ? "answer" : "answers"}`
+          }
         />
         <Figure
           label="Overdue"
           value={count(stats.overdue)}
           tone={stats.overdue > 0 ? "text-destructive" : undefined}
+          note={
+            loading || stats.overdue === 0
+              ? undefined
+              : stats.overdue === 1
+                ? "hand-in missing"
+                : "hand-ins missing"
+          }
         />
       </div>
     </dl>

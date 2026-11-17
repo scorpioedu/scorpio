@@ -112,7 +112,9 @@ export interface BoardStats {
   total: number;
   /** Mean of the assigned sets' average scores, or null when nothing is graded. */
   average: number | null;
-  /** Answers waiting for the teacher across the Needs you column. */
+  /** Sets waiting for the teacher: the same number as the Needs you column's count. */
+  needsYou: number;
+  /** Answers waiting for the teacher across those sets. */
   toCheck: number;
   /** Hand-ins still missing after their due date, summed over sets. */
   overdue: number;
@@ -133,6 +135,7 @@ export function boardStats(columns: BoardColumns): BoardStats {
     average: averages.length
       ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
       : null,
+    needsYou: columns.needsYou.length,
     toCheck: sum((c) => toCheck(c.progress)),
     overdue: sum((c) => c.progress?.overdue ?? 0),
   };
