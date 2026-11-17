@@ -44,7 +44,6 @@ import {
   type DragData,
 } from "./board-dnd";
 import { BoardStats } from "./board-stats";
-import { UnitFilter } from "./unit-filter";
 
 /** Cards shown before "+n more" in Up next and Done. */
 const UP_NEXT_SHOWN = 6;
@@ -86,7 +85,6 @@ export function CourseBoard({
   pacing,
   planOrder,
   unit,
-  onUnit,
   showDone,
   onShowDone,
   busy,
@@ -100,9 +98,8 @@ export function CourseBoard({
   pacing: Pacing;
   /** The class's order of sets, when it follows the course (needed to reorder Up next). */
   planOrder: string[] | null;
-  /** The unit the board is narrowed to (?unit=), or null. */
+  /** The unit the board is narrowed to (?unit=, chosen beside the view switch), or null. */
   unit: number | null;
-  onUnit: (unit: number | null) => void;
   /** Show every finished set instead of the latest few. */
   showDone: boolean;
   onShowDone: (show: boolean) => void;
@@ -275,9 +272,8 @@ export function CourseBoard({
         remaining={pacing.remaining}
         loading={progress === null}
       />
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <UnitFilter units={units} value={shownUnit} onChange={onUnit} />
-        {columns.done.length > DONE_SHOWN && (
+      {columns.done.length > DONE_SHOWN && (
+        <div className="flex justify-end">
           <Button
             variant="outline"
             size="sm"
@@ -286,8 +282,8 @@ export function CourseBoard({
           >
             {showDone ? "Show fewer done" : `Show done (${columns.done.length})`}
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       <div
         role="group"
         aria-label="Jump to a column"

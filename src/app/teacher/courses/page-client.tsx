@@ -39,6 +39,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssignDialog } from "./assign-dialog";
 import { CourseBoard } from "./board/course-board";
+import { UnitFilter } from "./board/unit-filter";
 import { CourseCalendar } from "./calendar/course-calendar";
 import { PlanEditor } from "./plan-editor";
 import { RoadmapTab } from "./roadmap-tab";
@@ -464,28 +465,37 @@ export default function CoursesClient() {
       )}
 
       {canBoard && !editing && (
-        <div
-          role="group"
-          aria-label="View"
-          className="inline-flex rounded-full border border-border bg-muted/40 p-1"
-        >
-          {(
-            [
-              ["board", "Board", Columns3],
-              ["calendar", "Calendar", CalendarRange],
-              ["list", "List", ListIcon],
-            ] as const
-          ).map(([value, label, Icon]) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={view === value}
-              onClick={() => setView(value)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring ${view === value ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <Icon className="size-4" aria-hidden /> {label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <div
+            role="group"
+            aria-label="View"
+            className="inline-flex rounded-full border border-border bg-muted/40 p-1"
+          >
+            {(
+              [
+                ["board", "Board", Columns3],
+                ["calendar", "Calendar", CalendarRange],
+                ["list", "List", ListIcon],
+              ] as const
+            ).map(([value, label, Icon]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={view === value}
+                onClick={() => setView(value)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring ${view === value ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                <Icon className="size-4" aria-hidden /> {label}
+              </button>
+            ))}
+          </div>
+          {(onBoard || onCalendar) && (
+            <UnitFilter
+              units={roadmap.map((u) => ({ unit: u.unit, title: u.info?.title ?? "" }))}
+              value={roadmap.some((u) => u.unit === unit) ? unit : null}
+              onChange={setUnit}
+            />
+          )}
         </div>
       )}
 
@@ -518,7 +528,6 @@ export default function CoursesClient() {
           pacing={pacing}
           planOrder={plan?.order ?? null}
           unit={unit}
-          onUnit={setUnit}
           showDone={showDone}
           onShowDone={setShowDone}
           busy={busy !== null}
@@ -542,7 +551,6 @@ export default function CoursesClient() {
           daysOff={calendar}
           isSchoolDay={isSchoolDay}
           unit={unit}
-          onUnit={setUnit}
           busy={busy !== null}
           onPreview={setPreview}
           actions={rowActions}

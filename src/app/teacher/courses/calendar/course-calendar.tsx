@@ -43,7 +43,6 @@ import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BoardStats } from "../board/board-stats";
-import { UnitFilter } from "../board/unit-filter";
 import type { PreviewTarget } from "../set-preview-dialog";
 import { shortDate, type ClassProgress } from "../use-course-data";
 import { setDisplayTitle, type SetRowActions } from "../use-set-actions";
@@ -260,7 +259,6 @@ export function CourseCalendar({
   daysOff,
   isSchoolDay,
   unit,
-  onUnit,
   busy,
   onPreview,
   actions,
@@ -273,9 +271,8 @@ export function CourseCalendar({
   /** The class's days off, to shade and name them. */
   daysOff: readonly DayOff[];
   isSchoolDay: SchoolDayTest;
-  /** The unit the calendar is narrowed to (?unit=), or null. */
+  /** The unit the calendar is narrowed to (?unit=, chosen beside the view switch), or null. */
   unit: number | null;
-  onUnit: (unit: number | null) => void;
   busy: boolean;
   onPreview: (t: PreviewTarget) => void;
   actions: SetRowActions;
@@ -346,7 +343,6 @@ export function CourseCalendar({
         remaining={pacing.remaining}
         loading={progress === null}
       />
-      <UnitFilter units={units} value={shownUnit} onChange={onUnit} />
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-1">
           <Button

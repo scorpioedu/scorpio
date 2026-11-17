@@ -142,7 +142,7 @@ The checks run in that order: Needs you, then Done, then Assigned. Details worth
 - Assigned is soonest due first (sets with no due date last); Done is latest due first. Up next shows the first six with "+ n more planned"; Done shows the latest four until **Show done (n)** is pressed.
 - While progress is loading, assigned sets wait in Assigned.
 
-**Above the columns:** one strip with the course progress bar ("12 of 31 sets assigned · on pace to finish Mar 19"; skipped sets are not counted), the class **Average** (mean of the sets' averages), **Needs you** (answers waiting, summed over sets) and **Overdue** (missing hand-ins past their due date, summed over sets). Under it, unit chips narrow every column to one unit (`?unit=4`).
+**Above the columns:** one strip with the course progress bar ("12 of 31 sets assigned · on pace to finish Mar 19"; skipped sets are not counted), the class **Average** (mean of the sets' averages), **Needs you** (answers waiting, summed over sets) and **Overdue** (missing hand-ins past their due date, summed over sets). The **unit filter** sits beside the Board | Calendar | List switch, for the Board and the Calendar alike: `Unit  All 1 2 3 …`, one small numbered chip per unit in the class's order. Only the chosen unit spells out its name (under the row on a phone); the others show it on hover. It narrows every column to one unit (`?unit=4`); pressing the chosen unit again, or All, shows everything.
 
 **Drag and drop** (`@dnd-kit`, `board-dnd.tsx`). `boardDrop` in `course-board.ts` decides what a drop means:
 
@@ -164,7 +164,7 @@ The board adds no Firestore rules and makes no AI calls: assigning uses `POST /a
 
 ### Calendar
 
-One month at a time (`src/lib/course-calendar.ts`, tested in `__tests__/course-calendar.test.ts`). It opens on the current month; the arrows step a month, **Today** comes back, and **Last set** jumps to the month the course finishes in. The same strip of numbers and the same unit chips (`?unit=`) as the Board sit above it.
+One month at a time (`src/lib/course-calendar.ts`, tested in `__tests__/course-calendar.test.ts`). It opens on the current month; the arrows step a month, **Today** comes back, and **Last set** jumps to the month the course finishes in. The same strip of numbers as the Board sits above it, and the unit filter beside the view switch (`?unit=`) narrows it the same way.
 
 - **Assigned sets** sit on their real due date, coloured by their Board column: Assigned (purple), Needs you (amber), Done (green).
 - **Sets still to come** (the Board's Up next) are dashed, on the date the pacing guide gives them at the current pace. They move when the pace, the plan or the days off change. Skipped and unpublished sets are not shown.
