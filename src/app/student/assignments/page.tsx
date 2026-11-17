@@ -103,11 +103,14 @@ export default function StudentAssignmentsPage() {
               where("courseId", "==", courseId),
             ),
           );
-          data = assignmentsSnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            dueDate: toDueDate(doc.data().dueDate),
-          })) as Assignment[];
+          // Archived assignments are hidden from students (the teacher can restore them).
+          data = assignmentsSnap.docs
+            .filter((doc) => doc.data().archivedAt == null)
+            .map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+              dueDate: toDueDate(doc.data().dueDate),
+            })) as Assignment[];
         } else if (teacherId) {
           // Fallback for legacy connections
           const assignmentsSnap = await getDocs(
@@ -118,11 +121,14 @@ export default function StudentAssignmentsPage() {
               where("courseId", "==", null),
             ),
           );
-          data = assignmentsSnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            dueDate: toDueDate(doc.data().dueDate),
-          })) as Assignment[];
+          // Archived assignments are hidden from students (the teacher can restore them).
+          data = assignmentsSnap.docs
+            .filter((doc) => doc.data().archivedAt == null)
+            .map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+              dueDate: toDueDate(doc.data().dueDate),
+            })) as Assignment[];
         }
         setAssignments(data);
 

@@ -186,8 +186,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               where("courseId", "==", courseId),
             ),
           );
-          totalAssignments = assignmentsSnap.size;
-          assignmentsSnap.docs.forEach((doc) => {
+          // Archived assignments are hidden from students (the teacher can restore them).
+          const shown = assignmentsSnap.docs.filter((doc) => doc.data().archivedAt == null);
+          totalAssignments = shown.length;
+          shown.forEach((doc) => {
             currentAssignmentIds.add(doc.id);
             assignmentsList.push({ id: doc.id, ...doc.data() } as AssignmentDoc);
           });
@@ -202,8 +204,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               where("courseId", "==", null),
             ),
           );
-          totalAssignments = assignmentsSnap.size;
-          assignmentsSnap.docs.forEach((doc) => {
+          // Archived assignments are hidden from students (the teacher can restore them).
+          const shown = assignmentsSnap.docs.filter((doc) => doc.data().archivedAt == null);
+          totalAssignments = shown.length;
+          shown.forEach((doc) => {
             currentAssignmentIds.add(doc.id);
             assignmentsList.push({ id: doc.id, ...doc.data() } as AssignmentDoc);
           });

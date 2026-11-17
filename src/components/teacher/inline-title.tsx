@@ -2,6 +2,7 @@
 
 // A title you can click to rename. Enter or leaving the field saves; Escape cancels.
 import { useEffect, useRef, useState, type ElementType } from "react";
+import Link from "next/link";
 import { Check, Loader2, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ export function InlineTitle({
   className,
   inputClassName,
   label = "Rename",
+  href,
 }: {
   value: string;
   /** Throw to stay in edit mode; show your own toast. */
@@ -22,6 +24,8 @@ export function InlineTitle({
   className?: string;
   inputClassName?: string;
   label?: string;
+  /** Show the title as a link (the pencil still renames). */
+  href?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -81,7 +85,13 @@ export function InlineTitle({
 
   return (
     <Tag className={cn("group inline-flex min-w-0 items-center gap-1.5", className)}>
-      <span className="min-w-0 break-words">{value}</span>
+      {href ? (
+        <Link href={href} className="min-w-0 break-words hover:text-primary hover:underline">
+          {value}
+        </Link>
+      ) : (
+        <span className="min-w-0 break-words">{value}</span>
+      )}
       <button
         type="button"
         onClick={() => {

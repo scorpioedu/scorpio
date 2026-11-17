@@ -170,7 +170,7 @@ export function SmartDateTimePicker({
       <p id='datetime-picker-help' className={cn('text-xs text-muted-foreground', !isValid && 'text-destructive')}>
         {!isValid
           ? 'Enter a date or choose one from the calendar.'
-          : date ? format(date, 'PPP p') : 'Due when you create it if left blank.'}
+          : date ? format(date, 'PPP p') : 'No due date if left blank.'}
       </p>
     </div>
   )

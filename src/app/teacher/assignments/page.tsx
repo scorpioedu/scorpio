@@ -1,16 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+// Every assignment the teacher owns. Rename, change a due date, share or archive right on the row;
+// select several to move their due dates together. Open one for its results, problems and settings.
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { collection, getDocs, deleteDoc, doc, query, where, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { Archive, Globe, Lock, PlusCircle, ShieldAlert, ShieldCheck, X } from "lucide-react";
+import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
-import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import { ALL_CLASSES, useSelectedClass } from "@/contexts/selected-class-context";
 import { getAssignmentPoints } from "@/lib/assignment-points";
-import { toast } from "sonner";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { parseDueDate } from "@/lib/due-date";
+import { addDays, dueState } from "@/lib/teacher-edit";
+import { assignmentHref, dueParam, updateAssignment } from "@/lib/assignment-actions";
+import { undoToast } from "@/lib/undo-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -26,222 +33,238 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
-import {
-  ArrowUpRight,
-  PlusCircle,
-  Trash2,
-  Globe,
-  Lock,
-  ShieldCheck,
-  ShieldAlert,
-  Copy,
-  MoreHorizontal,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { ClassPicker } from "@/components/teacher/class-picker";
+import { InlineTitle } from "@/components/teacher/inline-title";
+import { DueDateChip } from "@/components/teacher/due-date-chip";
+import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
 
-interface Assignment {
+type Visibility = "private" | "network" | "global";
+
+interface Row {
   id: string;
   title: string;
-  description: string;
-  dueDate: Date;
+  dueDate: Date | null;
   questions?: { points?: number }[];
-  createdAt: Date;
-  courseId?: string;
-  courseName?: string;
-  visibility?: "private" | "network" | "global";
-  organizationId?: string;
+  createdAt: Date | null;
+  courseId: string | null;
+  visibility: Visibility;
   lockdownMode?: boolean;
+  archived: boolean;
+  curriculumSetKey?: string;
 }
+
+const STATUS = [
+  { value: "open", label: "Open (not yet due)" },
+  { value: "pastDue", label: "Past due" },
+  { value: "noDate", label: "No due date" },
+  { value: "all", label: "All but archived" },
+  { value: "archived", label: "Archived" },
+] as const;
+type Status = (typeof STATUS)[number]["value"];
+
+const time = (d: Date | null, missing: number) => (d ? d.getTime() : missing);
 
 export default function AssignmentsPage() {
   const { user } = useAuth();
-  const router = useRouter();
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [courses, setCourses] = useState<{ id: string; name: string }[]>([]);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
-  const [filter, setFilter] = useState<string>("all");
-  const [sort, setSort] = useState<string>("dueDateDesc");
-  const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+  const { classes, classId } = useSelectedClass({ allowAll: true });
+  const [rows, setRows] = useState<Row[] | null>(null);
+  const [status, setStatus] = useState<Status>("all");
+  const [sort, setSort] = useState("dueDateAsc");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [shiftBy, setShiftBy] = useState("1");
+
+  const uid = user?.uid;
+  const load = useCallback(async () => {
+    if (!uid) return;
+    const snap = await getDocs(query(collection(db, "assignments"), where("teacherId", "==", uid)));
+    return snap.docs.map((d) => {
+      const a = d.data();
+      return {
+        id: d.id,
+        title: String(a.title || "Untitled assignment"),
+        dueDate: parseDueDate(a.dueDate),
+        questions: a.questions,
+        createdAt: parseDueDate(a.createdAt),
+        courseId: typeof a.courseId === "string" ? a.courseId : null,
+        visibility: (a.visibility as Visibility) || "private",
+        lockdownMode: a.lockdownMode,
+        archived: a.archivedAt != null,
+        curriculumSetKey: a.curriculumSetKey,
+      } satisfies Row;
+    });
+  }, [uid]);
 
   useEffect(() => {
-    async function fetchCourses() {
-      if (!user) return;
-      try {
-        const snap = await getDocs(
-          query(collection(db, "courses"), where("teacherId", "==", user.uid)),
-        );
-        setCourses(snap.docs.map((d) => ({ id: d.id, name: d.data().name })));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    fetchCourses();
-  }, [user]);
-
-  const fetchAssignments = useCallback(async () => {
-    if (!user) return;
-    try {
-      // 1. Fetch courses to map names
-      const coursesSnap = await getDocs(
-        query(collection(db, "courses"), where("teacherId", "==", user.uid)),
-      );
-      const courseMap: Record<string, string> = {};
-      coursesSnap.docs.forEach((d) => (courseMap[d.id] = d.data().name));
-
-      // 2. Fetch assignments
-      const q = query(collection(db, "assignments"), where("teacherId", "==", user.uid));
-      const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((doc) => {
-        const d = doc.data();
-        return {
-          id: doc.id,
-          ...d,
-          dueDate: d.dueDate?.toDate?.() || new Date(d.dueDate),
-          createdAt: d.createdAt?.toDate?.() || new Date(d.createdAt),
-          courseName: d.courseId ? courseMap[d.courseId] : undefined,
-        };
-      }) as Assignment[];
-      setAssignments(data);
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchAssignments();
-    }
-  }, [user, fetchAssignments]);
-
-  async function handleDuplicate(assignment: Assignment) {
-    if (!user) return;
-    // The server copies the questions and answer key into a new private assignment, then the editor loads it.
-    try {
-      const res = await authenticatedFetch("/api/assignments/clone", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceId: assignment.id }),
+    let active = true;
+    load()
+      .then((list) => active && list && setRows(list))
+      .catch(() => {
+        if (!active) return;
+        setRows([]);
+        toast.error("Could not load your assignments.");
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || typeof data.id !== "string") {
-        toast.error(data.error || "Could not duplicate this assignment. Please try again.");
-        return;
-      }
-      router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
+    return () => {
+      active = false;
+    };
+  }, [load]);
+
+  const patchRow = (id: string, patch: Partial<Row>) =>
+    setRows((cur) => (cur ?? []).map((r) => (r.id === id ? { ...r, ...patch } : r)));
+
+  const classNames = useMemo(() => new Map((classes ?? []).map((c) => [c.id, c.name])), [classes]);
+
+  const visible = useMemo(() => {
+    const now = new Date();
+    const list = (rows ?? []).filter((r) => {
+      if (classId !== ALL_CLASSES && r.courseId !== classId) return false;
+      if (status === "archived") return r.archived;
+      if (r.archived) return false;
+      const state = dueState(r.dueDate, now);
+      if (status === "open") return state === "soon" || state === "later";
+      if (status === "pastDue") return state === "past";
+      if (status === "noDate") return state === "none";
+      return true;
+    });
+    return list.sort((a, b) => {
+      if (sort === "dueDateAsc") return time(a.dueDate, Infinity) - time(b.dueDate, Infinity);
+      if (sort === "dueDateDesc") return time(b.dueDate, -Infinity) - time(a.dueDate, -Infinity);
+      if (sort === "titleAsc") return a.title.localeCompare(b.title, undefined, { numeric: true });
+      return b.title.localeCompare(a.title, undefined, { numeric: true });
+    });
+  }, [rows, classId, status, sort]);
+
+  const selectedRows = visible.filter((r) => selected.has(r.id));
+  const toggle = (id: string, on: boolean) =>
+    setSelected((cur) => {
+      const next = new Set(cur);
+      if (on) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
+  async function rename(row: Row, title: string) {
+    try {
+      await updateAssignment(row.id, { title });
+      patchRow(row.id, { title });
+      undoToast("Renamed", async () => {
+        await updateAssignment(row.id, { title: row.title });
+        patchRow(row.id, { title: row.title });
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not rename");
+      throw error;
+    }
+  }
+
+  async function changeDue(row: Row, dueDate: Date | null) {
+    try {
+      await updateAssignment(row.id, { dueDate: dueParam(dueDate) });
+      patchRow(row.id, { dueDate });
+      undoToast(dueDate ? "Due date changed" : "Due date removed", async () => {
+        await updateAssignment(row.id, { dueDate: dueParam(row.dueDate) });
+        patchRow(row.id, { dueDate: row.dueDate });
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not change the due date");
+      throw error;
+    }
+  }
+
+  async function updateVisibility(row: Row, visibility: Visibility) {
+    try {
+      await updateDoc(doc(db, "assignments", row.id), { visibility });
+      patchRow(row.id, { visibility });
+      undoToast(`Sharing set to ${visibility}`, async () => {
+        await updateDoc(doc(db, "assignments", row.id), { visibility: row.visibility });
+        patchRow(row.id, { visibility: row.visibility });
+      });
     } catch {
-      toast.error("Could not duplicate this assignment. Please try again.");
+      toast.error("Could not change sharing. Please try again.");
     }
   }
 
-  async function handleDelete(id: string) {
+  /** Move every selected due date by the same number of days (rows without a date are skipped). */
+  async function shiftSelected() {
+    const days = Number(shiftBy);
+    const targets = selectedRows.filter((r) => r.dueDate);
+    if (!targets.length) return toast.error("None of the selected assignments has a due date.");
+    const moves = targets.map((r) => ({ row: r, next: addDays(r.dueDate!, days) }));
+    const apply = async (list: { id: string; date: Date | null }[]) => {
+      const results = await Promise.allSettled(
+        list.map((m) => updateAssignment(m.id, { dueDate: dueParam(m.date) })),
+      );
+      list.forEach(
+        (m, i) => results[i].status === "fulfilled" && patchRow(m.id, { dueDate: m.date }),
+      );
+      const failed = results.filter((r) => r.status === "rejected").length;
+      if (failed)
+        throw new Error(`${failed} due date${failed === 1 ? "" : "s"} could not be changed`);
+    };
     try {
-      await deleteDoc(doc(db, "assignments", id));
-      setAssignments(assignments.filter((a) => a.id !== id));
-      toast.success("Assignment deleted.");
+      await apply(moves.map((m) => ({ id: m.row.id, date: m.next })));
+      undoToast(
+        `Moved ${moves.length} due date${moves.length === 1 ? "" : "s"} ${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} ${days > 0 ? "later" : "earlier"}`,
+        () => apply(moves.map((m) => ({ id: m.row.id, date: m.row.dueDate }))),
+      );
     } catch (error) {
-      console.error("Error deleting assignment:", error);
-      toast.error("Failed to delete assignment.");
+      toast.error(error instanceof Error ? error.message : "Could not move the due dates");
     }
   }
 
-  async function updateVisibility(id: string, visibility: "private" | "network" | "global") {
+  async function archiveSelected() {
+    const targets = selectedRows;
+    const setAll = async (archived: boolean) => {
+      await Promise.all(targets.map((r) => updateAssignment(r.id, { archived })));
+      targets.forEach((r) => patchRow(r.id, { archived }));
+    };
     try {
-      await updateDoc(doc(db, "assignments", id), { visibility });
-      setAssignments(assignments.map((a) => (a.id === id ? { ...a, visibility } : a)));
-    } catch (error) {
-      console.error("Error updating visibility:", error);
-      toast.error("Failed to update sharing. Please try again.");
+      await setAll(true);
+      setSelected(new Set());
+      undoToast(`Archived ${targets.length} assignment${targets.length === 1 ? "" : "s"}`, () =>
+        setAll(false),
+      );
+    } catch {
+      toast.error("Could not archive every assignment. Please try again.");
     }
   }
 
-  const isPastDue = (date: Date) => new Date(date) < new Date();
-
-  // Filtering
-  let filteredAssignments = assignments.filter((assignment) => {
-    if (selectedCourseId !== "all" && assignment.courseId !== selectedCourseId) return false;
-
-    const pastDue = isPastDue(assignment.dueDate);
-    if (filter === "active") return !pastDue;
-    if (filter === "pastDue") return pastDue;
-    return true;
-  });
-
-  // Sorting
-  filteredAssignments = filteredAssignments.sort((a, b) => {
-    if (sort === "dueDateAsc") {
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-    } else if (sort === "dueDateDesc") {
-      return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
-    } else if (sort === "titleAsc") {
-      return a.title.localeCompare(b.title);
-    } else if (sort === "titleDesc") {
-      return b.title.localeCompare(a.title);
-    }
-    return 0;
-  });
+  const allChecked = visible.length > 0 && visible.every((r) => selected.has(r.id));
 
   return (
     <div className="space-y-6">
       <TeacherPageHeader
         title="Assignments"
-        description="Review deadlines, manage sharing, and open student submissions."
+        description="Rename, re-date, share or archive right here. Open one to see results or edit its problems."
       >
+        <ClassPicker allowAll />
         <Button asChild>
           <Link href="/teacher/create">
-            <PlusCircle /> Create Assignment
+            <PlusCircle /> Create assignment
           </Link>
         </Button>
       </TeacherPageHeader>
 
       <Card className="min-w-0 gap-0 py-0">
         <CardHeader className="flex flex-wrap items-end justify-between gap-3 px-4 py-4 sm:px-5">
-          <div className="grid w-full max-w-xl gap-3 sm:grid-cols-3">
-            <div className="min-w-0 space-y-1.5">
-              <label
-                htmlFor="assignment-class"
-                className="block text-xs font-medium text-muted-foreground"
-              >
-                Class
-              </label>
-              <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
-                <SelectTrigger id="assignment-class" className="w-full cursor-pointer">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Classes</SelectItem>
-                  {courses.map((course) => (
-                    <SelectItem key={course.id} value={course.id}>
-                      {course.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="grid w-full max-w-md gap-3 sm:grid-cols-2">
             <div className="min-w-0 space-y-1.5">
               <label
                 htmlFor="assignment-status"
                 className="block text-xs font-medium text-muted-foreground"
               >
-                Status
+                Show
               </label>
-              <Select value={filter} onValueChange={setFilter}>
+              <Select value={status} onValueChange={(v) => setStatus(v as Status)}>
                 <SelectTrigger id="assignment-status" className="w-full cursor-pointer">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pastDue">Past Due</SelectItem>
+                  {STATUS.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -257,87 +280,137 @@ export default function AssignmentsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dueDateDesc">Due Date (Latest)</SelectItem>
-                  <SelectItem value="dueDateAsc">Due Date (Earliest)</SelectItem>
+                  <SelectItem value="dueDateAsc">Due date (soonest)</SelectItem>
+                  <SelectItem value="dueDateDesc">Due date (latest)</SelectItem>
                   <SelectItem value="titleAsc">Title (A–Z)</SelectItem>
                   <SelectItem value="titleDesc">Title (Z–A)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-          {!loading && (
+          {rows && (
             <p className="text-sm text-muted-foreground">
-              {filteredAssignments.length} assignments
+              {visible.length} assignment{visible.length === 1 ? "" : "s"}
             </p>
           )}
         </CardHeader>
+
+        {selectedRows.length > 0 && (
+          <div
+            role="region"
+            aria-label="Selected assignments"
+            className="flex flex-wrap items-center gap-3 border-t bg-primary/5 px-4 py-2.5 text-sm sm:px-5"
+          >
+            <span className="font-medium">{selectedRows.length} selected</span>
+            <span className="text-muted-foreground">Move due dates</span>
+            <Select value={shiftBy} onValueChange={setShiftBy}>
+              <SelectTrigger size="sm" aria-label="Move by" className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[-7, -3, -2, -1, 1, 2, 3, 7].map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    {Math.abs(n)} day{Math.abs(n) === 1 ? "" : "s"} {n > 0 ? "later" : "earlier"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button size="sm" variant="outline" onClick={shiftSelected}>
+              Move
+            </Button>
+            {status !== "archived" && (
+              <Button size="sm" variant="ghost" onClick={archiveSelected}>
+                <Archive /> Archive
+              </Button>
+            )}
+            <Button
+              size="sm"
+              variant="ghost"
+              className="ml-auto"
+              onClick={() => setSelected(new Set())}
+            >
+              <X /> Clear
+            </Button>
+          </div>
+        )}
+
         <CardContent className="border-t p-0">
-          {loading || filteredAssignments.length === 0 ? (
-            <p role="status" className="px-5 py-10 text-center text-sm text-muted-foreground">
-              {loading ? "Loading assignments…" : "No assignments match these filters."}
-            </p>
+          {!rows || visible.length === 0 ? (
+            <div role="status" className="px-5 py-10 text-center text-sm text-muted-foreground">
+              {!rows
+                ? "Loading assignments…"
+                : status === "archived"
+                  ? "Nothing archived. Archived assignments are hidden from students and can be restored."
+                  : "No assignments match. Try another class or “All but archived”."}
+            </div>
           ) : (
             <Table aria-label="Assignments">
               <TableHeader className="bg-muted/40">
                 <TableRow>
-                  <TableHead className="pl-4 sm:pl-5">Assignment</TableHead>
-                  <TableHead>Deadline</TableHead>
-                  <TableHead>Visibility</TableHead>
+                  <TableHead className="w-10 pl-4 sm:pl-5">
+                    <Checkbox
+                      aria-label="Select all"
+                      checked={allChecked}
+                      onCheckedChange={(on) =>
+                        setSelected(on === true ? new Set(visible.map((r) => r.id)) : new Set())
+                      }
+                    />
+                  </TableHead>
+                  <TableHead>Assignment</TableHead>
+                  <TableHead>Due</TableHead>
+                  <TableHead>Sharing</TableHead>
                   <TableHead className="w-12">
                     <span className="sr-only">Actions</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredAssignments.map((assignment) => (
-                  <TableRow key={assignment.id}>
-                    <TableCell className="max-w-80 whitespace-normal py-3 pl-4 sm:pl-5">
-                      <Link
-                        href={`/teacher/assignment-view?id=${assignment.id}`}
-                        className="inline-flex items-baseline gap-1.5 break-words font-medium hover:text-primary hover:underline"
-                      >
-                        {assignment.title}
-                        <ArrowUpRight
-                          aria-hidden="true"
-                          className="size-3 shrink-0 text-muted-foreground"
-                        />
-                      </Link>
+                {visible.map((row) => (
+                  <TableRow key={row.id} data-state={selected.has(row.id) ? "selected" : undefined}>
+                    <TableCell className="pl-4 sm:pl-5">
+                      <Checkbox
+                        aria-label={`Select ${row.title}`}
+                        checked={selected.has(row.id)}
+                        onCheckedChange={(on) => toggle(row.id, on === true)}
+                      />
+                    </TableCell>
+                    <TableCell className="max-w-96 whitespace-normal py-3">
+                      <InlineTitle
+                        value={row.title}
+                        href={assignmentHref(row.id)}
+                        label="Rename assignment"
+                        className="font-medium"
+                        onSave={(title) => rename(row, title)}
+                      />
                       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
                         <span>
-                          {assignment.courseName ||
-                            (assignment.courseId ? "Unknown class" : "All classes")}
+                          {row.courseId
+                            ? (classNames.get(row.courseId) ?? "Archived class")
+                            : "Not in a class"}
                         </span>
                         <span>
-                          {assignment.questions?.length || 0} questions ·{" "}
-                          {getAssignmentPoints(assignment.questions)} pts
+                          {row.questions?.length || 0} problems ·{" "}
+                          {getAssignmentPoints(row.questions)} pts
                         </span>
-                        {assignment.lockdownMode && (
+                        {row.lockdownMode && (
                           <span className="inline-flex items-center gap-1">
                             <ShieldAlert aria-hidden="true" className="size-3" /> Lockdown
                           </span>
                         )}
+                        {row.archived && <span>Archived</span>}
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs">
-                      <p className="font-medium">
-                        {Number.isNaN(assignment.dueDate.getTime())
-                          ? "No due date"
-                          : assignment.dueDate.toLocaleDateString()}
-                      </p>
-                      <p className="text-muted-foreground">
-                        {isPastDue(assignment.dueDate) ? "Past due" : "Active"}
-                      </p>
+                    <TableCell>
+                      <DueDateChip due={row.dueDate} onChange={(d) => changeDue(row, d)} />
                     </TableCell>
                     <TableCell>
                       <Select
-                        value={assignment.visibility || "private"}
-                        onValueChange={(value: "private" | "network" | "global") =>
-                          updateVisibility(assignment.id, value)
-                        }
+                        value={row.visibility}
+                        onValueChange={(value: Visibility) => updateVisibility(row, value)}
                       >
                         <SelectTrigger
                           size="sm"
-                          aria-label={`Visibility for ${assignment.title}`}
+                          aria-label={`Sharing for ${row.title}`}
                           className="cursor-pointer text-xs"
                         >
                           <SelectValue />
@@ -356,28 +429,15 @@ export default function AssignmentsPage() {
                       </Select>
                     </TableCell>
                     <TableCell className="pr-3">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={`Actions for ${assignment.title}`}
-                          >
-                            <MoreHorizontal />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onSelect={() => handleDuplicate(assignment)}>
-                            <Copy /> Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onSelect={() => setAssignmentToDelete(assignment.id)}
-                          >
-                            <Trash2 /> Delete assignment
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <AssignmentActionsMenu
+                        id={row.id}
+                        title={row.title}
+                        archived={row.archived}
+                        onChanged={(archived) => patchRow(row.id, { archived })}
+                        onDeleted={() =>
+                          setRows((cur) => (cur ?? []).filter((r) => r.id !== row.id))
+                        }
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -386,16 +446,6 @@ export default function AssignmentsPage() {
           )}
         </CardContent>
       </Card>
-
-      <ConfirmDialog
-        open={!!assignmentToDelete}
-        onOpenChange={(open) => !open && setAssignmentToDelete(null)}
-        title="Delete Assignment"
-        description="Are you sure you want to delete this assignment? This will permanently remove all student submissions for this assignment as well."
-        onConfirm={() => assignmentToDelete && handleDelete(assignmentToDelete)}
-        confirmText="Delete"
-        variant="destructive"
-      />
     </div>
   );
 }

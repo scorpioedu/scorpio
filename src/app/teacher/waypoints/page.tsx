@@ -177,7 +177,8 @@ export default function WaypointsPage() {
       const res = await authenticatedFetch("/api/assignments/clone", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceId: waypoint.id }),
+        // Keep the waypoint's own title: students see it, and "(Copy)" means nothing to them.
+        body: JSON.stringify({ sourceId: waypoint.id, title: waypoint.title }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 403 && data.code === "plan_upgrade_required") {

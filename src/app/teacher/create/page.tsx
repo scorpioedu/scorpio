@@ -4,9 +4,11 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { collection, getDocs, query, where, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { useSelectedClass } from "@/contexts/selected-class-context";
+import { useUnsavedGuard } from "@/hooks/use-unsaved-guard";
 import { validateQuestionAnswers } from "@/lib/assignment-validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +34,7 @@ import { SettingsFields } from "@/components/teacher/assignment-editor/settings-
 import { StudentPreviewContent } from "@/components/teacher/assignment-editor/student-preview";
 import {
   DEFAULT_SETTINGS,
+  settingsFrom,
   getAssignmentPoints,
   summarisePoints,
   toEditorQuestion,
@@ -72,7 +75,6 @@ interface CourseItem {
   id: string;
   name?: string;
   code?: string;
-  [key: string]: unknown;
 }
 
 export default function CreateAssignmentPage() {
@@ -95,11 +97,15 @@ function CreateAssignmentForm() {
   const forkId = searchParams?.get("fork");
   const initialCourseId = searchParams?.get("courseId");
   const { user, profile, loading: authLoading } = useAuth();
-  const [courses, setCourses] = useState<CourseItem[]>([]);
+  const { classes, classId: selectedClassId } = useSelectedClass({ allowAll: true, mirror: false });
+  const courses: CourseItem[] = classes ?? [];
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [chosenCourseId, setChosenCourseId] = useState("");
   const selectedCourseId =
-    chosenCourseId || courses.find((course) => course.id === initialCourseId)?.id || "";
+    chosenCourseId ||
+    courses.find((course) => course.id === initialCourseId)?.id ||
+    courses.find((course) => course.id === selectedClassId)?.id ||
+    "";
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
@@ -148,24 +154,8 @@ function CreateAssignmentForm() {
         if (cancelled) return;
         setTitle(assignment.title || "");
         setDescription(assignment.description || "");
-        setSettings((current) => ({
-          ...current,
-          ...(typeof assignment.apUnit === "number" ? { apUnit: assignment.apUnit } : {}),
-          ...(Array.isArray(assignment.apTopics) ? { apTopics: assignment.apTopics } : {}),
-          ...(typeof assignment.topic === "string" && assignment.topic
-            ? { topic: assignment.topic }
-            : {}),
-          ...(assignment.gradingType === "manual" || assignment.gradingType === "ai"
-            ? { gradingType: assignment.gradingType }
-            : {}),
-          ...(assignment.allowCalculator !== undefined
-            ? { allowCalculator: !!assignment.allowCalculator }
-            : {}),
-          ...(assignment.allowAIHelp !== undefined
-            ? { allowAIHelp: !!assignment.allowAIHelp }
-            : {}),
-          visibility: "private", // Default to private for copies
-        }));
+        // Every setting comes with the copy (time limit, lockdown, tools, grading); sharing starts private.
+        setSettings({ ...settingsFrom(assignment), visibility: "private" });
         if (assignment.questions?.length) {
           const copiedQuestions = assignment.questions.map((question: RawQuestion) =>
             toEditorQuestion(question),
@@ -185,19 +175,11 @@ function CreateAssignmentForm() {
     };
   }, [forkId, forkCopyId, user]);
 
-  useEffect(() => {
-    async function fetchCourses() {
-      if (!user) return;
-      try {
-        const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
-        const snap = await getDocs(q);
-        setCourses(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      } catch (e) {
-        console.error("Error fetching courses", e);
-      }
-    }
-    fetchCourses();
-  }, [user]);
+  // Leaving with a title or questions typed asks first (not after a successful create).
+  const [created, setCreated] = useState(false);
+  const { guardDialog } = useUnsavedGuard(
+    !created && (title.trim() !== "" || questions.length > 0 || description.trim() !== ""),
+  );
 
   const summary = summarisePoints(questions, assignmentPoints, customPoints);
   const { validTotal, scoredQuestions, pointsError } = summary;
@@ -248,7 +230,7 @@ function CreateAssignmentForm() {
           organizationId: profile?.organizationId || null,
           visibility: settings.visibility,
           courseId: selectedCourseId,
-          dueDate: dueDate || new Date(),
+          dueDate: dueDate ?? null,
           timeLimit: timeLimit === "" ? null : Number(timeLimit),
           gradingType: settings.gradingType,
           requireWorkSubmission: settings.requireWorkSubmission,
@@ -280,7 +262,14 @@ function CreateAssignmentForm() {
       // The email notifications to students are now automatically handled in the background
       // by the Firebase Cloud Function 'onAssignmentCreated'.
 
-      router.push("/teacher/assignments");
+      setCreated(true);
+      const { id } = await createResponse.json();
+      toast.success("Assignment created");
+      router.push(
+        typeof id === "string"
+          ? `/teacher/assignment-view?id=${encodeURIComponent(id)}`
+          : "/teacher/assignments",
+      );
     } catch (error) {
       console.error("Error creating assignment:", error);
       toast.error("Couldn’t create the assignment. Your changes are still here. Please try again.");
@@ -449,6 +438,7 @@ function CreateAssignmentForm() {
           onClose={() => setIsPreviewOpen(false)}
         />
       </Dialog>
+      {guardDialog}
     </div>
   );
 }

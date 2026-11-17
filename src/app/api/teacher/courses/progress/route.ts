@@ -52,6 +52,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
     ]);
 
     const assignments = assignmentSnap.docs
+      .filter((d) => d.data().archivedAt == null)
       .map((d) => ({
         id: d.id,
         curriculumId: d.data().curriculumId,
