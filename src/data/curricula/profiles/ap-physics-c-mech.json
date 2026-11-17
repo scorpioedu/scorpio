@@ -168,5 +168,67 @@
         "problems": 1
       }
     ]
+  },
+  "2C": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "friction-always-opposes-motion",
+        "problems": 2
+      },
+      {
+        "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
+        "tag": "no-gravity-in-orbit",
+        "problems": 1
+      }
+    ]
+  },
+  "2D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "centrifugal-force",
+        "problems": 1
+      },
+      {
+        "tag": "force-implies-motion",
+        "problems": 1
+      },
+      {
+        "tag": "mass-weight-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "normal-force-equals-weight",
+        "problems": 1
+      }
+    ]
   }
 }

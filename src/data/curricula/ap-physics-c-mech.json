@@ -94,7 +94,13 @@
       "title": "Gravity, friction and springs",
       "description": "Universal gravitation, friction models and Hooke's law.",
       "topics": ["2.6", "2.7", "2.8"],
-      "draftIds": []
+      "draftIds": [
+        "m5GyN2O9B4C7SB91pxzM",
+        "HAsk2TQ2yPdiUc9xcxUg",
+        "aeLYrsWdMAc4ONznCa9H",
+        "AZd4V5FA3uc3kxTCEavM",
+        "ypQCjYry92EuVoN21c6K"
+      ]
     },
     {
       "key": "2D",
@@ -102,7 +108,13 @@
       "title": "Drag and circular motion",
       "description": "Velocity-dependent resistive forces, terminal velocity and centripetal acceleration.",
       "topics": ["2.9", "2.10"],
-      "draftIds": []
+      "draftIds": [
+        "BsqOX7a9Ha0i9S9Jzj6A",
+        "28cBXOg9UE3sMUvADm0Q",
+        "t7kPKZUjw6n0Y67AEb8C",
+        "gdYSOirYpLF6PhrYzXtH",
+        "GrJgtq04QRWZXp4UfWvZ"
+      ]
     },
     {
       "key": "3A",
