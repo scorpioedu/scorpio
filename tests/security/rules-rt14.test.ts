@@ -130,3 +130,16 @@ describe('server-only collections are client-inaccessible', () => {
   await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(),`${c}/x`)));
  });
 });
+
+describe('courses follow a curriculum only through the server', () => {
+ test('owner can still edit settings, but cannot set, change or clear curriculumId', async () => {
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f1']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:'ap-physics-1'}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumId:'ap-physics-1'}); });
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f2']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:'other'}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:null}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumId:null}); });
+ });
+ test('a student can read their own class (to group assignments by unit)', async () => assertSucceeds(getDoc(doc(db('sa'),'courses/ca'))));
+});

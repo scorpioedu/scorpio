@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SetsPanel } from "./sets-panel";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 
 interface Draft {
@@ -473,6 +474,7 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
 export default function ContentReviewPage() {
   const access = useAdminAccess();
   const [status, setStatus] = useState<DraftStatus>("draft");
+  const [showSets, setShowSets] = useState(false);
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(false);
   const [unit, setUnit] = useState("4");
@@ -513,7 +515,10 @@ export default function ContentReviewPage() {
       if (!res.ok) throw new Error(body.error || "Generation failed");
       toast.success(`${body.drafts.length} drafts ready for review`);
       if (status === "draft") setDrafts((cur) => [...body.drafts, ...cur]);
-      else setStatus("draft");
+      else {
+        setStatus("draft");
+        setShowSets(false);
+      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Generation failed");
     } finally {
@@ -630,10 +635,12 @@ export default function ContentReviewPage() {
       </Card>
 
       <Tabs
-        value={status}
+        value={showSets ? "sets" : status}
         onValueChange={(v) => {
-          setStatus(v as DraftStatus);
           setSelected([]);
+          if (v === "sets") return setShowSets(true);
+          setShowSets(false);
+          setStatus(v as DraftStatus);
         }}
       >
         <TabsList>
@@ -641,10 +648,13 @@ export default function ContentReviewPage() {
           <TabsTrigger value="approved">Approved</TabsTrigger>
           <TabsTrigger value="rejected">Rejected</TabsTrigger>
           <TabsTrigger value="published">Published</TabsTrigger>
+          <TabsTrigger value="sets">Sets</TabsTrigger>
         </TabsList>
       </Tabs>
 
-      {status === "approved" && drafts.length > 0 && (
+      {showSets && <SetsPanel />}
+
+      {!showSets && status === "approved" && drafts.length > 0 && (
         <Card className="gap-0 py-0">
           <CardHeader className="flex flex-wrap items-end gap-3 px-5 py-4">
             <div className="min-w-64 flex-1 space-y-1.5">
@@ -672,7 +682,7 @@ export default function ContentReviewPage() {
         </Card>
       )}
 
-      {loading ? (
+      {showSets ? null : loading ? (
         <p className="py-10 text-center text-sm text-muted-foreground">Loading…</p>
       ) : drafts.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">Nothing here.</p>

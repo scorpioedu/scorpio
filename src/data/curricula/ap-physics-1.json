@@ -1,0 +1,176 @@
+{
+  "id": "ap-physics-1",
+  "apCourse": "physics-1",
+  "name": "AP Physics 1",
+  "description": "Scorpio's roadmap through the eight AP Physics 1 units: ready-made, auto-graded sets in a teaching order.",
+  "sets": [
+    {
+      "key": "4A",
+      "unit": 4,
+      "title": "Momentum of objects and systems",
+      "description": "Momentum as a vector: single objects, two-object systems and changes in momentum.",
+      "topics": ["4.1"],
+      "draftIds": [
+        "Gc2h9qSFqEJRWhHlALAF",
+        "YCbhyeEwoiUznyZSY0nE",
+        "HHz1T1EBIFJbOjuyNJIH",
+        "GdGiwomjt2nJ31pU94fz",
+        "5yoOn6KOLAl0OufEmeJO"
+      ]
+    },
+    {
+      "key": "4B",
+      "unit": 4,
+      "title": "Impulse and change in momentum",
+      "description": "Impulse from average force and force–time graphs, and how it changes momentum.",
+      "topics": ["4.2"],
+      "draftIds": [
+        "Okr4WSiADru058fc1VEJ",
+        "OzE2UuNOcdcrIFRvMdkl",
+        "7IzD0u3P4POmmRP0IK2K",
+        "TSSFTuvsuEIyy14bBrcf",
+        "0c7CtVfh080LLdYQRRmu"
+      ]
+    },
+    {
+      "key": "4C",
+      "unit": 4,
+      "title": "Conservation of momentum",
+      "description": "Isolated systems, explosions and pushes, and centre-of-mass motion.",
+      "topics": ["4.3"],
+      "draftIds": [
+        "qYbLNgxYAQ6czFEqYjRm",
+        "U2y8BIwZ0DSYa5m0ai0v",
+        "gPvYmMWHGmEbKuycGAmH",
+        "9Ylc7pDpZG8lry8Z5X6h",
+        "RkpQjnQBEFt30axRGsdD"
+      ]
+    },
+    {
+      "key": "4D",
+      "unit": 4,
+      "title": "Elastic and inelastic collisions",
+      "description": "Sticking and bouncing collisions: momentum conserved, kinetic energy not always.",
+      "topics": ["4.4"],
+      "draftIds": [
+        "Mc5mjuB0GsLntMtvI0O5",
+        "fYReCdOGzh5WKhLrEGnm",
+        "FKRX8537wlxxoTrTjK9C",
+        "2OkA26F8qlaqtrRhvvOO",
+        "qaonuOPyGbPRRdR1ZGYU"
+      ]
+    },
+    {
+      "key": "5A",
+      "unit": 5,
+      "title": "Rotational kinematics",
+      "description": "Angular displacement, speed and acceleration, and linking them to linear motion.",
+      "topics": ["5.1", "5.2"],
+      "draftIds": [
+        "EtRGKNXbHKnxVLKQK4hO",
+        "VqK0ZArd0hCavmd703x5",
+        "spYPkbDY727BMPtdx2Wf",
+        "gQ7zdiieGcRfZ91CE01M",
+        "6AXMdTSJ7It4pFZeg4WF"
+      ]
+    },
+    {
+      "key": "5B",
+      "unit": 5,
+      "title": "Torque",
+      "description": "Torque from force, lever arm and angle; net torque and balanced torques.",
+      "topics": ["5.3"],
+      "draftIds": [
+        "G4irqnMELcaqk5xB0At9",
+        "VqpBuL0Tyl4h6mQBWXDb",
+        "Htoz7pqu7DthYxnwdJXN",
+        "qULoaG3OFz0KtY1XwyjG",
+        "BfC7m7jnQaeMLIBgLwKO"
+      ]
+    },
+    {
+      "key": "5C",
+      "unit": 5,
+      "title": "Rotational inertia and equilibrium",
+      "description": "How mass distribution sets rotational inertia, and static equilibrium of rigid bodies.",
+      "topics": ["5.4", "5.5"],
+      "draftIds": [
+        "SysedISkEhAXQx1fT8aJ",
+        "iyT9364KLF0OXRGQjIZr",
+        "FZiRCwgMroNOIKVFeYA7",
+        "HDq1JwUEaqa09l6Bv0eY",
+        "8T2O5dbJL5ADINzcv77T"
+      ]
+    },
+    {
+      "key": "5D",
+      "unit": 5,
+      "title": "Newton's second law for rotation",
+      "description": "Net torque = Iα: pulleys, hanging masses and pivoted rods.",
+      "topics": ["5.6"],
+      "draftIds": [
+        "fV17mTufrV9rtBxC4rSA",
+        "Sw4nnN0VSflOFSyHbuRb",
+        "lcrGrlmBHnjza1WjT2fe",
+        "GuUfYu2x4hERnE7OxWki",
+        "ihzE6jd4N6lPRtDscjtK"
+      ]
+    },
+    {
+      "key": "6A",
+      "unit": 6,
+      "title": "Rotational kinetic energy and work",
+      "description": "Rotational kinetic energy and the work done by a torque.",
+      "topics": ["6.1", "6.2"],
+      "draftIds": [
+        "qBId6ThCK0ZWl8BFSYu1",
+        "cNZ9aaYnZtqkCuKUtjO3",
+        "AdhD2iIngwY3BXvfgkFg",
+        "sAbThyM6SFHLhf84775L",
+        "lWxovYALN1gqsq7U8yRB"
+      ]
+    },
+    {
+      "key": "6B",
+      "unit": 6,
+      "title": "Angular momentum and angular impulse",
+      "description": "Angular momentum of rigid bodies and point masses, and angular impulse.",
+      "topics": ["6.3"],
+      "draftIds": [
+        "m6hyC2XRMjNhoIe0fN9s",
+        "DnBFbJkMTMTrQOKhooJb",
+        "gobRjCnM9JLh2YcPQKWJ",
+        "vrYxSZlG0Thww7cK8Fh7",
+        "FwLpyKRAJhha6y9wKI1m"
+      ]
+    },
+    {
+      "key": "6C",
+      "unit": 6,
+      "title": "Conservation of angular momentum",
+      "description": "Spinning skaters, dropped masses and tethered systems with no external torque.",
+      "topics": ["6.4"],
+      "draftIds": [
+        "kQuw1rCiS3xcqMsTmAgE",
+        "4lQcL6ISSYjddNAvZ00O",
+        "ZfXJGKf5ovH0pnKbZJXi",
+        "PCcPkrHjaYN8vDvre0KE",
+        "xAoD3SZuiRSihD6OczhB"
+      ]
+    },
+    {
+      "key": "6D",
+      "unit": 6,
+      "title": "Rolling and orbits",
+      "description": "Rolling without slipping with energy, and angular momentum in elliptical orbits.",
+      "topics": ["6.5", "6.6"],
+      "draftIds": [
+        "7Y1J8cwoiVLMe3T5AxQP",
+        "ohyCKurVvyJXZkkVhUD2",
+        "SuAYYMGwH5PkR7JMcxCO",
+        "OAT2HwKnz98EnqVTwTpd",
+        "LSsIkDiDE0Gahq33tzuV"
+      ]
+    }
+  ]
+}

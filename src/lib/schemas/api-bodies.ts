@@ -136,11 +136,18 @@ export const courseBody = z.object({
     .refine((v) => v.trim().length > 0)
     .pipe(z.string().max(10000)),
   code: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
+  /** Optional: the class follows this course roadmap (a known id from src/data/curricula). */
+  curriculumId: z.string().trim().min(1).max(64).optional(),
+});
+export const courseCurriculumBody = z.object({
+  curriculumId: z.string().trim().min(1).max(64).nullable(),
 });
 export const courseBodyMessage = (issues: { path: string }[]) =>
   issues[0]?.path === "name"
     ? "Enter a class name"
-    : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
+    : issues[0]?.path === "curriculumId"
+      ? "Unknown course"
+      : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
 
 // ─── POST /api/student/enrollment ──────────────────────────────────────────
 // `code` is validated further by findClassByCode; it is absent for action "leave".
@@ -330,8 +337,23 @@ export const contentReviewBody = z.object({
   /** Who checked the answer. "ai" approvals still need a person before they can be published. */
   reviewer: z.enum(["human", "ai"]).optional(),
 });
-export const contentPublishBody = z.object({
-  draftIds: z.array(docId).min(1).max(30),
-  title: z.string().trim().min(1).max(200),
-  description: z.string().max(5000).optional(),
-});
+export const contentPublishBody = z
+  .object({
+    draftIds: z.array(docId).min(1).max(30).optional(),
+    title: z.string().trim().min(1).max(200).optional(),
+    description: z.string().max(5000).optional(),
+    /** Publish one set of a course roadmap (src/data/curricula); draftIds, title and description then come from it. */
+    curriculumId: z.string().trim().min(1).max(64).optional(),
+    setKey: z.string().trim().min(1).max(8).optional(),
+  })
+  .refine(
+    (b) =>
+      b.curriculumId !== undefined || b.setKey !== undefined
+        ? b.curriculumId !== undefined &&
+          b.setKey !== undefined &&
+          b.draftIds === undefined &&
+          b.title === undefined &&
+          b.description === undefined
+        : b.draftIds !== undefined && b.title !== undefined,
+    { message: "Send either draftIds and title, or curriculumId and setKey" },
+  );

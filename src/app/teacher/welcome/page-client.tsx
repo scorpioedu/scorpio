@@ -3,22 +3,21 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { AP_UNITS, apUnitLabel } from "@/data/ap";
+import { apUnitLabel } from "@/data/ap";
+import { getCurriculum, curriculumUnits, setSequence } from "@/data/curricula";
+import { loadPublishedSets, type PublishedSetInfo } from "@/lib/curriculum-client";
+import { cloneSetToClass, planAssignments, runAssignments, type PlannedAssignment } from "@/lib/assign-sets";
 import { classInvitePath } from "@/lib/onboarding-links";
 import {
   WELCOME_SKIPPED_KEY,
-  countByUnit,
   formatClassName,
   parseDateInput,
   randomClassCode,
   addSchoolDays,
-  scheduleDueDates,
   studentMessage,
   toDateInput,
 } from "@/lib/first-run";
@@ -26,6 +25,7 @@ import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -36,13 +36,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const CURRICULUM_ID = "ap-physics-1";
+
 interface UnitSet {
   id: string;
+  key: string;
   title: string;
   apUnit: number;
-  apCourse?: string | null;
   questionCount: number;
-  createdAt: number;
 }
 interface CreatedClass {
   id: string;
@@ -50,7 +51,7 @@ interface CreatedClass {
   code: string;
 }
 interface Scheduled {
-  id: string;
+  key: string;
   title: string;
   due: Date;
 }
@@ -61,6 +62,7 @@ export default function WelcomeClient() {
 
   const [className, setClassName] = useState("AP Physics 1");
   const [period, setPeriod] = useState("");
+  const [follow, setFollow] = useState(true);
   const [creating, setCreating] = useState(false);
   const [classError, setClassError] = useState("");
   const [course, setCourse] = useState<CreatedClass | null>(null);
@@ -73,33 +75,25 @@ export default function WelcomeClient() {
   const [assigning, setAssigning] = useState(false);
   const [assignError, setAssignError] = useState("");
   const [done, setDone] = useState<Scheduled[]>([]);
+  // Planned once per unit, so a retry after a failure keeps the same due dates.
+  const [planState, setPlan] = useState<{ sig: string; items: PlannedAssignment[] }>({ sig: "", items: [] });
 
   useEffect(() => {
     let active = true;
-    getDocs(query(collection(db, "assignments"), where("visibility", "==", "global")))
-      .then((snap) => {
+    loadPublishedSets(CURRICULUM_ID)
+      .then((published: PublishedSetInfo[]) => {
         if (!active) return;
+        const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
+        // Roadmap order comes from the course definition, not from when sets were published.
         setSets(
-          snap.docs
-            .map((d) => {
-              const data = d.data();
-              const created =
-                data.createdAt?.toMillis?.() ??
-                (data.createdAt ? new Date(data.createdAt).getTime() : 0);
-              return {
-                id: d.id,
-                title: String(data.title || "Untitled"),
-                apUnit: data.apUnit,
-                apCourse: data.apCourse,
-                questionCount: Array.isArray(data.questions) ? data.questions.length : 0,
-                createdAt: created || 0,
-              } as UnitSet;
-            })
-            .filter(
-              (s) =>
-                typeof s.apUnit === "number" && (s.apCourse == null || s.apCourse === "physics-1"),
-            )
-            .sort((a, b) => a.createdAt - b.createdAt || a.title.localeCompare(b.title)),
+          curriculumUnits(CURRICULUM_ID).flatMap((u) =>
+            u.sets.flatMap((def) => {
+              const p = byKey.get(def.key);
+              return p
+                ? [{ id: p.id, key: def.key, title: p.title, apUnit: u.unit, questionCount: p.questionCount }]
+                : [];
+            }),
+          ).sort((a, b) => setSequence(CURRICULUM_ID, a.key) - setSequence(CURRICULUM_ID, b.key)),
         );
       })
       .catch(() => {
@@ -110,16 +104,32 @@ export default function WelcomeClient() {
     };
   }, []);
 
-  const counts = useMemo(() => countByUnit(sets ?? []), [sets]);
-  const unitsWithSets = AP_UNITS.filter((u) => counts.has(u.unit));
+  const counts = useMemo(() => {
+    const m = new Map<number, number>();
+    for (const s of sets ?? []) m.set(s.apUnit, (m.get(s.apUnit) ?? 0) + 1);
+    return m;
+  }, [sets]);
+  const units = getCurriculum(CURRICULUM_ID) ? curriculumUnits(CURRICULUM_ID) : [];
+  const unitsWithSets = units.filter((u) => counts.has(u.unit));
   const unitSets = useMemo(
     () => (sets ?? []).filter((s) => String(s.apUnit) === unit),
     [sets, unit],
   );
   const startDate = parseDateInput(start);
+  const planSig = `${unit}|${start}|${spacing}`;
+  // A plan made for different inputs is ignored (and replaced on the next Assign).
+  const plan = planState.sig === planSig ? planState.items : [];
   const preview = useMemo(
-    () => (startDate ? scheduleDueDates(startDate, unitSets.length, Number(spacing)) : []),
-    [startDate, unitSets.length, spacing],
+    () =>
+      startDate
+        ? planAssignments(
+            unitSets.map((s) => ({ sourceId: s.id, key: s.key, title: s.title })),
+            new Set(),
+            startDate,
+            Number(spacing),
+          )
+        : [],
+    [startDate, unitSets, spacing],
   );
 
   const joinUrl = course ? new URL(classInvitePath(course.code), window.location.origin).href : "";
@@ -154,7 +164,7 @@ export default function WelcomeClient() {
         const res = await authenticatedFetch("/api/courses", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, code }),
+          body: JSON.stringify({ name, code, ...(follow ? { curriculumId: CURRICULUM_ID } : {}) }),
         });
         const body = await res.json().catch(() => ({}));
         if (res.ok) {
@@ -176,28 +186,20 @@ export default function WelcomeClient() {
     if (!course || !startDate || unitSets.length === 0) return;
     setAssignError("");
     setAssigning(true);
-    // Resume safely after a partial failure: sets already copied are not copied again.
-    const finished = new Map(done.map((d) => [d.id, d]));
+    // Resume safely after a partial failure: sets already copied are not copied again, and the
+    // remaining ones keep the due dates planned the first time.
+    const planned = plan.length ? plan : preview;
+    if (!plan.length) setPlan({ sig: planSig, items: planned });
+    const finished = new Set(done.map((d) => d.key));
     try {
-      for (let i = 0; i < unitSets.length; i++) {
-        const set = unitSets[i];
-        if (finished.has(set.id)) continue;
-        const res = await authenticatedFetch("/api/assignments/clone", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          // Keep the set's own title: students see it, and "(Copy)" means nothing to them.
-          body: JSON.stringify({
-            sourceId: set.id,
-            courseId: course.id,
-            title: set.title,
-            dueDate: preview[i].toISOString(),
-          }),
-        });
-        const body = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(body.error || "Could not assign this unit.");
-        finished.set(set.id, { id: set.id, title: set.title, due: preview[i] });
-        setDone([...finished.values()]);
-      }
+      await runAssignments(
+        planned.filter((p) => !finished.has(p.key)),
+        (item) => cloneSetToClass(authenticatedFetch, course.id, item),
+        (item) => {
+          finished.add(item.key);
+          setDone((cur) => [...cur, { key: item.key, title: item.title, due: item.due }]);
+        },
+      );
       toast.success("Unit assigned.");
     } catch (e) {
       setAssignError(
@@ -288,6 +290,16 @@ export default function WelcomeClient() {
               <Button type="submit" disabled={creating || noOrg || !className.trim()}>
                 {creating ? "Creating…" : "Create class"}
               </Button>
+              <div className="flex items-center gap-2 sm:col-span-3">
+                <Checkbox
+                  id="follow-course"
+                  checked={follow}
+                  onCheckedChange={(c) => setFollow(c === true)}
+                />
+                <Label htmlFor="follow-course" className="font-normal">
+                  Follow the AP Physics 1 course (students see assignments grouped by unit)
+                </Label>
+              </div>
               {classError && (
                 <p role="alert" className="text-sm text-destructive sm:col-span-3">
                   {classError}
@@ -337,7 +349,7 @@ export default function WelcomeClient() {
                       <SelectValue placeholder="Choose a unit" />
                     </SelectTrigger>
                     <SelectContent>
-                      {AP_UNITS.map((u) => {
+                      {units.map((u) => {
                         const n = counts.get(u.unit) ?? 0;
                         return (
                           <SelectItem key={u.unit} value={String(u.unit)} disabled={n === 0}>
@@ -384,7 +396,7 @@ export default function WelcomeClient() {
               {unit && unitSets.length > 0 && (
                 <ul className="divide-y divide-border rounded-xl border border-border">
                   {unitSets.map((s, i) => {
-                    const ok = done.some((d) => d.id === s.id);
+                    const ok = done.some((d) => d.key === s.key);
                     return (
                       <li
                         key={s.id}
@@ -393,8 +405,8 @@ export default function WelcomeClient() {
                         <span className="min-w-0 break-words font-medium">{s.title}</span>
                         <span className="flex items-center gap-2 text-muted-foreground">
                           {ok && <Check className="size-4 text-green-600" aria-label="Assigned" />}
-                          {preview[i]
-                            ? `Due ${preview[i].toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}`
+                          {(plan[i] ?? preview[i])
+                            ? `Due ${(plan[i] ?? preview[i]).due.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}`
                             : "Pick a start date"}
                         </span>
                       </li>

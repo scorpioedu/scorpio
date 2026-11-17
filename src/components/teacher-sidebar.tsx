@@ -9,6 +9,7 @@ import {
   ChartColumnBig,
   Building2,
   Waypoints,
+  Route,
   PackageCheck,
   Presentation,
   Lightbulb,
@@ -40,6 +41,7 @@ const navSections: NavSection[] = [
     label: "Tools",
     items: [
       { href: "/teacher/waypoints", label: "Waypoints", icon: Waypoints },
+      { href: "/teacher/courses", label: "Courses", icon: Route },
       { href: "/teacher/vault", label: "Vault Controls", icon: PackageCheck },
       { href: "/teacher/uploads", label: "Resource Uploads", icon: Upload },
     ],

@@ -10,6 +10,7 @@ import { assertValidAnswerKeys } from "@/lib/answer-key-access";
 import { compareTopicIds, normaliseApTags } from "@/data/ap";
 import { toAssignmentQuestion, validateDraftProblem } from "@/lib/content/problem-format";
 import { CONTENT_DRAFTS } from "@/lib/content/drafts";
+import { curriculumSet, displayTitle, getCurriculum, setSequence } from "@/data/curricula";
 
 /** The library's older topic filter, so reviewed AP sets also show under it. */
 const LEGACY_TOPIC: Record<number, string> = {
@@ -24,7 +25,9 @@ const LEGACY_TOPIC: Record<number, string> = {
 };
 
 /**
- * POST /api/admin/content/publish { draftIds, title, description? }
+ * POST /api/admin/content/publish { draftIds, title, description? } or { curriculumId, setKey }
+ * With a curriculum set, the drafts, title, description and question order come from the definition in
+ * src/data/curricula, the assignment records which set it is, and a set can only be published once.
  * Turns approved drafts from one AP unit into a global Waypoints assignment (auto-graded, answer
  * key and distractors stored server-side) and marks the drafts published.
  */
@@ -32,7 +35,34 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
   try {
     const parsed = await parseJsonBody(req, contentPublishBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const { draftIds, title, description } = parsed.data;
+    let draftIds = parsed.data.draftIds ?? [];
+    let title = parsed.data.title ?? "";
+    let description = parsed.data.description;
+    let curriculum: { curriculumId: string; curriculumSetKey: string; curriculumSequence: number } | null =
+      null;
+    if (parsed.data.curriculumId !== undefined && parsed.data.setKey !== undefined) {
+      const { curriculumId, setKey } = parsed.data;
+      const set = curriculumSet(curriculumId, setKey);
+      if (!getCurriculum(curriculumId) || !set)
+        return NextResponse.json({ error: "Unknown course set" }, { status: 400 });
+      const existing = await adminDb
+        .collection("assignments")
+        .where("visibility", "==", "global")
+        .where("curriculumId", "==", curriculumId)
+        .where("curriculumSetKey", "==", setKey)
+        .limit(1)
+        .get();
+      if (!existing.empty)
+        return NextResponse.json({ error: "This set is already published" }, { status: 409 });
+      draftIds = set.draftIds;
+      title = displayTitle(set, getCurriculum(curriculumId)!.name);
+      description = set.description;
+      curriculum = {
+        curriculumId,
+        curriculumSetKey: setKey,
+        curriculumSequence: setSequence(curriculumId, setKey),
+      };
+    }
     if (new Set(draftIds).size !== draftIds.length)
       return NextResponse.json({ error: "Duplicate problems" }, { status: 400 });
 
@@ -95,6 +125,7 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
       answerKeySeparated: true,
       contentSource: "scorpio-reviewed",
       contentDraftIds: draftIds,
+      ...(curriculum ?? {}),
       forkCount: 0,
       dueDate: null,
       createdAt: new Date(),

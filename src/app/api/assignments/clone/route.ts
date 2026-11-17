@@ -35,6 +35,9 @@ const COPIED_FIELDS = [
   "apCourse",
   "apUnit",
   "apTopics",
+  "curriculumId",
+  "curriculumSetKey",
+  "curriculumSequence",
 ] as const;
 
 /**

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { groupByUnit } from "@/lib/student-grouping";
 
 interface Assignment {
   id: string;
@@ -19,6 +20,8 @@ interface Assignment {
   questions?: unknown[];
   courseId: string;
   teacherId: string;
+  curriculumSetKey?: string;
+  curriculumSequence?: number;
 }
 
 export default function StudentAssignmentsPage() {
@@ -26,6 +29,8 @@ export default function StudentAssignmentsPage() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  // Set when the student's class follows a course roadmap; then assignments are grouped by unit.
+  const [followsCourse, setFollowsCourse] = useState(false);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("dueDateAsc");
 
@@ -52,6 +57,12 @@ export default function StudentAssignmentsPage() {
 
         let data: Assignment[] = [];
         if (courseId) {
+          try {
+            const classDoc = await getDoc(doc(db, "courses", courseId));
+            setFollowsCourse(typeof classDoc.data()?.curriculumId === "string");
+          } catch {
+            setFollowsCourse(false);
+          }
           // New system: filter by specific course
           const assignmentsSnap = await getDocs(
             query(collection(db, "assignments"), where("answerKeySeparated", "==", true), where("courseId", "==", courseId))
@@ -176,82 +187,7 @@ export default function StudentAssignmentsPage() {
     return 0;
   });
 
-  return (
-    <div className="space-y-6">
-      <WorkspaceHeader title="Assignments" description="Open coursework and check what’s due." />
-      <div className="flex flex-wrap gap-2 items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-9">
-              Status: {(() => {
-                if (filter === "all") return `All (${counts.all})`;
-                if (filter === "submitted") return `Submitted (${counts.submitted})`;
-                if (filter === "pending") return `Pending (${counts.pending})`;
-                if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
-                return "All";
-              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onSelect={() => setFilter("all")}>
-              All ({counts.all})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("pending")}>
-              Pending ({counts.pending})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("submitted")}>
-              Submitted ({counts.submitted})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("pastDue")}>
-              Past Due ({counts.pastDue})
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-9">
-              Sort by: {(() => {
-                if (sort === "dueDateAsc") return "Due Date (Earliest)";
-                if (sort === "dueDateDesc") return "Due Date (Latest)";
-                if (sort === "titleAsc") return "Title (A–Z)";
-                if (sort === "titleDesc") return "Title (Z–A)";
-                return "Due Date (Earliest)";
-              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>Due Date (Earliest)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>Due Date (Latest)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("titleAsc")}>Title (A–Z)</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSort("titleDesc")}>Title (Z–A)</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Coursework ({filteredAssignments.length})
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {sort === "dueDateAsc"
-              ? "Earliest due first"
-              : sort === "dueDateDesc"
-              ? "Latest due first"
-              : sort === "titleAsc"
-              ? "Alphabetical (A–Z)"
-              : "Alphabetical (Z–A)"}
-          </span>
-        </div>
-
-        {loading ? (
-          <p role="status" className="p-6 text-sm text-muted-foreground">Loading assignments…</p>
-        ) : filteredAssignments.length === 0 ? (
-          <p className="p-6 text-sm text-muted-foreground">No assignments match this view.</p>
-        ) : (
-          <ul className="divide-y divide-border">
-            {filteredAssignments.map((assignment) => {
+  const renderItem = (assignment: Assignment) => {
               const isSubmitted = submissions.has(assignment.id);
               const pastDue = !isSubmitted && isPastDue(assignment.dueDate);
               const dateInfo = formatDueDate(assignment.dueDate, isSubmitted);
@@ -320,7 +256,104 @@ export default function StudentAssignmentsPage() {
                   </div>
                 </li>
               );
-            })}
+  };
+
+  const groups = followsCourse ? groupByUnit(filteredAssignments) : null;
+
+  return (
+    <div className="space-y-6">
+      <WorkspaceHeader title="Assignments" description="Open coursework and check what’s due." />
+      <div className="flex flex-wrap gap-2 items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-9">
+              Status: {(() => {
+                if (filter === "all") return `All (${counts.all})`;
+                if (filter === "submitted") return `Submitted (${counts.submitted})`;
+                if (filter === "pending") return `Pending (${counts.pending})`;
+                if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
+                return "All";
+              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onSelect={() => setFilter("all")}>
+              All ({counts.all})
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setFilter("pending")}>
+              Pending ({counts.pending})
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setFilter("submitted")}>
+              Submitted ({counts.submitted})
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setFilter("pastDue")}>
+              Past Due ({counts.pastDue})
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {!followsCourse && <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-9">
+              Sort by: {(() => {
+                if (sort === "dueDateAsc") return "Due Date (Earliest)";
+                if (sort === "dueDateDesc") return "Due Date (Latest)";
+                if (sort === "titleAsc") return "Title (A–Z)";
+                if (sort === "titleDesc") return "Title (Z–A)";
+                return "Due Date (Earliest)";
+              })()} <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>Due Date (Earliest)</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>Due Date (Latest)</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setSort("titleAsc")}>Title (A–Z)</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setSort("titleDesc")}>Title (Z–A)</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>}
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Coursework ({filteredAssignments.length})
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {followsCourse
+              ? "By unit, in course order"
+              : sort === "dueDateAsc"
+              ? "Earliest due first"
+              : sort === "dueDateDesc"
+              ? "Latest due first"
+              : sort === "titleAsc"
+              ? "Alphabetical (A–Z)"
+              : "Alphabetical (Z–A)"}
+          </span>
+        </div>
+
+        {loading ? (
+          <p role="status" className="p-6 text-sm text-muted-foreground">Loading assignments…</p>
+        ) : filteredAssignments.length === 0 ? (
+          <p className="p-6 text-sm text-muted-foreground">No assignments match this view.</p>
+        ) : groups ? (
+          <div>
+            {groups.map((group) => (
+              <section key={group.id} aria-labelledby={`group-${group.id}`}>
+                <h2
+                  id={`group-${group.id}`}
+                  className="border-b border-border/80 bg-muted/20 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  {group.label}
+                </h2>
+                <ul className="divide-y divide-border border-b border-border last:border-b-0">
+                  {group.items.map(renderItem)}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {filteredAssignments.map(renderItem)}
           </ul>
         )}
       </div>

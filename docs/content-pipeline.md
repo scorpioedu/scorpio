@@ -43,6 +43,8 @@ Where tags come from:
 
 AI calls are billed to `CONTENT_ORG_ID` when set. Otherwise they are uncapped, because the route is admin-only (the same rule as the research route).
 
+**Sets in teaching order.** The 12 sets of Units 4–6 (and the rest as they are written) live in `src/data/curricula/ap-physics-1.json`; the **Sets** tab publishes one in a click and teachers get them as a roadmap. See [courses.md](courses.md).
+
 ### First run (24 Nov 2026, emulators, live Gemini)
 10 problems for Unit 4 (4.1 ×3, 4.2 ×3, 4.3 ×2, 4.4 ×2) were generated, reviewed and published. Claude (AI) did the review, solving every problem by hand; **a person still needs to check them before they go to a real class.**
 - **1 wrong key caught:** a force-time graph problem keyed 38 m/s; the right answer is 50 m/s. The independent solve flagged it, and the worked solution itself said 50. 1 in 10 is why every problem needs a person.
