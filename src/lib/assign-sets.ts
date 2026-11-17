@@ -1,6 +1,7 @@
 // Copying course sets into a class with school-day due dates. Used by the first-run page and
 // /teacher/courses. The scheduling is pure; the network call is injected so it can be tested.
 import { scheduleDueDates } from "./first-run";
+import type { SchoolDayTest } from "./school-calendar";
 
 export interface AssignableSet {
   /** The published global waypoint to copy. */
@@ -23,9 +24,10 @@ export function planAssignments(
   alreadyAssigned: ReadonlySet<string>,
   start: Date,
   spacing: number,
+  isSchoolDay?: SchoolDayTest,
 ): PlannedAssignment[] {
   const todo = sets.filter((s) => !alreadyAssigned.has(s.key));
-  const dates = scheduleDueDates(start, todo.length, spacing);
+  const dates = scheduleDueDates(start, todo.length, spacing, isSchoolDay);
   return todo.map((s, i) => ({ ...s, due: dates[i] }));
 }
 

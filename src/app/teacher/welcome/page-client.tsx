@@ -10,7 +10,13 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apUnitLabel } from "@/data/ap";
 import { getCurriculum, curriculumUnits, setSequence } from "@/data/curricula";
 import { loadPublishedSets, type PublishedSetInfo } from "@/lib/curriculum-client";
-import { cloneSetToClass, planAssignments, runAssignments, type PlannedAssignment } from "@/lib/assign-sets";
+import { defaultCalendar, schoolDays } from "@/lib/school-calendar";
+import {
+  cloneSetToClass,
+  planAssignments,
+  runAssignments,
+  type PlannedAssignment,
+} from "@/lib/assign-sets";
 import { classInvitePath } from "@/lib/onboarding-links";
 import {
   WELCOME_SKIPPED_KEY,
@@ -70,13 +76,18 @@ export default function WelcomeClient() {
   const [sets, setSets] = useState<UnitSet[] | null>(null);
   const [setsError, setSetsError] = useState(false);
   const [unit, setUnit] = useState("");
-  const [start, setStart] = useState(() => toDateInput(addSchoolDays(new Date(), 2)));
+  // A new class has no calendar of its own yet: US default holidays and winter break are skipped.
+  const [isSchoolDay] = useState(() => schoolDays(defaultCalendar()));
+  const [start, setStart] = useState(() => toDateInput(addSchoolDays(new Date(), 2, isSchoolDay)));
   const [spacing, setSpacing] = useState("2");
   const [assigning, setAssigning] = useState(false);
   const [assignError, setAssignError] = useState("");
   const [done, setDone] = useState<Scheduled[]>([]);
   // Planned once per unit, so a retry after a failure keeps the same due dates.
-  const [planState, setPlan] = useState<{ sig: string; items: PlannedAssignment[] }>({ sig: "", items: [] });
+  const [planState, setPlan] = useState<{ sig: string; items: PlannedAssignment[] }>({
+    sig: "",
+    items: [],
+  });
 
   useEffect(() => {
     let active = true;
@@ -86,14 +97,24 @@ export default function WelcomeClient() {
         const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
         // Roadmap order comes from the course definition, not from when sets were published.
         setSets(
-          curriculumUnits(CURRICULUM_ID).flatMap((u) =>
-            u.sets.flatMap((def) => {
-              const p = byKey.get(def.key);
-              return p
-                ? [{ id: p.id, key: def.key, title: p.title, apUnit: u.unit, questionCount: p.questionCount }]
-                : [];
-            }),
-          ).sort((a, b) => setSequence(CURRICULUM_ID, a.key) - setSequence(CURRICULUM_ID, b.key)),
+          curriculumUnits(CURRICULUM_ID)
+            .flatMap((u) =>
+              u.sets.flatMap((def) => {
+                const p = byKey.get(def.key);
+                return p
+                  ? [
+                      {
+                        id: p.id,
+                        key: def.key,
+                        title: p.title,
+                        apUnit: u.unit,
+                        questionCount: p.questionCount,
+                      },
+                    ]
+                  : [];
+              }),
+            )
+            .sort((a, b) => setSequence(CURRICULUM_ID, a.key) - setSequence(CURRICULUM_ID, b.key)),
         );
       })
       .catch(() => {
@@ -127,9 +148,10 @@ export default function WelcomeClient() {
             new Set(),
             startDate,
             Number(spacing),
+            isSchoolDay,
           )
         : [],
-    [startDate, unitSets, spacing],
+    [startDate, unitSets, spacing, isSchoolDay],
   );
 
   const joinUrl = course ? new URL(classInvitePath(course.code), window.location.origin).href : "";
