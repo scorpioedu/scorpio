@@ -612,5 +612,59 @@
         "problems": 1
       }
     ]
+  },
+  "14C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "standing-wave-harmonics",
+        "problems": 4
+      },
+      {
+        "tag": "superposition-not-temporary",
+        "problems": 1
+      },
+      {
+        "tag": "wave-speed-depends-on-source",
+        "problems": 1
+      }
+    ]
+  },
+  "14D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "slit-width-pattern-width",
+        "problems": 2
+      },
+      {
+        "tag": "boundary-phase-change",
+        "problems": 1
+      },
+      {
+        "tag": "interference-condition-swapped",
+        "problems": 1
+      }
+    ]
   }
 }

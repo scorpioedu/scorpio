@@ -66,7 +66,13 @@
       "title": "Systems, center of mass and free-body diagrams",
       "description": "Choosing a system, locating its center of mass and drawing its forces.",
       "topics": ["2.1", "2.2"],
-      "draftIds": []
+      "draftIds": [
+        "7W6qGSrEpPDe5lg8ht4m",
+        "uDzAJDSvAbzCrl6JoX9I",
+        "zf4fFCEDSMnP90fQuvkN",
+        "XBhAsOFl5j6g3XzyO3of",
+        "MKXLBOu499XMxoh6ITos"
+      ]
     },
     {
       "key": "2B",
@@ -74,7 +80,13 @@
       "title": "Newton's laws",
       "description": "Third-law pairs, equilibrium and net force with acceleration.",
       "topics": ["2.3", "2.4", "2.5"],
-      "draftIds": []
+      "draftIds": [
+        "O8BVtLfJe9hqCmFdt04z",
+        "qJRdXQMzyx3QG13x8aAE",
+        "3prfcE1CdnaMz0ZBVkRu",
+        "HtP2tYWFqBaJdkPlXhrr",
+        "HMnArct9hzRo0xwnTFSX"
+      ]
     },
     {
       "key": "2C",

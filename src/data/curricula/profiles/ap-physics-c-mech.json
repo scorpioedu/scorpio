@@ -118,5 +118,55 @@
         "problems": 1
       }
     ]
+  },
+  "2A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "force-implies-motion",
+        "problems": 1
+      },
+      {
+        "tag": "impetus-force",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "2B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "third-law-pair-same-object",
+        "problems": 1
+      }
+    ]
   }
 }
