@@ -46,10 +46,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
 import { AP_UNITS, apUnitLabel } from "@/data/ap";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
-import {
-  STARTER_WAYPOINT_COUNT,
-  isWaypointLocked as isWaypointLockedByPlan,
-} from "@/lib/plan-limits";
+import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
 
 interface WaypointQuestion {
   id?: string;
@@ -85,7 +82,6 @@ export default function WaypointsPage() {
   const { isDepartmentPlan, isFreePlan, hasNoOrg } = useDepartmentPlan();
 
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
-  const [starterIds, setStarterIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("global");
@@ -95,7 +91,7 @@ export default function WaypointsPage() {
 
   // Upgrade modal state
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState<"waypoints" | "network-share">("waypoints");
+  const [upgradeFeature, setUpgradeFeature] = useState<"network-share">("network-share");
 
   const fetchWaypoints = useCallback(async () => {
     if (!user || authLoading) return;
@@ -147,13 +143,6 @@ export default function WaypointsPage() {
       })) as Waypoint[];
 
       setWaypoints(docs);
-
-      // Track the first 3 global templates as starter waypoints for Free plan
-      if (activeTab === "global") {
-        setStarterIds((prev) =>
-          prev.length === 0 ? docs.slice(0, STARTER_WAYPOINT_COUNT).map((d) => d.id) : prev,
-        );
-      }
     } catch (e: unknown) {
       console.error("Waypoints fetch error:", e);
       const errMsg = e instanceof Error ? e.message : "";
@@ -173,12 +162,11 @@ export default function WaypointsPage() {
     }
   }, [user, authLoading, fetchWaypoints]);
 
-  const isWaypointLocked = (waypoint: Waypoint, index: number): boolean =>
-    isWaypointLockedByPlan(waypoint.id, index, starterIds, isFreePlan, activeTab);
+  const waypointsLocked = isWaypointLockedByPlan(isFreePlan, activeTab);
 
-  const handleFork = async (waypoint: Waypoint, index: number) => {
-    if (isWaypointLocked(waypoint, index)) {
-      setUpgradeFeature("waypoints");
+  const handleFork = async (waypoint: Waypoint) => {
+    if (waypointsLocked) {
+      setUpgradeFeature("network-share");
       setIsUpgradeOpen(true);
       return;
     }
@@ -193,7 +181,7 @@ export default function WaypointsPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 403 && data.code === "plan_upgrade_required") {
-        setUpgradeFeature(data.feature === "network-share" ? "network-share" : "waypoints");
+        setUpgradeFeature("network-share");
         setIsUpgradeOpen(true);
         return;
       }
@@ -233,8 +221,9 @@ export default function WaypointsPage() {
             <div>
               <span className="font-semibold text-foreground">Free Plan:</span>
               <span className="text-muted-foreground ml-1.5">
-                You have access to 3 starter waypoints. Upgrade to a Department License to unlock
-                all 20+ verified templates and department sharing.
+                Every global waypoint, auto-grading and the misconception report are free.
+                A Department License adds department waypoints, sharing across your school and
+                higher AI limits.
               </span>
             </div>
           </div>
@@ -300,7 +289,7 @@ export default function WaypointsPage() {
                 className="flex items-center gap-2 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20"
               >
                 <div className="h-1.5 w-1.5 rounded-full bg-amber-600 dark:bg-amber-500" />
-                Free Plan (3 Starter Waypoints)
+                Free Plan (All Global Waypoints)
               </motion.div>
             )}
           </div>
@@ -476,7 +465,7 @@ export default function WaypointsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
               {filteredWaypoints.map((waypoint, idx) => {
-                const locked = isWaypointLocked(waypoint, idx);
+                const locked = waypointsLocked;
                 return (
                   <motion.div
                     key={waypoint.id}
@@ -514,11 +503,6 @@ export default function WaypointsPage() {
                             {waypoint.topic && (
                               <Badge className="bg-primary/10 text-primary border-primary/20 capitalize font-mono text-[10px]">
                                 {waypoint.topic}
-                              </Badge>
-                            )}
-                            {isFreePlan && !locked && (
-                              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] font-bold">
-                                Starter Template
                               </Badge>
                             )}
                             {locked && (
@@ -567,7 +551,7 @@ export default function WaypointsPage() {
                         {locked ? (
                           <Button
                             onClick={() => {
-                              setUpgradeFeature("waypoints");
+                              setUpgradeFeature("network-share");
                               setIsUpgradeOpen(true);
                             }}
                             className="w-full h-11 font-bold bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
@@ -577,7 +561,7 @@ export default function WaypointsPage() {
                           </Button>
                         ) : (
                           <Button
-                            onClick={() => handleFork(waypoint, idx)}
+                            onClick={() => handleFork(waypoint)}
                             className="w-full h-11 font-bold active:scale-[0.98] cursor-pointer"
                           >
                             <Copy className="h-4 w-4 mr-1.5" />

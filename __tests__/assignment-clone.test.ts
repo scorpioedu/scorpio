@@ -136,6 +136,16 @@ beforeEach(() => {
 afterEach(() => jest.restoreAllMocks());
 
 describe("POST /api/assignments/clone", () => {
+  test("sets the optional due date on the copy, and defaults to none", async () => {
+    mockDocs.set("courses/c1", { teacherId: "teacher1" });
+    await post({ sourceId: "src1", courseId: "c1", dueDate: "2027-01-12T20:00:00.000Z" });
+    expect((newAssignment()?.data as { dueDate: Date }).dueDate).toEqual(new Date("2027-01-12T20:00:00.000Z"));
+    mockWrites.length = 0;
+    await post({ sourceId: "src1" });
+    expect((newAssignment()?.data as { dueDate: unknown }).dueDate).toBeNull();
+    expect((await post({ sourceId: "src1", dueDate: "not a date" })).status).toBe(400);
+  });
+
   test("creates a private copy owned by the caller with the key copied server-side, never in the response", async () => {
     const res = await post({ sourceId: "src1" });
     expect(res.status).toBe(200);
@@ -274,28 +284,21 @@ describe("POST /api/assignments/clone", () => {
   describe("free plan", () => {
     beforeEach(() => {
       mockDocs.set("organizations/orgB", { planId: "free", subscriptionStatus: "active" });
-      // Starter waypoints are the first three global assignments by document id.
-      for (const id of ["g1", "g2", "g3", "g4"])
+      // Global waypoints are uncapped on the free plan.
+      for (const id of ["g1", "g2", "g3", "g4"]) {
         mockDocs.set(`assignments/${id}`, { ...source, title: id });
-      mockDocs.set(`assignment_keys/g1`, { answers: { q1: "a", q2: "1", q3: "" } });
+        mockDocs.set(`assignment_keys/${id}`, { answers: { q1: "a", q2: "1", q3: "" } });
+      }
     });
 
-    test("a starter waypoint can be cloned", async () => {
+    test("a global waypoint can be cloned", async () => {
       expect((await post({ sourceId: "g1" })).status).toBe(200);
     });
 
-    test("a locked global waypoint returns 403 with the upgrade code and writes nothing", async () => {
-      mockDocs.delete("assignments/src1");
-      const res = await post({ sourceId: "g4" });
-      expect(res.status).toBe(403);
-      expect(await res.json()).toEqual(
-        expect.objectContaining({
-          code: "plan_upgrade_required",
-          feature: "waypoints",
-          hasNoOrg: false,
-        }),
-      );
-      expect(mockCommits).toBe(0);
+    test("every global waypoint can be cloned on the free plan", async () => {
+      for (const id of ["g1", "g2", "g3", "g4"]) {
+        expect((await post({ sourceId: id })).status).toBe(200);
+      }
     });
 
     test("a same-network waypoint is locked (network-share)", async () => {
@@ -313,10 +316,9 @@ describe("POST /api/assignments/clone", () => {
       });
     });
 
-    test("teachers without an organization are on the free plan", async () => {
+    test("teachers without an organization are on the free plan and can copy global waypoints", async () => {
       mockDocs.set("users/teacher1", { role: "teacher" });
-      const res = await post({ sourceId: "g4" });
-      expect(await res.json()).toMatchObject({ code: "plan_upgrade_required", hasNoOrg: true });
+      expect((await post({ sourceId: "g4" })).status).toBe(200);
     });
 
     test("own assignments can always be duplicated", async () => {
@@ -330,7 +332,8 @@ describe("POST /api/assignments/clone", () => {
         planId: "department-monthly",
         subscriptionStatus: "canceled",
       });
-      expect((await post({ sourceId: "g4" })).status).toBe(403);
+      mockDocs.set("assignments/net", { ...source, visibility: "network", organizationId: "orgB", teacherId: "colleague" });
+      expect((await post({ sourceId: "net" })).status).toBe(403);
     });
   });
 });

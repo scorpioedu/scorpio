@@ -60,6 +60,11 @@ export const cloneAssignmentBody = z.object({
   sourceId: docId,
   courseId: docId.nullish(),
   title: z.string().trim().min(1).max(1000).optional(),
+  // Optional due date for the copy (ISO string or epoch ms), used by the first-run unit assignment.
+  dueDate: z
+    .union([z.string(), z.number()])
+    .nullish()
+    .refine((v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────

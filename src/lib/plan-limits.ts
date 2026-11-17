@@ -1,10 +1,10 @@
 /**
  * Free-plan rules shared by the client (UI locks) and the server (src/lib/plan-gates.ts), so the two
  * cannot drift. Pure functions only: this file is imported from client components.
+ *
+ * Free plan: every global waypoint can be copied, with auto-grading and the misconception report.
+ * Paid (Department License): department/network waypoints, network sharing, higher AI limits.
  */
-
-/** Free plans may copy this many "starter" global waypoints: the first N global waypoints by document id. */
-export const STARTER_WAYPOINT_COUNT = 3;
 
 /** Mirrors isOnDepartmentPlan in src/hooks/use-department-plan.ts: a paid plan with an active subscription. */
 export function isDepartmentPlanOrg(
@@ -16,23 +16,9 @@ export function isDepartmentPlanOrg(
 }
 
 /**
- * Free-plan gating for the teacher waypoint library. Extracted verbatim from
- * src/app/teacher/waypoints/page.tsx (E-003).
- * - Paid plans: nothing is locked.
- * - Free plan: the network tab is locked; otherwise only the starter waypoints are unlocked, or
- *   the first three by position when no starter list has loaded.
+ * Free-plan gating for the teacher waypoint library. Paid plans: nothing is locked. Free plan: only
+ * the department (network) tab is locked; global waypoints are never capped.
  */
-export function isWaypointLocked(
-  waypointId: string,
-  index: number,
-  starterIds: string[],
-  isFreePlan: boolean,
-  activeTab: string,
-): boolean {
-  if (!isFreePlan) return false;
-  if (activeTab === "network") return true;
-  if (starterIds.length > 0) {
-    return !starterIds.includes(waypointId);
-  }
-  return index >= STARTER_WAYPOINT_COUNT;
+export function isWaypointLocked(isFreePlan: boolean, activeTab: string): boolean {
+  return isFreePlan && activeTab === "network";
 }

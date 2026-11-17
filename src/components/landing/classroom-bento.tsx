@@ -4,15 +4,15 @@ import { ArrowRight } from "lucide-react";
 const workflowSteps = [
   {
     title: "Post an assignment",
-    description: "Write questions with equations and share them with your class.",
+    description: "Copy a ready-made AP Physics 1 set or write your own, then share it with your class using a class code.",
   },
   {
     title: "Guide students with Raise",
-    description: "Raise gives a hint when a student gets stuck so they can work through the next step.",
+    description: "Raise gives a hint when a student gets stuck so they can work through the next step. Numeric and multiple-choice answers are graded for you on submit.",
   },
   {
-    title: "Review class progress",
-    description: "See who submitted and which questions need more class time.",
+    title: "See class misconceptions",
+    description: "See the top misconceptions ranked by how many students showed them, such as 8 of 24 students, by class, assignment and AP unit.",
   },
 ];
 

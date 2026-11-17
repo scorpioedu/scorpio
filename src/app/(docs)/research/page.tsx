@@ -216,7 +216,7 @@ export default function ResearchPage() {
                   Infrastructure
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Always-on Raise, Department Waypoints, and Mastery Analytics come standard with every organizational license.
+                  Higher AI limits for Raise and AI grading, plus Department Waypoints and sharing, come with every Department License. Auto-grading and the class misconception report are free.
                 </p>
               </div>
               <div className="p-6 rounded-2xl border border-border/50 bg-card space-y-4">

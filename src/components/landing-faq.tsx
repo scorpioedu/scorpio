@@ -12,7 +12,7 @@ const faqs = [
     index: "01",
     question: "What is Scorpio?",
     answer:
-      "Scorpio is a platform for physics classes. Teachers can post and grade assignments, and students can ask Raise for a hint when they get stuck.",
+      "Scorpio is a homework tool for physics classes, starting with AP Physics 1. Teachers assign ready-made or custom problems that are graded automatically, students can ask Raise for a hint instead of an answer, and a class misconception report shows which wrong ideas students hold.",
   },
   {
     index: "02",
@@ -24,37 +24,37 @@ const faqs = [
     index: "03",
     question: "Can students bypass the AI and get direct answers?",
     answer:
-      "Raise is designed to give hints. In our 125-response study, the version with all four checks gave no direct answers.",
+      "Raise is designed to give hints. In our 125-response study, the version with all four checks gave no direct answers. That is a result on 25 test questions, not a guarantee for every question.",
   },
   {
     index: "04",
     question: "What physics topics and grade levels are supported?",
     answer:
-      "Scorpio supports A-Level, AP Physics, and introductory college physics. It covers topics such as mechanics, electromagnetism, thermodynamics, waves, and introductory quantum physics. Teachers can use Waypoints to focus hints on the material their class is studying.",
+      "Our pilot is AP Physics 1. Ready-made problems are tagged by AP unit and released unit by unit, and a person checks every answer before it goes live. Teachers can also write their own questions for any physics course.",
   },
   {
     index: "05",
     question: "What are Waypoints?",
     answer:
-      "Waypoints are modules teachers can attach to assignments. They tell Raise which topic to stay on, what notation to use, and how much help to give.",
+      "Waypoints are shared assignments. Every global Waypoint, including the AP Physics 1 sets, is free to copy into your own class and edit. Department Waypoints, shared inside your school network, need a Department License.",
   },
   {
     index: "06",
     question: "How is pricing structured?",
     answer:
-      "Scorpio charges a subscription for platform access and passes through AI usage charges at the provider’s rate. You can see usage costs in your dashboard.",
+      "Individual teachers use Scorpio for free, including auto-grading and the misconception report, with a small starter AI budget. A Department License is $10 a month or $100 a year for the whole department and adds department sharing and higher AI limits. AI usage is passed through at the provider’s rate.",
   },
   {
     index: "07",
     question: "Does Scorpio integrate with existing LMS platforms?",
     answer:
-      "You can use Scorpio alongside your current LMS without connecting the two. If your school needs a Canvas or Blackboard integration, ask us about the Enterprise plan.",
+      "Not yet. Students join with a class code and teachers can export grades as CSV. Google Classroom and Canvas integrations are not built; tell us which one your school uses.",
   },
   {
     index: "08",
     question: "How is student data protected?",
     answer:
-      "All student data is stored on FERPA-ready infrastructure with role-based access controls enforced at the database level. Teachers only see aggregated analytics for their own cohorts. No student data is used for model training.",
+      "Records are stored in Firebase with role-based access rules, and school records are not used for model training. Scorpio does not claim blanket FERPA or COPPA certification, so check with your school before students use it. See the privacy page for details.",
   },
 ];
 

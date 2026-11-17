@@ -27,16 +27,11 @@ export interface DepartmentUpgradeDialogProps {
   onOpenChange: (open: boolean) => void;
   title?: string;
   description?: string;
-  feature?: "waypoints" | "vault-custom" | "vault-lock" | "network-share" | "general";
+  feature?: "vault-custom" | "vault-lock" | "network-share" | "general";
   hasNoOrg?: boolean;
 }
 
 const FEATURE_CONFIGS = {
-  waypoints: {
-    badge: "Template Library",
-    title: "Unlock Full Waypoint Library",
-    description: "Free plans include 3 starter waypoints. A Department License gives your entire department unlimited access to all 20+ physics templates.",
-  },
   "vault-custom": {
     badge: "Vault Controls",
     title: "Unlock Custom Equations",
@@ -126,7 +121,7 @@ export function DepartmentUpgradeDialog({
           </ul>
 
           <div className="rounded-xl bg-purple-500/10 dark:bg-purple-950/30 border border-purple-500/20 p-3 text-xs text-purple-900 dark:text-purple-200">
-            <strong>Free Plan Status:</strong> Standard physics features remain active for all your classes, including all 24 core physics equations and 3 starter waypoints.
+            <strong>Free Plan Status:</strong> Standard physics features remain active for all your classes, including all 24 core physics equations, every global waypoint, auto-grading and the misconception report.
           </div>
         </div>
 

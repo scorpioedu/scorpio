@@ -51,7 +51,7 @@ export default function PricingPage() {
           </h1>
 
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            No per-student fees. One flat $10/mo subscription + at-cost AI compute metering. Covers your entire physics department.
+            Free for a single teacher: every global Waypoint, auto-grading and the misconception report. The Department License adds department sharing and higher AI limits for $10/mo plus at-cost AI usage, with no per-student fees.
           </p>
 
           {/* Billing Switcher Toggle */}
@@ -92,7 +92,7 @@ export default function PricingPage() {
                 )}
                 <span className="relative z-10">Annual billing</span>
                 <span className="relative z-10 text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                  Save 50%
+                  Save 17%
                 </span>
               </button>
             </div>
@@ -108,7 +108,7 @@ export default function PricingPage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Starter</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    Essential classroom tools for individual instructors evaluating Scorpio.
+                    Everything an individual AP Physics 1 teacher needs to assign, auto-grade and see misconceptions.
                   </p>
                 </div>
 
@@ -122,11 +122,14 @@ export default function PricingPage() {
 
                 <ul className="space-y-3 text-xs sm:text-[13px]">
                   {[
-                    "Teacher & student accounts",
-                    "Course & roster management",
-                    "1 active Waypoint curriculum module",
+                    "Teacher & student accounts, class codes",
+                    "Unlimited courses and students",
+                    "Every global Waypoint, including all AP Physics 1 sets",
+                    "Auto-grading with units and tolerance",
+                    "Class misconception report",
+                    "CSV grade export",
                     "LaTeX equation builder",
-                    "Standard coursework submissions",
+                    "Raise hints within a small starter AI budget",
                   ].map((feat) => (
                     <li key={feat} className="flex items-start gap-2.5 text-foreground/80">
                       <Check className="h-4 w-4 text-muted-foreground/60 shrink-0 mt-0.5" />
@@ -151,7 +154,7 @@ export default function PricingPage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Department License</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    Full Socratic AI scaffolding and analytics for your entire student cohort.
+                    Department sharing and higher AI limits for your whole physics department.
                   </p>
                 </div>
 
@@ -175,14 +178,13 @@ export default function PricingPage() {
                 <ul className="space-y-3 text-xs sm:text-[13px]">
                   {[
                     "Everything in Starter",
-                    "Unlimited student enrollments (no per-seat fees)",
-                    "Unlimited physics Waypoints",
-                    "Raise Socratic AI assistant for all students",
-                    "AI-assisted grading & rubric synthesis",
-                    "Student derivation tracking & portfolios",
+                    "No per-seat fees",
+                    "Department waypoints and sharing across your school network",
+                    "Higher AI limits for Raise hints and AI grading of written answers",
+                    "AI-assisted rubric drafting",
+                    "AI-written student portfolios",
                     "Hard monthly spend caps & controls",
                     "Direct raw compute pass-through ($0.75/$3.75 per 1M tokens)",
-                    "Priority faculty support",
                   ].map((feat) => (
                     <li key={feat} className="flex items-start gap-2.5 text-foreground font-medium">
                       <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -205,7 +207,7 @@ export default function PricingPage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">District</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    For multi-school districts, universities, and centralized procurement.
+                    For multi-school deployments. Talk to us before you plan one.
                   </p>
                 </div>
 
@@ -213,17 +215,14 @@ export default function PricingPage() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl sm:text-5xl font-black tracking-tight text-foreground">Custom</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1">Site licensing & invoice billing.</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Arranged case by case.</p>
                 </div>
 
                 <ul className="space-y-3 text-xs sm:text-[13px]">
                   {[
                     "Everything in Department License",
-                    "Canvas, Blackboard & Schoology LTI integration",
-                    "Centralized multi-school administration",
-                    "FERPA & COPPA compliance agreements",
-                    "Custom school procurement (PO / Invoice / ACH)",
-                    "Dedicated instructor onboarding & SLA",
+                    "Tell us which LMS your school uses (Google Classroom and Canvas integrations are not built yet)",
+                    "Data-protection review with your school; Scorpio does not claim blanket FERPA or COPPA certification",
                   ].map((feat) => (
                     <li key={feat} className="flex items-start gap-2.5 text-foreground/80">
                       <Check className="h-4 w-4 text-muted-foreground/60 shrink-0 mt-0.5" />
@@ -234,7 +233,7 @@ export default function PricingPage() {
               </div>
 
               <Button asChild variant="outline" className="w-full py-5 rounded-2xl font-semibold">
-                <Link href="/request-access">Request District License</Link>
+                <Link href="/contact">Talk to us</Link>
               </Button>
             </div>
           </div>
@@ -243,8 +242,8 @@ export default function PricingPage() {
         {/* ── Why Flat Pricing Matters (Minimal 3-Pillar Breakdown) ───────── */}
         <section className="container mx-auto px-4 sm:px-6 max-w-5xl py-12">
           <div className="text-center space-y-2 mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">The Economics of Fair EdTech</h2>
-            <p className="text-sm text-muted-foreground">How Scorpio is structured to protect departmental budgets.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">How the pricing works</h2>
+            <p className="text-sm text-muted-foreground">What is free, and what the Department License adds.</p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-6">
@@ -254,7 +253,7 @@ export default function PricingPage() {
               </div>
               <h3 className="font-bold text-sm text-foreground">Zero Per-Seat Penalties</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Traditional tools charge $4–$12 per student per month. Scorpio never charges per seat—your flat fee covers 25 or 250 students equally.
+                Scorpio never charges per seat. The free plan has no student cap, and the Department License is one flat fee for 25 or 250 students.
               </p>
             </div>
 
@@ -274,7 +273,7 @@ export default function PricingPage() {
               </div>
               <h3 className="font-bold text-sm text-foreground">Hard Budget Caps</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Set monthly compute limits directly in your portal settings. You will never receive an unexpected billing overage.
+                Set a monthly AI spend cap in Network settings. AI stops when the cap is reached.
               </p>
             </div>
           </div>
@@ -301,23 +300,22 @@ export default function PricingPage() {
               { category: "Core Platform" },
               { name: "Student & Instructor Accounts", starter: true, dept: true, district: true },
               { name: "Assignment Builder with LaTeX", starter: true, dept: true, district: true },
-              { name: "Student Derivation Portfolios", starter: false, dept: true, district: true },
-              { name: "Waypoints Curriculum Network", starter: "1 Module", dept: "Unlimited", district: "Unlimited" },
+              { name: "Class Codes & CSV Grade Export", starter: true, dept: true, district: true },
+              { name: "Global Waypoints (all AP Physics 1 sets)", starter: "All", dept: "All", district: "All" },
+              { name: "Department Waypoints & Network Sharing", starter: false, dept: true, district: true },
+              { name: "AI-Written Student Portfolios", starter: false, dept: true, district: true },
               { category: "Socratic AI & Grading" },
-              { name: "Raise 4-Layer Socratic Assistant", starter: false, dept: true, district: true },
-              { name: "Anti-Solver Derivation Enforcement", starter: false, dept: true, district: true },
-              { name: "AI-Assisted Grading & Rubrics", starter: false, dept: true, district: true },
-              { name: "Classroom Mastery Analytics", starter: false, dept: true, district: true },
+              { name: "Auto-Grading (numeric with units, multiple choice)", starter: true, dept: true, district: true },
+              { name: "Class Misconception Report", starter: true, dept: true, district: true },
+              { name: "Raise Hints (Socratic Assistant)", starter: "Starter budget", dept: "Higher limits", district: "Higher limits" },
+              { name: "AI Grading of Written Answers", starter: "Starter budget", dept: "Higher limits", district: "Higher limits" },
+              { name: "AI-Assisted Rubric Drafting", starter: false, dept: true, district: true },
               { category: "Pricing & Metering" },
               { name: "Base Department Fee", starter: "$0", dept: "$10/mo or $100/yr", district: "Custom" },
               { name: "Zero-Markup AI Metering (Gemini 3.8 Flash)", starter: false, dept: "$0.75 / $3.75 per 1M", district: "Included / Custom" },
               { name: "Hard Monthly Spend Caps", starter: false, dept: true, district: true },
-              { category: "Institutional Infrastructure" },
-              { name: "Itemized PDF P-Card Receipts", starter: false, dept: true, district: true },
-              { name: "Canvas / Blackboard / Schoology LTI", starter: false, dept: false, district: true },
-              { name: "Central District Administration", starter: false, dept: false, district: true },
-              { name: "FERPA / COPPA Data Agreements", starter: false, dept: false, district: true },
-              { name: "Invoice & PO Payment Options", starter: false, dept: false, district: true },
+              { category: "Billing" },
+              { name: "Itemized Receipts", starter: false, dept: true, district: true },
             ].map((row, i) => {
               if (row.category) {
                 return (

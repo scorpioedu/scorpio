@@ -38,17 +38,17 @@ const COPIED_FIELDS = [
 ] as const;
 
 /**
- * POST /api/assignments/clone { sourceId, courseId?, title? } -> { id }
+ * POST /api/assignments/clone { sourceId, courseId?, title?, dueDate? } -> { id }
  * Copies an assignment the caller can read (own, global, or shared with their network) into a new
  * private assignment they own. The answer key is copied server-side (assignment_keys/{sourceId} ->
- * assignment_keys/{newId}) and is never returned. Free plans may only copy their own assignments and
- * the starter waypoints (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
+ * assignment_keys/{newId}) and is never returned. Free plans may copy their own assignments and every
+ * global waypoint; department (network) waypoints need a Department License (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
  */
 export const POST = withAuthorizedRequest(
   async (req, { caller, profile, requestId }) => {
     const parsed = await parseJsonBody(req, cloneAssignmentBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const { sourceId, courseId, title } = parsed.data;
+    const { sourceId, courseId, title, dueDate } = parsed.data;
 
     const sourceRef = adminDb.collection("assignments").doc(sourceId);
     const source = (await sourceRef.get()).data();
@@ -63,9 +63,8 @@ export const POST = withAuthorizedRequest(
     let split: ReturnType<typeof splitAssignmentQuestions>;
     let rubric: string;
     try {
-      await assertCanCloneAssignment({
+      assertCanCloneAssignment({
         plan: await resolveCallerPlan(profile.organizationId),
-        sourceId,
         source,
         callerUid: caller.uid,
       });
@@ -116,7 +115,7 @@ export const POST = withAuthorizedRequest(
       answerKeySeparated: true,
       forkedFrom: sourceId,
       forkCount: 0,
-      dueDate: null,
+      dueDate: dueDate ? new Date(dueDate) : null,
       createdAt: new Date(),
     });
     batch.set(adminDb.collection("assignment_keys").doc(ref.id), {
