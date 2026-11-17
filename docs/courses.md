@@ -103,15 +103,15 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
-The page has three views of the same class and course, switched with **Board | Calendar | List** under the class card:
+The page has three views of the same class and course, switched with **Board | Calendar | List** under the course chips:
 
 - **Board** (the default): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
 - **Calendar** (`?view=calendar`): a month at a time, every set on the day it is due. See [Calendar](#calendar) below.
 - **List** (`?view=list`): the roadmap, unit by unit, with the Schedule tab. An old link to `?tab=schedule` opens the List on that tab. A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a board or a calendar).
 
-**Header** (both views): the class picker; **Schedule & days off**, which opens the Schedule tab's content in a side sheet; **Reorder or skip** (a class that follows the course), which swaps the view for the plan editor until it is saved or discarded; and **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any.
+**Header** (every view): the class picker; **Following ▾** for a class that follows the course (its menu says what following does and has **Stop following**), or a **Follow / Switch to** button for one that does not, with a line under the header saying what following changes; **Schedule & days off**, which opens the Schedule tab's content in a side sheet; **Reorder or skip** (a class that follows the course), which swaps the view for the plan editor until it is saved or discarded; and **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any.
 
-- **Class card.** Follow or stop following the course. On the List it also has a summary strip (sets assigned, students, average score, the date the course finishes at the current pace) and **Assign next**; on the Board and the Calendar those numbers are in the strip at the top.
+- **No class card.** Following lives in the header (above). On the List a summary strip sits under the course chips: sets assigned, students, average score and the date the course finishes at the current pace; on the Board and the Calendar those numbers are in the strip at the top. The List's own "Assign next: Unit n" button is gone; **Assign next N** in the header does that in every view.
 - **Roadmap tab (List).** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
   - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Duplicate, Archive, and Skip / Stop skipping for a class that follows the course);
   - a published set that is not assigned has **Assign** (just that set) and, for a following class, **Skip** / **Unskip**;

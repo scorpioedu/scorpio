@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import {
   CalendarDays,
   CalendarRange,
+  Check,
+  ChevronDown,
   Columns3,
   List as ListIcon,
   ListOrdered,
@@ -26,8 +28,15 @@ import { apiError, undoToast } from "@/lib/undo-toast";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
 import { ClassPicker } from "@/components/teacher/class-picker";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Sheet,
@@ -268,6 +277,45 @@ export default function CoursesClient() {
             editing ? toast.info("Save or discard the new order first.") : change()
           }
         />
+        {selected &&
+          written &&
+          (follows ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  disabled={busy !== null}
+                  aria-label={`${selected.name} follows ${curriculum.name}. Change`}
+                >
+                  <Check aria-hidden className="text-green-600 dark:text-green-400" /> Following
+                  <ChevronDown aria-hidden className="opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-72">
+                <DropdownMenuLabel className="font-normal text-muted-foreground">
+                  {selected.name} follows {curriculum.name}: students see their work by unit, and
+                  you can reorder or skip sets.
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => void setFollowing(false)}>
+                  Stop following
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              variant="outline"
+              className="border-primary/60"
+              onClick={() => setFollowing(true)}
+              disabled={busy !== null}
+            >
+              {busy === "follow"
+                ? "Saving…"
+                : followsOther
+                  ? `Switch to ${curriculum.name}`
+                  : `Follow ${curriculum.name}`}
+            </Button>
+          ))}
         {selected && written && published !== null && !loadError && (
           <>
             <Button variant="outline" onClick={() => setScheduleOpen(true)}>
@@ -368,100 +416,58 @@ export default function CoursesClient() {
         )
       )}
 
-      {written && (
-        <Card className="shadow-none">
-          <CardContent className="space-y-4">
-            {classes === null ? (
-              <p role="status" className="text-sm text-muted-foreground">
-                Loading your classes…
-              </p>
-            ) : classes.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                You have no classes yet.{" "}
-                <Link className="underline" href="/teacher/welcome">
-                  Create one
-                </Link>{" "}
-                to assign units. You can still browse and preview every set below.
-              </p>
-            ) : (
-              selected && (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <p className="text-base font-semibold">{selected.name}</p>
-                  {follows ? (
-                    <>
-                      <Badge variant="secondary">Follows {curriculum.name}</Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setFollowing(false)}
-                        disabled={busy !== null}
-                      >
-                        Stop following
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button size="sm" onClick={() => setFollowing(true)} disabled={busy !== null}>
-                        {busy === "follow"
-                          ? "Saving…"
-                          : followsOther
-                            ? `Switch to ${curriculum.name}`
-                            : `Follow ${curriculum.name}`}
-                      </Button>
-                      <span className="max-w-md text-xs text-muted-foreground">
-                        {followsOther
-                          ? `This class follows ${followsOther.name}. A class follows one course at a time; switching keeps every assignment.`
-                          : "Following groups students’ work by unit and lets you reorder or skip sets. You can assign either way."}
-                      </span>
-                    </>
-                  )}
-                </div>
-              )
-            )}
-            {error && (
-              <p role="alert" className="text-sm text-destructive">
-                {error}
-              </p>
-            )}
-            {!onBoard && !onCalendar && (
-              <>
-                {selected && published !== null && (
-                  <TeacherSummary
-                    label="Class progress"
-                    items={[
-                      { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
-                      { label: "Students", value: progress ? progress.students : "…" },
-                      {
-                        label: "Average score",
-                        value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
-                      },
-                      {
-                        label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
-                        value: pacing.finish ? shortDate(pacing.finish) : "—",
-                      },
-                    ]}
-                  />
-                )}
-                {selected && next && (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Button onClick={() => openUnit(next)} disabled={busy !== null}>
-                      Assign next: Unit {next.unit}
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                      {next.info?.title} · {next.assignable.length} set
-                      {next.assignable.length === 1 ? "" : "s"} to assign
-                    </span>
-                  </div>
-                )}
-                {selected && !next && published !== null && publishedCount > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Every published set is assigned to this class.
-                  </p>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
+      {/* What used to be the class card: only the lines that have something to say. */}
+      {written && classes === null && (
+        <p role="status" className="text-sm text-muted-foreground">
+          Loading your classes…
+        </p>
+      )}
+      {written && classes?.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          You have no classes yet.{" "}
+          <Link className="underline" href="/teacher/welcome">
+            Create one
+          </Link>{" "}
+          to assign units. You can still browse and preview every set below.
+        </p>
+      )}
+      {written && selected && !follows && (
+        <p className="text-sm text-muted-foreground">
+          {followsOther
+            ? `${selected.name} follows ${followsOther.name}. A class follows one course at a time; switching keeps every assignment.`
+            : `${selected.name} does not follow ${curriculum.name}. Following groups students’ work by unit and lets you reorder or skip sets. You can assign either way.`}
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+      {written && !onBoard && !onCalendar && (
+        <>
+          {selected && published !== null && (
+            <TeacherSummary
+              label="Class progress"
+              items={[
+                { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
+                { label: "Students", value: progress ? progress.students : "…" },
+                {
+                  label: "Average score",
+                  value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
+                },
+                {
+                  label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
+                  value: pacing.finish ? shortDate(pacing.finish) : "—",
+                },
+              ]}
+            />
+          )}
+          {selected && !next && published !== null && publishedCount > 0 && (
+            <p className="text-sm text-muted-foreground">
+              Every published set is assigned to this class.
+            </p>
+          )}
+        </>
       )}
 
       {canBoard && !editing && (

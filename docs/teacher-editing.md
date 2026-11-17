@@ -27,7 +27,7 @@ Goal: **it is easy for a teacher to make changes.** Every screen follows the sam
 | Take a set back by dragging | Courses → **Board**: drag an Assigned card to Up next (or ⋯ → Archive) | Archived at once with Undo; asks first if students have handed it in. |
 | Order of sets still to come | Courses → **Board**: drag an Up next card onto another of the same unit, or ⋯ → Move up / Move down | Saved to the class's plan at once, with Undo. Sets stay inside their unit. |
 | Order of units and sets, skipped sets | Courses → **Reorder or skip** (header) | Drag, keyboard or arrows; save bar; offer to re-date after saving. Skip / Unskip also on each List row and Board card. |
-| Follow / stop following a course | Courses class card | At once, with Undo. |
+| Follow / stop following a course | Courses header: **Following ▾** → Stop following, or the Follow button | At once, with Undo. |
 | Class name, period, description; new join code; archive; delete | Dashboard → class → **Settings** | One dialog. A new code frees the old one; delete frees the code and keeps assignments and student work. |
 | Days off | Courses → Schedule & days off (header sheet, or the List's tab) | Draft + Save; then an offer to move due dates that land on a day off. |
 | A student's score or feedback | Grade page | Save bar and leave warning. Scores set by hand are recorded as `teacherGraded`. *Re-grade with Raise* asks before replacing them. |
