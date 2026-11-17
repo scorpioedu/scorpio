@@ -17,7 +17,11 @@ function resolve(curriculumId: string, unit: string) {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { curriculumId, unit } = await params;
   const found = resolve(curriculumId, unit);
-  return { title: found ? `Unit ${found.unit}: ${apUnit(found.unit)?.title ?? ""}` : "Courses" };
+  return {
+    title: found
+      ? `Unit ${found.unit}: ${apUnit(found.unit, found.curriculum.apCourse)?.title ?? ""}`
+      : "Courses",
+  };
 }
 
 export default async function Page({ params }: { params: Params }) {

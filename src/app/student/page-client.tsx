@@ -53,6 +53,7 @@ interface AssignmentDoc {
   title?: string;
   dueDate?: FirestoreDate;
   curriculumSetKey?: unknown;
+  curriculumId?: unknown;
 }
 
 interface SubmissionDoc {
@@ -287,6 +288,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
                   title: a.title,
                   dueDate: parseDueDate(a.dueDate as Parameters<typeof parseDueDate>[0]),
                   curriculumSetKey: a.curriculumSetKey,
+                  curriculumId: a.curriculumId,
                 })),
                 submissions,
               )

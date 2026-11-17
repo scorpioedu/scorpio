@@ -3,7 +3,7 @@
 // (/api/teacher/courses/progress) loads the data. The suggestions come from fixed rules over the
 // misconception data. A later version may have the AI write them; see docs/courses.md.
 import { apTopicLabel } from "@/data/ap";
-import { curriculumSet } from "@/data/curricula";
+import { curriculumSet, getCurriculum } from "@/data/curricula";
 import { setsTargeting } from "@/data/curricula/profiles";
 import { buildInsightsReport, type InsightEvent } from "@/lib/insights";
 import { keyUnit } from "@/lib/curriculum-plan";
@@ -172,6 +172,7 @@ export function buildUnitInsights(
     skippedKeys?: readonly string[];
   },
 ): UnitInsight[] {
+  const course = getCurriculum(curriculumId)?.apCourse;
   const assigned = new Set(context.assignedKeys);
   const skipped = new Set(context.skippedKeys ?? []);
   const units = [...new Set(events.map((e) => e.apUnit).filter((u): u is number => !!u))].sort(
@@ -210,7 +211,9 @@ export function buildUnitInsights(
         description: row.description,
         studentCount: row.studentCount,
         studentShare: row.studentShare,
-        topics: row.topics.slice(0, 2).map((t) => ({ id: t.id, label: apTopicLabel(t.id) })),
+        topics: row.topics
+          .slice(0, 2)
+          .map((t) => ({ id: t.id, label: apTopicLabel(t.id, course) })),
         action: reteachAction(row.studentCount, row.studentShare),
         practice,
       };

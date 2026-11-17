@@ -21,11 +21,12 @@ const MAX_ASSIGNMENTS = 300;
 const ID = /^[A-Za-z0-9_-]{1,128}$/;
 
 /**
- * GET /api/teacher/courses/progress?courseId= ->
+ * GET /api/teacher/courses/progress?courseId=&curriculumId= ->
  *   { courseId, curriculumId, students, sets: { [setKey]: SetProgress }, units: UnitInsight[], truncated }
  * `students` is the class roster size. `sets` has one entry per course set assigned to the class.
  * `units` lists up to three misconceptions per unit with a re-teach suggestion. The class does not
- * have to follow a course: sets assigned from one still count (the course is read from them).
+ * have to follow a course: sets assigned from one still count. `curriculumId` picks the course to
+ * report on; without it, it is the course the class follows, else the one its sets came from.
  */
 async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedContext) {
   const courseId = req.nextUrl.searchParams.get("courseId") ?? "";
@@ -57,10 +58,14 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         curriculumSetKey: d.data().curriculumSetKey,
       }))
       .filter((a) => typeof a.curriculumSetKey === "string");
+    const asked = req.nextUrl.searchParams.get("curriculumId");
+    if (asked !== null && !getCurriculum(asked))
+      return NextResponse.json({ error: "Unknown course" }, { status: 400 });
     const curriculumId =
-      typeof course.curriculumId === "string"
+      asked ??
+      (typeof course.curriculumId === "string"
         ? course.curriculumId
-        : (assignments.find((a) => typeof a.curriculumId === "string")?.curriculumId ?? null);
+        : (assignments.find((a) => typeof a.curriculumId === "string")?.curriculumId ?? null));
     const courseSets = assignments.filter((a) => a.curriculumId === curriculumId);
 
     const submissions: ProgressSubmission[] = [];
@@ -96,7 +101,10 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
           ? buildUnitInsights(curriculumId, events, {
               studentsByUnit: studentsByUnit(courseSets, submissions),
               assignedKeys: courseSets.map((a) => a.curriculumSetKey as string),
-              skippedKeys: normalisePlan(curriculumId, course.curriculumPlan).skipped,
+              skippedKeys:
+                course.curriculumId === curriculumId
+                  ? normalisePlan(curriculumId, course.curriculumPlan).skipped
+                  : [],
             })
           : [],
       truncated: eventSnap.size >= MAX_EVENTS,

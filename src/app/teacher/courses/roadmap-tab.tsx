@@ -61,7 +61,10 @@ function unitState(
   const wanted = u.sets.filter((s) => !s.skipped);
   if (wanted.length === 0) return { label: "Skipped", tone: "plain" };
   if (wanted.every((s) => !s.published && !s.assigned))
-    return { label: "Not published yet", tone: "plain" };
+    return {
+      label: wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet",
+      tone: "plain",
+    };
   if (u.allAssigned) return { label: "Assigned", tone: "done" };
   if (isNext) return { label: "Next up", tone: "next" };
   if (wanted.some((s) => s.assigned)) return { label: "Partly assigned", tone: "plain" };

@@ -38,8 +38,11 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
     let draftIds = parsed.data.draftIds ?? [];
     let title = parsed.data.title ?? "";
     let description = parsed.data.description;
-    let curriculum: { curriculumId: string; curriculumSetKey: string; curriculumSequence: number } | null =
-      null;
+    let curriculum: {
+      curriculumId: string;
+      curriculumSetKey: string;
+      curriculumSequence: number;
+    } | null = null;
     if (parsed.data.curriculumId !== undefined && parsed.data.setKey !== undefined) {
       const { curriculumId, setKey } = parsed.data;
       const set = curriculumSet(curriculumId, setKey);
@@ -55,6 +58,11 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
       if (!existing.empty)
         return NextResponse.json({ error: "This set is already published" }, { status: 409 });
       draftIds = set.draftIds;
+      if (set.draftIds.length === 0)
+        return NextResponse.json(
+          { error: "This set is planned: it has no problems yet" },
+          { status: 400 },
+        );
       title = displayTitle(set, getCurriculum(curriculumId)!.name);
       description = set.description;
       curriculum = {

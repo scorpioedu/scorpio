@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apUnit } from "@/data/ap";
-import { curriculumSet } from "@/data/curricula";
+import { curriculumSet, getCurriculum } from "@/data/curricula";
 import {
   defaultOrder,
   isDefaultPlan,
@@ -85,7 +85,7 @@ export function CustomizeTab({
                 <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-2">
                   <p className="min-w-0 break-words text-sm font-semibold">
                     <span className="text-muted-foreground">{ui + 1}.</span> Unit {unit}:{" "}
-                    {apUnit(unit)?.title}
+                    {apUnit(unit, getCurriculum(curriculumId)?.apCourse)?.title}
                   </p>
                   <span className="flex shrink-0 gap-1">
                     <Button

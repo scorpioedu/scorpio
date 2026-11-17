@@ -1,5 +1,5 @@
 // Groups a student's assignments under unit headings when their class follows a course roadmap.
-import { apUnitLabel } from "@/data/ap";
+import { apUnitLabel, type ApCourseId } from "@/data/ap";
 
 export interface GroupableAssignment {
   id: string;
@@ -39,6 +39,8 @@ export function groupByUnit<T extends GroupableAssignment>(
   items: T[],
   /** The class's own order of set keys (its plan), when it has one. */
   order?: readonly string[],
+  /** The AP course the class's roadmap belongs to (unit numbers repeat between courses). */
+  course?: ApCourseId,
 ): AssignmentGroup<T>[] {
   const position = new Map((order ?? []).map((key, i) => [key, i]));
   const firstOfUnit = new Map<number, number>();
@@ -63,7 +65,7 @@ export function groupByUnit<T extends GroupableAssignment>(
     .sort(([a], [b]) => unitAt(a) - unitAt(b) || a - b)
     .map(([unit, list]) => ({
       id: `unit-${unit}`,
-      label: apUnitLabel(unit),
+      label: apUnitLabel(unit, course),
       items: [...list].sort(bySequence),
     }));
   if (other.length)

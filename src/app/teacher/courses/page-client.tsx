@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { CURRICULA, type Curriculum } from "@/data/curricula";
+import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
 import { addSchoolDays, parseDateInput, toDateInput } from "@/lib/first-run";
 import {
   cloneSetToClass,
@@ -54,6 +54,8 @@ export default function CoursesClient() {
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
 
   const follows = selected?.curriculumId === curriculum.id;
+  // The class follows a different course than the one being viewed.
+  const followsOther = follows ? undefined : getCurriculum(selected?.curriculumId);
   const plan = useMemo(
     () => (follows ? normalisePlan(curriculum.id, selected?.curriculumPlan) : null),
     [follows, curriculum.id, selected?.curriculumPlan],
@@ -82,6 +84,7 @@ export default function CoursesClient() {
   );
 
   const publishedCount = published?.length ?? 0;
+  const written = hasContent(curriculum);
   const wanted = roadmap.flatMap((u) => u.sets.filter((s) => !s.skipped));
   const assignedCount = wanted.filter((s) => s.assigned).length;
   const averages = Object.values(progress?.sets ?? {})
@@ -166,147 +169,174 @@ export default function CoursesClient() {
       />
 
       {CURRICULA.length > 1 && (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="group" aria-label="Course">
           {CURRICULA.map((c) => (
             <button
               key={c.id}
               type="button"
               onClick={() => setCurriculum(c)}
               aria-pressed={c.id === curriculum.id}
-              className={`rounded-2xl border bg-card p-4 text-left transition-colors hover:border-primary/60 ${c.id === curriculum.id ? "border-primary" : "border-border"}`}
+              className={`rounded-2xl border bg-card p-4 text-left transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-ring ${c.id === curriculum.id ? "border-primary" : "border-border"}`}
             >
-              <span className="block font-semibold">{c.name}</span>
+              <span className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-semibold">{c.name}</span>
+                <Badge variant={hasContent(c) ? "secondary" : "outline"}>
+                  {hasContent(c) ? `${c.sets.length} sets` : "Planned"}
+                </Badge>
+              </span>
               <span className="mt-1 block text-sm text-muted-foreground">{c.description}</span>
             </button>
           ))}
         </div>
       )}
 
-      {published !== null && !loadError && publishedCount < curriculum.sets.length && (
+      {!written ? (
         <Card className="shadow-none" role="status">
           <CardHeader>
-            <CardTitle>
-              {publishedCount === 0
-                ? `${curriculum.name} is not published here yet`
-                : `${curriculum.sets.length - publishedCount} sets are not published here yet`}
-            </CardTitle>
+            <CardTitle>{curriculum.name} is planned</CardTitle>
             <CardDescription>
-              {publishedCount === 0
-                ? `All ${curriculum.sets.length} sets are written. You can browse the roadmap now; sets can be assigned once they have been reviewed and published in this workspace.`
-                : "Sets marked “Not published yet” are written and can be assigned once they have been reviewed and published in this workspace."}
+              The units and sets below are the outline. Their problems are not written yet, so
+              nothing can be previewed or assigned yet. Classes can follow it once its first sets
+              are published.
             </CardDescription>
           </CardHeader>
-          {isAdmin && (
-            <CardContent className="space-y-2 text-sm">
-              <p>
-                You are an admin. To publish: import the drafts into this project, approve each
-                problem, then press <strong>Publish set</strong> on the Sets tab.
-              </p>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/content?tab=sets">Open Admin · Content · Sets</Link>
-              </Button>
-            </CardContent>
-          )}
         </Card>
+      ) : (
+        published !== null &&
+        !loadError &&
+        publishedCount < curriculum.sets.length && (
+          <Card className="shadow-none" role="status">
+            <CardHeader>
+              <CardTitle>
+                {publishedCount === 0
+                  ? `${curriculum.name} is not published here yet`
+                  : `${curriculum.sets.length - publishedCount} sets are not published here yet`}
+              </CardTitle>
+              <CardDescription>
+                {publishedCount === 0
+                  ? `All ${curriculum.sets.length} sets are written. You can browse the roadmap now; sets can be assigned once they have been reviewed and published in this workspace.`
+                  : "Sets marked “Not published yet” are written and can be assigned once they have been reviewed and published in this workspace."}
+              </CardDescription>
+            </CardHeader>
+            {isAdmin && (
+              <CardContent className="space-y-2 text-sm">
+                <p>
+                  You are an admin. To publish: import the drafts into this project, approve each
+                  problem, then press <strong>Publish set</strong> on the Sets tab.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/admin/content?tab=sets">Open Admin · Content · Sets</Link>
+                </Button>
+              </CardContent>
+            )}
+          </Card>
+        )
       )}
 
-      <Card className="shadow-none">
-        <CardContent className="space-y-4">
-          {classes === null ? (
-            <p role="status" className="text-sm text-muted-foreground">
-              Loading your classes…
-            </p>
-          ) : classes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              You have no classes yet.{" "}
-              <Link className="underline" href="/teacher/welcome">
-                Create one
-              </Link>{" "}
-              to assign units. You can still browse and preview every set below.
-            </p>
-          ) : (
-            <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-              <div className="min-w-56 flex-1 space-y-2 sm:max-w-sm">
-                <Label htmlFor="class">Class</Label>
-                <Select value={classId} onValueChange={data.setClassId}>
-                  <SelectTrigger id="class" className="w-full">
-                    <SelectValue placeholder="Choose a class" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {classes.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+      {written && (
+        <Card className="shadow-none">
+          <CardContent className="space-y-4">
+            {classes === null ? (
+              <p role="status" className="text-sm text-muted-foreground">
+                Loading your classes…
+              </p>
+            ) : classes.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                You have no classes yet.{" "}
+                <Link className="underline" href="/teacher/welcome">
+                  Create one
+                </Link>{" "}
+                to assign units. You can still browse and preview every set below.
+              </p>
+            ) : (
+              <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+                <div className="min-w-56 flex-1 space-y-2 sm:max-w-sm">
+                  <Label htmlFor="class">Class</Label>
+                  <Select value={classId} onValueChange={data.setClassId}>
+                    <SelectTrigger id="class" className="w-full">
+                      <SelectValue placeholder="Choose a class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {selected &&
+                  (follows ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="secondary">Follows {curriculum.name}</Badge>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setFollowing(false)}
+                        disabled={busy !== null}
+                      >
+                        Stop following
+                      </Button>
+                    </div>
+                  ) : !written ? null : (
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Button onClick={() => setFollowing(true)} disabled={busy !== null}>
+                        {busy === "follow"
+                          ? "Saving…"
+                          : followsOther
+                            ? `Switch to ${curriculum.name}`
+                            : `Follow ${curriculum.name}`}
+                      </Button>
+                      <span className="max-w-xs text-xs text-muted-foreground">
+                        {followsOther
+                          ? `This class follows ${followsOther.name}. A class follows one course at a time; switching keeps every assignment.`
+                          : "Following groups students’ work by unit and lets you reorder or skip sets. You can assign units either way."}
+                      </span>
+                    </div>
+                  ))}
               </div>
-              {selected &&
-                (follows ? (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="secondary">Follows {curriculum.name}</Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setFollowing(false)}
-                      disabled={busy !== null}
-                    >
-                      Stop following
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Button onClick={() => setFollowing(true)} disabled={busy !== null}>
-                      {busy === "follow" ? "Saving…" : `Follow ${curriculum.name}`}
-                    </Button>
-                    <span className="max-w-xs text-xs text-muted-foreground">
-                      Following groups students&apos; work by unit and lets you reorder or skip
-                      sets. You can assign units either way.
-                    </span>
-                  </div>
-                ))}
-            </div>
-          )}
-          {error && (
-            <p role="alert" className="text-sm text-destructive">
-              {error}
-            </p>
-          )}
-          {selected && published !== null && (
-            <TeacherSummary
-              label="Class progress"
-              items={[
-                { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
-                { label: "Students", value: progress ? progress.students : "…" },
-                {
-                  label: "Average score",
-                  value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
-                },
-                {
-                  label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
-                  value: pacing.finish ? shortDate(pacing.finish) : "—",
-                },
-              ]}
-            />
-          )}
-          {selected && next && (
-            <div className="flex flex-wrap items-center gap-3">
-              <Button onClick={() => setAssigning(next)} disabled={busy !== null}>
-                Assign next: Unit {next.unit}
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                {next.info?.title} · {next.assignable.length} set
-                {next.assignable.length === 1 ? "" : "s"} to assign
-              </span>
-            </div>
-          )}
-          {selected && !next && published !== null && publishedCount > 0 && (
-            <p className="text-sm text-muted-foreground">
-              Every published set is assigned to this class.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+            )}
+            {error && (
+              <p role="alert" className="text-sm text-destructive">
+                {error}
+              </p>
+            )}
+            {selected && published !== null && written && (
+              <TeacherSummary
+                label="Class progress"
+                items={[
+                  { label: "Sets assigned", value: `${assignedCount} of ${wanted.length}` },
+                  { label: "Students", value: progress ? progress.students : "…" },
+                  {
+                    label: "Average score",
+                    value: !progress ? "…" : classAverage === null ? "—" : `${classAverage}%`,
+                  },
+                  {
+                    label: pacing.remaining === 0 ? "Last due date" : "Finishes at this pace",
+                    value: pacing.finish ? shortDate(pacing.finish) : "—",
+                  },
+                ]}
+              />
+            )}
+            {selected && next && (
+              <div className="flex flex-wrap items-center gap-3">
+                <Button onClick={() => setAssigning(next)} disabled={busy !== null}>
+                  Assign next: Unit {next.unit}
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {next.info?.title} · {next.assignable.length} set
+                  {next.assignable.length === 1 ? "" : "s"} to assign
+                </span>
+              </div>
+            )}
+            {selected && !next && published !== null && publishedCount > 0 && written && (
+              <p className="text-sm text-muted-foreground">
+                Every published set is assigned to this class.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {loadError ? (
         <p role="alert" className="text-sm text-destructive">
@@ -317,8 +347,8 @@ export default function CoursesClient() {
           Loading roadmap…
         </p>
       ) : (
-        <Tabs defaultValue="roadmap" className="gap-4">
-          {selected && (
+        <Tabs defaultValue="roadmap" className="gap-4" key={curriculum.id}>
+          {selected && written && (
             <TabsList>
               <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
               <TabsTrigger value="schedule">Schedule</TabsTrigger>
@@ -329,7 +359,7 @@ export default function CoursesClient() {
             <RoadmapTab
               curriculum={curriculum}
               roadmap={roadmap}
-              className={selected?.name ?? null}
+              className={written ? (selected?.name ?? null) : null}
               progress={progress}
               nextUnitNumber={next?.unit}
               busy={busy !== null}
@@ -340,6 +370,7 @@ export default function CoursesClient() {
           {selected && (
             <TabsContent value="schedule">
               <ScheduleTab
+                course={curriculum.apCourse}
                 classId={selected.id}
                 roadmap={roadmap}
                 pacing={pacing}

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { apUnitLabel } from "@/data/ap";
+import { apUnitLabel, type ApCourseId } from "@/data/ap";
 import { parseDateInput } from "@/lib/first-run";
 import type { RoadmapUnit } from "@/lib/curriculum-roadmap";
 import { respaceDueDates, shiftDueDates, type DatedItem, type Pacing } from "@/lib/course-pacing";
@@ -34,12 +34,14 @@ const range = (a: Date, b: Date) =>
   a.toDateString() === b.toDateString() ? shortDate(a) : `${shortDate(a)} – ${shortDate(b)}`;
 
 function PacingCard({
+  course,
   pacing,
   start,
   spacing,
   onStart,
   onSpacing,
 }: {
+  course: ApCourseId;
   pacing: Pacing;
   start: string;
   spacing: string;
@@ -77,7 +79,7 @@ function PacingCard({
               key={u.unit}
               className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5"
             >
-              <span className="min-w-0 break-words font-medium">{apUnitLabel(u.unit)}</span>
+              <span className="min-w-0 break-words font-medium">{apUnitLabel(u.unit, course)}</span>
               <span className="text-muted-foreground">
                 {u.sets.length === 0
                   ? "Skipped"
@@ -114,6 +116,7 @@ function PacingCard({
 }
 
 function MoveDatesCard({
+  course,
   classId,
   roadmap,
   start,
@@ -121,6 +124,7 @@ function MoveDatesCard({
   isSchoolDay,
   onDone,
 }: {
+  course: ApCourseId;
   classId: string;
   roadmap: RoadmapUnit[];
   start: string;
@@ -214,7 +218,7 @@ function MoveDatesCard({
                     <SelectItem value="upcoming">Everything not yet due</SelectItem>
                     {units.map((u) => (
                       <SelectItem key={u} value={String(u)}>
-                        {apUnitLabel(u)}
+                        {apUnitLabel(u, course)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -450,6 +454,7 @@ function DaysOffCard({
 }
 
 export function ScheduleTab(props: {
+  course: ApCourseId;
   classId: string;
   roadmap: RoadmapUnit[];
   pacing: Pacing;
@@ -466,6 +471,7 @@ export function ScheduleTab(props: {
   return (
     <div className="space-y-4">
       <PacingCard
+        course={props.course}
         pacing={props.pacing}
         start={props.start}
         spacing={props.spacing}
@@ -473,6 +479,7 @@ export function ScheduleTab(props: {
         onSpacing={props.onSpacing}
       />
       <MoveDatesCard
+        course={props.course}
         classId={props.classId}
         roadmap={props.roadmap}
         start={props.start}

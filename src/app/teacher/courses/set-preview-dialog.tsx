@@ -8,7 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apTopicLabel, misconceptionTag } from "@/data/ap";
-import type { CurriculumSet } from "@/data/curricula";
+import { getCurriculum, type CurriculumSet } from "@/data/curricula";
 import { setProfile, typeSummary } from "@/data/curricula/profiles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -96,6 +96,8 @@ export function SetPreviewDialog({
   if (!target) return null;
   const { set } = target;
   const profile = setProfile(target.curriculumId, set.key);
+  const course = getCurriculum(target.curriculumId)?.apCourse;
+  const planned = set.draftIds.length === 0;
 
   return (
     <Dialog open onOpenChange={(open) => !open && close()}>
@@ -109,7 +111,7 @@ export function SetPreviewDialog({
 
         <div className="space-y-4 text-sm">
           <p className="text-muted-foreground">
-            {set.topics.map(apTopicLabel).join(" · ")}
+            {set.topics.map((t) => apTopicLabel(t, course)).join(" · ")}
             {profile
               ? ` · ${profile.problems} problems (${typeSummary(profile)}) · about ${profile.minutes} min`
               : ""}
@@ -131,7 +133,9 @@ export function SetPreviewDialog({
 
           {!sourceId ? (
             <p className="rounded-xl border border-border bg-muted/40 p-4 text-muted-foreground">
-              This set is not published in this workspace yet, so its problems cannot be shown here.
+              {planned
+                ? "This set is planned: its problems are not written yet."
+                : "This set is not published in this workspace yet, so its problems cannot be shown here."}
             </p>
           ) : failed ? (
             <p role="alert" className="text-destructive">

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { apTopic, misconceptionTag } from "@/data/ap";
-import { getCurriculum } from "@/data/curricula";
+import { getCurriculum, hasContent } from "@/data/curricula";
 import { setProfile, typeSummary } from "@/data/curricula/profiles";
 import { deriveRoadmap } from "@/lib/curriculum-roadmap";
 import { normalisePlan } from "@/lib/curriculum-plan";
@@ -31,6 +31,7 @@ export default function UnitGuideClient({
   unit: number;
 }) {
   const curriculum = getCurriculum(curriculumId)!;
+  const written = hasContent(curriculum);
   const data = useCourseData(curriculumId);
   const { classes, classId, selected, published, classAssignments, progress } = data;
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
@@ -72,7 +73,7 @@ export default function UnitGuideClient({
       </Link>
 
       <TeacherPageHeader title={`Unit ${unit}: ${info?.title ?? ""}`} description={info?.summary}>
-        {classes && classes.length > 0 && (
+        {written && classes && classes.length > 0 && (
           <div className="w-64 max-w-full space-y-1.5">
             <Label htmlFor="guide-class" className="text-xs text-muted-foreground">
               Show progress for
@@ -97,8 +98,8 @@ export default function UnitGuideClient({
         label="Unit overview"
         items={[
           { label: "Sets", value: roadmapUnit.sets.length },
-          { label: "Problems", value: problems },
-          { label: "Student time", value: `about ${minutes} min` },
+          { label: "Problems", value: problems || "Planned" },
+          { label: "Student time", value: minutes ? `about ${minutes} min` : "—" },
           { label: "Topics", value: topics.length },
         ]}
       />
@@ -116,7 +117,7 @@ export default function UnitGuideClient({
                   <SetRow
                     curriculumId={curriculumId}
                     s={s}
-                    hasClass={!!selected}
+                    hasClass={written && !!selected}
                     students={progress?.students ?? 0}
                     progress={progress}
                     onPreview={setPreview}
@@ -126,7 +127,9 @@ export default function UnitGuideClient({
                   <div className="space-y-1 px-4 pb-3 text-xs text-muted-foreground">
                     <p>
                       Topics:{" "}
-                      {s.set.topics.map((t) => `${t} ${apTopic(t)?.title ?? ""}`).join(" · ")}
+                      {s.set.topics
+                        .map((t) => `${t} ${apTopic(t, curriculum.apCourse)?.title ?? ""}`)
+                        .join(" · ")}
                     </p>
                     <p>
                       {typeSummary(p)} ·{" "}
@@ -169,7 +172,7 @@ export default function UnitGuideClient({
           <CardContent>
             <ul className="space-y-3 text-sm">
               {topics.map((id) => {
-                const t = apTopic(id);
+                const t = apTopic(id, curriculum.apCourse);
                 return (
                   <li key={id}>
                     <p className="font-medium">
@@ -182,32 +185,36 @@ export default function UnitGuideClient({
             </ul>
           </CardContent>
         </Card>
-        <Card className="shadow-none">
-          <CardHeader>
-            <CardTitle>Misconceptions this unit targets</CardTitle>
-            <CardDescription>
-              Wrong answers are written to catch these, so the class report can name them.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-3 text-sm">
-              {targeted.map(([tag, keys]) => {
-                const meta = misconceptionTag(tag);
-                return (
-                  <li key={tag}>
-                    <p className="break-words font-medium">
-                      {meta?.label ?? tag}{" "}
-                      <span className="font-normal text-muted-foreground">· {keys.join(", ")}</span>
-                    </p>
-                    {meta?.description && (
-                      <p className="break-words text-muted-foreground">{meta.description}</p>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </CardContent>
-        </Card>
+        {targeted.length > 0 && (
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle>Misconceptions this unit targets</CardTitle>
+              <CardDescription>
+                Wrong answers are written to catch these, so the class report can name them.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-sm">
+                {targeted.map(([tag, keys]) => {
+                  const meta = misconceptionTag(tag);
+                  return (
+                    <li key={tag}>
+                      <p className="break-words font-medium">
+                        {meta?.label ?? tag}{" "}
+                        <span className="font-normal text-muted-foreground">
+                          · {keys.join(", ")}
+                        </span>
+                      </p>
+                      {meta?.description && (
+                        <p className="break-words text-muted-foreground">{meta.description}</p>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <SetPreviewDialog target={preview} onClose={() => setPreview(null)} />

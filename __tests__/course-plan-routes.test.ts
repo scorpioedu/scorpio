@@ -327,6 +327,14 @@ describe("GET /api/teacher/courses/progress", () => {
     expect(body.students).toBe(0);
   });
 
+  test("a course can be asked for by id; an unknown one is refused", async () => {
+    const other = await (await get("?courseId=c1&curriculumId=ap-physics-c-mech")).json();
+    expect(other).toMatchObject({ curriculumId: "ap-physics-c-mech", sets: {}, units: [] });
+    const same = await (await get("?courseId=c1&curriculumId=ap-physics-1")).json();
+    expect(Object.keys(same.sets)).toEqual(["4A", "4B"]);
+    expect((await get("?courseId=c1&curriculumId=nope")).status).toBe(400);
+  });
+
   test("bad ids, other teachers' classes and students are refused", async () => {
     expect((await get("")).status).toBe(400);
     expect((await get("?courseId=a/b")).status).toBe(400);

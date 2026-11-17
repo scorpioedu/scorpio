@@ -78,7 +78,7 @@ describe("curriculum definitions", () => {
     expect(run([{ ...d, topics: ["9.9"] }])).toMatch(/unknown topic 9\.9/);
     expect(run([{ ...d, draftIds: ["x", "x"] }])).toMatch(/repeated draftIds/);
     expect(run([{ ...a, key: "4a" }])).toMatch(/key must be/);
-    expect(run([{ ...a, draftIds: [] }])).toMatch(/no draftIds/);
+    expect(run([{ ...a, draftIds: [] }])).toBe(""); // a planned set has no problems yet
   });
 });
 

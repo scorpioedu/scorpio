@@ -9,6 +9,8 @@ export interface RoadmapAssignment {
   title?: string;
   dueDate?: Date | null;
   curriculumSetKey?: unknown;
+  /** The course the set came from. Set keys repeat between courses, so other courses are ignored. */
+  curriculumId?: unknown;
 }
 
 export interface RoadmapSubmission {
@@ -65,6 +67,7 @@ export function buildStudentRoadmap(
   const byKey = new Map<string, RoadmapAssignment>();
   for (const a of assignments)
     if (
+      (a.curriculumId === undefined || a.curriculumId === curriculum.id) &&
       typeof a.curriculumSetKey === "string" &&
       position.has(a.curriculumSetKey) &&
       !byKey.has(a.curriculumSetKey)
@@ -98,7 +101,7 @@ export function buildStudentRoadmap(
     } else state = doneKeys.length === plannedKeys.length ? "done" : "current";
     units.push({
       unit,
-      label: apUnitLabel(unit),
+      label: apUnitLabel(unit, curriculum.apCourse),
       planned: plannedKeys.length,
       assigned: assigned.length,
       done: doneKeys.length,

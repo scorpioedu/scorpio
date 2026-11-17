@@ -40,10 +40,12 @@ function rememberedClass(): string {
   }
 }
 
-async function fetchClass(uid: string, classId: string) {
+async function fetchClass(uid: string, classId: string, curriculumId: string) {
   const [assignments, progress] = await Promise.all([
     loadClassAssignments(uid, classId).catch(() => [] as ClassAssignment[]),
-    authenticatedFetch(`/api/teacher/courses/progress?courseId=${encodeURIComponent(classId)}`)
+    authenticatedFetch(
+      `/api/teacher/courses/progress?courseId=${encodeURIComponent(classId)}&curriculumId=${encodeURIComponent(curriculumId)}`,
+    )
       .then(async (res) => (res.ok ? ((await res.json()) as ClassProgress) : null))
       .catch(() => null),
   ]);
@@ -116,7 +118,7 @@ export function useCourseData(curriculumId: string) {
   useEffect(() => {
     if (!uid || !classId) return;
     let active = true;
-    fetchClass(uid, classId).then((loaded) => {
+    fetchClass(uid, classId, curriculumId).then((loaded) => {
       if (!active) return;
       setClassAssignments(loaded.assignments);
       setProgress(loaded.progress);
@@ -124,15 +126,15 @@ export function useCourseData(curriculumId: string) {
     return () => {
       active = false;
     };
-  }, [uid, classId]);
+  }, [uid, classId, curriculumId]);
 
   /** Reload the class's assignments and progress after a change. */
   const refreshClass = useCallback(async () => {
     if (!uid || !classId) return;
-    const loaded = await fetchClass(uid, classId);
+    const loaded = await fetchClass(uid, classId, curriculumId);
     setClassAssignments(loaded.assignments);
     setProgress(loaded.progress);
-  }, [uid, classId]);
+  }, [uid, classId, curriculumId]);
 
   /** Apply a saved change to a class without reloading the list. */
   const patchClass = useCallback((id: string, patch: Partial<ClassOption>) => {

@@ -40,6 +40,8 @@ export interface PublishedSet {
 export interface ClassAssignment {
   id?: string;
   title?: string;
+  /** The course the set came from; assignments from another course are ignored. */
+  curriculumId?: unknown;
   curriculumSetKey?: unknown;
   dueDate?: Date | null;
 }
@@ -94,7 +96,11 @@ export function deriveRoadmap(
   const byKey = new Map(published.map((p) => [p.curriculumSetKey, p]));
   const assignedByKey = new Map<string, ClassAssignment>();
   for (const a of classAssignments)
-    if (typeof a.curriculumSetKey === "string" && !assignedByKey.has(a.curriculumSetKey))
+    if (
+      (a.curriculumId === undefined || a.curriculumId === curriculumId) &&
+      typeof a.curriculumSetKey === "string" &&
+      !assignedByKey.has(a.curriculumSetKey)
+    )
       assignedByKey.set(a.curriculumSetKey, a);
   const { order, skipped } = normalisePlan(curriculumId, plan);
   const position = new Map(order.map((key, i) => [key, i]));
