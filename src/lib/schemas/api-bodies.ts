@@ -53,6 +53,33 @@ export const createAssignmentBody = z.object({
   questions: z.array(assignmentQuestionSchema).max(100),
 });
 
+// ─── PATCH /api/assignments/{id} ───────────────────────────────────────────
+// The owner edits an assignment after it is created. Every field is optional; only what is sent changes.
+// `questions` replaces the whole list (answer keys are split server-side, as on create).
+// `archived` hides it from students and default lists (restorable); it is not a delete.
+export const updateAssignmentBody = z
+  .object({
+    title: z.string().trim().min(1).max(1000),
+    description: z.string().max(50000).nullable(),
+    topic: z.string().max(1000).nullable(),
+    dueDate: z
+      .union([z.string(), z.number()])
+      .nullable()
+      .refine((v) => v == null || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
+    timeLimit: z.number().min(0).max(100000).nullable(),
+    gradingType: z.string().max(64),
+    requireWorkSubmission: z.boolean(),
+    enableTabDetection: z.boolean(),
+    lockdownMode: z.boolean(),
+    allowAIHelp: z.boolean(),
+    allowCalculator: z.boolean(),
+    rubric: z.string().max(100000).nullable(),
+    questions: z.array(assignmentQuestionSchema).min(1).max(100),
+    archived: z.boolean(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to change");
+
 // ─── POST /api/assignments/clone ───────────────────────────────────────────
 // Copies a readable assignment (own, global, or same-network) into a new private one owned by the
 // caller; the answer key is copied server-side and never returned.
