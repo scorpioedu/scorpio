@@ -29,5 +29,94 @@
         "problems": 1
       }
     ]
+  },
+  "1B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "acceleration-sign-means-slowing",
+        "problems": 1
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "1C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "1D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "graph-as-picture",
+        "problems": 1
+      },
+      {
+        "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
+        "tag": "projectile-components-coupled",
+        "problems": 1
+      }
+    ]
   }
 }

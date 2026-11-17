@@ -24,7 +24,13 @@
       "title": "Representing motion",
       "description": "Motion graphs and equations for constant and changing acceleration.",
       "topics": ["1.3"],
-      "draftIds": []
+      "draftIds": [
+        "9DppJUuhYHAJrkzkkQsn",
+        "LItq6qNpphvoF3Y8mKN9",
+        "Gyg4BdHNSSzZ9NhnqKjn",
+        "2bSjiSQWoRFTUQybPC1n",
+        "c5Xzv33ACKp5YD3yPg7b"
+      ]
     },
     {
       "key": "1C",
@@ -32,7 +38,13 @@
       "title": "Reference frames and relative motion",
       "description": "Velocities measured from frames that move relative to each other.",
       "topics": ["1.4"],
-      "draftIds": []
+      "draftIds": [
+        "L2cgbMXZC6yUBWLIQYWy",
+        "mzmjhOAuD7mF9ddbDxUS",
+        "lJVVC0RXcPJyaMQmeUeg",
+        "XWHvpExMp26tX1ZasmNK",
+        "e6jOKGtLw8HImUOlU62D"
+      ]
     },
     {
       "key": "1D",
@@ -40,7 +52,13 @@
       "title": "Motion in two and three dimensions",
       "description": "Projectiles and vector kinematics with independent components.",
       "topics": ["1.5"],
-      "draftIds": []
+      "draftIds": [
+        "lLOJN28JoYjBPWwV7Y2K",
+        "7YZmydObvXNoQF7Gakef",
+        "OS9Q0AdCcpP2CzBgbPfz",
+        "xXwmbUOQ6HOgEkGHRQpP",
+        "y0dlAPxgwxhY2vntlqgT"
+      ]
     },
     {
       "key": "2A",

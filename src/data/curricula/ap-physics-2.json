@@ -290,7 +290,13 @@
       "title": "Wave properties",
       "description": "Pulses, periodic waves, speed, wavelength and frequency.",
       "topics": ["14.1", "14.2"],
-      "draftIds": []
+      "draftIds": [
+        "oUMjEQPXJne63JwrCtK0",
+        "lujUpwe3aSnrxWddsbej",
+        "EG9OjTCqRGE7MNFFkvg0",
+        "c0mPfxbdBt1bXxwclTEn",
+        "r8vHNe60gwXsF36r8MFt"
+      ]
     },
     {
       "key": "14B",
@@ -298,7 +304,13 @@
       "title": "Boundaries, light and the Doppler effect",
       "description": "Reflection at boundaries, polarization, electromagnetic waves and frequency shifts.",
       "topics": ["14.3", "14.4", "14.5"],
-      "draftIds": []
+      "draftIds": [
+        "2XlvwSGuzs2bRz2tEnuA",
+        "anzdiCaVpcQnJV8bnpEI",
+        "nd9eNnRXxUjvkr5ZLqSa",
+        "eZNaqGAcbPXskYsE7nTX",
+        "RyQ3zCs5YWPkbry6AR4n"
+      ]
     },
     {
       "key": "14C",

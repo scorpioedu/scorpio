@@ -562,5 +562,55 @@
         "problems": 1
       }
     ]
+  },
+  "14A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "wave-speed-depends-on-source",
+        "problems": 2
+      },
+      {
+        "tag": "frequency-changes-in-medium",
+        "problems": 1
+      },
+      {
+        "tag": "wave-carries-matter",
+        "problems": 1
+      }
+    ]
+  },
+  "14B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 3,
+      "medium": 1,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "boundary-phase-change",
+        "problems": 1
+      },
+      {
+        "tag": "light-speed-varies-in-vacuum",
+        "problems": 1
+      }
+    ]
   }
 }
