@@ -10,12 +10,13 @@ import { toast } from "sonner";
 import {
   CalendarDays,
   CalendarRange,
+  ChevronDown,
   Columns3,
   List as ListIcon,
   ListOrdered,
   MoreHorizontal,
   Plus,
-  Repeat,
+  Route as RouteIcon,
 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
@@ -43,8 +44,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -301,9 +300,6 @@ export default function CoursesClient() {
             "A class follows one course: its units in order, each with short auto-graded sets."
           ) : (
             <>
-              {/* The course is the class's, so it is named, not picked. */}
-              <span className="font-medium text-foreground">{curriculum.name}</span>
-              {" · "}
               {onBoard
                 ? "Every set by where it stands. Drag a card to Assigned, or press Assign."
                 : onCalendar
@@ -318,6 +314,20 @@ export default function CoursesClient() {
             editing ? toast.info("Save or discard the new order first.") : change()
           }
         />
+        {/* Which course this class is on, said loudly; pressing it changes the course. */}
+        {selected && follows && (
+          <Button
+            variant="outline"
+            className="border-primary/60 bg-primary/10 font-semibold text-foreground hover:bg-primary/15"
+            disabled={busy !== null || editing}
+            aria-label={`Course: ${curriculum.name}. Change course`}
+            title={`${selected.name} follows ${curriculum.name}. Press to change the course.`}
+            onClick={() => setCourseDraft(selected.curriculumId)}
+          >
+            <RouteIcon aria-hidden className="text-primary" /> {curriculum.name}
+            <ChevronDown aria-hidden className="opacity-60" />
+          </Button>
+        )}
         {classes?.length === 0 && CURRICULA.length > 1 && (
           <Select
             value={curriculum.id}
@@ -354,7 +364,7 @@ export default function CoursesClient() {
           </Button>
         )}
         {/* Everything a teacher does now and then, behind one button. */}
-        {selected && follows && (
+        {selected && follows && ready && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" aria-label="More course actions">
@@ -372,16 +382,6 @@ export default function CoursesClient() {
                   <ListOrdered /> Reorder or skip sets
                 </DropdownMenuItem>
               )}
-              {ready && <DropdownMenuSeparator />}
-              <DropdownMenuLabel className="font-normal text-muted-foreground">
-                {selected.name} follows {curriculum.name}.
-              </DropdownMenuLabel>
-              <DropdownMenuItem
-                disabled={busy !== null || editing}
-                onSelect={() => setCourseDraft(selected.curriculumId)}
-              >
-                <Repeat /> Change course…
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}

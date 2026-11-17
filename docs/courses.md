@@ -107,10 +107,10 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 "Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`, `?view=board`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
 
-**One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it under the title; there is no course picker, so a teacher never looks at one course while a class follows another. Where the course is set:
+**One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it on a highlighted **course button** beside the class picker; there is no way to look at a different course from the one the class follows, so a teacher never looks at one course while a class follows another. Where the course is set:
 
 - **A class with no course** opens the page on **Choose a course for {class}**: one card per course with **Use this course**. Nothing else is offered until one is chosen (a class may also stay without a course and keep working as a plain class).
-- **⋯ → Change course…** on the Courses page opens a small dialog: pick another course, or **No course**.
+- **The course button** ("AP Physics 2 ▾", tinted in the primary colour so the course on screen is obvious) opens a small dialog: pick another course, or **No course**.
 - **Dashboard → class → Settings** has a **Course** dropdown (saves at once, with Undo), and **Create Class** has an optional one.
 - `/teacher/welcome` still creates its class on AP Physics 1 only.
 
@@ -124,7 +124,7 @@ The page has three views of the same class and course, switched with **List | Ca
 - **Calendar** (`?view=calendar`): a month at a time, every set on the day it is due. See [Calendar](#calendar) below.
 - **Board** (`?view=board`): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
 
-**Header** (every view), kept to three controls: the **class** picker; **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any; and **⋯ More**, a menu with **Schedule & days off** (opens the Schedule tab's content in a side sheet), **Reorder or skip sets** (swaps the view for the plan editor until it is saved or discarded), a line naming the class's course, and **Change course…**.
+**Header** (every view), kept to four controls: the **class** picker; the **course button**, which names the class's course and opens Change course; **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any; and **⋯ More**, a menu with **Schedule & days off** (opens the Schedule tab's content in a side sheet) and **Reorder or skip sets** (swaps the view for the plan editor until it is saved or discarded), and nothing else.
 
 - **No class card and no row of course chips.** On the List a summary strip sits under the header: sets assigned, students, average score and the date the course finishes at the current pace; on the Board and the Calendar those numbers are in the strip at the top. **Assign next N** in the header is the only "assign next" button, in every view.
 - **Roadmap tab (List).** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
