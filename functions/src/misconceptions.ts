@@ -567,7 +567,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Adds field magnitudes without directions, or cancels potentials from like charges as if they pointed opposite ways.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10, 12] },
   },
   {
     id: "conductor-interior-field",

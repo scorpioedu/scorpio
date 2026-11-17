@@ -358,5 +358,109 @@
         "problems": 1
       }
     ]
+  },
+  "12A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "vector-scalar-superposition",
+        "problems": 2
+      },
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-poles-as-charges",
+        "problems": 1
+      }
+    ]
+  },
+  "12B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-force-along-field",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-force-does-work",
+        "problems": 1
+      }
+    ]
+  },
+  "12C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "wire-field-not-circular",
+        "problems": 2
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "12D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 1
+      },
+      {
+        "tag": "induction-needs-change",
+        "problems": 1
+      },
+      {
+        "tag": "lenz-opposes-field",
+        "problems": 1
+      }
+    ]
   }
 }

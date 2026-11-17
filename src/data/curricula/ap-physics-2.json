@@ -178,7 +178,13 @@
       "title": "Magnetic fields",
       "description": "Fields of magnets and Earth, dipoles and magnetic materials.",
       "topics": ["12.1"],
-      "draftIds": []
+      "draftIds": [
+        "G71hVTptgRAPZpR8Jfbs",
+        "3Qn69OeYuo5FBglbFiRM",
+        "f1u0iZ6QVg643WDcDEve",
+        "NUZbstLaOZ6YQs86IJ36",
+        "ZhfNfkCQngr5VFFUctYO"
+      ]
     },
     {
       "key": "12B",
@@ -186,7 +192,13 @@
       "title": "Forces on moving charges",
       "description": "Magnitude and direction of the magnetic force and circular paths in a field.",
       "topics": ["12.2"],
-      "draftIds": []
+      "draftIds": [
+        "dLLDmBqjhTyxH1V0HLD9",
+        "8m3BrnoK0WbSaZ2g5ObD",
+        "vnEiK2dPg2P6WjAufJ6P",
+        "WOSNMZH5XPmpuUHNFteZ",
+        "EN3guXhQ7yCybj0LDNun"
+      ]
     },
     {
       "key": "12C",
@@ -194,7 +206,13 @@
       "title": "Fields and forces of wires",
       "description": "The field around a current and forces on and between wires.",
       "topics": ["12.3"],
-      "draftIds": []
+      "draftIds": [
+        "1d5p0ccrLrF4uzYSHuVk",
+        "lbJ4irGkNVTLBZHZ7Irx",
+        "D4iHWyZ5JjgAFKlwLVBb",
+        "GqD9uDw1BSgVHGEw7Jml",
+        "sOYiKKmOs7FGDpN3QIhR"
+      ]
     },
     {
       "key": "12D",
@@ -202,7 +220,13 @@
       "title": "Induction and Faraday's law",
       "description": "Changing flux, induced emf and Lenz's law.",
       "topics": ["12.4"],
-      "draftIds": []
+      "draftIds": [
+        "yOIcdydaGDwg1tzmKToK",
+        "KzGuLo9NDmxwOTayQ6pg",
+        "coLP2CL0XamvcdAtqOFb",
+        "Zgv6qla6nnlbcbCgNqWM",
+        "n3ftpXmuPvp1gF2ecmpg"
+      ]
     },
     {
       "key": "13A",
