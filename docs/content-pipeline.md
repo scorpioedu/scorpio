@@ -38,6 +38,7 @@ Where tags come from:
 2. **Validate.** `validateDraftProblem` rejects drafts whose key is unreadable, isn't one of the options, or has the wrong number of options. Distractors with unknown tags, or that the grader would mark correct, are dropped, with a warning.
 3. **Independent check.** A second call solves each problem without seeing the key. Its answer is graded against the key by the real grader, and a disagreement shows as an amber warning.
 4. **Human review.** A person solves the problem, fixes the key, options, distractors and solution if needed, adds a note, and approves. Approval re-runs the checks on the edited problem. Drafts live in the server-only `content_drafts` collection.
+   An approval records who checked it: `reviewKind` is `human` (the review screen) or `ai` (`reviewer: "ai"` on `PATCH /api/admin/content`). AI-reviewed drafts show an amber "AI-reviewed: needs your check" badge, and **publish refuses them outside the local emulator**. A person re-approves each one to make it publishable; reopening clears the mark.
 5. **Publish.** Approved problems from one unit become a global Waypoints assignment: auto-graded, AP-tagged, and with the key and distractors in `assignment_keys`. The drafts are then marked published and frozen.
 
 AI calls are billed to `CONTENT_ORG_ID` when set. Otherwise they are uncapped, because the route is admin-only (the same rule as the research route).
@@ -51,7 +52,24 @@ AI calls are billed to `CONTENT_ORG_ID` when set. Otherwise they are uncapped, b
 - The checker answered multiple choice as "A. <text>". The parser now accepts a letter, a lettered option or the option text.
 - End to end in the emulator: the demo teacher copied the set into the demo class, 12 demo students submitted (`tools/seed-insights-demo.cjs`), the Cloud Function auto-graded all 12, and `/teacher/insights` ranked 6 misconceptions with student counts.
 
+### Sprint 3 run (16 Nov 2026, Firenook emulator, live Gemini): Units 4–6
+60 problems in 12 sets of 5 (4 per unit, all 16 topics of Units 4–6), generated through the API in the local emulator. Claude (AI) solved every one by hand and approved them as **AI-reviewed**; they still need a person. Full log: [content/ap-physics-1/units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md).
+- **1 wrong key caught** again (1 in 60 this time): a disk angular-acceleration ratio keyed 1/2, correct answer 1. The worked solution slipped and the independent check disagreed, as in Sprint 2. The amber warning remains the best signal.
+- 3 keys were rounded (inside tolerance but tightened), 2 problem texts were ambiguous (an object's weight not stated).
+- Distractors were the weakest part: 26 changes across 25 problems, mostly values that no mistake produces or tags naming the wrong misconception. A wrong tag puts a wrong row in the teacher's report, so check distractors as carefully as keys.
+- No tag fits "rotation ignored in rolling" (v = √2gh). Worth adding to `functions/src/misconceptions.ts`.
+
+**Where the drafts are.** In the Firenook emulator's kept data (`.firenook/`, published there as 12 global waypoints owned by `otherteacher@demo.test`), and in the repo as [content/ap-physics-1/units-4-6.json](../content/ap-physics-1/units-4-6.json). To load them into a real project as approved, **unpublished** drafts for the human check:
+```bash
+node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json          # dry run
+node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json --apply
+```
+It keeps ids (re-running overwrites, published drafts are skipped), keeps review notes and the AI-review mark, and never publishes. The groupings for the 12 sets are in the file's `sets`. `export` writes the file from any project.
+
 ### Try it locally
+`npm run dev:firenook` starts Auth, Firestore, Storage and Functions on the usual ports with data kept between runs in `.firenook/` (console at http://127.0.0.1:4001/console). `npx firebase emulators:start ...` below still works; the security suite (`npm run test:security`) uses the Firebase emulators, so stop Firenook first. Next 16 refuses a second `next dev` in the same folder, so `.claude/launch.json` builds the emulator server into `.next-emulators` and it can run beside `npm run dev`.
+
+
 ```bash
 npx firebase emulators:start --only auth,firestore,storage,functions --project demo-scorpio
 ```
