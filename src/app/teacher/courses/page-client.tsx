@@ -11,29 +11,10 @@ import { ListOrdered } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
-import {
-  cloneSetToClass,
-  planAssignments,
-  runAssignments,
-  type AssignableSet,
-  type PlannedAssignment,
-} from "@/lib/assign-sets";
-import {
-  deriveRoadmap,
-  nextUnit,
-  type RoadmapSet,
-  type RoadmapUnit,
-} from "@/lib/curriculum-roadmap";
-import {
-  isDefaultPlan,
-  normalisePlan,
-  toggleSkipped,
-  type CurriculumPlan,
-} from "@/lib/curriculum-plan";
+import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
+import { normalisePlan } from "@/lib/curriculum-plan";
 import { paceCourse } from "@/lib/course-pacing";
 import { classCalendar, schoolDays } from "@/lib/school-calendar";
-import { loadClassAssignments } from "@/lib/curriculum-client";
-import { dueParam, updateAssignment } from "@/lib/assignment-actions";
 import { apiError, undoToast } from "@/lib/undo-toast";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { TeacherPageHeader, TeacherSummary } from "@/components/teacher/workspace";
@@ -48,15 +29,9 @@ import { RoadmapTab } from "./roadmap-tab";
 import { ScheduleTab } from "./schedule-tab";
 import { SetPreviewDialog, type PreviewTarget } from "./set-preview-dialog";
 import { shortDate, useCourseData } from "./use-course-data";
+import { useSetActions, type Assigning } from "./use-set-actions";
 
 type Tab = "roadmap" | "schedule";
-
-interface Assigning {
-  label: string;
-  sets: AssignableSet[];
-  /** Unit to re-plan from on a fresh read; absent for a single set. */
-  unit?: RoadmapUnit;
-}
 
 /** Keep ?course= and ?tab= in the address bar without a navigation. */
 function setParam(name: string, value: string | null) {
@@ -76,12 +51,11 @@ export default function CoursesClient() {
     params?.get("tab") === "schedule" ? "schedule" : "roadmap",
   );
   const data = useCourseData(curriculum.id);
-  const { user, classes, selected, published, loadError, classAssignments, progress } = data;
+  const { classes, selected, published, loadError, classAssignments, progress } = data;
 
   const [spacing, setSpacing] = useState("2");
   const [startInput, setStartInput] = useState("");
-  const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [followBusy, setFollowBusy] = useState(false);
   const [assigning, setAssigning] = useState<Assigning | null>(null);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const [editing, setEditing] = useState(false);
@@ -108,6 +82,19 @@ export default function CoursesClient() {
   // Until the teacher picks a date, the next set is due two school days from today.
   const start = startInput || defaultFirstDue(isSchoolDay);
   const startDate = parseDateInput(start);
+  const actions = useSetActions({
+    data,
+    curriculum,
+    follows,
+    plan,
+    startDate,
+    spacing: Number(spacing),
+    isSchoolDay,
+    openAssign: setAssigning,
+    closeAssign: () => setAssigning(null),
+  });
+  const { error, setError, toAssignable, assign, rowActions } = actions;
+  const busy = followBusy ? "follow" : actions.busy;
 
   const roadmap = useMemo(
     () => deriveRoadmap(curriculum.id, published ?? [], selected ? classAssignments : [], plan),
@@ -158,7 +145,7 @@ export default function CoursesClient() {
       if (!res.ok) throw new Error(await apiError(res, "Could not update the class."));
       data.patchClass(selected.id, { curriculumId });
     };
-    setBusy("follow");
+    setFollowBusy(true);
     setError("");
     try {
       await change(on ? curriculum.id : null);
@@ -171,19 +158,9 @@ export default function CoursesClient() {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not update the class.");
     } finally {
-      setBusy(null);
+      setFollowBusy(false);
     }
   }
-
-  const toAssignable = useCallback(
-    (sets: RoadmapSet[]): AssignableSet[] =>
-      sets.map((s) => ({
-        sourceId: s.published!.id,
-        key: s.set.key,
-        title: (published ?? []).find((p) => p.id === s.published!.id)?.title ?? s.set.title,
-      })),
-    [published],
-  );
 
   const openUnit = useCallback(
     (unit: RoadmapUnit) =>
@@ -205,107 +182,6 @@ export default function CoursesClient() {
     setParam("assign", null);
     if (unit && unit.assignable.length) openUnit(unit);
   }, [roadmap, selected, published, openUnit]);
-
-  async function assign(target: Assigning, planned: PlannedAssignment[]) {
-    if (!selected || !user || !startDate) return;
-    setBusy("assign");
-    setError("");
-    // Fresh read, so a set assigned elsewhere (or in another tab) is not copied twice.
-    let todo = planned;
-    let archived = new Map<string, string>();
-    try {
-      const fresh = await loadClassAssignments(user.uid, selected.id);
-      const have = new Set(fresh.filter((a) => !a.archived).map((a) => String(a.curriculumSetKey)));
-      archived = new Map(
-        fresh.filter((a) => a.archived && a.id).map((a) => [String(a.curriculumSetKey), a.id!]),
-      );
-      if (planned.some((p) => have.has(p.key)))
-        todo = planAssignments(target.sets, have, startDate, Number(spacing), isSchoolDay);
-    } catch {
-      /* keep the plan the teacher confirmed */
-    }
-    try {
-      // An archived copy of a set is restored (with its students' work) instead of copied again.
-      await runAssignments(todo, (item) =>
-        archived.has(item.key)
-          ? updateAssignment(archived.get(item.key)!, {
-              archived: false,
-              dueDate: dueParam(item.due),
-            }).then(() => undefined)
-          : cloneSetToClass(authenticatedFetch, selected.id, item),
-      );
-      toast.success(
-        todo.length ? `${target.label} assigned to ${selected.name}.` : "Nothing new to assign.",
-      );
-      setAssigning(null);
-    } catch (e) {
-      setAssigning(null);
-      setError(
-        `${e instanceof Error ? e.message : "Could not assign."} Press assign again to continue; copies already made are kept.`,
-      );
-    } finally {
-      await data.refreshClass();
-      setBusy(null);
-    }
-  }
-
-  async function savePlan(next: CurriculumPlan | null) {
-    if (!selected) return null;
-    const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(selected.id)}/plan`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan: next }),
-    });
-    if (!res.ok) throw new Error(await apiError(res, "Could not save the change."));
-    const stored = ((await res.json()).plan ?? null) as CurriculumPlan | null;
-    data.patchClass(selected.id, { curriculumPlan: stored });
-    return stored;
-  }
-
-  const rowActions = selected
-    ? {
-        onAssignSet: (s: RoadmapSet) =>
-          setAssigning({ label: `${s.set.key}: ${s.set.title}`, sets: toAssignable([s]) }),
-        onToggleSkip:
-          follows && plan
-            ? async (s: RoadmapSet) => {
-                const previous = plan;
-                const toStore = (p: CurriculumPlan) => (isDefaultPlan(curriculum.id, p) ? null : p);
-                try {
-                  await savePlan(toStore(toggleSkipped(plan, s.set.key)));
-                  undoToast(
-                    s.skipped
-                      ? `${s.set.key} is back in the plan`
-                      : `${s.set.key} skipped for ${selected.name}`,
-                    () => savePlan(toStore(previous)),
-                  );
-                } catch (e) {
-                  toast.error(e instanceof Error ? e.message : "Could not save the change.");
-                }
-              }
-            : undefined,
-        onChangeDue: async (s: RoadmapSet, due: Date | null) => {
-          if (!s.assignmentId) return;
-          const id = s.assignmentId;
-          const before = s.dueDate;
-          try {
-            await updateAssignment(id, { dueDate: dueParam(due) });
-            await data.refreshClass();
-            undoToast(
-              due ? `${s.set.key} now due ${shortDate(due)}` : `${s.set.key} has no due date`,
-              async () => {
-                await updateAssignment(id, { dueDate: dueParam(before) });
-                await data.refreshClass();
-              },
-            );
-          } catch (e) {
-            toast.error(e instanceof Error ? e.message : "Could not change the due date.");
-            throw e;
-          }
-        },
-        onCopyChanged: () => void data.refreshClass(),
-      }
-    : undefined;
 
   return (
     <div className="space-y-6 md:pb-16">

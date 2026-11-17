@@ -33,12 +33,12 @@ export function planAssignments(
 
 type Fetcher = (url: string, init: RequestInit) => Promise<Response>;
 
-/** Copy one set into a class (answer key copied server-side) keeping its own title. */
+/** Copy one set into a class (answer key copied server-side) keeping its own title. Returns the copy's id. */
 export async function cloneSetToClass(
   fetcher: Fetcher,
   courseId: string,
   item: PlannedAssignment,
-): Promise<void> {
+): Promise<string> {
   const res = await fetcher("/api/assignments/clone", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -52,6 +52,7 @@ export async function cloneSetToClass(
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error || "Could not assign this unit.");
+  return typeof body.id === "string" ? body.id : "";
 }
 
 /**
@@ -60,7 +61,7 @@ export async function cloneSetToClass(
  */
 export async function runAssignments(
   plan: PlannedAssignment[],
-  copy: (item: PlannedAssignment) => Promise<void>,
+  copy: (item: PlannedAssignment) => Promise<unknown>,
   onDone?: (item: PlannedAssignment) => void,
 ): Promise<void> {
   for (const item of plan) {

@@ -4,7 +4,7 @@
 // assigned, how the class did, and a Preview button; each unit shows what students got wrong.
 import Link from "next/link";
 import { Check, ChevronRight, Eye, EyeOff, Plus } from "lucide-react";
-import { getCurriculum, type Curriculum } from "@/data/curricula";
+import type { Curriculum } from "@/data/curricula";
 import { setProfile } from "@/data/curricula/profiles";
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/accordion";
 import type { PreviewTarget } from "./set-preview-dialog";
 import { shortDate, type ClassProgress } from "./use-course-data";
+import { setDisplayTitle, type SetRowActions } from "./use-set-actions";
 
 const percent = (share: number) => `${Math.round(share * 100)}%`;
 
@@ -75,17 +76,6 @@ function unitState(
   return { label: "Not assigned", tone: "plain" };
 }
 
-export interface SetRowActions {
-  /** Assign this one set (opens the assign dialog with just it). */
-  onAssignSet?: (s: RoadmapSet) => void;
-  /** Skip or un-skip the set for this class (only for classes that follow the course). */
-  onToggleSkip?: (s: RoadmapSet) => void;
-  /** Change the class copy's due date. Throw to keep the picker open. */
-  onChangeDue?: (s: RoadmapSet, due: Date | null) => Promise<void>;
-  /** The class copy was archived or restored from its menu. */
-  onCopyChanged?: () => void;
-}
-
 export function SetRow({
   curriculumId,
   s,
@@ -105,13 +95,7 @@ export function SetRow({
 }) {
   const profile = setProfile(curriculumId, s.set.key);
   const p = progress?.sets[s.set.key];
-  // A copy still carrying the published title ("AP Physics 1 · Unit 3A · …") reads as the set's own
-  // title; one the teacher renamed shows the new name.
-  const published = getCurriculum(curriculumId)?.name;
-  const title =
-    s.copyTitle && !(published && s.copyTitle.startsWith(`${published} · Unit `))
-      ? s.copyTitle
-      : s.set.title;
+  const title = setDisplayTitle(curriculumId, s);
   const canAssign = hasClass && !!s.published && !s.assigned && !s.skipped && !!actions.onAssignSet;
   return (
     <li
