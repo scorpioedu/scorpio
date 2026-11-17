@@ -30,7 +30,7 @@ describe("curriculum-tag tool", () => {
   });
 
   test("matches by the same set of draft ids, in any order, and sets the fields", () => {
-    const s = ap.sets[1];
+    const s = ap.sets.find((x) => x.key === "4B")!;
     const { updates, unmatched, conflicts } = matchAssignments(
       [
         a("w1", [...s.draftIds].reverse(), { title: "old title" }),
@@ -55,7 +55,7 @@ describe("curriculum-tag tool", () => {
   });
 
   test("a partial overlap does not match; already tagged assignments are unchanged", () => {
-    const s = ap.sets[0];
+    const s = ap.sets.find((x) => x.key === "4A")!;
     expect(matchAssignments([a("p", s.draftIds.slice(0, 4))], curricula).updates).toEqual([]);
     expect(matchAssignments([a("p", [...s.draftIds, "extra"])], curricula).updates).toEqual([]);
     const done = matchAssignments(
@@ -63,7 +63,7 @@ describe("curriculum-tag tool", () => {
         a("w", s.draftIds, {
           curriculumId: "ap-physics-1",
           curriculumSetKey: "4A",
-          curriculumSequence: 0,
+          curriculumSequence: setSequence("ap-physics-1", "4A"),
           title: tsDisplayTitle(s),
         }),
       ],
@@ -73,7 +73,7 @@ describe("curriculum-tag tool", () => {
   });
 
   test("two assignments for one set are reported and neither is tagged", () => {
-    const s = ap.sets[2];
+    const s = ap.sets.find((x) => x.key === "4C")!;
     const r = matchAssignments([a("w1", s.draftIds), a("w2", s.draftIds)], curricula);
     expect(r.updates).toEqual([]);
     expect(r.conflicts).toEqual([{ key: "ap-physics-1/4C", ids: ["w1", "w2"] }]);

@@ -97,7 +97,7 @@ const url = "https://scorpio.test";
 const post = (path: string, body: unknown, method = "POST") =>
   new NextRequest(`${url}${path}`, { method, body: JSON.stringify(body) });
 
-const set4A = getCurriculum("ap-physics-1")!.sets[0];
+const set4A = getCurriculum("ap-physics-1")!.sets.find((s) => s.key === "4A")!;
 const draftRecord = (id: string) => units46.drafts.find((d) => d.id === id)!;
 function seedDrafts(set = set4A, status = "approved", reviewKind: string | null = "human") {
   for (const id of set.draftIds) {
@@ -206,17 +206,19 @@ describe("GET /api/admin/content/sets", () => {
       curriculumSetKey: "4B",
     });
     const body = await (await get("?curriculumId=ap-physics-1")).json();
-    expect(body.sets).toHaveLength(12);
-    expect(body.sets[0].drafts.map((d: { state: string }) => d.state)).toEqual([
-      "ai-reviewed",
-      "human-approved",
-      "draft",
-      "missing",
-      "ai-reviewed",
-    ]);
-    expect(body.sets[0].assignmentId).toBeNull();
-    expect(body.sets[1].assignmentId).toBe("w4B");
-    expect(body.sets[1].drafts.every((d: { state: string }) => d.state === "missing")).toBe(true);
+    expect(body.sets).toHaveLength(32);
+    expect(
+      body.sets
+        .find((x: { key: string }) => x.key === "4A")
+        .drafts.map((d: { state: string }) => d.state),
+    ).toEqual(["ai-reviewed", "human-approved", "draft", "missing", "ai-reviewed"]);
+    expect(body.sets.find((x: { key: string }) => x.key === "4A").assignmentId).toBeNull();
+    expect(body.sets.find((x: { key: string }) => x.key === "4B").assignmentId).toBe("w4B");
+    expect(
+      body.sets
+        .find((x: { key: string }) => x.key === "4B")
+        .drafts.every((d: { state: string }) => d.state === "missing"),
+    ).toBe(true);
   });
 
   test("unknown course 400; admin only", async () => {
