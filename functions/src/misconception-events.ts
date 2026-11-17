@@ -1,5 +1,5 @@
 import type { firestore } from "firebase-admin";
-import { MISCONCEPTION_IDS } from "./misconceptions";
+import { MISCONCEPTION_IDS, apCourseKey, isUnitOfCourse, type ApCourseKey } from "./misconceptions";
 
 // One document per (submission, question, misconception tag) in the server-only
 // `misconception_events` collection (no client rule matches it, so Firestore denies all client
@@ -20,7 +20,12 @@ export interface MisconceptionEvent {
   courseId: string | null;
   questionId: string;
   tag: string;
-  /** AP Physics 1 unit (1–8), from the question's topic or the assignment's unit. */
+  /**
+   * The AP course `apUnit` and `apTopic` belong to (unit numbers repeat between courses). Null when
+   * there is no unit. Events written before courses were recorded have no field: AP Physics 1.
+   */
+  apCourse: ApCourseKey | null;
+  /** Unit of that course, from the question's topic or the assignment's unit. */
   apUnit: number | null;
   /** AP topic id such as "4.2", when the question or assignment names exactly one. */
   apTopic: string | null;
@@ -57,11 +62,12 @@ export interface EventContext {
   now?: Date;
 }
 
-const TOPIC_ID = /^([1-8])\.(\d{1,2})$/;
+const TOPIC_ID = /^(\d{1,2})\.(\d{1,2})$/;
 
-function unitOfTopic(topic: unknown): number | null {
+/** The unit a topic id names, when that unit is in the course ("4.2" -> 4). */
+function unitOfTopic(topic: unknown, course: ApCourseKey): number | null {
   const m = typeof topic === "string" ? topic.match(TOPIC_ID) : null;
-  return m ? Number(m[1]) : null;
+  return m && isUnitOfCourse(Number(m[1]), course) ? Number(m[1]) : null;
 }
 
 /** Pure: the events a graded submission produces. Unknown tags are dropped. */
@@ -72,15 +78,15 @@ export function buildMisconceptionEvents(ctx: EventContext): MisconceptionEvent[
       .filter((q) => q && typeof q.id === "string")
       .map((q) => [q.id as string, q]),
   );
+  const course = apCourseKey(a.apCourse);
   const assignmentTopics: string[] = Array.isArray(a.apTopics)
-    ? a.apTopics.filter((t: unknown): t is string => typeof t === "string" && TOPIC_ID.test(t))
+    ? a.apTopics.filter((t: unknown): t is string => unitOfTopic(t, course) !== null)
     : [];
-  const assignmentUnit =
-    typeof a.apUnit === "number" && a.apUnit >= 1 && a.apUnit <= 8
-      ? a.apUnit
-      : assignmentTopics.length
-        ? unitOfTopic(assignmentTopics[0])
-        : null;
+  const assignmentUnit = isUnitOfCourse(a.apUnit, course)
+    ? a.apUnit
+    : assignmentTopics.length
+      ? unitOfTopic(assignmentTopics[0], course)
+      : null;
   const now = ctx.now ?? new Date();
   const events: MisconceptionEvent[] = [];
   for (const raw of ctx.answers) {
@@ -88,9 +94,9 @@ export function buildMisconceptionEvents(ctx: EventContext): MisconceptionEvent[
     if (!ans || typeof ans.questionId !== "string" || !Array.isArray(ans.misconceptions)) continue;
     const q = questions.get(ans.questionId);
     const questionTopic =
-      typeof q?.apTopic === "string" && TOPIC_ID.test(q.apTopic) ? q.apTopic : null;
+      typeof q?.apTopic === "string" && unitOfTopic(q.apTopic, course) !== null ? q.apTopic : null;
     const apTopic = questionTopic ?? (assignmentTopics.length === 1 ? assignmentTopics[0] : null);
-    const apUnit = unitOfTopic(apTopic) ?? assignmentUnit;
+    const apUnit = unitOfTopic(apTopic, course) ?? assignmentUnit;
     const maxPoints = typeof ans.maxPoints === "number" ? ans.maxPoints : 0;
     const scoreFraction =
       typeof ans.score === "number" && maxPoints > 0
@@ -113,6 +119,7 @@ export function buildMisconceptionEvents(ctx: EventContext): MisconceptionEvent[
         courseId: typeof a.courseId === "string" && a.courseId ? a.courseId : null,
         questionId: ans.questionId,
         tag,
+        apCourse: apUnit === null ? null : course,
         apUnit,
         apTopic,
         scoreFraction,

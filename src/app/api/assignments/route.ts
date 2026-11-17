@@ -7,7 +7,7 @@ import { createAssignmentBody } from "@/lib/schemas/api-bodies";
 import { errorResponse } from "@/lib/api-errors";
 import { assertValidAnswerKeys, assignmentAccess, stripAnswerKey } from "@/lib/answer-key-access";
 import { assertCanCreateAssignment, resolveCallerPlan } from "@/lib/plan-gates";
-import { isApTopicId, normaliseApTags } from "@/data/ap";
+import { apCourseOf, isApTopicId, normaliseApTags } from "@/data/ap";
 
 export const POST = withAuthorizedRequest(
   async (req, { requestId }) => {
@@ -34,7 +34,7 @@ export const POST = withAuthorizedRequest(
     } = data;
     // A question's own AP topic is kept only when it is a real topic id.
     const questions = rawQuestions.map(({ apTopic, ...q }) =>
-      isApTopicId(apTopic) ? { ...q, apTopic } : q,
+      isApTopicId(apTopic, apCourseOf(apCourse)) ? { ...q, apTopic } : q,
     );
     let split: ReturnType<typeof splitAssignmentQuestions>;
     try {

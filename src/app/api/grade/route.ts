@@ -15,6 +15,7 @@ import {
   type SubmittedAnswer,
 } from "../../../../functions/src/grading-core";
 import { recordMisconceptionEvents } from "../../../../functions/src/misconception-events";
+import { nonDefaultApCourse } from "../../../../functions/src/misconceptions";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
@@ -77,12 +78,16 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       }
       const studentNames = await rosterNames(studentData);
       aiGrader = (input) =>
-        gradeResponse(
-          input.question,
-          input.answer,
-          input.rubric,
-          studentNames,
-          input.reference,
+        (input.apCourse
+          ? gradeResponse(
+              input.question,
+              input.answer,
+              input.rubric,
+              studentNames,
+              input.reference,
+              input.apCourse,
+            )
+          : gradeResponse(input.question, input.answer, input.rubric, studentNames, input.reference)
         ).then((r) => ({ ...r, reasoning: r.reasoning || "" }));
     }
 
@@ -92,6 +97,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       result = await gradeSubmissionAnswers(questions, answers, {
         aiGrader,
         globalRubric: assignmentData?.rubric || "",
+        apCourse: nonDefaultApCourse(assignmentSnap.data()?.apCourse),
       });
     } catch (e) {
       console.error("AI Grading failed", e instanceof Error ? e.message : String(e));

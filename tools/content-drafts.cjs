@@ -5,6 +5,8 @@
  *   FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 node tools/content-drafts.cjs export \
  *     --project demo-scorpio --units 4,5,6 --sets content/ap-physics-1/sets.json \
  *     --out content/ap-physics-1/units-4-6.json
+ *   # Unit numbers repeat between AP courses, so name the course for any other than AP Physics 1
+ *   ... export --project demo-scorpio --course physics-c-mech --out content/ap-physics-c-mech/units-1-7.json
  *
  *   # Load them into another project as approved, UNPUBLISHED drafts (dry run unless --apply)
  *   node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json
@@ -31,6 +33,7 @@ function parseArgs(argv) {
     command,
     project: null,
     units: null,
+    course: null,
     out: null,
     file: null,
     sets: null,
@@ -45,6 +48,7 @@ function parseArgs(argv) {
     };
     if (a === "--project") out.project = next();
     else if (a === "--units") out.units = next().split(",").map(Number);
+    else if (a === "--course") out.course = next();
     else if (a === "--out") out.out = next();
     else if (a === "--file") out.file = next();
     else if (a === "--sets") out.sets = next();
@@ -130,6 +134,8 @@ async function runExport(opts) {
   const snap = await db(opts.project).collection(COLLECTION).get();
   const drafts = snap.docs
     .map((d) => toRecord(d.id, d.data()))
+    // Unit numbers repeat between AP courses; drafts stored without a course are AP Physics 1.
+    .filter((r) => !opts.course || (r.course || "physics-1") === opts.course)
     .filter((r) => !opts.units || opts.units.includes(r.apUnit))
     .filter((r) => r.status === "approved" || r.status === "published")
     .sort(

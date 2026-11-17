@@ -2,10 +2,15 @@
 // most common misconceptions with a rule-based re-teach suggestion. Pure: the route
 // (/api/teacher/courses/progress) loads the data. The suggestions come from fixed rules over the
 // misconception data. A later version may have the AI write them; see docs/courses.md.
-import { apTopicLabel } from "@/data/ap";
+import { DEFAULT_AP_COURSE, apTopicLabel } from "@/data/ap";
 import { curriculumSet, getCurriculum } from "@/data/curricula";
 import { setsTargeting } from "@/data/curricula/profiles";
-import { buildInsightsReport, type InsightEvent } from "@/lib/insights";
+import {
+  buildInsightsReport,
+  eventCourse,
+  parseCourseScopedId,
+  type InsightEvent,
+} from "@/lib/insights";
 import { keyUnit } from "@/lib/curriculum-plan";
 
 export interface ProgressAssignment {
@@ -175,13 +180,16 @@ export function buildUnitInsights(
   const course = getCurriculum(curriculumId)?.apCourse;
   const assigned = new Set(context.assignedKeys);
   const skipped = new Set(context.skippedKeys ?? []);
-  const units = [...new Set(events.map((e) => e.apUnit).filter((u): u is number => !!u))].sort(
+  // A class may hold work from another AP course (it switched, or the teacher added sets by hand);
+  // unit numbers repeat between courses, so only this course's events count.
+  const own = events.filter((e) => eventCourse(e) === (course ?? DEFAULT_AP_COURSE));
+  const units = [...new Set(own.map((e) => e.apUnit).filter((u): u is number => !!u))].sort(
     (a, b) => a - b,
   );
   return units.map((unit) => {
     const report = buildInsightsReport(
-      events,
-      { apUnit: unit },
+      own,
+      { apUnit: unit, apCourse: course },
       {},
       {
         studentsInScope: context.studentsByUnit[unit] ?? 0,
@@ -211,9 +219,10 @@ export function buildUnitInsights(
         description: row.description,
         studentCount: row.studentCount,
         studentShare: row.studentShare,
-        topics: row.topics
-          .slice(0, 2)
-          .map((t) => ({ id: t.id, label: apTopicLabel(t.id, course) })),
+        topics: row.topics.slice(0, 2).map((t) => {
+          const id = parseCourseScopedId(t.id).id;
+          return { id, label: apTopicLabel(id, course) };
+        }),
         action: reteachAction(row.studentCount, row.studentShare),
         practice,
       };

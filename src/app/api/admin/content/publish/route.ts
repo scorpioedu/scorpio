@@ -7,13 +7,13 @@ import { parseJsonBody } from "@/lib/api-schema";
 import { contentPublishBody } from "@/lib/schemas/api-bodies";
 import { splitAssignmentQuestions } from "@/lib/assignment-security";
 import { assertValidAnswerKeys } from "@/lib/answer-key-access";
-import { compareTopicIds, normaliseApTags } from "@/data/ap";
+import { compareTopicIds, normaliseApTags, type ApCourseId } from "@/data/ap";
 import { toAssignmentQuestion, validateDraftProblem } from "@/lib/content/problem-format";
-import { CONTENT_DRAFTS } from "@/lib/content/drafts";
+import { CONTENT_DRAFTS, draftCourse } from "@/lib/content/drafts";
 import { curriculumSet, displayTitle, getCurriculum, setSequence } from "@/data/curricula";
 
 /** The library's older topic filter, so reviewed AP sets also show under it. */
-const LEGACY_TOPIC: Record<number, string> = {
+const MECHANICS_TOPIC: Record<number, string> = {
   1: "kinematics",
   2: "dynamics",
   3: "energy",
@@ -23,12 +23,27 @@ const LEGACY_TOPIC: Record<number, string> = {
   7: "oscillations",
   8: "fluids",
 };
+const PHYSICS_2_TOPIC: Record<number, string> = {
+  9: "thermodynamics",
+  10: "em",
+  11: "em",
+  12: "em",
+  13: "waves",
+  14: "waves",
+  15: "modern",
+};
+const LEGACY_TOPIC: Record<ApCourseId, Record<number, string>> = {
+  "physics-1": MECHANICS_TOPIC,
+  "physics-2": PHYSICS_2_TOPIC,
+  "physics-c-mech": MECHANICS_TOPIC,
+};
 
 /**
  * POST /api/admin/content/publish { draftIds, title, description? } or { curriculumId, setKey }
  * With a curriculum set, the drafts, title, description and question order come from the definition in
  * src/data/curricula, the assignment records which set it is, and a set can only be published once.
- * Turns approved drafts from one AP unit into a global Waypoints assignment (auto-graded, answer
+ * The assignment's `apCourse` is the course definition's; without one it is the drafts' own course.
+ * Turns approved drafts from one AP unit of one AP course into a global Waypoints assignment (auto-graded, answer
  * key and distractors stored server-side) and marks the drafts published.
  */
 async function handlePublish(req: NextRequest, { caller, requestId }: AuthorizedContext) {
@@ -43,6 +58,7 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
       curriculumSetKey: string;
       curriculumSequence: number;
     } | null = null;
+    let definitionCourse: ApCourseId | null = null;
     if (parsed.data.curriculumId !== undefined && parsed.data.setKey !== undefined) {
       const { curriculumId, setKey } = parsed.data;
       const set = curriculumSet(curriculumId, setKey);
@@ -64,6 +80,7 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
           { status: 400 },
         );
       title = displayTitle(set, getCurriculum(curriculumId)!.name);
+      definitionCourse = getCurriculum(curriculumId)!.apCourse;
       description = set.description;
       curriculum = {
         curriculumId,
@@ -95,13 +112,21 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
         { status: 409 },
       );
     const units = new Set(drafts.map((d) => d.data!.apUnit));
-    if (units.size !== 1)
+    const courses = new Set(drafts.map((d) => draftCourse(d.data)));
+    if (units.size !== 1 || courses.size !== 1)
       return NextResponse.json({ error: "Publish one AP unit at a time" }, { status: 400 });
+    // Unit numbers repeat between courses: Unit 2 drafts of AP Physics 1 must not fill a C: Mechanics set.
+    const apCourse = [...courses][0];
+    if (definitionCourse && definitionCourse !== apCourse)
+      return NextResponse.json(
+        { error: "These problems were written for another AP course" },
+        { status: 400 },
+      );
 
     // Re-check every problem on the way out; approval happened earlier and the rules may be newer.
     const questions = [];
     for (const d of drafts) {
-      const v = validateDraftProblem(d.data!.problem, d.data!.apTopic);
+      const v = validateDraftProblem(d.data!.problem, d.data!.apTopic, apCourse);
       if (!v.problem || v.errors.length)
         return NextResponse.json(
           { error: `Problem ${d.id} no longer passes checks`, errors: v.errors },
@@ -119,8 +144,8 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
     batch.set(ref, {
       title,
       description: description || "",
-      topic: LEGACY_TOPIC[unit] || "other",
-      ...normaliseApTags({ apUnit: unit, apTopics: topics }),
+      topic: LEGACY_TOPIC[apCourse][unit] || "other",
+      ...normaliseApTags({ apCourse, apUnit: unit, apTopics: topics }),
       teacherId: caller.uid,
       organizationId: null,
       courseId: null,

@@ -17,12 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AP_UNITS } from "@/data/ap";
+import { apCourseOf, parseApUnitKey } from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import type { GroupRow, InsightsReport, TagRow } from "@/lib/insights";
 
 interface InsightsResponse extends InsightsReport {
   classes: { id: string; name: string }[];
-  assignments: { id: string; title: string; courseId: string | null; apUnit: number | null }[];
+  assignments: {
+    id: string;
+    title: string;
+    courseId: string | null;
+    apCourse?: string | null;
+    apUnit: number | null;
+  }[];
   truncated: boolean;
   error?: string;
 }
@@ -194,7 +201,12 @@ export default function TeacherInsightsPage() {
     const params = new URLSearchParams();
     if (courseId !== ALL) params.set("courseId", courseId);
     if (assignmentId !== ALL) params.set("assignmentId", assignmentId);
-    if (apUnit !== ALL) params.set("apUnit", apUnit);
+    // The picker's value names the course and the unit ("4", or "physics-2:9").
+    const unit = apUnit === ALL ? null : parseApUnitKey(apUnit);
+    if (unit) {
+      params.set("apUnit", String(unit.unit));
+      if (unit.course !== "physics-1") params.set("apCourse", unit.course);
+    }
     if (!includePending) params.set("pending", "0");
     try {
       const res = await authenticatedFetch(`/api/teacher/insights?${params}`);
@@ -209,16 +221,22 @@ export default function TeacherInsightsPage() {
   }, [user, courseId, assignmentId, apUnit, includePending]);
 
   useEffect(() => {
+    // Reloads the report whenever a filter changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
 
   const assignments = useMemo(
     () =>
-      (data?.assignments || []).filter(
-        (a) =>
+      (data?.assignments || []).filter((a) => {
+        const unit = apUnit === ALL ? null : parseApUnitKey(apUnit);
+        return (
           (courseId === ALL || a.courseId === courseId) &&
-          (apUnit === ALL || a.apUnit === null || a.apUnit === Number(apUnit)),
-      ),
+          (!unit ||
+            a.apUnit === null ||
+            (a.apUnit === unit.unit && apCourseOf(a.apCourse) === unit.course))
+        );
+      }),
     [data, courseId, apUnit],
   );
   const rows = (data?.top || []).filter((r) => showProcedural || r.category === "conceptual");
@@ -271,7 +289,7 @@ export default function TeacherInsightsPage() {
                 htmlFor="insights-unit"
                 className="block text-xs font-medium text-muted-foreground"
               >
-                AP Physics 1 unit
+                AP unit
               </label>
               <Select
                 value={apUnit}
@@ -285,11 +303,7 @@ export default function TeacherInsightsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL}>All units</SelectItem>
-                  {AP_UNITS.map((u) => (
-                    <SelectItem key={u.unit} value={String(u.unit)}>
-                      Unit {u.unit}: {u.title}
-                    </SelectItem>
-                  ))}
+                  <ApUnitSelectItems />
                 </SelectContent>
               </Select>
             </div>
@@ -352,7 +366,7 @@ export default function TeacherInsightsPage() {
             <p className="font-medium">No misconceptions recorded yet</p>
             <p className="max-w-md text-sm text-muted-foreground">
               Each time Scorpio grades a submission it records the misconceptions it finds. Assign
-              an AP Physics 1 unit from{" "}
+              an AP unit from{" "}
               <Link href="/teacher/waypoints" className="text-primary hover:underline">
                 Waypoints
               </Link>{" "}

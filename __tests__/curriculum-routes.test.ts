@@ -179,6 +179,25 @@ describe("publish by course set", () => {
     expect(mockWrites.filter((w) => w.path.startsWith("assignments/"))).toHaveLength(1);
   });
 
+  test("the assignment's AP course is the course definition's; drafts of another course are refused", async () => {
+    seedDrafts();
+    const p = () =>
+      publish(post("/api/admin/content/publish", { curriculumId: "ap-physics-1", setKey: "4A" }));
+    expect((await p()).status).toBe(200);
+    expect(assignmentWrite().apCourse).toBe("physics-1");
+    // Unit 4 also exists in C: Mechanics: its drafts must not fill an AP Physics 1 set.
+    mockWrites.length = 0;
+    for (const id of set4A.draftIds)
+      mockDocs.set(`content_drafts/${id}`, {
+        ...mockDocs.get(`content_drafts/${id}`),
+        course: "physics-c-mech",
+      });
+    const res = await p();
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/another AP course/);
+    expect(mockWrites).toEqual([]);
+  });
+
   test("the old draftIds + title body still works", async () => {
     seedDrafts();
     const res = await publish(

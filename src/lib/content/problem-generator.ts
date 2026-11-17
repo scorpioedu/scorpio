@@ -1,9 +1,9 @@
-// AI drafts AP Physics 1 problems in Scorpio's numeric / multiple-choice format, then a second,
+// AI drafts AP problems (AP Physics 1, AP Physics 2, AP Physics C: Mechanics) in Scorpio's numeric / multiple-choice format, then a second,
 // independent AI call solves each one without seeing the key. Disagreements are flagged for the
 // person who reviews every draft before it goes live (docs/content-pipeline.md).
 
-import { apTopic, apUnit } from "@/data/ap";
-import { MISCONCEPTION_TAGS } from "../../../functions/src/misconceptions";
+import { DEFAULT_AP_COURSE, apCourseName, apTopic, apUnit, type ApCourseId } from "@/data/ap";
+import { misconceptionsForUnit } from "../../../functions/src/misconceptions";
 import {
   answerAgrees,
   validateDraftProblem,
@@ -32,10 +32,22 @@ export interface GeneratedDraft {
   check?: { answer: string; agrees: boolean; reasoning: string };
 }
 
-export const GENERATOR_SYSTEM_INSTRUCTION = `You write AP Physics 1 homework problems for high school students in the United States.
+/** What each course allows, and what makes a problem belong to it. One line each, in the prompts. */
+const COURSE_METHODS: Record<ApCourseId, string> = {
+  "physics-1":
+    "Every problem must be solvable with AP Physics 1 methods (algebra and trigonometry, no calculus) and must test the given topic.",
+  "physics-2":
+    "Every problem must be solvable with AP Physics 2 methods (algebra and trigonometry, no calculus) and must test the given topic. Give any constant a student needs that is not g (for example k = 8.99 x 10^9 N*m^2/C^2, e = 1.60 x 10^-19 C, h = 6.63 x 10^-34 J*s, c = 3.00 x 10^8 m/s, R = 8.31 J/(mol*K), k_B = 1.38 x 10^-23 J/K, specific heats, indices of refraction).",
+  "physics-c-mech":
+    "Every problem must be at the level of AP Physics C: Mechanics and must test the given topic. The course is calculus-based: where the topic calls for it, use derivatives and integrals (forces, velocities or potential energies given as functions, non-constant acceleration, moments of inertia by integration, differential equations for drag and oscillation). Do not write problems that only need AP Physics 1 algebra when the topic is about a calculus idea.",
+};
+
+export function generatorSystemInstruction(course: ApCourseId = DEFAULT_AP_COURSE): string {
+  const name = apCourseName(course);
+  return `You write ${name} homework problems for high school students in the United States.
 
 Rules:
-- Every problem must be solvable with AP Physics 1 methods (algebra and trigonometry, no calculus) and must test the given topic.
+- ${COURSE_METHODS[course]}
 - Use realistic numbers and SI units. Use g = 9.8 m/s^2 unless the problem says otherwise. State every value needed; do not rely on a figure.
 - Write the problems yourself. Do not copy published AP exam questions or textbook problems.
 - Numeric problems ask for exactly one quantity. "correctAnswer" is a number and unit only, for example "2.4 m/s" or "-15 N" or "0.25 s". Use 2-3 significant figures. No words, no equations, no "approximately".
@@ -45,29 +57,35 @@ Rules:
 - Mix conceptual and quantitative problems when asked for several, and vary the situations (carts, sports, astronauts, lab setups, everyday objects); do not reuse the same scenario, such as a truck hitting a car, across problems.
 
 Return ONLY JSON: {"problems": [{"text": string, "type": "numeric" | "multiple-choice", "options"?: string[], "correctAnswer": string, "solution": string, "distractors": [{"answer": string, "misconception": string}], "difficulty": "easy" | "medium" | "hard"}]}`;
+}
 
-export const SOLVER_SYSTEM_INSTRUCTION = `You are checking an answer key. Solve the AP Physics 1 problem yourself, carefully, step by step, using g = 9.8 m/s^2 unless the problem says otherwise.
+/** The AP Physics 1 instruction, as it was before there were other courses. */
+export const GENERATOR_SYSTEM_INSTRUCTION = generatorSystemInstruction();
+
+export function solverSystemInstruction(course: ApCourseId = DEFAULT_AP_COURSE): string {
+  return `You are checking an answer key. Solve the ${apCourseName(course)} problem yourself, carefully, step by step, using g = 9.8 m/s^2 unless the problem says otherwise.
 Return ONLY JSON: {"reasoning": string (brief), "answer": string}
 - For a numeric problem, "answer" is a number with its unit, e.g. "2.4 m/s".
 - For multiple choice, "answer" is the full text of the option you choose, copied exactly.`;
+}
+
+export const SOLVER_SYSTEM_INSTRUCTION = solverSystemInstruction();
 
 export function buildGeneratorPrompt(
   topicId: string,
   count: number,
   difficulty?: Difficulty,
+  course: ApCourseId = DEFAULT_AP_COURSE,
 ): string {
-  const topic = apTopic(topicId);
-  const unit = topic ? apUnit(topic.unit) : undefined;
+  const topic = apTopic(topicId, course);
+  const unit = topic ? apUnit(topic.unit, course) : undefined;
   if (!topic || !unit) throw new Error(`Unknown AP topic ${topicId}`);
-  const tags = MISCONCEPTION_TAGS.filter(
-    (t) =>
-      t.category === "conceptual" &&
-      t.id !== "other" &&
-      (t.units.includes(unit.unit) || !t.units.length),
+  const tags = misconceptionsForUnit(unit.unit, course).filter(
+    (t) => t.category === "conceptual" && t.id !== "other",
   );
   const nNumeric = Math.ceil(count / 2);
   return [
-    `Write ${count} AP Physics 1 problem${count === 1 ? "" : "s"}: ${nNumeric} numeric and ${count - nNumeric} multiple-choice.`,
+    `Write ${count} ${apCourseName(course)} problem${count === 1 ? "" : "s"}: ${nNumeric} numeric and ${count - nNumeric} multiple-choice.`,
     `Unit ${unit.unit}: ${unit.title}. Topic ${topic.id}: ${topic.title} (${topic.summary})`,
     difficulty ? `Difficulty: ${difficulty}.` : "Spread difficulty from easy to hard.",
     "",
@@ -103,10 +121,11 @@ function solverPrompt(p: DraftProblem): string {
 export async function independentlySolve(
   problem: DraftProblem,
   call: ModelCall,
+  course: ApCourseId = DEFAULT_AP_COURSE,
 ): Promise<GeneratedDraft["check"]> {
   try {
     const reply = await call({
-      systemInstruction: SOLVER_SYSTEM_INSTRUCTION,
+      systemInstruction: solverSystemInstruction(course),
       prompt: solverPrompt(problem),
       temperature: 0,
       maxOutputTokens: 1500,
@@ -138,13 +157,14 @@ export async function independentlySolve(
 }
 
 export async function generateProblems(
-  input: { apTopic: string; count: number; difficulty?: Difficulty },
+  input: { apTopic: string; count: number; difficulty?: Difficulty; apCourse?: ApCourseId },
   call: ModelCall,
 ): Promise<GeneratedDraft[]> {
   const count = Math.max(1, Math.min(5, Math.floor(input.count)));
+  const course = input.apCourse ?? DEFAULT_AP_COURSE;
   const reply = await call({
-    systemInstruction: GENERATOR_SYSTEM_INSTRUCTION,
-    prompt: buildGeneratorPrompt(input.apTopic, count, input.difficulty),
+    systemInstruction: generatorSystemInstruction(course),
+    prompt: buildGeneratorPrompt(input.apTopic, count, input.difficulty, course),
     temperature: 0.8,
     maxOutputTokens: 6000,
   });
@@ -158,12 +178,12 @@ export async function generateProblems(
       unknown
     >;
     void _t;
-    const v = validateDraftProblem(rest, input.apTopic);
+    const v = validateDraftProblem(rest, input.apTopic, course);
     return { problem: v.problem, raw, errors: v.errors, warnings: v.warnings };
   });
   await Promise.all(
     drafts.map(async (d) => {
-      if (d.problem) d.check = await independentlySolve(d.problem, call);
+      if (d.problem) d.check = await independentlySolve(d.problem, call, course);
     }),
   );
   return drafts;

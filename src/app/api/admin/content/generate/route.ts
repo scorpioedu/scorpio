@@ -6,7 +6,7 @@ import { errorResponse } from "@/lib/api-errors";
 import { parseJsonBody } from "@/lib/api-schema";
 import { contentGenerateBody } from "@/lib/schemas/api-bodies";
 import { billingContext } from "@/lib/billing-context";
-import { apTopic } from "@/data/ap";
+import { DEFAULT_AP_COURSE, apTopic } from "@/data/ap";
 import { generateProblems } from "@/lib/content/problem-generator";
 import {
   CONTENT_DRAFTS,
@@ -16,21 +16,22 @@ import {
 } from "@/lib/content/drafts";
 
 /**
- * POST /api/admin/content/generate { apTopic, count, difficulty? }
- * Drafts problems for one AP topic, checks each key with an independent solve, and stores them as
+ * POST /api/admin/content/generate { apTopic, count, difficulty?, apCourse? }
+ * Drafts problems for one AP topic of one AP course (AP Physics 1 when none is sent), checks each key with an independent solve, and stores them as
  * drafts. Nothing reaches students until a person approves and publishes it.
  */
 async function handleGenerate(req: NextRequest, { caller, requestId }: AuthorizedContext) {
   try {
     const parsed = await parseJsonBody(req, contentGenerateBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const topic = apTopic(parsed.data.apTopic);
+    const course = parsed.data.apCourse ?? DEFAULT_AP_COURSE;
+    const topic = apTopic(parsed.data.apTopic, course);
     if (!topic) return NextResponse.json({ error: "Unknown AP topic" }, { status: 400 });
 
     // Admin-only, so the pipeline is billed to the content org when one is configured, else uncapped.
     const drafts = await billingContext.run(
       { organizationId: process.env.CONTENT_ORG_ID || "", userId: caller.uid, type: "content" },
-      () => generateProblems(parsed.data, geminiModelCall),
+      () => generateProblems({ ...parsed.data, apCourse: course }, geminiModelCall),
     );
 
     const batchId = randomUUID();
@@ -38,7 +39,7 @@ async function handleGenerate(req: NextRequest, { caller, requestId }: Authorize
     const saved = drafts.map((d) => {
       const ref = adminDb.collection(CONTENT_DRAFTS).doc();
       const doc: ContentDraft = {
-        course: "physics-1",
+        course,
         apUnit: topic.unit,
         apTopic: topic.id,
         status: "draft",

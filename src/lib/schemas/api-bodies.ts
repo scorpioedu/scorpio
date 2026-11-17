@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AP_COURSE_KEYS, apCourseKey, isUnitOfCourse } from "../../../functions/src/misconceptions";
 
 /** Firestore document ids must not contain "/" (it would address a sub-path). */
 const docId = z
@@ -6,6 +7,9 @@ const docId = z
   .min(1)
   .max(256)
   .refine((v) => !v.includes("/"), "must not contain '/'");
+
+/** The AP courses in src/data/ap (a test keeps `AP_COURSE_KEYS` equal to `AP_COURSE_IDS`). */
+const apCourseId = z.enum(AP_COURSE_KEYS);
 
 // ─── POST /api/assignments ─────────────────────────────────────────────────
 // Explicit allow-list: the client also sends teacherId, organizationId and createdAt, but the
@@ -18,40 +22,46 @@ export const assignmentQuestionSchema = z.looseObject({
   points: z.number().optional(),
   correctAnswer: z.string().optional(),
 });
-export const createAssignmentBody = z.object({
-  title: z.string().min(1).max(1000),
-  description: z.string().max(50000).nullish(),
-  topic: z.string().max(1000).nullish(),
-  visibility: z.enum(["private", "network", "global"]).optional(),
-  courseId: z
-    .string()
-    .max(256)
-    .refine((v) => !v.includes("/"), "must not contain '/'")
-    .nullish(),
-  dueDate: z
-    .union([z.string(), z.number()])
-    .nullish()
-    .refine(
-      (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
-      "must be a valid date",
-    ),
-  timeLimit: z.number().nullish(),
-  gradingType: z.string().max(64).optional(),
-  requireWorkSubmission: z.boolean().optional(),
-  enableTabDetection: z.boolean().optional(),
-  lockdownMode: z.boolean().optional(),
-  allowAIHelp: z.boolean().optional(),
-  allowCalculator: z.boolean().optional(),
-  totalPoints: z.number().optional(),
-  type: z.string().max(64).optional(),
-  googleFormLink: z.string().max(2048).nullish(),
-  rubric: z.string().max(100000).nullish(),
-  // AP tags, checked against src/data/ap by the route (normaliseApTags).
-  apCourse: z.enum(["physics-1"]).nullish(),
-  apUnit: z.number().int().min(1).max(8).nullish(),
-  apTopics: z.array(z.string().max(16)).max(40).nullish(),
-  questions: z.array(assignmentQuestionSchema).max(100),
-});
+export const createAssignmentBody = z
+  .object({
+    title: z.string().min(1).max(1000),
+    description: z.string().max(50000).nullish(),
+    topic: z.string().max(1000).nullish(),
+    visibility: z.enum(["private", "network", "global"]).optional(),
+    courseId: z
+      .string()
+      .max(256)
+      .refine((v) => !v.includes("/"), "must not contain '/'")
+      .nullish(),
+    dueDate: z
+      .union([z.string(), z.number()])
+      .nullish()
+      .refine(
+        (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
+        "must be a valid date",
+      ),
+    timeLimit: z.number().nullish(),
+    gradingType: z.string().max(64).optional(),
+    requireWorkSubmission: z.boolean().optional(),
+    enableTabDetection: z.boolean().optional(),
+    lockdownMode: z.boolean().optional(),
+    allowAIHelp: z.boolean().optional(),
+    allowCalculator: z.boolean().optional(),
+    totalPoints: z.number().optional(),
+    type: z.string().max(64).optional(),
+    googleFormLink: z.string().max(2048).nullish(),
+    rubric: z.string().max(100000).nullish(),
+    // AP tags, checked against src/data/ap by the route (normaliseApTags).
+    apCourse: apCourseId.nullish(),
+    apUnit: z.number().int().min(1).max(15).nullish(),
+    apTopics: z.array(z.string().max(16)).max(40).nullish(),
+    questions: z.array(assignmentQuestionSchema).max(100),
+  })
+  // Unit numbers belong to a course: 9 is a unit of AP Physics 2, not of AP Physics 1 (the default).
+  .refine((b) => b.apUnit == null || isUnitOfCourse(b.apUnit, apCourseKey(b.apCourse)), {
+    message: "apUnit is not a unit of this AP course",
+    path: ["apUnit"],
+  });
 
 // ─── POST /api/assignments/clone ───────────────────────────────────────────
 // Copies a readable assignment (own, global, or same-network) into a new private one owned by the
@@ -357,8 +367,10 @@ export const portfolioBody = z.object({
 });
 
 // ─── /api/admin/content (AI-drafted AP problems, reviewed by a person) ─────
-const apTopicId = z.string().regex(/^[1-8]\.\d{1,2}$/, "must be an AP topic id like 4.2");
+const apTopicId = z.string().regex(/^\d{1,2}\.\d{1,2}$/, "must be an AP topic id like 4.2");
 export const contentGenerateBody = z.object({
+  /** Which AP course the topic is in; topic ids repeat between courses. Default AP Physics 1. */
+  apCourse: apCourseId.optional(),
   apTopic: apTopicId,
   count: z.number().int().min(1).max(5),
   difficulty: z.enum(["easy", "medium", "hard"]).optional(),

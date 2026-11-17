@@ -408,3 +408,70 @@ describe("POST /api/admin/content/publish", () => {
     ]);
   });
 });
+
+describe("other AP courses", () => {
+  const circuit = {
+    text: "A 12 V battery is connected across a 4.0 ohm resistor. Find the current in the resistor.",
+    type: "numeric",
+    correctAnswer: "3.0 A",
+    solution: "I = V/R = 12 V / 4.0 ohm = 3.0 A.",
+    distractors: [{ answer: "48 A", misconception: "voltage-current-confusion" }],
+    difficulty: "easy",
+  };
+  const draft = (course: string | undefined, apUnit: number, apTopic: string, problem: Data) => ({
+    ...(course ? { course } : {}),
+    apUnit,
+    apTopic,
+    status: "approved",
+    problem,
+  });
+
+  beforeEach(() => {
+    const p2 = validateDraftProblem(circuit, "11.3", "physics-2").problem as unknown as Data;
+    mockDocs.set("content_drafts/p2a", draft("physics-2", 11, "11.3", p2));
+    mockDocs.set("content_drafts/p2b", draft("physics-2", 11, "11.5", { ...p2, apTopic: "11.5" }));
+    // Unit 2 exists in AP Physics 1 (d3, stored with no course) and in C: Mechanics.
+    const mech = validateDraftProblem(mc, "2.3", "physics-c-mech").problem as unknown as Data;
+    mockDocs.set("content_drafts/m1", draft("physics-c-mech", 2, "2.3", mech));
+  });
+
+  test("publish tags the assignment with the drafts' course", async () => {
+    const res = await publish(req({ draftIds: ["p2a", "p2b"], title: "Circuits" }));
+    expect(res.status).toBe(200);
+    const { id } = await res.json();
+    expect(mockWrites.find((w) => w.path === `assignments/${id}`)!.data).toMatchObject({
+      apCourse: "physics-2",
+      apUnit: 11,
+      apTopics: ["11.3", "11.5"],
+      topic: "em",
+    });
+    mockWrites.length = 0;
+    const mech = await publish(req({ draftIds: ["m1"], title: "Third law" }));
+    const mechId = (await mech.json()).id;
+    expect(mockWrites.find((w) => w.path === `assignments/${mechId}`)!.data).toMatchObject({
+      apCourse: "physics-c-mech",
+      apUnit: 2,
+      apTopics: ["2.3"],
+      topic: "dynamics",
+    });
+  });
+
+  test("the same unit number in two courses is not one unit", async () => {
+    const res = await publish(req({ draftIds: ["d3", "m1"], title: "Mixed" }));
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe("Publish one AP unit at a time");
+    expect(mockWrites).toEqual([]);
+  });
+
+  test("review re-validates an edit against the draft's own course", async () => {
+    mockDocs.set("content_drafts/p2a", { ...mockDocs.get("content_drafts/p2a"), status: "draft" });
+    const res = await PATCH(req({ id: "p2a", action: "approve", problem: circuit }, "PATCH"));
+    expect(res.status).toBe(200);
+    expect(mockDocs.get("content_drafts/p2a")).toMatchObject({ status: "approved", errors: [] });
+    // The same edit on a draft of AP Physics 1 topic 4.3 is flagged: the tag is not a Unit 4 one.
+    const p1 = await PATCH(req({ id: "d1", action: "save", problem: circuit }, "PATCH"));
+    expect((await p1.json()).draft.warnings).toEqual([
+      '"voltage-current-confusion" is not usually a Unit 4 misconception; check it fits',
+    ]);
+  });
+});

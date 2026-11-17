@@ -52,7 +52,15 @@ import { Organization } from "@/lib/types";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { MathInputField } from "@/components/math-input";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
-import { AP_UNITS, apUnit as findApUnit } from "@/data/ap";
+import {
+  DEFAULT_AP_COURSE,
+  apCourseOf,
+  apUnit as findApUnit,
+  apUnitKey,
+  parseApUnitKey,
+  type ApCourseId,
+} from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import { SmartDateTimePicker } from "@/components/ui/smart-datetime-picker";
 
 function AdvancedSettings({ children }: { children: React.ReactNode }) {
@@ -234,6 +242,7 @@ function CreateAssignmentForm() {
   const [timeLimit, setTimeLimit] = useState<number | "">("");
   const [visibility, setVisibility] = useState<"private" | "network" | "global">("private");
   const [topic, setTopic] = useState<string>("other");
+  const [apCourse, setApCourse] = useState<ApCourseId>(DEFAULT_AP_COURSE);
   const [apUnit, setApUnit] = useState<number | null>(null);
   const [apTopics, setApTopics] = useState<string[]>([]);
   const [requireWorkSubmission, setRequireWorkSubmission] = useState(false);
@@ -294,7 +303,10 @@ function CreateAssignmentForm() {
         setTitle(assignment.title || "");
         setDescription(assignment.description || "");
         setVisibility("private"); // Default to private for copies
-        if (typeof assignment.apUnit === "number") setApUnit(assignment.apUnit);
+        if (typeof assignment.apUnit === "number") {
+          setApCourse(apCourseOf(assignment.apCourse));
+          setApUnit(assignment.apUnit);
+        }
         if (Array.isArray(assignment.apTopics)) setApTopics(assignment.apTopics);
         if (typeof assignment.topic === "string" && assignment.topic) setTopic(assignment.topic);
         if (assignment.gradingType === "manual" || assignment.gradingType === "ai")
@@ -679,7 +691,7 @@ function CreateAssignmentForm() {
           title,
           description,
           topic,
-          apCourse: apUnit ? "physics-1" : null,
+          apCourse: apUnit ? apCourse : null,
           apUnit,
           apTopics: apUnit ? apTopics : [],
           teacherId: user?.uid,
@@ -1284,11 +1296,13 @@ function CreateAssignmentForm() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ap-unit">AP Physics 1 unit</Label>
+                  <Label htmlFor="ap-unit">AP unit</Label>
                   <Select
-                    value={apUnit ? String(apUnit) : "none"}
+                    value={apUnit ? apUnitKey(apCourse, apUnit) : "none"}
                     onValueChange={(value) => {
-                      setApUnit(value === "none" ? null : Number(value));
+                      const chosen = parseApUnitKey(value);
+                      setApCourse(chosen?.course ?? DEFAULT_AP_COURSE);
+                      setApUnit(chosen?.unit ?? null);
                       setApTopics([]);
                     }}
                   >
@@ -1297,11 +1311,7 @@ function CreateAssignmentForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">Not an AP assignment</SelectItem>
-                      {AP_UNITS.map((u) => (
-                        <SelectItem key={u.unit} value={String(u.unit)}>
-                          Unit {u.unit}: {u.title}
-                        </SelectItem>
-                      ))}
+                      <ApUnitSelectItems />
                     </SelectContent>
                   </Select>
                 </div>
@@ -1312,7 +1322,7 @@ function CreateAssignmentForm() {
                       Used by the misconception report and the Waypoints library filter.
                     </p>
                     <div className="grid gap-2 pt-1 sm:grid-cols-2">
-                      {findApUnit(apUnit)?.topics.map((t) => (
+                      {findApUnit(apUnit, apCourse)?.topics.map((t) => (
                         <label key={t.id} className="flex cursor-pointer items-start gap-2 text-sm">
                           <Checkbox
                             className="mt-0.5"
