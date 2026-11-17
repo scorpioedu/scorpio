@@ -24,6 +24,7 @@ A planned course shows on `/teacher/courses` with a "Planned" badge; its roadmap
 | Days off and school-day tests | `src/lib/school-calendar.ts` |
 | Pacing guide, bulk due-date moves | `src/lib/course-pacing.ts` |
 | Class progress, re-teach suggestions | `src/lib/course-progress.ts` |
+| Status board: columns, stats, what a drop means | `src/lib/course-board.ts` |
 | Student dashboard roadmap | `src/lib/student-roadmap.ts` |
 | Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `tools/curriculum-profile.cjs` |
 | Copy sets into a class with due dates | `src/lib/assign-sets.ts` (used by `/teacher/welcome` and `/teacher/courses`) |
@@ -97,21 +98,67 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" in the sidebar, next to Waypoints. The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`) and tab (`?tab=schedule`) are kept in the address bar.
+"Courses" in the sidebar, next to Waypoints. The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The course (`?course=`), view (`?view=list`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
-- **Class card.** Follow or stop following the course, and a summary strip: sets assigned, students, average score, and the date the course finishes at the current pace. **Assign next** opens the assign dialog for the first unit that still has sets to assign.
-- **Roadmap tab.** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
+The page has two views of the same class and course, switched with **Board | List** under the class card:
+
+- **Board** (the default): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
+- **List** (`?view=list`): the roadmap, unit by unit, with the Schedule tab. An old link to `?tab=schedule` opens the List on that tab. A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a board).
+
+**Header** (both views): the class picker; **Schedule & days off**, which opens the Schedule tab's content in a side sheet; **Reorder or skip** (a class that follows the course), which swaps the view for the plan editor until it is saved or discarded; and **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any.
+
+- **Class card.** Follow or stop following the course. On the List it also has a summary strip (sets assigned, students, average score, the date the course finishes at the current pace) and **Assign next**; on the Board those numbers are in the strip above the columns.
+- **Roadmap tab (List).** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
   - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Duplicate, Archive, and Skip / Stop skipping for a class that follows the course);
   - a published set that is not assigned has **Assign** (just that set) and, for a following class, **Skip** / **Unskip**;
   - a set whose class copy was archived shows "Archived · assign to restore it", and **Restore** brings the same copy back (with its students' work) instead of copying it again.
   **Preview** shows the problems as students see them, the topics and the misconceptions the wrong answers catch; for the class's own copy it has **Edit problems** and **Results**, and **Show answers** loads the key through `GET /api/assignments?id=`; for an unassigned set it has **Assign this set**. Under the sets, **What students got wrong** lists up to three misconceptions for the unit with a re-teach suggestion.
-- **Reorder or skip** (above the roadmap, for a class that follows the course) turns the roadmap into an editor: drag a unit or a set by its handle (or focus the handle and use the arrow keys), or use the arrows; tick Skip. Changes are a draft with a save bar (Save order / Discard) and a warning before leaving. After saving, if assigned sets are now out of date order, a message offers **Re-date**: the same due dates handed out again in the new order (`redateToOrder` in `src/lib/course-pacing.ts`), with Undo. This replaces the old Customize tab.
+- **Reorder or skip** (in the header, for a class that follows the course) turns the page into an editor: drag a unit or a set by its handle (or focus the handle and use the arrow keys), or use the arrows; tick Skip. Changes are a draft with a save bar (Save order / Discard) and a warning before leaving. After saving, if assigned sets are now out of date order, a message offers **Re-date**: the same due dates handed out again in the new order (`redateToOrder` in `src/lib/course-pacing.ts`), with Undo. This replaces the old Customize tab.
 - **Assign dialog.** Lists exactly which sets will be copied and each due date before anything is created. First due date and spacing (every 1, 2 or 3 school days, or weekly) can be changed there; for a single set it asks only for the due date. Sets already in the class are skipped, so nothing is duplicated. A class that does not follow the course can still have units assigned.
-- **Schedule and days off tab.** The pacing guide, bulk due-date moves and the class's days off (below).
+- **Schedule and days off** (a tab on the List, a side sheet from the header). The pacing guide, bulk due-date moves and the class's days off (below).
 
-Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`).
+Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `use-set-actions.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`) and `src/app/teacher/courses/board/` (`course-board.tsx`, `board-column.tsx`, `board-card.tsx`, `board-stats.tsx`, `unit-filter.tsx`, `board-dnd.tsx`). `use-set-actions.ts` holds what can be done to one set (assign, change the due date, skip, archive, move in the plan); List rows and Board cards call the same functions, so a change behaves the same in both.
+
+### Status board
+
+Every set of the course is in exactly one column. `boardColumns` in `src/lib/course-board.ts` decides which; it is pure and tested in `__tests__/course-board.test.ts`.
+
+| Column | A set is here when | The card shows |
+|---|---|---|
+| **Up next** | published, not assigned, not skipped; in the class's plan order | unit, title, problem count, the due date it would get at the current pace, **Assign**, ⋯ (Preview, Move up, Move down, Skip) |
+| under Up next, dimmed | skipped, or not published here yet | "Skipped" with **Unskip**, or "Not published yet" / "Planned". Cannot be assigned or dragged. |
+| **Assigned** | assigned, nothing waiting for the teacher, and not Done | hand-in bar and "8 of 13 handed in", an "n overdue" pill, the due-date chip, ⋯ (Open, Edit problems, Results, Preview, Duplicate, Archive) |
+| **Needs you** | assigned and something waits for the teacher: written answers to grade (`pending`) or answers to check after an answer-key change (`needsReview`) | amber pills ("Check 5 written answers", "Key changed · 2 to check"), **Grade** or **Review** to the assignment's Results |
+| **Done** | assigned, nothing waiting, and either everyone on the roster handed it in, or the due date has passed and nobody is missing | average, **Results** |
+
+The checks run in that order: Needs you, then Done, then Assigned. Details worth knowing:
+
+- A set that is past due while students still owe it **stays in Assigned** with its overdue pill; it moves to Done when the last student hands it in. (A class with no students has nobody missing, so its sets are Done once past due.)
+- An assigned set stays on the board even if the plan skips it. An archived copy counts as not assigned, so its set is back in Up next marked "Archived copy"; **Restore** (or a drop on Assigned) brings the same copy back.
+- Assigned is soonest due first (sets with no due date last); Done is latest due first. Up next shows the first six with "+ n more planned"; Done shows the latest four until **Show done (n)** is pressed.
+- While progress is loading, assigned sets wait in Assigned.
+
+**Above the columns:** one strip with the course progress bar ("12 of 31 sets assigned · on pace to finish Mar 19"; skipped sets are not counted), the class **Average** (mean of the sets' averages), **Needs you** (answers waiting, summed over sets) and **Overdue** (missing hand-ins past their due date, summed over sets). Under it, unit chips narrow every column to one unit (`?unit=4`).
+
+**Drag and drop** (`@dnd-kit`, `board-dnd.tsx`). `boardDrop` in `course-board.ts` decides what a drop means:
+
+| Drag | What happens | Same thing without dragging |
+|---|---|---|
+| Up next → Assigned | That one set is assigned with the next free date in the pacing guide; while a card is carried the top of Assigned says "Drop to assign · due Mon, Nov 24". Undo archives the copy again. An archived copy is restored instead of copied. | **Assign** on the card (opens the assign dialog for that set, where the date can be changed) |
+| Assigned → Up next | The class's copy is archived (students stop seeing it; their work is kept). If anyone has handed it in, a dialog asks first. Undo restores it. | ⋯ → **Archive** |
+| Up next card onto another | The set takes the other's place in the class's plan (`placeSet`), saved at once with Undo. Sets stay inside their unit: a drop on another unit's card is refused with a message. Needs a class that follows the course. | ⋯ → **Move up** / **Move down** (swaps with the nearest Up next set of the same unit) |
+
+Needs you and Done take no drops, and their cards cannot be dragged. Reordering whole units stays in **Reorder or skip**.
+
+- **Mouse:** drag a card from anywhere on it (a small move starts the drag, so its buttons still click).
+- **Keyboard:** each movable card has a move button (the grip). Space or Enter picks the card up; Right carries an Up next card to Assigned, Left carries an Assigned card to Up next, the opposite arrow brings it back, Up and Down step through Up next; Space or Enter drops, Escape cancels. A screen reader hears what is picked up, what it is over and what dropping there would do.
+- **Touch:** press and hold a card to pick it up; a swipe still scrolls.
+
+**Phone width.** The columns become one row that scrolls sideways, one column per swipe, with a switcher above it (Up next 15 · Assigned 3 · Needs you 2 · Done 12) that jumps to a column.
+
+The board adds no Firestore rules and makes no AI calls: assigning uses `POST /api/assignments/clone` (every global set is free to copy), archiving and due dates use `PATCH /api/assignments/{id}`, and reordering uses `PATCH /api/courses/{id}/plan`.
 
 **Follow / stop following.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
 
@@ -148,7 +195,7 @@ node tools/curriculum-profile.cjs --write    # after changing a set's draftIds o
 
 ### Class progress and re-teach suggestions
 
-`GET /api/teacher/courses/progress?courseId=` (owner only) returns the roster size, per-set progress (`submitted`, `graded`, `pending`, `averageScore`) and, per unit, up to three misconceptions from `misconception_events` with the share of students who have graded work in that unit (`src/lib/course-progress.ts`, built on `buildInsightsReport`).
+`GET /api/teacher/courses/progress?courseId=` (owner only) returns the roster size, per-set progress (`submitted`, `graded`, `pending`, `averageScore`, and for the Status board `overdue`: students on the roster with nothing handed in after the due date, and `needsReview`: students whose handed-in work has answers listed in `reviewQuestions` after an answer-key change) and, per unit, up to three misconceptions from `misconception_events` with the share of students who have graded work in that unit (`src/lib/course-progress.ts`, built on `buildInsightsReport`).
 
 The re-teach suggestion is **rule-based**, so the same data always gives the same words:
 
