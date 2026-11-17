@@ -75,6 +75,13 @@ export function toTeacherClass(id: string, d: Record<string, unknown>): TeacherC
   };
 }
 
+async function fetchClasses(uid: string): Promise<TeacherClass[]> {
+  const snap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", uid)));
+  return snap.docs
+    .map((d) => toTeacherClass(d.id, d.data()))
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+}
+
 interface SelectedClassValue {
   /** Active classes, by name. null while loading. */
   classes: TeacherClass[] | null;
@@ -93,14 +100,7 @@ export function SelectedClassProvider({ children }: { children: ReactNode }) {
   const [all, setAll] = useState<TeacherClass[] | null>(null);
   const [choice, setChoiceState] = useState("");
 
-  const load = useCallback(async () => {
-    if (!user) return;
-    const snap = await getDocs(
-      query(collection(db, "courses"), where("teacherId", "==", user.uid)),
-    );
-    const list = snap.docs
-      .map((d) => toTeacherClass(d.id, d.data()))
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  const apply = useCallback((list: TeacherClass[]) => {
     setAll(list);
     const active = list.filter((c) => !c.archived).map((c) => c.id);
     setChoiceState((cur) => {
@@ -111,11 +111,23 @@ export function SelectedClassProvider({ children }: { children: ReactNode }) {
       if (!fromUrl && stored === ALL_CLASSES) return ALL_CLASSES;
       return chooseClass(active, { fromUrl, remembered: cur || stored });
     });
-  }, [user]);
+  }, []);
 
+  const uid = user?.uid;
   useEffect(() => {
-    load().catch(() => setAll([]));
-  }, [load]);
+    if (!uid) return;
+    let active = true;
+    fetchClasses(uid)
+      .then((list) => active && apply(list))
+      .catch(() => active && setAll([]));
+    return () => {
+      active = false;
+    };
+  }, [uid, apply]);
+
+  const load = useCallback(async () => {
+    if (uid) apply(await fetchClasses(uid));
+  }, [uid, apply]);
 
   const setChoice = useCallback((id: string) => {
     setChoiceState(id);

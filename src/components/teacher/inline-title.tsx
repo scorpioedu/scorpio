@@ -29,9 +29,6 @@ export function InlineTitle({
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!editing) setDraft(value);
-  }, [value, editing]);
-  useEffect(() => {
     if (editing) input.current?.select();
   }, [editing]);
 
@@ -87,7 +84,10 @@ export function InlineTitle({
       <span className="min-w-0 break-words">{value}</span>
       <button
         type="button"
-        onClick={() => setEditing(true)}
+        onClick={() => {
+          setDraft(value);
+          setEditing(true);
+        }}
         aria-label={`${label}: ${value}`}
         className="shrink-0 rounded p-0.5 text-muted-foreground opacity-60 transition-opacity hover:bg-accent hover:opacity-100 focus-visible:opacity-100 group-hover:opacity-100"
       >
