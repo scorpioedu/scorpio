@@ -2,7 +2,15 @@
 
 Sprint 3. **Waypoints** is still the library of single sets (global, department, mine). A **course** is an ordered roadmap on top of it: units in order, each with its sets in order. A teacher can optionally attach a course to a class; classes that follow none work exactly as before.
 
-**AP Physics 1 is complete:** 8 units × 4 sets × 5 problems = 32 sets, 160 problems (1A–8D). All are AI-reviewed only and need a person's approval before they can go live; see [units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md) and [units-1-3-7-8-review.md](../content/ap-physics-1/units-1-3-7-8-review.md). In the Firenook emulator all 32 sets are published and tagged.
+**Three courses.**
+
+| Course | `curriculumId` | State |
+|---|---|---|
+| AP Physics 1 | `ap-physics-1` | Complete: 8 units × 4 sets × 5 problems = 32 sets, 160 problems (1A–8D). All are AI-reviewed only and need a person's approval before they can go live; see [units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md) and [units-1-3-7-8-review.md](../content/ap-physics-1/units-1-3-7-8-review.md). In the Firenook emulator all 32 sets are published and tagged. |
+| AP Physics 2 | `ap-physics-2` | **Planned.** Outline only: units 9–15, 28 sets (9A–15D), no problems written. |
+| AP Physics C: Mechanics | `ap-physics-c-mech` | **Planned.** Outline only: units 1–7, 28 sets (1A–7D), no problems written. |
+
+A planned course shows on `/teacher/courses` with a "Planned" badge; its roadmap and unit guides can be read, but nothing can be previewed, assigned or followed until sets are published. AP Physics C: Electricity and Magnetism is not outlined yet.
 
 **Naming.** In code, "course" already means a *class* (`courses` collection, `courseId`, `ownsCourse`) and `apCourse` is the AP subject. The new concept is `curriculum` / `curriculumId` in code and "Courses" in the UI.
 
@@ -31,13 +39,35 @@ Definition (`src/data/curricula/<id>.json`):
   "sets": [ { "key": "4A", "unit": 4, "title": "Momentum of objects and systems",
               "description": "One sentence.", "topics": ["4.1"], "draftIds": ["<id>", "..."] } ] }
 ```
-Units and topics come from `src/data/ap/physics1.json`; they are not repeated. The published title is `displayTitle(set)`: "AP Physics 1 · Unit 4A · Momentum of objects and systems".
+`apCourse` says which AP course's units and topics the sets refer to. Units and topics come from `src/data/ap/` (`physics1.json`, `physics2.json`, `physicsc-mech.json`); they are not repeated. A set with an empty `draftIds` is planned. The published title is `displayTitle(set)`: "AP Physics 1 · Unit 4A · Momentum of objects and systems".
 
 A published set is a global `assignments` doc with the usual AP fields plus `curriculumId`, `curriculumSetKey` and `curriculumSequence` (0-based position over the whole course). Clones copy all three, so a class's own assignment keeps its set key. A class doc may have `curriculumId` (absent or null = follows nothing), `curriculumPlan` (its own order and skipped sets) and `daysOff` (its school calendar).
 
 ## Adding sets
 
-Append to `sets` in the same shape (keys are `<unit><letter>`, e.g. `1A`, `7C`; they never change once published). `draftIds` are approved `content_drafts` ids, in question order. Order in the file is cosmetic: unit then letter decides the roadmap. `npx jest curricula` checks that keys are unique, each set's unit matches its key and its topics, topics exist, and no draft id appears in two sets. To get drafts into a project, see [content-pipeline.md](content-pipeline.md) (`tools/content-drafts.cjs import`).
+Append to `sets` in the same shape (keys are `<unit><letter>`, e.g. `1A`, `7C`, `12B`; they never change once published). `draftIds` are approved `content_drafts` ids, in question order. Order in the file is cosmetic: unit then letter decides the roadmap. `npx jest curricula ap-courses` checks that keys are unique, each set's unit matches its key and its topics, topics exist in the course, and no draft id appears in two sets. To get drafts into a project, see [content-pipeline.md](content-pipeline.md) (`tools/content-drafts.cjs import`).
+
+## More than one course
+
+Unit numbers and topic ids repeat between courses: AP Physics 1 and AP Physics C: Mechanics both have a unit 2 and a topic "1.1", and both have a set "1A". So:
+
+- **AP data is scoped by course.** `src/data/ap/index.ts` has `AP_COURSES` (`physics-1`, `physics-2`, `physics-c-mech`) and every helper takes the course last: `apUnits(course)`, `apUnit(unit, course)`, `apTopic(id, course)`, `apUnitLabel`, `apTopicLabel`, `isApTopicId`. The default is AP Physics 1, which is what every assignment saved so far is. `normaliseApTags` checks topics against the assignment's own `apCourse`.
+- **A set key only means something with its `curriculumId`.** The roadmap, class progress and the student views ignore a class assignment whose `curriculumId` is another course (older copies without one still count). `GET /api/teacher/courses/progress` takes an optional `curriculumId`.
+- **A class follows one course at a time.** Viewing another course offers "Switch to …"; switching keeps every assignment.
+
+**Adding a course:** add `src/data/ap/<course>.json` and register it in `AP_COURSES`; add `src/data/curricula/<id>.json` with its `apCourse` and register it in `CURRICULA` (and its profile in `profiles.ts` once it has content).
+
+**Still AP Physics 1 only.** These must be generalised before problems can be written or published for the two planned courses (none of them affects AP Physics 1):
+
+| Where | What is fixed to Physics 1 |
+|---|---|
+| `functions/src/misconceptions.ts` | The 37 conceptual tags are mechanics, mapped to Physics 1 unit numbers. Physics 2 needs its own tags (thermodynamics, electricity, magnetism, optics, waves, modern physics); C: Mechanics can reuse the mechanics tags but its unit numbers differ |
+| `functions/src/misconception-events.ts` | Events store `apUnit` (1–8) and `apTopic` with no course, so unit 2 of two courses would merge in `/teacher/insights`. Add `apCourse` to events, then label and filter by it in `src/lib/insights.ts` and the insights route (`apUnit` 1–8 check) |
+| `src/lib/content/problem-generator.ts`, `/api/admin/content/generate`, `src/lib/content/drafts.ts` | Prompts say "AP Physics 1 … no calculus"; drafts are typed `course: "physics-1"`; the admin page lists Physics 1 units |
+| `src/lib/schemas/api-bodies.ts` | `apCourse` enum is `["physics-1"]`, `apUnit` max 8, topic id regex `[1-8].n` |
+| `/api/admin/content/publish` | Does not set `apCourse` from the course definition |
+| `src/app/teacher/create/page.tsx`, `/teacher/waypoints`, `/teacher/welcome` | Unit pickers and filters list Physics 1 units; the first-run page offers only AP Physics 1 |
+| `src/app/admin/content/sets-panel.tsx` | Shows the first course only |
 
 ## Admin: publish by set
 
