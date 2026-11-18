@@ -14,6 +14,8 @@ import {
   type GradableQuestion,
   type SubmittedAnswer,
 } from "../../../../functions/src/grading-core";
+import { recordMisconceptionEvents } from "../../../../functions/src/misconception-events";
+import { nonDefaultApCourse } from "../../../../functions/src/misconceptions";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   if (!adminDb) {
@@ -76,12 +78,16 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       }
       const studentNames = await rosterNames(studentData);
       aiGrader = (input) =>
-        gradeResponse(
-          input.question,
-          input.answer,
-          input.rubric,
-          studentNames,
-          input.reference,
+        (input.apCourse
+          ? gradeResponse(
+              input.question,
+              input.answer,
+              input.rubric,
+              studentNames,
+              input.reference,
+              input.apCourse,
+            )
+          : gradeResponse(input.question, input.answer, input.rubric, studentNames, input.reference)
         ).then((r) => ({ ...r, reasoning: r.reasoning || "" }));
     }
 
@@ -91,6 +97,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       result = await gradeSubmissionAnswers(questions, answers, {
         aiGrader,
         globalRubric: assignmentData?.rubric || "",
+        apCourse: nonDefaultApCourse(assignmentSnap.data()?.apCourse),
       });
     } catch (e) {
       console.error("AI Grading failed", e instanceof Error ? e.message : String(e));
@@ -105,6 +112,24 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
         { status: 502 },
       );
     }
+
+    const recordEvents = (final: boolean) =>
+      recordMisconceptionEvents(
+        adminDb,
+        {
+          submissionId,
+          studentId,
+          assignmentId,
+          assignment: assignmentSnap.data(),
+          answers: result.answers,
+          final,
+        },
+        (e) =>
+          console.error(
+            "Failed to record misconception events",
+            e instanceof Error ? e.message : String(e),
+          ),
+      );
 
     if (organizationId && (result.usage.inputTokens > 0 || result.usage.outputTokens > 0)) {
       await recordUsage(
@@ -124,6 +149,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
           gradingError: result.reviewReasons[0],
           graded: false,
         });
+        await recordEvents(false);
       }
       return NextResponse.json(
         { success: false, pendingReview: true, reason: result.reviewReasons[0] },
@@ -141,6 +167,7 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       status: "graded",
       gradedAt: new Date(),
     });
+    await recordEvents(true);
 
     return NextResponse.json({ success: true, score: result.score });
   } catch (error: unknown) {

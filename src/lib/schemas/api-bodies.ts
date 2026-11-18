@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AP_COURSE_KEYS, apCourseKey, isUnitOfCourse } from "../../../functions/src/misconceptions";
 
 /** Firestore document ids must not contain "/" (it would address a sub-path). */
 const docId = z
@@ -6,6 +7,9 @@ const docId = z
   .min(1)
   .max(256)
   .refine((v) => !v.includes("/"), "must not contain '/'");
+
+/** The AP courses in src/data/ap (a test keeps `AP_COURSE_KEYS` equal to `AP_COURSE_IDS`). */
+const apCourseId = z.enum(AP_COURSE_KEYS);
 
 // ─── POST /api/assignments ─────────────────────────────────────────────────
 // Explicit allow-list: the client also sends teacherId, organizationId and createdAt, but the
@@ -18,36 +22,78 @@ export const assignmentQuestionSchema = z.looseObject({
   points: z.number().optional(),
   correctAnswer: z.string().optional(),
 });
-export const createAssignmentBody = z.object({
-  title: z.string().min(1).max(1000),
-  description: z.string().max(50000).nullish(),
-  topic: z.string().max(1000).nullish(),
-  visibility: z.enum(["private", "network", "global"]).optional(),
-  courseId: z
-    .string()
-    .max(256)
-    .refine((v) => !v.includes("/"), "must not contain '/'")
-    .nullish(),
-  dueDate: z
-    .union([z.string(), z.number()])
-    .nullish()
-    .refine(
-      (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
-      "must be a valid date",
-    ),
-  timeLimit: z.number().nullish(),
-  gradingType: z.string().max(64).optional(),
-  requireWorkSubmission: z.boolean().optional(),
-  enableTabDetection: z.boolean().optional(),
-  lockdownMode: z.boolean().optional(),
-  allowAIHelp: z.boolean().optional(),
-  allowCalculator: z.boolean().optional(),
-  totalPoints: z.number().optional(),
-  type: z.string().max(64).optional(),
-  googleFormLink: z.string().max(2048).nullish(),
-  rubric: z.string().max(100000).nullish(),
-  questions: z.array(assignmentQuestionSchema).max(100),
-});
+export const createAssignmentBody = z
+  .object({
+    title: z.string().min(1).max(1000),
+    description: z.string().max(50000).nullish(),
+    topic: z.string().max(1000).nullish(),
+    visibility: z.enum(["private", "network", "global"]).optional(),
+    courseId: z
+      .string()
+      .max(256)
+      .refine((v) => !v.includes("/"), "must not contain '/'")
+      .nullish(),
+    dueDate: z
+      .union([z.string(), z.number()])
+      .nullish()
+      .refine(
+        (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
+        "must be a valid date",
+      ),
+    timeLimit: z.number().nullish(),
+    gradingType: z.string().max(64).optional(),
+    requireWorkSubmission: z.boolean().optional(),
+    enableTabDetection: z.boolean().optional(),
+    lockdownMode: z.boolean().optional(),
+    allowAIHelp: z.boolean().optional(),
+    allowCalculator: z.boolean().optional(),
+    totalPoints: z.number().optional(),
+    type: z.string().max(64).optional(),
+    googleFormLink: z.string().max(2048).nullish(),
+    rubric: z.string().max(100000).nullish(),
+    // AP tags, checked against src/data/ap by the route (normaliseApTags).
+    apCourse: apCourseId.nullish(),
+    apUnit: z.number().int().min(1).max(15).nullish(),
+    apTopics: z.array(z.string().max(16)).max(40).nullish(),
+    questions: z.array(assignmentQuestionSchema).max(100),
+  })
+  // Unit numbers belong to a course: 9 is a unit of AP Physics 2, not of AP Physics 1 (the default).
+  .refine((b) => b.apUnit == null || isUnitOfCourse(b.apUnit, apCourseKey(b.apCourse)), {
+    message: "apUnit is not a unit of this AP course",
+    path: ["apUnit"],
+  });
+
+// ─── PATCH /api/assignments/{id} ───────────────────────────────────────────
+// The owner edits an assignment after it is created. Every field is optional; only what is sent changes.
+// `questions` replaces the whole list (answer keys are split server-side, as on create).
+// `archived` hides it from students and default lists (restorable); it is not a delete.
+export const updateAssignmentBody = z
+  .object({
+    title: z.string().trim().min(1).max(1000),
+    description: z.string().max(50000).nullable(),
+    topic: z.string().max(1000).nullable(),
+    dueDate: z
+      .union([z.string(), z.number()])
+      .nullable()
+      .refine((v) => v == null || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
+    timeLimit: z.number().min(0).max(100000).nullable(),
+    gradingType: z.string().max(64),
+    requireWorkSubmission: z.boolean(),
+    enableTabDetection: z.boolean(),
+    lockdownMode: z.boolean(),
+    allowAIHelp: z.boolean(),
+    allowCalculator: z.boolean(),
+    rubric: z.string().max(100000).nullable(),
+    questions: z.array(assignmentQuestionSchema).min(1).max(100),
+    archived: z.boolean(),
+    // AP tags, checked against the AP course by the route (normaliseApTags). Without `apCourse` the
+    // assignment keeps its own.
+    apCourse: apCourseId,
+    apUnit: z.number().int().min(1).max(20).nullable(),
+    apTopics: z.array(z.string().max(16)).max(40),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to change");
 
 // ─── POST /api/assignments/clone ───────────────────────────────────────────
 // Copies a readable assignment (own, global, or same-network) into a new private one owned by the
@@ -56,6 +102,14 @@ export const cloneAssignmentBody = z.object({
   sourceId: docId,
   courseId: docId.nullish(),
   title: z.string().trim().min(1).max(1000).optional(),
+  // Optional due date for the copy (ISO string or epoch ms), used by the first-run unit assignment.
+  dueDate: z
+    .union([z.string(), z.number()])
+    .nullish()
+    .refine(
+      (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
+      "must be a valid date",
+    ),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────
@@ -127,11 +181,56 @@ export const courseBody = z.object({
     .refine((v) => v.trim().length > 0)
     .pipe(z.string().max(10000)),
   code: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
+  /** Optional: the class follows this course roadmap (a known id from src/data/curricula). */
+  curriculumId: z.string().trim().min(1).max(64).optional(),
+});
+// PATCH /api/courses/{id}: the owner edits a class. Only what is sent changes.
+export const updateCourseBody = z
+  .object({
+    name: z.string().trim().min(1).max(120),
+    period: z.string().trim().max(40).nullable(),
+    description: z.string().trim().max(2000).nullable(),
+    archived: z.boolean(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to change");
+export const courseCurriculumBody = z.object({
+  curriculumId: z.string().trim().min(1).max(64).nullable(),
+});
+// ─── PATCH /api/courses/{id}/plan ──────────────────────────────────────────
+// Shapes only; curriculum-plan.ts and school-calendar.ts do the real checks and give the reasons.
+export const coursePlanBody = z.object({
+  plan: z
+    .object({
+      order: z.array(z.string().max(8)).max(200),
+      skipped: z.array(z.string().max(8)).max(200),
+    })
+    .nullable()
+    .optional(),
+  daysOff: z.array(z.unknown()).max(200).nullable().optional(),
+});
+
+// ─── POST /api/courses/{id}/due-dates ──────────────────────────────────────
+export const courseDueDatesBody = z.object({
+  updates: z
+    .array(
+      z.object({
+        assignmentId: docId,
+        dueDate: z
+          .union([z.string().min(1), z.number()])
+          .nullable()
+          .refine((v) => v == null || !Number.isNaN(new Date(v).getTime()), "must be a valid date"),
+      }),
+    )
+    .min(1)
+    .max(100),
 });
 export const courseBodyMessage = (issues: { path: string }[]) =>
   issues[0]?.path === "name"
     ? "Enter a class name"
-    : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
+    : issues[0]?.path === "curriculumId"
+      ? "Unknown course"
+      : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
 
 // ─── POST /api/student/enrollment ──────────────────────────────────────────
 // `code` is validated further by findClassByCode; it is absent for action "leave".
@@ -191,7 +290,28 @@ export const supportReportBody = z.object({
   userName: z.string().max(512).nullish(),
   userAgent: z.string().max(1024).optional(),
   screenshots: z.array(z.string()).max(10).optional(),
+  // Where the report came from. The in-app feedback widget also sends what the user was trying to do
+  // and the app area (teacher / student / admin) so triage does not need to guess.
+  source: z.enum(["navigation-chatbot", "feedback-widget"]).optional(),
+  context: z.string().trim().max(2000).nullish(),
+  appContext: z.enum(["teacher", "student", "admin"]).optional(),
 });
+
+// ─── PATCH /api/admin/support ──────────────────────────────────────────────
+export const SUPPORT_TICKET_STATUSES = ["open", "triaged", "done"] as const;
+export const supportTicketUpdateBody = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .max(100)
+      .regex(/^[A-Za-z0-9_-]+$/),
+    status: z.enum(SUPPORT_TICKET_STATUSES).optional(),
+    note: z.string().trim().max(5000).optional(),
+  })
+  .refine((b) => b.status !== undefined || b.note !== undefined, {
+    message: "Provide a status or a note",
+  });
 
 // ─── AI and chat routes ────────────────────────────────────────────────────
 // These feed text to the model, so every string has a ceiling. The 500 KB body cap still applies.
@@ -287,3 +407,42 @@ export const portfolioBody = z.object({
   studentId: docId,
   organizationId: docId,
 });
+
+// ─── /api/admin/content (AI-drafted AP problems, reviewed by a person) ─────
+const apTopicId = z.string().regex(/^\d{1,2}\.\d{1,2}$/, "must be an AP topic id like 4.2");
+export const contentGenerateBody = z.object({
+  /** Which AP course the topic is in; topic ids repeat between courses. Default AP Physics 1. */
+  apCourse: apCourseId.optional(),
+  apTopic: apTopicId,
+  count: z.number().int().min(1).max(5),
+  difficulty: z.enum(["easy", "medium", "hard"]).optional(),
+});
+export const contentReviewBody = z.object({
+  id: docId,
+  action: z.enum(["save", "approve", "reject", "reopen"]),
+  /** The reviewer's edited problem; checked again by validateDraftProblem. */
+  problem: z.looseObject({}).optional(),
+  note: z.string().max(2000).optional(),
+  /** Who checked the answer. "ai" approvals still need a person before they can be published. */
+  reviewer: z.enum(["human", "ai"]).optional(),
+});
+export const contentPublishBody = z
+  .object({
+    draftIds: z.array(docId).min(1).max(30).optional(),
+    title: z.string().trim().min(1).max(200).optional(),
+    description: z.string().max(5000).optional(),
+    /** Publish one set of a course roadmap (src/data/curricula); draftIds, title and description then come from it. */
+    curriculumId: z.string().trim().min(1).max(64).optional(),
+    setKey: z.string().trim().min(1).max(8).optional(),
+  })
+  .refine(
+    (b) =>
+      b.curriculumId !== undefined || b.setKey !== undefined
+        ? b.curriculumId !== undefined &&
+          b.setKey !== undefined &&
+          b.draftIds === undefined &&
+          b.title === undefined &&
+          b.description === undefined
+        : b.draftIds !== undefined && b.title !== undefined,
+    { message: "Send either draftIds and title, or curriculumId and setKey" },
+  );

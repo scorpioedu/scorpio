@@ -12,7 +12,7 @@ export function LandingHero() {
           The workspace for physics teachers
         </h1>
         <p className={`${reveal.enter} ${reveal.description} mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg`}>
-          Post assignments, see where your class gets stuck, and give students hints they can work through on their own.
+          AP Physics 1 homework that grades itself, gives students hints instead of answers, and shows you which misconceptions your class has.
         </p>
         <div className={`${reveal.enter} ${reveal.actions} mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-4`}>
           <Button

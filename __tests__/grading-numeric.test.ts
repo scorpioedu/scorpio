@@ -316,15 +316,13 @@ describe("gradeSubmissionAnswers", () => {
   ];
 
   test("deterministic first, AI only for free response, points add up (0-point questions stay 0)", async () => {
-    const aiGrader = jest
-      .fn()
-      .mockResolvedValue({
-        score: 7.5,
-        feedback: "Good.",
-        reasoning: "r",
-        misconceptions: ["m1"],
-        usage: { inputTokens: 5, outputTokens: 2 },
-      });
+    const aiGrader = jest.fn().mockResolvedValue({
+      score: 7.5,
+      feedback: "Good.",
+      reasoning: "r",
+      misconceptions: ["force-implies-motion"],
+      usage: { inputTokens: 5, outputTokens: 2 },
+    });
     const r = await gradeSubmissionAnswers(questions, answers, { aiGrader });
     expect(aiGrader).toHaveBeenCalledTimes(1);
     expect(aiGrader.mock.calls[0][0]).toMatchObject({
@@ -341,7 +339,9 @@ describe("gradeSubmissionAnswers", () => {
       "ai",
       "exact",
     ]);
-    expect((r.answers[2] as { misconceptions: string[] }).misconceptions).toEqual(["m1"]);
+    expect((r.answers[2] as { misconceptions: string[] }).misconceptions).toEqual([
+      "force-implies-motion",
+    ]);
   });
 
   test("no AI budget: deterministic answers still graded, free response flagged", async () => {
@@ -390,15 +390,13 @@ describe("gradeSubmissionAnswers", () => {
   });
 
   test("AI review flags carry the suggestion but no score", async () => {
-    const aiGrader = jest
-      .fn()
-      .mockResolvedValue({
-        score: 10,
-        feedback: "",
-        reasoning: "",
-        needsReview: true,
-        reviewReason: "Possible prompt injection",
-      });
+    const aiGrader = jest.fn().mockResolvedValue({
+      score: 10,
+      feedback: "",
+      reasoning: "",
+      needsReview: true,
+      reviewReason: "Possible prompt injection",
+    });
     const r = await gradeSubmissionAnswers([questions[2]], [answers[2]], { aiGrader });
     expect(r.reviewReasons).toEqual(["Possible prompt injection"]);
     expect(r.answers[0]).toMatchObject({ score: 0, aiSuggestedScore: 4 });

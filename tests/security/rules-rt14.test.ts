@@ -1,7 +1,7 @@
 // RT-14 (D-002, D-003, D-005, D-006): characterization of operations the client performs
 // (must keep working) plus abuse cases the rules must deny. Also pins default-deny collections.
 import { initializeTestEnvironment, assertFails, assertSucceeds, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, deleteField, addDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes } from 'firebase/storage';
 import fs from 'node:fs';
 let env: RulesTestEnvironment;
@@ -21,7 +21,7 @@ beforeAll(async () => {
    'notebooks/sb':{studentId:'sa',title:'squat',content:'payload'},
    'tutor_sessions/seeded':{studentId:'sa',title:'x',messages:[]},
    'tutor_sessions/sb':{studentId:'sa',title:'squat',messages:[]},
-   'admin_audit/x':{a:1}, 'landing_daily/x':{a:1}, 'landing_visitors/x':{a:1}, 'ai_reservations/x':{a:1}, 'grading_locks/x':{a:1}
+   'admin_audit/x':{a:1}, 'landing_daily/x':{a:1}, 'landing_visitors/x':{a:1}, 'ai_reservations/x':{a:1}, 'grading_locks/x':{a:1}, 'support_tickets/x':{a:1}
   };
   await Promise.all(Object.entries(docs).map(([p,d])=>setDoc(doc(db,p),d)));
  });
@@ -120,7 +120,7 @@ describe('storage (D-006)', () => {
 });
 
 describe('server-only collections are client-inaccessible', () => {
- test.each(['admin_audit','landing_daily','landing_visitors','ai_reservations','grading_locks'])('%s denies read and write to teachers and students', async (c) => {
+ test.each(['admin_audit','landing_daily','landing_visitors','ai_reservations','grading_locks','support_tickets'])('%s denies read and write to teachers and students', async (c) => {
   for (const who of ['ta','sa']) {
    await assertFails(getDoc(doc(db(who),`${c}/x`)));
    await assertFails(setDoc(doc(db(who),`${c}/y`),{a:1}));
@@ -129,4 +129,32 @@ describe('server-only collections are client-inaccessible', () => {
   }
   await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(),`${c}/x`)));
  });
+});
+
+describe('courses follow a curriculum only through the server', () => {
+ test('owner can still edit settings, but cannot set, change or clear curriculumId', async () => {
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f1']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:'ap-physics-1'}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumId:'ap-physics-1'}); });
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f2']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:'other'}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumId:null}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumId:null}); });
+ });
+ test('owner cannot write the course plan or the school calendar directly', async () => {
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumPlan:{order:['1A'],skipped:[]}}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{daysOff:[]}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumPlan:{order:['1A'],skipped:[]},daysOff:[{start:'2027-03-22',end:'2027-03-26',label:'Spring break'}]}); });
+  // Other settings still save while a plan and calendar are stored; the stored values cannot be changed or removed.
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f3']}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{daysOff:[]}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{curriculumPlan:deleteField()}));
+  await env.withSecurityRulesDisabled(async ctx => { await updateDoc(doc(ctx.firestore(),'courses/ca'),{curriculumPlan:deleteField(),daysOff:deleteField()}); });
+ });
+ test('owner cannot change the join code or archive a class directly (routes keep course_codes in step)', async () => {
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{code:'NEWCODE1'}));
+  await assertFails(updateDoc(doc(db('ta'),'courses/ca'),{archivedAt:'2026-11-17T00:00:00.000Z'}));
+  await assertSucceeds(updateDoc(doc(db('ta'),'courses/ca'),{restrictedFormulaIds:['f4']}));
+ });
+ test('a student can read their own class (to group assignments by unit)', async () => assertSucceeds(getDoc(doc(db('sa'),'courses/ca'))));
 });

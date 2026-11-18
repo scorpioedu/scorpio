@@ -228,7 +228,7 @@ export default function BillingPage() {
             </Badge>
             <CardTitle className="text-lg font-bold mt-2">Free Starter</CardTitle>
             <CardDescription className="text-xs">
-              Manual grading and course tools for individual teachers evaluating Scorpio.
+              Every global Waypoint, auto-grading and the misconception report for individual teachers.
             </CardDescription>
             <div className="pt-3">
               <div className="flex items-baseline gap-1">
@@ -244,7 +244,7 @@ export default function BillingPage() {
             <ul className="space-y-2 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                <span>1 active Waypoint curriculum module</span>
+                <span>Every global Waypoint, including AP Physics 1 sets</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
@@ -252,11 +252,11 @@ export default function BillingPage() {
               </li>
               <li className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                <span>Manual review & LaTeX equation editor</span>
+                <span>Auto-grading, class misconception report & LaTeX equation editor</span>
               </li>
               <li className="flex items-start gap-2 text-muted-foreground/50">
                 <span className="h-4 w-4 flex items-center justify-center shrink-0">—</span>
-                <span>No AI tutor or automated grading</span>
+                <span>Small starter AI budget; no department waypoints or sharing</span>
               </li>
             </ul>
           </CardContent>
@@ -279,7 +279,7 @@ export default function BillingPage() {
             </div>
             <CardTitle className="text-2xl sm:text-3xl font-bold mt-2">Department License</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Complete physics LMS with Socratic AI tutoring, automated homework grading, and all Waypoints for your entire school.
+              Department waypoints and sharing, plus higher AI limits for Raise hints and AI grading, for your entire school.
             </CardDescription>
 
             <div className="pt-4 pb-1">
@@ -325,11 +325,11 @@ export default function BillingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Instant automated homework and lab grading</span>
+                <span>Higher AI limits for AI grading of written answers</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>All Waypoints physics curriculum modules</span>
+                <span>Department waypoints and sharing across your network</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />

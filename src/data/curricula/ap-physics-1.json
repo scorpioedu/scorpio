@@ -1,0 +1,456 @@
+{
+  "id": "ap-physics-1",
+  "apCourse": "physics-1",
+  "name": "AP Physics 1",
+  "description": "Scorpio's roadmap through the eight AP Physics 1 units: ready-made, auto-graded sets in a teaching order.",
+  "sets": [
+    {
+      "key": "1A",
+      "unit": 1,
+      "title": "Describing motion",
+      "description": "Scalars and vectors, displacement, average velocity and average acceleration in one dimension.",
+      "topics": ["1.1", "1.2"],
+      "draftIds": [
+        "s409uAYI0QpvJ0y3pOZL",
+        "uEx61fVZiSQR5YK3SUuz",
+        "4xMuq8jR9ih1EAQyZ7x2",
+        "nwyrFEwbyviQxAmHCIPr",
+        "1W2uBAOwUjbkGmCefmy0"
+      ]
+    },
+    {
+      "key": "1B",
+      "unit": 1,
+      "title": "Representing motion",
+      "description": "Reading motion from position and velocity graphs and the kinematic equations.",
+      "topics": ["1.3"],
+      "draftIds": [
+        "U0m58BxaGKO3AIZuPLkG",
+        "Y9L9aApYJwPcI3aRG90s",
+        "gP8r5asLaWQO0bzHmLzQ",
+        "rNiG43RAPQylFr0JiRJE",
+        "SDBOAvkWJ6tg0z887bYR"
+      ]
+    },
+    {
+      "key": "1C",
+      "unit": 1,
+      "title": "Reference frames and relative motion",
+      "description": "Velocities measured from moving frames: trains, walkways, boats and currents.",
+      "topics": ["1.4"],
+      "draftIds": [
+        "x379AR7pyZbhROqns08G",
+        "wljJ4SlO6wJLJ0592BS7",
+        "PqhLjLjVTyzBBx5PtiZu",
+        "yqbjtaft4jzyH8TT3coI",
+        "RnFKTAeV5qWCFXr225Nk"
+      ]
+    },
+    {
+      "key": "1D",
+      "unit": 1,
+      "title": "Projectile motion",
+      "description": "Horizontal and angled launches with independent horizontal and vertical motion.",
+      "topics": ["1.5"],
+      "draftIds": [
+        "zu5g1n7KOXif944iMcdp",
+        "C30Jes2PKr9FULyxnuEW",
+        "Ag1TQNGK8qIa5HNEcEvP",
+        "xNvAXO9esPVU3A0Tuh9P",
+        "8rGTh14PR6qdGxDXEOs3"
+      ]
+    },
+    {
+      "key": "2A",
+      "unit": 2,
+      "title": "Systems and free-body diagrams",
+      "description": "Centre of mass, internal and external forces, and drawing the forces on an object.",
+      "topics": ["2.1", "2.2"],
+      "draftIds": [
+        "gNWBhYZNPi7afVnGzfF4",
+        "VdcoMxEkj56uEbshYqWi",
+        "hpWwF4oSsowsUPhPkZ2r",
+        "EEcLvvq0owqZwbIaCT5R",
+        "4k7nd1iIVztG73XQfqwO"
+      ]
+    },
+    {
+      "key": "2B",
+      "unit": 2,
+      "title": "Newton's three laws",
+      "description": "Interaction pairs, constant velocity, and net force producing acceleration.",
+      "topics": ["2.3", "2.4", "2.5"],
+      "draftIds": [
+        "8PTjVbN3HojI1qhjwniP",
+        "rKB03MLvyUjCcwnUVFk7",
+        "G3W0vqg3bdN2HJL3Ne0W",
+        "6EfqqLOMjX7acRURkfXm",
+        "wAlzzANcSgCDgTxE3EQC"
+      ]
+    },
+    {
+      "key": "2C",
+      "unit": 2,
+      "title": "Gravity and friction",
+      "description": "Apparent weight, gravity at altitude, and static and kinetic friction.",
+      "topics": ["2.6", "2.7"],
+      "draftIds": [
+        "zSjQRLHxIg0e3ArVIqgz",
+        "DloT8voJ7ptNcr1ZdIFG",
+        "ydmYNkGkJZVGlxBmTV5c",
+        "3idEpvEIENGrhGLS51I4",
+        "sG3iPeGBiPsTeaARFHel"
+      ]
+    },
+    {
+      "key": "2D",
+      "unit": 2,
+      "title": "Springs and circular motion",
+      "description": "Spring forces and the net inward force in circular motion.",
+      "topics": ["2.8", "2.9"],
+      "draftIds": [
+        "07TeCEIDNkYTcvHqEiU1",
+        "m5wqP7LEdxmdpMYn7Lf7",
+        "pPxpyFfcRSZp29fBqsYR",
+        "EUpQj1NQt2az6gKsQDEl",
+        "s3njqfYfv4VtBPya2FLS"
+      ]
+    },
+    {
+      "key": "3A",
+      "unit": 3,
+      "title": "Kinetic energy and work",
+      "description": "Kinetic energy, work by constant and varying forces, and the sign of work.",
+      "topics": ["3.1", "3.2"],
+      "draftIds": [
+        "X4jyKKjW0FEKFVYhEqYt",
+        "yUNWsnCooXBa29EFmewv",
+        "Z5NRmkqM6wlcKRkr23Uc",
+        "edyBTRWcMBGkVTnmwoy0",
+        "NidV0UnpzQWXsBC7AZ7P"
+      ]
+    },
+    {
+      "key": "3B",
+      "unit": 3,
+      "title": "Potential energy",
+      "description": "Gravitational and elastic potential energy and the choice of zero.",
+      "topics": ["3.3"],
+      "draftIds": [
+        "5rfjEKqGWDXCAYIGqIGw",
+        "CRXIKIfYAlkCg4xqtJ5C",
+        "yxrRCuu6ms9v8Yb3JYjw",
+        "zMXl5RYgWLx4ndymxI7S",
+        "2NtTHQkNaWI9bdeG0vHT"
+      ]
+    },
+    {
+      "key": "3C",
+      "unit": 3,
+      "title": "Conservation of energy",
+      "description": "Energy bar charts, friction losses and energy conservation in systems.",
+      "topics": ["3.4"],
+      "draftIds": [
+        "DfEsWin1XSClSIjZUYkB",
+        "hqSR3BItjCVvPT4HZepE",
+        "H10TeXaCWl9RjoQL2Z7E",
+        "HYuFyEJyLQDZhzuZMRm9",
+        "uTUdLNsOuXMFlY9FXpNz"
+      ]
+    },
+    {
+      "key": "3D",
+      "unit": 3,
+      "title": "Energy problems and power",
+      "description": "Multi-step energy problems, and power as the rate of energy transfer.",
+      "topics": ["3.4", "3.5"],
+      "draftIds": [
+        "YivJqghiYJXizXPbinDx",
+        "21gN2Hr7A5JLXxtdanZu",
+        "07XjSEWuEZX7IWxtP2dk",
+        "TXCy8qtf99hYSYhhXmBX",
+        "fzZPDTa7ret2ouZNK7tR"
+      ]
+    },
+    {
+      "key": "4A",
+      "unit": 4,
+      "title": "Momentum of objects and systems",
+      "description": "Momentum as a vector: single objects, two-object systems and changes in momentum.",
+      "topics": ["4.1"],
+      "draftIds": [
+        "Gc2h9qSFqEJRWhHlALAF",
+        "YCbhyeEwoiUznyZSY0nE",
+        "HHz1T1EBIFJbOjuyNJIH",
+        "GdGiwomjt2nJ31pU94fz",
+        "5yoOn6KOLAl0OufEmeJO"
+      ]
+    },
+    {
+      "key": "4B",
+      "unit": 4,
+      "title": "Impulse and change in momentum",
+      "description": "Impulse from average force and force–time graphs, and how it changes momentum.",
+      "topics": ["4.2"],
+      "draftIds": [
+        "Okr4WSiADru058fc1VEJ",
+        "OzE2UuNOcdcrIFRvMdkl",
+        "7IzD0u3P4POmmRP0IK2K",
+        "TSSFTuvsuEIyy14bBrcf",
+        "0c7CtVfh080LLdYQRRmu"
+      ]
+    },
+    {
+      "key": "4C",
+      "unit": 4,
+      "title": "Conservation of momentum",
+      "description": "Isolated systems, explosions and pushes, and centre-of-mass motion.",
+      "topics": ["4.3"],
+      "draftIds": [
+        "qYbLNgxYAQ6czFEqYjRm",
+        "U2y8BIwZ0DSYa5m0ai0v",
+        "gPvYmMWHGmEbKuycGAmH",
+        "9Ylc7pDpZG8lry8Z5X6h",
+        "RkpQjnQBEFt30axRGsdD"
+      ]
+    },
+    {
+      "key": "4D",
+      "unit": 4,
+      "title": "Elastic and inelastic collisions",
+      "description": "Sticking and bouncing collisions: momentum conserved, kinetic energy not always.",
+      "topics": ["4.4"],
+      "draftIds": [
+        "Mc5mjuB0GsLntMtvI0O5",
+        "fYReCdOGzh5WKhLrEGnm",
+        "FKRX8537wlxxoTrTjK9C",
+        "2OkA26F8qlaqtrRhvvOO",
+        "qaonuOPyGbPRRdR1ZGYU"
+      ]
+    },
+    {
+      "key": "5A",
+      "unit": 5,
+      "title": "Rotational kinematics",
+      "description": "Angular displacement, speed and acceleration, and linking them to linear motion.",
+      "topics": ["5.1", "5.2"],
+      "draftIds": [
+        "EtRGKNXbHKnxVLKQK4hO",
+        "VqK0ZArd0hCavmd703x5",
+        "spYPkbDY727BMPtdx2Wf",
+        "gQ7zdiieGcRfZ91CE01M",
+        "6AXMdTSJ7It4pFZeg4WF"
+      ]
+    },
+    {
+      "key": "5B",
+      "unit": 5,
+      "title": "Torque",
+      "description": "Torque from force, lever arm and angle; net torque and balanced torques.",
+      "topics": ["5.3"],
+      "draftIds": [
+        "G4irqnMELcaqk5xB0At9",
+        "VqpBuL0Tyl4h6mQBWXDb",
+        "Htoz7pqu7DthYxnwdJXN",
+        "qULoaG3OFz0KtY1XwyjG",
+        "BfC7m7jnQaeMLIBgLwKO"
+      ]
+    },
+    {
+      "key": "5C",
+      "unit": 5,
+      "title": "Rotational inertia and equilibrium",
+      "description": "How mass distribution sets rotational inertia, and static equilibrium of rigid bodies.",
+      "topics": ["5.4", "5.5"],
+      "draftIds": [
+        "SysedISkEhAXQx1fT8aJ",
+        "iyT9364KLF0OXRGQjIZr",
+        "FZiRCwgMroNOIKVFeYA7",
+        "HDq1JwUEaqa09l6Bv0eY",
+        "8T2O5dbJL5ADINzcv77T"
+      ]
+    },
+    {
+      "key": "5D",
+      "unit": 5,
+      "title": "Newton's second law for rotation",
+      "description": "Net torque = Iα: pulleys, hanging masses and pivoted rods.",
+      "topics": ["5.6"],
+      "draftIds": [
+        "fV17mTufrV9rtBxC4rSA",
+        "Sw4nnN0VSflOFSyHbuRb",
+        "lcrGrlmBHnjza1WjT2fe",
+        "GuUfYu2x4hERnE7OxWki",
+        "ihzE6jd4N6lPRtDscjtK"
+      ]
+    },
+    {
+      "key": "6A",
+      "unit": 6,
+      "title": "Rotational kinetic energy and work",
+      "description": "Rotational kinetic energy and the work done by a torque.",
+      "topics": ["6.1", "6.2"],
+      "draftIds": [
+        "qBId6ThCK0ZWl8BFSYu1",
+        "cNZ9aaYnZtqkCuKUtjO3",
+        "AdhD2iIngwY3BXvfgkFg",
+        "sAbThyM6SFHLhf84775L",
+        "lWxovYALN1gqsq7U8yRB"
+      ]
+    },
+    {
+      "key": "6B",
+      "unit": 6,
+      "title": "Angular momentum and angular impulse",
+      "description": "Angular momentum of rigid bodies and point masses, and angular impulse.",
+      "topics": ["6.3"],
+      "draftIds": [
+        "m6hyC2XRMjNhoIe0fN9s",
+        "DnBFbJkMTMTrQOKhooJb",
+        "gobRjCnM9JLh2YcPQKWJ",
+        "vrYxSZlG0Thww7cK8Fh7",
+        "FwLpyKRAJhha6y9wKI1m"
+      ]
+    },
+    {
+      "key": "6C",
+      "unit": 6,
+      "title": "Conservation of angular momentum",
+      "description": "Spinning skaters, dropped masses and tethered systems with no external torque.",
+      "topics": ["6.4"],
+      "draftIds": [
+        "kQuw1rCiS3xcqMsTmAgE",
+        "4lQcL6ISSYjddNAvZ00O",
+        "ZfXJGKf5ovH0pnKbZJXi",
+        "PCcPkrHjaYN8vDvre0KE",
+        "xAoD3SZuiRSihD6OczhB"
+      ]
+    },
+    {
+      "key": "6D",
+      "unit": 6,
+      "title": "Rolling and orbits",
+      "description": "Rolling without slipping with energy, and angular momentum in elliptical orbits.",
+      "topics": ["6.5", "6.6"],
+      "draftIds": [
+        "7Y1J8cwoiVLMe3T5AxQP",
+        "ohyCKurVvyJXZkkVhUD2",
+        "SuAYYMGwH5PkR7JMcxCO",
+        "OAT2HwKnz98EnqVTwTpd",
+        "LSsIkDiDE0Gahq33tzuV"
+      ]
+    },
+    {
+      "key": "7A",
+      "unit": 7,
+      "title": "Restoring forces and period",
+      "description": "What makes motion simple harmonic, and what the period does and does not depend on.",
+      "topics": ["7.1", "7.2"],
+      "draftIds": [
+        "GLO2aC5diT3CtyJmXAXE",
+        "1OGHIAQLl2eTWVZYG2tD",
+        "QNkfJx6N70KD4glMMDkm",
+        "al6c9t906oFIMck7pn6w",
+        "ueqUIdHCId0EPpX7liXU"
+      ]
+    },
+    {
+      "key": "7B",
+      "unit": 7,
+      "title": "Period and frequency",
+      "description": "Measuring and calculating periods of springs and pendulums.",
+      "topics": ["7.2", "7.3"],
+      "draftIds": [
+        "ii25DZhbRnxwz7lx1vnO",
+        "M54gGwx7sQqZUNOix2sf",
+        "buQ0A6v6kUDkKEJNWzNq",
+        "Yb1VdwuJuJjkOrTxebNv",
+        "rDbgAVoTgWOMiuE9AkWb"
+      ]
+    },
+    {
+      "key": "7C",
+      "unit": 7,
+      "title": "Analysing SHM",
+      "description": "Position, velocity and acceleration through an oscillation.",
+      "topics": ["7.3"],
+      "draftIds": [
+        "T93OFKDXS49WhIOOZz3Z",
+        "2k9mEQeuskEVHBlQCDMv",
+        "0ZimUZKmviVyLbt1FZ5j",
+        "vt0yyATU8sjVLy1PadY6",
+        "cXpkN9ZFIE5811LdtUZL"
+      ]
+    },
+    {
+      "key": "7D",
+      "unit": 7,
+      "title": "Energy of oscillators",
+      "description": "Kinetic and potential energy exchange in springs and pendulums.",
+      "topics": ["7.4"],
+      "draftIds": [
+        "ijFZhQN6gLDcIVPqqOJy",
+        "GiRK6zOJoIDLAldsEV0C",
+        "RESWuhm8MbrRT1wk8r74",
+        "Oa4xrXQTyaGEs9YkgfDD",
+        "BJ6gEiaw8s6p3079cF6Y"
+      ]
+    },
+    {
+      "key": "8A",
+      "unit": 8,
+      "title": "Density and pressure",
+      "description": "Density, absolute and gauge pressure, and pressure with depth.",
+      "topics": ["8.1", "8.2"],
+      "draftIds": [
+        "NRcHJlaxRDsC3L596n9A",
+        "sSdUgVxcIt5Gmc8AY6wz",
+        "ihX649rv47y5zqkK1L9G",
+        "oWxol8Cin0ddjIWAjLQW",
+        "7nPNgWUm0IlIav6En9KE"
+      ]
+    },
+    {
+      "key": "8B",
+      "unit": 8,
+      "title": "Pressure forces and buoyancy",
+      "description": "Forces from pressure differences, and buoyant force on floating and tethered objects.",
+      "topics": ["8.2", "8.3"],
+      "draftIds": [
+        "c2gKxuzSI7A5k8fNDEjC",
+        "tq1BSPh5viSkx3MAYfHZ",
+        "ixPQfDoKzkHAh75w1YIP",
+        "w2tdGMziqVHz0jTZ28ma",
+        "xSxOKT1m3ouSQNuSCD49"
+      ]
+    },
+    {
+      "key": "8C",
+      "unit": 8,
+      "title": "Buoyancy and Newton's laws",
+      "description": "Net force and acceleration of submerged objects; what buoyancy does and does not depend on.",
+      "topics": ["8.3"],
+      "draftIds": [
+        "ZJsW74HTxx3uQh4YUbrH",
+        "fCIYycL8CEBMPP4AfZLi",
+        "vwXW7LRTn1XZLNlUjoE3",
+        "KBHBaqOOeac7uiXASWM5",
+        "GMNEvhR1ApM96Mq2gx0h"
+      ]
+    },
+    {
+      "key": "8D",
+      "unit": 8,
+      "title": "Fluid flow and Bernoulli",
+      "description": "Continuity, Bernoulli's equation and Torricelli's law.",
+      "topics": ["8.4"],
+      "draftIds": [
+        "cQihtx5MJxV5cNsXkjFE",
+        "C64Hx67jxNwBHiEaE0cC",
+        "m4Zddm6LDEbSjzDDkMB2",
+        "QLZtB8vyq5YfQ0aQDpAm",
+        "7eeFb9cVmvxTWFfHEBDq"
+      ]
+    }
+  ]
+}

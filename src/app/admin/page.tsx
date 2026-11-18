@@ -13,7 +13,7 @@ import { TeacherInviteCodes } from "@/components/admin/teacher-invite-codes";
 import { FirestoreExplorer } from "@/components/admin/firestore-explorer";
 import { GlobalAnalytics } from "@/components/admin/global-analytics";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShieldCheck, Lock, Database, BarChart3 } from "lucide-react";
+import { ShieldCheck, Lock, Database, BarChart3, BookCheck, MessageSquarePlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminPage() {
@@ -22,9 +22,11 @@ export default function AdminPage() {
 
   if (access !== "admin") {
     const message =
-      access === "loading" ? "Checking your account…"
-      : access === "signed-out" ? "Sign in with an administrator account to continue."
-      : "This account does not have administrator access.";
+      access === "loading"
+        ? "Checking your account…"
+        : access === "signed-out"
+          ? "Sign in with an administrator account to continue."
+          : "This account does not have administrator access.";
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
         <SpaceBackground />
@@ -60,9 +62,9 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen w-full relative flex flex-col md:flex-row bg-background">
       <SpaceBackground />
-      
+
       {/* Sidebar */}
-      <motion.aside 
+      <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border/40 relative z-20 bg-background/60 backdrop-blur-xl flex flex-col h-auto md:h-screen sticky top-0"
@@ -103,13 +105,27 @@ export default function AdminPage() {
             <Database className="mr-2 h-4 w-4" />
             Database Explorer
           </Button>
+          <Button variant="ghost" className="w-full justify-start font-medium" asChild>
+            <Link href="/admin/content">
+              <BookCheck className="mr-2 h-4 w-4" />
+              Content Review
+            </Link>
+          </Button>
+          <Button variant="ghost" className="w-full justify-start font-medium" asChild>
+            <Link href="/admin/feedback">
+              <MessageSquarePlus className="mr-2 h-4 w-4" />
+              Feedback
+            </Link>
+          </Button>
         </nav>
 
         <div className="p-4 border-t border-border/40 mt-auto">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full justify-start text-muted-foreground hover:text-foreground"
-            onClick={() => { void logout(); }}
+            onClick={() => {
+              void logout();
+            }}
           >
             Log Out
           </Button>
@@ -131,9 +147,11 @@ export default function AdminPage() {
               >
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight">Access & Security</h2>
-                  <p className="text-muted-foreground">Manage waitlist access requests and teacher invite codes.</p>
+                  <p className="text-muted-foreground">
+                    Manage waitlist access requests and teacher invite codes.
+                  </p>
                 </div>
-                
+
                 <AccessRequests />
                 <TeacherInviteCodes />
               </motion.div>
@@ -163,9 +181,11 @@ export default function AdminPage() {
               >
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight">Database Explorer</h2>
-                  <p className="text-muted-foreground">Query read-only platform data directly from Firestore.</p>
+                  <p className="text-muted-foreground">
+                    Query read-only platform data directly from Firestore.
+                  </p>
                 </div>
-                
+
                 <div className="flex-1 min-h-0">
                   <FirestoreExplorer />
                 </div>

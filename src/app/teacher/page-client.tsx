@@ -2,23 +2,27 @@
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useEffect, useState } from "react";
-import { collection, getCountFromServer, getDocs, query, where, orderBy, limit, startAfter, deleteDoc, doc, getDoc, type Query, type QueryDocumentSnapshot } from "firebase/firestore";
+import { collection, getCountFromServer, getDocs, query, where, orderBy, limit, startAfter, doc, getDoc, type Query, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
-import { ArrowRight, FileText, RotateCcw, Users, PlusCircle, Upload, GraduationCap, Trash2, Copy, Link2, Building2, Waypoints, PackageCheck, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { ArrowRight, FileText, RotateCcw, Users, PlusCircle, Upload, GraduationCap, Settings2, Copy, Link2, Building2, Waypoints, PackageCheck, LayoutDashboard, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { WELCOME_SKIPPED_KEY } from "@/lib/first-run";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { chunk, summarizeSubmissionCounts, unionCount, type SubmissionCountParts } from "@/lib/count-math";
 import { classInvitePath } from "@/lib/onboarding-links";
 import { TeacherDashboardContent, type TeacherDashboardStats } from "@/components/teacher/dashboard-content";
+import { ClassSettingsDialog } from "@/components/teacher/class-settings-dialog";
+import { CourseSelect } from "@/components/teacher/course-select";
+import { useSelectedClass } from "@/contexts/selected-class-context";
 
 interface Submission {
   id: string;
@@ -36,6 +40,11 @@ interface Course {
   name: string;
   code: string;
   teacherId: string;
+  period?: string;
+  description?: string;
+  archivedAt?: string | null;
+  /** The one course (roadmap) the class follows, if any. */
+  curriculumId?: string | null;
 }
 
 interface RecentAssignment {
@@ -129,6 +138,7 @@ function assignmentDueLabel(dueDate: RecentAssignment["dueDate"]) {
 
 export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }) {
   const { user, profile } = useAuth();
+  const router = useRouter();
   const networkId = profile?.organizationId;
   const [network, setNetwork] = useState<{ id: string; name: string } | null>(null);
   const [networkError, setNetworkError] = useState(false);
@@ -147,9 +157,12 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
   const [courses, setCourses] = useState<Course[]>([]);
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseCode, setNewCourseCode] = useState("");
+  const [newCourseCurriculum, setNewCourseCurriculum] = useState<string | null>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
+  const [settingsFor, setSettingsFor] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const { refreshClasses } = useSelectedClass({ mirror: false });
   const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
@@ -253,6 +266,14 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
     return () => { active = false; };
   }, [user, retry]);
 
+  // A teacher with no classes goes to the guided first-run page (unless they skipped it before).
+  useEffect(() => {
+    if (!dataReady || setupError || !networkId || courses.length > 0) return;
+    let skipped = false;
+    try { skipped = localStorage.getItem(WELCOME_SKIPPED_KEY) === "1"; } catch { /* storage unavailable */ }
+    if (!skipped) router.replace("/teacher/welcome");
+  }, [dataReady, setupError, networkId, courses.length, router]);
+
   const handleCreateCourse = async () => {
     if (!user || !newCourseName.trim() || !newCourseCode.trim()) return;
     setCourseError("");
@@ -260,32 +281,23 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
     const code = newCourseCode.trim();
     try {
       const response = await authenticatedFetch('/api/courses', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newCourseName, code }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newCourseName, code, ...(newCourseCurriculum ? { curriculumId: newCourseCurriculum } : {}) }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not create the class.");
 
-      const course = { id: result.id, name: newCourseName.trim().slice(0, 120), code, teacherId: user.uid };
+      const course = { id: result.id, name: newCourseName.trim().slice(0, 120), code, teacherId: user.uid, curriculumId: newCourseCurriculum };
       setCourses(current => [course, ...current]);
       setNewCourseName("");
       setNewCourseCode("");
+      setNewCourseCurriculum(null);
       toast.success("Class created successfully!");
+      refreshClasses().catch(() => undefined);
       setDialogOpen(false);
     } catch (error) {
       setCourseError(error instanceof Error ? error.message : "Could not create the class. Try again.");
     } finally {
       setIsCreatingCourse(false);
-    }
-  };
-
-  const handleDeleteCourse = async (courseId: string) => {
-    try {
-      await deleteDoc(doc(db, "courses", courseId));
-      setCourses(courses.filter(c => c.id !== courseId));
-      toast.success("Class deleted successfully!");
-    } catch (error) {
-       console.error("Error deleting course:", error);
-       toast.error("Failed to delete course");
     }
   };
 
@@ -432,7 +444,12 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                 <Button variant="outline" onClick={() => copyClassInvite(firstClass, true)}>Copy student invite link</Button>
                 <Button variant="outline" onClick={() => copyClassInvite(firstClass, false)}>Copy class code</Button>
               </>
-            ) : <Button onClick={() => changeClassDialog(true)}>Create your first class</Button>}
+            ) : (
+              <>
+                <Button asChild><Link href="/teacher/welcome">Guided setup (5 minutes)</Link></Button>
+                <Button variant="outline" onClick={() => changeClassDialog(true)}>Create your first class</Button>
+              </>
+            )}
           </CardContent>
         </Card>
       ) : null}
@@ -528,6 +545,11 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                     </Button>
                     <p className="text-xs text-muted-foreground">Use 6–64 letters, numbers, dashes, or underscores.</p>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-class-course">Course</Label>
+                    <CourseSelect id="new-class-course" value={newCourseCurriculum} onChange={setNewCourseCurriculum} />
+                    <p className="text-xs text-muted-foreground">Optional. A class follows one course; you can change it later in the class settings.</p>
+                  </div>
                 </div>
                 {courseError && <p role="alert" className="text-sm text-destructive">{courseError}</p>}
                 <DialogFooter>
@@ -538,10 +560,14 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               </DialogContent>
             </Dialog>
           ),
-          rows: courses.map((course) => (
+          rows: [
+            ...courses.filter((course) => !!course.archivedAt === showArchived).map((course) => (
             <li key={course.id} className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-muted/30 transition-colors">
               <div className="min-w-0">
-                <p className="break-words text-sm font-medium text-foreground">{course.name}</p>
+                <p className="break-words text-sm font-medium text-foreground">
+                  {course.name}
+                  {course.period ? <span className="font-normal text-muted-foreground"> · Period {course.period}</span> : null}
+                </p>
                 <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <span className="font-mono font-medium text-foreground/80">{course.code}</span>
                   <Button
@@ -566,15 +592,31 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               </div>
               <Button
                 variant="ghost"
-                size="icon-sm"
-                className="size-7 text-muted-foreground hover:text-destructive"
-                aria-label={`Delete class ${course.name}`}
-                onClick={() => setCourseToDelete(course.id)}
+                size="sm"
+                className="h-7 text-xs text-muted-foreground hover:text-foreground"
+                aria-label={`Settings for ${course.name}`}
+                onClick={() => setSettingsFor(course.id)}
               >
-                <Trash2 className="size-3.5" />
+                <Settings2 className="size-3.5" /> Settings
               </Button>
             </li>
           )),
+            ...(courses.some((course) => course.archivedAt) || showArchived
+              ? [
+                  <li key="archived-toggle" className="px-5 py-2.5">
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                      onClick={() => setShowArchived(!showArchived)}
+                    >
+                      {showArchived
+                        ? "Back to active classes"
+                        : `Archived classes (${courses.filter((course) => course.archivedAt).length})`}
+                    </button>
+                  </li>,
+                ]
+              : []),
+          ],
         }}
       />
 
@@ -583,15 +625,32 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         <Button variant="outline" asChild><Link href="/teacher/vault"><PackageCheck /> Vault Controls</Link></Button>
       </nav>
 
-      <ConfirmDialog
-        open={!!courseToDelete}
-        onOpenChange={(open) => !open && setCourseToDelete(null)}
-        title="Delete Class"
-        description="Students will lose access to assignments for this class."
-        onConfirm={() => courseToDelete && handleDeleteCourse(courseToDelete)}
-        confirmText="Delete"
-        cancelText="Cancel"
-      />
+      {(() => {
+        const course = courses.find((c) => c.id === settingsFor);
+        if (!course) return null;
+        return (
+          <ClassSettingsDialog
+            key={course.id}
+            value={{ ...course, archived: !!course.archivedAt }}
+            open
+            onOpenChange={(open) => !open && setSettingsFor(null)}
+            onChanged={({ archived, ...patch }) => {
+              setCourses((cur) =>
+                cur.map((c) =>
+                  c.id === course.id
+                    ? { ...c, ...patch, ...(archived === undefined ? {} : { archivedAt: archived ? new Date().toISOString() : null }) }
+                    : c,
+                ),
+              );
+              refreshClasses().catch(() => undefined);
+            }}
+            onDeleted={() => {
+              setCourses((cur) => cur.filter((c) => c.id !== course.id));
+              refreshClasses().catch(() => undefined);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }

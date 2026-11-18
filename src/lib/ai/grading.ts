@@ -1,3 +1,4 @@
+import type { ApCourseKey } from "../../../functions/src/misconceptions";
 import { model } from "./config";
 import { scrubPII, classifyQuestion } from "./utils";
 import { gradeWithModel } from "../../../functions/src/grading-schema";
@@ -9,6 +10,8 @@ export async function gradeResponse(
   studentNames: string[] = [],
   /** The teacher's expected answer for this question (kept apart from the assignment rubric). */
   reference?: string,
+  /** The assignment's AP course when it is not AP Physics 1. */
+  apCourse?: ApCourseKey,
 ): Promise<{
   score: number;
   feedback: string;
@@ -26,7 +29,7 @@ export async function gradeResponse(
     }
 
     return await gradeWithModel(
-      { question, answer, rubric, reference },
+      { question, answer, rubric, reference, apCourse },
       async ({ systemInstruction, userPrompt }) => {
         const result = await model.generateContent({
           scrubLevel: "full",

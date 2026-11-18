@@ -1,0 +1,400 @@
+{
+  "id": "ap-physics-2",
+  "apCourse": "physics-2",
+  "name": "AP Physics 2",
+  "description": "Scorpio's roadmap through the seven AP Physics 2 units, from thermodynamics to modern physics: ready-made, auto-graded sets in a teaching order.",
+  "sets": [
+    {
+      "key": "9A",
+      "unit": 9,
+      "title": "Temperature and the ideal gas",
+      "description": "Particle motion, temperature and pressure, and ideal gas law calculations.",
+      "topics": ["9.1", "9.2"],
+      "draftIds": [
+        "KowBjxXLd4vYWO7EtY4I",
+        "NEJwpIkQIr0LY4IM1iOZ",
+        "HBwaMMw3jbc4JPBV4CRd",
+        "f6wB3T4HktcHsCLCeowr",
+        "q6S0kGQ5OVzY2GD1kCsh"
+      ]
+    },
+    {
+      "key": "9B",
+      "unit": 9,
+      "title": "Heating and thermal equilibrium",
+      "description": "Conduction, convection and radiation, specific heat and reaching a common temperature.",
+      "topics": ["9.3", "9.5"],
+      "draftIds": [
+        "shCjgbRqw69seUpPaAQy",
+        "8tC9DV2nvSaJvMLRsX3l",
+        "9TrtBJtW19YHmwyyatgZ",
+        "wzrkX0SC6EnLw2raZiUp",
+        "3BnXUHwHCmrUsveUENey"
+      ]
+    },
+    {
+      "key": "9C",
+      "unit": 9,
+      "title": "The first law and PV diagrams",
+      "description": "Work, heating and internal energy for gas processes read from PV diagrams.",
+      "topics": ["9.4"],
+      "draftIds": [
+        "qtdRFnjLm9USIfHhBaUB",
+        "NpHFItoomgD1SNr2o8rr",
+        "JtNqrxlgkp3wNFBJHwGa",
+        "z0HIh8Na50wULrKiqge6",
+        "Q7mPLUFgcsokGulrQCL2"
+      ]
+    },
+    {
+      "key": "9D",
+      "unit": 9,
+      "title": "Entropy and the second law",
+      "description": "Direction of energy flow, entropy changes and limits on heat engines.",
+      "topics": ["9.6"],
+      "draftIds": [
+        "YXnqCnFtNTSt0fU6Kw3G",
+        "7upYsE3nQzGX7w8eftyo",
+        "eASTuINrHaUGxGS029mQ",
+        "n5QXXe1ECJAFMXnI1RI7",
+        "5wyx8XxTCiQnp9ratX0M"
+      ]
+    },
+    {
+      "key": "10A",
+      "unit": 10,
+      "title": "Charge and Coulomb's law",
+      "description": "Charging objects, conservation of charge and forces between point charges.",
+      "topics": ["10.1", "10.2"],
+      "draftIds": [
+        "RrSXcAJCjVAA71hQ1Bk4",
+        "JAg7hf7MYqA5t6ziNS3p",
+        "BhKbeVJwZhjRJtqflbHi",
+        "Lkfm4T4757kN46cMd8lR",
+        "8zT0fteUHwzdlqVKUUoi"
+      ]
+    },
+    {
+      "key": "10B",
+      "unit": 10,
+      "title": "Electric fields",
+      "description": "Field vectors and field lines for point charges, plates and conductors.",
+      "topics": ["10.3"],
+      "draftIds": [
+        "LMtrfTECZiVpjsCXvUAp",
+        "NYwMNQYNtaApLTfsqxJI",
+        "UT8nzdX5J9EjtzuoGf6j",
+        "kUPg5RkS4mpS0FPMCLzS",
+        "W25OpmMiYDOoE3xWneNI"
+      ]
+    },
+    {
+      "key": "10C",
+      "unit": 10,
+      "title": "Potential energy and potential",
+      "description": "Electric potential energy of charge systems, potential and equipotentials.",
+      "topics": ["10.4", "10.5"],
+      "draftIds": [
+        "F6yqeNRPGY26ALP3ZnDk",
+        "8lYCRmKu5o3Xt26fRjuD",
+        "0M1JotPIRvRvKSk9Dhax",
+        "cuAcWpZdH2GeQ62yamvn",
+        "03RH4iS8WNRiAEdap5aN"
+      ]
+    },
+    {
+      "key": "10D",
+      "unit": 10,
+      "title": "Capacitors and energy",
+      "description": "Parallel-plate capacitors, stored energy and energy conservation for moving charges.",
+      "topics": ["10.6", "10.7"],
+      "draftIds": [
+        "ItV5TRgOWCfnQCN62wQe",
+        "khvAcZZZ6qtC61oQQJpL",
+        "DpqB6RsvhdD3mX5fctVa",
+        "wGavZDamMcg4W9Gkg3OI",
+        "InFJ2RuJDmrpV7tcp2s4"
+      ]
+    },
+    {
+      "key": "11A",
+      "unit": 11,
+      "title": "Current, resistance and Ohm's law",
+      "description": "Charge flow in simple circuits, resistivity and ohmic behaviour.",
+      "topics": ["11.1", "11.2", "11.3"],
+      "draftIds": [
+        "ErBDqyhx5vohYFVSckbr",
+        "YXGhA6GyQEJip44ZZHIB",
+        "jJoMO19GiE1J3ZOJFDXc",
+        "3OYsAn627sgkJ1mjzH9Z",
+        "bHGnC6jTsV4gJfdv8kgk"
+      ]
+    },
+    {
+      "key": "11B",
+      "unit": 11,
+      "title": "Power and series-parallel circuits",
+      "description": "Power in circuit elements and equivalent resistance of combined circuits.",
+      "topics": ["11.4", "11.5"],
+      "draftIds": [
+        "upWvJMOWX9ZIlKrV2tMR",
+        "kOij3ASc3ln5kuY6Xe5d",
+        "hWLKK0db5eDJydlqtjrh",
+        "Jb1v1zvt2iMZuzzEveVL",
+        "Hno0odpGSncHVIkxw8ae"
+      ]
+    },
+    {
+      "key": "11C",
+      "unit": 11,
+      "title": "Kirchhoff's rules",
+      "description": "Loop and junction rules for circuits with more than one branch or battery.",
+      "topics": ["11.6", "11.7"],
+      "draftIds": [
+        "w1jBQxXFj2mQi78ztLS1",
+        "DnNdlGdJC5JYB6nW6WzU",
+        "ag33cmExvC2GFLuvkjcR",
+        "mGaOEHrp7cFCCi0Z30Se",
+        "mMDu8HcRNBCbUZ864V3N"
+      ]
+    },
+    {
+      "key": "11D",
+      "unit": 11,
+      "title": "RC circuits",
+      "description": "Charging and discharging capacitors: initial, steady-state and time-constant behaviour.",
+      "topics": ["11.8"],
+      "draftIds": [
+        "G4TCkltk2yT72eZSmamT",
+        "YE8cm3lZQzlqDpjpzwMv",
+        "COfRbZiirkrvdJ6GccD2",
+        "iIGvmA4zd7vD5bZ4SvtY",
+        "C1mNLGgNHUrVAXcGPZFo"
+      ]
+    },
+    {
+      "key": "12A",
+      "unit": 12,
+      "title": "Magnetic fields",
+      "description": "Fields of magnets and Earth, dipoles and magnetic materials.",
+      "topics": ["12.1"],
+      "draftIds": [
+        "G71hVTptgRAPZpR8Jfbs",
+        "3Qn69OeYuo5FBglbFiRM",
+        "f1u0iZ6QVg643WDcDEve",
+        "NUZbstLaOZ6YQs86IJ36",
+        "ZhfNfkCQngr5VFFUctYO"
+      ]
+    },
+    {
+      "key": "12B",
+      "unit": 12,
+      "title": "Forces on moving charges",
+      "description": "Magnitude and direction of the magnetic force and circular paths in a field.",
+      "topics": ["12.2"],
+      "draftIds": [
+        "dLLDmBqjhTyxH1V0HLD9",
+        "8m3BrnoK0WbSaZ2g5ObD",
+        "vnEiK2dPg2P6WjAufJ6P",
+        "WOSNMZH5XPmpuUHNFteZ",
+        "EN3guXhQ7yCybj0LDNun"
+      ]
+    },
+    {
+      "key": "12C",
+      "unit": 12,
+      "title": "Fields and forces of wires",
+      "description": "The field around a current and forces on and between wires.",
+      "topics": ["12.3"],
+      "draftIds": [
+        "1d5p0ccrLrF4uzYSHuVk",
+        "lbJ4irGkNVTLBZHZ7Irx",
+        "D4iHWyZ5JjgAFKlwLVBb",
+        "GqD9uDw1BSgVHGEw7Jml",
+        "sOYiKKmOs7FGDpN3QIhR"
+      ]
+    },
+    {
+      "key": "12D",
+      "unit": 12,
+      "title": "Induction and Faraday's law",
+      "description": "Changing flux, induced emf and Lenz's law.",
+      "topics": ["12.4"],
+      "draftIds": [
+        "yOIcdydaGDwg1tzmKToK",
+        "KzGuLo9NDmxwOTayQ6pg",
+        "coLP2CL0XamvcdAtqOFb",
+        "Zgv6qla6nnlbcbCgNqWM",
+        "n3ftpXmuPvp1gF2ecmpg"
+      ]
+    },
+    {
+      "key": "13A",
+      "unit": 13,
+      "title": "Reflection and plane mirrors",
+      "description": "The law of reflection and images in flat mirrors.",
+      "topics": ["13.1"],
+      "draftIds": [
+        "P6w4IeVVmRHEqPwTepkK",
+        "TCqVSFZZNtvEiJEp9fWl",
+        "rIqwd5YuFkzrKWvqbXLx",
+        "X5Jja2dJX9CjmXVNzxAf",
+        "K5RMm8xyPkaOsErmFChP"
+      ]
+    },
+    {
+      "key": "13B",
+      "unit": 13,
+      "title": "Curved mirrors",
+      "description": "Ray diagrams and the mirror equation for concave and convex mirrors.",
+      "topics": ["13.2"],
+      "draftIds": [
+        "ulbajkykIKEFLOyrk87g",
+        "7PJtsnwAiX4rGek9Ar8T",
+        "BjyXpjHXcKpZf7og4hPH",
+        "S4JezfTMpqAJ07Dm2IaI",
+        "WxKOF5L4L64PPStjCG5m"
+      ]
+    },
+    {
+      "key": "13C",
+      "unit": 13,
+      "title": "Refraction",
+      "description": "Snell's law, index of refraction and total internal reflection.",
+      "topics": ["13.3"],
+      "draftIds": [
+        "mskGxuNNyA0VeL4OSgG6",
+        "CVC7bPe7VzvtWSJc4KV4",
+        "DsJYFWkcV61Eny72sa5g",
+        "XT8lJozsH86b38l1ETue",
+        "gj0sAKv7lMHFfMDE67sf"
+      ]
+    },
+    {
+      "key": "13D",
+      "unit": 13,
+      "title": "Lenses",
+      "description": "Ray diagrams, the thin-lens equation and magnification.",
+      "topics": ["13.4"],
+      "draftIds": [
+        "bNn4V4MrNdAGiiVNmRCT",
+        "YDh7gRVdGqVeYmb53MEp",
+        "RE3DjmWhtmuuFqUC21dn",
+        "toFzCxixyXztBoqofOmh",
+        "qWwaAj3phAR2i9sHOZjY"
+      ]
+    },
+    {
+      "key": "14A",
+      "unit": 14,
+      "title": "Wave properties",
+      "description": "Pulses, periodic waves, speed, wavelength and frequency.",
+      "topics": ["14.1", "14.2"],
+      "draftIds": [
+        "oUMjEQPXJne63JwrCtK0",
+        "lujUpwe3aSnrxWddsbej",
+        "EG9OjTCqRGE7MNFFkvg0",
+        "c0mPfxbdBt1bXxwclTEn",
+        "r8vHNe60gwXsF36r8MFt"
+      ]
+    },
+    {
+      "key": "14B",
+      "unit": 14,
+      "title": "Boundaries, light and the Doppler effect",
+      "description": "Reflection at boundaries, polarization, electromagnetic waves and frequency shifts.",
+      "topics": ["14.3", "14.4", "14.5"],
+      "draftIds": [
+        "2XlvwSGuzs2bRz2tEnuA",
+        "anzdiCaVpcQnJV8bnpEI",
+        "nd9eNnRXxUjvkr5ZLqSa",
+        "eZNaqGAcbPXskYsE7nTX",
+        "RyQ3zCs5YWPkbry6AR4n"
+      ]
+    },
+    {
+      "key": "14C",
+      "unit": 14,
+      "title": "Superposition and standing waves",
+      "description": "Interference of waves, beats and harmonics on strings and in pipes.",
+      "topics": ["14.6"],
+      "draftIds": [
+        "LWxklk5PcVR6IJMZ3uZX",
+        "cw5K7bJAKHHvYMC96uyg",
+        "OjrachkAvhLAtfeLTlNd",
+        "iLu3vsmxf9dOtZ9X4vkW",
+        "8o93AXhLsHIPW4mnnCuI"
+      ]
+    },
+    {
+      "key": "14D",
+      "unit": 14,
+      "title": "Diffraction and interference of light",
+      "description": "Single slits, double slits, gratings and thin films.",
+      "topics": ["14.7", "14.8", "14.9"],
+      "draftIds": [
+        "CQgjBU405XjOxCsg2YlS",
+        "N6GOjorIiwWBFvImkOOX",
+        "SqNyowzXxnlqDTqKLhcY",
+        "lXsqMmXbBhwFKYFgZYzh",
+        "0w4rkZGl9r5SJ6id5EPe"
+      ]
+    },
+    {
+      "key": "15A",
+      "unit": 15,
+      "title": "Photons and the photoelectric effect",
+      "description": "Photon energy, wave-particle duality, threshold frequency and work function.",
+      "topics": ["15.1", "15.5"],
+      "draftIds": [
+        "U94FBkzR2AdB1OBpimkh",
+        "WVZMjGAqnwMR8yVttQv5",
+        "AGh0CamhB4wH9zpUuNIU",
+        "w2LJD2YjyPAvSyCvfgOf",
+        "JpR1u4JEnNE4fkKZ6LH6"
+      ]
+    },
+    {
+      "key": "15B",
+      "unit": 15,
+      "title": "Atoms and spectra",
+      "description": "Energy levels in the Bohr model and emission and absorption lines.",
+      "topics": ["15.2", "15.3"],
+      "draftIds": [
+        "TdpxCc7QwK4RqJld3Nqr",
+        "tdfNqEtGMFy2rxaXn5WC",
+        "AgbEt7ANY9NkXQvzzAD5",
+        "RSD3Aux3qI9IC0AZ1ot4",
+        "7eWZUUBIcjQ5nwy448JD"
+      ]
+    },
+    {
+      "key": "15C",
+      "unit": 15,
+      "title": "Blackbody radiation and Compton scattering",
+      "description": "Thermal radiation from hot objects and photon momentum in scattering.",
+      "topics": ["15.4", "15.6"],
+      "draftIds": [
+        "Lhu6i3PQMliPgGQ2gzwL",
+        "PEdGmemfpRHGzxKedT2T",
+        "8GUUVKcvkgtuRrm6oKNS",
+        "A4jaF0Rdx9Q4trDxZP2w",
+        "txEi7gCFbG4KLsAdAQVD"
+      ]
+    },
+    {
+      "key": "15D",
+      "unit": 15,
+      "title": "Nuclear physics",
+      "description": "Mass-energy, fission and fusion, radioactive decay and half-life.",
+      "topics": ["15.7", "15.8"],
+      "draftIds": [
+        "AbYdTMVDAypt4ixFGhpN",
+        "TgTlarMInIxJkctHwJOT",
+        "IonuQLo8C81iLWAlolPD",
+        "LTkkWFgP24tV0iWtBnb8",
+        "rVaOythIMwzE1zWpUzcY"
+      ]
+    }
+  ]
+}

@@ -34,6 +34,16 @@ test('teacher invite is consumed atomically and cannot be reused',async()=>{
  const results=await Promise.all(['wta','wtb'].map(u=>register(req('auth/register',u,{role:'teacher',name:u,code:'INVITE'}))));
  expect(results.map(r=>r.status).sort()).toEqual([200,400]);
 });
+test('teacher invite attribution is copied onto the server-managed profile in the same transaction',async()=>{
+ await adminDb.collection('teacherInviteCodes').doc('ATTRIB').set({organizationId:null,contactEmail:'ann@school.test',label:'Dec outreach',expiresAt:new Date(Date.now()+60000),isUsed:false});
+ expect((await register(req('auth/register','wattrib',{role:'teacher',name:'Ann',code:'attrib'}))).status).toBe(200);
+ for(const col of ['users','teachers']){
+  const d=(await adminDb.collection(col).doc('wattrib').get()).data()!;
+  expect(d.invite).toMatchObject({code:'ATTRIB',contactEmail:'ann@school.test',label:'Dec outreach'});
+  expect(d.invite.redeemedAt).toBeDefined();
+ }
+ expect((await adminDb.collection('teacherInviteCodes').doc('ATTRIB').get()).data()).toMatchObject({isUsed:true,usedBy:'wattrib'});
+});
 test('assignment, draft, submission and finalization preserve permissions and answer secrecy',async()=>{
  const created=await createAssignment(req('assignments','wt',{title:'Physics',courseId:'wc',visibility:'private',gradingType:'manual',questions:[{id:'q',text:'2 + 2',points:10,correctAnswer:'4'}],dueDate:new Date(Date.now()-1000).toISOString()}));
  expect(created.status).toBe(200);const {id}=await created.json();

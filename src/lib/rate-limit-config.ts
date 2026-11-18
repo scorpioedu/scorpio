@@ -24,7 +24,11 @@ const MINUTE = 60_000;
 
 export const RATE_LIMITS = {
   // Routes that already had a limiter: numbers unchanged.
-  chat: { windowMs: chatbotConfig.rateLimit.windowMs, maxRequests: chatbotConfig.rateLimit.maxRequests, onError: "closed" },
+  chat: {
+    windowMs: chatbotConfig.rateLimit.windowMs,
+    maxRequests: chatbotConfig.rateLimit.maxRequests,
+    onError: "closed",
+  },
   generate: { windowMs: MINUTE, maxRequests: 5, onError: "closed" },
   notebook: { windowMs: MINUTE, maxRequests: 20, onError: "closed" },
   landing: { windowMs: MINUTE, maxRequests: 5, onError: "closed" },
@@ -45,6 +49,7 @@ export const RATE_LIMITS = {
   session: { windowMs: MINUTE, maxRequests: 60, onError: "open" },
   register: { windowMs: MINUTE, maxRequests: 20, onError: "open" },
   write: { windowMs: MINUTE, maxRequests: 120, onError: "open" },
+  insights: { windowMs: MINUTE, maxRequests: 30, onError: "open" },
 
   // Unauthenticated routes, per trusted client IP.
   teacherCode: { windowMs: MINUTE, maxRequests: 30, onError: "closed", noIp: 600 },

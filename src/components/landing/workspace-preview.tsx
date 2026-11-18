@@ -262,7 +262,7 @@ export function WorkspacePreview() {
 
   const handleDuplicateAssignment = (assignment: Assignment) => {
     setCreateDraft({
-      title: `${assignment.title} (Copy)`,
+      title: assignment.title,
       description: assignment.description,
       courseId: assignment.courseId,
       questions: assignment.questions.map((q) => ({ ...q })),

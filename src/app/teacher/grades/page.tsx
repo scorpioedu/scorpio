@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where, doc, getDoc, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { useSelectedClass } from "@/contexts/selected-class-context";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -29,8 +30,9 @@ interface Student {
 
 export default function TeacherGradesPage() {
   const { user } = useAuth();
-  const [courses, setCourses] = useState<{id: string, name: string, code: string}[]>([]);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
+  // The class is shared with the other teacher pages (remembered, and in the URL as ?class=).
+  const { classes, classId: selectedCourseId, setClassId: setSelectedCourseId } = useSelectedClass({ allowAll: true });
+  const courses = classes ?? [];
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [assignments, setAssignments] = useState<{id: string, title: string, courseId?: string}[]>([]);
@@ -40,25 +42,6 @@ export default function TeacherGradesPage() {
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
 
-  useEffect(() => {
-    async function fetchCourses() {
-        if (!user) return;
-        try {
-            const snap = await getDocs(query(collection(db, "courses"), where("teacherId", "==", user.uid)));
-            const coursesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string; code: string }));
-            setCourses(coursesData);
-            
-            // If there's at least one course, select the first one by default 
-            // instead of "All Classes" to satisfy "per class" requirement better
-            if (coursesData.length > 0) {
-                setSelectedCourseId(coursesData[0].id);
-            }
-        } catch (e) {
-            console.error("Error fetching courses", e);
-        }
-    }
-    fetchCourses();
-  }, [user]);
 
   useEffect(() => {
     async function fetchAssignments() {

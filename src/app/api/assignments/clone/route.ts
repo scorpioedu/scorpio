@@ -32,20 +32,26 @@ const COPIED_FIELDS = [
   "totalPoints",
   "type",
   "googleFormLink",
+  "apCourse",
+  "apUnit",
+  "apTopics",
+  "curriculumId",
+  "curriculumSetKey",
+  "curriculumSequence",
 ] as const;
 
 /**
- * POST /api/assignments/clone { sourceId, courseId?, title? } -> { id }
+ * POST /api/assignments/clone { sourceId, courseId?, title?, dueDate? } -> { id }
  * Copies an assignment the caller can read (own, global, or shared with their network) into a new
  * private assignment they own. The answer key is copied server-side (assignment_keys/{sourceId} ->
- * assignment_keys/{newId}) and is never returned. Free plans may only copy their own assignments and
- * the starter waypoints (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
+ * assignment_keys/{newId}) and is never returned. Free plans may copy their own assignments and every
+ * global waypoint; department (network) waypoints need a Department License (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
  */
 export const POST = withAuthorizedRequest(
   async (req, { caller, profile, requestId }) => {
     const parsed = await parseJsonBody(req, cloneAssignmentBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const { sourceId, courseId, title } = parsed.data;
+    const { sourceId, courseId, title, dueDate } = parsed.data;
 
     const sourceRef = adminDb.collection("assignments").doc(sourceId);
     const source = (await sourceRef.get()).data();
@@ -60,9 +66,8 @@ export const POST = withAuthorizedRequest(
     let split: ReturnType<typeof splitAssignmentQuestions>;
     let rubric: string;
     try {
-      await assertCanCloneAssignment({
+      assertCanCloneAssignment({
         plan: await resolveCallerPlan(profile.organizationId),
-        sourceId,
         source,
         callerUid: caller.uid,
       });
@@ -80,6 +85,7 @@ export const POST = withAuthorizedRequest(
           id: randomUUID(),
           correctAnswer: answer,
         };
+        if (Array.isArray(question.distractors)) copy.distractors = question.distractors;
         if (type !== undefined) copy.type = type;
         if (copy.points === undefined) copy.points = 10;
         return copy;
@@ -98,9 +104,9 @@ export const POST = withAuthorizedRequest(
     const batch = adminDb.batch();
     batch.set(ref, {
       ...copied,
+      // The source's own title: students see it, and a "(Copy)" suffix means nothing to them.
       title:
-        title ??
-        `${typeof source.title === "string" && source.title ? source.title : "Untitled"} (Copy)`,
+        title ?? (typeof source.title === "string" && source.title ? source.title : "Untitled"),
       gradingType:
         typeof source.gradingType === "string" && source.gradingType ? source.gradingType : "ai",
       teacherId: caller.uid,
@@ -112,11 +118,12 @@ export const POST = withAuthorizedRequest(
       answerKeySeparated: true,
       forkedFrom: sourceId,
       forkCount: 0,
-      dueDate: null,
+      dueDate: dueDate ? new Date(dueDate) : null,
       createdAt: new Date(),
     });
     batch.set(adminDb.collection("assignment_keys").doc(ref.id), {
       answers: split.answers,
+      ...(Object.keys(split.distractors).length ? { distractors: split.distractors } : {}),
       rubric,
       teacherId: caller.uid,
     });

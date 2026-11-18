@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import { RouteProgressBar } from "@/components/route-progress-bar";
 import { Suspense } from "react";
 import { MotionConfig } from "framer-motion";
+import { FeedbackWidget } from "@/components/feedback-widget";
 
 export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
@@ -23,7 +24,10 @@ export function Providers({ children }: Readonly<{ children: React.ReactNode }>)
             <Suspense fallback={null}>
               <RouteProgressBar />
             </Suspense>
-            <AuthProvider needsAuth={needsAuth}>{children}</AuthProvider>
+            <AuthProvider needsAuth={needsAuth}>
+              {children}
+              {needsAuth && <FeedbackWidget />}
+            </AuthProvider>
             <Toaster position="top-center" richColors />
           </SpaceEffectsProvider>
         </AppearanceProvider>

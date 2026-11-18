@@ -22,6 +22,8 @@ import {
   type GradableQuestion,
   type SubmittedAnswer,
 } from "./grading-core";
+import { recordMisconceptionEvents } from "./misconception-events";
+import { nonDefaultApCourse, type ApCourseKey } from "./misconceptions";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
 
@@ -42,6 +44,7 @@ async function gradeResponseAI(
   studentNames: string[] = [],
   organizationId: string = "",
   reference?: string,
+  apCourse?: ApCourseKey,
 ): Promise<GradeResult> {
   try {
     if (!question || !answer) {
@@ -55,7 +58,7 @@ async function gradeResponseAI(
     }
 
     return await gradeWithModel(
-      { question, answer, rubric, reference },
+      { question, answer, rubric, reference, apCourse },
       async (request) => {
         // Same choke-point rule as callGeminiDirect: nothing leaves unscrubbed (patterns only; roster names
         // were already masked in the inputs and must not hit our own template words). Idempotent, so the
@@ -130,6 +133,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
   const questions = ((assignmentData?.questions || []) as GradableQuestion[]).map((q) => ({
     ...q,
     correctAnswer: key?.answers?.[q.id] ?? q.correctAnswer,
+    distractors: key?.distractors?.[q.id],
   }));
   const answers: SubmittedAnswer[] = submissionData?.answers || [];
   const globalRubric = key?.rubric || assignmentData?.rubric || "";
@@ -162,6 +166,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
           studentNames,
           organizationId,
           input.reference,
+          input.apCourse,
         );
     }
   }
@@ -169,9 +174,28 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
   const result = await gradeSubmissionAnswers(questions, answers, {
     aiGrader,
     globalRubric,
+    apCourse: nonDefaultApCourse(assignmentData?.apCourse),
     concurrency: GRADING_CONCURRENCY,
     defaultFeedback: "Submission received and pending final review.",
   });
+
+  const recordEvents = (final: boolean) =>
+    recordMisconceptionEvents(
+      db,
+      {
+        submissionId,
+        studentId,
+        assignmentId,
+        assignment: assignmentData,
+        answers: result.answers,
+        final,
+      },
+      (error) =>
+        logger.error("Failed to record misconception events", {
+          submissionId,
+          error: error instanceof Error ? error.message : String(error),
+        }),
+    );
 
   if (result.reviewReasons.length > 0) {
     await db
@@ -188,6 +212,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
             ? result.reviewReasons[0]
             : "AI budget unavailable",
       });
+    await recordEvents(false);
     logger.warn("Submission routed to teacher review", {
       submissionId,
       flaggedAnswers: result.reviewReasons.length,
@@ -205,6 +230,7 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
     gradedAt: new Date(),
   });
 
+  await recordEvents(true);
   logger.info("Successfully graded submission", { submissionId, aiCalls: result.aiCalls });
 
   // --- EMAIL NOTIFICATION (DISABLED) ---

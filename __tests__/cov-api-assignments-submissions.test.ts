@@ -129,6 +129,55 @@ describe("POST /api/assignments", () => {
     expect(mockWrites[1].data).toMatchObject({ rubric: "", answers: { q1: "" } });
   });
 
+  test("AP tags are checked: unknown and other-unit topics dropped, distractors kept in the key", async () => {
+    const res = await post(assignmentsPost, {
+      ...valid,
+      apUnit: 4,
+      apTopics: ["4.3", "9.9", "2.1", "4.1", "4.3"],
+      questions: [
+        {
+          id: "q1",
+          text: "Final speed?",
+          type: "numeric",
+          correctAnswer: "2 m/s",
+          apTopic: "4.3",
+          distractors: [{ answer: "4 m/s", misconception: "momentum-kinetic-energy-confusion" }],
+        },
+        { id: "q2", text: "Explain", correctAnswer: "x", apTopic: "made up" },
+      ],
+    });
+    expect(res.status).toBe(200);
+    const [assignment, key] = mockWrites;
+    expect(assignment.data).toMatchObject({
+      apCourse: "physics-1",
+      apUnit: 4,
+      apTopics: ["4.1", "4.3"],
+      questions: [
+        { id: "q1", apTopic: "4.3" },
+        expect.not.objectContaining({ apTopic: expect.anything() }),
+      ],
+    });
+    expect(JSON.stringify(assignment.data)).not.toContain("momentum-kinetic-energy-confusion");
+    expect(key.data).toMatchObject({
+      distractors: {
+        q1: [{ answer: "4 m/s", misconception: "momentum-kinetic-energy-confusion" }],
+      },
+    });
+  });
+
+  test("no AP unit stores null AP tags; topics alone imply their unit", async () => {
+    await post(assignmentsPost, valid);
+    expect(mockWrites[0].data).toMatchObject({ apCourse: null, apUnit: null, apTopics: [] });
+    mockWrites.length = 0;
+    await post(assignmentsPost, { ...valid, apTopics: ["7.2"] });
+    expect(mockWrites[0].data).toMatchObject({
+      apCourse: "physics-1",
+      apUnit: 7,
+      apTopics: ["7.2"],
+    });
+    expect((await post(assignmentsPost, { ...valid, apUnit: 9 })).status).toBe(400);
+  });
+
   test("403 when the class belongs to another teacher or does not exist", async () => {
     mockDocs.set("courses/c1", { teacherId: "other" });
     const res = await post(assignmentsPost, { ...valid, courseId: "c1" });

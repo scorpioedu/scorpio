@@ -1,0 +1,286 @@
+{
+  "course": "physics-2",
+  "name": "AP Physics 2",
+  "note": "Unit and topic structure follows the College Board AP Physics 2 course framework (2024 revision). Titles and descriptions are written in Scorpio's own words; they are not College Board text.",
+  "units": [
+    {
+      "unit": 9,
+      "title": "Thermodynamics",
+      "summary": "Temperature, gases, heat transfer, the first and second laws and entropy.",
+      "topics": [
+        {
+          "id": "9.1",
+          "title": "Kinetic theory of temperature and pressure",
+          "summary": "Linking temperature to the average kinetic energy of particles and pressure to their collisions with walls."
+        },
+        {
+          "id": "9.2",
+          "title": "The ideal gas law",
+          "summary": "Relating pressure, volume, temperature and amount of gas, and reading PV diagrams."
+        },
+        {
+          "id": "9.3",
+          "title": "Thermal energy transfer and equilibrium",
+          "summary": "Heating by conduction, convection and radiation, and why objects in contact reach one temperature."
+        },
+        {
+          "id": "9.4",
+          "title": "The first law of thermodynamics",
+          "summary": "Energy conservation for a gas: internal energy changes through heating and work in isothermal, isobaric, isochoric and adiabatic processes."
+        },
+        {
+          "id": "9.5",
+          "title": "Specific heat and thermal conductivity",
+          "summary": "How much energy a temperature change takes for a material, and how fast energy flows through it."
+        },
+        {
+          "id": "9.6",
+          "title": "Entropy and the second law of thermodynamics",
+          "summary": "Why energy spreads out, the direction of spontaneous processes and limits on converting heating into work."
+        }
+      ]
+    },
+    {
+      "unit": 10,
+      "title": "Electric force, field and potential",
+      "summary": "Charge, Coulomb's law, electric fields, potential energy, potential and capacitors.",
+      "topics": [
+        {
+          "id": "10.1",
+          "title": "Electric charge and electric force",
+          "summary": "Two kinds of charge and the inverse-square force between point charges."
+        },
+        {
+          "id": "10.2",
+          "title": "Conservation of electric charge and charging",
+          "summary": "Charging by friction, contact and induction; conductors, insulators and grounding."
+        },
+        {
+          "id": "10.3",
+          "title": "Electric fields",
+          "summary": "Field as force per unit charge: field vectors and lines for point charges, plates and conductors."
+        },
+        {
+          "id": "10.4",
+          "title": "Electric potential energy",
+          "summary": "Energy stored in a system of charges and how it changes as charges move."
+        },
+        {
+          "id": "10.5",
+          "title": "Electric potential",
+          "summary": "Potential energy per unit charge, equipotential lines and their link to the field."
+        },
+        {
+          "id": "10.6",
+          "title": "Capacitors",
+          "summary": "Parallel-plate capacitors: capacitance, charge, field, stored energy and dielectrics."
+        },
+        {
+          "id": "10.7",
+          "title": "Conservation of electric energy",
+          "summary": "Energy bar charts and conservation for charges moving through a potential difference."
+        }
+      ]
+    },
+    {
+      "unit": 11,
+      "title": "Electric circuits",
+      "summary": "Current, resistance, power, series and parallel circuits, Kirchhoff's rules and RC circuits.",
+      "topics": [
+        {
+          "id": "11.1",
+          "title": "Electric current",
+          "summary": "Rate of charge flow, its direction by convention and what drives it."
+        },
+        {
+          "id": "11.2",
+          "title": "Simple circuits",
+          "summary": "Closed loops, circuit diagrams and the roles of batteries, wires, switches and loads."
+        },
+        {
+          "id": "11.3",
+          "title": "Resistance, resistivity and Ohm's law",
+          "summary": "What sets a wire's resistance, and the current through ohmic and non-ohmic elements."
+        },
+        {
+          "id": "11.4",
+          "title": "Electric power",
+          "summary": "The rate at which circuit elements transfer energy, and comparing bulb brightness."
+        },
+        {
+          "id": "11.5",
+          "title": "Compound direct current circuits",
+          "summary": "Equivalent resistance for series and parallel combinations, ammeters, voltmeters and internal resistance."
+        },
+        {
+          "id": "11.6",
+          "title": "Kirchhoff's loop rule",
+          "summary": "Energy conservation around any closed loop of a circuit."
+        },
+        {
+          "id": "11.7",
+          "title": "Kirchhoff's junction rule",
+          "summary": "Charge conservation where branches of a circuit meet."
+        },
+        {
+          "id": "11.8",
+          "title": "Resistor-capacitor (RC) circuits",
+          "summary": "Charging and discharging a capacitor through a resistor: initial, steady-state and time-constant behaviour."
+        }
+      ]
+    },
+    {
+      "unit": 12,
+      "title": "Magnetism and electromagnetism",
+      "summary": "Magnetic fields, forces on moving charges and currents, and induction.",
+      "topics": [
+        {
+          "id": "12.1",
+          "title": "Magnetic fields",
+          "summary": "Fields of permanent magnets and Earth, dipoles and how materials respond to a field."
+        },
+        {
+          "id": "12.2",
+          "title": "Magnetism and moving charges",
+          "summary": "The force on a charge moving through a field, circular paths and the field a moving charge makes."
+        },
+        {
+          "id": "12.3",
+          "title": "Magnetism and current-carrying wires",
+          "summary": "The field around a long wire and forces on and between wires that carry current."
+        },
+        {
+          "id": "12.4",
+          "title": "Electromagnetic induction and Faraday's law",
+          "summary": "Changing magnetic flux, induced emf and Lenz's law for the direction of the induced current."
+        }
+      ]
+    },
+    {
+      "unit": 13,
+      "title": "Geometric optics",
+      "summary": "Reflection, refraction and the images formed by mirrors and lenses.",
+      "topics": [
+        {
+          "id": "13.1",
+          "title": "Reflection",
+          "summary": "The law of reflection, specular and diffuse reflection and plane-mirror images."
+        },
+        {
+          "id": "13.2",
+          "title": "Images formed by mirrors",
+          "summary": "Ray diagrams and the mirror equation for concave and convex mirrors; real and virtual images."
+        },
+        {
+          "id": "13.3",
+          "title": "Refraction",
+          "summary": "Index of refraction, Snell's law, total internal reflection and the critical angle."
+        },
+        {
+          "id": "13.4",
+          "title": "Images formed by lenses",
+          "summary": "Ray diagrams and the thin-lens equation for converging and diverging lenses; magnification."
+        }
+      ]
+    },
+    {
+      "unit": 14,
+      "title": "Waves, sound and physical optics",
+      "summary": "Wave properties, standing waves, the Doppler effect, interference and diffraction.",
+      "topics": [
+        {
+          "id": "14.1",
+          "title": "Properties of wave pulses and waves",
+          "summary": "Transverse and longitudinal waves, amplitude, and what sets a wave's speed in a medium."
+        },
+        {
+          "id": "14.2",
+          "title": "Periodic waves",
+          "summary": "Wavelength, frequency, period and the relation v = f times wavelength; reading wave graphs."
+        },
+        {
+          "id": "14.3",
+          "title": "Boundary behaviour of waves and polarization",
+          "summary": "Reflection and transmission at boundaries, inverted pulses and polarized light."
+        },
+        {
+          "id": "14.4",
+          "title": "Electromagnetic waves",
+          "summary": "Light as a transverse wave of fields, the spectrum and the speed of light."
+        },
+        {
+          "id": "14.5",
+          "title": "The Doppler effect",
+          "summary": "Shifts in observed frequency when a source or observer moves."
+        },
+        {
+          "id": "14.6",
+          "title": "Wave interference and standing waves",
+          "summary": "Superposition, beats, nodes and antinodes, and harmonics on strings and in pipes."
+        },
+        {
+          "id": "14.7",
+          "title": "Diffraction",
+          "summary": "Spreading of waves through openings and around obstacles; single-slit patterns."
+        },
+        {
+          "id": "14.8",
+          "title": "Double-slit interference and diffraction gratings",
+          "summary": "Path difference, bright and dark fringes and how slit spacing and wavelength set the pattern."
+        },
+        {
+          "id": "14.9",
+          "title": "Thin-film interference",
+          "summary": "Phase changes on reflection and the colours of soap films and coatings."
+        }
+      ]
+    },
+    {
+      "unit": 15,
+      "title": "Modern physics",
+      "summary": "Quantum ideas, atomic models, photons, and nuclear physics.",
+      "topics": [
+        {
+          "id": "15.1",
+          "title": "Quantum theory and wave-particle duality",
+          "summary": "Photons, the de Broglie wavelength and when wave or particle models apply."
+        },
+        {
+          "id": "15.2",
+          "title": "The Bohr model of atomic structure",
+          "summary": "Quantized energy levels in hydrogen and transitions between them."
+        },
+        {
+          "id": "15.3",
+          "title": "Emission and absorption spectra",
+          "summary": "Spectral lines as energy differences between levels; identifying elements."
+        },
+        {
+          "id": "15.4",
+          "title": "Blackbody radiation",
+          "summary": "How the spectrum and power radiated by a hot object depend on its temperature."
+        },
+        {
+          "id": "15.5",
+          "title": "The photoelectric effect",
+          "summary": "Threshold frequency, work function and the energy of ejected electrons."
+        },
+        {
+          "id": "15.6",
+          "title": "Compton scattering",
+          "summary": "Photon momentum and the wavelength shift when a photon scatters from an electron."
+        },
+        {
+          "id": "15.7",
+          "title": "Fission, fusion and nuclear decay",
+          "summary": "Mass-energy equivalence, binding energy and conservation in nuclear reactions."
+        },
+        {
+          "id": "15.8",
+          "title": "Types of radioactive decay",
+          "summary": "Alpha, beta and gamma decay, half-life and decay curves."
+        }
+      ]
+    }
+  ]
+}

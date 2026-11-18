@@ -1,0 +1,766 @@
+{
+  "9A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "gas-variable-in-isolation",
+        "problems": 1
+      }
+    ]
+  },
+  "9B": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 3,
+      "numeric": 2
+    },
+    "misconceptions": [
+      {
+        "tag": "conduction-rate-factors",
+        "problems": 2
+      },
+      {
+        "tag": "specific-heat-ignored",
+        "problems": 2
+      },
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 1
+      },
+      {
+        "tag": "heat-temperature-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "9C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 1,
+      "medium": 3,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "thermal-work-sign",
+        "problems": 5
+      },
+      {
+        "tag": "isothermal-adiabatic-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 1
+      }
+    ]
+  },
+  "9D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "engine-converts-all-heat",
+        "problems": 2
+      },
+      {
+        "tag": "entropy-never-decreases-locally",
+        "problems": 1
+      },
+      {
+        "tag": "thermal-work-sign",
+        "problems": 1
+      }
+    ]
+  },
+  "10A": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "charging-moves-positive-charge",
+        "problems": 1
+      },
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "10B": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 2
+      },
+      {
+        "tag": "conductor-interior-field",
+        "problems": 1
+      },
+      {
+        "tag": "field-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 1
+      }
+    ]
+  },
+  "10C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-potential-zero-together",
+        "problems": 2
+      },
+      {
+        "tag": "inverse-square-misapplied",
+        "problems": 2
+      },
+      {
+        "tag": "potential-energy-potential-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "vector-scalar-superposition",
+        "problems": 1
+      }
+    ]
+  },
+  "10D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "capacitor-wrong-quantity-fixed",
+        "problems": 2
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 1
+      },
+      {
+        "tag": "potential-energy-potential-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11A": {
+    "problems": 5,
+    "minutes": 11,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "current-used-up",
+        "problems": 2
+      },
+      {
+        "tag": "sequential-circuit-reasoning",
+        "problems": 2
+      },
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "terminal-voltage-equals-emf",
+        "problems": 2
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "voltage-current-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "battery-constant-current",
+        "problems": 1
+      },
+      {
+        "tag": "current-used-up",
+        "problems": 1
+      },
+      {
+        "tag": "junction-rule-ignored",
+        "problems": 1
+      },
+      {
+        "tag": "sequential-circuit-reasoning",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "11D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "capacitor-steady-current",
+        "problems": 2
+      },
+      {
+        "tag": "battery-constant-current",
+        "problems": 1
+      },
+      {
+        "tag": "rc-linear-change",
+        "problems": 1
+      },
+      {
+        "tag": "series-parallel-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "12A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "vector-scalar-superposition",
+        "problems": 2
+      },
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-poles-as-charges",
+        "problems": 1
+      }
+    ]
+  },
+  "12B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "field-direction-ignores-sign",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-force-along-field",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-force-does-work",
+        "problems": 1
+      }
+    ]
+  },
+  "12C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "wire-field-not-circular",
+        "problems": 2
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      }
+    ]
+  },
+  "12D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 1
+      },
+      {
+        "tag": "induction-needs-change",
+        "problems": 1
+      },
+      {
+        "tag": "lenz-opposes-field",
+        "problems": 1
+      }
+    ]
+  },
+  "13A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "plane-mirror-image-location",
+        "problems": 2
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "13B": {
+    "problems": 5,
+    "minutes": 15,
+    "difficulty": {
+      "easy": 1,
+      "medium": 2,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "optics-sign-convention",
+        "problems": 4
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "13C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "refraction-wrong-way",
+        "problems": 4
+      },
+      {
+        "tag": "frequency-changes-in-medium",
+        "problems": 2
+      },
+      {
+        "tag": "total-internal-reflection-direction",
+        "problems": 2
+      }
+    ]
+  },
+  "13D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "optics-sign-convention",
+        "problems": 3
+      },
+      {
+        "tag": "partial-lens-partial-image",
+        "problems": 1
+      },
+      {
+        "tag": "real-virtual-image-confusion",
+        "problems": 1
+      }
+    ]
+  },
+  "14A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "wave-speed-depends-on-source",
+        "problems": 2
+      },
+      {
+        "tag": "frequency-changes-in-medium",
+        "problems": 1
+      },
+      {
+        "tag": "wave-carries-matter",
+        "problems": 1
+      }
+    ]
+  },
+  "14B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 3,
+      "medium": 1,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "boundary-phase-change",
+        "problems": 1
+      },
+      {
+        "tag": "light-speed-varies-in-vacuum",
+        "problems": 1
+      }
+    ]
+  },
+  "14C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "standing-wave-harmonics",
+        "problems": 4
+      },
+      {
+        "tag": "superposition-not-temporary",
+        "problems": 1
+      },
+      {
+        "tag": "wave-speed-depends-on-source",
+        "problems": 1
+      }
+    ]
+  },
+  "14D": {
+    "problems": 5,
+    "minutes": 12,
+    "difficulty": {
+      "easy": 2,
+      "medium": 3,
+      "hard": 0
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "slit-width-pattern-width",
+        "problems": 2
+      },
+      {
+        "tag": "boundary-phase-change",
+        "problems": 1
+      },
+      {
+        "tag": "interference-condition-swapped",
+        "problems": 1
+      }
+    ]
+  },
+  "15A": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "intensity-sets-photon-energy",
+        "problems": 2
+      }
+    ]
+  },
+  "15B": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "photon-energy-is-level-energy",
+        "problems": 3
+      },
+      {
+        "tag": "emission-absorption-confusion",
+        "problems": 2
+      }
+    ]
+  },
+  "15C": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "blackbody-peak-wrong-way",
+        "problems": 2
+      },
+      {
+        "tag": "celsius-as-absolute",
+        "problems": 2
+      },
+      {
+        "tag": "photon-slows-when-losing-energy",
+        "problems": 2
+      }
+    ]
+  },
+  "15D": {
+    "problems": 5,
+    "minutes": 13,
+    "difficulty": {
+      "easy": 2,
+      "medium": 2,
+      "hard": 1
+    },
+    "types": {
+      "multiple-choice": 2,
+      "numeric": 3
+    },
+    "misconceptions": [
+      {
+        "tag": "mass-conserved-in-nuclear-reactions",
+        "problems": 2
+      },
+      {
+        "tag": "nucleon-charge-bookkeeping",
+        "problems": 2
+      },
+      {
+        "tag": "half-life-linear",
+        "problems": 1
+      }
+    ]
+  }
+}

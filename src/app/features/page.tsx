@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import Image from "next/image";
+import { AP_UNITS, apUnitLabel } from "@/data/ap";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -60,7 +61,7 @@ export default function FeaturesPage() {
     {
       icon: Brain,
       title: "4-Layer Socratic Scaffolding",
-      description: "Enforces the struggle: diagnostic query, concept priming, guided derivation, and verification. No answer leaks.",
+      description: "Hints follow four steps: diagnostic query, concept priming, guided derivation, and verification.",
       tag: "Pedagogical",
       highlight: "0% Direct Answer Rate",
     },
@@ -81,37 +82,37 @@ export default function FeaturesPage() {
     {
       icon: Calculator,
       title: "Constraint-Led Derivations",
-      description: "Students are guided through the steps, not handed solutions. AI architecture makes solver bypass structurally impossible.",
+      description: "Students are guided through the steps, not handed solutions. Tested on 25 problems, not guaranteed for every question.",
       tag: "Architecture",
-      highlight: "Anti-Solver",
+      highlight: "Tested on 25 problems",
     },
     {
       icon: Waypoints,
-      title: "Shared Waypoints Network",
-      description: "Integrate high-precision, peer-validated physics modules and benchmarks into your syllabus with one click.",
-      tag: "Network",
-      highlight: "Instructor-Authored",
+      title: "Waypoints Library",
+      description: "Copy any global Waypoint, including the AP Physics 1 problem sets, into your class and edit it. Department Waypoints are shared inside your school network.",
+      tag: "Library",
+      highlight: "Free to copy",
     },
     {
       icon: ShieldUser,
-      title: "Verifiable Academic Integrity",
-      description: "Rigid schema constraints block homework-solving hacks and preserve homework value for true formative assessment.",
-      tag: "Security",
-      highlight: "FERPA / COPPA",
+      title: "Hints, Not Answers",
+      description: "Raise is built to give the next step instead of the solution, so homework still shows what students know.",
+      tag: "Integrity",
+      highlight: "0 of 25 test questions answered directly",
     },
     {
       icon: FileUp,
-      title: "Multimodal Evidence Logistics",
-      description: "End-to-end support for multi-format coursework, including OCR-ready student PDF uploads and handwritten math scans.",
-      tag: "Logistics",
-      highlight: "Multi-Format",
+      title: "Auto-Grading",
+      description: "Numeric answers are checked with units and tolerance, multiple choice by exact match, and written answers by an AI grader. Feedback never reveals the answer key.",
+      tag: "Grading",
+      highlight: "Free",
     },
     {
       icon: Users,
-      title: "Departmental Scale",
-      description: "Role-based access designed for deans and instructors to manage student cohorts, spend caps, and mastery telemetry.",
-      tag: "Enterprise",
-      highlight: "Unlimited Seats",
+      title: "Class Misconception Report",
+      description: "Top misconceptions ranked by how many students showed them (for example 8 of 24), by class, assignment and AP unit.",
+      tag: "Insight",
+      highlight: "Free",
     },
   ];
 
@@ -138,7 +139,7 @@ export default function FeaturesPage() {
               <span className="text-primary italic">not answer-shortcuts.</span>
             </h1>
             <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              From verified 4-layer scaffolding to collaborative Waypoints—every feature is purpose-built to enforce the Socratic method and restore homework integrity.
+              From hint-only tutoring to auto-grading and the class misconception report, built for AP Physics 1 homework.
             </p>
 
             {/* Quick Link Pills */}
@@ -148,7 +149,7 @@ export default function FeaturesPage() {
                 { label: "LaTeX Precision Engine", target: "math-fidelity" },
                 { label: "Blinded Ablation Study", target: "comparison" },
                 { label: "Instructional Workflows", target: "workflow" },
-                { label: "Waypoints Network", target: "waypoints" },
+                { label: "Waypoints Library", target: "waypoints" },
               ].map((link) => (
                 <button
                   key={link.label}
@@ -318,7 +319,7 @@ export default function FeaturesPage() {
                 Independent Research • 125-Response Ablation Study
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-                Not another AI chatbot wrapper.
+                Hints, not answers: what we measured.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                 Every metric below is sourced from our published ablation study—blinded scoring by an independent Physics Ph.D. auditor across 25 procedural physics problems.
@@ -333,7 +334,7 @@ export default function FeaturesPage() {
             </div>
 
             <div className="rounded-3xl border border-border/60 overflow-hidden bg-card/30 backdrop-blur-xl shadow-xl">
-              <div className="grid grid-cols-5 bg-muted/30 border-b border-border/50 px-6 py-4">
+              <div className="grid grid-cols-3 bg-muted/30 border-b border-border/50 px-6 py-4">
                 <div className="col-span-1 text-xs font-black uppercase tracking-[0.15em] text-muted-foreground">Capability</div>
                 <div className="col-span-1 text-center">
                   <div className="inline-flex flex-col items-center gap-1">
@@ -342,22 +343,19 @@ export default function FeaturesPage() {
                   </div>
                 </div>
                 <div className="col-span-1 text-center"><span className="text-xs font-black uppercase tracking-widest text-muted-foreground/70">ChatGPT / Gemini</span></div>
-                <div className="col-span-1 text-center"><span className="text-xs font-black uppercase tracking-widest text-muted-foreground/70">Khanmigo</span></div>
-                <div className="col-span-1 text-center"><span className="text-xs font-black uppercase tracking-widest text-muted-foreground/70">Human Tutor</span></div>
               </div>
 
               {[
-                { capability: "Direct Answer Rate", footnote: "25 procedural physics problems", scorpio: { val: "0%" }, chatgpt: { val: "~100%", dim: true }, khan: { val: "~40%", dim: true }, human: { val: "Varies" } },
-                { capability: "Pedagogical Quality Score", footnote: "Ph.D. blinded holistic audit, 5-pt scale", scorpio: { val: "4.62 / 5" }, chatgpt: { val: "4.38 / 5¹", dim: true }, khan: { val: "No data" }, human: { val: "~4.5 / 5" } },
-                { capability: "LaTeX Notation Density", footnote: "Per 100 words, ablation study", scorpio: { val: "0.92" }, chatgpt: { val: "0.22¹", dim: true }, khan: { val: "Limited", dim: true }, human: { val: "Whiteboard" } },
-                { capability: "Socratic Questions / Response", footnote: "Avg. across 125-response study", scorpio: { val: "1.25" }, chatgpt: { val: "1.00¹", dim: true }, khan: { val: "~0.8", dim: true }, human: { val: "~1.5" } },
-                { capability: "Constraint Architecture", footnote: "Inference-time, verifiable", scorpio: { val: "4-Layer Enforced" }, chatgpt: { val: "None", dim: true }, khan: { val: "Prompt-only", dim: true }, human: { val: "Implicit" } },
-                { capability: "Cost Transparency", footnote: "Per-student visibility", scorpio: { val: "$10 flat / mo" }, chatgpt: { val: "$20 / student", dim: true }, khan: { val: "$4 / student", dim: true }, human: { val: "$40–120 / hr", dim: true } },
-                { capability: "Verifiable & Auditable", footnote: "Published methodology, reproducible", scorpio: { val: "Open Methodology" }, chatgpt: { val: "No", dim: true }, khan: { val: "No", dim: true }, human: { val: "Subjective" } },
+                { capability: "Direct Answer Rate", footnote: "25 procedural physics problems", scorpio: { val: "0%" }, chatgpt: { val: "~100%", dim: true } },
+                { capability: "Pedagogical Quality Score", footnote: "Ph.D. blinded holistic audit, 5-pt scale", scorpio: { val: "4.62 / 5" }, chatgpt: { val: "4.38 / 5¹", dim: true } },
+                { capability: "LaTeX Notation Density", footnote: "Per 100 words, ablation study", scorpio: { val: "0.92" }, chatgpt: { val: "0.22¹", dim: true } },
+                { capability: "Socratic Questions / Response", footnote: "Avg. across 125-response study", scorpio: { val: "1.25" }, chatgpt: { val: "1.00¹", dim: true } },
+                { capability: "Constraint Architecture", footnote: "Inference-time, verifiable", scorpio: { val: "4-Layer Enforced" }, chatgpt: { val: "None", dim: true } },
+                { capability: "Verifiable & Auditable", footnote: "Published methodology, reproducible", scorpio: { val: "Open Methodology" }, chatgpt: { val: "No", dim: true } },
               ].map((row, i) => (
                 <div
                   key={i}
-                  className={`grid grid-cols-5 px-6 py-4 border-b border-border/30 last:border-0 hover:bg-muted/10 transition-colors ${i % 2 === 0 ? "" : "bg-muted/5"}`}
+                  className={`grid grid-cols-3 px-6 py-4 border-b border-border/30 last:border-0 hover:bg-muted/10 transition-colors ${i % 2 === 0 ? "" : "bg-muted/5"}`}
                 >
                   <div className="col-span-1 pr-4">
                     <p className="text-sm font-bold text-foreground">{row.capability}</p>
@@ -371,16 +369,6 @@ export default function FeaturesPage() {
                   <div className="col-span-1 flex items-center justify-center">
                     <span className={`text-sm font-semibold ${row.chatgpt.dim ? "text-muted-foreground/50" : "text-foreground"}`}>
                       {row.chatgpt.val}
-                    </span>
-                  </div>
-                  <div className="col-span-1 flex items-center justify-center">
-                    <span className={`text-sm font-semibold ${row.khan.dim ? "text-muted-foreground/50" : "text-foreground"}`}>
-                      {row.khan.val}
-                    </span>
-                  </div>
-                  <div className="col-span-1 flex items-center justify-center">
-                    <span className="text-sm font-semibold text-muted-foreground/70">
-                      {row.human.val}
                     </span>
                   </div>
                 </div>
@@ -410,7 +398,7 @@ export default function FeaturesPage() {
                 Your Classroom. Reimagined.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                Faculty control pedagogical constraints and monitor student telemetry. Students experience Socratic struggle and authentic mastery.
+                Teachers assign, grade and see class misconceptions. Students get hints, not answers.
               </p>
             </div>
 
@@ -461,10 +449,10 @@ export default function FeaturesPage() {
 
                   <ul className="space-y-3 pt-2">
                     {[
-                      "Construct LaTeX-rich assignments with parametric variations",
-                      "Define granular AI tutoring guardrails per question",
-                      "Review student derivation paths and automated sanity checks",
-                      "Monitor real-time cohort conceptual bottlenecks",
+                      "Construct LaTeX-rich assignments, or copy a ready-made AP Physics 1 set",
+                      "Choose automatic or manual grading per assignment",
+                      "Review submissions that auto-grading flags for your attention",
+                      "See which misconceptions your class has, ranked by number of students",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85">
                         <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -529,8 +517,8 @@ export default function FeaturesPage() {
                     {[
                       "Engage with constraint-led Socratic tutoring in real-time",
                       "Interact with physics equations through publication-grade KaTeX",
-                      "Instant feedback on dimensional analysis and unit sanity",
-                      "Persistent derivation portfolio tracking individual mastery",
+                      "Instant auto-grading with unit and sign feedback",
+                      "Join your class with a class code",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85">
                         <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
@@ -554,22 +542,19 @@ export default function FeaturesPage() {
             <div className="rounded-[2.5rem] border border-border/60 bg-card/25 backdrop-blur-xl p-8 sm:p-12 space-y-12">
               <div className="text-center space-y-3 max-w-2xl mx-auto">
                 <div className="text-xs font-black text-primary uppercase tracking-[0.25em]">
-                  Collaborative Curriculum
+                  Ready-Made Curriculum
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                  The Waypoints Network
+                  The Waypoints Library
                 </h2>
                 <p className="text-muted-foreground text-sm sm:text-base">
-                  Peer-validated physics modules authored by real instructors across institutions. Drop them straight into your syllabus.
+                  Ready-made physics assignments you can copy into your class and edit.
                 </p>
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { title: "Rotational Dynamics — Torque & Inertia", tag: "Mechanics", author: "Dr. A. Patel", badge: "Verified" },
-                  { title: "Maxwell's Equations — Integral Form", tag: "E&M", author: "Prof. R. Chen", badge: "Verified" },
-                  { title: "Quantum Tunneling — WKB Approx", tag: "Quantum", author: "Dr. S. Okafor", badge: "Verified" },
-                  { title: "Thermodynamic Cycles — Carnot", tag: "Thermo", author: "Prof. L. Torres", badge: "Verified" },
+                  ...AP_UNITS.slice(0, 4).map((u) => ({ title: apUnitLabel(u.unit), tag: "AP Physics 1", note: "Copy and edit in your class", badge: "Free" })),
                 ].map((item, i) => (
                   <div key={i} className="p-4 rounded-2xl border border-border/50 bg-background/50 space-y-3 flex flex-col justify-between">
                     <div>
@@ -586,7 +571,7 @@ export default function FeaturesPage() {
                       </h4>
                     </div>
                     <div className="text-[11px] text-muted-foreground border-t border-border/30 pt-2">
-                      Authored by <span className="font-semibold text-foreground/80">{item.author}</span>
+                      {item.note}
                     </div>
                   </div>
                 ))}
@@ -602,7 +587,7 @@ export default function FeaturesPage() {
                   Ready to upgrade your physics classroom?
                 </h2>
                 <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                  Start free with your class today or see our transparent flat pricing for full AI scaffolding.
+                  Start free with your class today, or see the flat department pricing.
                 </p>
               </div>
 

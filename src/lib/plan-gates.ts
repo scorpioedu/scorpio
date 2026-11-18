@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "./firebase-admin";
 import { ClientError } from "./client-error";
-import { STARTER_WAYPOINT_COUNT, isDepartmentPlanOrg, isWaypointLocked } from "./plan-limits";
+import { isDepartmentPlanOrg } from "./plan-limits";
 
 /**
  * Server-side enforcement of free-plan limits. The UI locks in src/lib/plan-limits.ts are only a
@@ -18,7 +18,7 @@ export interface CallerPlan {
 }
 
 /** Feature names understood by DepartmentUpgradeDialog (src/components/teacher/department-upgrade-dialog.tsx). */
-export type GatedFeature = "waypoints" | "network-share";
+export type GatedFeature = "network-share";
 
 /** A 403 the client can turn into the upgrade dialog: `{ error, code: 'plan_upgrade_required', feature, hasNoOrg }`. */
 export class PlanGateError extends ClientError {
@@ -65,43 +65,20 @@ export async function resolveCallerPlan(
 }
 
 /**
- * The starter waypoints a free plan may copy: the first STARTER_WAYPOINT_COUNT global assignments in
- * Firestore's default (document id) order, which is the order the Waypoints page lists them in when
- * it picks its starter ids (src/app/teacher/waypoints/page.tsx).
+ * Free plan: may copy its own assignments and every global waypoint (no cap); department (network)
+ * waypoints are locked. Paid plans may copy anything they can read. Throws PlanGateError.
  */
-export async function getStarterWaypointIds(): Promise<string[]> {
-  const snap = await adminDb
-    .collection("assignments")
-    .where("visibility", "==", "global")
-    .limit(STARTER_WAYPOINT_COUNT)
-    .get();
-  return snap.docs.map((d) => d.id);
-}
-
-/**
- * Free plan: may copy its own assignments and the starter global waypoints only; network waypoints
- * are locked. Paid plans may copy anything they can read. Throws PlanGateError.
- */
-export async function assertCanCloneAssignment(args: {
+export function assertCanCloneAssignment(args: {
   plan: CallerPlan;
-  sourceId: string;
   source: { teacherId?: unknown; visibility?: unknown };
   callerUid: string;
-}): Promise<void> {
-  const { plan, sourceId, source, callerUid } = args;
+}): void {
+  const { plan, source, callerUid } = args;
   if (plan.isDepartmentPlan || source.teacherId === callerUid) return;
   if (source.visibility === "network") {
     throw new PlanGateError(
       "Department waypoints require a Department License.",
       "network-share",
-      plan.hasNoOrg,
-    );
-  }
-  const starterIds = await getStarterWaypointIds();
-  if (isWaypointLocked(sourceId, Number.POSITIVE_INFINITY, starterIds, true, "global")) {
-    throw new PlanGateError(
-      `The free plan includes ${STARTER_WAYPOINT_COUNT} starter waypoints. Upgrade to a Department License to copy this one.`,
-      "waypoints",
       plan.hasNoOrg,
     );
   }

@@ -1,7 +1,5 @@
 // Server-side plan gates (src/lib/plan-gates.ts) and the shared pure rules in src/lib/plan-limits.ts.
 const mockOrgs = new Map<string, Record<string, unknown>>();
-let mockGlobalIds: string[] = [];
-const mockLimit = jest.fn();
 
 jest.mock("../src/lib/firebase-admin", () => ({
   adminDb: {
@@ -11,22 +9,6 @@ jest.mock("../src/lib/firebase-admin", () => ({
           data: () => (name === "organizations" ? mockOrgs.get(id) : undefined),
         }),
       }),
-      where: (field: string, op: string, value: unknown) => {
-        expect([name, field, op, value]).toEqual(["assignments", "visibility", "==", "global"]);
-        return {
-          limit: (n: number) => {
-            mockLimit(n);
-            return {
-              get: async () => ({
-                docs: [...mockGlobalIds]
-                  .sort()
-                  .slice(0, n)
-                  .map((id) => ({ id })),
-              }),
-            };
-          },
-        };
-      },
     }),
   },
 }));
@@ -35,17 +17,14 @@ import {
   PlanGateError,
   assertCanCloneAssignment,
   assertCanCreateAssignment,
-  getStarterWaypointIds,
   planGateResponse,
   resolveCallerPlan,
 } from "../src/lib/plan-gates";
 import { ClientError } from "../src/lib/client-error";
-import { isDepartmentPlanOrg, STARTER_WAYPOINT_COUNT } from "../src/lib/plan-limits";
+import { isDepartmentPlanOrg } from "../src/lib/plan-limits";
 
 beforeEach(() => {
   mockOrgs.clear();
-  mockGlobalIds = ["g3", "g1", "g2", "g4"];
-  mockLimit.mockClear();
 });
 
 describe("isDepartmentPlanOrg", () => {
@@ -86,11 +65,6 @@ describe("resolveCallerPlan", () => {
   });
 });
 
-test("starter waypoints are the first global assignments by document id", async () => {
-  expect(await getStarterWaypointIds()).toEqual(["g1", "g2", "g3"]);
-  expect(mockLimit).toHaveBeenCalledWith(STARTER_WAYPOINT_COUNT);
-});
-
 describe("assertCanCloneAssignment", () => {
   const free = {
     organizationId: "o1",
@@ -100,37 +74,40 @@ describe("assertCanCloneAssignment", () => {
     hasNoOrg: false,
   };
   const paid = { ...free, planId: "dept", isDepartmentPlan: true };
-  const run = (plan: typeof free, sourceId: string, source: Record<string, unknown>) =>
-    assertCanCloneAssignment({ plan, sourceId, source, callerUid: "me" });
+  const run = (plan: typeof free, source: Record<string, unknown>) =>
+    assertCanCloneAssignment({ plan, source, callerUid: "me" });
 
-  test("paid plans and own assignments are never gated", async () => {
-    await expect(run(paid, "g4", { visibility: "global" })).resolves.toBeUndefined();
-    await expect(run(paid, "n", { visibility: "network" })).resolves.toBeUndefined();
-    await expect(
-      run(free, "x", { teacherId: "me", visibility: "network" }),
-    ).resolves.toBeUndefined();
+  test("paid plans and own assignments are never gated", () => {
+    expect(() => run(paid, { visibility: "global" })).not.toThrow();
+    expect(() => run(paid, { visibility: "network" })).not.toThrow();
+    expect(() => run(free, { teacherId: "me", visibility: "network" })).not.toThrow();
   });
-  test('free plan: starter waypoints allowed, others locked as "waypoints"', async () => {
-    await expect(run(free, "g2", { visibility: "global" })).resolves.toBeUndefined();
-    const error = await run(free, "g4", { visibility: "global" }).catch((e) => e);
-    expect(error).toBeInstanceOf(PlanGateError);
-    expect(error).toMatchObject({ status: 403, feature: "waypoints", hasNoOrg: false });
+  test("free plan: every global waypoint can be copied (no cap)", () => {
+    for (const _ of Array.from({ length: 50 })) {
+      expect(() => run(free, { visibility: "global" })).not.toThrow();
+    }
   });
-  test('free plan: network waypoints locked as "network-share" without querying starters', async () => {
-    await expect(
-      run({ ...free, hasNoOrg: true }, "n", { visibility: "network" }),
-    ).rejects.toMatchObject({ feature: "network-share", hasNoOrg: true });
-    expect(mockLimit).not.toHaveBeenCalled();
+  test('free plan: department/network waypoints stay locked as "network-share"', () => {
+    for (const hasNoOrg of [true, false]) {
+      let error: unknown;
+      try {
+        run({ ...free, hasNoOrg }, { visibility: "network" });
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeInstanceOf(PlanGateError);
+      expect(error).toMatchObject({ status: 403, feature: "network-share", hasNoOrg });
+    }
   });
 });
 
 test("planGateResponse gives the client what it needs for the upgrade dialog", async () => {
-  const res = planGateResponse(new PlanGateError("Upgrade", "waypoints", true));
+  const res = planGateResponse(new PlanGateError("Upgrade", "network-share", true));
   expect(res.status).toBe(403);
   expect(await res.json()).toEqual({
     error: "Upgrade",
     code: "plan_upgrade_required",
-    feature: "waypoints",
+    feature: "network-share",
     hasNoOrg: true,
   });
 });

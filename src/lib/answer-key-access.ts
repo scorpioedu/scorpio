@@ -10,7 +10,13 @@ import { parseNumericKey } from "../../functions/src/grading-core";
 import { validateQuestionAnswers, type ValidatableQuestion } from "./assignment-validation";
 
 /** Question fields that hold (or, on legacy and seeded documents, may hold) the answer key. */
-export const ANSWER_KEY_FIELDS = ["correctAnswer", "answer", "expectedAnswer", "rubric"] as const;
+export const ANSWER_KEY_FIELDS = [
+  "correctAnswer",
+  "answer",
+  "expectedAnswer",
+  "rubric",
+  "distractors",
+] as const;
 
 type Record_ = Record<string, unknown>;
 

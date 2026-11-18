@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, where } from "firebase/firestore";
 import { db, uploadFilesToStorage } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { useSelectedClass } from "@/contexts/selected-class-context";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,9 @@ export default function ResourcesPage() {
   const [type, setType] = useState<string>("link");
   const [file, setFile] = useState<File | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
-  const [filterCourseId, setFilterCourseId] = useState<string>("all");
+  // The archive filter is the class shared with the other teacher pages.
+  const { classId: sharedClassId, setClassId: setFilterCourseId } = useSelectedClass({ allowAll: true });
+  const filterCourseId = sharedClassId || "all";
   const [searchQuery, setSearchQuery] = useState("");
   const [adding, setAdding] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);

@@ -44,11 +44,10 @@ import {
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
+import { apCourseName, apCourseOf, apUnitLabel, parseApUnitKey } from "@/data/ap";
+import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
-import {
-  STARTER_WAYPOINT_COUNT,
-  isWaypointLocked as isWaypointLockedByPlan,
-} from "@/lib/plan-limits";
+import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
 
 interface WaypointQuestion {
   id?: string;
@@ -74,6 +73,9 @@ interface Waypoint {
   createdAt: Date;
   topic?: string;
   forkCount?: number;
+  apCourse?: string | null;
+  apUnit?: number | null;
+  apTopics?: string[];
 }
 
 export default function WaypointsPage() {
@@ -82,16 +84,19 @@ export default function WaypointsPage() {
   const { isDepartmentPlan, isFreePlan, hasNoOrg } = useDepartmentPlan();
 
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
-  const [starterIds, setStarterIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("global");
   const [topicFilter, setTopicFilter] = useState("all");
+  // Filtered in the browser: no composite index needed next to the visibility/topic queries.
+  const [apUnitFilter, setApUnitFilter] = useState("all");
 
   // Upgrade modal state
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState<"waypoints" | "network-share">("waypoints");
+  const [upgradeFeature, setUpgradeFeature] = useState<"network-share">("network-share");
 
+  // The compiler cannot keep this callback's memoization (it reads profile?.organizationId).
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const fetchWaypoints = useCallback(async () => {
     if (!user || authLoading) return;
     setLoading(true);
@@ -142,13 +147,6 @@ export default function WaypointsPage() {
       })) as Waypoint[];
 
       setWaypoints(docs);
-
-      // Track the first 3 global templates as starter waypoints for Free plan
-      if (activeTab === "global") {
-        setStarterIds((prev) =>
-          prev.length === 0 ? docs.slice(0, STARTER_WAYPOINT_COUNT).map((d) => d.id) : prev,
-        );
-      }
     } catch (e: unknown) {
       console.error("Waypoints fetch error:", e);
       const errMsg = e instanceof Error ? e.message : "";
@@ -164,16 +162,17 @@ export default function WaypointsPage() {
 
   useEffect(() => {
     if (user && !authLoading) {
+      // Loads the library for the chosen tab and topic once the account is known.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchWaypoints();
     }
   }, [user, authLoading, fetchWaypoints]);
 
-  const isWaypointLocked = (waypoint: Waypoint, index: number): boolean =>
-    isWaypointLockedByPlan(waypoint.id, index, starterIds, isFreePlan, activeTab);
+  const waypointsLocked = isWaypointLockedByPlan(isFreePlan, activeTab);
 
-  const handleFork = async (waypoint: Waypoint, index: number) => {
-    if (isWaypointLocked(waypoint, index)) {
-      setUpgradeFeature("waypoints");
+  const handleFork = async (waypoint: Waypoint) => {
+    if (waypointsLocked) {
+      setUpgradeFeature("network-share");
       setIsUpgradeOpen(true);
       return;
     }
@@ -184,16 +183,17 @@ export default function WaypointsPage() {
       const res = await authenticatedFetch("/api/assignments/clone", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceId: waypoint.id }),
+        // Keep the waypoint's own title: students see it, and "(Copy)" means nothing to them.
+        body: JSON.stringify({ sourceId: waypoint.id, title: waypoint.title }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 403 && data.code === "plan_upgrade_required") {
-        setUpgradeFeature(data.feature === "network-share" ? "network-share" : "waypoints");
+        setUpgradeFeature("network-share");
         setIsUpgradeOpen(true);
         return;
       }
       if (!res.ok || typeof data.id !== "string") {
-        toast.error(data.error || "Could not copy this waypoint. Please try again.");
+        toast.error(data.error || "Could not add this waypoint. Please try again.");
         return;
       }
       setWaypoints((prev) =>
@@ -201,7 +201,7 @@ export default function WaypointsPage() {
       );
       router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
     } catch {
-      toast.error("Could not copy this waypoint. Please try again.");
+      toast.error("Could not add this waypoint. Please try again.");
     }
   };
 
@@ -211,6 +211,10 @@ export default function WaypointsPage() {
       (a.description || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     if (activeTab === "network" && !a.organizationId) return false;
+    // A unit filter names a course too: Unit 2 of AP Physics 1 is not Unit 2 of C: Mechanics.
+    const wanted = apUnitFilter === "all" ? null : parseApUnitKey(apUnitFilter);
+    if (wanted && (a.apUnit !== wanted.unit || apCourseOf(a.apCourse) !== wanted.course))
+      return false;
 
     return matchesSearch;
   });
@@ -227,8 +231,9 @@ export default function WaypointsPage() {
             <div>
               <span className="font-semibold text-foreground">Free Plan:</span>
               <span className="text-muted-foreground ml-1.5">
-                You have access to 3 starter waypoints. Upgrade to a Department License to unlock
-                all 20+ verified templates and department sharing.
+                Every global waypoint, auto-grading and the misconception report are free. A
+                Department License adds department waypoints, sharing across your school and higher
+                AI limits.
               </span>
             </div>
           </div>
@@ -273,7 +278,7 @@ export default function WaypointsPage() {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-sm leading-relaxed"
             >
-              Find a shared assignment and copy it into your class.
+              Find a shared assignment and use it with your class.
             </motion.p>
 
             {isDepartmentPlan ? (
@@ -294,7 +299,7 @@ export default function WaypointsPage() {
                 className="flex items-center gap-2 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20"
               >
                 <div className="h-1.5 w-1.5 rounded-full bg-amber-600 dark:bg-amber-500" />
-                Free Plan (3 Starter Waypoints)
+                Free Plan (All Global Waypoints)
               </motion.div>
             )}
           </div>
@@ -339,6 +344,24 @@ export default function WaypointsPage() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
+
+        <Select value={apUnitFilter} onValueChange={setApUnitFilter}>
+          <SelectTrigger
+            aria-label="AP unit"
+            className="cursor-pointer w-full sm:w-56 data-[size=default]:h-12 bg-background dark:bg-background border-border"
+          >
+            <div className="flex min-w-0 items-center gap-2">
+              <Filter className="h-4 w-4 shrink-0" />
+              <SelectValue placeholder="All AP units" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="cursor-pointer">
+              All AP units
+            </SelectItem>
+            <ApUnitSelectItems itemClassName="cursor-pointer" />
+          </SelectContent>
+        </Select>
 
         <Select value={topicFilter} onValueChange={setTopicFilter}>
           <SelectTrigger
@@ -439,14 +462,16 @@ export default function WaypointsPage() {
             <p className="text-muted-foreground max-w-sm px-4">
               {activeTab === "network" && !profile?.organizationId
                 ? "Switch to the Global tab or join a department network to see shared waypoints."
-                : "Try another search or topic."}
+                : apUnitFilter !== "all"
+                  ? "No templates are tagged with this AP unit yet. Try another unit or All AP units."
+                  : "Try another search or topic."}
             </p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
               {filteredWaypoints.map((waypoint, idx) => {
-                const locked = isWaypointLocked(waypoint, idx);
+                const locked = waypointsLocked;
                 return (
                   <motion.div
                     key={waypoint.id}
@@ -476,14 +501,17 @@ export default function WaypointsPage() {
                               <Clock className="h-3 w-3 mr-1" />
                               {waypoint.questions?.length || 0} Components
                             </Badge>
+                            {typeof waypoint.apUnit === "number" && (
+                              <Badge variant="outline" className="text-[10px]">
+                                {apCourseOf(waypoint.apCourse) === "physics-1"
+                                  ? "AP 1"
+                                  : apCourseName(apCourseOf(waypoint.apCourse))}{" "}
+                                · {apUnitLabel(waypoint.apUnit, apCourseOf(waypoint.apCourse))}
+                              </Badge>
+                            )}
                             {waypoint.topic && (
                               <Badge className="bg-primary/10 text-primary border-primary/20 capitalize font-mono text-[10px]">
                                 {waypoint.topic}
-                              </Badge>
-                            )}
-                            {isFreePlan && !locked && (
-                              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] font-bold">
-                                Starter Template
                               </Badge>
                             )}
                             {locked && (
@@ -532,7 +560,7 @@ export default function WaypointsPage() {
                         {locked ? (
                           <Button
                             onClick={() => {
-                              setUpgradeFeature("waypoints");
+                              setUpgradeFeature("network-share");
                               setIsUpgradeOpen(true);
                             }}
                             className="w-full h-11 font-bold bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
@@ -542,7 +570,7 @@ export default function WaypointsPage() {
                           </Button>
                         ) : (
                           <Button
-                            onClick={() => handleFork(waypoint, idx)}
+                            onClick={() => handleFork(waypoint)}
                             className="w-full h-11 font-bold active:scale-[0.98] cursor-pointer"
                           >
                             <Copy className="h-4 w-4 mr-1.5" />

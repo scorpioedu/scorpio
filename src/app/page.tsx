@@ -68,8 +68,8 @@ export default function Home() {
         <section id="pricing-teaser" className="mx-auto max-w-6xl px-5 sm:px-8">
           <div data-scroll-reveal className="flex flex-col gap-4 border-y border-border py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight">One subscription for all your students</h2>
-              <p className="mt-2 text-muted-foreground">Compare plans and see how AI usage is billed.</p>
+              <h2 className="text-2xl font-semibold tracking-tight">Free for individual teachers</h2>
+              <p className="mt-2 text-muted-foreground">Every global Waypoint, auto-grading and the misconception report are free. A flat department plan adds sharing and higher AI limits.</p>
             </div>
             <Link href="/pricing" className="inline-flex w-fit shrink-0 items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline">
               See pricing <ArrowRight aria-hidden="true" className="size-4" />
@@ -83,7 +83,7 @@ export default function Home() {
           <div data-scroll-reveal className="rounded-2xl border border-primary/20 bg-primary/5 px-5 py-12 text-center sm:px-10 sm:py-16 lg:py-20">
             <h2 id="cta-heading" className="mx-auto max-w-3xl text-balance text-4xl font-semibold leading-tight tracking-[-0.045em] sm:text-5xl lg:text-6xl">Try Scorpio with your class</h2>
             <p className="mx-auto mt-4 max-w-lg text-pretty leading-relaxed text-muted-foreground sm:text-lg">
-              Start with an assignment you already teach. Scorpio works alongside your existing LMS.
+              Start with one AP Physics 1 unit. Students join with a class code, so there is nothing to connect to your LMS.
             </p>
             <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center">
               <Button asChild className="group h-12 rounded-lg px-6 text-base motion-reduce:transition-none sm:h-14">

@@ -1,0 +1,261 @@
+{
+  "course": "physics-c-mech",
+  "name": "AP Physics C: Mechanics",
+  "note": "Unit and topic structure follows the College Board AP Physics C: Mechanics course framework (2024 revision). Titles and descriptions are written in Scorpio's own words; they are not College Board text.",
+  "units": [
+    {
+      "unit": 1,
+      "title": "Kinematics",
+      "summary": "Motion in one, two and three dimensions using derivatives and integrals.",
+      "topics": [
+        {
+          "id": "1.1",
+          "title": "Scalars and vectors",
+          "summary": "Vector components, unit vectors and vector addition."
+        },
+        {
+          "id": "1.2",
+          "title": "Displacement, velocity and acceleration",
+          "summary": "Velocity and acceleration as derivatives of position; position and velocity as integrals."
+        },
+        {
+          "id": "1.3",
+          "title": "Representing motion",
+          "summary": "Graphs, equations and calculus relations for constant and changing acceleration."
+        },
+        {
+          "id": "1.4",
+          "title": "Reference frames and relative motion",
+          "summary": "Velocities measured by observers who move relative to each other."
+        },
+        {
+          "id": "1.5",
+          "title": "Motion in two or three dimensions",
+          "summary": "Projectile motion and vector kinematics with independent components."
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "title": "Force and translational dynamics",
+      "summary": "Newton's laws for systems, including friction, springs, drag and circular motion.",
+      "topics": [
+        {
+          "id": "2.1",
+          "title": "Systems and center of mass",
+          "summary": "Choosing a system and finding its center of mass, including by integration."
+        },
+        {
+          "id": "2.2",
+          "title": "Forces and free-body diagrams",
+          "summary": "Identifying interactions and drawing the forces on one object."
+        },
+        {
+          "id": "2.3",
+          "title": "Newton's third law",
+          "summary": "Paired forces between interacting objects and internal forces in a system."
+        },
+        {
+          "id": "2.4",
+          "title": "Newton's first law",
+          "summary": "Balanced forces, equilibrium and inertial reference frames."
+        },
+        {
+          "id": "2.5",
+          "title": "Newton's second law",
+          "summary": "Net force and acceleration of a system's center of mass."
+        },
+        {
+          "id": "2.6",
+          "title": "Gravitational force",
+          "summary": "Universal gravitation, gravitational field and weight near and far from a planet."
+        },
+        {
+          "id": "2.7",
+          "title": "Kinetic and static friction",
+          "summary": "Friction models, coefficients and the limit of static friction."
+        },
+        {
+          "id": "2.8",
+          "title": "Spring forces",
+          "summary": "Hooke's law and springs in series and parallel."
+        },
+        {
+          "id": "2.9",
+          "title": "Resistive forces",
+          "summary": "Velocity-dependent drag, differential equations of motion and terminal velocity."
+        },
+        {
+          "id": "2.10",
+          "title": "Circular motion",
+          "summary": "Centripetal acceleration, banked curves, vertical circles and orbits."
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "title": "Work, energy and power",
+      "summary": "Work as an integral, potential energy functions, conservation of energy and power.",
+      "topics": [
+        {
+          "id": "3.1",
+          "title": "Translational kinetic energy",
+          "summary": "Kinetic energy of a moving object and how it depends on speed."
+        },
+        {
+          "id": "3.2",
+          "title": "Work",
+          "summary": "Work as the integral of force over displacement and the work-energy theorem."
+        },
+        {
+          "id": "3.3",
+          "title": "Potential energy",
+          "summary": "Conservative forces, potential energy functions and force as the negative slope of U(x)."
+        },
+        {
+          "id": "3.4",
+          "title": "Conservation of energy",
+          "summary": "Tracking energy in systems with and without nonconservative forces."
+        },
+        {
+          "id": "3.5",
+          "title": "Power",
+          "summary": "Rate of energy transfer, including P = F dot v."
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "title": "Linear momentum",
+      "summary": "Momentum, impulse as an integral, conservation of momentum and collisions.",
+      "topics": [
+        {
+          "id": "4.1",
+          "title": "Linear momentum",
+          "summary": "Momentum as a vector for objects and systems."
+        },
+        {
+          "id": "4.2",
+          "title": "Change in momentum and impulse",
+          "summary": "Impulse as the integral of force over time and the area under a force-time graph."
+        },
+        {
+          "id": "4.3",
+          "title": "Conservation of linear momentum",
+          "summary": "Isolated systems, center-of-mass velocity and explosions."
+        },
+        {
+          "id": "4.4",
+          "title": "Elastic and inelastic collisions",
+          "summary": "What is conserved in each kind of collision, in one and two dimensions."
+        }
+      ]
+    },
+    {
+      "unit": 5,
+      "title": "Torque and rotational dynamics",
+      "summary": "Rotational kinematics, torque, rotational inertia by integration and Newton's second law for rotation.",
+      "topics": [
+        {
+          "id": "5.1",
+          "title": "Rotational kinematics",
+          "summary": "Angular position, velocity and acceleration with calculus relations."
+        },
+        {
+          "id": "5.2",
+          "title": "Connecting linear and rotational motion",
+          "summary": "Relating tangential and angular quantities for points on a rotating object."
+        },
+        {
+          "id": "5.3",
+          "title": "Torque",
+          "summary": "Torque as a cross product: lever arm, line of action and direction."
+        },
+        {
+          "id": "5.4",
+          "title": "Rotational inertia",
+          "summary": "Moment of inertia for point masses and extended objects by integration; the parallel-axis theorem."
+        },
+        {
+          "id": "5.5",
+          "title": "Rotational equilibrium and Newton's first law in rotational form",
+          "summary": "Balanced torques and static equilibrium of extended objects."
+        },
+        {
+          "id": "5.6",
+          "title": "Newton's second law in rotational form",
+          "summary": "Net torque and angular acceleration, alone and combined with translation."
+        }
+      ]
+    },
+    {
+      "unit": 6,
+      "title": "Energy and momentum of rotating systems",
+      "summary": "Rotational kinetic energy, angular momentum and its conservation, rolling and orbits.",
+      "topics": [
+        {
+          "id": "6.1",
+          "title": "Rotational kinetic energy",
+          "summary": "Energy of rotation and total kinetic energy of an object that also translates."
+        },
+        {
+          "id": "6.2",
+          "title": "Torque and work",
+          "summary": "Work done by a torque through an angle and rotational power."
+        },
+        {
+          "id": "6.3",
+          "title": "Angular momentum and angular impulse",
+          "summary": "Angular momentum of particles and rigid bodies, and how torque over time changes it."
+        },
+        {
+          "id": "6.4",
+          "title": "Conservation of angular momentum",
+          "summary": "Systems with no net external torque: changing shape, collisions with rotating objects."
+        },
+        {
+          "id": "6.5",
+          "title": "Rolling",
+          "summary": "Rolling with and without slipping, and the role of friction."
+        },
+        {
+          "id": "6.6",
+          "title": "Motion of orbiting satellites",
+          "summary": "Energy and angular momentum in circular and elliptical orbits; escape speed."
+        }
+      ]
+    },
+    {
+      "unit": 7,
+      "title": "Oscillations",
+      "summary": "Simple harmonic motion from its differential equation, energy, and pendulums.",
+      "topics": [
+        {
+          "id": "7.1",
+          "title": "Defining simple harmonic motion (SHM)",
+          "summary": "Restoring force proportional to displacement and the equation of motion it gives."
+        },
+        {
+          "id": "7.2",
+          "title": "Frequency and period of SHM",
+          "summary": "What sets the period of a mass on a spring and of other oscillators."
+        },
+        {
+          "id": "7.3",
+          "title": "Representing and analysing SHM",
+          "summary": "Sinusoidal position, velocity and acceleration, phase and amplitude."
+        },
+        {
+          "id": "7.4",
+          "title": "Energy of simple harmonic oscillators",
+          "summary": "Exchange between kinetic and potential energy over a cycle."
+        },
+        {
+          "id": "7.5",
+          "title": "Simple and physical pendulums",
+          "summary": "Small-angle motion, and the period of an extended object swinging about a pivot."
+        }
+      ]
+    }
+  ]
+}
