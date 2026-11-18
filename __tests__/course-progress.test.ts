@@ -17,12 +17,13 @@ import {
 } from "../src/lib/course-progress";
 import type { InsightEvent } from "../src/lib/insights";
 
+import { testWithContent } from "../tests/helpers/course-content";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const tool = require("../tools/curriculum-profile.cjs");
 const ID = "ap-physics-1";
 
 describe("set profiles", () => {
-  test("the committed profiles match the content files, for every course", () => {
+  testWithContent("the committed profiles match the content files, for every course", () => {
     for (const { id } of CURRICULA) {
       const fresh = tool.buildProfile(getCurriculum(id), tool.loadDrafts(id));
       const committed = JSON.parse(

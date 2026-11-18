@@ -1,10 +1,12 @@
 // tools/content-drafts.cjs: moving reviewed drafts between projects through the repo file.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { parseArgs, toRecord, toImportDoc } = require("../tools/content-drafts.cjs");
-import file from "../content/ap-physics-1/units-4-6.json";
+import { courseContent, describeWithContent } from "../tests/helpers/course-content";
 import { validateDraftProblem } from "../src/lib/content/problem-format";
 
-describe("content-drafts tool", () => {
+const file = courseContent("content/ap-physics-1/units-4-6.json");
+
+describeWithContent("content-drafts tool", () => {
   test("the project is never inferred and commands are checked", () => {
     expect(() => parseArgs(["export", "--out", "x.json"])).toThrow(/--project/);
     expect(() => parseArgs(["import", "--project", "p"])).toThrow(/--file/);
@@ -44,7 +46,7 @@ describe("content-drafts tool", () => {
   });
 });
 
-describe("Units 4–6 content file", () => {
+describeWithContent("Units 4–6 content file", () => {
   test("60 AI-reviewed problems in 12 sets of 5, one AP unit per set, every draft in exactly one set", () => {
     expect(file.drafts).toHaveLength(60);
     expect(file.sets).toHaveLength(12);
@@ -54,7 +56,7 @@ describe("Units 4–6 content file", () => {
     const unit = Object.fromEntries(file.drafts.map((d) => [d.id, d.apUnit]));
     for (const s of file.sets) {
       expect(s.draftIds).toHaveLength(5);
-      expect(new Set(s.draftIds.map((id) => unit[id])).size).toBe(1);
+      expect(new Set(s.draftIds.map((id: string) => unit[id])).size).toBe(1);
     }
     expect(file.drafts.every((d) => d.reviewKind === "ai")).toBe(true);
   });
@@ -72,9 +74,8 @@ describe("Units 4–6 content file", () => {
   });
 });
 
-describe("Units 1–3, 7, 8 content file", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const rest = require("../content/ap-physics-1/units-1-3-7-8.json");
+describeWithContent("Units 1–3, 7, 8 content file", () => {
+  const rest = courseContent("content/ap-physics-1/units-1-3-7-8.json");
   type D = { id: string; apUnit: number; apTopic: string; reviewKind: string; problem: unknown };
 
   test("100 AI-reviewed problems in 20 sets of 5, one AP unit per set, every draft in exactly one set", () => {

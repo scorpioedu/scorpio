@@ -27,6 +27,7 @@ import { buildStudentRoadmap } from "../src/lib/student-roadmap";
 import { groupByUnit } from "../src/lib/student-grouping";
 import { setProfile } from "../src/data/curricula/profiles";
 import { CONTENT_FILES } from "../src/data/curricula/content-files";
+import { describeWithContent } from "../tests/helpers/course-content";
 import { validateDraftProblem } from "../src/lib/content/problem-format";
 import { misconceptionTag, misconceptionUnits } from "../functions/src/misconceptions";
 import fs from "fs";
@@ -199,7 +200,7 @@ describe("course definitions", () => {
   });
 });
 
-describe("reviewed content of every course", () => {
+describeWithContent("reviewed content of every course", () => {
   type Record_ = {
     id: string;
     course?: string;

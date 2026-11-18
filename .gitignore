@@ -82,3 +82,7 @@ firestore-debug.log
 
 # Firenook local emulator data (npm run dev:firenook --keep-data)
 .firenook/
+
+# Reviewed course problems with their answer keys and worked solutions. The repository is public and
+# this is homework teachers assign, so the files stay private (docs/content-pipeline.md).
+/content/

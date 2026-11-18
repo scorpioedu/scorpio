@@ -1,5 +1,7 @@
 import physics1 from "../src/data/curricula/ap-physics-1.json";
-import units46 from "../content/ap-physics-1/units-4-6.json";
+import { courseContent, testWithContent } from "../tests/helpers/course-content";
+
+const units46 = courseContent("content/ap-physics-1/units-4-6.json");
 import {
   CURRICULA,
   compareSetKeys,
@@ -34,19 +36,22 @@ describe("curriculum definitions", () => {
     for (const c of CURRICULA) expect(validateCurriculum(c)).toEqual([]);
   });
 
-  test("the full course: 32 sets, 4 per unit, 1A-8D; 4A-6D round-trip to the Units 4-6 titles", () => {
-    const keys = [1, 2, 3, 4, 5, 6, 7, 8].flatMap((u) =>
-      ["A", "B", "C", "D"].map((l) => `${u}${l}`),
-    );
-    expect(ap.sets.map((s) => s.key)).toEqual(keys);
-    expect(ap.sets.every((s) => s.draftIds.length === 5)).toBe(true);
-    const mid = ap.sets.filter((s) => s.unit >= 4 && s.unit <= 6);
-    expect(mid.map((s) => displayTitle(s))).toEqual(units46.sets.map((s) => s.title));
-    mid.forEach((s, i) => {
-      expect(s.draftIds).toEqual(units46.sets[i].draftIds);
-      expect(s.topics).toEqual(units46.sets[i].topics);
-    });
-  });
+  testWithContent(
+    "the full course: 32 sets, 4 per unit, 1A-8D; 4A-6D round-trip to the Units 4-6 titles",
+    () => {
+      const keys = [1, 2, 3, 4, 5, 6, 7, 8].flatMap((u) =>
+        ["A", "B", "C", "D"].map((l) => `${u}${l}`),
+      );
+      expect(ap.sets.map((s) => s.key)).toEqual(keys);
+      expect(ap.sets.every((s) => s.draftIds.length === 5)).toBe(true);
+      const mid = ap.sets.filter((s) => s.unit >= 4 && s.unit <= 6);
+      expect(mid.map((s) => displayTitle(s))).toEqual(units46.sets.map((s) => s.title));
+      mid.forEach((s, i) => {
+        expect(s.draftIds).toEqual(units46.sets[i].draftIds);
+        expect(s.topics).toEqual(units46.sets[i].topics);
+      });
+    },
+  );
 
   test("units come in order with their sets; sequence follows unit then letter", () => {
     const units = curriculumUnits("ap-physics-1");

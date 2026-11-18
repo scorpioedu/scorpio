@@ -1,6 +1,8 @@
 // Publish by course set, the sets status route, class follow/unfollow, and clone keeping the set fields.
 import { NextRequest } from "next/server";
-import units46 from "../content/ap-physics-1/units-4-6.json";
+import { courseContent, describeWithContent } from "../tests/helpers/course-content";
+
+const units46 = courseContent("content/ap-physics-1/units-4-6.json");
 import { getCurriculum, displayTitle, setSequence } from "../src/data/curricula";
 
 type Data = Record<string, unknown>;
@@ -122,7 +124,7 @@ beforeEach(() => {
   delete process.env.FIRESTORE_EMULATOR_HOST;
 });
 
-describe("publish by course set", () => {
+describeWithContent("publish by course set", () => {
   test("title, description, order and set fields come from the definition", async () => {
     seedDrafts();
     const res = await publish(
@@ -208,7 +210,7 @@ describe("publish by course set", () => {
   });
 });
 
-describe("GET /api/admin/content/sets", () => {
+describeWithContent("GET /api/admin/content/sets", () => {
   const get = (q: string) => setsStatus(new NextRequest(`${url}/api/admin/content/sets${q}`));
 
   test("per-set draft states and whether a set is published", async () => {
@@ -248,7 +250,7 @@ describe("GET /api/admin/content/sets", () => {
   });
 });
 
-describe("class follows a course", () => {
+describeWithContent("class follows a course", () => {
   const patch = (id: string, body: unknown) =>
     follow(post(`/api/courses/${id}/curriculum`, body, "PATCH"));
   beforeEach(() => {
@@ -323,7 +325,7 @@ describe("class follows a course", () => {
   });
 });
 
-describe("clone keeps the course set", () => {
+describeWithContent("clone keeps the course set", () => {
   test("curriculumId, curriculumSetKey and curriculumSequence are copied", async () => {
     mockUid = "t1";
     mockDocs.set("users/t1", { role: "teacher", organizationId: "org" });
