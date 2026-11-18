@@ -93,6 +93,8 @@ export function useCourseData(curriculumId: string) {
     loadError,
     classAssignments,
     progress,
+    /** The chosen class's assignments and progress have arrived (false right after a switch). */
+    classLoaded: loaded?.key === loadKey,
     refreshClass,
     patchClass,
   };

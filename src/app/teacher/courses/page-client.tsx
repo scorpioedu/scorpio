@@ -286,16 +286,23 @@ export default function CoursesClient() {
     [toAssignable],
   );
 
-  // /teacher/courses?assign=4 (from a unit guide) opens the assign dialog for that unit once.
+  // /teacher/courses?assign=4 (from a unit guide) opens the assign dialog for that unit once;
+  // ?assign=4C opens it for that one set.
   const assignParam = useRef(params?.get("assign"));
   useEffect(() => {
-    const want = Number(assignParam.current);
+    const want = assignParam.current;
     if (!want || !selected || published === null) return;
-    const unit = roadmap.find((u) => u.unit === want);
     assignParam.current = null;
     setParam("assign", null);
-    if (unit && unit.assignable.length) openUnit(unit);
-  }, [roadmap, selected, published, openUnit]);
+    const unit = roadmap.find((u) => String(u.unit) === want);
+    if (unit) {
+      if (unit.assignable.length) openUnit(unit);
+      return;
+    }
+    const s = roadmap.flatMap((u) => u.sets).find((x) => x.set.key === want);
+    if (s && s.published && !s.assigned && !s.skipped)
+      setAssigning({ label: `${s.set.key}: ${s.set.title}`, sets: toAssignable([s]) });
+  }, [roadmap, selected, published, openUnit, toAssignable]);
 
   const schedule = selected && (
     <ScheduleTab

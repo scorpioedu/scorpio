@@ -91,6 +91,18 @@ export function boardColumns(
   return out;
 }
 
+/** Where one set stands: its group, or why it is not in the queue. */
+export type SetStatus = "upNext" | "assigned" | "needsYou" | "done" | ParkedReason;
+
+/** Every set's status by set key: what the List and the unit guide mark each set with. */
+export function setStatuses(columns: BoardColumns): Map<string, SetStatus> {
+  const out = new Map<string, SetStatus>();
+  for (const group of ["upNext", "assigned", "needsYou", "done"] as const)
+    for (const card of columns[group]) out.set(card.key, group);
+  for (const card of columns.parked) out.set(card.key, card.reason);
+  return out;
+}
+
 /** Keep only one unit's sets (null keeps everything). */
 export function filterBoard(columns: BoardColumns, unit: number | null): BoardColumns {
   if (unit === null) return columns;

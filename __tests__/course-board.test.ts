@@ -5,6 +5,7 @@ import {
   boardColumns,
   boardStats,
   filterBoard,
+  setStatuses,
   plannedDates,
   toCheck,
 } from "../src/lib/course-board";
@@ -209,6 +210,27 @@ describe("board columns", () => {
     expect(keys(two.assigned)).toEqual(["2A"]);
     expect(two.done).toEqual([]);
     expect(filterBoard(b, null)).toBe(b);
+  });
+});
+
+describe("a set's status", () => {
+  test("every set has one: its group, or why it cannot be assigned", () => {
+    const columns = board(
+      [copy("1A", past), copy("1B", future), copy("1C", future)],
+      byKey(prog("1A", { submitted: STUDENTS }), prog("1B"), prog("1C", { pending: 2 })),
+      {
+        plan: { order: all, skipped: ["1D"] },
+        published: published.filter((p) => p.curriculumSetKey !== "2A"),
+      },
+    );
+    const status = setStatuses(columns);
+    expect(status.size).toBe(all.length);
+    expect(status.get("1A")).toBe("done");
+    expect(status.get("1B")).toBe("assigned");
+    expect(status.get("1C")).toBe("needsYou");
+    expect(status.get("1D")).toBe("skipped");
+    expect(status.get("2A")).toBe("unpublished");
+    expect(status.get("2B")).toBe("upNext");
   });
 });
 
