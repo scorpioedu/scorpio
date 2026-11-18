@@ -24,8 +24,9 @@ Every problem in all three courses still needs a person's check before it can go
 | Days off and school-day tests | `src/lib/school-calendar.ts` |
 | Pacing guide, bulk due-date moves | `src/lib/course-pacing.ts` |
 | Class progress, re-teach suggestions | `src/lib/course-progress.ts` |
-| Status board: columns, stats, what a drop means | `src/lib/course-board.ts` |
-| Calendar: sets on days, the month grid, moving a due date | `src/lib/course-calendar.ts` |
+| Where a set stands (not assigned, assigned, needs you, done), the numbers strip | `src/lib/course-board.ts` |
+| Calendar: sets on days, month and week grids, runs of days off, what dropping a set on a day means | `src/lib/course-calendar.ts` |
+| Unit colours, status marks, topic chips (shared by List, Calendar, unit guide) | `src/app/teacher/courses/unit-look.tsx` |
 | Student dashboard roadmap | `src/lib/student-roadmap.ts` |
 | Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `src/data/curricula/profiles/<id>.json`, `tools/curriculum-profile.cjs` |
 | Reviewed problems (exported drafts) and review logs | `content/<id>/` |
@@ -104,7 +105,7 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`, `?view=board`), unit filter (`?unit=`) and List tab (`?tab=schedule`) are kept in the address bar.
+"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`), the Calendar's unit filter (`?unit=`) and the Schedule sheet (`?tab=schedule`) are kept in the address bar.
 
 **One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it on a highlighted **course button** beside the class picker; there is no way to look at a different course from the one the class follows, so a teacher never looks at one course while a class follows another. Where the course is set:
 
@@ -119,79 +120,75 @@ Changing a class's course never touches assignments: sets already assigned from 
 
 Everything is changed where it is shown; each change saves at once and its message has **Undo**.
 
-The page has three views of the same class and course, switched with **List | Calendar | Board** under the header:
+The page has two views of the same class and course, switched with **List | Calendar** under the header:
 
-- **List** (the default): the roadmap, unit by unit, with the Schedule tab. An old link to `?view=list` or `?tab=schedule` still opens it (the latter on that tab). A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a board or a calendar).
-- **Calendar** (`?view=calendar`): a month at a time, every set on the day it is due. See [Calendar](#calendar) below.
-- **Board** (`?view=board`): every set as a card in one of four columns, by where it stands. See [Status board](#status-board) below.
+- **List** (the default): the roadmap, unit by unit. A teacher with no class, or a course whose sets are not written yet, sees only the List (there is nothing to put on a calendar).
+- **Calendar** (`?view=calendar`): a month or a week at a time, every set on the day it is due. See [Calendar](#calendar) below.
 
-**Header** (every view): the **class** picker; the **course button**, which names the class's course and opens Change course; **⋯ More**, a menu with **Schedule & days off** (opens in a side sheet; an old `?tab=schedule` link opens it straight away) and **Reorder or skip sets** (swaps the view for the plan editor until it is saved or discarded); and, on the Calendar and the Board only, **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any. On the List each unit has its own Assign button instead, filled for the unit that is up next and outlined for the others, so there is one obvious thing to press in every view.
+There used to be a third view, a Status board; it was removed. An old `?view=board` link opens the List. What the board's columns meant is still how a set's status is decided everywhere: see [Where a set stands](#where-a-set-stands).
 
-- **One strip of numbers above every view** (`board-stats.tsx`): the course progress bar with the finish date at the current pace, then Students, Average, Needs you and Overdue. A class with no students also gets a line with its join code and a link to the Dashboard's invite link, and its sets say "No students yet" instead of "0 of 0 submitted".
-- **List.** Units in the class's order, as collapsible sections; the next unit is open. Each set row shows its key, title (the class copy's own name if the teacher renamed it), description, problem count and time estimate, and its status. On the row:
-  - an assigned set has a **due-date chip** (click it to pick another day, or clear it), "9 of 13 submitted · average 71%", **Results**, and a ⋯ menu (Edit problems, Preview, Skip / Stop skipping, Duplicate, Archive);
+**Header** (every view): the **class** picker; the **course button**, which names the class's course and opens Change course; **⋯ More**, a menu with **Schedule & days off** (opens in a side sheet; an old `?tab=schedule` link opens it straight away) and **Reorder or skip sets** (swaps the view for the plan editor until it is saved or discarded); and, on the Calendar only, **Assign next N**, which opens the assign dialog for the N sets still to assign in the first unit that has any. On the List each unit has its own Assign button instead, filled for the unit that is up next and outlined for the others, so there is one obvious thing to press in every view.
+
+- **One strip of numbers above both views** (`course-stats.tsx`): the course progress bar with the finish date at the current pace ("12 of 31 sets assigned · on pace to finish Mar 19"; skipped sets are not counted), then Students, the class **Average** (mean of the sets' averages), **Needs you** (the number of sets waiting for the teacher, with the answers inside them underneath: "2 sets · 7 answers") and **Overdue** (missing hand-ins past their due date, summed over sets). A class with no students also gets a line with its join code and a link to the Dashboard's invite link, and its sets say "No students yet" instead of "0 of 0 submitted".
+- **List** (`roadmap-tab.tsx`). The list is headed by the course itself: its icon on its tinted tile, its name, level ("Algebra-based"), what it covers and its size. Under it, units and sets look different on purpose, so a teacher can tell where one unit ends and what kind of thing a row is:
+  - **A unit is a section.** Its number sits on a tile in the unit's own colour, beside a large title; under the title, "Unit 4 · 2 of 4 sets assigned · 1 skipped · average 81% · 1 needs you". On the right, a bar with **one segment per set** (unit colour = assigned, amber = needs you, grey = still to come, dashed = skipped) and a badge when the unit is **Next up**, fully **Assigned** or not started. Units are in the class's order and collapse; the next unit is open, and an open unit sits on a card while closed ones are bare headings with space between them.
+  - **A unit's colour** comes from `unitLook` in `unit-look.tsx`: the course's own tint for its first unit (sky for AP Physics 1, amber for AP Physics 2, emerald for C: Mechanics), then round a fixed wheel of eight, so neighbouring units never share a colour. A unit keeps its colour when a class reorders its units, and has the same colour on the Calendar and on its unit guide.
+  - **A set is a child of its unit.** The unit's summary, its **Assign this unit / the rest (n sets)** and **Unit guide** buttons and its sets all hang off a rail in the unit's colour. Each set has a **status mark on the rail**, told apart by shape as well as colour: filled (assigned), a green tick (done), an amber "!" (needs you), a hollow ring (not assigned), a dashed ring with the title struck through (skipped), a lock (not published or planned). Beside the title are the set's **AP topics** as small chips ("4.1", "4.2"; hover for the topic's name), then a lighter line with the description, problem count and time estimate.
+  - On the right of the row: an assigned set has a **due-date chip** (click it to pick another day, or clear it), **Results** (or **Review** when answers wait), a ⋯ menu (Edit problems, Preview, Skip / Stop skipping, Duplicate, Archive), and under them "9 of 13 submitted · average 71% · 2 to check · 1 overdue";
   - a published set that is not assigned has **Assign** (just that set) and a ⋯ menu with **Preview** and **Skip**; clicking its name also opens the preview; a skipped set shows **Unskip**;
-  - a set whose class copy was archived shows "Archived · assign to restore it" (on the Board, "Archived · Restore brings it back"), and **Restore** brings the same copy back (with its students' work) instead of copying it again.
-  **Preview** shows the problems as students see them, the topics and the misconceptions the wrong answers catch; for the class's own copy it has **Edit problems** and **Results**, and **Show answers** loads the key through `GET /api/assignments?id=`; for an unassigned set it has **Assign this set**. Under the sets, **What students got wrong** lists up to three misconceptions for the unit with a re-teach suggestion.
+  - a set whose class copy was archived shows "Archived · assign to restore it", and **Restore** brings the same copy back (with its students' work) instead of copying it again.
+  **Preview** (`set-preview-dialog.tsx`) shows the problems as students see them, the topics and the misconceptions the wrong answers catch; for the class's own copy it has **Edit problems** and **Results**, and **Show answers** loads the key through `GET /api/assignments?id=`; for an unassigned set it has **Assign this set**. Question text, every answer choice and the shown answers go through the app's Markdown renderer, so `$…$` math is typeset (KaTeX) exactly as students see it; the renderer is loaded when the dialog first shows problems. The assignment editor's student preview already rendered math the same way. Under the sets, **What students got wrong** lists up to three misconceptions for the unit with a re-teach suggestion.
 - **Reorder or skip sets** (in the header's ⋯ menu, for a class that follows the course) turns the page into an editor: drag a unit or a set by its handle (or focus the handle and use the arrow keys), or use the arrows; tick Skip. Changes are a draft with a save bar (Save order / Discard) and a warning before leaving. After saving, if assigned sets are now out of date order, a message offers **Re-date**: the same due dates handed out again in the new order (`redateToOrder` in `src/lib/course-pacing.ts`), with Undo. This replaces the old Customize tab.
 - **Assign dialog.** Lists exactly which sets will be copied and each due date before anything is created. First due date and spacing (every 1, 2 or 3 school days, or weekly) can be changed there; for a single set it asks only for the due date. Sets already in the class are skipped, so nothing is duplicated. A class that does not follow the course can still have units assigned.
 - **Schedule and days off** (the side sheet from ⋯). The pacing guide, bulk due-date moves and the class's days off (below). It is no longer a tab on the List.
 
-Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `use-set-actions.ts`, `roadmap-tab.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`) `src/app/teacher/courses/calendar/course-calendar.tsx`, and `src/app/teacher/courses/board/` (`course-board.tsx`, `board-column.tsx`, `board-card.tsx`, `board-stats.tsx`, `unit-filter.tsx`, `board-dnd.tsx`). `use-set-actions.ts` holds what can be done to one set (assign, change the due date, skip, archive, move in the plan); List rows and Board cards call the same functions, so a change behaves the same in both.
+Files: `src/app/teacher/courses/` (`page-client.tsx`, `use-course-data.ts`, `use-set-actions.ts`, `roadmap-tab.tsx`, `course-stats.tsx`, `unit-filter.tsx`, `unit-look.tsx`, `plan-editor.tsx`, `schedule-tab.tsx`, `assign-dialog.tsx`, `set-preview-dialog.tsx`), `src/app/teacher/courses/calendar/course-calendar.tsx` and `src/app/teacher/courses/[curriculumId]/[unit]/page-client.tsx`. `use-set-actions.ts` holds what can be done to one set (assign, assign for a day, change the due date, skip); List rows and the Calendar call the same functions, so a change behaves the same in both. `unit-look.tsx` holds what is shared by every screen: a unit's colour, its number tile, a set's status mark, the per-set progress bar and the topic chips.
 
-### Status board
+### Where a set stands
 
-Every set of the course is in exactly one column. `boardColumns` in `src/lib/course-board.ts` decides which; it is pure and tested in `__tests__/course-board.test.ts`.
+Every set of the course is in exactly one group. `boardColumns` in `src/lib/course-board.ts` decides which, and `setStatuses` gives each set's status by key; both are pure and tested in `__tests__/course-board.test.ts`. (The names say "board" because the groups were first the columns of the Status board.) The List's marks, the numbers strip, the Calendar and the unit guide all read from it, so a set reads the same everywhere.
 
-| Column | A set is here when | The card shows |
+| Status | A set has it when | Mark |
 |---|---|---|
-| **Up next** | published, not assigned, not skipped; in the class's plan order | unit, title, problem count, the due date it would get at the current pace, **Assign**, ⋯ (Preview, Move up, Move down, Skip) |
-| under Up next, dimmed | skipped, or not published here yet | "Skipped" with **Unskip**, or "Not published yet" / "Planned". Cannot be assigned or dragged. |
-| **Assigned** | assigned, nothing waiting for the teacher, and not Done | hand-in bar and "8 of 13 handed in", an "n overdue" pill, the due-date chip, ⋯ (Open, Edit problems, Results, Preview, Duplicate, Archive) |
-| **Needs you** | assigned and something waits for the teacher: written answers to grade (`pending`) or answers to check after an answer-key change (`needsReview`) | amber pills ("Check 5 written answers", "Key changed · 2 to check"), **Grade** or **Review** to the assignment's Results |
-| **Done** | assigned, nothing waiting, and either everyone on the roster handed it in, or the due date has passed and nobody is missing | average, **Results** |
+| **Not assigned** (up next) | published, not assigned, not skipped | hollow ring; dashed chip on the Calendar |
+| **Skipped** / **Not published yet** / **Planned** | skipped in the class's plan, or not published here, or not written | dashed ring; lock. Not on the Calendar. |
+| **Assigned** | assigned, nothing waiting for the teacher, and not Done | filled dot |
+| **Needs you** | assigned and something waits for the teacher: written answers to grade (`pending`) or answers to check after an answer-key change (`needsReview`) | amber "!" |
+| **Done** | assigned, nothing waiting, and either everyone on the roster handed it in, or the due date has passed and nobody is missing | green tick |
 
-The checks run in that order: Needs you, then Done, then Assigned. Details worth knowing:
+The checks run in this order: Needs you, then Done, then Assigned. Details worth knowing:
 
-- A set that is past due while students still owe it **stays in Assigned** with its overdue pill; it moves to Done when the last student hands it in. (A class with no students has nobody missing, so its sets are Done once past due.)
-- An assigned set stays on the board even if the plan skips it. An archived copy counts as not assigned, so its set is back in Up next marked "Archived"; **Restore** (or a drop on Assigned) brings the same copy back.
-- Assigned is soonest due first (sets with no due date last); Done is latest due first. Up next shows the first six with "+ n more planned"; Done shows the latest four until **Show done (n)** is pressed.
-- While progress is loading, assigned sets wait in Assigned.
+- A set that is past due while students still owe it **stays Assigned** (and counts in Overdue); it is Done when the last student hands it in. (A class with no students has nobody missing, so its sets are Done once past due.)
+- An assigned set keeps its status even if the plan skips it. An archived copy counts as not assigned, so its set is back to Not assigned, marked "Archived"; **Restore** brings the same copy back.
+- While progress is loading, assigned sets read as Assigned.
 
-**Above every view** (the page renders it once): one strip with the course progress bar ("12 of 31 sets assigned · on pace to finish Mar 19"; skipped sets are not counted), the class **Average** (mean of the sets' averages), **Needs you** (the number of sets waiting for the teacher, the same number as the Needs you column's count, with the answers inside them underneath: "2 sets · 7 answers") and **Overdue** (missing hand-ins past their due date, summed over sets). The **unit filter** sits beside the List | Calendar | Board switch, for the Board and the Calendar alike: `Unit  All 1 2 3 …`, one small numbered chip per unit in the class's order. Only the chosen unit spells out its name (under the row on a phone); the others show it on hover. It narrows every column to one unit (`?unit=4`); pressing the chosen unit again, or All, shows everything.
-
-**Drag and drop** (`@dnd-kit`, `board-dnd.tsx`). `boardDrop` in `course-board.ts` decides what a drop means:
-
-| Drag | What happens | Same thing without dragging |
-|---|---|---|
-| Up next → Assigned | That one set is assigned with the next free date in the pacing guide; while a card is carried the top of Assigned says "Drop to assign · due Mon, Nov 24". Undo archives the copy again. An archived copy is restored instead of copied. | **Assign** on the card (opens the assign dialog for that set, where the date can be changed) |
-| Assigned → Up next | The class's copy is archived (students stop seeing it; their work is kept). If anyone has handed it in, a dialog asks first. Undo restores it. | ⋯ → **Archive** |
-| Up next card onto another | The set takes the other's place in the class's plan (`placeSet`), saved at once with Undo. Sets stay inside their unit: a drop on another unit's card is refused with a message. Needs a class that follows the course. | ⋯ → **Move up** / **Move down** (swaps with the nearest Up next set of the same unit) |
-
-Needs you and Done take no drops, and their cards cannot be dragged. Reordering whole units stays in **Reorder or skip**.
-
-- **Mouse:** drag a card from anywhere on it (a small move starts the drag, so its buttons still click).
-- **Keyboard:** each movable card has a move button (the grip). Space or Enter picks the card up; Right carries an Up next card to Assigned, Left carries an Assigned card to Up next, the opposite arrow brings it back, Up and Down step through Up next; Space or Enter drops, Escape cancels. A screen reader hears what is picked up, what it is over and what dropping there would do.
-- **Touch:** press and hold a card to pick it up; a swipe still scrolls.
-
-**Phone width.** The columns become one row that scrolls sideways, one column per swipe, with a switcher above it (Up next 15 · Assigned 3 · Needs you 2 · Done 12) that jumps to a column.
-
-The board adds no Firestore rules and makes no AI calls: assigning uses `POST /api/assignments/clone` (every global set is free to copy), archiving and due dates use `PATCH /api/assignments/{id}`, and reordering uses `PATCH /api/courses/{id}/plan`.
+Nothing here adds Firestore rules or makes AI calls: assigning uses `POST /api/assignments/clone` (every global set is free to copy), archiving and due dates use `PATCH /api/assignments/{id}`, and the plan uses `PATCH /api/courses/{id}/plan`.
 
 ### Calendar
 
-One month at a time (`src/lib/course-calendar.ts`, tested in `__tests__/course-calendar.test.ts`). It opens on the current month; the arrows step a month, **Today** comes back, and **Last set** jumps to the month the course finishes in. The same strip of numbers as the Board sits above it, and the unit filter beside the view switch (`?unit=`) narrows it the same way.
+A month or a week at a time (`src/lib/course-calendar.ts`, tested in `__tests__/course-calendar.test.ts`). It opens on the current month; the arrows step a month (or a week), **Today** comes back, **Last set** jumps to the month the course finishes in, and **Month | Week** switches the range. The same strip of numbers sits above it.
 
-- **Assigned sets** sit on their real due date, coloured by their Board column: Assigned (purple), Needs you (amber), Done (green).
-- **Sets still to come** (the Board's Up next) are dashed, on the date the pacing guide gives them at the current pace. They move when the pace, the plan or the days off change. Skipped and unpublished sets are not shown.
-- **Days off** are shaded and named (weekends, the default holidays, the class's own days off); today is marked.
+- **Colour is the unit.** A set's chip has its unit's colour (the same one as on the List), so a glance shows where one unit ends and the next begins. The fill says where the set stands: **dashed outline** = planned (not assigned yet, on the date the pacing guide gives it at the current pace), **tinted** = assigned, with an amber "!" when it needs the teacher and a green tick when it is done. Planned sets move when the pace, the plan or the days off change. Skipped and unpublished sets are not shown.
+- **Jump to a unit.** Under the grid, one chip per unit in its colour (this row is also the key to the colours); pressing it goes to the month (or week) of the unit's first set (`unitFirstDay`). The **unit filter** beside the List | Calendar switch (`Unit  All 1 2 3 …`, `?unit=4`; `unit-filter.tsx`) narrows the calendar to one unit and jumps to it too; pressing the chosen unit again, or All, shows everything.
+- **Today** has a ring, a filled date and the word "Today".
+- **Weekends** are narrow columns. A set due on a weekend shows as a count; press it for the list.
+- **Days off look different from empty days.** A day with no school is hatched, and the break is **named once across all of its days in the week** on a small card with its dates ("Thanksgiving break · No school · Thu, Nov 26 – Fri, Nov 27"; a winter break runs across the whole row, weekend included). `dayOffRuns` finds the runs. Plain weekends are not named. If a set is due on a day off, the name moves to the bottom of the day.
+- **Full days do not overflow.** In the Month view a day shows up to three sets (four when that is all there are), then **+N more**, which lists the rest. The Week view shows every set.
+- **Week view.** One tall row with the same days off and weekends, with each set on a roomier card (key, whole title, and "11 of 13 in · 3 to check" or "Planned").
 - An assigned set with **no due date** has no day to sit on, so it is listed under the calendar with a link.
 
 Click a set for its unit, where it stands ("8 of 13 handed in · 3 overdue") and its actions: an assigned set has the **due-date chip**, **Results** (or **Review** when something waits) and **Preview**; a planned set has **Assign** (the one-set dialog) and **Preview**.
 
-**Drag an assigned set to another day** to move its due date there; the time of day is kept and the message has Undo (the same `PATCH /api/assignments/{id}` as the due-date chip). Only school days take a drop: a weekend or a day off is refused with a message, and the due-date chip in the popover can still set any date. Planned sets cannot be dragged, because their dates come from the pacing guide (change the pace in **Schedule & days off**, or the order in **Reorder or skip**). Dragging works with a mouse, and with press-and-hold on touch; with a keyboard, open the set and use the due-date chip.
+**Drag a set to another day.** What a drop means is decided by `moveToDay`:
 
-**Phone width.** The grid becomes a list of the month's days that have sets, each with its sets; everything else works the same (no dragging on the list, use the due-date chip).
+| Drag | What happens |
+|---|---|
+| An **assigned** set to another school day | Its due date moves there; the time of day is kept and the message has Undo (the same `PATCH /api/assignments/{id}` as the due-date chip). |
+| A **planned** set to a school day | That one set is assigned at once, due that day (`assignNow` in `use-set-actions.ts`); Undo archives the copy again, so students stop seeing it and the set is planned again. An archived copy is restored instead of copied. The other planned sets then re-space after it, as the pacing guide always does. |
+
+Only school days take a drop: a weekend or a day off is refused with a message, and the due-date chip in the popover can still set any date. To assign a planned set without dragging, click it and press **Assign** (the one-set dialog, where the date can be changed). Dragging works with a mouse, and with press-and-hold on touch; with a keyboard, open the set and use its buttons.
+
+**Phone width.** The grid becomes a list of the month's (or week's) days that have sets, each with its sets in their unit colours, with the days off in between as hatched rows ("Winter break · no school · Sat, Dec 19 – Mon, Jan 4"); today's day is outlined. Everything else works the same (no dragging on the list, use the due-date chip).
 
 **Setting a class's course.** `POST /api/courses` accepts an optional `curriculumId`. `PATCH /api/courses/{id}/curriculum { curriculumId: string | null }` is owner-only (teacher who owns the class; unknown course 400). Following changes nothing in existing assignments. `firestore.rules` stops clients from writing `curriculumId`, `curriculumPlan` or `daysOff` on a class, so the routes are the only way.
 
@@ -199,7 +196,16 @@ The first-run page (`/teacher/welcome`) has a Course dropdown, lists the chosen 
 
 ### Unit guides: `/teacher/courses/{curriculumId}/{unit}`
 
-One page per unit (linked from each unit on the roadmap): sets, problems, estimated student time and topics; each set with its topics, question types, difficulty mix and the misconceptions it catches; the AP topics with their summaries; and every misconception the unit targets with the sets that target it. With a class chosen it also shows that class's status, results and re-teach suggestions for the unit, and **Assign N sets** opens the assign dialog for the unit on `/teacher/courses` (`?assign={unit}`).
+A unit's home page, linked from each unit on the List (**Unit guide**). From top to bottom:
+
+- **Header** in the unit's colour: the unit number on a large tile, the course's icon and name, the unit's title and summary, and the facts (sets, problems, student time, AP topics). With a class chosen it adds the class's line (the per-set progress bar, "2 of 4 sets assigned · average 81%", answers to check) and the one filled button, **Assign this unit / the rest (n sets)**, which opens the assign dialog on `/teacher/courses` (`?assign={unit}`).
+- **What this unit covers**: one card per AP topic with its number, name and summary, and the sets that practise it (links down the page).
+- **Sets in this unit**, on the unit's rail. Each set has, on the left, what it practises: title (opens the preview), description, its AP topics by name, problem count, question types, difficulty mix and time, and the misconceptions its wrong answers catch (highlighted when this class has hit them). On the right, how the class did: the status mark, due date, a hand-in bar ("12 of 13"), the average, answers waiting and students overdue, with **Results** (or **Review**), **Preview** and, for a set not assigned yet, **Assign** (`?assign=4C` opens the one-set dialog on `/teacher/courses`).
+- **What students got wrong, and what to re-teach** (with a class): up to three misconceptions, each with how many students hit it, a bar, and the rule-based suggestion labelled **Re-teach to the whole class**, **Pull a small group** or **Check in one to one** (see below). Before anything is graded it says so instead.
+- **Misconceptions this unit is built to catch**: every one the unit targets with the sets that target it; those this class has hit are marked "Seen in this class".
+- **Previous unit / Next unit**, in the class's order.
+
+**The guide belongs to the chosen class's course.** A class follows exactly one course, so if the chosen class follows a different course (or none) the page does not show the unit; it says which course the class follows, with **Open {course}** (or **Choose a course**) and **Switch to {class}** for each class that does follow this course. A teacher with no class yet can read any course's guides. Nothing about the class is shown until its assignments have loaded.
 
 The per-set facts come from `src/data/curricula/profiles/<id>.json` (`setProfile` in `src/data/curricula/profiles.ts`), generated from the reviewed drafts in `content/<id>/`:
 ```bash
@@ -228,7 +234,7 @@ node tools/curriculum-profile.cjs --id ap-physics-2 --write    # after changing 
 
 ### Class progress and re-teach suggestions
 
-`GET /api/teacher/courses/progress?courseId=` (owner only) returns the roster size, per-set progress (`submitted`, `graded`, `pending`, `averageScore`, and for the Status board `overdue`: students on the roster with nothing handed in after the due date, and `needsReview`: students whose handed-in work has answers listed in `reviewQuestions` after an answer-key change) and, per unit, up to three misconceptions from `misconception_events` with the share of students who have graded work in that unit (`src/lib/course-progress.ts`, built on `buildInsightsReport`).
+`GET /api/teacher/courses/progress?courseId=` (owner only) returns the roster size, per-set progress (`submitted`, `graded`, `pending`, `averageScore`, and `overdue`: students on the roster with nothing handed in after the due date, and `needsReview`: students whose handed-in work has answers listed in `reviewQuestions` after an answer-key change) and, per unit, up to three misconceptions from `misconception_events` with the share of students who have graded work in that unit (`src/lib/course-progress.ts`, built on `buildInsightsReport`).
 
 The re-teach suggestion is **rule-based**, so the same data always gives the same words:
 
