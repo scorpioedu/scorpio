@@ -1,7 +1,8 @@
-// How units and sets look on every Courses screen (List, Calendar, unit guide), so a unit has the
-// same colour and a set the same status mark wherever a teacher meets it.
-// - A unit's colour: the course's own tint for its first unit (see course-icon.tsx), then round a
-//   fixed wheel, so neighbouring units never share a colour.
+// How units and sets look on the Courses screens (List, Calendar, unit guide), so a set has the same
+// status mark wherever a teacher meets it.
+// - A unit's colour (Calendar and unit guide; the List colours a unit by how far along it is): the
+//   course's own tint for its first unit (see course-icon.tsx), then round a fixed wheel, so
+//   neighbouring units never share a colour.
 // - A set's status mark: told apart by shape as well as colour (filled, ticked, "!", hollow, dashed).
 import { Check, Lock } from "lucide-react";
 import { apTopic, type ApCourseId } from "@/data/ap";
@@ -127,14 +128,19 @@ export function unitLook(curriculumId: string, unit: number): UnitLook {
   return WHEEL[((FIRST[curriculumId] ?? 0) + at) % WHEEL.length];
 }
 
-/** The unit's number on its coloured tile. */
+/**
+ * The unit's number on a tile: in the unit's colour, or in `tone` (background and text classes)
+ * where the tile's colour says something else, like how far along the unit is on the List.
+ */
 export function UnitTile({
   curriculumId,
   unit,
+  tone,
   className,
 }: {
   curriculumId: string;
   unit: number;
+  tone?: string;
   className?: string;
 }) {
   return (
@@ -142,7 +148,7 @@ export function UnitTile({
       aria-hidden
       className={cn(
         "inline-flex size-11 shrink-0 items-center justify-center rounded-2xl text-xl font-semibold tabular-nums",
-        unitLook(curriculumId, unit).tile,
+        tone ?? unitLook(curriculumId, unit).tile,
         className,
       )}
     >
@@ -202,15 +208,15 @@ export function StatusMark({
   );
 }
 
-/** One bar segment per set, coloured by status: how far through a unit the class is, at a glance. */
+/**
+ * One bar segment per set: green when it is out with students (lighter until it is done), amber when
+ * it needs the teacher, grey when it is still to come, dashed when skipped.
+ */
 export function SetSegments({
   statuses,
-  solid,
   className,
 }: {
   statuses: SetStatus[];
-  /** The unit's solid colour, for sets that are out with students. */
-  solid: string;
   className?: string;
 }) {
   const out = statuses.filter((s) => s === "assigned" || s === "needsYou" || s === "done").length;
@@ -228,12 +234,13 @@ export function SetSegments({
             "min-w-3 flex-1 rounded-full",
             s === "needsYou"
               ? "bg-amber-500"
-              : s === "done" || s === "assigned"
-                ? solid
-                : s === "skipped"
-                  ? "border border-dashed border-muted-foreground/50"
-                  : "bg-muted-foreground/25",
-            s === "assigned" && "opacity-60",
+              : s === "done"
+                ? "bg-green-500"
+                : s === "assigned"
+                  ? "bg-green-500/60"
+                  : s === "skipped"
+                    ? "border border-dashed border-muted-foreground/50"
+                    : "bg-muted-foreground/25",
           )}
         />
       ))}

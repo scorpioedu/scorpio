@@ -636,7 +636,8 @@ export default function CoursesClient() {
             <p role="alert" className="text-sm text-destructive">
               Could not load the roadmap. Refresh to try again.
             </p>
-          ) : published === null ? (
+          ) : published === null || (selected && !data.classLoaded) ? (
+            // Wait for the class's assignments too, so the roadmap never flashes "0 of 4 assigned".
             <p role="status" className="text-sm text-muted-foreground">
               Loading roadmap…
             </p>

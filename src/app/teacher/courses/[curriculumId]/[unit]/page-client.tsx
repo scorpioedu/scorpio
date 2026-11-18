@@ -337,7 +337,7 @@ export default function UnitGuideClient({
           {classReady && selected && (
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/60 pt-4 text-sm">
               <span className="font-semibold">{selected.name}</span>
-              <SetSegments statuses={statuses} solid={look.solid} className="w-32" />
+              <SetSegments statuses={statuses} className="w-32" />
               <span className="text-muted-foreground">
                 {assigned.length} of {wanted.length} sets assigned
                 {average !== null ? ` · average ${average}%` : ""}

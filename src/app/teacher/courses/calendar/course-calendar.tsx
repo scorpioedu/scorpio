@@ -1,7 +1,7 @@
 "use client";
 
 // The Calendar view: every set of the class's course on the day it is due, a month or a week at a
-// time. A set is coloured by its unit (the same colour as on the List). Assigned sets sit on their
+// time. A set is coloured by its unit. Assigned sets sit on their
 // real due date; sets still to come are dashed, on the date the pacing guide gives them. Days off
 // are hatched and named once across the whole break; weekends are narrow. Drag a set to another
 // school day: an assigned set moves its due date there, a planned one is assigned for that day.

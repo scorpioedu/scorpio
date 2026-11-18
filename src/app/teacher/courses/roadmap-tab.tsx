@@ -1,7 +1,8 @@
 "use client";
 
-// The List: the class's course as a roadmap. A unit is a section with its number on a coloured tile,
-// a bar with one segment per set, and its own Assign button; its sets hang off a rail under it, each
+// The List: the class's course as a roadmap. A unit is a section with its number on a tile whose
+// colour says how far along it is (green done, amber under way, grey not started), a bar with one
+// segment per set, and its own Assign button; its sets hang off a rail under it, each
 // with a status mark (told apart by shape), its AP topics, its due date and how the class did.
 import Link from "next/link";
 import { ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
@@ -31,14 +32,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { PreviewTarget } from "./set-preview-dialog";
-import {
-  SetSegments,
-  StatusMark,
-  TopicChips,
-  UnitTile,
-  unitLook,
-  type UnitLook,
-} from "./unit-look";
+import { SetSegments, StatusMark, TopicChips, UnitTile } from "./unit-look";
 import { shortDate, type ClassProgress } from "./use-course-data";
 import { setDisplayTitle, type SetRowActions } from "./use-set-actions";
 
@@ -77,20 +71,35 @@ function MisconceptionList({ insight }: { insight: UnitInsight }) {
   );
 }
 
+type UnitTone = "done" | "next" | "started" | "plain";
+
+/** The number tile's colour says how far along the unit is: green done, amber under way, grey not started. */
+const TILE: Record<UnitTone, string> = {
+  done: "bg-green-500/15 text-green-700 dark:text-green-300",
+  next: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  started: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  plain: "bg-muted text-muted-foreground",
+};
+
 function unitState(
   u: RoadmapUnit,
   isNext: boolean,
-): { label: string; tone: "done" | "next" | "plain" } {
+): {
+  label: string;
+  tone: UnitTone;
+  /** Worth a badge: the colour alone does not say it. */ note?: true;
+} {
   const wanted = u.sets.filter((s) => !s.skipped);
-  if (wanted.length === 0) return { label: "Skipped", tone: "plain" };
+  if (wanted.length === 0) return { label: "Skipped", tone: "plain", note: true };
   if (wanted.every((s) => !s.published && !s.assigned))
     return {
       label: wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet",
       tone: "plain",
+      note: true,
     };
   if (u.allAssigned) return { label: "Assigned", tone: "done" };
   if (isNext) return { label: "Next up", tone: "next" };
-  if (wanted.some((s) => s.assigned)) return { label: "Partly assigned", tone: "plain" };
+  if (wanted.some((s) => s.assigned)) return { label: "Partly assigned", tone: "started" };
   return { label: "Not assigned", tone: "plain" };
 }
 
@@ -98,7 +107,6 @@ function unitState(
 function SetRow({
   curriculumId,
   course,
-  look,
   s,
   status,
   hasClass,
@@ -109,7 +117,6 @@ function SetRow({
 }: {
   curriculumId: string;
   course: ApCourseId;
-  look: UnitLook;
   s: RoadmapSet;
   status: SetStatus;
   hasClass: boolean;
@@ -142,7 +149,7 @@ function SetRow({
       />
       <div className={cn("min-w-0 flex-1 basis-64 space-y-1", skipped && "opacity-60")}>
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 break-words">
-          <span className={cn("font-mono text-xs font-semibold", look.text)}>{s.set.key}</span>
+          <span className="font-mono text-xs font-semibold text-muted-foreground">{s.set.key}</span>
           {s.assignmentId ? (
             <Link
               href={assignmentHref(s.assignmentId)}
@@ -349,9 +356,10 @@ export function RoadmapTab({
         className="space-y-3"
       >
         {roadmap.map((u) => {
-          const look = unitLook(curriculum.id, u.unit);
           const isNext = u.unit === nextUnitNumber;
           const state = unitState(u, isNext);
+          // No class: nothing is under way, so every tile is neutral.
+          const tone: UnitTone = hasClass ? state.tone : "plain";
           const wanted = u.sets.filter((s) => !s.skipped);
           const assigned = wanted.filter((s) => s.assigned).length;
           const insight = progress?.units.find((x) => x.unit === u.unit);
@@ -374,7 +382,7 @@ export function RoadmapTab({
               )}
             >
               <AccordionTrigger className="items-center gap-3 py-3 hover:no-underline sm:gap-4">
-                <UnitTile curriculumId={curriculum.id} unit={u.unit} />
+                <UnitTile curriculumId={curriculum.id} unit={u.unit} tone={TILE[tone]} />
                 <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1.5 text-left">
                   <span className="min-w-0">
                     <span className="block break-words text-lg font-semibold leading-tight tracking-tight sm:text-xl">
@@ -398,20 +406,10 @@ export function RoadmapTab({
                     </span>
                   </span>
                   <span className="flex shrink-0 items-center gap-3">
-                    {hasClass && (
-                      <SetSegments
-                        statuses={statuses}
-                        solid={look.solid}
-                        className="w-20 sm:w-24"
-                      />
-                    )}
-                    {hasClass && (state.tone !== "plain" || assigned === 0) && (
-                      <Badge
-                        variant={state.tone === "next" ? "default" : "secondary"}
-                        className={
-                          state.tone === "done" ? "text-green-700 dark:text-green-400" : ""
-                        }
-                      >
+                    {hasClass && <SetSegments statuses={statuses} className="w-20 sm:w-24" />}
+                    {/* Only what the colour does not already say. */}
+                    {hasClass && (state.tone === "next" || state.note) && (
+                      <Badge variant={state.tone === "next" ? "default" : "secondary"}>
                         {state.label}
                       </Badge>
                     )}
@@ -420,7 +418,7 @@ export function RoadmapTab({
               </AccordionTrigger>
               <AccordionContent className="space-y-3 pb-3">
                 {/* Everything under the heading hangs off the unit's rail. */}
-                <div className={cn("ml-[21px] space-y-3 border-l-2", look.line)}>
+                <div className="ml-[21px] space-y-3 border-l-2 border-border">
                   <div className="space-y-3 pl-7 sm:pl-8">
                     {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
                     <div className="flex flex-wrap items-center gap-2">
@@ -450,7 +448,6 @@ export function RoadmapTab({
                         key={s.set.key}
                         curriculumId={curriculum.id}
                         course={curriculum.apCourse}
-                        look={look}
                         s={s}
                         status={status.get(s.set.key) ?? "upNext"}
                         hasClass={hasClass}
