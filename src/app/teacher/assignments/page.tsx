@@ -78,7 +78,14 @@ export default function AssignmentsPage() {
   const load = useCallback(async () => {
     if (!uid) return;
     const snap = await getDocs(query(collection(db, "assignments"), where("teacherId", "==", uid)));
-    return snap.docs.map((d) => {
+    // Published course sets (the library every teacher assigns from) belong to the admin who published
+    // them and are managed in Admin → Content. They are not that teacher's own assignments, so they
+    // stay out of this list; the copies assigned to a class have a courseId and are listed.
+    const own = snap.docs.filter((d) => {
+      const a = d.data();
+      return !(a.visibility === "global" && a.curriculumSetKey && typeof a.courseId !== "string");
+    });
+    return own.map((d) => {
       const a = d.data();
       return {
         id: d.id,
