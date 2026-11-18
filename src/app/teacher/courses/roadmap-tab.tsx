@@ -89,7 +89,7 @@ function unitBadge(u: RoadmapUnit, isNext: boolean): string | null {
   if (wanted.length === 0) return "Skipped";
   if (wanted.every((s) => !s.published && !s.assigned))
     return wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet";
-  return isNext ? "Next up" : null;
+  return isNext ? "Assign next" : null;
 }
 
 const day = (d: Date) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
