@@ -1,7 +1,7 @@
 "use client";
 
 // The List: the class's course as a roadmap. A unit is a section with its number on a tile whose
-// colour says how far along it is (green done, amber under way, grey not started), a bar with one
+// colour says how far along it is (green finished, amber out with students, grey not started), a bar with one
 // segment per set, and its own Assign button; its sets hang off a rail under it, each
 // with a status mark (told apart by shape), its AP topics, its due date and how the class did.
 import Link from "next/link";
@@ -71,37 +71,35 @@ function MisconceptionList({ insight }: { insight: UnitInsight }) {
   );
 }
 
-type UnitTone = "done" | "next" | "started" | "plain";
+type UnitTone = "done" | "started" | "plain";
 
-/** The number tile's colour says how far along the unit is: green done, amber under way, grey not started. */
+/**
+ * The number tile's colour says how far along the unit is: green when the class has finished every
+ * set, amber while sets are out with students, grey when nothing is assigned yet.
+ */
 const TILE: Record<UnitTone, string> = {
   done: "bg-green-500/15 text-green-700 dark:text-green-300",
-  next: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
   started: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
   plain: "bg-muted text-muted-foreground",
 };
 
-function unitState(
-  u: RoadmapUnit,
-  isNext: boolean,
-): {
-  label: string;
-  tone: UnitTone;
-  /** Worth a badge: the colour alone does not say it. */ note?: true;
-} {
+/** A badge for what the tile's colour does not say. */
+function unitBadge(u: RoadmapUnit, isNext: boolean): string | null {
   const wanted = u.sets.filter((s) => !s.skipped);
-  if (wanted.length === 0) return { label: "Skipped", tone: "plain", note: true };
+  if (wanted.length === 0) return "Skipped";
   if (wanted.every((s) => !s.published && !s.assigned))
-    return {
-      label: wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet",
-      tone: "plain",
-      note: true,
-    };
-  if (u.allAssigned) return { label: "Assigned", tone: "done" };
-  if (isNext) return { label: "Next up", tone: "next" };
-  if (wanted.some((s) => s.assigned)) return { label: "Partly assigned", tone: "started" };
-  return { label: "Not assigned", tone: "plain" };
+    return wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet";
+  return isNext ? "Next up" : null;
 }
+
+const day = (d: Date) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+/** "Nov 18", or "Nov 18 – Dec 1". */
+const dayRange = (dates: Date[]) => {
+  const times = dates.map((d) => d.getTime());
+  const first = new Date(Math.min(...times));
+  const last = new Date(Math.max(...times));
+  return day(first) === day(last) ? day(first) : `${day(first)} – ${day(last)}`;
+};
 
 /** One set on its unit's rail. The mark on the rail says where it stands. */
 function SetRow({
@@ -293,6 +291,7 @@ export function RoadmapTab({
   className,
   progress,
   nextUnitNumber,
+  planned,
   busy,
   onAssign,
   onPreview,
@@ -304,6 +303,8 @@ export function RoadmapTab({
   className: string | null;
   progress: ClassProgress | null;
   nextUnitNumber: number | undefined;
+  /** Where the pacing guide puts each set that is not assigned yet, by set key. */
+  planned?: Map<string, Date>;
   busy: boolean;
   onAssign: (u: RoadmapUnit) => void;
   onPreview: (t: PreviewTarget) => void;
@@ -357,9 +358,7 @@ export function RoadmapTab({
       >
         {roadmap.map((u) => {
           const isNext = u.unit === nextUnitNumber;
-          const state = unitState(u, isNext);
-          // No class: nothing is under way, so every tile is neutral.
-          const tone: UnitTone = hasClass ? state.tone : "plain";
+          const badge = unitBadge(u, isNext);
           const wanted = u.sets.filter((s) => !s.skipped);
           const assigned = wanted.filter((s) => s.assigned).length;
           const insight = progress?.units.find((x) => x.unit === u.unit);
@@ -371,6 +370,28 @@ export function RoadmapTab({
             ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
             : null;
           const needsYou = statuses.filter((x) => x === "needsYou").length;
+          // Green only when the class has finished the unit; being assigned is not being done.
+          const out = u.sets.filter((s) => s.assigned);
+          const finished = out.filter((s) => status.get(s.set.key) === "done").length;
+          const tone: UnitTone = !hasClass
+            ? "plain"
+            : wanted.length > 0 && finished === wanted.length
+              ? "done"
+              : out.length > 0
+                ? "started"
+                : "plain";
+          // When the unit happens: its real due dates, or where the pacing guide puts it.
+          const due = out.flatMap((s) => (s.dueDate ? [s.dueDate] : []));
+          const plan = u.sets.flatMap((s) => planned?.get(s.set.key) ?? []);
+          const when = !hasClass
+            ? ""
+            : tone === "done"
+              ? " · finished"
+              : due.length
+                ? ` · due ${dayRange(due)}`
+                : plan.length
+                  ? ` · planned ${dayRange(plan)}`
+                  : "";
           return (
             <AccordionItem
               key={u.unit}
@@ -396,6 +417,7 @@ export function RoadmapTab({
                       {u.sets.length !== wanted.length
                         ? ` · ${u.sets.length - wanted.length} skipped`
                         : ""}
+                      {when}
                       {average !== null ? ` · average ${average}%` : ""}
                       {needsYou > 0 && (
                         <span className="font-medium text-amber-700 dark:text-amber-400">
@@ -408,10 +430,8 @@ export function RoadmapTab({
                   <span className="flex shrink-0 items-center gap-3">
                     {hasClass && <SetSegments statuses={statuses} className="w-20 sm:w-24" />}
                     {/* Only what the colour does not already say. */}
-                    {hasClass && (state.tone === "next" || state.note) && (
-                      <Badge variant={state.tone === "next" ? "default" : "secondary"}>
-                        {state.label}
-                      </Badge>
+                    {hasClass && badge && (
+                      <Badge variant={isNext ? "default" : "secondary"}>{badge}</Badge>
                     )}
                   </span>
                 </span>

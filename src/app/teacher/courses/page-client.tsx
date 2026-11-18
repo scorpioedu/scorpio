@@ -28,7 +28,7 @@ import {
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import { normalisePlan, planStartingAt, type CurriculumPlan } from "@/lib/curriculum-plan";
-import { boardColumns, boardStats } from "@/lib/course-board";
+import { boardColumns, boardStats, plannedDates } from "@/lib/course-board";
 import { paceCourse } from "@/lib/course-pacing";
 import { classCalendar, schoolDays } from "@/lib/school-calendar";
 import { apiError, undoToast } from "@/lib/undo-toast";
@@ -208,6 +208,7 @@ export default function CoursesClient() {
     [roadmap, start, spacing, isSchoolDay],
   );
 
+  const planned = useMemo(() => plannedDates(pacing), [pacing]);
   const publishedCount = published?.length ?? 0;
   const written = hasContent(curriculum);
   // The views are a class's look at its course: without a class (or before the course is written)
@@ -675,6 +676,7 @@ export default function CoursesClient() {
               className={written ? (selected?.name ?? null) : null}
               progress={progress}
               nextUnitNumber={next?.unit}
+              planned={planned}
               busy={busy !== null}
               onAssign={openUnit}
               onPreview={setPreview}

@@ -209,8 +209,8 @@ export function StatusMark({
 }
 
 /**
- * One bar segment per set: green when it is out with students (lighter until it is done), amber when
- * it needs the teacher, grey when it is still to come, dashed when skipped.
+ * One bar segment per set: green when the class has finished it, amber while it is out with students
+ * (stronger when it needs the teacher), grey when it is still to come, dashed when skipped.
  */
 export function SetSegments({
   statuses,
@@ -237,7 +237,7 @@ export function SetSegments({
               : s === "done"
                 ? "bg-green-500"
                 : s === "assigned"
-                  ? "bg-green-500/60"
+                  ? "bg-amber-500/50"
                   : s === "skipped"
                     ? "border border-dashed border-muted-foreground/50"
                     : "bg-muted-foreground/25",
