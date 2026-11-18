@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { assignmentHref } from "@/lib/assignment-actions";
+import { LazyMarkdownRenderer } from "@/components/lazy-markdown-renderer";
 import {
   Dialog,
   DialogContent,
@@ -42,6 +43,25 @@ export interface PreviewTarget {
 }
 
 const TYPE: Record<string, string> = { "multiple-choice": "Multiple choice", numeric: "Numeric" };
+
+/**
+ * Problem text as students see it: Markdown with $…$ math typeset by KaTeX (loaded when the dialog
+ * first shows problems). `inline` keeps a choice or an answer on its line.
+ */
+function Maths({ children, inline }: { children: string; inline?: boolean }) {
+  return (
+    <LazyMarkdownRenderer
+      noProse
+      className={
+        inline
+          ? "min-w-0 break-words [&_p]:m-0 [&_p]:inline"
+          : "space-y-2 break-words leading-relaxed [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden"
+      }
+    >
+      {children}
+    </LazyMarkdownRenderer>
+  );
+}
 
 export function SetPreviewDialog({
   target,
@@ -196,28 +216,32 @@ export function SetPreviewDialog({
                       <span>{TYPE[q.type ?? ""] ?? q.type ?? "Question"}</span>
                       {typeof q.points === "number" && <span>{q.points} pts</span>}
                     </div>
-                    <p className="whitespace-pre-wrap break-words leading-relaxed">{q.text}</p>
+                    <Maths>{q.text ?? ""}</Maths>
                     {Array.isArray(q.options) && q.options.length > 0 && (
                       <ol className="space-y-1 pl-1">
                         {q.options.map((option, j) => (
                           <li
                             key={j}
-                            className={
+                            className={`flex items-baseline gap-1.5 ${
                               showKey && option === q.correctAnswer
                                 ? "font-medium text-green-700 dark:text-green-400"
                                 : ""
-                            }
+                            }`}
                           >
-                            {String.fromCharCode(65 + j)}. {option}
-                            {showKey && option === q.correctAnswer ? " (correct)" : ""}
+                            <span className="shrink-0">{String.fromCharCode(65 + j)}.</span>
+                            <Maths inline>{option}</Maths>
+                            {showKey && option === q.correctAnswer && (
+                              <span className="shrink-0">(correct)</span>
+                            )}
                           </li>
                         ))}
                       </ol>
                     )}
                     {showKey && !(Array.isArray(q.options) && q.options.length > 0) && (
-                      <p className="font-medium text-green-700 dark:text-green-400">
-                        Answer: {q.correctAnswer || "not set"}
-                      </p>
+                      <div className="flex items-baseline gap-1.5 font-medium text-green-700 dark:text-green-400">
+                        <span className="shrink-0">Answer:</span>
+                        {q.correctAnswer ? <Maths inline>{q.correctAnswer}</Maths> : "not set"}
+                      </div>
                     )}
                   </li>
                 ))}
