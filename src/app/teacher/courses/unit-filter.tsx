@@ -1,4 +1,4 @@
-// Narrows the Board or the Calendar to one unit (kept in the address bar as ?unit=). Compact on
+// Narrows the Calendar to one unit (kept in the address bar as ?unit=). Compact on
 // purpose: one small numbered chip per unit, in the class's order; only the chosen unit spells out
 // its name (under the row on a phone), the others show it on hover.
 import { cn } from "@/lib/utils";

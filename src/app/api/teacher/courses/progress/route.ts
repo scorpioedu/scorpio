@@ -33,7 +33,7 @@ function toDate(v: unknown): Date | null {
  *   { courseId, curriculumId, students, sets: { [setKey]: SetProgress }, units: UnitInsight[], truncated }
  * `students` is the class roster size. `sets` has one entry per course set assigned to the class;
  * each carries `overdue` (students with nothing handed in after the due date) and `needsReview`
- * (students whose work has answers to check after a key change), which the Status board sorts by.
+ * (students whose work has answers to check after a key change), which decide whether a set needs the teacher.
  * `units` lists up to three misconceptions per unit with a re-teach suggestion. The class does not
  * have to follow a course: sets assigned from one still count. `curriculumId` picks the course to
  * report on; without it, it is the course the class follows, else the one its sets came from.

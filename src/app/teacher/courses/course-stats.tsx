@@ -1,8 +1,8 @@
-// The strip above the List, the Calendar and the Board: how far through the course the class is, its average, and what is
-// waiting (for the teacher, and from students).
+// The strip above the List and the Calendar: how far through the course the class is, its average,
+// and what is waiting (for the teacher, and from students).
 import { cn } from "@/lib/utils";
 import type { BoardStats as Stats } from "@/lib/course-board";
-import { shortDate } from "../use-course-data";
+import { shortDate } from "./use-course-data";
 
 function Figure({
   label,
@@ -27,7 +27,7 @@ function Figure({
   );
 }
 
-export function BoardStats({
+export function CourseStats({
   stats,
   finish,
   remaining,
@@ -82,7 +82,7 @@ export function BoardStats({
         />
         <Figure
           label="Needs you"
-          // Sets, like the Needs you column's count; the answers inside them are the note.
+          // Counted in sets; the answers inside them are the note.
           value={count(stats.needsYou)}
           tone={stats.needsYou > 0 ? "text-amber-600 dark:text-amber-400" : undefined}
           note={

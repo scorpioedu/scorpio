@@ -12,7 +12,6 @@ import {
   CalendarDays,
   CalendarRange,
   ChevronDown,
-  Columns3,
   List as ListIcon,
   ListOrdered,
   MoreHorizontal,
@@ -70,9 +69,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AssignDialog } from "./assign-dialog";
-import { CourseBoard } from "./board/course-board";
-import { BoardStats } from "./board/board-stats";
-import { UnitFilter } from "./board/unit-filter";
+import { CourseStats } from "./course-stats";
+import { UnitFilter } from "./unit-filter";
 import { CourseCalendar } from "./calendar/course-calendar";
 import { PlanEditor } from "./plan-editor";
 import { RoadmapTab } from "./roadmap-tab";
@@ -82,11 +80,8 @@ import { SetPreviewDialog, type PreviewTarget } from "./set-preview-dialog";
 import { useCourseData } from "./use-course-data";
 import { useSetActions, type Assigning } from "./use-set-actions";
 
-/**
- * List: the roadmap, unit by unit (the default). Calendar: every set on the day it is due.
- * Board: every set by where it stands.
- */
-type View = "list" | "calendar" | "board";
+/** List: the roadmap, unit by unit (the default). Calendar: every set on the day it is due. */
+type View = "list" | "calendar";
 
 /** Keep ?course=, ?view=, ?unit= and ?tab= in the address bar without a navigation. */
 function setParam(name: string, value: string | null) {
@@ -109,13 +104,12 @@ export default function CoursesClient() {
     chosen.classes?.find((c) => c.id === chosen.classId)?.curriculumId,
   );
   const curriculum = classCourse ?? browse;
-  // The List is where the page opens; ?view=calendar and ?view=board open the other two.
-  const [view, setViewState] = useState<View>(() => {
-    const asked = params?.get("view");
-    return asked === "calendar" || asked === "board" ? asked : "list";
-  });
+  // The List is where the page opens; ?view=calendar opens the Calendar. Anything else (an old
+  // ?view=board link included) is the List.
+  const [view, setViewState] = useState<View>(() =>
+    params?.get("view") === "calendar" ? "calendar" : "list",
+  );
   const [unit, setUnitState] = useState<number | null>(() => Number(params?.get("unit")) || null);
-  const [showDone, setShowDone] = useState(false);
   // Schedule and days off opens in a side sheet; an old ?tab=schedule link opens it straight away.
   const [scheduleOpen, setScheduleOpen] = useState(() => params?.get("tab") === "schedule");
   const data = useCourseData(curriculum.id);
@@ -216,13 +210,12 @@ export default function CoursesClient() {
 
   const publishedCount = published?.length ?? 0;
   const written = hasContent(curriculum);
-  // The board is a class's view of a course: without a class (or before the course is written)
+  // The views are a class's look at its course: without a class (or before the course is written)
   // there is only the roadmap to browse.
-  const canBoard = follows && written && published !== null && !loadError;
-  const onBoard = canBoard && view === "board";
-  const onCalendar = canBoard && view === "calendar";
+  const canView = follows && written && published !== null && !loadError;
+  const onCalendar = canView && view === "calendar";
   /** The class's course is loaded, so its actions can be offered. */
-  const ready = canBoard;
+  const ready = canView;
   // The same numbers above every view.
   const stats = useMemo(
     () => boardStats(boardColumns(roadmap, progress?.sets, progress?.students ?? 0)),
@@ -332,11 +325,9 @@ export default function CoursesClient() {
             "A class follows one course: its units in order, each with short auto-graded sets."
           ) : (
             <>
-              {onBoard
-                ? "Every set by where it stands. Drag a card to Assigned, or press Assign."
-                : onCalendar
-                  ? "Every set on the day it is due. Drag an assigned set to another day, or click it."
-                  : "Units in order, each with short auto-graded sets. Assign, re-date or skip right on the roadmap."}
+              {onCalendar
+                ? "Every set on the day it is due. Drag an assigned set to another day, or click it."
+                : "Units in order, each with short auto-graded sets. Assign, re-date or skip right on the roadmap."}
             </>
           )
         }
@@ -383,8 +374,8 @@ export default function CoursesClient() {
             </SelectContent>
           </Select>
         )}
-        {/* On the List each unit has its own Assign button; the other views get this one. */}
-        {ready && next && !editing && (onBoard || onCalendar) && (
+        {/* On the List each unit has its own Assign button; the Calendar gets this one. */}
+        {ready && next && !editing && onCalendar && (
           <Button
             onClick={() => openUnit(next)}
             disabled={busy !== null}
@@ -463,8 +454,8 @@ export default function CoursesClient() {
             </h2>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
               Pick one and the class gets its whole year laid out: every unit in a teaching order,
-              each with short auto-graded sets you can assign in a click, a calendar, and a board of
-              what is out and what needs you.
+              each with short auto-graded sets you can assign in a click, and a calendar of what is
+              due when.
             </p>
           </div>
           <ul className="grid gap-4 lg:grid-cols-3">
@@ -579,7 +570,7 @@ export default function CoursesClient() {
             )
           )}
 
-          {canBoard && !editing && (
+          {canView && !editing && (
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
               <div
                 role="group"
@@ -590,7 +581,6 @@ export default function CoursesClient() {
                   [
                     ["list", "List", ListIcon],
                     ["calendar", "Calendar", CalendarRange],
-                    ["board", "Board", Columns3],
                   ] as const
                 ).map(([value, label, Icon]) => (
                   <button
@@ -604,7 +594,7 @@ export default function CoursesClient() {
                   </button>
                 ))}
               </div>
-              {(onBoard || onCalendar) && (
+              {onCalendar && (
                 <UnitFilter
                   units={roadmap.map((u) => ({ unit: u.unit, title: u.info?.title ?? "" }))}
                   value={roadmap.some((u) => u.unit === unit) ? unit : null}
@@ -614,8 +604,8 @@ export default function CoursesClient() {
             </div>
           )}
 
-          {canBoard && !editing && (
-            <BoardStats
+          {canView && !editing && (
+            <CourseStats
               stats={stats}
               finish={pacing.finish}
               remaining={pacing.remaining}
@@ -623,7 +613,7 @@ export default function CoursesClient() {
               loading={progress === null}
             />
           )}
-          {canBoard && selected && progress?.students === 0 && (
+          {canView && selected && progress?.students === 0 && (
             <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
               No students have joined {selected.name} yet. Share its join code{" "}
               <span className="font-mono font-semibold text-foreground">{selected.code}</span> with
@@ -654,28 +644,6 @@ export default function CoursesClient() {
               onSaved={(saved) => data.patchClass(selected.id, { curriculumPlan: saved })}
               onDatesMoved={() => data.refreshClass()}
               onDone={() => setEditing(false)}
-            />
-          ) : onBoard && selected && rowActions ? (
-            <CourseBoard
-              key={`${selected.id}-${curriculum.id}`}
-              curriculum={curriculum}
-              roadmap={roadmap}
-              progress={progress}
-              pacing={pacing}
-              planOrder={plan?.order ?? null}
-              unit={unit}
-              showDone={showDone}
-              onShowDone={setShowDone}
-              busy={busy !== null}
-              onPreview={setPreview}
-              actions={{
-                ...rowActions,
-                onAssignNow: (s, due) => void actions.assignNow(s, due),
-                onArchive: (s) => void actions.archiveCopy(s),
-                onReorder: actions.reorder
-                  ? (order, done) => void actions.reorder!(order, done)
-                  : undefined,
-              }}
             />
           ) : onCalendar && selected && rowActions ? (
             <CourseCalendar

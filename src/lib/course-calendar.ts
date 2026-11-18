@@ -1,11 +1,11 @@
 // The Calendar view on /teacher/courses: every set of the class's course on the day it is due.
 // Assigned sets sit on their real due date; sets still to come sit where the pacing guide puts them.
-// Pure; it builds on the Status board's columns (course-board.ts) so a set reads the same in both.
+// Pure; it builds on the status groups in course-board.ts, so a set reads the same on the List and here.
 import type { BoardCard, BoardColumns } from "@/lib/course-board";
 import { dayKey, type SchoolDayTest } from "@/lib/school-calendar";
 import { dueOnDay } from "@/lib/teacher-edit";
 
-/** "planned": not assigned yet, dated by the pacing guide. The rest are the board's columns. */
+/** "planned": not assigned yet, dated by the pacing guide. The rest are the status groups of course-board.ts. */
 export type CalendarStatus = "planned" | "assigned" | "needsYou" | "done";
 
 export interface CalendarItem extends BoardCard {
@@ -22,7 +22,7 @@ export interface CalendarItems {
 }
 
 /**
- * Put the board's cards on days. Skipped and unpublished sets are left out (they have no date), and
+ * Put the sets on days. Skipped and unpublished sets are left out (they have no date), and
  * so is an Up next set the pacing guide has no date for.
  */
 export function calendarItems(columns: BoardColumns, planned: Map<string, Date>): CalendarItems {

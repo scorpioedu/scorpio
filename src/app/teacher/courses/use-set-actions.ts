@@ -1,9 +1,8 @@
 "use client";
 
 // What a teacher can do to one set of a course, for one class: assign it, change its due date, skip
-// it, archive its copy, move it in the class's plan. The List (roadmap rows) and the Board (cards and
-// drops) both call these, so a change behaves the same wherever it is made. Every change shows an
-// Undo message.
+// it. The List (roadmap rows) and the Calendar (a set's popover, a drop on a day) both call these, so
+// a change behaves the same wherever it is made. Every change shows an Undo message.
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
@@ -145,73 +144,6 @@ export function useSetActions({
     }
   }
 
-  /**
-   * Assign one set straight away with the given due date (a card dropped on Assigned). The Undo
-   * archives the copy again, which hides it from students and puts the set back in Up next.
-   */
-  async function assignNow(s: RoadmapSet, due: Date) {
-    if (!selected || !user || !s.published) return;
-    const key = s.set.key;
-    setBusy("assign");
-    try {
-      const fresh = (await loadClassAssignments(user.uid, selected.id)).filter(
-        (a) => ofCourse(a) && a.curriculumSetKey === key,
-      );
-      if (fresh.some((a) => !a.archived)) {
-        toast.info(`${key} is already assigned to ${selected.name}.`);
-        return;
-      }
-      const archivedId = fresh.find((a) => a.archived && a.id)?.id;
-      let id: string;
-      if (archivedId) {
-        await updateAssignment(archivedId, { archived: false, dueDate: dueParam(due) });
-        id = archivedId;
-      } else {
-        id = await cloneSetToClass(authenticatedFetch, selected.id, {
-          ...toAssignable([s])[0],
-          due,
-        });
-      }
-      await data.refreshClass();
-      undoToast(
-        `${key} assigned to ${selected.name}, due ${shortDate(due)}`,
-        async () => {
-          await updateAssignment(id, { archived: true });
-          await data.refreshClass();
-        },
-        `${key} is back in Up next`,
-      );
-    } catch (e) {
-      toast.error(message(e, "Could not assign this set."));
-      await data.refreshClass();
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  /** Archive the class's copy (a card dropped back on Up next). Students' work is kept; Undo restores it. */
-  async function archiveCopy(s: RoadmapSet) {
-    if (!s.assignmentId) return;
-    const id = s.assignmentId;
-    setBusy("archive");
-    try {
-      await updateAssignment(id, { archived: true });
-      await data.refreshClass();
-      undoToast(
-        `${s.set.key} archived. Students no longer see it.`,
-        async () => {
-          await updateAssignment(id, { archived: false });
-          await data.refreshClass();
-        },
-        `${s.set.key} restored`,
-      );
-    } catch (e) {
-      toast.error(message(e, "Could not archive this set."));
-    } finally {
-      setBusy(null);
-    }
-  }
-
   async function savePlan(next: CurriculumPlan | null) {
     if (!selected) return null;
     const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(selected.id)}/plan`, {
@@ -250,10 +182,6 @@ export function useSetActions({
         )
       : undefined;
 
-  /** Save a new order of sets (the skipped list is kept). */
-  const reorder = (order: string[], done: string) =>
-    plan ? changePlan({ order, skipped: plan.skipped }, done) : undefined;
-
   async function changeDue(s: RoadmapSet, due: Date | null) {
     if (!s.assignmentId) return;
     const id = s.assignmentId;
@@ -291,11 +219,7 @@ export function useSetActions({
     setError,
     toAssignable,
     assign,
-    assignNow,
-    archiveCopy,
     savePlan,
-    /** Undefined when the class does not follow the course (it has no plan to change). */
-    reorder: canPlan ? reorder : undefined,
     rowActions,
   };
 }

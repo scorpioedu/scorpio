@@ -1,22 +1,16 @@
-// The Status board on /teacher/courses: which column a set lands in, the numbers above the board,
-// and reordering inside Up next.
+// Where each set of a class's course stands on /teacher/courses (up next, assigned, needs you, done)
+// and the numbers strip above the List and the Calendar.
 import { getCurriculum } from "../src/data/curricula";
 import {
-  DROP_ASSIGNED,
-  DROP_UP_NEXT,
   boardColumns,
-  boardDrop,
   boardStats,
-  dropInUpNext,
   filterBoard,
-  nextAssignDate,
-  nudgeInUpNext,
   plannedDates,
   toCheck,
 } from "../src/lib/course-board";
 import type { SetProgress } from "../src/lib/course-progress";
 import { paceCourse } from "../src/lib/course-pacing";
-import { defaultOrder, parsePlan } from "../src/lib/curriculum-plan";
+import { defaultOrder } from "../src/lib/curriculum-plan";
 import { deriveRoadmap, type ClassAssignment } from "../src/lib/curriculum-roadmap";
 
 const ID = "ap-physics-1";
@@ -253,9 +247,9 @@ describe("board stats", () => {
   });
 });
 
-describe("pacing on the board", () => {
+describe("planned dates", () => {
   const start = new Date("2026-11-24T23:59:00");
-  test("the next slot is the first projected date; assigned sets have no planned date", () => {
+  test("unassigned sets get the pacing guide's dates; assigned and skipped sets have none", () => {
     const roadmap = deriveRoadmap(ID, published, [copy("1A", past)], {
       order: all,
       skipped: ["1B"],
@@ -265,85 +259,6 @@ describe("pacing on the board", () => {
     expect(planned.has("1A")).toBe(false);
     expect(planned.has("1B")).toBe(false);
     expect(planned.get("1C")).toEqual(start);
-    expect(nextAssignDate(pacing)).toEqual(start);
     expect(planned.get("1D")!.getTime()).toBeGreaterThan(start.getTime());
-  });
-
-  test("there is no next slot once everything is assigned", () => {
-    const roadmap = deriveRoadmap(
-      ID,
-      published,
-      all.map((k) => copy(k, past)),
-    );
-    expect(nextAssignDate(paceCourse(roadmap, { start, spacing: 2 }))).toBeNull();
-  });
-});
-
-describe("reordering Up next", () => {
-  test("a dropped set takes the other's place inside its unit", () => {
-    const down = dropInUpNext(all, "4A", "4C");
-    expect(down).toEqual({ ok: true, order: expect.any(Array) });
-    if (!down.ok) throw new Error("expected a move");
-    expect(down.order.slice(12, 16)).toEqual(["4B", "4C", "4A", "4D"]);
-    expect(parsePlan(ID, { order: down.order, skipped: [] }).ok).toBe(true);
-    const up = dropInUpNext(all, "4D", "4A");
-    expect(up.ok && up.order.slice(12, 16)).toEqual(["4D", "4A", "4B", "4C"]);
-    // Everything outside the unit is untouched.
-    expect(up.ok && [...up.order.slice(0, 12), ...up.order.slice(16)]).toEqual([
-      ...all.slice(0, 12),
-      ...all.slice(16),
-    ]);
-  });
-
-  test("a drop across units is refused; a drop on itself or an unknown set does nothing", () => {
-    expect(dropInUpNext(all, "4A", "5A")).toEqual({ ok: false, reason: "unit" });
-    expect(dropInUpNext(all, "4A", "4A")).toEqual({ ok: false, reason: "none" });
-    expect(dropInUpNext(all, "4A", "9Z")).toEqual({ ok: false, reason: "none" });
-    expect(dropInUpNext(all, "9Z", "4A")).toEqual({ ok: false, reason: "none" });
-  });
-
-  test("Move up and down jump over sets that are not in Up next", () => {
-    // 4B is assigned, so the queue for unit 4 is 4A, 4C, 4D.
-    const queue = all.filter((k) => k !== "4B");
-    const down = nudgeInUpNext(all, queue, "4A", 1);
-    expect(down.ok && down.order.slice(12, 16)).toEqual(["4B", "4C", "4A", "4D"]);
-    const up = nudgeInUpNext(all, queue, "4D", -1);
-    expect(up.ok && up.order.slice(12, 16)).toEqual(["4A", "4B", "4D", "4C"]);
-  });
-
-  test("the first and last of a unit's queue do not leave the unit", () => {
-    expect(nudgeInUpNext(all, all, "4A", -1)).toEqual({ ok: false, reason: "none" });
-    expect(nudgeInUpNext(all, all, "4D", 1)).toEqual({ ok: false, reason: "none" });
-    expect(nudgeInUpNext(all, ["4A"], "4B", 1)).toEqual({ ok: false, reason: "none" });
-  });
-});
-
-describe("what a drop means", () => {
-  const queue = ["4C", "4D", "5A"];
-  test("Up next on Assigned assigns; on another Up next card reorders", () => {
-    expect(boardDrop("upNext", "4C", DROP_ASSIGNED, queue)).toEqual({ type: "assign" });
-    expect(boardDrop("upNext", "4C", `${DROP_ASSIGNED}:column`, queue)).toEqual({ type: "assign" });
-    expect(boardDrop("upNext", "4C", "4D", queue)).toEqual({ type: "reorder", overKey: "4D" });
-    // Another unit's card is still a reorder here; dropInUpNext refuses it with the reason.
-    expect(boardDrop("upNext", "4C", "5A", queue)).toEqual({ type: "reorder", overKey: "5A" });
-  });
-
-  test("Assigned on Up next (the column or any of its cards) archives", () => {
-    expect(boardDrop("assigned", "4A", DROP_UP_NEXT, queue)).toEqual({ type: "archive" });
-    expect(boardDrop("assigned", "4A", `${DROP_UP_NEXT}:column`, queue)).toEqual({
-      type: "archive",
-    });
-    expect(boardDrop("assigned", "4A", "4D", queue)).toEqual({ type: "archive" });
-  });
-
-  test("everything else changes nothing", () => {
-    expect(boardDrop("upNext", "4C", null, queue)).toBeNull();
-    expect(boardDrop("upNext", "4C", "4C", queue)).toBeNull();
-    expect(boardDrop("upNext", "4C", DROP_UP_NEXT, queue)).toBeNull();
-    expect(boardDrop("upNext", "4C", "4A", queue)).toBeNull(); // not an Up next card
-    expect(boardDrop("assigned", "4A", DROP_ASSIGNED, queue)).toBeNull();
-    expect(boardDrop("assigned", "4A", null, queue)).toBeNull();
-    expect(boardDrop("needsYou", "3D", DROP_UP_NEXT, queue)).toBeNull();
-    expect(boardDrop("done", "3A", DROP_ASSIGNED, queue)).toBeNull();
   });
 });
