@@ -95,32 +95,6 @@ export function weekOf(d: Date): Date[] {
   return Array.from({ length: 7 }, (_, i) => addDays(start, i));
 }
 
-/**
- * The unit (or units) each week belongs to, one list per week: the units of the sets on its days, in
- * the order they come up. A week with no sets between two that have some belongs to the unit that
- * comes next (the class is working towards it); a week before the first set or after the last has
- * none, and neither has a week with no school at all (a break).
- */
-export function weekUnits(
-  weeks: readonly Date[][],
-  items: CalendarItems,
-  isSchoolDay?: SchoolDayTest,
-): number[][] {
-  const own = weeks.map((week) => [
-    ...new Set(week.flatMap((day) => (items.byDay.get(dayKey(day)) ?? []).map((i) => i.unit))),
-  ]);
-  const days = [...items.byDay.keys()].sort();
-  if (!days.length) return own;
-  return own.map((units, w) => {
-    if (units.length) return units;
-    const start = dayKey(weeks[w][0]);
-    if (start < days[0]) return [];
-    if (isSchoolDay && !weeks[w].some(isSchoolDay)) return [];
-    const next = days.find((day) => day > start);
-    return next ? [items.byDay.get(next)![0].unit] : [];
-  });
-}
-
 /** The first day one unit has a set on (its real or planned date), to jump the calendar to. */
 export function unitFirstDay(items: CalendarItems, unit: number): Date | null {
   let first: Date | null = null;
@@ -167,17 +141,20 @@ export function calendarSpan(items: CalendarItems): { first: Month; last: Month 
 }
 
 export type DayMove =
-  | { ok: true; due: Date }
-  /** "same": dropped on the day it is already due. "off": not a school day. "planned": no copy to re-date. */
-  | { ok: false; reason: "same" | "off" | "planned" };
+  /** `assign`: the set is only planned, so the drop assigns it with this due date. */
+  | { ok: true; due: Date; assign?: true }
+  /** "same": dropped on the day it is already on. "off": not a school day. */
+  | { ok: false; reason: "same" | "off" };
 
 /**
- * Drop a set on a day: its due date moves there and keeps its time of day. Only a set that is
- * assigned can move (a planned set's date comes from the pacing guide), and only to a school day.
+ * Drop a set on a day. An assigned set's due date moves there and keeps its time of day; a planned
+ * set is assigned, due that day at the time the pacing guide gave it. Only school days take a drop.
  */
 export function moveToDay(item: CalendarItem, day: Date, isSchoolDay: SchoolDayTest): DayMove {
-  if (item.status === "planned" || !item.s.assignmentId) return { ok: false, reason: "planned" };
   if (dayKey(day) === dayKey(item.due)) return { ok: false, reason: "same" };
   if (!isSchoolDay(day)) return { ok: false, reason: "off" };
-  return { ok: true, due: dueOnDay(day, item.due) };
+  const due = dueOnDay(day, item.due);
+  return item.status === "planned" || !item.s.assignmentId
+    ? { ok: true, due, assign: true }
+    : { ok: true, due };
 }

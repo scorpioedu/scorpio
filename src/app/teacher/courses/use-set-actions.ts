@@ -33,6 +33,8 @@ export interface Assigning {
 export interface SetRowActions {
   /** Assign this one set (opens the assign dialog with just it). */
   onAssignSet?: (s: RoadmapSet) => void;
+  /** Assign this one set at once, due on the given day (dropped on a day of the Calendar). */
+  onAssignOn?: (s: RoadmapSet, due: Date) => void;
   /** Skip or un-skip the set for this class (only for classes that follow the course). */
   onToggleSkip?: (s: RoadmapSet) => void;
   /** Change the class copy's due date. Throw to keep the picker open. */
@@ -144,6 +146,51 @@ export function useSetActions({
     }
   }
 
+  /**
+   * Assign one set straight away with the given due date (a planned set dropped on a day of the
+   * Calendar). The Undo archives the copy again, which hides it from students and makes the set
+   * planned again.
+   */
+  async function assignNow(s: RoadmapSet, due: Date) {
+    if (!selected || !user || !s.published) return;
+    const key = s.set.key;
+    setBusy("assign");
+    try {
+      const fresh = (await loadClassAssignments(user.uid, selected.id)).filter(
+        (a) => ofCourse(a) && a.curriculumSetKey === key,
+      );
+      if (fresh.some((a) => !a.archived)) {
+        toast.info(`${key} is already assigned to ${selected.name}.`);
+        return;
+      }
+      const archivedId = fresh.find((a) => a.archived && a.id)?.id;
+      let id: string;
+      if (archivedId) {
+        await updateAssignment(archivedId, { archived: false, dueDate: dueParam(due) });
+        id = archivedId;
+      } else {
+        id = await cloneSetToClass(authenticatedFetch, selected.id, {
+          ...toAssignable([s])[0],
+          due,
+        });
+      }
+      await data.refreshClass();
+      undoToast(
+        `${key} assigned to ${selected.name}, due ${shortDate(due)}`,
+        async () => {
+          await updateAssignment(id, { archived: true });
+          await data.refreshClass();
+        },
+        `${key} is not assigned any more`,
+      );
+    } catch (e) {
+      toast.error(message(e, "Could not assign this set."));
+      await data.refreshClass();
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function savePlan(next: CurriculumPlan | null) {
     if (!selected) return null;
     const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(selected.id)}/plan`, {
@@ -207,6 +254,7 @@ export function useSetActions({
     ? {
         onAssignSet: (s) =>
           openAssign({ label: `${s.set.key}: ${s.set.title}`, sets: toAssignable([s]) }),
+        onAssignOn: (s, due) => void assignNow(s, due),
         onToggleSkip: canPlan ? (s) => void toggleSkip(s) : undefined,
         onChangeDue: changeDue,
         onCopyChanged: () => void data.refreshClass(),

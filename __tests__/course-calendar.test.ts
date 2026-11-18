@@ -13,7 +13,6 @@ import {
   sameMonth,
   unitFirstDay,
   weekOf,
-  weekUnits,
 } from "../src/lib/course-calendar";
 import { paceCourse } from "../src/lib/course-pacing";
 import type { SetProgress } from "../src/lib/course-progress";
@@ -172,11 +171,17 @@ describe("moving a due date by dropping on a day", () => {
     });
   });
 
-  test("a planned set cannot be moved: its date comes from the pacing guide", () => {
+  test("a planned set dropped on a school day is assigned for that day", () => {
     expect(moveToDay(planned, noon("2026-12-01"), isSchoolDay)).toEqual({
-      ok: false,
-      reason: "planned",
+      ok: true,
+      due: at("2026-12-01"),
+      assign: true,
     });
+    expect(moveToDay(planned, noon("2026-11-28"), isSchoolDay)).toEqual({
+      ok: false,
+      reason: "off",
+    });
+    expect(moveToDay(planned, planned.due, isSchoolDay)).toEqual({ ok: false, reason: "same" });
   });
 });
 
@@ -200,18 +205,6 @@ describe("weeks, units and days off", () => {
     ]);
     expect(week.every((d) => d.getHours() === 12)).toBe(true);
     expect(dayKey(addDays(week[0], -7))).toBe("2026-11-08");
-  });
-
-  test("a week belongs to the units of its sets; an empty week to the unit that comes next", () => {
-    // 2B is planned for Tue 24 Nov, so the week of 15 Nov has nothing on it.
-    expect(items.byDay.get("2026-11-24")).toMatchObject([{ key: "2B", status: "planned" }]);
-    const weeks = monthWeeks({ year: 2026, month: 10 });
-    expect(weekUnits(weeks, items)).toEqual([[], [1, 2], [2], [2], []]);
-    // With the school calendar, a week that is all break belongs to no unit.
-    const later = calendar([copy("1A", at("2026-12-15")), copy("1B", at("2027-01-12"))], []);
-    const december = monthWeeks({ year: 2026, month: 11 });
-    expect(weekUnits(december, later)).toEqual([[], [], [1], [1], [1]]);
-    expect(weekUnits(december, later, isSchoolDay)).toEqual([[], [], [1], [], []]);
   });
 
   test("the first day of a unit, for jumping to it", () => {

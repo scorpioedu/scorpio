@@ -1,11 +1,11 @@
 "use client";
 
 // The Calendar view: every set of the class's course on the day it is due, a month or a week at a
-// time. A set is coloured by its unit (the same colour as on the List) and each week starts with a
-// band naming the unit it belongs to. Assigned sets sit on their real due date; sets still to come
-// are dashed, on the date the pacing guide gives them. Days off are hatched and named once across
-// the whole break; weekends are narrow. Drag an assigned set to another school day to move its due
-// date, or click it and pick a date.
+// time. A set is coloured by its unit (the same colour as on the List). Assigned sets sit on their
+// real due date; sets still to come are dashed, on the date the pacing guide gives them. Days off
+// are hatched and named once across the whole break; weekends are narrow. Drag a set to another
+// school day: an assigned set moves its due date there, a planned one is assigned for that day.
+// Or click a set and pick a date.
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -37,7 +37,6 @@ import {
   sameMonth,
   unitFirstDay,
   weekOf,
-  weekUnits,
   type CalendarItem,
   type CalendarStatus,
 } from "@/lib/course-calendar";
@@ -63,9 +62,9 @@ const STATUS_LABEL: Record<CalendarStatus, string> = {
 /** Sets shown on a day of the month grid before the rest fold into "+N more". */
 const MONTH_MAX = 3;
 
-/** The unit band, then Sunday to Saturday with the weekend narrow. */
+/** Sunday to Saturday, with the weekend narrow. */
 const COLUMNS =
-  "grid grid-cols-[4.25rem_2.5rem_repeat(5,minmax(0,1fr))_2.5rem] lg:grid-cols-[8.5rem_2.75rem_repeat(5,minmax(0,1fr))_2.75rem]";
+  "grid grid-cols-[2.5rem_repeat(5,minmax(0,1fr))_2.5rem] lg:grid-cols-[2.75rem_repeat(5,minmax(0,1fr))_2.75rem]";
 /** A day with no school: hatched, so it never reads as an empty school day. */
 const HATCH =
   "bg-[repeating-linear-gradient(135deg,var(--muted)_0,var(--muted)_5px,transparent_5px,transparent_11px)]";
@@ -168,7 +167,11 @@ function standing(item: CalendarItem, students: number): string {
 /** One set on a day. Click for details and actions; an assigned one can be dragged to another day. */
 function SetChip({ item, ctx, roomy }: { item: CalendarItem; ctx: ChipContext; roomy?: boolean }) {
   const [open, setOpen] = useState(false);
-  const movable = item.status !== "planned" && !!item.s.assignmentId && !!ctx.actions.onChangeDue;
+  // An assigned set moves its due date; a planned one is assigned for the day it is dropped on.
+  const movable =
+    item.status === "planned"
+      ? !!ctx.actions.onAssignOn
+      : !!item.s.assignmentId && !!ctx.actions.onChangeDue;
   const { setNodeRef, listeners, isDragging } = useDraggable({
     id: item.key,
     disabled: !movable || ctx.busy,
@@ -328,7 +331,7 @@ function DayCell({
       role="gridcell"
       aria-label={`${day.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}${today ? ", today" : ""}${off ? `, ${off.label}, no school` : ""}`}
       className={cn(
-        "relative flex min-w-0 flex-col gap-1 border-l border-border p-1.5 transition-colors",
+        "relative flex min-w-0 flex-col gap-1 border-l border-border p-1.5 transition-colors first:border-l-0",
         tall ? "min-h-72" : "min-h-28",
         weekend && "items-center px-0.5",
         off ? HATCH : weekend && "bg-muted/50",
@@ -357,45 +360,6 @@ function DayCell({
   );
 }
 
-/** The unit (or units) a week belongs to, at the start of its row. */
-function UnitBand({
-  units,
-  ctx,
-  onPick,
-}: {
-  units: number[];
-  ctx: ChipContext;
-  onPick: (unit: number) => void;
-}) {
-  return (
-    <div role="rowheader" className="flex min-w-0 flex-col gap-1 p-1.5">
-      {units.map((n) => {
-        const look = unitLook(ctx.curriculumId, n);
-        return (
-          <button
-            key={n}
-            type="button"
-            title={`Unit ${n}: ${ctx.unitTitle(n)}. Show only this unit.`}
-            onClick={() => onPick(n)}
-            className={cn(
-              "flex min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-xl px-2 py-1.5 text-left transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              look.tile,
-            )}
-          >
-            <span className="text-[11px] font-semibold uppercase leading-none opacity-80">
-              Unit
-            </span>
-            <span className="text-lg font-semibold leading-none tabular-nums">{n}</span>
-            <span className="hidden w-full break-words text-[11px] font-medium leading-tight lg:line-clamp-2">
-              {ctx.unitTitle(n)}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 export function CourseCalendar({
   curriculum,
   roadmap,
@@ -404,7 +368,6 @@ export function CourseCalendar({
   daysOff,
   isSchoolDay,
   unit,
-  onUnit,
   loaded,
   busy,
   onPreview,
@@ -420,8 +383,6 @@ export function CourseCalendar({
   isSchoolDay: SchoolDayTest;
   /** The unit the calendar is narrowed to (?unit=, chosen beside the view switch), or null. */
   unit: number | null;
-  /** Narrow the calendar to one unit (a week's band was pressed). */
-  onUnit: (unit: number | null) => void;
   /** The class's assignments have arrived, so sets are on their real due dates. */
   loaded: boolean;
   busy: boolean;
@@ -455,7 +416,7 @@ export function CourseCalendar({
     () => (shownUnit === null ? everything : calendarItems(filterBoard(all, shownUnit), planned)),
     [everything, all, shownUnit, planned],
   );
-  // Choosing a unit (beside the view switch, or on a week's band) brings its first set into view.
+  // Choosing a unit (beside the view switch) brings its first set into view.
   const [jumpedTo, setJumpedTo] = useState<number | null>(null);
   if (jumpedTo !== shownUnit && loaded) {
     setJumpedTo(shownUnit);
@@ -469,7 +430,6 @@ export function CourseCalendar({
     () => (mode === "month" ? monthWeeks(monthOf(cursor)) : [weekOf(cursor)]),
     [mode, cursor],
   );
-  const bands = useMemo(() => weekUnits(weeks, items, isSchoolDay), [weeks, items, isSchoolDay]);
   const ctx: ChipContext = {
     curriculumId: curriculum.id,
     unitTitle: (n) => units.find((u) => u.unit === n)?.title ?? "",
@@ -527,7 +487,8 @@ export function CourseCalendar({
     const [y, m, d] = String(over.id).split("-").map(Number);
     const day = new Date(y, m - 1, d, 12);
     const move = moveToDay(item, day, isSchoolDay);
-    if (move.ok) void actions.onChangeDue?.(item.s, move.due)?.catch(() => undefined);
+    if (move.ok && move.assign) actions.onAssignOn?.(item.s, move.due);
+    else if (move.ok) void actions.onChangeDue?.(item.s, move.due)?.catch(() => undefined);
     else if (move.reason === "off")
       toast.info(
         `${shortDate(day)} is not a school day${dayOffOn(day, daysOff) ? ` (${dayOffOn(day, daysOff)!.label})` : ""}. Drop it on a school day, or click the set to pick any date.`,
@@ -619,19 +580,13 @@ export function CourseCalendar({
           className="hidden overflow-hidden rounded-3xl border border-border bg-card md:block"
         >
           <div role="row" className={cn(COLUMNS, "border-b border-border bg-muted/30")}>
-            <div
-              role="columnheader"
-              className="px-2 py-2 text-xs font-medium text-muted-foreground"
-            >
-              Unit
-            </div>
             {WEEKDAYS.map((d, i) => (
               <div
                 key={d}
                 role="columnheader"
                 aria-label={d}
                 className={cn(
-                  "border-l border-border py-2 text-xs font-medium text-muted-foreground",
+                  "border-l border-border py-2 text-xs font-medium text-muted-foreground first:border-l-0",
                   i === 0 || i === 6 ? "text-center" : "px-2",
                 )}
               >
@@ -639,13 +594,12 @@ export function CourseCalendar({
               </div>
             ))}
           </div>
-          {weeks.map((week, w) => (
+          {weeks.map((week) => (
             <div
               key={dayKey(week[0])}
               role="row"
               className={cn(COLUMNS, "relative border-b border-border last:border-b-0")}
             >
-              <UnitBand units={bands[w]} ctx={ctx} onPick={onUnit} />
               {week.map((day) => {
                 const list = items.byDay.get(dayKey(day)) ?? [];
                 const max = isWeekend(day) ? 0 : mode === "week" ? list.length : MONTH_MAX;
@@ -683,7 +637,7 @@ export function CourseCalendar({
                   return (
                     <div
                       key={run.from}
-                      style={{ gridColumn: `${run.from + 2} / ${run.to + 3}`, gridRow: 1 }}
+                      style={{ gridColumn: `${run.from + 1} / ${run.to + 2}`, gridRow: 1 }}
                       className={cn(
                         "flex min-w-0 justify-center px-1.5 pb-2 pt-8",
                         crowded ? "items-end" : "items-center",
@@ -849,7 +803,8 @@ export function CourseCalendar({
           school
         </span>
         <span className="hidden md:inline">
-          Colour is the unit. Drag an assigned set to another school day to move its due date.
+          Colour is the unit. Drag a set to another school day: an assigned set moves its due date,
+          a planned one is assigned for that day.
         </span>
       </div>
 
