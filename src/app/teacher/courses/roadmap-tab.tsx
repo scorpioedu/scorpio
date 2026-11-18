@@ -1,13 +1,17 @@
 "use client";
 
-// The roadmap: one section per unit, in the class's order. Each set shows what it is, whether it is
-// assigned, how the class did, and a Preview button; each unit shows what students got wrong.
+// The List: the class's course as a roadmap. A unit is a section with its number on a coloured tile,
+// a bar with one segment per set, and its own Assign button; its sets hang off a rail under it, each
+// with a status mark (told apart by shape), its AP topics, its due date and how the class did.
 import Link from "next/link";
-import { Check, ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
+import { ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
+import type { ApCourseId } from "@/data/ap";
 import type { Curriculum } from "@/data/curricula";
 import { setProfile } from "@/data/curricula/profiles";
+import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course-board";
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CourseBadge, courseLook, courseSize } from "@/components/teacher/course-icon";
 import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
 import { assignmentHref } from "@/lib/assignment-actions";
@@ -26,12 +31,20 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { PreviewTarget } from "./set-preview-dialog";
+import {
+  SetSegments,
+  StatusMark,
+  TopicChips,
+  UnitTile,
+  unitLook,
+  type UnitLook,
+} from "./unit-look";
 import { shortDate, type ClassProgress } from "./use-course-data";
 import { setDisplayTitle, type SetRowActions } from "./use-set-actions";
 
 const percent = (share: number) => `${Math.round(share * 100)}%`;
 
-export function MisconceptionList({ insight }: { insight: UnitInsight }) {
+function MisconceptionList({ insight }: { insight: UnitInsight }) {
   return (
     <div className="space-y-2 rounded-xl border border-border bg-muted/30 p-4">
       <p className="text-sm font-medium">
@@ -81,9 +94,13 @@ function unitState(
   return { label: "Not assigned", tone: "plain" };
 }
 
-export function SetRow({
+/** One set on its unit's rail. The mark on the rail says where it stands. */
+function SetRow({
   curriculumId,
+  course,
+  look,
   s,
+  status,
   hasClass,
   students,
   progress,
@@ -91,7 +108,10 @@ export function SetRow({
   actions = {},
 }: {
   curriculumId: string;
+  course: ApCourseId;
+  look: UnitLook;
   s: RoadmapSet;
+  status: SetStatus;
   hasClass: boolean;
   students: number;
   progress: ClassProgress | null;
@@ -102,6 +122,8 @@ export function SetRow({
   const p = progress?.sets[s.set.key];
   const title = setDisplayTitle(curriculumId, s);
   const canAssign = hasClass && !!s.published && !s.assigned && !s.skipped && !!actions.onAssignSet;
+  const skipped = status === "skipped";
+  const waiting = toCheck(p);
   const preview = () =>
     onPreview({
       curriculumId,
@@ -112,18 +134,19 @@ export function SetRow({
   // Nobody is on the roster (or nobody had joined when this was handed in).
   const outOf = p ? Math.max(students, p.submitted) : 0;
   return (
-    <li
-      className={`flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3 text-sm ${s.skipped && !s.assigned ? "opacity-60" : ""}`}
-    >
-      <div className="min-w-0 flex-1 basis-64 space-y-0.5">
-        <p className="flex flex-wrap items-baseline gap-x-2 break-words font-medium">
-          <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
-            {s.set.key}
-          </span>
+    <li className="relative flex flex-wrap items-start justify-between gap-x-4 gap-y-1.5 py-2.5 pl-7 text-sm sm:pl-8">
+      {/* Sits on the rail. */}
+      <StatusMark
+        status={hasClass || !s.published ? status : "upNext"}
+        className="absolute -left-[9px] top-3.5 ring-4 ring-background"
+      />
+      <div className={cn("min-w-0 flex-1 basis-64 space-y-1", skipped && "opacity-60")}>
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 break-words">
+          <span className={cn("font-mono text-xs font-semibold", look.text)}>{s.set.key}</span>
           {s.assignmentId ? (
             <Link
               href={assignmentHref(s.assignmentId)}
-              className="hover:text-primary hover:underline"
+              className="font-medium hover:text-primary hover:underline"
             >
               {title}
             </Link>
@@ -132,56 +155,47 @@ export function SetRow({
             <button
               type="button"
               onClick={preview}
-              className="text-left hover:text-primary hover:underline"
+              className={cn(
+                "text-left font-medium hover:text-primary hover:underline",
+                skipped && "line-through decoration-muted-foreground/60",
+              )}
             >
               {title}
             </button>
           )}
+          <TopicChips topics={s.set.topics} course={course} />
         </p>
-        <p className="break-words text-muted-foreground">{s.set.description}</p>
-        {profile && (
-          <p className="text-xs text-muted-foreground">
-            {profile.problems} problems · about {profile.minutes} min
-          </p>
-        )}
-      </div>
-      <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
-        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          {s.assigned ? (
-            actions.onChangeDue ? (
-              <>
-                <Check className="size-4 text-green-600" aria-hidden />
-                <span className="sr-only">Assigned.</span>
-                <DueDateChip due={s.dueDate} onChange={(d) => actions.onChangeDue!(s, d)} />
-              </>
-            ) : (
-              <>
-                <Check className="size-4 text-green-600" aria-hidden />
-                Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}
-              </>
-            )
-          ) : s.skipped ? (
-            "Skipped for this class"
-          ) : !s.published ? (
-            AVAILABILITY_LABEL[s.availability]
-          ) : hasClass ? (
-            s.archivedId ? (
-              "Archived · assign to restore it"
-            ) : (
-              "Not assigned yet"
-            )
-          ) : (
-            "Ready to assign"
+        <p className="break-words text-[13px] leading-snug text-muted-foreground">
+          {s.set.description}
+          {profile && (
+            <span className="whitespace-nowrap">
+              {" "}
+              · {profile.problems} problems · about {profile.minutes} min
+            </span>
           )}
-        </span>
-        {s.assigned && p && (
-          <span className="text-xs text-muted-foreground">
-            {outOf === 0 ? "No students yet" : `${p.submitted} of ${outOf} submitted`}
-            {p.averageScore !== null ? ` · average ${p.averageScore}%` : ""}
-            {p.pending ? ` · ${p.pending} to review` : ""}
-          </span>
-        )}
+        </p>
+      </div>
+      <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
         <div className="flex flex-wrap items-center gap-1.5">
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            {s.assigned ? (
+              actions.onChangeDue ? (
+                <DueDateChip due={s.dueDate} onChange={(d) => actions.onChangeDue!(s, d)} />
+              ) : (
+                <>Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}</>
+              )
+            ) : s.skipped ? (
+              "Skipped for this class"
+            ) : !s.published ? (
+              AVAILABILITY_LABEL[s.availability]
+            ) : hasClass ? (
+              s.archivedId ? (
+                "Archived · assign to restore it"
+              ) : null
+            ) : (
+              "Ready to assign"
+            )}
+          </span>
           {canAssign && (
             <Button size="sm" variant="outline" onClick={() => actions.onAssignSet!(s)}>
               <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
@@ -191,7 +205,7 @@ export function SetRow({
             <>
               <Button variant="ghost" size="sm" asChild>
                 <Link href={assignmentHref(s.assignmentId)}>
-                  Results <ChevronRight aria-hidden />
+                  {status === "needsYou" ? "Review" : "Results"} <ChevronRight aria-hidden />
                 </Link>
               </Button>
               {actions.onCopyChanged ? (
@@ -246,6 +260,21 @@ export function SetRow({
             </Button>
           )}
         </div>
+        {s.assigned && p && (
+          <span className="text-xs text-muted-foreground">
+            {outOf === 0 ? "No students yet" : `${p.submitted} of ${outOf} submitted`}
+            {p.averageScore !== null ? ` · average ${p.averageScore}%` : ""}
+            {waiting > 0 && (
+              <span className="font-medium text-amber-700 dark:text-amber-400">
+                {" "}
+                · {waiting} to check
+              </span>
+            )}
+            {p.overdue > 0 && (
+              <span className="font-medium text-destructive"> · {p.overdue} overdue</span>
+            )}
+          </span>
+        )}
       </div>
     </li>
   );
@@ -274,6 +303,9 @@ export function RoadmapTab({
   actions?: SetRowActions;
 }) {
   const hasClass = className !== null;
+  const students = progress?.students ?? 0;
+  const status = setStatuses(boardColumns(roadmap, progress?.sets, students));
+  const course = courseLook(curriculum.id);
   const open = String(
     nextUnitNumber ??
       roadmap.find((u) => u.sets.some((s) => s.assigned))?.unit ??
@@ -281,7 +313,28 @@ export function RoadmapTab({
       "",
   );
   return (
-    <div className="space-y-2">
+    <div className="space-y-5">
+      {/* Which course this is, in its own colour. */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <CourseBadge
+          curriculumId={curriculum.id}
+          className="size-12 rounded-2xl"
+          iconClassName="size-7"
+        />
+        <div className="min-w-0 flex-1 basis-64">
+          <h2 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold tracking-tight">
+            {curriculum.name}
+            {course.level && (
+              <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", course.tint)}>
+                {course.level}
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {course.covers} <span className="whitespace-nowrap">{courseSize(curriculum)}.</span>
+          </p>
+        </div>
+      </div>
       {hasClass && actions && (
         <p className="text-xs text-muted-foreground">
           Click a set&apos;s name to preview it, or a due date to change it. Every change can be
@@ -293,77 +346,127 @@ export function RoadmapTab({
         defaultValue={open ? [open] : []}
         // Re-open the right unit when the class changes.
         key={`${className}-${open}`}
-        className="rounded-2xl border border-border bg-card"
+        className="space-y-3"
       >
-        {roadmap.map((u, i) => {
-          const state = unitState(u, u.unit === nextUnitNumber);
+        {roadmap.map((u) => {
+          const look = unitLook(curriculum.id, u.unit);
+          const isNext = u.unit === nextUnitNumber;
+          const state = unitState(u, isNext);
           const wanted = u.sets.filter((s) => !s.skipped);
           const assigned = wanted.filter((s) => s.assigned).length;
           const insight = progress?.units.find((x) => x.unit === u.unit);
+          const statuses = u.sets.map((s) => status.get(s.set.key) ?? "upNext");
+          const averages = u.sets
+            .map((s) => (s.assigned ? progress?.sets[s.set.key]?.averageScore : null))
+            .filter((n): n is number => typeof n === "number");
+          const average = averages.length
+            ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
+            : null;
+          const needsYou = statuses.filter((x) => x === "needsYou").length;
           return (
-            <AccordionItem key={u.unit} value={String(u.unit)} className="px-4 sm:px-5">
-              <AccordionTrigger className="gap-3 py-4 hover:no-underline">
-                <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1 text-left">
+            <AccordionItem
+              key={u.unit}
+              value={String(u.unit)}
+              className={cn(
+                "rounded-3xl border border-b border-transparent px-3 transition-colors last:border-b sm:px-4",
+                "data-[state=open]:border-border data-[state=open]:bg-card data-[state=open]:pb-2",
+                "data-[state=closed]:hover:bg-muted/40",
+              )}
+            >
+              <AccordionTrigger className="items-center gap-3 py-3 hover:no-underline sm:gap-4">
+                <UnitTile curriculumId={curriculum.id} unit={u.unit} />
+                <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1.5 text-left">
                   <span className="min-w-0">
-                    <span className="block break-words text-base font-semibold">
-                      <span className="text-muted-foreground">{i + 1}.</span> Unit {u.unit}:{" "}
-                      {u.info?.title}
+                    <span className="block break-words text-lg font-semibold leading-tight tracking-tight sm:text-xl">
+                      {u.info?.title ?? `Unit ${u.unit}`}
                     </span>
                     <span className="block text-xs font-normal text-muted-foreground">
+                      Unit {u.unit} ·{" "}
                       {hasClass
                         ? `${assigned} of ${wanted.length} sets assigned`
                         : `${u.sets.length} sets`}
                       {u.sets.length !== wanted.length
                         ? ` · ${u.sets.length - wanted.length} skipped`
                         : ""}
+                      {average !== null ? ` · average ${average}%` : ""}
+                      {needsYou > 0 && (
+                        <span className="font-medium text-amber-700 dark:text-amber-400">
+                          {" "}
+                          · {needsYou} {needsYou === 1 ? "needs" : "need"} you
+                        </span>
+                      )}
                     </span>
                   </span>
-                  {hasClass && (
-                    <Badge
-                      variant={state.tone === "next" ? "default" : "secondary"}
-                      className={state.tone === "done" ? "text-green-700 dark:text-green-400" : ""}
-                    >
-                      {state.label}
-                    </Badge>
-                  )}
+                  <span className="flex shrink-0 items-center gap-3">
+                    {hasClass && (
+                      <SetSegments
+                        statuses={statuses}
+                        solid={look.solid}
+                        className="w-20 sm:w-24"
+                      />
+                    )}
+                    {hasClass && (state.tone !== "plain" || assigned === 0) && (
+                      <Badge
+                        variant={state.tone === "next" ? "default" : "secondary"}
+                        className={
+                          state.tone === "done" ? "text-green-700 dark:text-green-400" : ""
+                        }
+                      >
+                        {state.label}
+                      </Badge>
+                    )}
+                  </span>
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="space-y-4">
-                {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
-                <div className="flex flex-wrap items-center gap-2">
-                  {hasClass && u.assignable.length > 0 && (
-                    <Button
-                      size="sm"
-                      // The unit that is up next is the one obvious thing to press.
-                      variant={u.unit === nextUnitNumber ? "default" : "outline"}
-                      onClick={() => onAssign(u)}
-                      disabled={busy}
-                    >
-                      Assign {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
-                      {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
-                    </Button>
+              <AccordionContent className="space-y-3 pb-3">
+                {/* Everything under the heading hangs off the unit's rail. */}
+                <div className={cn("ml-[21px] space-y-3 border-l-2", look.line)}>
+                  <div className="space-y-3 pl-7 sm:pl-8">
+                    {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {hasClass && u.assignable.length > 0 && (
+                        <Button
+                          size="sm"
+                          // The unit that is up next is the one obvious thing to press.
+                          variant={isNext ? "default" : "outline"}
+                          onClick={() => onAssign(u)}
+                          disabled={busy}
+                        >
+                          <Plus aria-hidden /> Assign{" "}
+                          {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
+                          {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
+                        </Button>
+                      )}
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
+                          Unit guide <ChevronRight aria-hidden />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                  <ul className="divide-y divide-border/60">
+                    {u.sets.map((s) => (
+                      <SetRow
+                        key={s.set.key}
+                        curriculumId={curriculum.id}
+                        course={curriculum.apCourse}
+                        look={look}
+                        s={s}
+                        status={status.get(s.set.key) ?? "upNext"}
+                        hasClass={hasClass}
+                        students={students}
+                        progress={progress}
+                        onPreview={onPreview}
+                        actions={actions}
+                      />
+                    ))}
+                  </ul>
+                  {insight && insight.top.length > 0 && (
+                    <div className="pl-7 sm:pl-8">
+                      <MisconceptionList insight={insight} />
+                    </div>
                   )}
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
-                      Unit guide <ChevronRight aria-hidden />
-                    </Link>
-                  </Button>
                 </div>
-                <ul className="divide-y divide-border rounded-xl border border-border">
-                  {u.sets.map((s) => (
-                    <SetRow
-                      key={s.set.key}
-                      curriculumId={curriculum.id}
-                      s={s}
-                      hasClass={hasClass}
-                      students={progress?.students ?? 0}
-                      progress={progress}
-                      onPreview={onPreview}
-                      actions={actions}
-                    />
-                  ))}
-                </ul>
-                {insight && insight.top.length > 0 && <MisconceptionList insight={insight} />}
               </AccordionContent>
             </AccordionItem>
           );
