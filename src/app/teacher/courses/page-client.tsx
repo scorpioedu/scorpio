@@ -662,6 +662,8 @@ export default function CoursesClient() {
               daysOff={calendar}
               isSchoolDay={isSchoolDay}
               unit={unit}
+              onUnit={setUnit}
+              loaded={data.classLoaded}
               busy={busy !== null}
               onPreview={setPreview}
               actions={rowActions}

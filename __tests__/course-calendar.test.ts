@@ -2,13 +2,18 @@
 import { getCurriculum } from "../src/data/curricula";
 import { boardColumns, plannedDates } from "../src/lib/course-board";
 import {
+  addDays,
   addMonths,
   calendarItems,
   calendarSpan,
+  dayOffRuns,
   monthOf,
   monthWeeks,
   moveToDay,
   sameMonth,
+  unitFirstDay,
+  weekOf,
+  weekUnits,
 } from "../src/lib/course-calendar";
 import { paceCourse } from "../src/lib/course-pacing";
 import type { SetProgress } from "../src/lib/course-progress";
@@ -172,5 +177,64 @@ describe("moving a due date by dropping on a day", () => {
       ok: false,
       reason: "planned",
     });
+  });
+});
+
+describe("weeks, units and days off", () => {
+  const items = calendar(
+    [copy("1C", at("2026-11-10")), copy("1D", at("2026-11-12")), copy("2A", at("2026-11-13"))],
+    [],
+    all.filter((k) => !["1C", "1D", "2A", "2B"].includes(k)),
+  );
+
+  test("a week is Sunday to Saturday at noon", () => {
+    const week = weekOf(at("2026-11-18", "08:00:00"));
+    expect(week.map(dayKey)).toEqual([
+      "2026-11-15",
+      "2026-11-16",
+      "2026-11-17",
+      "2026-11-18",
+      "2026-11-19",
+      "2026-11-20",
+      "2026-11-21",
+    ]);
+    expect(week.every((d) => d.getHours() === 12)).toBe(true);
+    expect(dayKey(addDays(week[0], -7))).toBe("2026-11-08");
+  });
+
+  test("a week belongs to the units of its sets; an empty week to the unit that comes next", () => {
+    // 2B is planned for Tue 24 Nov, so the week of 15 Nov has nothing on it.
+    expect(items.byDay.get("2026-11-24")).toMatchObject([{ key: "2B", status: "planned" }]);
+    const weeks = monthWeeks({ year: 2026, month: 10 });
+    expect(weekUnits(weeks, items)).toEqual([[], [1, 2], [2], [2], []]);
+    // With the school calendar, a week that is all break belongs to no unit.
+    const later = calendar([copy("1A", at("2026-12-15")), copy("1B", at("2027-01-12"))], []);
+    const december = monthWeeks({ year: 2026, month: 11 });
+    expect(weekUnits(december, later)).toEqual([[], [], [1], [1], [1]]);
+    expect(weekUnits(december, later, isSchoolDay)).toEqual([[], [], [1], [], []]);
+  });
+
+  test("the first day of a unit, for jumping to it", () => {
+    expect(dayKey(unitFirstDay(items, 1)!)).toBe("2026-11-10");
+    expect(dayKey(unitFirstDay(items, 2)!)).toBe("2026-11-13");
+    expect(unitFirstDay(items, 7)).toBeNull();
+  });
+
+  test("days off side by side are one run; a break covers the weekend too", () => {
+    const daysOff = defaultDaysOff(2026);
+    expect(dayOffRuns(weekOf(at("2026-11-26")), daysOff)).toEqual([
+      { from: 4, to: 5, label: "Thanksgiving break" },
+    ]);
+    expect(dayOffRuns(weekOf(at("2026-11-11")), daysOff)).toEqual([
+      { from: 3, to: 3, label: "Veterans Day" },
+    ]);
+    expect(dayOffRuns(weekOf(at("2026-12-23")), daysOff)).toEqual([
+      { from: 0, to: 6, label: "Winter break" },
+    ]);
+    // Winter break starts on Saturday 19 December.
+    expect(dayOffRuns(weekOf(at("2026-12-16")), daysOff)).toEqual([
+      { from: 6, to: 6, label: "Winter break" },
+    ]);
+    expect(dayOffRuns(weekOf(at("2026-11-18")), daysOff)).toEqual([]);
   });
 });
