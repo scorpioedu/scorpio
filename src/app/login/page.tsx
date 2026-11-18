@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { classInvitePath, inviteAuthPath, networkInvitePath } from "@/lib/onboarding-links";
 import { login, logout } from "@/lib/firebase";
@@ -20,7 +20,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { errorMessage } from "@/lib/error-utils";
 
 export default function LoginPage() {
-  return <Suspense fallback={<LoginShell />}><LoginForm /></Suspense>;
+  return (
+    <Suspense fallback={<LoginShell />}>
+      <LoginForm />
+    </Suspense>
+  );
 }
 
 /**
@@ -38,7 +42,9 @@ function LoginShell() {
             <div className="flex justify-center mb-4">
               <Logo size={48} className="text-primary" />
             </div>
-            <CardTitle className="text-2xl font-inter font-black tracking-tighter">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-inter font-black tracking-tighter">
+              Welcome Back
+            </CardTitle>
             <CardDescription>Sign in to Scorpio</CardDescription>
           </CardHeader>
           {/* min-h matches the real form so swapping it in does not shift the card */}
@@ -57,8 +63,11 @@ function LoginForm() {
   const params = useSearchParams();
   const teacherInvite = params.get("teacherInvite") || "";
   const classCode = params.get("classCode") || "";
-  const signUpPath = teacherInvite ? inviteAuthPath("signup", "network", teacherInvite)
-    : classCode ? inviteAuthPath("signup", "class", classCode) : "/signup";
+  const signUpPath = teacherInvite
+    ? inviteAuthPath("signup", "network", teacherInvite)
+    : classCode
+      ? inviteAuthPath("signup", "class", classCode)
+      : "/signup";
   const { user, role, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,11 +79,8 @@ function LoginForm() {
   const [recoveryAccessCode, setRecoveryAccessCode] = useState("");
   const [isRecovering, setIsRecovering] = useState(false);
 
-  useEffect(() => {
-    if (user && !recoveryEmail) {
-      setRecoveryEmail(user.email || "");
-    }
-  }, [user, recoveryEmail]);
+  // An empty field falls back to the signed-in account's email.
+  const recoveryEmailValue = recoveryEmail || user?.email || "";
 
   const handleLogin = async (role: "teacher" | "student") => {
     console.log(`[Login] Starting login for role: ${role}`);
@@ -89,9 +95,9 @@ function LoginForm() {
 
       console.log(`[Login] ID Token received. Calling session API...`);
       // Set session cookie
-      const response = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken, role }),
       });
 
@@ -104,15 +110,22 @@ function LoginForm() {
       console.log(`[Login] Redirecting to: ${role === "teacher" ? "/teacher" : "/student"}`);
       // Hard redirect is safer for ensuring middleware catches the new session
       const sessionData = await response.json();
-      const target = sessionData.role === "teacher"
-        ? teacherInvite ? networkInvitePath(teacherInvite) : "/teacher"
-        : classCode ? classInvitePath(classCode) : "/student";
+      const target =
+        sessionData.role === "teacher"
+          ? teacherInvite
+            ? networkInvitePath(teacherInvite)
+            : "/teacher"
+          : classCode
+            ? classInvitePath(classCode)
+            : "/student";
       window.location.href = target;
     } catch (err: unknown) {
       console.error("[Login] Detailed Error:", err);
-      setError(errorMessage(err) === "Failed to create session"
-        ? "Session creation failed. Please try again."
-        : "Invalid email or password");
+      setError(
+        errorMessage(err) === "Failed to create session"
+          ? "Session creation failed. Please try again."
+          : "Invalid email or password",
+      );
       setLoading(false);
     }
   };
@@ -122,12 +135,14 @@ function LoginForm() {
   };
 
   const handleRecovery = async () => {
-    if (!recoveryEmail) {
+    if (!recoveryEmailValue) {
       setError("Please enter your email");
       return;
     }
 
-    setError("For account recovery, contact rushil@scorpioedu.org. Roles cannot be restored from this browser.");
+    setError(
+      "For account recovery, contact rushil@scorpioedu.org. Roles cannot be restored from this browser.",
+    );
   };
   if (user && role === null) {
     return (
@@ -156,12 +171,14 @@ function LoginForm() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="rec-email" className="text-sm font-medium">Account Email</Label>
+              <Label htmlFor="rec-email" className="text-sm font-medium">
+                Account Email
+              </Label>
               <Input
                 id="rec-email"
                 type="email"
                 placeholder="Enter your email"
-                value={recoveryEmail}
+                value={recoveryEmailValue}
                 onChange={(e) => setRecoveryEmail(e.target.value)}
                 disabled={loading}
               />
@@ -193,7 +210,9 @@ function LoginForm() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-2 pt-2"
               >
-                <Label htmlFor="rec-code" className="text-sm font-medium">Teacher Access Code</Label>
+                <Label htmlFor="rec-code" className="text-sm font-medium">
+                  Teacher Access Code
+                </Label>
                 <Input
                   id="rec-code"
                   type="password"
@@ -248,7 +267,9 @@ function LoginForm() {
             >
               <Logo size={48} className="text-primary" />
             </motion.div>
-            <CardTitle className="text-2xl font-inter font-black tracking-tighter">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-inter font-black tracking-tighter">
+              Welcome Back
+            </CardTitle>
             <CardDescription>Sign in to Scorpio</CardDescription>
           </CardHeader>
           <CardContent>
@@ -321,7 +342,11 @@ function LoginForm() {
                         className="absolute inset-y-0 right-0 text-muted-foreground"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </motion.div>
@@ -344,7 +369,11 @@ function LoginForm() {
                       onClick={() => handleLogin("student")}
                       disabled={loading || authLoading}
                     >
-                      {loading ? "Signing in..." : authLoading ? "Preparing..." : "Sign in as Student"}
+                      {loading
+                        ? "Signing in..."
+                        : authLoading
+                          ? "Preparing..."
+                          : "Sign in as Student"}
                     </Button>
                   </motion.div>
                 </motion.div>
@@ -407,7 +436,11 @@ function LoginForm() {
                         className="absolute inset-y-0 right-0 text-muted-foreground"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </motion.div>
@@ -430,7 +463,11 @@ function LoginForm() {
                       onClick={() => handleLogin("teacher")}
                       disabled={loading || authLoading}
                     >
-                      {loading ? "Signing in..." : authLoading ? "Preparing..." : "Sign in as Teacher"}
+                      {loading
+                        ? "Signing in..."
+                        : authLoading
+                          ? "Preparing..."
+                          : "Sign in as Teacher"}
                     </Button>
                   </motion.div>
                 </motion.div>

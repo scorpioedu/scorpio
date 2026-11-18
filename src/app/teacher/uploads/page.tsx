@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  where,
+} from "firebase/firestore";
 import { db, uploadFilesToStorage } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
@@ -11,12 +20,33 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Trash2, ExternalLink, Plus, Upload, FileText, Search } from "lucide-react";
 
 import { TeacherPageHeader } from "@/components/teacher/workspace";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Resource {
   id: string;
@@ -40,7 +70,9 @@ export default function ResourcesPage() {
   const [file, setFile] = useState<File | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
   // The archive filter is the class shared with the other teacher pages.
-  const { classId: sharedClassId, setClassId: setFilterCourseId } = useSelectedClass({ allowAll: true });
+  const { classId: sharedClassId, setClassId: setFilterCourseId } = useSelectedClass({
+    allowAll: true,
+  });
   const filterCourseId = sharedClassId || "all";
   const [searchQuery, setSearchQuery] = useState("");
   const [adding, setAdding] = useState(false);
@@ -52,17 +84,19 @@ export default function ResourcesPage() {
     try {
       const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
       const snap = await getDocs(q);
-      setCourses(snap.docs.map(d => ({ id: d.id, ...d.data() } as { id: string; name: string })));
-    } catch (e) { console.error(e); }
+      setCourses(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as { id: string; name: string }));
+    } catch (e) {
+      console.error(e);
+    }
   }, [user]);
 
   const fetchResources = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(
-        collection(db, "resources"), 
+        collection(db, "resources"),
         where("teacherId", "==", user.uid),
-        orderBy("createdAt", "desc")
+        orderBy("createdAt", "desc"),
       );
       const querySnapshot = await getDocs(q);
       const resourceList = querySnapshot.docs.map((doc) => ({
@@ -79,12 +113,11 @@ export default function ResourcesPage() {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
       fetchResources();
       fetchCourses();
     }
   }, [user, fetchResources, fetchCourses]);
-
-
 
   async function handleAddResource(e: React.FormEvent) {
     e.preventDefault();
@@ -97,16 +130,25 @@ export default function ResourcesPage() {
 
       if (file) {
         setUploadProgress(10);
-        const uploadedFiles = await uploadFilesToStorage([file], user.uid, (_, progress) => {
-          setUploadProgress(progress);
-        }, "resources");
+        const uploadedFiles = await uploadFilesToStorage(
+          [file],
+          user.uid,
+          (_, progress) => {
+            setUploadProgress(progress);
+          },
+          "resources",
+        );
         if (uploadedFiles.length > 0) {
           finalUrl = uploadedFiles[0].url;
           // Auto-assign type if it's a file
           if (file.type.startsWith("video/")) finalType = "video";
           else finalType = "document";
         }
-      } else if (url.includes("youtube.com") || url.includes("youtu.be") || url.includes("vimeo.com")) {
+      } else if (
+        url.includes("youtube.com") ||
+        url.includes("youtu.be") ||
+        url.includes("vimeo.com")
+      ) {
         finalType = "video";
       }
 
@@ -146,17 +188,29 @@ export default function ResourcesPage() {
   }
 
   const search = searchQuery.trim().toLowerCase();
-  const filteredResources = resources.filter((resource) =>
-    (filterCourseId === "all" || resource.courseId === filterCourseId)
-    && (resource.title.toLowerCase().includes(search) || resource.url.toLowerCase().includes(search))
+  const filteredResources = resources.filter(
+    (resource) =>
+      (filterCourseId === "all" || resource.courseId === filterCourseId) &&
+      (resource.title.toLowerCase().includes(search) ||
+        resource.url.toLowerCase().includes(search)),
   );
 
   return (
     <div className="space-y-6">
-      <TeacherPageHeader title="Resource Uploads" description="Share files, videos, and links with your classes.">
-        <Dialog open={addOpen} onOpenChange={(open) => { if (!adding) setAddOpen(open); }}>
+      <TeacherPageHeader
+        title="Resource Uploads"
+        description="Share files, videos, and links with your classes."
+      >
+        <Dialog
+          open={addOpen}
+          onOpenChange={(open) => {
+            if (!adding) setAddOpen(open);
+          }}
+        >
           <DialogTrigger asChild>
-            <Button><Plus /> Add Resource</Button>
+            <Button>
+              <Plus /> Add Resource
+            </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
             <DialogHeader>
@@ -166,24 +220,42 @@ export default function ResourcesPage() {
             <form onSubmit={handleAddResource} className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="resource-title">Title</Label>
-                <Input id="resource-title" placeholder="e.g. Chapter 1 notes" value={title}
-                  onChange={(event) => setTitle(event.target.value)} required disabled={adding} />
+                <Input
+                  id="resource-title"
+                  placeholder="e.g. Chapter 1 notes"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  required
+                  disabled={adding}
+                />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="grid min-w-0 gap-2">
                   <Label htmlFor="resource-course">Class</Label>
-                  <Select value={selectedCourseId} onValueChange={setSelectedCourseId} disabled={adding}>
-                    <SelectTrigger id="resource-course" className="w-full cursor-pointer"><SelectValue /></SelectTrigger>
+                  <Select
+                    value={selectedCourseId}
+                    onValueChange={setSelectedCourseId}
+                    disabled={adding}
+                  >
+                    <SelectTrigger id="resource-course" className="w-full cursor-pointer">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Classes</SelectItem>
-                      {courses.map((course) => <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>)}
+                      {courses.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          {course.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="grid min-w-0 gap-2">
                   <Label htmlFor="resource-type">Type</Label>
                   <Select value={type} onValueChange={setType} disabled={adding}>
-                    <SelectTrigger id="resource-type" className="w-full cursor-pointer"><SelectValue /></SelectTrigger>
+                    <SelectTrigger id="resource-type" className="w-full cursor-pointer">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="link">Website</SelectItem>
                       <SelectItem value="document">Document</SelectItem>
@@ -195,34 +267,66 @@ export default function ResourcesPage() {
               <div className="grid gap-2">
                 <Label htmlFor="resource-url">Link or file</Label>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Input id="resource-url" placeholder="https://…" value={url}
-                    className="min-w-32 flex-1" disabled={!!file || adding}
-                    onChange={(event) => setUrl(event.target.value)} />
-                  <input ref={fileInput} type="file" hidden onChange={(event) => {
-                    const selected = event.target.files?.[0];
-                    if (!selected) return;
-                    setFile(selected);
-                    setUrl("");
-                    if (!title) setTitle(selected.name.replace(/\.[^/.]+$/, ""));
-                  }} />
-                  <Button type="button" variant="outline" disabled={adding} onClick={() => fileInput.current?.click()}>
+                  <Input
+                    id="resource-url"
+                    placeholder="https://…"
+                    value={url}
+                    className="min-w-32 flex-1"
+                    disabled={!!file || adding}
+                    onChange={(event) => setUrl(event.target.value)}
+                  />
+                  <input
+                    ref={fileInput}
+                    type="file"
+                    hidden
+                    onChange={(event) => {
+                      const selected = event.target.files?.[0];
+                      if (!selected) return;
+                      setFile(selected);
+                      setUrl("");
+                      if (!title) setTitle(selected.name.replace(/\.[^/.]+$/, ""));
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={adding}
+                    onClick={() => fileInput.current?.click()}
+                  >
                     <Upload /> Choose File
                   </Button>
                 </div>
                 {file && (
                   <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm">
-                    <FileText aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                    <span className="min-w-0 flex-1 truncate" title={file.name}>{file.name}</span>
-                    <Button type="button" size="sm" variant="ghost" disabled={adding} onClick={() => {
-                      setFile(null);
-                      if (fileInput.current) fileInput.current.value = "";
-                    }}>Remove</Button>
+                    <FileText
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-muted-foreground"
+                    />
+                    <span className="min-w-0 flex-1 truncate" title={file.name}>
+                      {file.name}
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      disabled={adding}
+                      onClick={() => {
+                        setFile(null);
+                        if (fileInput.current) fileInput.current.value = "";
+                      }}
+                    >
+                      Remove
+                    </Button>
                   </div>
                 )}
               </div>
               <DialogFooter>
                 <Button type="submit" disabled={adding || !title || (!url && !file)}>
-                  {adding ? (file && uploadProgress < 100 ? `Uploading (${Math.round(uploadProgress)}%)…` : "Adding…") : "Add Resource"}
+                  {adding
+                    ? file && uploadProgress < 100
+                      ? `Uploading (${Math.round(uploadProgress)}%)…`
+                      : "Adding…"
+                    : "Add Resource"}
                 </Button>
               </DialogFooter>
             </form>
@@ -235,15 +339,32 @@ export default function ResourcesPage() {
           <h2 className="text-base font-semibold">Resource archive</h2>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
             <div className="relative w-full sm:w-48">
-              <Search aria-hidden="true" className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-              <Input aria-label="Search resources" placeholder="Search resources…" className="pl-8"
-                value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
+              <Search
+                aria-hidden="true"
+                className="absolute left-2.5 top-2.5 size-4 text-muted-foreground"
+              />
+              <Input
+                aria-label="Search resources"
+                placeholder="Search resources…"
+                className="pl-8"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
             </div>
             <Select value={filterCourseId} onValueChange={setFilterCourseId}>
-              <SelectTrigger aria-label="Filter resources by class" className="w-full cursor-pointer sm:w-40"><SelectValue /></SelectTrigger>
+              <SelectTrigger
+                aria-label="Filter resources by class"
+                className="w-full cursor-pointer sm:w-40"
+              >
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Classes</SelectItem>
-                {courses.map((course) => <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>)}
+                {courses.map((course) => (
+                  <SelectItem key={course.id} value={course.id}>
+                    {course.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -251,7 +372,11 @@ export default function ResourcesPage() {
         <CardContent className="border-t p-0">
           {loading || filteredResources.length === 0 ? (
             <p role="status" className="px-5 py-10 text-center text-sm text-muted-foreground">
-              {loading ? "Loading resources…" : resources.length === 0 ? "No resources yet." : "No resources match these filters."}
+              {loading
+                ? "Loading resources…"
+                : resources.length === 0
+                  ? "No resources yet."
+                  : "No resources match these filters."}
             </p>
           ) : (
             <Table aria-label="Resource archive">
@@ -259,29 +384,49 @@ export default function ResourcesPage() {
                 <TableRow>
                   <TableHead className="pl-4 sm:pl-5">Resource</TableHead>
                   <TableHead>Class</TableHead>
-                  <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
+                  <TableHead className="w-12">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredResources.map((resource) => (
                   <TableRow key={resource.id}>
                     <TableCell className="max-w-72 whitespace-normal py-3 pl-4 sm:pl-5">
-                      <a href={resource.url} target="_blank" rel="noopener noreferrer"
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-baseline gap-1.5 break-words font-medium hover:text-primary hover:underline"
-                        title={resource.url}>
-                        {resource.title} <ExternalLink aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+                        title={resource.url}
+                      >
+                        {resource.title}{" "}
+                        <ExternalLink
+                          aria-hidden="true"
+                          className="size-3 shrink-0 text-muted-foreground"
+                        />
                       </a>
                       <p className="text-xs capitalize text-muted-foreground">
-                        {resource.type || "Link"} · {resource.createdAt?.toDate ? resource.createdAt.toDate().toLocaleDateString() : "Recently added"}
+                        {resource.type || "Link"} ·{" "}
+                        {resource.createdAt?.toDate
+                          ? resource.createdAt.toDate().toLocaleDateString()
+                          : "Recently added"}
                       </p>
                     </TableCell>
                     <TableCell className="max-w-48 whitespace-normal break-words text-muted-foreground">
-                      {resource.courseId ? courses.find((course) => course.id === resource.courseId)?.name || "Unknown class" : "All classes"}
+                      {resource.courseId
+                        ? courses.find((course) => course.id === resource.courseId)?.name ||
+                          "Unknown class"
+                        : "All classes"}
                     </TableCell>
                     <TableCell className="pr-3">
-                      <Button variant="ghost" size="icon-sm" aria-label={`Delete ${resource.title}`}
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Delete ${resource.title}`}
                         className="text-muted-foreground hover:text-destructive"
-                        onClick={() => setResourceToDelete(resource.id)}>
+                        onClick={() => setResourceToDelete(resource.id)}
+                      >
                         <Trash2 />
                       </Button>
                     </TableCell>

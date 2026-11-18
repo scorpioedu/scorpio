@@ -4,12 +4,31 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Loader2, Database, ChevronLeft, ChevronRight, RefreshCw, FileJson, Filter } from "lucide-react";
+import {
+  Loader2,
+  Database,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  FileJson,
+  Filter,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { errorMessage } from "@/lib/error-utils";
 
 export function FirestoreExplorer() {
@@ -48,7 +67,10 @@ export function FirestoreExplorer() {
     fetchCollections();
   }, []);
 
-  const loadDocuments = async (cursor: string | null = null, direction: "next" | "prev" | "refresh" = "refresh") => {
+  const loadDocuments = async (
+    cursor: string | null = null,
+    direction: "next" | "prev" | "refresh" = "refresh",
+  ) => {
     if (!selectedCollection) return;
     setLoading(true);
     setError("");
@@ -98,6 +120,7 @@ export function FirestoreExplorer() {
 
   useEffect(() => {
     if (selectedCollection) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
       loadDocuments(null, "refresh");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,42 +166,52 @@ export function FirestoreExplorer() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" size="icon" onClick={() => loadDocuments(history[history.length - 1], "refresh")} disabled={loading}>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => loadDocuments(history[history.length - 1], "refresh")}
+              disabled={loading}
+            >
               <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               <span className="sr-only">Refresh</span>
             </Button>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3 bg-muted/20 p-2.5 rounded-lg border border-border/40 mt-2">
           <Filter className="h-4 w-4 text-muted-foreground ml-1" />
-          <Input 
-            placeholder="Field (e.g. role)" 
-            value={filterField} 
+          <Input
+            placeholder="Field (e.g. role)"
+            value={filterField}
             onChange={(e) => setFilterField(e.target.value)}
             className="h-8 text-xs bg-background max-w-[150px]"
-            onKeyDown={(e) => e.key === 'Enter' && loadDocuments(null, 'refresh')}
+            onKeyDown={(e) => e.key === "Enter" && loadDocuments(null, "refresh")}
           />
           <span className="text-muted-foreground/50 text-xs font-mono font-bold">==</span>
-          <Input 
-            placeholder="Value (e.g. teacher)" 
-            value={filterValue} 
+          <Input
+            placeholder="Value (e.g. teacher)"
+            value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
             className="h-8 text-xs bg-background max-w-[200px]"
-            onKeyDown={(e) => e.key === 'Enter' && loadDocuments(null, 'refresh')}
+            onKeyDown={(e) => e.key === "Enter" && loadDocuments(null, "refresh")}
           />
-          <Button variant="secondary" size="sm" className="h-8 text-xs ml-auto" onClick={() => loadDocuments(null, 'refresh')}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-8 text-xs ml-auto"
+            onClick={() => loadDocuments(null, "refresh")}
+          >
             Apply Filter
           </Button>
           {(filterField || filterValue) && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 text-xs" 
-              onClick={() => { 
-                setFilterField(""); 
-                setFilterValue(""); 
-                setTimeout(() => loadDocuments(null, 'refresh'), 0); 
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs"
+              onClick={() => {
+                setFilterField("");
+                setFilterValue("");
+                setTimeout(() => loadDocuments(null, "refresh"), 0);
               }}
             >
               Clear

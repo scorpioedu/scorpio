@@ -13,7 +13,7 @@ import {
   Trash2,
   RotateCcw,
   HelpCircle,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useDepartmentPlan } from "@/hooks/use-department-plan";
@@ -28,8 +28,22 @@ import { doc, updateDoc, collection, query, where, getDocs } from "firebase/fire
 import { db } from "@/lib/firebase";
 import { Latex } from "@/components/latex";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -61,36 +75,132 @@ interface Formula {
 
 const DEFAULT_FORMULAS: Formula[] = [
   // Kinematics
-  { id: "k1", name: "Final Velocity", latex: "v = u + at", category: "kinematics", isCustom: false },
-  { id: "k2", name: "Displacement", latex: "s = ut + \\frac{1}{2}at^2", category: "kinematics", isCustom: false },
-  { id: "k3", name: "Velocity Squared", latex: "v^2 = u^2 + 2as", category: "kinematics", isCustom: false },
-  { id: "k4", name: "Average Velocity", latex: "v_{avg} = \\frac{u + v}{2}", category: "kinematics", isCustom: false },
+  {
+    id: "k1",
+    name: "Final Velocity",
+    latex: "v = u + at",
+    category: "kinematics",
+    isCustom: false,
+  },
+  {
+    id: "k2",
+    name: "Displacement",
+    latex: "s = ut + \\frac{1}{2}at^2",
+    category: "kinematics",
+    isCustom: false,
+  },
+  {
+    id: "k3",
+    name: "Velocity Squared",
+    latex: "v^2 = u^2 + 2as",
+    category: "kinematics",
+    isCustom: false,
+  },
+  {
+    id: "k4",
+    name: "Average Velocity",
+    latex: "v_{avg} = \\frac{u + v}{2}",
+    category: "kinematics",
+    isCustom: false,
+  },
   // Dynamics
   { id: "d1", name: "Newton's Second Law", latex: "F = ma", category: "dynamics", isCustom: false },
   { id: "d2", name: "Friction Force", latex: "f = \\mu N", category: "dynamics", isCustom: false },
-  { id: "d3", name: "Centripetal Force", latex: "F_c = \\frac{mv^2}{r}", category: "dynamics", isCustom: false },
-  { id: "d4", name: "Gravitational Force", latex: "F = G \\frac{m_1 m_2}{r^2}", category: "dynamics", isCustom: false },
+  {
+    id: "d3",
+    name: "Centripetal Force",
+    latex: "F_c = \\frac{mv^2}{r}",
+    category: "dynamics",
+    isCustom: false,
+  },
+  {
+    id: "d4",
+    name: "Gravitational Force",
+    latex: "F = G \\frac{m_1 m_2}{r^2}",
+    category: "dynamics",
+    isCustom: false,
+  },
   // Energy
-  { id: "e1", name: "Kinetic Energy", latex: "K.E. = \\frac{1}{2}mv^2", category: "energy", isCustom: false },
+  {
+    id: "e1",
+    name: "Kinetic Energy",
+    latex: "K.E. = \\frac{1}{2}mv^2",
+    category: "energy",
+    isCustom: false,
+  },
   { id: "e3", name: "Gravitational PE", latex: "P.E. = mgh", category: "energy", isCustom: false },
   { id: "e4", name: "Momentum", latex: "p = mv", category: "energy", isCustom: false },
-  { id: "e5", name: "Elastic Potential Energy", latex: "U_s = \\frac{1}{2}kx^2", category: "energy", isCustom: false },
+  {
+    id: "e5",
+    name: "Elastic Potential Energy",
+    latex: "U_s = \\frac{1}{2}kx^2",
+    category: "energy",
+    isCustom: false,
+  },
   // Thermodynamics
-  { id: "t1", name: "First Law of Thermo", latex: "\\Delta U = Q - W", category: "thermo", isCustom: false },
+  {
+    id: "t1",
+    name: "First Law of Thermo",
+    latex: "\\Delta U = Q - W",
+    category: "thermo",
+    isCustom: false,
+  },
   { id: "t2", name: "Ideal Gas Law", latex: "PV = nRT", category: "thermo", isCustom: false },
-  { id: "t3", name: "Specific Heat", latex: "Q = mc\\Delta T", category: "thermo", isCustom: false },
+  {
+    id: "t3",
+    name: "Specific Heat",
+    latex: "Q = mc\\Delta T",
+    category: "thermo",
+    isCustom: false,
+  },
   // Waves & Optics
   { id: "w1", name: "Wave Speed", latex: "v = f\\lambda", category: "optics", isCustom: false },
-  { id: "w2", name: "Snell's Law", latex: "n_1 \\sin \\theta_1 = n_2 \\sin \\theta_2", category: "optics", isCustom: false },
-  { id: "w3", name: "Lens Equation", latex: "\\frac{1}{f} = \\frac{1}{d_o} + \\frac{1}{d_i}", category: "optics", isCustom: false },
+  {
+    id: "w2",
+    name: "Snell's Law",
+    latex: "n_1 \\sin \\theta_1 = n_2 \\sin \\theta_2",
+    category: "optics",
+    isCustom: false,
+  },
+  {
+    id: "w3",
+    name: "Lens Equation",
+    latex: "\\frac{1}{f} = \\frac{1}{d_o} + \\frac{1}{d_i}",
+    category: "optics",
+    isCustom: false,
+  },
   // Electricity
   { id: "el1", name: "Ohm's Law", latex: "V = IR", category: "electricity", isCustom: false },
-  { id: "el2", name: "Electrical Power", latex: "P = IV = I^2 R = \\frac{V^2}{R}", category: "electricity", isCustom: false },
-  { id: "el3", name: "Coulomb's Law", latex: "F = k_e \\frac{q_1 q_2}{r^2}", category: "electricity", isCustom: false },
+  {
+    id: "el2",
+    name: "Electrical Power",
+    latex: "P = IV = I^2 R = \\frac{V^2}{R}",
+    category: "electricity",
+    isCustom: false,
+  },
+  {
+    id: "el3",
+    name: "Coulomb's Law",
+    latex: "F = k_e \\frac{q_1 q_2}{r^2}",
+    category: "electricity",
+    isCustom: false,
+  },
   // Nuclear
   { id: "n1", name: "Mass-Energy", latex: "E = mc^2", category: "nuclear", isCustom: false },
-  { id: "n2", name: "Photon Energy", latex: "E = hf = \\frac{hc}{\\lambda}", category: "nuclear", isCustom: false },
-  { id: "n3", name: "Radioactive Decay", latex: "N(t) = N_0 e^{-\\lambda t}", category: "nuclear", isCustom: false }
+  {
+    id: "n2",
+    name: "Photon Energy",
+    latex: "E = hf = \\frac{hc}{\\lambda}",
+    category: "nuclear",
+    isCustom: false,
+  },
+  {
+    id: "n3",
+    name: "Radioactive Decay",
+    latex: "N(t) = N_0 e^{-\\lambda t}",
+    category: "nuclear",
+    isCustom: false,
+  },
 ];
 
 interface Course {
@@ -115,25 +225,30 @@ export default function TeacherVault() {
   const [saving, setSaving] = useState(false);
   // Upgrade modal state
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState<"vault-custom" | "vault-lock">("vault-custom");
+  const [upgradeFeature, setUpgradeFeature] = useState<"vault-custom" | "vault-lock">(
+    "vault-custom",
+  );
   // New Formula State
   const [isAddingFormula, setIsAddingFormula] = useState(false);
   const [newFormula, setNewFormula] = useState({
     name: "",
     latex: "",
     category: "custom",
-    description: ""
+    description: "",
   });
   const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
   const [pendingNavUrl, setPendingNavUrl] = useState<string | null>(null);
   const router = useRouter();
 
   // Unsaved Changes Detection Logic
-  const selectedCourse = courses.find(c => c.id === selectedCourseId);
-  const hasUnsavedChanges = isFreePlan ? false : (selectedCourse ? (
-    JSON.stringify([...restrictedIds].sort()) !== JSON.stringify([...(selectedCourse.restrictedFormulaIds || [])].sort()) ||
-    JSON.stringify(customFormulas) !== JSON.stringify(selectedCourse.customFormulas || [])
-  ) : false);
+  const selectedCourse = courses.find((c) => c.id === selectedCourseId);
+  const hasUnsavedChanges = isFreePlan
+    ? false
+    : selectedCourse
+      ? JSON.stringify([...restrictedIds].sort()) !==
+          JSON.stringify([...(selectedCourse.restrictedFormulaIds || [])].sort()) ||
+        JSON.stringify(customFormulas) !== JSON.stringify(selectedCourse.customFormulas || [])
+      : false;
 
   // 1. Handle Browser Close/Refresh (standard beforeunload)
   useEffect(() => {
@@ -153,7 +268,7 @@ export default function TeacherVault() {
       if (!hasUnsavedChanges) return;
 
       const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
+      const anchor = target.closest("a");
 
       if (anchor && anchor.href && !anchor.target) {
         const url = new URL(anchor.href);
@@ -169,8 +284,8 @@ export default function TeacherVault() {
       }
     };
 
-    document.addEventListener('click', handleAnchorClick, true);
-    return () => document.removeEventListener('click', handleAnchorClick, true);
+    document.addEventListener("click", handleAnchorClick, true);
+    return () => document.removeEventListener("click", handleAnchorClick, true);
   }, [hasUnsavedChanges]);
 
   const confirmNavigation = () => {
@@ -191,7 +306,9 @@ export default function TeacherVault() {
       try {
         const q = query(collection(db, "courses"), where("teacherId", "==", user.uid));
         const querySnapshot = await getDocs(q);
-        const coursesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+        const coursesList = querySnapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() }) as Course,
+        );
         setCourses(coursesList);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -203,13 +320,24 @@ export default function TeacherVault() {
     fetchCourses();
   }, [user]);
 
-  useEffect(() => {
-    const selectedCourse = courses.find(c => c.id === selectedCourseId);
+  // Load the class's saved restrictions and custom formulas whenever the class, the class list or the plan changes.
+  const [loadedFor, setLoadedFor] = useState<{
+    id: string;
+    courses: Course[];
+    free: boolean;
+  } | null>(null);
+  if (
+    !loadedFor ||
+    loadedFor.id !== selectedCourseId ||
+    loadedFor.courses !== courses ||
+    loadedFor.free !== isFreePlan
+  ) {
+    setLoadedFor({ id: selectedCourseId, courses, free: isFreePlan });
     if (selectedCourse) {
-      setRestrictedIds(isFreePlan ? [] : (selectedCourse.restrictedFormulaIds || []));
+      setRestrictedIds(isFreePlan ? [] : selectedCourse.restrictedFormulaIds || []);
       setCustomFormulas(selectedCourse.customFormulas || []);
     }
-  }, [selectedCourseId, courses, isFreePlan]);
+  }
 
   const toggleFormula = (id: string) => {
     if (isFreePlan) {
@@ -217,9 +345,7 @@ export default function TeacherVault() {
       setIsUpgradeOpen(true);
       return;
     }
-    setRestrictedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
+    setRestrictedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
   const handleDiscard = () => {
@@ -251,13 +377,17 @@ export default function TeacherVault() {
     try {
       await updateDoc(doc(db, "courses", selectedCourseId), {
         restrictedFormulaIds: restrictedIds,
-        customFormulas: customFormulas
+        customFormulas: customFormulas,
       });
 
       // Update local courses state
-      setCourses(prev => prev.map(c =>
-        c.id === selectedCourseId ? { ...c, restrictedFormulaIds: restrictedIds, customFormulas: customFormulas } : c
-      ));
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.id === selectedCourseId
+            ? { ...c, restrictedFormulaIds: restrictedIds, customFormulas: customFormulas }
+            : c,
+        ),
+      );
 
       toast.success("Changes saved successfully!");
     } catch (error) {
@@ -284,24 +414,25 @@ export default function TeacherVault() {
     const formulaToAdd: Formula = {
       ...newFormula,
       id: `custom-${Date.now()}`,
-      isCustom: true
+      isCustom: true,
     };
 
-    setCustomFormulas(prev => [...prev, formulaToAdd]);
+    setCustomFormulas((prev) => [...prev, formulaToAdd]);
     setIsAddingFormula(false);
     setNewFormula({ name: "", latex: "", category: "custom", description: "" });
     toast.success("Custom formula added to list. Remember to save changes!");
   };
 
   const removeCustomFormula = (id: string) => {
-    setCustomFormulas(prev => prev.filter(f => f.id !== id));
-    setRestrictedIds(prev => prev.filter(i => i !== id));
+    setCustomFormulas((prev) => prev.filter((f) => f.id !== id));
+    setRestrictedIds((prev) => prev.filter((i) => i !== id));
   };
 
   const allFormulas = [...DEFAULT_FORMULAS, ...customFormulas];
 
-  const filteredFormulas = allFormulas.filter(formula => {
-    const matchesSearch = formula.name.toLowerCase().includes(search.toLowerCase()) ||
+  const filteredFormulas = allFormulas.filter((formula) => {
+    const matchesSearch =
+      formula.name.toLowerCase().includes(search.toLowerCase()) ||
       formula.category.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = activeCategory === "all" || formula.category === activeCategory;
     return matchesSearch && matchesCategory;
@@ -318,7 +449,10 @@ export default function TeacherVault() {
   return (
     <>
       <div className="space-y-6">
-        <TeacherPageHeader title="Vault Controls" description="Choose which formulas students can use in each class.">
+        <TeacherPageHeader
+          title="Vault Controls"
+          description="Choose which formulas students can use in each class."
+        >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -360,7 +494,9 @@ export default function TeacherVault() {
                 </DialogHeader>
                 <div className="grid gap-6 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="formula-name" className="font-bold ml-1">Equation Name</Label>
+                    <Label htmlFor="formula-name" className="font-bold ml-1">
+                      Equation Name
+                    </Label>
                     <Input
                       id="formula-name"
                       placeholder="e.g. Einstein's Energy"
@@ -370,7 +506,9 @@ export default function TeacherVault() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="formula-latex" className="font-bold ml-1">LaTeX Expression</Label>
+                    <Label htmlFor="formula-latex" className="font-bold ml-1">
+                      LaTeX Expression
+                    </Label>
                     <Textarea
                       id="formula-latex"
                       placeholder="e.g. E = mc^2"
@@ -379,25 +517,41 @@ export default function TeacherVault() {
                       onChange={(e) => setNewFormula({ ...newFormula, latex: e.target.value })}
                     />
                     <div className="bg-muted/40 border border-border p-6 rounded-2xl flex items-center justify-center min-h-[80px] shadow-inner">
-                      {newFormula.latex ? <Latex math={newFormula.latex} display /> : <span className="text-muted-foreground text-sm italic">Live preview</span>}
+                      {newFormula.latex ? (
+                        <Latex math={newFormula.latex} display />
+                      ) : (
+                        <span className="text-muted-foreground text-sm italic">Live preview</span>
+                      )}
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="formula-category" className="font-bold ml-1">Category</Label>
-                    <Select value={newFormula.category} onValueChange={(v) => setNewFormula({ ...newFormula, category: v })}>
+                    <Label htmlFor="formula-category" className="font-bold ml-1">
+                      Category
+                    </Label>
+                    <Select
+                      value={newFormula.category}
+                      onValueChange={(v) => setNewFormula({ ...newFormula, category: v })}
+                    >
                       <SelectTrigger id="formula-category" className="h-11 rounded-xl">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
-                        {CATEGORIES.filter(c => c.id !== "all").map(cat => (
-                          <SelectItem key={cat.id} value={cat.id} className="rounded-lg">{cat.name}</SelectItem>
+                        {CATEGORIES.filter((c) => c.id !== "all").map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id} className="rounded-lg">
+                            {cat.name}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <DialogFooter className="mt-4">
-                  <Button onClick={handleAddCustomFormula} className="w-full h-12 rounded-xl font-bold cursor-pointer">Add to Vault</Button>
+                  <Button
+                    onClick={handleAddCustomFormula}
+                    className="w-full h-12 rounded-xl font-bold cursor-pointer"
+                  >
+                    Add to Vault
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -413,7 +567,8 @@ export default function TeacherVault() {
               <div>
                 <span className="font-semibold text-foreground">Free Plan:</span>
                 <span className="text-muted-foreground ml-1.5">
-                  All 24 core physics equations are active in student vaults. Locking formulas for exams and adding custom formulas require a Department License.
+                  All 24 core physics equations are active in student vaults. Locking formulas for
+                  exams and adding custom formulas require a Department License.
                 </span>
               </div>
             </div>
@@ -432,15 +587,24 @@ export default function TeacherVault() {
         <div className="bg-muted/50 p-2 rounded-[2rem] border border-border flex flex-col lg:flex-row items-center gap-2 mb-4">
           <div className="w-full lg:w-72">
             <Select value={selectedCourseId} onValueChange={onCourseSelectAttempt}>
-              <SelectTrigger aria-label="Class" className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4">
+              <SelectTrigger
+                aria-label="Class"
+                className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4"
+              >
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-primary" />
                   <SelectValue placeholder="Select Class" />
                 </div>
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
-                {courses.map(course => (
-                  <SelectItem key={course.id} value={course.id} className="rounded-xl cursor-pointer py-3">{course.name}</SelectItem>
+                {courses.map((course) => (
+                  <SelectItem
+                    key={course.id}
+                    value={course.id}
+                    className="rounded-xl cursor-pointer py-3"
+                  >
+                    {course.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -459,15 +623,22 @@ export default function TeacherVault() {
 
           <div className="w-full lg:w-64">
             <Select value={activeCategory} onValueChange={setActiveCategory}>
-              <SelectTrigger aria-label="Formula category" className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4">
+              <SelectTrigger
+                aria-label="Formula category"
+                className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4"
+              >
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-primary" />
                   <SelectValue placeholder="Filter Category" />
                 </div>
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
-                {CATEGORIES.map(cat => (
-                  <SelectItem key={cat.id} value={cat.id} className="rounded-xl cursor-pointer py-3">
+                {CATEGORIES.map((cat) => (
+                  <SelectItem
+                    key={cat.id}
+                    value={cat.id}
+                    className="rounded-xl cursor-pointer py-3"
+                  >
                     {cat.name}
                   </SelectItem>
                 ))}
@@ -501,12 +672,7 @@ export default function TeacherVault() {
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Discard
                 </Button>
-                <Button
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="h-10"
-                >
+                <Button size="sm" onClick={handleSave} disabled={saving} className="h-10">
                   {saving ? "Saving..." : "Save Changes"}
                 </Button>
               </div>
@@ -515,25 +681,22 @@ export default function TeacherVault() {
         )}
       </AnimatePresence>
 
-
-
-
-
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredFormulas.map(formula => {
+        {filteredFormulas.map((formula) => {
           const isRestricted = isFreePlan ? false : restrictedIds.includes(formula.id);
           const isCustom = formula.isCustom;
           return (
             <Card
               key={formula.id}
-              className={`group transition-all duration-300 border-none cursor-pointer rounded-3xl overflow-hidden shadow-md ${isRestricted
-                ? "bg-red-50 dark:bg-red-950/20 ring-1 ring-red-200 dark:ring-red-900/50"
-                : isCustom
-                  ? "bg-primary/5 ring-1 ring-primary/20"
-                  : isFreePlan
-                    ? "bg-muted/40 hover:ring-2 hover:ring-purple-500/30"
-                    : "bg-muted/40 hover:ring-2 hover:ring-primary/50"
-                }`}
+              className={`group transition-all duration-300 border-none cursor-pointer rounded-3xl overflow-hidden shadow-md ${
+                isRestricted
+                  ? "bg-red-50 dark:bg-red-950/20 ring-1 ring-red-200 dark:ring-red-900/50"
+                  : isCustom
+                    ? "bg-primary/5 ring-1 ring-primary/20"
+                    : isFreePlan
+                      ? "bg-muted/40 hover:ring-2 hover:ring-purple-500/30"
+                      : "bg-muted/40 hover:ring-2 hover:ring-primary/50"
+              }`}
               onClick={() => toggleFormula(formula.id)}
             >
               <CardHeader className="pb-2">
@@ -541,16 +704,25 @@ export default function TeacherVault() {
                   <div className="flex-1">
                     <CardTitle className="text-lg font-black truncate">{formula.name}</CardTitle>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md"
+                      >
                         {formula.category}
                       </Badge>
                       {isCustom && (
-                        <Badge variant="secondary" className="bg-primary/20 text-primary border-none text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md">
+                        <Badge
+                          variant="secondary"
+                          className="bg-primary/20 text-primary border-none text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md"
+                        >
                           Custom
                         </Badge>
                       )}
                       {isFreePlan && (
-                        <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md">
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md"
+                        >
                           Active
                         </Badge>
                       )}
@@ -577,8 +749,20 @@ export default function TeacherVault() {
                       size="icon-sm"
                       aria-label={`Visible to students: ${formula.name}`}
                       aria-pressed={!isRestricted}
-                      title={isFreePlan ? "Active for all students. Locking requires Department License." : (isRestricted ? "Show formula" : "Hide formula")}
-                      className={isFreePlan ? "text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" : (isRestricted ? "text-destructive" : "text-primary")}
+                      title={
+                        isFreePlan
+                          ? "Active for all students. Locking requires Department License."
+                          : isRestricted
+                            ? "Show formula"
+                            : "Hide formula"
+                      }
+                      className={
+                        isFreePlan
+                          ? "text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                          : isRestricted
+                            ? "text-destructive"
+                            : "text-primary"
+                      }
                       onClick={(event) => {
                         event.stopPropagation();
                         toggleFormula(formula.id);

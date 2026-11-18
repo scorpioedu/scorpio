@@ -20,7 +20,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -52,12 +59,12 @@ export default function BillingPage() {
   useEffect(() => {
     if (authLoading) return;
     if (user && profile?.organizationId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
       fetchOrg();
     } else {
       setLoading(false);
     }
   }, [user, profile, authLoading, fetchOrg]);
-
 
   const handleUpgrade = async (planId: string) => {
     if (!user || !organization) return;
@@ -107,7 +114,8 @@ export default function BillingPage() {
         </div>
         <h2 className="text-xl font-bold tracking-tight">No Department Network Found</h2>
         <p className="text-sm text-muted-foreground">
-          You must be part of an authenticated Scorpio Network to view or manage department licensing.
+          You must be part of an authenticated Scorpio Network to view or manage department
+          licensing.
         </p>
         <Button variant="outline" asChild size="sm">
           <Link href="/teacher/network">Return to Network</Link>
@@ -116,7 +124,8 @@ export default function BillingPage() {
     );
   }
 
-  const isOwner = user?.uid === organization.ownerId || (profile?.role as string) === "school_admin";
+  const isOwner =
+    user?.uid === organization.ownerId || (profile?.role as string) === "school_admin";
   const isFreePlan = !organization.planId || organization.planId === "free";
   const isYearlyActive = organization.planId?.includes("yearly");
 
@@ -152,7 +161,7 @@ export default function BillingPage() {
             <div
               className={cn(
                 "h-2.5 w-2.5 rounded-full shrink-0",
-                isFreePlan ? "bg-amber-500" : "bg-emerald-500"
+                isFreePlan ? "bg-amber-500" : "bg-emerald-500",
               )}
             />
             <div className="text-xs">
@@ -168,7 +177,11 @@ export default function BillingPage() {
             </div>
             {!isFreePlan && (
               <Button asChild variant="outline" size="sm" className="h-7 text-xs ml-1">
-                <Link href="https://polar.sh/scorpio/portal" target="_blank" className="flex items-center gap-1">
+                <Link
+                  href="https://polar.sh/scorpio/portal"
+                  target="_blank"
+                  className="flex items-center gap-1"
+                >
                   Polar Portal <ExternalLink className="h-3 w-3" />
                 </Link>
               </Button>
@@ -194,7 +207,7 @@ export default function BillingPage() {
               "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
               billingCycle === "monthly"
                 ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             Monthly ($10/mo)
@@ -206,7 +219,7 @@ export default function BillingPage() {
               "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5",
               billingCycle === "yearly"
                 ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             <span>Annual ($100/yr)</span>
@@ -219,7 +232,6 @@ export default function BillingPage() {
 
       {/* ── Pricing Cards (Dominant Department License) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
         {/* Free Starter Card (Compact - col-span-4) */}
         <Card className="lg:col-span-4 border-border/60 shadow-sm flex flex-col justify-between">
           <CardHeader className="pb-4">
@@ -228,14 +240,17 @@ export default function BillingPage() {
             </Badge>
             <CardTitle className="text-lg font-bold mt-2">Free Starter</CardTitle>
             <CardDescription className="text-xs">
-              Every global Waypoint, auto-grading and the misconception report for individual teachers.
+              Every global Waypoint, auto-grading and the misconception report for individual
+              teachers.
             </CardDescription>
             <div className="pt-3">
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-bold text-foreground">$0</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">Free forever. No card required.</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Free forever. No card required.
+              </p>
             </div>
           </CardHeader>
 
@@ -262,7 +277,11 @@ export default function BillingPage() {
           </CardContent>
 
           <CardFooter className="pt-2">
-            <Button variant="outline" disabled className="w-full h-9 text-xs font-medium cursor-default">
+            <Button
+              variant="outline"
+              disabled
+              className="w-full h-9 text-xs font-medium cursor-default"
+            >
               {isFreePlan ? "Current Plan" : "Included"}
             </Button>
           </CardFooter>
@@ -275,11 +294,16 @@ export default function BillingPage() {
               <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-0.5">
                 Department License
               </Badge>
-              <span className="text-xs font-mono text-muted-foreground">Entire School Department</span>
+              <span className="text-xs font-mono text-muted-foreground">
+                Entire School Department
+              </span>
             </div>
-            <CardTitle className="text-2xl sm:text-3xl font-bold mt-2">Department License</CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl font-bold mt-2">
+              Department License
+            </CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Department waypoints and sharing, plus higher AI limits for Raise hints and AI grading, for your entire school.
+              Department waypoints and sharing, plus higher AI limits for Raise hints and AI
+              grading, for your entire school.
             </CardDescription>
 
             <div className="pt-4 pb-1">
@@ -300,19 +324,34 @@ export default function BillingPage() {
           <CardContent className="space-y-4 text-xs sm:text-sm">
             {/* Flat + Metered Summary Box */}
             <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-2.5">
-              <p className="font-semibold text-foreground text-xs uppercase tracking-wider">How Billing Works:</p>
+              <p className="font-semibold text-foreground text-xs uppercase tracking-wider">
+                How Billing Works:
+              </p>
               <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-start gap-2">
                   <span className="font-semibold text-foreground shrink-0">• Flat Fee:</span>
-                  <span>{billingCycle === "yearly" ? "$100/yr" : "$10/mo"} covers all teachers, courses, and students in your department. No per-seat fees.</span>
+                  <span>
+                    {billingCycle === "yearly" ? "$100/yr" : "$10/mo"} covers all teachers, courses,
+                    and students in your department. No per-seat fees.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="font-semibold text-foreground shrink-0">• At-Cost AI Metering:</span>
-                  <span>Gemini 3.8 Flash passed through at exact Google cost ($0.75 / 1M in, $3.75 / 1M out). ~0.10/student/mo. Zero markup.</span>
+                  <span className="font-semibold text-foreground shrink-0">
+                    • At-Cost AI Metering:
+                  </span>
+                  <span>
+                    Gemini 3.8 Flash passed through at exact Google cost ($0.75 / 1M in, $3.75 / 1M
+                    out). ~0.10/student/mo. Zero markup.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="font-semibold text-foreground shrink-0">• Spend Protection:</span>
-                  <span>You set a hard monthly cap in Network Settings (e.g. $25). AI halts safely if reached—no surprise overages.</span>
+                  <span className="font-semibold text-foreground shrink-0">
+                    • Spend Protection:
+                  </span>
+                  <span>
+                    You set a hard monthly cap in Network Settings (e.g. $25). AI halts safely if
+                    reached—no surprise overages.
+                  </span>
                 </div>
               </div>
             </div>
@@ -355,13 +394,15 @@ export default function BillingPage() {
               >
                 {upgrading ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Redirecting to Polar Checkout...
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Redirecting to Polar
+                    Checkout...
                   </>
                 ) : !isOwner ? (
                   "Only Network Owner Can Upgrade"
                 ) : (
                   <>
-                    Upgrade to Department License ({billingCycle === "yearly" ? "$100/yr" : "$10/mo"})
+                    Upgrade to Department License (
+                    {billingCycle === "yearly" ? "$100/yr" : "$10/mo"})
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
@@ -369,7 +410,11 @@ export default function BillingPage() {
             ) : (
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button asChild className="flex-1 h-12 text-sm font-semibold" variant="outline">
-                  <Link href="https://polar.sh/scorpio/portal" target="_blank" className="flex items-center justify-center gap-2">
+                  <Link
+                    href="https://polar.sh/scorpio/portal"
+                    target="_blank"
+                    className="flex items-center justify-center gap-2"
+                  >
                     <Receipt className="h-4 w-4" /> Polar Customer Portal
                   </Link>
                 </Button>
@@ -382,7 +427,6 @@ export default function BillingPage() {
             )}
           </CardFooter>
         </Card>
-
       </div>
 
       {/* ── Explanation: Flat Fee + Metering ── */}
@@ -400,7 +444,9 @@ export default function BillingPage() {
               <span>1. Flat Department License</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              {billingCycle === "yearly" ? "$100/year" : "$10/month"} covers your entire school. Unlimited teachers, unlimited course periods, and unlimited students. No per-seat license fees.
+              {billingCycle === "yearly" ? "$100/year" : "$10/month"} covers your entire school.
+              Unlimited teachers, unlimited course periods, and unlimited students. No per-seat
+              license fees.
             </p>
           </div>
 
@@ -410,7 +456,8 @@ export default function BillingPage() {
               <span>2. At-Cost AI Metering</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              AI requests use Gemini 3.8 Flash, billed at exact Google cost ($0.75 / 1M input, $3.75 / 1M output). Scorpio takes zero markup on AI compute.
+              AI requests use Gemini 3.8 Flash, billed at exact Google cost ($0.75 / 1M input, $3.75
+              / 1M output). Scorpio takes zero markup on AI compute.
             </p>
           </div>
 
@@ -420,7 +467,8 @@ export default function BillingPage() {
               <span>3. Guaranteed Spend Caps</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Set a monthly dollar cap in Network Settings. If reached, AI assistance halts safely until next month or until you raise it.
+              Set a monthly dollar cap in Network Settings. If reached, AI assistance halts safely
+              until next month or until you raise it.
             </p>
           </div>
         </CardContent>
@@ -430,10 +478,15 @@ export default function BillingPage() {
             <div className="flex items-center gap-2 text-muted-foreground">
               <Sliders className="h-4 w-4 text-primary" />
               <span>Department Spend Cap:</span>
-              <span className="font-semibold text-foreground">${budgetCapDollars.toFixed(2)}/mo</span>
+              <span className="font-semibold text-foreground">
+                ${budgetCapDollars.toFixed(2)}/mo
+              </span>
               <span>(Used this month: ${currentUsageDollars.toFixed(2)})</span>
             </div>
-            <Link href="/teacher/network" className="text-primary hover:underline font-medium inline-flex items-center gap-1">
+            <Link
+              href="/teacher/network"
+              className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+            >
               Adjust in Network Settings <ArrowRight className="h-3 w-3" />
             </Link>
           </CardFooter>

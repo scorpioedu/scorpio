@@ -13,7 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, FileText, Image as ImageIcon, Download, Brain, Sparkles, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  FileText,
+  Image as ImageIcon,
+  Download,
+  Brain,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -72,7 +83,7 @@ interface Assignment {
 
 export default function GradeSubmissionPage() {
   const searchParams = useSearchParams();
-  const id = searchParams ? searchParams.get('id') ?? "" : "";
+  const id = searchParams ? (searchParams.get("id") ?? "") : "";
   const router = useRouter();
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
@@ -83,17 +94,17 @@ export default function GradeSubmissionPage() {
   const [feedback, setFeedback] = useState<Record<string, string>>({});
   const [aiReasoning, setAiReasoning] = useState<Record<string, string>>({});
   // What is saved, to tell unsaved edits apart (save bar, leave warning, re-grade confirm).
-  const [baseline, setBaseline] = useState<{ grades: Record<string, number>; feedback: Record<string, string> }>({
+  const [baseline, setBaseline] = useState<{
+    grades: Record<string, number>;
+    feedback: Record<string, string>;
+  }>({
     grades: {},
     feedback: {},
   });
   const [confirmRegrade, setConfirmRegrade] = useState(false);
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
 
     async function fetchSubmission() {
       try {
@@ -105,7 +116,7 @@ export default function GradeSubmissionPage() {
             ...data,
             submittedAt: data.submittedAt?.toDate?.() || new Date(data.submittedAt),
           } as Submission;
-          
+
           setSubmission(sub);
 
           // Fetch assignment details to get question metadata
@@ -148,11 +159,11 @@ export default function GradeSubmissionPage() {
       // Actually, we can implement a specific AI grading logic here too.
       // But the best UX is to just trigger the global API if they want to re-evaluate everything
       // OR specifically grade one.
-      
-      const response = await authenticatedFetch('/api/grade', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ submissionId: submission.id })
+
+      const response = await authenticatedFetch("/api/grade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ submissionId: submission.id }),
       });
 
       if (response.ok) {
@@ -163,13 +174,13 @@ export default function GradeSubmissionPage() {
           const initialGrades: Record<string, number> = {};
           const initialFeedback: Record<string, string> = {};
           const initialReasoning: Record<string, string> = {};
-          
+
           updatedSub.answers.forEach((ans) => {
             if (ans.score !== undefined) initialGrades[ans.questionId] = ans.score;
             if (ans.feedback) initialFeedback[ans.questionId] = ans.feedback;
             if (ans.reasoning) initialReasoning[ans.questionId] = ans.reasoning;
           });
-          
+
           setGrades(initialGrades);
           setFeedback(initialFeedback);
           setAiReasoning(initialReasoning);
@@ -196,10 +207,11 @@ export default function GradeSubmissionPage() {
   };
 
   const totalPossiblePoints = getAssignmentPoints(assignment?.questions);
-  const totalEarnedPoints = assignment?.questions?.reduce((earned, question) => earned + (grades[question.id] || 0), 0) ?? 0;
-  const percentageScore = totalPossiblePoints > 0
-    ? Math.round((totalEarnedPoints / totalPossiblePoints) * 100)
-    : 0;
+  const totalEarnedPoints =
+    assignment?.questions?.reduce((earned, question) => earned + (grades[question.id] || 0), 0) ??
+    0;
+  const percentageScore =
+    totalPossiblePoints > 0 ? Math.round((totalEarnedPoints / totalPossiblePoints) * 100) : 0;
 
   const sameRecord = (a: Record<string, unknown>, b: Record<string, unknown>) =>
     Object.keys({ ...a, ...b }).every((k) => (a[k] ?? "") === (b[k] ?? ""));
@@ -210,7 +222,9 @@ export default function GradeSubmissionPage() {
     ...new Set([
       ...(submission?.teacherGraded ?? []),
       ...(submission?.answers ?? [])
-        .filter((ans) => grades[ans.questionId] !== undefined && grades[ans.questionId] !== ans.score)
+        .filter(
+          (ans) => grades[ans.questionId] !== undefined && grades[ans.questionId] !== ans.score,
+        )
         .map((ans) => ans.questionId),
     ]),
   ];
@@ -221,11 +235,11 @@ export default function GradeSubmissionPage() {
 
     try {
       // Update answers with new grades/feedback
-      const updatedAnswers = submission.answers.map(ans => ({
+      const updatedAnswers = submission.answers.map((ans) => ({
         ...ans,
         score: grades[ans.questionId] || 0,
         feedback: feedback[ans.questionId] || "",
-        reasoning: aiReasoning[ans.questionId] || ""
+        reasoning: aiReasoning[ans.questionId] || "",
       }));
 
       await updateDoc(doc(db, "submissions", id), {
@@ -254,7 +268,8 @@ export default function GradeSubmissionPage() {
     }
   };
 
-  if (loading) {
+  // Nothing to wait for without a submission in the address.
+  if (loading && id) {
     return <LoadingSpinner fullPage />;
   }
 
@@ -275,25 +290,31 @@ export default function GradeSubmissionPage() {
   }
 
   if (!submission) {
-    return <div className="flex items-center justify-center min-h-[50vh] w-full text-muted-foreground">Submission not found</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[50vh] w-full text-muted-foreground">
+        Submission not found
+      </div>
+    );
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
       {/* Integrity Alert */}
       {submission.unfocusCount !== undefined && submission.unfocusCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="bg-yellow-50 border-yellow-200 dark:bg-yellow-950/20 dark:border-yellow-900">
             <CardHeader className="py-3">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="h-5 w-5 text-yellow-600" />
                 <div>
-                  <CardTitle className="text-yellow-800 dark:text-yellow-500 text-sm font-bold">Integrity Alert</CardTitle>
+                  <CardTitle className="text-yellow-800 dark:text-yellow-500 text-sm font-bold">
+                    Integrity Alert
+                  </CardTitle>
                   <CardDescription className="text-yellow-700 dark:text-yellow-400/80 text-xs">
-                    Student switched tabs <span className="font-bold">{submission.unfocusCount}</span> time{submission.unfocusCount === 1 ? '' : 's'}. This may indicate searching for answers.
+                    Student switched tabs{" "}
+                    <span className="font-bold">{submission.unfocusCount}</span> time
+                    {submission.unfocusCount === 1 ? "" : "s"}. This may indicate searching for
+                    answers.
                   </CardDescription>
                 </div>
               </div>
@@ -305,9 +326,9 @@ export default function GradeSubmissionPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4">
         <div className="space-y-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => router.back()}
             className="text-muted-foreground hover:text-foreground -ml-2"
           >
@@ -320,36 +341,41 @@ export default function GradeSubmissionPage() {
                 Grading Terminal
               </Badge>
               <div className="h-1 w-1 rounded-full bg-muted-foreground/30" />
-              <span className="text-xs text-muted-foreground">Submission ID: {submission.id.slice(0, 8)}</span>
+              <span className="text-xs text-muted-foreground">
+                Submission ID: {submission.id.slice(0, 8)}
+              </span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight">
               {submission.studentName || "Student Submission"}
             </h1>
             <p className="text-muted-foreground text-sm">
-              Submitted on {submission.submittedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              Submitted on{" "}
+              {submission.submittedAt.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <Button 
-            onClick={() => (dirty || handGraded.length ? setConfirmRegrade(true) : handleAiGrade('all'))} 
+          <Button
+            onClick={() =>
+              dirty || handGraded.length ? setConfirmRegrade(true) : handleAiGrade("all")
+            }
             variant="outline"
-            disabled={gradingQuestion === 'all'}
+            disabled={gradingQuestion === "all"}
             size="sm"
           >
-            {gradingQuestion === 'all' ? (
+            {gradingQuestion === "all" ? (
               <Sparkles className="h-4 w-4 mr-2 animate-spin" />
             ) : (
               <RaiseLogo size={16} className="text-foreground" />
             )}
             Re-grade with Raise
           </Button>
-          <Button 
-            onClick={handleSave} 
-            disabled={saving}
-            size="sm"
-          >
+          <Button onClick={handleSave} disabled={saving} size="sm">
             <Save className="h-4 w-4 mr-2" />
             {saving ? "Saving..." : "Save Grades"}
           </Button>
@@ -360,10 +386,11 @@ export default function GradeSubmissionPage() {
         <div className="lg:col-span-2 space-y-8">
           <AnimatePresence>
             {submission.answers.map((ans, index) => {
-              const question = assignment?.questions?.find(q => q.id === ans.questionId);
-              const isMCQOrTrueFalse = question?.type === "multiple-choice" || question?.type === "true-false";
+              const question = assignment?.questions?.find((q) => q.id === ans.questionId);
+              const isMCQOrTrueFalse =
+                question?.type === "multiple-choice" || question?.type === "true-false";
               const maxPoints = question?.points || 10;
-              const isGrading = gradingQuestion === ans.questionId || gradingQuestion === 'all';
+              const isGrading = gradingQuestion === ans.questionId || gradingQuestion === "all";
 
               return (
                 <motion.div
@@ -385,34 +412,39 @@ export default function GradeSubmissionPage() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                           <Badge variant="outline" className="text-[10px] border-muted-foreground/30">
-                             Max Points: {maxPoints}
-                           </Badge>
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] border-muted-foreground/30"
+                          >
+                            Max Points: {maxPoints}
+                          </Badge>
                         </div>
                       </div>
 
                       <CardContent className="p-6 space-y-6">
                         {/* Question Text */}
                         <div className="space-y-2">
-                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">Original Question</Label>
+                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">
+                            Original Question
+                          </Label>
                           <div className="prose prose-zinc dark:prose-invert max-w-none text-sm">
-                            <MarkdownRenderer noProse>
-                              {ans.questionText}
-                            </MarkdownRenderer>
+                            <MarkdownRenderer noProse>{ans.questionText}</MarkdownRenderer>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Student Answer */}
                           <div className="space-y-3 bg-muted/20 p-4 rounded-lg border">
-                            <Label className="text-[10px] uppercase font-bold text-muted-foreground">Student Answer</Label>
+                            <Label className="text-[10px] uppercase font-bold text-muted-foreground">
+                              Student Answer
+                            </Label>
                             <div className="prose prose-sm dark:prose-invert max-w-none min-h-[40px]">
                               {ans.answer ? (
-                                <MarkdownRenderer noProse>
-                                  {ans.answer}
-                                </MarkdownRenderer>
+                                <MarkdownRenderer noProse>{ans.answer}</MarkdownRenderer>
                               ) : (
-                                <span className="text-muted-foreground italic text-xs">No response provided.</span>
+                                <span className="text-muted-foreground italic text-xs">
+                                  No response provided.
+                                </span>
                               )}
                             </div>
                           </div>
@@ -439,7 +471,9 @@ export default function GradeSubmissionPage() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <Sparkles className="h-4 w-4 text-primary" />
-                                <span className="text-[10px] uppercase font-bold text-primary">AI Reasoning / Grading logic</span>
+                                <span className="text-[10px] uppercase font-bold text-primary">
+                                  AI Reasoning / Grading logic
+                                </span>
                               </div>
                               {isGrading && (
                                 <div className="flex items-center gap-2 text-[10px] font-medium text-primary animate-pulse">
@@ -457,55 +491,70 @@ export default function GradeSubmissionPage() {
 
                         {/* Teacher Inputs */}
                         <div className="pt-4 border-t space-y-6">
-                           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                              <div className="space-y-2">
-                                <Label className="text-[10px] uppercase font-bold text-muted-foreground">Points Earned</Label>
-                                {isMCQOrTrueFalse ? (
-                                  <div className="flex flex-col gap-2">
-                                    <Button
-                                      variant={grades[ans.questionId] === maxPoints ? "default" : "outline"}
-                                      size="sm"
-                                      className="h-10 text-xs"
-                                      onClick={() => setGrades({ ...grades, [ans.questionId]: maxPoints })}
-                                    >
-                                      Correct
-                                    </Button>
-                                    <Button
-                                      variant={grades[ans.questionId] === 0 ? "destructive" : "outline"}
-                                      size="sm"
-                                      className="h-10 text-xs"
-                                      onClick={() => setGrades({ ...grades, [ans.questionId]: 0 })}
-                                    >
-                                      Incorrect
-                                    </Button>
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className="space-y-2">
+                              <Label className="text-[10px] uppercase font-bold text-muted-foreground">
+                                Points Earned
+                              </Label>
+                              {isMCQOrTrueFalse ? (
+                                <div className="flex flex-col gap-2">
+                                  <Button
+                                    variant={
+                                      grades[ans.questionId] === maxPoints ? "default" : "outline"
+                                    }
+                                    size="sm"
+                                    className="h-10 text-xs"
+                                    onClick={() =>
+                                      setGrades({ ...grades, [ans.questionId]: maxPoints })
+                                    }
+                                  >
+                                    Correct
+                                  </Button>
+                                  <Button
+                                    variant={
+                                      grades[ans.questionId] === 0 ? "destructive" : "outline"
+                                    }
+                                    size="sm"
+                                    className="h-10 text-xs"
+                                    onClick={() => setGrades({ ...grades, [ans.questionId]: 0 })}
+                                  >
+                                    Incorrect
+                                  </Button>
+                                </div>
+                              ) : (
+                                <div className="relative group">
+                                  <Input
+                                    type="number"
+                                    value={grades[ans.questionId] ?? ""}
+                                    onChange={(e) => {
+                                      const val = parseFloat(e.target.value) || 0;
+                                      setGrades({
+                                        ...grades,
+                                        [ans.questionId]: Math.min(val, maxPoints),
+                                      });
+                                    }}
+                                    className="h-10 bg-background rounded-lg font-mono text-base pr-12"
+                                  />
+                                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                                    / {maxPoints}
                                   </div>
-                                ) : (
-                                  <div className="relative group">
-                                    <Input
-                                      type="number"
-                                      value={grades[ans.questionId] ?? ""}
-                                      onChange={(e) => {
-                                        const val = parseFloat(e.target.value) || 0;
-                                        setGrades({ ...grades, [ans.questionId]: Math.min(val, maxPoints) });
-                                      }}
-                                      className="h-10 bg-background rounded-lg font-mono text-base pr-12"
-                                    />
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                                      / {maxPoints}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="md:col-span-3 space-y-2">
-                                 <Label className="text-[10px] uppercase font-bold text-muted-foreground">Feedback for Student</Label>
-                                 <Textarea
-                                   value={feedback[ans.questionId] || ""}
-                                   onChange={(e) => setFeedback({ ...feedback, [ans.questionId]: e.target.value })}
-                                   className="min-h-[100px] bg-background rounded-lg resize-none"
-                                   placeholder="Add any specific feedback for the student..."
-                                 />
-                              </div>
-                           </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className="md:col-span-3 space-y-2">
+                              <Label className="text-[10px] uppercase font-bold text-muted-foreground">
+                                Feedback for Student
+                              </Label>
+                              <Textarea
+                                value={feedback[ans.questionId] || ""}
+                                onChange={(e) =>
+                                  setFeedback({ ...feedback, [ans.questionId]: e.target.value })
+                                }
+                                className="min-h-[100px] bg-background rounded-lg resize-none"
+                                placeholder="Add any specific feedback for the student..."
+                              />
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </div>
@@ -521,7 +570,9 @@ export default function GradeSubmissionPage() {
           <div className="sticky top-6 space-y-6">
             <Card className="shadow-lg border-primary/10">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">Overall Score</CardTitle>
+                <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Overall Score
+                </CardTitle>
                 <CardDescription className="text-[10px]">Points and percentage</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -529,7 +580,9 @@ export default function GradeSubmissionPage() {
                   <span className="text-5xl font-bold tracking-tight">
                     {totalEarnedPoints.toLocaleString()}
                   </span>
-                  <span className="text-xl text-muted-foreground">/ {totalPossiblePoints} points</span>
+                  <span className="text-xl text-muted-foreground">
+                    / {totalPossiblePoints} points
+                  </span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
@@ -537,8 +590,8 @@ export default function GradeSubmissionPage() {
                     <span className="font-bold">{percentageScore}%</span>
                   </div>
                   <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                    <motion.div 
-                      className="h-full bg-primary" 
+                    <motion.div
+                      className="h-full bg-primary"
                       initial={{ width: 0 }}
                       animate={{ width: `${percentageScore}%` }}
                       transition={{ duration: 0.5 }}
@@ -546,8 +599,12 @@ export default function GradeSubmissionPage() {
                   </div>
                 </div>
                 <div className="space-y-1 border-t pt-4">
-                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Status</p>
-                  <p className="text-sm font-medium">{percentageScore >= 60 ? "Passing" : "Needs Review"}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
+                    Status
+                  </p>
+                  <p className="text-sm font-medium">
+                    {percentageScore >= 60 ? "Passing" : "Needs Review"}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -563,7 +620,10 @@ export default function GradeSubmissionPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {submission.workFiles.map((file, index) => (
-                    <div key={index} className="group p-2 bg-muted/30 border rounded-lg hover:border-primary/50 transition-all">
+                    <div
+                      key={index}
+                      className="group p-2 bg-muted/30 border rounded-lg hover:border-primary/50 transition-all"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 overflow-hidden">
                           {file.type === "application/pdf" ? (
@@ -573,12 +633,13 @@ export default function GradeSubmissionPage() {
                           )}
                           <p className="text-xs font-medium truncate w-32">{file.name}</p>
                         </div>
-                        <Button aria-label={`Download ${file.name}`} 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          aria-label={`Download ${file.name}`}
+                          variant="ghost"
+                          size="icon"
                           className="h-8 w-8"
                           onClick={() => {
-                            const link = document.createElement('a');
+                            const link = document.createElement("a");
                             link.href = file.url;
                             link.download = file.name;
                             link.click();
@@ -587,9 +648,13 @@ export default function GradeSubmissionPage() {
                           <Download className="h-4 w-4" />
                         </Button>
                       </div>
-                      {file.type.startsWith('image/') && (
+                      {file.type.startsWith("image/") && (
                         <div className="mt-2 relative">
-                          <img src={file.url} alt={file.name} className="w-full h-24 object-cover rounded" />
+                          <img
+                            src={file.url}
+                            alt={file.name}
+                            className="w-full h-24 object-cover rounded"
+                          />
                         </div>
                       )}
                     </div>

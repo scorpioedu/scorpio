@@ -8,10 +8,26 @@ import { motion, AnimatePresence } from "framer-motion";
 type WebkitFullscreenVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 
 const demoSlides = [
-  { src: "/demos/processed/ai-tutor-chat.mp4", title: "Raise", desc: "Conversational AI assistant with reasoning." },
-  { src: "/demos/processed/assignment-creation-teacher.mp4", title: "Assignments", desc: "Teachers build assignments." },
-  { src: "/demos/processed/student-submission-math-file.mp4", title: "Submission", desc: "Students submit work easily." },
-  { src: "/demos/processed/navigation-assistant.mp4", title: "Assistant", desc: "Smart guided navigation." }
+  {
+    src: "/demos/processed/ai-tutor-chat.mp4",
+    title: "Raise",
+    desc: "Conversational AI assistant with reasoning.",
+  },
+  {
+    src: "/demos/processed/assignment-creation-teacher.mp4",
+    title: "Assignments",
+    desc: "Teachers build assignments.",
+  },
+  {
+    src: "/demos/processed/student-submission-math-file.mp4",
+    title: "Submission",
+    desc: "Students submit work easily.",
+  },
+  {
+    src: "/demos/processed/navigation-assistant.mp4",
+    title: "Assistant",
+    desc: "Smart guided navigation.",
+  },
 ];
 
 // Progress bar durations in seconds for each slide
@@ -31,8 +47,8 @@ export function DemoCarousel() {
   const currentVideoRef = useRef<HTMLVideoElement>(null);
   const [unavailableSlides, setUnavailableSlides] = useState<string[]>([]);
 
-  const next = useCallback(() => setIndex(i => (i + 1) % total), [total]);
-  const prev = useCallback(() => setIndex(i => (i - 1 + total) % total), [total]);
+  const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
 
   const getSlide = (o: number) => demoSlides[(index + o + total) % total];
 
@@ -42,19 +58,24 @@ export function DemoCarousel() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'ArrowRight') next();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [next, prev]);
 
-
   // Auto-play and progress bar animation with per-slide timing, pause on click
+  // The bar restarts from empty on each slide.
+  const [progressIndex, setProgressIndex] = useState(index);
+  if (progressIndex !== index) {
+    setProgressIndex(index);
+    setProgress(0);
+  }
+
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     progressRef.current = 0;
-    setProgress(0);
     let currentStep = 0;
     const duration = slideDurations[index] * 1000; // ms
     const intervalMs = 50;
@@ -130,7 +151,7 @@ export function DemoCarousel() {
       ([entry]) => {
         setIsVideoVisible(entry.isIntersecting);
       },
-      { threshold: 0.25 }
+      { threshold: 0.25 },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -138,10 +159,7 @@ export function DemoCarousel() {
 
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
-      <div
-        className="relative w-full h-[300px] md:h-[540px] flex items-center justify-center overflow-visible"
-      >
-
+      <div className="relative w-full h-[300px] md:h-[540px] flex items-center justify-center overflow-visible">
         {/* Left arrow */}
         <Button
           type="button"
@@ -156,7 +174,6 @@ export function DemoCarousel() {
 
         {/* Track */}
         <div className="relative w-full flex items-center justify-center">
-
           {/* Previous preview */}
           <div className="absolute left-0 -translate-x-1/4 z-10 scale-[0.9] opacity-70 blur-[2px] hover:blur-0 transition-all hidden md:block">
             <video
@@ -188,7 +205,7 @@ export function DemoCarousel() {
                 aria-label={isVideoPaused ? "Play video" : "Pause video"}
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     setIsVideoPaused((p) => !p);
                   }
@@ -246,7 +263,7 @@ export function DemoCarousel() {
                 className="h-1.5 bg-primary rounded-full transition-all"
                 style={{
                   width: `${progress}%`,
-                  transition: `width ${slideDurations[index]}s linear`
+                  transition: `width ${slideDurations[index]}s linear`,
                 }}
               />
             </div>
@@ -292,9 +309,11 @@ export function DemoCarousel() {
             key={i}
             onClick={() => setIndex(i)}
             className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-125 cursor-pointer
-              ${i === index
-                ? "bg-primary scale-125"
-                : "bg-muted-foreground/40 hover:bg-muted-foreground"}
+              ${
+                i === index
+                  ? "bg-primary scale-125"
+                  : "bg-muted-foreground/40 hover:bg-muted-foreground"
+              }
             `}
             aria-label={`Go to slide ${i + 1}`}
             aria-current={i === index ? "true" : undefined}

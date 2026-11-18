@@ -2,7 +2,8 @@
 
 import * as React from "react";
 
-export type FontOption = "inter" | "ibm-plex-sans" | "verdana" | "roboto-mono" | "pt-serif" | "atkinson";
+export type FontOption =
+  "inter" | "ibm-plex-sans" | "verdana" | "roboto-mono" | "pt-serif" | "atkinson";
 
 const themeColors = ["default", "blue", "emerald", "monochrome", "custom"] as const;
 const themeClasses = themeColors.map((color) => `theme-${color}`);
@@ -27,7 +28,13 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
 
   React.useEffect(() => {
     const storedFont = localStorage.getItem("app-font") as FontOption;
-    if (storedFont && ["inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"].includes(storedFont)) {
+    if (
+      storedFont &&
+      ["inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"].includes(
+        storedFont,
+      )
+    ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
       setFontState(storedFont);
     }
 
@@ -73,7 +80,14 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     const html = document.documentElement;
 
     // Manage Font Classes
-    const fontClasses = ["font-inter", "font-ibm-plex-sans", "font-verdana", "font-roboto-mono", "font-pt-serif", "font-atkinson"];
+    const fontClasses = [
+      "font-inter",
+      "font-ibm-plex-sans",
+      "font-verdana",
+      "font-roboto-mono",
+      "font-pt-serif",
+      "font-atkinson",
+    ];
     html.classList.remove(...fontClasses);
     html.classList.add(`font-${font}`);
 
@@ -91,7 +105,9 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
   }, [font, themeColor, customColor]);
 
   return (
-    <AppearanceContext.Provider value={{ font, setFont, themeColor, setThemeColor, customColor, setCustomColor }}>
+    <AppearanceContext.Provider
+      value={{ font, setFont, themeColor, setThemeColor, customColor, setCustomColor }}
+    >
       {children}
     </AppearanceContext.Provider>
   );

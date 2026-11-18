@@ -1,40 +1,37 @@
-"use client"
+"use client";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import * as React from "react"
-import { useState, useRef, useEffect, useCallback, useMemo } from "react"
-import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
+import * as React from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAuth } from "@/contexts/auth-context"
-import {
-  ChatContainerContent,
-  ChatContainerRoot,
-} from "@/components/prompt-kit/chat-container"
+import { useAuth } from "@/contexts/auth-context";
+import { ChatContainerContent, ChatContainerRoot } from "@/components/prompt-kit/chat-container";
 import {
   Message as PromptMessage,
   MessageAction,
   MessageActions,
   MessageContent,
-} from "@/components/prompt-kit/message"
+} from "@/components/prompt-kit/message";
 import {
   PromptInput,
   PromptInputAction,
   PromptInputActions,
   PromptInputTextarea,
-} from "@/components/prompt-kit/prompt-input"
-import { ScrollButton } from "@/components/prompt-kit/scroll-button"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+} from "@/components/prompt-kit/prompt-input";
+import { ScrollButton } from "@/components/prompt-kit/scroll-button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -42,12 +39,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { MarkdownRenderer } from "@/components/markdown-renderer"
-import { RaiseLogo } from "@/components/ui/raise-logo"
-import { cn } from "@/lib/utils"
-import { Organization } from "@/lib/types"
-import { db } from "@/lib/firebase"
+} from "@/components/ui/dialog";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { RaiseLogo } from "@/components/ui/raise-logo";
+import { cn } from "@/lib/utils";
+import { Organization } from "@/lib/types";
+import { db } from "@/lib/firebase";
 import {
   doc,
   getDoc,
@@ -59,8 +56,8 @@ import {
   where,
   deleteDoc,
   addDoc,
-} from "firebase/firestore"
-import { toast } from "sonner"
+} from "firebase/firestore";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ArrowUp,
@@ -86,62 +83,58 @@ import {
   Trash2,
   X,
   Zap,
-} from "lucide-react"
+} from "lucide-react";
 
 // Typewriter effect for fresh assistant responses
 function Typewriter({ text, onDone }: { text: string; onDone?: () => void }) {
-  const [displayed, setDisplayed] = useState("")
+  const [displayed, setDisplayed] = useState("");
 
   useEffect(() => {
-    if (!text) return
+    if (!text) return;
 
-    let currentIndex = 0
-    let cancelled = false
+    let currentIndex = 0;
+    let cancelled = false;
 
     const interval = setInterval(() => {
-      if (cancelled) return
-      currentIndex++
-      setDisplayed(text.slice(0, currentIndex))
+      if (cancelled) return;
+      currentIndex++;
+      setDisplayed(text.slice(0, currentIndex));
       if (currentIndex >= text.length) {
-        clearInterval(interval)
-        onDone?.()
+        clearInterval(interval);
+        onDone?.();
       }
-    }, 8)
+    }, 8);
 
     return () => {
-      cancelled = true
-      clearInterval(interval)
-    }
-  }, [text, onDone])
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [text, onDone]);
 
-  return <MarkdownRenderer>{displayed}</MarkdownRenderer>
+  return <MarkdownRenderer>{displayed}</MarkdownRenderer>;
 }
 
 interface ChatMessage {
-  id: string
-  role: "user" | "assistant"
-  content: string
-  type?: "concept" | "problem"
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  type?: "concept" | "problem";
 }
 
 interface ChatSession {
-  id: string
-  title: string
-  messages: ChatMessage[]
-  createdAt: number
-  updatedAt: number
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: number;
+  updatedAt: number;
 }
 
 function groupSessionsByPeriod(sessions: ChatSession[]) {
-  const now = new Date()
-  const startOfToday = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate()
-  ).getTime()
-  const startOfYesterday = startOfToday - 86400000
-  const startOf7Days = startOfToday - 6 * 86400000
-  const startOf30Days = startOfToday - 29 * 86400000
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startOfYesterday = startOfToday - 86400000;
+  const startOf7Days = startOfToday - 6 * 86400000;
+  const startOf30Days = startOfToday - 29 * 86400000;
 
   const groups: { period: string; conversations: ChatSession[] }[] = [
     { period: "Today", conversations: [] },
@@ -149,24 +142,24 @@ function groupSessionsByPeriod(sessions: ChatSession[]) {
     { period: "Last 7 days", conversations: [] },
     { period: "Last 30 days", conversations: [] },
     { period: "Older", conversations: [] },
-  ]
+  ];
 
   sessions.forEach((session) => {
-    const time = session.updatedAt || session.createdAt || 0
+    const time = session.updatedAt || session.createdAt || 0;
     if (time >= startOfToday) {
-      groups[0].conversations.push(session)
+      groups[0].conversations.push(session);
     } else if (time >= startOfYesterday) {
-      groups[1].conversations.push(session)
+      groups[1].conversations.push(session);
     } else if (time >= startOf7Days) {
-      groups[2].conversations.push(session)
+      groups[2].conversations.push(session);
     } else if (time >= startOf30Days) {
-      groups[3].conversations.push(session)
+      groups[3].conversations.push(session);
     } else {
-      groups[4].conversations.push(session)
+      groups[4].conversations.push(session);
     }
-  })
+  });
 
-  return groups.filter((g) => g.conversations.length > 0)
+  return groups.filter((g) => g.conversations.length > 0);
 }
 
 const STARTER_PROMPTS = [
@@ -190,52 +183,53 @@ const STARTER_PROMPTS = [
   },
   {
     title: "Projectile Motion Problem",
-    prompt: "How do I break down a 2D projectile motion problem into horizontal and vertical components?",
+    prompt:
+      "How do I break down a 2D projectile motion problem into horizontal and vertical components?",
     mode: "problem" as const,
     icon: Calculator,
   },
-]
+];
 
 export default function TutorPage() {
-  const router = useRouter()
-  const { user, profile } = useAuth()
+  const router = useRouter();
+  const { user, profile } = useAuth();
 
-  const [sessions, setSessions] = useState<ChatSession[]>([])
-  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [prompt, setPrompt] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [mode, setMode] = useState<"concept" | "problem">("concept")
-  const [typingId, setTypingId] = useState<string | null>(null)
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<"concept" | "problem">("concept");
+  const [typingId, setTypingId] = useState<string | null>(null);
 
   // Feedback state: messageId -> "up" | "down"
-  const [feedback, setFeedback] = useState<Record<string, "up" | "down">>({})
+  const [feedback, setFeedback] = useState<Record<string, "up" | "down">>({});
 
   // Sidebar & Search state
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const isMobile = useIsMobile()
-  const [sidebarSearch, setSidebarSearch] = useState("")
-  const [showSearchInput, setShowSearchInput] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const [sidebarSearch, setSidebarSearch] = useState("");
+  const [showSearchInput, setShowSearchInput] = useState(false);
 
   // Rename modal / inline state
-  const [editingTitleId, setEditingTitleId] = useState<string | null>(null)
-  const [editingTitleText, setEditingTitleText] = useState("")
+  const [editingTitleId, setEditingTitleId] = useState<string | null>(null);
+  const [editingTitleText, setEditingTitleText] = useState("");
 
   // Delete modal state
-  const [sessionToDelete, setSessionToDelete] = useState<ChatSession | null>(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [sessionToDelete, setSessionToDelete] = useState<ChatSession | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Voice recording state
-  const [isRecording, setIsRecording] = useState(false)
-  const recognitionRef = useRef<{ stop: () => void; start: () => void } | null>(null)
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<{ stop: () => void; start: () => void } | null>(null);
 
   // Plan check & usage state
-  const [rateLimitError, setRateLimitError] = useState<string | null>(null)
-  const [isFreePlan, setIsFreePlan] = useState(false)
-  const [orgData, setOrgData] = useState<Organization | null>(null)
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [isFreePlan, setIsFreePlan] = useState(false);
+  const [orgData, setOrgData] = useState<Organization | null>(null);
 
-  const chatContainerRef = useRef<HTMLDivElement>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll when messages change or loading
   useEffect(() => {
@@ -243,57 +237,55 @@ export default function TutorPage() {
       chatContainerRef.current.scrollTo({
         top: chatContainerRef.current.scrollHeight,
         behavior: "smooth",
-      })
+      });
     }
-  }, [messages, isLoading])
+  }, [messages, isLoading]);
 
   // Plan verification
   useEffect(() => {
     async function checkPlan() {
-      const studentProfile = profile as (typeof profile & { teacherId?: string }) | null
-      let organizationId = studentProfile?.organizationId
+      const studentProfile = profile as (typeof profile & { teacherId?: string }) | null;
+      let organizationId = studentProfile?.organizationId;
 
       if (!organizationId && studentProfile?.teacherId) {
         try {
-          const teacherDoc = await getDoc(
-            doc(db, "users", studentProfile.teacherId)
-          )
+          const teacherDoc = await getDoc(doc(db, "users", studentProfile.teacherId));
           if (teacherDoc.exists()) {
-            organizationId = teacherDoc.data()?.organizationId
+            organizationId = teacherDoc.data()?.organizationId;
           }
         } catch (e) {
-          console.error("Error fetching teacher org", e)
+          console.error("Error fetching teacher org", e);
         }
       }
 
-      if (!organizationId) return
+      if (!organizationId) return;
 
       try {
-        const orgSnap = await getDoc(doc(db, "organizations", organizationId))
+        const orgSnap = await getDoc(doc(db, "organizations", organizationId));
         if (orgSnap.exists()) {
-          const data = orgSnap.data() as Organization
-          setOrgData(data)
-          setIsFreePlan(!data.planId || data.planId === "free")
+          const data = orgSnap.data() as Organization;
+          setOrgData(data);
+          setIsFreePlan(!data.planId || data.planId === "free");
         }
       } catch (e) {
-        console.error("Error checking plan:", e)
+        console.error("Error checking plan:", e);
       }
     }
-    if (profile) checkPlan()
-  }, [profile])
+    if (profile) checkPlan();
+  }, [profile]);
 
   // Load all sessions from Firestore
   useEffect(() => {
-    if (!user || user.uid === "loading") return
+    if (!user || user.uid === "loading") return;
 
-    const sessionsRef = collection(db, "tutor_sessions")
-    const q = query(sessionsRef, where("studentId", "==", user.uid))
+    const sessionsRef = collection(db, "tutor_sessions");
+    const q = query(sessionsRef, where("studentId", "==", user.uid));
 
     const unsubscribe = onSnapshot(
       q,
       (snap) => {
         const loaded: ChatSession[] = snap.docs.map((d) => {
-          const data = d.data()
+          const data = d.data();
           return {
             id: d.id,
             title: data.title || "Untitled Chat",
@@ -304,278 +296,276 @@ export default function TutorPage() {
             updatedAt:
               data.updatedAt?.toMillis?.() ??
               (data.updatedAt?.seconds ? data.updatedAt.seconds * 1000 : 0),
-          }
-        })
+          };
+        });
 
-        loaded.sort((a, b) => b.updatedAt - a.updatedAt)
-        setSessions(loaded)
+        loaded.sort((a, b) => b.updatedAt - a.updatedAt);
+        setSessions(loaded);
 
         setActiveSessionId((curr) => {
-          if (!curr && loaded.length > 0) return loaded[0].id
-          return curr
-        })
+          if (!curr && loaded.length > 0) return loaded[0].id;
+          return curr;
+        });
       },
       (error) => {
-        console.error("Sessions listener error:", error)
-      }
-    )
+        console.error("Sessions listener error:", error);
+      },
+    );
 
-    return () => unsubscribe()
-  }, [user])
+    return () => unsubscribe();
+  }, [user]);
 
   // Load active session messages from Firestore
   useEffect(() => {
-    if (!user || !activeSessionId) {
-      if (!activeSessionId) setMessages([])
-      return
-    }
+    // Every place that clears the active session also clears the messages.
+    if (!user || !activeSessionId) return;
 
-    const sessionRef = doc(db, "tutor_sessions", activeSessionId)
+    const sessionRef = doc(db, "tutor_sessions", activeSessionId);
     const unsubscribe = onSnapshot(
       sessionRef,
       (snap) => {
         if (snap.exists()) {
-          const data = snap.data()
-          setMessages(data.messages || [])
+          const data = snap.data();
+          setMessages(data.messages || []);
         }
       },
       (error) => {
-        console.error("Active session listener error:", error)
-      }
-    )
+        console.error("Active session listener error:", error);
+      },
+    );
 
-    return () => unsubscribe()
-  }, [user, activeSessionId])
+    return () => unsubscribe();
+  }, [user, activeSessionId]);
 
   // Switch session
   const switchSession = useCallback((session: ChatSession) => {
-    setActiveSessionId(session.id)
-    setMessages(session.messages)
-    setRateLimitError(null)
-    setTypingId(null)
-  }, [])
+    setActiveSessionId(session.id);
+    setMessages(session.messages);
+    setRateLimitError(null);
+    setTypingId(null);
+  }, []);
 
   // Create new session
   const createNewSession = useCallback(async () => {
-    setActiveSessionId(null)
-    setMessages([])
-    setPrompt("")
-    setRateLimitError(null)
-    setTypingId(null)
-    toast.success("Ready for a new conversation")
-  }, [])
+    setActiveSessionId(null);
+    setMessages([]);
+    setPrompt("");
+    setRateLimitError(null);
+    setTypingId(null);
+    toast.success("Ready for a new conversation");
+  }, []);
 
   // Delete chat session
   const handleDeleteSession = useCallback(
     async (session: ChatSession) => {
-      if (!user) return
+      if (!user) return;
       try {
-        await deleteDoc(doc(db, "tutor_sessions", session.id))
-        toast.success(`Deleted "${session.title}"`)
+        await deleteDoc(doc(db, "tutor_sessions", session.id));
+        toast.success(`Deleted "${session.title}"`);
 
         if (activeSessionId === session.id) {
-          const remaining = sessions.filter((s) => s.id !== session.id)
+          const remaining = sessions.filter((s) => s.id !== session.id);
           if (remaining.length > 0) {
-            setActiveSessionId(remaining[0].id)
-            setMessages(remaining[0].messages)
+            setActiveSessionId(remaining[0].id);
+            setMessages(remaining[0].messages);
           } else {
-            setActiveSessionId(null)
-            setMessages([])
+            setActiveSessionId(null);
+            setMessages([]);
           }
         }
       } catch (err) {
-        console.error("Delete session error:", err)
-        toast.error("Failed to delete chat")
+        console.error("Delete session error:", err);
+        toast.error("Failed to delete chat");
       }
     },
-    [user, activeSessionId, sessions]
-  )
+    [user, activeSessionId, sessions],
+  );
 
   // Rename session
   const handleRename = useCallback(
     async (sessionId: string, newTitle: string) => {
       if (!user || !newTitle.trim()) {
-        setEditingTitleId(null)
-        return
+        setEditingTitleId(null);
+        return;
       }
       try {
         await updateDoc(doc(db, "tutor_sessions", sessionId), {
           title: newTitle.trim(),
           updatedAt: serverTimestamp(),
-        })
-        setEditingTitleId(null)
-        toast.success("Chat renamed")
+        });
+        setEditingTitleId(null);
+        toast.success("Chat renamed");
       } catch (e) {
-        console.error("Rename error:", e)
-        toast.error("Failed to rename chat")
+        console.error("Rename error:", e);
+        toast.error("Failed to rename chat");
       }
     },
-    [user]
-  )
+    [user],
+  );
 
   // Delete single message
   const handleDeleteMessage = useCallback(
     async (messageId: string) => {
-      const updated = messages.filter((m) => m.id !== messageId)
-      setMessages(updated)
+      const updated = messages.filter((m) => m.id !== messageId);
+      setMessages(updated);
 
       if (activeSessionId) {
         try {
           await updateDoc(doc(db, "tutor_sessions", activeSessionId), {
             messages: updated,
             updatedAt: serverTimestamp(),
-          })
-          toast.success("Message deleted")
+          });
+          toast.success("Message deleted");
         } catch (e) {
-          console.error("Error deleting message:", e)
-          toast.error("Failed to delete message from history")
+          console.error("Error deleting message:", e);
+          toast.error("Failed to delete message from history");
         }
       }
     },
-    [messages, activeSessionId]
-  )
+    [messages, activeSessionId],
+  );
 
   // Edit / Reprompt user message
   const handleEditMessage = useCallback((content: string) => {
-    setPrompt(content)
-  }, [])
+    setPrompt(content);
+  }, []);
 
   // Copy message to clipboard
   const handleCopyMessage = useCallback((content: string) => {
-    navigator.clipboard.writeText(content)
-    toast.success("Copied to clipboard")
-  }, [])
+    navigator.clipboard.writeText(content);
+    toast.success("Copied to clipboard");
+  }, []);
 
   // Upvote / Downvote reaction
-  const handleFeedback = useCallback(
-    (messageId: string, type: "up" | "down") => {
-      setFeedback((prev) => ({
-        ...prev,
-        [messageId]: prev[messageId] === type ? undefined! : type,
-      }))
-      toast.success(
-        type === "up" ? "Thanks for the positive feedback!" : "Feedback recorded"
-      )
-    },
-    []
-  )
+  const handleFeedback = useCallback((messageId: string, type: "up" | "down") => {
+    setFeedback((prev) => ({
+      ...prev,
+      [messageId]: prev[messageId] === type ? undefined! : type,
+    }));
+    toast.success(type === "up" ? "Thanks for the positive feedback!" : "Feedback recorded");
+  }, []);
 
   // Keyboard shortcut: Cmd+N / Ctrl+N for new chat, Cmd+K for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSidebarOpen(false)
+      if (e.key === "Escape") setSidebarOpen(false);
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
-        e.preventDefault()
-        createNewSession()
+        e.preventDefault();
+        createNewSession();
       }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault()
-        setSidebarOpen(true)
-        setShowSearchInput(true)
+        e.preventDefault();
+        setSidebarOpen(true);
+        setShowSearchInput(true);
       }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [createNewSession])
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [createNewSession]);
 
   // Voice recording toggle
   const toggleVoiceRecording = useCallback(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") return;
 
     const windowWithSpeech = window as unknown as {
       SpeechRecognition?: new () => {
-        continuous: boolean
-        interimResults: boolean
-        lang: string
-        onstart: () => void
-        onresult: (event: { results: { [key: number]: { [key: number]: { transcript: string } } } }) => void
-        onerror: (event: { error: string }) => void
-        onend: () => void
-        start: () => void
-        stop: () => void
-      }
+        continuous: boolean;
+        interimResults: boolean;
+        lang: string;
+        onstart: () => void;
+        onresult: (event: {
+          results: { [key: number]: { [key: number]: { transcript: string } } };
+        }) => void;
+        onerror: (event: { error: string }) => void;
+        onend: () => void;
+        start: () => void;
+        stop: () => void;
+      };
       webkitSpeechRecognition?: new () => {
-        continuous: boolean
-        interimResults: boolean
-        lang: string
-        onstart: () => void
-        onresult: (event: { results: { [key: number]: { [key: number]: { transcript: string } } } }) => void
-        onerror: (event: { error: string }) => void
-        onend: () => void
-        start: () => void
-        stop: () => void
-      }
-    }
+        continuous: boolean;
+        interimResults: boolean;
+        lang: string;
+        onstart: () => void;
+        onresult: (event: {
+          results: { [key: number]: { [key: number]: { transcript: string } } };
+        }) => void;
+        onerror: (event: { error: string }) => void;
+        onend: () => void;
+        start: () => void;
+        stop: () => void;
+      };
+    };
 
     const SpeechRecognitionClass =
-      windowWithSpeech.SpeechRecognition ||
-      windowWithSpeech.webkitSpeechRecognition
+      windowWithSpeech.SpeechRecognition || windowWithSpeech.webkitSpeechRecognition;
 
     if (!SpeechRecognitionClass) {
-      toast.error("Voice input is not supported by your browser")
-      return
+      toast.error("Voice input is not supported by your browser");
+      return;
     }
 
     if (isRecording) {
-      recognitionRef.current?.stop()
-      setIsRecording(false)
-      return
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
     }
 
     try {
-      const recognition = new SpeechRecognitionClass()
-      recognition.continuous = false
-      recognition.interimResults = false
-      recognition.lang = "en-US"
+      const recognition = new SpeechRecognitionClass();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
 
       recognition.onstart = () => {
-        setIsRecording(true)
-        toast.info("Listening... Speak your physics question")
-      }
+        setIsRecording(true);
+        toast.info("Listening... Speak your physics question");
+      };
 
-      recognition.onresult = (event: { results: { [key: number]: { [key: number]: { transcript: string } } } }) => {
-        const transcript = event.results[0]?.[0]?.transcript
+      recognition.onresult = (event: {
+        results: { [key: number]: { [key: number]: { transcript: string } } };
+      }) => {
+        const transcript = event.results[0]?.[0]?.transcript;
         if (transcript) {
-          setPrompt((prev) => (prev ? `${prev} ${transcript}` : transcript))
+          setPrompt((prev) => (prev ? `${prev} ${transcript}` : transcript));
         }
-      }
+      };
 
       recognition.onerror = (event: { error: string }) => {
-        console.error("Speech recognition error:", event.error)
-        setIsRecording(false)
-        toast.error("Voice recognition failed. Please try typing.")
-      }
+        console.error("Speech recognition error:", event.error);
+        setIsRecording(false);
+        toast.error("Voice recognition failed. Please try typing.");
+      };
 
       recognition.onend = () => {
-        setIsRecording(false)
-      }
+        setIsRecording(false);
+      };
 
-      recognitionRef.current = recognition
-      recognition.start()
+      recognitionRef.current = recognition;
+      recognition.start();
     } catch (err) {
-      console.error("Voice start error:", err)
-      setIsRecording(false)
-      toast.error("Could not start voice input")
+      console.error("Voice start error:", err);
+      setIsRecording(false);
+      toast.error("Could not start voice input");
     }
-  }, [isRecording])
+  }, [isRecording]);
 
   // Submit chat prompt
   const handleSubmit = async (textToSubmit?: string) => {
-    const inputContent = (textToSubmit || prompt).trim()
-    if (!inputContent || isLoading) return
+    const inputContent = (textToSubmit || prompt).trim();
+    if (!inputContent || isLoading) return;
 
-    setRateLimitError(null)
+    setRateLimitError(null);
 
     if (!user || user.uid === "loading") {
-      toast.error("Please wait... loading user profile")
-      return
+      toast.error("Please wait... loading user profile");
+      return;
     }
 
-    setPrompt("")
-    setIsLoading(true)
+    setPrompt("");
+    setIsLoading(true);
 
     // Create session in Firestore if none active
-    let sessionId = activeSessionId
+    let sessionId = activeSessionId;
     if (!sessionId) {
       try {
         const newRef = await addDoc(collection(db, "tutor_sessions"), {
@@ -584,14 +574,14 @@ export default function TutorPage() {
           messages: [],
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-        })
-        sessionId = newRef.id
-        setActiveSessionId(sessionId)
+        });
+        sessionId = newRef.id;
+        setActiveSessionId(sessionId);
       } catch (err) {
-        console.error("Error creating session:", err)
-        toast.error("Failed to initialize conversation")
-        setIsLoading(false)
-        return
+        console.error("Error creating session:", err);
+        toast.error("Failed to initialize conversation");
+        setIsLoading(false);
+        return;
       }
     }
 
@@ -600,16 +590,16 @@ export default function TutorPage() {
       role: "user",
       content: inputContent,
       type: mode,
-    }
+    };
 
-    const updatedMessages = [...messages, newUserMessage]
-    setMessages(updatedMessages)
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
 
     try {
       const chatHistory = messages.map((msg) => ({
         role: msg.role,
         content: msg.content,
-      }))
+      }));
 
       const res = await authenticatedFetch("/api/student/tutor", {
         method: "POST",
@@ -621,24 +611,24 @@ export default function TutorPage() {
           mode,
           chatHistory,
         }),
-      })
+      });
 
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Failed to get response")
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to get response");
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
         content: data.response,
         type: mode,
-      }
+      };
 
-      const finalMessages = [...updatedMessages, assistantMessage]
-      setMessages(finalMessages)
-      setTypingId(assistantMessage.id)
+      const finalMessages = [...updatedMessages, assistantMessage];
+      setMessages(finalMessages);
+      setTypingId(assistantMessage.id);
 
       // Auto-title on first exchange
-      let newTitle: string | undefined = undefined
+      let newTitle: string | undefined = undefined;
       if (finalMessages.length === 2) {
         try {
           const titleRes = await authenticatedFetch("/api/ai/generate-title", {
@@ -649,20 +639,18 @@ export default function TutorPage() {
               aiResponse: assistantMessage.content,
               context: "Raise",
             }),
-          })
+          });
           if (titleRes.ok) {
-            const titleData = await titleRes.json()
+            const titleData = await titleRes.json();
             if (titleData.title) {
-              newTitle = (titleData.title as string).slice(0, 35)
+              newTitle = (titleData.title as string).slice(0, 35);
             }
           }
         } catch (e) {
-          console.error("Auto-title error:", e)
+          console.error("Auto-title error:", e);
         }
         if (!newTitle) {
-          newTitle =
-            inputContent.slice(0, 35) +
-            (inputContent.length > 35 ? "..." : "")
+          newTitle = inputContent.slice(0, 35) + (inputContent.length > 35 ? "..." : "");
         }
       }
 
@@ -671,46 +659,49 @@ export default function TutorPage() {
           messages: finalMessages,
           updatedAt: serverTimestamp(),
           ...(newTitle ? { title: newTitle } : {}),
-        })
+        });
       }
     } catch (error: unknown) {
-      console.error("Error getting response:", error)
+      console.error("Error getting response:", error);
       // Server errors carry a friendly message (budget, 502/503 "please try again"); network and JSON
       // failures do not, so they get the generic text.
       const errMessage =
-        error instanceof Error && !(error instanceof TypeError) && !(error instanceof SyntaxError) && error.message
+        error instanceof Error &&
+        !(error instanceof TypeError) &&
+        !(error instanceof SyntaxError) &&
+        error.message
           ? error.message
-          : "Sorry, I encountered an error answering your question. Please try again."
+          : "Sorry, I encountered an error answering your question. Please try again.";
 
       // A failed turn is never stored as an assistant message (RT-17, F-003): drop it from the chat, give the
       // text back to the input so the student can resend, and show the error in the banner instead.
-      setMessages(messages)
-      setTypingId(null)
-      setPrompt(inputContent)
-      setRateLimitError(errMessage)
+      setMessages(messages);
+      setTypingId(null);
+      setPrompt(inputContent);
+      setRateLimitError(errMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // Filtered sessions for sidebar
   const filteredSessions = useMemo(() => {
-    if (!sidebarSearch.trim()) return sessions
-    const queryStr = sidebarSearch.toLowerCase()
+    if (!sidebarSearch.trim()) return sessions;
+    const queryStr = sidebarSearch.toLowerCase();
     return sessions.filter(
       (s) =>
         s.title.toLowerCase().includes(queryStr) ||
-        s.messages.some((m) => m.content.toLowerCase().includes(queryStr))
-    )
-  }, [sessions, sidebarSearch])
+        s.messages.some((m) => m.content.toLowerCase().includes(queryStr)),
+    );
+  }, [sessions, sidebarSearch]);
 
   // Grouped history
   const groupedSessions = useMemo(
     () => groupSessionsByPeriod(filteredSessions),
-    [filteredSessions]
-  )
+    [filteredSessions],
+  );
 
-  const activeSession = sessions.find((s) => s.id === activeSessionId)
+  const activeSession = sessions.find((s) => s.id === activeSessionId);
 
   // Free Tier Restriction Guard
   if (isFreePlan) {
@@ -722,12 +713,10 @@ export default function TutorPage() {
               <Lock className="h-8 w-8 text-amber-500" />
             </div>
             <div className="space-y-2">
-              <CardTitle className="text-xl font-bold">
-                Raise AI Assistant Restricted
-              </CardTitle>
+              <CardTitle className="text-xl font-bold">Raise AI Assistant Restricted</CardTitle>
               <CardDescription>
-                Your network is on the **Free tier**. Raise features
-                require an active Department Network subscription.
+                Your network is on the **Free tier**. Raise features require an active Department
+                Network subscription.
               </CardDescription>
             </div>
             <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground border border-border/40">
@@ -745,10 +734,11 @@ export default function TutorPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
-  const tutorUsage = (profile as (typeof profile & { tutorUsageCurrent?: number }) | null)?.tutorUsageCurrent || 0
+  const tutorUsage =
+    (profile as (typeof profile & { tutorUsageCurrent?: number }) | null)?.tutorUsageCurrent || 0;
 
   return (
     <motion.div
@@ -761,12 +751,20 @@ export default function TutorPage() {
       {/* SIDEBAR: Chat History (Full Height Left Panel)                           */}
       {/* ========================================================================= */}
       {sidebarOpen && (
-        <button type="button" aria-label="Dismiss chat history" tabIndex={-1} className="absolute inset-0 z-20 bg-black/40 md:hidden" onClick={() => setSidebarOpen(false)} />
+        <button
+          type="button"
+          aria-label="Dismiss chat history"
+          tabIndex={-1}
+          className="absolute inset-0 z-20 bg-black/40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
-      <aside aria-label="Chat history" inert={!sidebarOpen}
+      <aside
+        aria-label="Chat history"
+        inert={!sidebarOpen}
         className={cn(
           "absolute inset-y-0 left-0 z-30 flex h-full shrink-0 flex-col border-r border-border bg-card md:relative",
-          sidebarOpen ? "w-[min(19rem,85vw)]" : "hidden"
+          sidebarOpen ? "w-[min(19rem,85vw)]" : "hidden",
         )}
       >
         {/* Header */}
@@ -802,7 +800,7 @@ export default function TutorPage() {
               size="icon"
               className={cn(
                 "size-7 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
-                showSearchInput && "bg-muted text-foreground"
+                showSearchInput && "bg-muted text-foreground",
               )}
               onClick={() => setShowSearchInput(!showSearchInput)}
               title="Search chats (⌘K)"
@@ -827,8 +825,8 @@ export default function TutorPage() {
             variant="outline"
             className="w-full justify-between h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/70 hover:border-border shadow-2xs font-medium text-xs transition-all cursor-pointer"
             onClick={() => {
-              createNewSession()
-              if (isMobile) setSidebarOpen(false)
+              createNewSession();
+              if (isMobile) setSidebarOpen(false);
             }}
           >
             <span className="flex items-center gap-2">
@@ -885,8 +883,8 @@ export default function TutorPage() {
                 </div>
                 <div className="space-y-0.5">
                   {group.conversations.map((conversation) => {
-                    const isActive = conversation.id === activeSessionId
-                    const isEditing = editingTitleId === conversation.id
+                    const isActive = conversation.id === activeSessionId;
+                    const isEditing = editingTitleId === conversation.id;
 
                     if (isEditing) {
                       return (
@@ -899,14 +897,15 @@ export default function TutorPage() {
                             onChange={(e) => setEditingTitleText(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === "Enter")
-                                handleRename(conversation.id, editingTitleText)
-                              if (e.key === "Escape") setEditingTitleId(null)
+                                handleRename(conversation.id, editingTitleText);
+                              if (e.key === "Escape") setEditingTitleId(null);
                             }}
                             className="h-7 text-xs px-2 bg-background border-none focus-visible:ring-0"
                             autoFocus
                             maxLength={50}
                           />
-                          <Button aria-label="Save conversation title"
+                          <Button
+                            aria-label="Save conversation title"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
@@ -914,7 +913,8 @@ export default function TutorPage() {
                           >
                             <Check className="size-3.5" />
                           </Button>
-                          <Button aria-label="Cancel renaming"
+                          <Button
+                            aria-label="Cancel renaming"
                             size="icon"
                             variant="ghost"
                             className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
@@ -923,7 +923,7 @@ export default function TutorPage() {
                             <X className="size-3.5" />
                           </Button>
                         </div>
-                      )
+                      );
                     }
 
                     return (
@@ -933,27 +933,25 @@ export default function TutorPage() {
                           "group relative flex items-center justify-between rounded-xl px-2.5 py-2 text-xs transition-all cursor-pointer",
                           isActive
                             ? "bg-primary/10 font-semibold text-primary border border-primary/20 shadow-2xs"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
                         )}
                       >
                         <button
                           type="button"
                           aria-current={isActive ? "true" : undefined}
                           onClick={() => {
-                            switchSession(conversation)
-                            if (isMobile) setSidebarOpen(false)
+                            switchSession(conversation);
+                            if (isMobile) setSidebarOpen(false);
                           }}
                           className="flex min-w-0 flex-1 items-center gap-2 rounded-sm py-1 pr-1 text-left focus-visible:outline-2 focus-visible:outline-ring"
                         >
                           <MessageSquare
                             className={cn(
                               "size-3.5 shrink-0 transition-colors",
-                              isActive ? "text-primary" : "text-muted-foreground/60"
+                              isActive ? "text-primary" : "text-muted-foreground/60",
                             )}
                           />
-                          <span className="truncate font-normal">
-                            {conversation.title}
-                          </span>
+                          <span className="truncate font-normal">{conversation.title}</span>
                         </button>
 
                         {/* Dropdown Menu for Rename & Delete */}
@@ -964,7 +962,7 @@ export default function TutorPage() {
                               size="icon"
                               className={cn(
                                 "size-6 rounded-full transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 hover:bg-muted/80 cursor-pointer",
-                                isActive && "opacity-100"
+                                isActive && "opacity-100",
                               )}
                               aria-label={`Options for ${conversation.title}`}
                             >
@@ -975,9 +973,9 @@ export default function TutorPage() {
                             <DropdownMenuItem
                               className="gap-2 cursor-pointer text-xs"
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setEditingTitleId(conversation.id)
-                                setEditingTitleText(conversation.title)
+                                e.stopPropagation();
+                                setEditingTitleId(conversation.id);
+                                setEditingTitleText(conversation.title);
                               }}
                             >
                               <Edit2 className="size-3.5" /> Rename
@@ -986,9 +984,9 @@ export default function TutorPage() {
                             <DropdownMenuItem
                               className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10"
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setSessionToDelete(conversation)
-                                setDeleteDialogOpen(true)
+                                e.stopPropagation();
+                                setSessionToDelete(conversation);
+                                setDeleteDialogOpen(true);
                               }}
                             >
                               <Trash2 className="size-3.5" /> Delete
@@ -996,7 +994,7 @@ export default function TutorPage() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -1025,19 +1023,17 @@ export default function TutorPage() {
                     "h-full rounded-full transition-all duration-500",
                     tutorUsage / orgData.aiTutorLimitPerStudent! > 0.8
                       ? "bg-amber-500"
-                      : "bg-primary"
+                      : "bg-primary",
                   )}
                   style={{
                     width: `${Math.min(
                       100,
-                      (tutorUsage / orgData.aiTutorLimitPerStudent!) * 100
+                      (tutorUsage / orgData.aiTutorLimitPerStudent!) * 100,
                     )}%`,
                   }}
                 />
               </div>
-              <span className="text-[10px] text-muted-foreground/60">
-                Department Quota
-              </span>
+              <span className="text-[10px] text-muted-foreground/60">Department Quota</span>
             </div>
           </div>
         )}
@@ -1046,7 +1042,11 @@ export default function TutorPage() {
       {/* ========================================================================= */}
       {/* MAIN CHAT CONTENT AREA (Rigid Flex Column)                                */}
       {/* ========================================================================= */}
-      <section inert={sidebarOpen && isMobile} aria-label="Raise conversation" className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <section
+        inert={sidebarOpen && isMobile}
+        aria-label="Raise conversation"
+        className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+      >
         {/* Top Header */}
         <header className="z-10 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2 sm:px-4">
           <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -1079,7 +1079,7 @@ export default function TutorPage() {
                   "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer",
                   mode === "concept"
                     ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Lightbulb className="size-3.5 text-amber-500" />
@@ -1093,7 +1093,7 @@ export default function TutorPage() {
                   "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer",
                   mode === "problem"
                     ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Calculator className="size-3.5 text-primary" />
@@ -1112,9 +1112,9 @@ export default function TutorPage() {
                   <DropdownMenuItem
                     className="gap-2 cursor-pointer text-xs"
                     onClick={() => {
-                      setSidebarOpen(true)
-                      setEditingTitleId(activeSession.id)
-                      setEditingTitleText(activeSession.title)
+                      setSidebarOpen(true);
+                      setEditingTitleId(activeSession.id);
+                      setEditingTitleText(activeSession.title);
                     }}
                   >
                     <Edit2 className="size-3.5" /> Rename
@@ -1123,8 +1123,8 @@ export default function TutorPage() {
                   <DropdownMenuItem
                     className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive"
                     onClick={() => {
-                      setSessionToDelete(activeSession)
-                      setDeleteDialogOpen(true)
+                      setSessionToDelete(activeSession);
+                      setDeleteDialogOpen(true);
                     }}
                   >
                     <Trash2 className="size-3.5" /> Delete Chat
@@ -1147,7 +1147,10 @@ export default function TutorPage() {
         </header>
 
         {/* Scrollable Messages Container (Pure Flex-1 Scrollable Area) */}
-        <ChatContainerRoot ref={chatContainerRef} className="flex-1 min-h-0 overflow-y-auto relative w-full">
+        <ChatContainerRoot
+          ref={chatContainerRef}
+          className="flex-1 min-h-0 overflow-y-auto relative w-full"
+        >
           <ChatContainerContent className="mx-auto max-w-3xl space-y-6 px-4 py-8 md:px-6">
             {messages.length === 0 ? (
               /* Empty State / Welcome Screen */
@@ -1165,15 +1168,15 @@ export default function TutorPage() {
                 {/* Starter Chips */}
                 <div className="mt-5 grid w-full gap-2 sm:grid-cols-2">
                   {STARTER_PROMPTS.map((item, idx) => {
-                    const Icon = item.icon
+                    const Icon = item.icon;
                     return (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => {
-                          setMode(item.mode)
-                          setPrompt(item.prompt)
-                          handleSubmit(item.prompt)
+                          setMode(item.mode);
+                          setPrompt(item.prompt);
+                          handleSubmit(item.prompt);
                         }}
                         className="group flex flex-col items-start rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:bg-accent cursor-pointer"
                       >
@@ -1187,26 +1190,23 @@ export default function TutorPage() {
                           {item.prompt}
                         </span>
                       </button>
-                    )
+                    );
                   })}
                 </div>
               </div>
             ) : (
               /* Message List */
               messages.map((message, index) => {
-                const isAssistant = message.role === "assistant"
-                const isLastMessage = index === messages.length - 1
-                const isTyping =
-                  isAssistant &&
-                  isLastMessage &&
-                  message.id === typingId
+                const isAssistant = message.role === "assistant";
+                const isLastMessage = index === messages.length - 1;
+                const isTyping = isAssistant && isLastMessage && message.id === typingId;
 
                 return (
                   <PromptMessage
                     key={message.id}
                     className={cn(
                       "flex w-full flex-col gap-2",
-                      isAssistant ? "items-start" : "items-end"
+                      isAssistant ? "items-start" : "items-end",
                     )}
                   >
                     {isAssistant ? (
@@ -1216,9 +1216,7 @@ export default function TutorPage() {
                           <div className="flex size-6 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-2xs">
                             <RaiseLogo size={12} className="text-primary" />
                           </div>
-                          <span className="text-xs font-semibold text-foreground">
-                            Raise
-                          </span>
+                          <span className="text-xs font-semibold text-foreground">Raise</span>
                           {message.type && (
                             <Badge
                               variant="outline"
@@ -1234,10 +1232,7 @@ export default function TutorPage() {
                           markdown={!isTyping}
                         >
                           {isTyping ? (
-                            <Typewriter
-                              text={message.content}
-                              onDone={() => setTypingId(null)}
-                            />
+                            <Typewriter text={message.content} onDone={() => setTypingId(null)} />
                           ) : (
                             message.content
                           )}
@@ -1247,61 +1242,58 @@ export default function TutorPage() {
                         <MessageActions
                           className={cn(
                             "pl-8 flex gap-1 pt-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100",
-                            (isLastMessage || feedback[message.id]) &&
-                              "opacity-100"
+                            (isLastMessage || feedback[message.id]) && "opacity-100",
                           )}
                         >
                           <MessageAction tooltip="Copy message">
-                            <Button aria-label="Copy message"
+                            <Button
+                              aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() =>
-                                handleCopyMessage(message.content)
-                              }
+                              onClick={() => handleCopyMessage(message.content)}
                             >
                               <Copy className="size-3.5" />
                             </Button>
                           </MessageAction>
 
                           <MessageAction tooltip="Good response">
-                            <Button aria-label="Mark response as helpful"
+                            <Button
+                              aria-label="Mark response as helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
                                 "size-7 rounded-full transition-colors cursor-pointer",
                                 feedback[message.id] === "up"
                                   ? "text-primary bg-primary/10"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  : "text-muted-foreground hover:text-foreground",
                               )}
-                              onClick={() =>
-                                handleFeedback(message.id, "up")
-                              }
+                              onClick={() => handleFeedback(message.id, "up")}
                             >
                               <ThumbsUp className="size-3.5" />
                             </Button>
                           </MessageAction>
 
                           <MessageAction tooltip="Bad response">
-                            <Button aria-label="Mark response as not helpful"
+                            <Button
+                              aria-label="Mark response as not helpful"
                               variant="ghost"
                               size="icon"
                               className={cn(
                                 "size-7 rounded-full transition-colors cursor-pointer",
                                 feedback[message.id] === "down"
                                   ? "text-destructive bg-destructive/10"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  : "text-muted-foreground hover:text-foreground",
                               )}
-                              onClick={() =>
-                                handleFeedback(message.id, "down")
-                              }
+                              onClick={() => handleFeedback(message.id, "down")}
                             >
                               <ThumbsDown className="size-3.5" />
                             </Button>
                           </MessageAction>
 
                           <MessageAction tooltip="Delete message">
-                            <Button aria-label="Delete message"
+                            <Button
+                              aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
@@ -1322,33 +1314,32 @@ export default function TutorPage() {
                         {/* User Actions */}
                         <MessageActions className="flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 pr-1">
                           <MessageAction tooltip="Edit prompt">
-                            <Button aria-label="Edit message"
+                            <Button
+                              aria-label="Edit message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() =>
-                                handleEditMessage(message.content)
-                              }
+                              onClick={() => handleEditMessage(message.content)}
                             >
                               <Pencil className="size-3.5" />
                             </Button>
                           </MessageAction>
 
                           <MessageAction tooltip="Copy text">
-                            <Button aria-label="Copy message"
+                            <Button
+                              aria-label="Copy message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() =>
-                                handleCopyMessage(message.content)
-                              }
+                              onClick={() => handleCopyMessage(message.content)}
                             >
                               <Copy className="size-3.5" />
                             </Button>
                           </MessageAction>
 
                           <MessageAction tooltip="Delete prompt">
-                            <Button aria-label="Delete message"
+                            <Button
+                              aria-label="Delete message"
                               variant="ghost"
                               size="icon"
                               className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
@@ -1361,7 +1352,7 @@ export default function TutorPage() {
                       </div>
                     )}
                   </PromptMessage>
-                )
+                );
               })
             )}
 
@@ -1456,7 +1447,7 @@ export default function TutorPage() {
                             onClick={() =>
                               setPrompt(
                                 (prev) =>
-                                  `${prev ? prev + " " : ""}Explain how kinetic energy K = 1/2 m v^2 is derived.`
+                                  `${prev ? prev + " " : ""}Explain how kinetic energy K = 1/2 m v^2 is derived.`,
                               )
                             }
                           >
@@ -1467,7 +1458,7 @@ export default function TutorPage() {
                             onClick={() =>
                               setPrompt(
                                 (prev) =>
-                                  `${prev ? prev + " " : ""}How do I use Newton's 2nd Law F = ma for an inclined plane?`
+                                  `${prev ? prev + " " : ""}How do I use Newton's 2nd Law F = ma for an inclined plane?`,
                               )
                             }
                           >
@@ -1478,7 +1469,7 @@ export default function TutorPage() {
                             onClick={() =>
                               setPrompt(
                                 (prev) =>
-                                  `${prev ? prev + " " : ""}Explain Faraday's Law of Induction step by step.`
+                                  `${prev ? prev + " " : ""}Explain Faraday's Law of Induction step by step.`,
                               )
                             }
                           >
@@ -1491,9 +1482,7 @@ export default function TutorPage() {
 
                   {/* Right Actions */}
                   <div className="flex items-center gap-1.5">
-                    <PromptInputAction
-                      tooltip={isRecording ? "Stop listening" : "Voice input"}
-                    >
+                    <PromptInputAction tooltip={isRecording ? "Stop listening" : "Voice input"}>
                       <Button
                         type="button"
                         variant="outline"
@@ -1501,7 +1490,7 @@ export default function TutorPage() {
                         className={cn(
                           "size-8 rounded-full border-border/60 transition-colors cursor-pointer",
                           isRecording &&
-                            "bg-destructive/10 text-destructive border-destructive/40 animate-pulse"
+                            "bg-destructive/10 text-destructive border-destructive/40 animate-pulse",
                         )}
                         aria-label={isRecording ? "Stop listening" : "Voice input"}
                         onClick={toggleVoiceRecording}
@@ -1540,16 +1529,12 @@ export default function TutorPage() {
           <DialogHeader>
             <DialogTitle className="text-base">Delete Conversation</DialogTitle>
             <DialogDescription className="text-xs">
-              Are you sure you want to delete &quot;{sessionToDelete?.title}&quot;?
-              This action cannot be undone.
+              Are you sure you want to delete &quot;{sessionToDelete?.title}&quot;? This action
+              cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDeleteDialogOpen(false)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
             <Button
@@ -1557,10 +1542,10 @@ export default function TutorPage() {
               size="sm"
               onClick={() => {
                 if (sessionToDelete) {
-                  handleDeleteSession(sessionToDelete)
+                  handleDeleteSession(sessionToDelete);
                 }
-                setDeleteDialogOpen(false)
-                setSessionToDelete(null)
+                setDeleteDialogOpen(false);
+                setSessionToDelete(null);
               }}
             >
               Delete
@@ -1569,5 +1554,5 @@ export default function TutorPage() {
         </DialogContent>
       </Dialog>
     </motion.div>
-  )
+  );
 }

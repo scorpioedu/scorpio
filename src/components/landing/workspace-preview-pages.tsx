@@ -102,12 +102,7 @@ import {
   type SubmissionAnswer,
 } from "./workspace-preview-data";
 
-export {
-  NetworkPage,
-  StudentsPage,
-  WaypointsPage,
-  VaultPage,
-} from "./workspace-preview-tabs";
+export { NetworkPage, StudentsPage, WaypointsPage, VaultPage } from "./workspace-preview-tabs";
 
 // ============================================================================
 // GRADING TERMINAL VIEW (Shared between Dashboard, Gradebook, Assignment View)
@@ -126,14 +121,10 @@ export function GradingTerminalView({
   student?: PreviewStudent;
   courseLabel?: string;
   onBack: () => void;
-  onSaveGrade: (
-    submissionId: string,
-    score: number,
-    updatedAnswers: SubmissionAnswer[]
-  ) => void;
+  onSaveGrade: (submissionId: string, score: number, updatedAnswers: SubmissionAnswer[]) => void;
 }) {
   const [answers, setAnswers] = React.useState<SubmissionAnswer[]>(() =>
-    submission.answers.map((a) => ({ ...a }))
+    submission.answers.map((a) => ({ ...a })),
   );
   const [isRegrading, setIsRegrading] = React.useState(false);
   const [savedNotice, setSavedNotice] = React.useState(false);
@@ -163,14 +154,8 @@ export function GradingTerminalView({
     return Math.min(100, Math.max(0, Math.round((earnedPoints / maxPointsSum) * 100)));
   }, [earnedPoints, maxPointsSum]);
 
-  const updateAnswerField = (
-    idx: number,
-    field: "score" | "feedback",
-    value: number | string
-  ) => {
-    setAnswers((prev) =>
-      prev.map((a, i) => (i === idx ? { ...a, [field]: value } : a))
-    );
+  const updateAnswerField = (idx: number, field: "score" | "feedback", value: number | string) => {
+    setAnswers((prev) => prev.map((a, i) => (i === idx ? { ...a, [field]: value } : a)));
     setSavedNotice(false);
   };
 
@@ -194,7 +179,7 @@ export function GradingTerminalView({
               ans.reasoning ||
               `Evaluated against ${maxPts} pt rubric criteria. Symbolic expressions and boundary conditions verified by Raise.`,
           };
-        })
+        }),
       );
       setIsRegrading(false);
       toast.success("Submission re-evaluated with Raise.");
@@ -242,10 +227,8 @@ export function GradingTerminalView({
                 Integrity Alert: Focus Lost
               </h4>
               <p className="text-xs opacity-90">
-                This student left the assignment tab{" "}
-                <strong>{submission.unfocusCount}</strong>{" "}
-                {submission.unfocusCount === 1 ? "time" : "times"} while Lockdown
-                Mode was active.
+                This student left the assignment tab <strong>{submission.unfocusCount}</strong>{" "}
+                {submission.unfocusCount === 1 ? "time" : "times"} while Lockdown Mode was active.
               </p>
             </div>
           </div>
@@ -260,19 +243,15 @@ export function GradingTerminalView({
         <div>
           <div className="flex items-center gap-2 text-primary mb-1">
             <Sparkles className="h-4 w-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">
-              Grading Terminal
-            </span>
+            <span className="text-xs font-bold uppercase tracking-widest">Grading Terminal</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
             {assignment?.title || "Physics Assignment"}
           </h1>
           <p className="text-sm text-muted-foreground">
             Submitted by{" "}
-            <span className="text-foreground font-medium">
-              {student?.name || "Student"}
-            </span>{" "}
-            on {formattedSubmittedAt}
+            <span className="text-foreground font-medium">{student?.name || "Student"}</span> on{" "}
+            {formattedSubmittedAt}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -290,11 +269,7 @@ export function GradingTerminalView({
             )}
             Re-grade with Raise
           </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            className="h-10 px-6 font-bold cursor-pointer"
-          >
+          <Button size="sm" onClick={handleSave} className="h-10 px-6 font-bold cursor-pointer">
             {savedNotice ? (
               <>
                 <Check className="mr-1.5 h-4 w-4" />
@@ -329,13 +304,8 @@ export function GradingTerminalView({
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold">
                         {index + 1}
                       </span>
-                      <CardTitle className="text-sm font-semibold">
-                        Question {index + 1}
-                      </CardTitle>
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] uppercase font-normal"
-                      >
+                      <CardTitle className="text-sm font-semibold">Question {index + 1}</CardTitle>
+                      <Badge variant="outline" className="text-[10px] uppercase font-normal">
                         {q.type === "text" ? "free-response" : q.type}
                       </Badge>
                     </div>
@@ -344,8 +314,8 @@ export function GradingTerminalView({
                         currentScore === maxPts
                           ? "default"
                           : currentScore > 0
-                          ? "secondary"
-                          : "destructive"
+                            ? "secondary"
+                            : "destructive"
                       }
                       className="font-mono text-xs"
                     >
@@ -372,9 +342,7 @@ export function GradingTerminalView({
                         {ans.answer ? (
                           <MarkdownRenderer>{ans.answer}</MarkdownRenderer>
                         ) : (
-                          <span className="italic text-muted-foreground">
-                            No answer provided
-                          </span>
+                          <span className="italic text-muted-foreground">No answer provided</span>
                         )}
                       </div>
                     </div>
@@ -407,10 +375,7 @@ export function GradingTerminalView({
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start pt-1">
                       <div className="space-y-1.5">
-                        <Label
-                          htmlFor={`score-${index}`}
-                          className="text-xs font-bold"
-                        >
+                        <Label htmlFor={`score-${index}`} className="text-xs font-bold">
                           Points Earned
                         </Label>
                         <div className="flex items-center gap-2">
@@ -426,32 +391,22 @@ export function GradingTerminalView({
                               updateAnswerField(
                                 index,
                                 "score",
-                                Math.min(
-                                  maxPts,
-                                  Math.max(0, parseFloat(e.target.value) || 0)
-                                )
+                                Math.min(maxPts, Math.max(0, parseFloat(e.target.value) || 0)),
                               )
                             }
                           />
-                          <span className="text-xs text-muted-foreground shrink-0">
-                            / {maxPts}
-                          </span>
+                          <span className="text-xs text-muted-foreground shrink-0">/ {maxPts}</span>
                         </div>
                       </div>
                       <div className="md:col-span-3 space-y-1.5">
-                        <Label
-                          htmlFor={`feedback-${index}`}
-                          className="text-xs font-bold"
-                        >
+                        <Label htmlFor={`feedback-${index}`} className="text-xs font-bold">
                           Feedback to Student
                         </Label>
                         <Textarea
                           id={`feedback-${index}`}
                           placeholder="Add or edit feedback..."
                           value={ans.feedback || ""}
-                          onChange={(e) =>
-                            updateAnswerField(index, "feedback", e.target.value)
-                          }
+                          onChange={(e) => updateAnswerField(index, "feedback", e.target.value)}
                           rows={2}
                           className="resize-none text-xs"
                         />
@@ -496,13 +451,10 @@ export function GradingTerminalView({
                     cy="64"
                   />
                 </svg>
-                <span className="absolute text-3xl font-bold font-mono">
-                  {calculatedScore}%
-                </span>
+                <span className="absolute text-3xl font-bold font-mono">{calculatedScore}%</span>
               </div>
               <p className="mt-4 text-xs text-muted-foreground text-center">
-                {earnedPoints} of {maxPointsSum} points earned across{" "}
-                {questions.length} questions.
+                {earnedPoints} of {maxPointsSum} points earned across {questions.length} questions.
               </p>
             </CardContent>
             <CardFooter>
@@ -532,15 +484,12 @@ export function GradingTerminalView({
                     <div className="flex items-center gap-2 min-w-0">
                       <FileText className="h-4 w-4 text-primary shrink-0" />
                       <div className="truncate">
-                        <p className="text-xs font-medium truncate">
-                          {file.name}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground">
-                          PDF attachment
-                        </p>
+                        <p className="text-xs font-medium truncate">{file.name}</p>
+                        <p className="text-[10px] text-muted-foreground">PDF attachment</p>
                       </div>
                     </div>
-                    <Button aria-label="Open student work"
+                    <Button
+                      aria-label="Open student work"
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 shrink-0 cursor-pointer"
@@ -583,11 +532,7 @@ export function GradingTerminalView({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setWorkDialogOpen(false)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setWorkDialogOpen(false)}>
               Close Preview
             </Button>
           </DialogFooter>
@@ -616,24 +561,17 @@ export function GradebookPage({
   submissions: Submission[];
   selectedSubmissionId: string | null;
   onSelectSubmission: (id: string | null) => void;
-  onSaveGrade: (
-    submissionId: string,
-    score: number,
-    updatedAnswers: SubmissionAnswer[]
-  ) => void;
+  onSaveGrade: (submissionId: string, score: number, updatedAnswers: SubmissionAnswer[]) => void;
 }) {
   const uid = React.useId();
   const [selectedCourse, setSelectedCourse] = React.useState<string>("all");
-  const [selectedAssignment, setSelectedAssignment] =
-    React.useState<string>("all");
+  const [selectedAssignment, setSelectedAssignment] = React.useState<string>("all");
   const [showAnalytics, setShowAnalytics] = React.useState(false);
-  const [selectedStudentId, setSelectedStudentId] = React.useState<
-    string | null
-  >(null);
+  const [selectedStudentId, setSelectedStudentId] = React.useState<string | null>(null);
 
   const assignmentById = React.useMemo(
     () => new Map(assignments.map((a) => [a.id, a])),
-    [assignments]
+    [assignments],
   );
 
   const filteredAssignments = React.useMemo(() => {
@@ -644,19 +582,15 @@ export function GradebookPage({
   const filteredSubmissions = React.useMemo(() => {
     return submissions.filter((s) => {
       const assign = assignmentById.get(s.assignmentId);
-      const courseMatch =
-        selectedCourse === "all" || assign?.courseId === selectedCourse;
-      const assignmentMatch =
-        selectedAssignment === "all" || s.assignmentId === selectedAssignment;
+      const courseMatch = selectedCourse === "all" || assign?.courseId === selectedCourse;
+      const assignmentMatch = selectedAssignment === "all" || s.assignmentId === selectedAssignment;
       return courseMatch && assignmentMatch;
     });
   }, [submissions, assignmentById, selectedCourse, selectedAssignment]);
 
   const studentGrades = React.useMemo(() => {
     const filteredStudents =
-      selectedCourse === "all"
-        ? students
-        : students.filter((st) => st.courseId === selectedCourse);
+      selectedCourse === "all" ? students : students.filter((st) => st.courseId === selectedCourse);
 
     return filteredStudents.map((st) => {
       const subs = filteredSubmissions.filter((s) => s.studentId === st.id);
@@ -664,9 +598,7 @@ export function GradebookPage({
         .filter((s) => s.graded && typeof s.score === "number")
         .map((s) => s.score as number);
       const averageGrade =
-        gradedScores.length > 0
-          ? gradedScores.reduce((a, b) => a + b, 0) / gradedScores.length
-          : 0;
+        gradedScores.length > 0 ? gradedScores.reduce((a, b) => a + b, 0) / gradedScores.length : 0;
       return {
         id: st.id,
         name: st.name,
@@ -703,7 +635,7 @@ export function GradebookPage({
 
   const activeSubmission = React.useMemo(
     () => submissions.find((s) => s.id === selectedSubmissionId) || null,
-    [submissions, selectedSubmissionId]
+    [submissions, selectedSubmissionId],
   );
 
   // If a specific submission is open in the Grading Terminal
@@ -725,16 +657,10 @@ export function GradebookPage({
   // If a specific student's grade breakdown is open
   if (selectedStudentId) {
     const student = studentById(students, selectedStudentId);
-    const studentSubs = submissions.filter(
-      (s) => s.studentId === selectedStudentId
-    );
-    const graded = studentSubs.filter(
-      (s) => s.graded && typeof s.score === "number"
-    );
+    const studentSubs = submissions.filter((s) => s.studentId === selectedStudentId);
+    const graded = studentSubs.filter((s) => s.graded && typeof s.score === "number");
     const avg =
-      graded.length > 0
-        ? graded.reduce((acc, s) => acc + (s.score || 0), 0) / graded.length
-        : 0;
+      graded.length > 0 ? graded.reduce((acc, s) => acc + (s.score || 0), 0) / graded.length : 0;
 
     return (
       <div className="space-y-6">
@@ -754,12 +680,8 @@ export function GradebookPage({
                 {(student?.name || "S").charAt(0)}
               </div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">
-                  {student?.name || "Student"}
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  {student?.email}
-                </p>
+                <h1 className="text-2xl font-bold tracking-tight">{student?.name || "Student"}</h1>
+                <p className="text-xs text-muted-foreground">{student?.email}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-muted/30 p-3.5 rounded-xl border">
@@ -787,8 +709,8 @@ export function GradebookPage({
           <CardHeader>
             <CardTitle className="text-base">Assignment Breakdown</CardTitle>
             <CardDescription className="text-xs">
-              Detailed performance across submitted assignments. Click any row
-              to open the Grading Terminal.
+              Detailed performance across submitted assignments. Click any row to open the Grading
+              Terminal.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -832,16 +754,10 @@ export function GradebookPage({
                         {dueLabel(sub.submittedAt)}
                       </TableCell>
                       <TableCell className="text-right font-mono font-bold">
-                        {sub.graded && sub.score !== undefined
-                          ? `${sub.score}%`
-                          : "Pending"}
+                        {sub.graded && sub.score !== undefined ? `${sub.score}%` : "Pending"}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 text-xs cursor-pointer"
-                        >
+                        <Button variant="ghost" size="sm" className="h-8 text-xs cursor-pointer">
                           {sub.graded ? "Review" : "Grade"}
                         </Button>
                       </TableCell>
@@ -896,13 +812,13 @@ export function GradebookPage({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor={`${uid}-assignment`} className="text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor={`${uid}-assignment`}
+              className="text-xs font-medium text-muted-foreground"
+            >
               Assignment
             </label>
-            <Select
-              value={selectedAssignment}
-              onValueChange={setSelectedAssignment}
-            >
+            <Select value={selectedAssignment} onValueChange={setSelectedAssignment}>
               <SelectTrigger id={`${uid}-assignment`} className="h-9">
                 <SelectValue placeholder="All assignments" />
               </SelectTrigger>
@@ -943,12 +859,10 @@ export function GradebookPage({
       {/* Student Grades Summary Table */}
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-          <h2 className="text-sm font-medium text-foreground">
-            Student grades
-          </h2>
+          <h2 className="text-sm font-medium text-foreground">Student grades</h2>
           <p className="text-xs text-muted-foreground">
-            Click a student to view their assignment history, or click a
-            submission below to open the Grading Terminal.
+            Click a student to view their assignment history, or click a submission below to open
+            the Grading Terminal.
           </p>
         </div>
 
@@ -969,12 +883,8 @@ export function GradebookPage({
                   className="cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => setSelectedStudentId(student.id)}
                 >
-                  <TableCell className="font-medium text-primary">
-                    {student.name}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs">
-                    {student.email}
-                  </TableCell>
+                  <TableCell className="font-medium text-primary">{student.name}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs">{student.email}</TableCell>
                   <TableCell className="tabular-nums text-sm">
                     {student.completedCount} / {filteredAssignments.length}
                   </TableCell>
@@ -997,8 +907,7 @@ export function GradebookPage({
             Submissions ({filteredSubmissions.length})
           </h2>
           <p className="text-xs text-muted-foreground">
-            Click any submission to inspect question-by-question responses and
-            AI grading logic.
+            Click any submission to inspect question-by-question responses and AI grading logic.
           </p>
         </div>
 
@@ -1028,10 +937,7 @@ export function GradebookPage({
                       <div className="flex items-center gap-2">
                         <span>{st?.name || "Student"}</span>
                         {(sub.unfocusCount ?? 0) > 0 && (
-                          <Badge
-                            variant="destructive"
-                            className="text-[10px] h-4 px-1.5"
-                          >
+                          <Badge variant="destructive" className="text-[10px] h-4 px-1.5">
                             {sub.unfocusCount} focus alert
                           </Badge>
                         )}
@@ -1058,9 +964,7 @@ export function GradebookPage({
                       )}
                     </TableCell>
                     <TableCell className="text-right font-mono text-sm font-semibold">
-                      {sub.graded && sub.score !== undefined
-                        ? `${sub.score}%`
-                        : "—"}
+                      {sub.graded && sub.score !== undefined ? `${sub.score}%` : "—"}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
@@ -1103,7 +1007,7 @@ export function AssignmentDetailsView({
 }) {
   const assignmentSubmissions = React.useMemo(
     () => submissions.filter((s) => s.assignmentId === assignment.id),
-    [submissions, assignment.id]
+    [submissions, assignment.id],
   );
 
   const gradedScores = assignmentSubmissions
@@ -1112,9 +1016,7 @@ export function AssignmentDetailsView({
 
   const averageScore =
     gradedScores.length > 0
-      ? `${(
-          gradedScores.reduce((a, b) => a + b, 0) / gradedScores.length
-        ).toFixed(1)}%`
+      ? `${(gradedScores.reduce((a, b) => a + b, 0) / gradedScores.length).toFixed(1)}%`
       : "—";
 
   const isPastDue = new Date(assignment.due) < new Date("2026-11-09");
@@ -1167,22 +1069,15 @@ export function AssignmentDetailsView({
         </h2>
         <div className="space-y-3">
           {assignment.questions.map((q, idx) => (
-            <div
-              key={q.id}
-              className="rounded-lg border border-border bg-card p-4 space-y-2"
-            >
+            <div key={q.id} className="rounded-lg border border-border bg-card p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-primary">
-                    Q{idx + 1}
-                  </span>
+                  <span className="text-xs font-bold text-primary">Q{idx + 1}</span>
                   <Badge variant="outline" className="text-[10px] uppercase">
                     {q.type === "text" ? "free-response" : q.type}
                   </Badge>
                 </div>
-                <span className="text-xs font-mono text-muted-foreground">
-                  {q.points} pts
-                </span>
+                <span className="text-xs font-mono text-muted-foreground">{q.points} pts</span>
               </div>
               <div className="text-sm">
                 <MarkdownRenderer>{q.text}</MarkdownRenderer>
@@ -1195,9 +1090,7 @@ export function AssignmentDetailsView({
       {/* Student Submissions Table */}
       <div>
         <div className="mb-3">
-          <h2 className="text-sm font-medium text-foreground">
-            Student submissions
-          </h2>
+          <h2 className="text-sm font-medium text-foreground">Student submissions</h2>
           <p className="text-xs text-muted-foreground">
             Review individual responses and scores in the Grading Terminal.
           </p>
@@ -1219,9 +1112,7 @@ export function AssignmentDetailsView({
                   const st = studentById(students, sub.studentId);
                   return (
                     <TableRow key={sub.id}>
-                      <TableCell className="font-medium text-sm">
-                        {st?.name || "Student"}
-                      </TableCell>
+                      <TableCell className="font-medium text-sm">{st?.name || "Student"}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">
                         {dueLabel(sub.submittedAt)}
                       </TableCell>
@@ -1254,10 +1145,7 @@ export function AssignmentDetailsView({
                 })
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    className="h-20 text-center text-sm text-muted-foreground"
-                  >
+                  <TableCell colSpan={4} className="h-20 text-center text-sm text-muted-foreground">
                     No submissions yet.
                   </TableCell>
                 </TableRow>
@@ -1291,10 +1179,7 @@ export function AssignmentsPage({
   onSelectAssignment: (id: string | null) => void;
   onOpenCreate: () => void;
   onDuplicateAssignment: (assignment: Assignment) => void;
-  onUpdateVisibility: (
-    assignmentId: string,
-    visibility: Assignment["visibility"]
-  ) => void;
+  onUpdateVisibility: (assignmentId: string, visibility: Assignment["visibility"]) => void;
   onDeleteAssignment: (assignmentId: string) => void;
   onOpenSubmission: (submissionId: string) => void;
 }) {
@@ -1302,15 +1187,13 @@ export function AssignmentsPage({
   const [selectedCourse, setSelectedCourse] = React.useState<string>("all");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [sortOrder, setSortOrder] = React.useState<string>("dueDate-desc");
-  const [assignmentToDelete, setAssignmentToDelete] =
-    React.useState<Assignment | null>(null);
+  const [assignmentToDelete, setAssignmentToDelete] = React.useState<Assignment | null>(null);
 
   const filteredAndSorted = React.useMemo(() => {
     return assignments
       .filter((a) => {
         const isPastDue = new Date(a.due) < new Date("2026-11-09");
-        const courseMatch =
-          selectedCourse === "all" || a.courseId === selectedCourse;
+        const courseMatch = selectedCourse === "all" || a.courseId === selectedCourse;
         const statusMatch =
           statusFilter === "all" ||
           (statusFilter === "active" && !isPastDue) ||
@@ -1334,7 +1217,7 @@ export function AssignmentsPage({
 
   const activeAssignment = React.useMemo(
     () => assignments.find((a) => a.id === selectedAssignmentId) || null,
-    [assignments, selectedAssignmentId]
+    [assignments, selectedAssignmentId],
   );
 
   if (activeAssignment) {
@@ -1356,11 +1239,7 @@ export function AssignmentsPage({
         title="My Assignments"
         description="Filter by class or status, adjust visibility, duplicate templates, or inspect submissions."
       >
-        <Button
-          size="sm"
-          className="h-9 cursor-pointer"
-          onClick={onOpenCreate}
-        >
+        <Button size="sm" className="h-9 cursor-pointer" onClick={onOpenCreate}>
           <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
           Create assignment
         </Button>
@@ -1467,10 +1346,7 @@ export function AssignmentsPage({
                     <Select
                       value={assignment.visibility}
                       onValueChange={(val) => {
-                        onUpdateVisibility(
-                          assignment.id,
-                          val as Assignment["visibility"]
-                        );
+                        onUpdateVisibility(assignment.id, val as Assignment["visibility"]);
                         toast.success("Assignment visibility updated.");
                       }}
                     >
@@ -1487,24 +1363,17 @@ export function AssignmentsPage({
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0 cursor-pointer"
-                        >
+                        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onClick={() => onSelectAssignment(assignment.id)}
-                        >
+                        <DropdownMenuItem onClick={() => onSelectAssignment(assignment.id)}>
                           <Eye className="mr-2 h-4 w-4" />
                           View submissions
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => onDuplicateAssignment(assignment)}
-                        >
+                        <DropdownMenuItem onClick={() => onDuplicateAssignment(assignment)}>
                           <Copy className="mr-2 h-4 w-4" />
                           Duplicate
                         </DropdownMenuItem>
@@ -1577,15 +1446,15 @@ export function CreateAssignmentPage({
 }) {
   const uid = React.useId();
   const [title, setTitle] = React.useState(
-    initialDraft?.title || "Rotational Dynamics & Angular Momentum Problem Set"
+    initialDraft?.title || "Rotational Dynamics & Angular Momentum Problem Set",
   );
   const [selectedCourse, setSelectedCourse] = React.useState(
-    initialDraft?.courseId || courses[0]?.id || "mechanics"
+    initialDraft?.courseId || courses[0]?.id || "mechanics",
   );
   const [dueDate, setDueDate] = React.useState("2026-11-24");
   const [description, setDescription] = React.useState(
     initialDraft?.description ||
-      "Derive angular acceleration, rotational kinetic energy, and conservation of angular momentum for rigid-body systems. Show full symbolic steps before substituting numerical values."
+      "Derive angular acceleration, rotational kinetic energy, and conservation of angular momentum for rigid-body systems. Show full symbolic steps before substituting numerical values.",
   );
   const [questions, setQuestions] = React.useState<Question[]>(
     initialDraft?.questions?.length
@@ -1613,35 +1482,30 @@ export function CreateAssignmentPage({
             correctAnswer:
               "$L$ remains constant while $K_{\\text{rot}}$ increases due to internal work",
           },
-        ]
+        ],
   );
 
   const [gradingRubric, setGradingRubric] = React.useState(
     initialDraft?.gradingRubric ||
-      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions."
+      "Award 60% for symbolic derivation from rotational Newton's second law, 25% for algebraic substitution, and 15% for units and sign conventions.",
   );
 
   // Sync when initialDraft changes (from Waypoint fork or Assignment duplicate)
   React.useEffect(() => {
     if (initialDraft) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- copies an incoming draft into the form once, then tells the parent to clear it (onClearDraft), which has to happen in an effect
       setTitle(initialDraft.title);
       setDescription(initialDraft.description);
       if (initialDraft.courseId) setSelectedCourse(initialDraft.courseId);
-      const totalPts = initialDraft.questions.reduce(
-        (acc, q) => acc + (Number(q.points) || 0),
-        0
-      );
+      const totalPts = initialDraft.questions.reduce((acc, q) => acc + (Number(q.points) || 0), 0);
       if (Math.abs(totalPts - 100) > 0.01 && initialDraft.questions.length > 0) {
-        const base =
-          Math.floor((100 / initialDraft.questions.length) * 10) / 10;
-        const rem = Number(
-          (100 - base * (initialDraft.questions.length - 1)).toFixed(1)
-        );
+        const base = Math.floor((100 / initialDraft.questions.length) * 10) / 10;
+        const rem = Number((100 - base * (initialDraft.questions.length - 1)).toFixed(1));
         setQuestions(
           initialDraft.questions.map((q, idx) => ({
             ...q,
             points: idx === initialDraft.questions.length - 1 ? rem : base,
-          }))
+          })),
         );
       } else {
         setQuestions(initialDraft.questions);
@@ -1664,26 +1528,22 @@ export function CreateAssignmentPage({
   // AI Question Generator Dialog
   const [aiGenOpen, setAiGenOpen] = React.useState(false);
   const [aiTopic, setAiTopic] = React.useState(
-    "Conservation of angular momentum in inelastic rotational collisions"
+    "Conservation of angular momentum in inelastic rotational collisions",
   );
   const [aiDifficultySelect, setAiDifficultySelect] = React.useState("Hard");
   const [aiCount, setAiCount] = React.useState(2);
-  const [isGeneratingQuestions, setIsGeneratingQuestions] =
-    React.useState(false);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = React.useState(false);
 
   // Import Text Dialog
   const [importOpen, setImportOpen] = React.useState(false);
   const [rawImportText, setRawImportText] = React.useState(
-    "1. A 2.0 kg block slides down a frictionless incline of height 4.5 m. Find its speed at the bottom. (25 points)\n\n2. True or False: Mechanical energy is conserved when non-conservative forces do zero net work. (25 points)"
+    "1. A 2.0 kg block slides down a frictionless incline of height 4.5 m. Find its speed at the bottom. (25 points)\n\n2. True or False: Mechanical energy is conserved when non-conservative forces do zero net work. (25 points)",
   );
 
   // Student Preview Dialog
   const [previewOpen, setPreviewOpen] = React.useState(false);
 
-  const totalPts = questions.reduce(
-    (acc, q) => acc + (Number(q.points) || 0),
-    0
-  );
+  const totalPts = questions.reduce((acc, q) => acc + (Number(q.points) || 0), 0);
   const isPointsValid = Math.abs(totalPts - 100) < 0.01;
 
   const distributePointsEvenly = () => {
@@ -1694,7 +1554,7 @@ export function CreateAssignmentPage({
       prev.map((q, i) => ({
         ...q,
         points: i === prev.length - 1 ? remainder : base,
-      }))
+      })),
     );
   };
 
@@ -1716,11 +1576,7 @@ export function CreateAssignmentPage({
     setQuestions((prev) => prev.filter((q) => q.id !== id));
   };
 
-  const updateQuestion = (
-    id: string,
-    field: keyof Question,
-    value: unknown
-  ) => {
+  const updateQuestion = (id: string, field: keyof Question, value: unknown) => {
     setQuestions((prev) =>
       prev.map((q) => {
         if (q.id !== id) return q;
@@ -1734,7 +1590,7 @@ export function CreateAssignmentPage({
           }
         }
         return updated;
-      })
+      }),
     );
   };
 
@@ -1783,8 +1639,8 @@ export function CreateAssignmentPage({
           p.type === "multiple-choice"
             ? p.options
             : p.type === "true-false"
-            ? ["True", "False"]
-            : undefined,
+              ? ["True", "False"]
+              : undefined,
         correctAnswer: p.correctAnswer || "",
       }));
       setQuestions((prev) => [...prev, ...mapped]);
@@ -1797,7 +1653,7 @@ export function CreateAssignmentPage({
     setIsSynthesizingRubric(true);
     setTimeout(() => {
       setGradingRubric(
-        `1. Symbolic Formulation (45 pts): Explicitly state rotational Newton's second law ($\\sum \\tau = I\\alpha$) or angular momentum conservation ($L_i = L_f$) before numerical substitution.\n2. Algebraic Execution (35 pts): Accurate moment of inertia substitution and sign consistency.\n3. Physical Interpretation & Units (20 pts): Proper SI units ($\\text{rad/s}^2$, $\\text{N}\\cdot\\text{m}$, $\\text{J}$) and physical explanation of energy dissipation.`
+        `1. Symbolic Formulation (45 pts): Explicitly state rotational Newton's second law ($\\sum \\tau = I\\alpha$) or angular momentum conservation ($L_i = L_f$) before numerical substitution.\n2. Algebraic Execution (35 pts): Accurate moment of inertia substitution and sign consistency.\n3. Physical Interpretation & Units (20 pts): Proper SI units ($\\text{rad/s}^2$, $\\text{N}\\cdot\\text{m}$, $\\text{J}$) and physical explanation of energy dissipation.`,
       );
       setIsSynthesizingRubric(false);
       toast.success("Grading rubric synthesized with Raise.");
@@ -1829,12 +1685,8 @@ export function CreateAssignmentPage({
         {/* Assignment Details Card */}
         <Card className="shadow-none">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-medium">
-              Assignment details
-            </CardTitle>
-            <CardDescription>
-              Title, class, due date, and student instructions.
-            </CardDescription>
+            <CardTitle className="text-base font-medium">Assignment details</CardTitle>
+            <CardDescription>Title, class, due date, and student instructions.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1851,10 +1703,7 @@ export function CreateAssignmentPage({
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="create-course">Class</Label>
-                  <Select
-                    value={selectedCourse}
-                    onValueChange={setSelectedCourse}
-                  >
+                  <Select value={selectedCourse} onValueChange={setSelectedCourse}>
                     <SelectTrigger id="create-course">
                       <SelectValue placeholder="Select a class" />
                     </SelectTrigger>
@@ -1901,20 +1750,15 @@ export function CreateAssignmentPage({
             <div>
               <CardTitle className="text-base font-medium">Questions</CardTitle>
               <CardDescription>
-                Add questions manually, import text, or generate with AI. Total
-                points must equal 100.
+                Add questions manually, import text, or generate with AI. Total points must equal
+                100.
               </CardDescription>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {/* Generate with AI Dialog */}
               <Dialog open={aiGenOpen} onOpenChange={setAiGenOpen}>
                 <DialogTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-9 cursor-pointer"
-                  >
+                  <Button type="button" variant="outline" size="sm" className="h-9 cursor-pointer">
                     <Sparkles className="mr-1.5 h-3.5 w-3.5" />
                     Generate with AI
                   </Button>
@@ -1926,8 +1770,8 @@ export function CreateAssignmentPage({
                       AI Question Generator
                     </DialogTitle>
                     <DialogDescription>
-                      Describe the physics topic and Raise will generate
-                      rigorous LaTeX-formatted questions and answer keys.
+                      Describe the physics topic and Raise will generate rigorous LaTeX-formatted
+                      questions and answer keys.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-3">
@@ -1942,10 +1786,7 @@ export function CreateAssignmentPage({
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <Label>Difficulty</Label>
-                        <Select
-                          value={aiDifficultySelect}
-                          onValueChange={setAiDifficultySelect}
-                        >
+                        <Select value={aiDifficultySelect} onValueChange={setAiDifficultySelect}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
@@ -1963,9 +1804,7 @@ export function CreateAssignmentPage({
                           min={1}
                           max={5}
                           value={aiCount}
-                          onChange={(e) =>
-                            setAiCount(parseInt(e.target.value) || 1)
-                          }
+                          onChange={(e) => setAiCount(parseInt(e.target.value) || 1)}
                         />
                       </div>
                     </div>
@@ -1996,12 +1835,7 @@ export function CreateAssignmentPage({
               {/* Import Text Dialog */}
               <Dialog open={importOpen} onOpenChange={setImportOpen}>
                 <DialogTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-9 cursor-pointer"
-                  >
+                  <Button type="button" variant="outline" size="sm" className="h-9 cursor-pointer">
                     <Upload className="mr-1.5 h-3.5 w-3.5" />
                     Import text
                   </Button>
@@ -2010,8 +1844,8 @@ export function CreateAssignmentPage({
                   <DialogHeader>
                     <DialogTitle>Smart Assignment Import</DialogTitle>
                     <DialogDescription>
-                      Paste questions from an existing worksheet or exam to
-                      parse them into structured items automatically.
+                      Paste questions from an existing worksheet or exam to parse them into
+                      structured items automatically.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-3 py-2">
@@ -2046,7 +1880,7 @@ export function CreateAssignmentPage({
                     "p-2 rounded-full",
                     isPointsValid
                       ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400",
                   )}
                 >
                   {isPointsValid ? (
@@ -2065,7 +1899,7 @@ export function CreateAssignmentPage({
                         "text-base font-black font-mono",
                         isPointsValid
                           ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-amber-600 dark:text-amber-400"
+                          : "text-amber-600 dark:text-amber-400",
                       )}
                     >
                       {totalPts.toFixed(1)} / 100
@@ -2074,9 +1908,9 @@ export function CreateAssignmentPage({
                   <p className="text-xs text-muted-foreground">
                     {isPointsValid
                       ? "Point distribution is balanced at 100 points."
-                      : `Adjust question points by ${Math.abs(
-                          100 - totalPts
-                        ).toFixed(1)} to reach 100.`}
+                      : `Adjust question points by ${Math.abs(100 - totalPts).toFixed(
+                          1,
+                        )} to reach 100.`}
                   </p>
                 </div>
               </div>
@@ -2107,7 +1941,8 @@ export function CreateAssignmentPage({
                       Question {index + 1}
                     </h4>
                   </div>
-                  <Button aria-label="Remove question"
+                  <Button
+                    aria-label="Remove question"
                     type="button"
                     variant="ghost"
                     size="icon"
@@ -2151,9 +1986,7 @@ export function CreateAssignmentPage({
                             type="button"
                             variant={q.type === type.id ? "default" : "outline"}
                             className="h-8 text-[11px] font-medium justify-start px-2.5 cursor-pointer"
-                            onClick={() =>
-                              updateQuestion(q.id, "type", type.id)
-                            }
+                            onClick={() => updateQuestion(q.id, "type", type.id)}
                           >
                             {type.label}
                           </Button>
@@ -2171,11 +2004,7 @@ export function CreateAssignmentPage({
                           step="0.5"
                           value={q.points}
                           onChange={(e) =>
-                            updateQuestion(
-                              q.id,
-                              "points",
-                              parseFloat(e.target.value) || 0
-                            )
+                            updateQuestion(q.id, "points", parseFloat(e.target.value) || 0)
                           }
                           className="pr-10 font-mono font-bold h-9"
                         />
@@ -2196,23 +2025,18 @@ export function CreateAssignmentPage({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                       {q.options.map((opt, oIdx) => (
                         <div key={oIdx} className="flex items-center gap-2">
-                          <Button aria-label={`Mark option ${opt} as the correct answer`}
+                          <Button
+                            aria-label={`Mark option ${opt} as the correct answer`}
                             type="button"
-                            variant={
-                              q.correctAnswer === opt ? "default" : "outline"
-                            }
+                            variant={q.correctAnswer === opt ? "default" : "outline"}
                             size="icon"
                             className="h-8 w-8 shrink-0 rounded-lg cursor-pointer"
-                            onClick={() =>
-                              updateQuestion(q.id, "correctAnswer", opt)
-                            }
+                            onClick={() => updateQuestion(q.id, "correctAnswer", opt)}
                           >
                             <CheckCircle2
                               className={cn(
                                 "h-4 w-4",
-                                q.correctAnswer === opt
-                                  ? "scale-100"
-                                  : "scale-75 opacity-30"
+                                q.correctAnswer === opt ? "scale-100" : "scale-75 opacity-30",
                               )}
                             />
                           </Button>
@@ -2241,9 +2065,7 @@ export function CreateAssignmentPage({
                     </Label>
                     <MathInputField
                       value={q.correctAnswer || ""}
-                      onChange={(val) =>
-                        updateQuestion(q.id, "correctAnswer", val)
-                      }
+                      onChange={(val) => updateQuestion(q.id, "correctAnswer", val)}
                       placeholder="Provide the reference solution or grading criteria for Raise..."
                       rows={2}
                     />
@@ -2275,8 +2097,7 @@ export function CreateAssignmentPage({
               <div>
                 <CardTitle className="text-base">Advanced Settings</CardTitle>
                 <CardDescription className="text-xs">
-                  Customize AI behavior, lockdown browser controls, and custom
-                  grading rubrics.
+                  Customize AI behavior, lockdown browser controls, and custom grading rubrics.
                 </CardDescription>
               </div>
             </div>
@@ -2299,43 +2120,33 @@ export function CreateAssignmentPage({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="supportive">
-                        Supportive (More hints)
-                      </SelectItem>
-                      <SelectItem value="standard">
-                        Standard (Balanced Socratic)
-                      </SelectItem>
-                      <SelectItem value="rigorous">
-                        Rigorous (Minimal hints)
-                      </SelectItem>
+                      <SelectItem value="supportive">Supportive (More hints)</SelectItem>
+                      <SelectItem value="standard">Standard (Balanced Socratic)</SelectItem>
+                      <SelectItem value="rigorous">Rigorous (Minimal hints)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-1.5">
                   <Label>Scaffolding Level</Label>
-                  <Select
-                    value={scaffoldingLevel}
-                    onValueChange={setScaffoldingLevel}
-                  >
+                  <Select value={scaffoldingLevel} onValueChange={setScaffoldingLevel}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="low">Low (Direct)</SelectItem>
-                      <SelectItem value="medium">
-                        Medium (Step-by-step)
-                      </SelectItem>
-                      <SelectItem value="high">
-                        High (Guided discovery)
-                      </SelectItem>
+                      <SelectItem value="medium">Medium (Step-by-step)</SelectItem>
+                      <SelectItem value="high">High (Guided discovery)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label htmlFor={`${uid}-lockdown`} className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
+                <label
+                  htmlFor={`${uid}-lockdown`}
+                  className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer"
+                >
                   <div className="space-y-0.5 pr-2">
                     <span className="text-sm font-medium">Lockdown Mode</span>
                     <p className="text-[11px] text-muted-foreground">
@@ -2349,11 +2160,12 @@ export function CreateAssignmentPage({
                   />
                 </label>
 
-                <label htmlFor={`${uid}-stealth`} className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer">
+                <label
+                  htmlFor={`${uid}-stealth`}
+                  className="flex items-center justify-between p-3 border rounded-lg bg-background cursor-pointer"
+                >
                   <div className="space-y-0.5 pr-2">
-                    <span className="text-sm font-medium">
-                      Stealth Assessment
-                    </span>
+                    <span className="text-sm font-medium">Stealth Assessment</span>
                     <p className="text-[11px] text-muted-foreground">
                       Grade students silently without showing real-time scores.
                     </p>
@@ -2398,12 +2210,7 @@ export function CreateAssignmentPage({
 
         {/* Footer Actions */}
         <div className="flex flex-wrap justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            className="cursor-pointer"
-          >
+          <Button type="button" variant="outline" onClick={onCancel} className="cursor-pointer">
             Cancel
           </Button>
           <Button
@@ -2415,11 +2222,7 @@ export function CreateAssignmentPage({
             <Eye className="mr-1.5 h-4 w-4" />
             Student preview
           </Button>
-          <Button
-            type="submit"
-            disabled={!isPointsValid}
-            className="cursor-pointer"
-          >
+          <Button type="submit" disabled={!isPointsValid} className="cursor-pointer">
             Create assignment
           </Button>
         </div>
@@ -2451,9 +2254,7 @@ export function CreateAssignmentPage({
                 </CardHeader>
                 <CardContent className="pt-4 space-y-3">
                   <div className="text-sm">
-                    <MarkdownRenderer>
-                      {q.text || "_No question text entered._"}
-                    </MarkdownRenderer>
+                    <MarkdownRenderer>{q.text || "_No question text entered._"}</MarkdownRenderer>
                   </div>
                   {q.type === "multiple-choice" && q.options && (
                     <div className="grid grid-cols-1 gap-2">
@@ -2493,27 +2294,19 @@ export function ResourcesPage({
   onAddResource: (resource: Omit<PreviewResource, "id" | "createdAt">) => void;
   onDeleteResource: (id: string) => void;
 }) {
-  const [selectedCourseFilter, setSelectedCourseFilter] =
-    React.useState<string>("all");
+  const [selectedCourseFilter, setSelectedCourseFilter] = React.useState<string>("all");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [title, setTitle] = React.useState("");
   const [courseId, setCourseId] = React.useState<string>("all");
-  const [fileName, setFileName] = React.useState(
-    "ap_physics_rotational_dynamics_notes.pdf"
-  );
-  const [resourceToDelete, setResourceToDelete] =
-    React.useState<PreviewResource | null>(null);
-  const [previewResource, setPreviewResource] =
-    React.useState<PreviewResource | null>(null);
+  const [fileName, setFileName] = React.useState("ap_physics_rotational_dynamics_notes.pdf");
+  const [resourceToDelete, setResourceToDelete] = React.useState<PreviewResource | null>(null);
+  const [previewResource, setPreviewResource] = React.useState<PreviewResource | null>(null);
 
   const filteredResources = React.useMemo(() => {
     return resources.filter((r) => {
-      const matchesCourse =
-        selectedCourseFilter === "all" || r.courseId === selectedCourseFilter;
-      const matchesSearch = r.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      const matchesCourse = selectedCourseFilter === "all" || r.courseId === selectedCourseFilter;
+      const matchesSearch = r.title.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCourse && matchesSearch;
     });
   }, [resources, selectedCourseFilter, searchQuery]);
@@ -2549,8 +2342,7 @@ export function ResourcesPage({
               <DialogHeader>
                 <DialogTitle>Upload Study Material</DialogTitle>
                 <DialogDescription>
-                  Provide a title and assign this PDF or document to a specific
-                  class.
+                  Provide a title and assign this PDF or document to a specific class.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -2595,11 +2387,7 @@ export function ResourcesPage({
                 </div>
               </div>
               <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setDialogOpen(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancel
                 </Button>
                 <Button type="submit" className="cursor-pointer">
@@ -2621,8 +2409,8 @@ export function ResourcesPage({
                 Uploaded Materials
               </CardTitle>
               <CardDescription>
-                Students can access these materials directly from their Course
-                Resources tab and Problem Solver sidebar.
+                Students can access these materials directly from their Course Resources tab and
+                Problem Solver sidebar.
               </CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
@@ -2635,10 +2423,7 @@ export function ResourcesPage({
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select
-                value={selectedCourseFilter}
-                onValueChange={setSelectedCourseFilter}
-              >
+              <Select value={selectedCourseFilter} onValueChange={setSelectedCourseFilter}>
                 <SelectTrigger className="w-full sm:w-[190px] h-9">
                   <SelectValue placeholder="Filter by Class" />
                 </SelectTrigger>
@@ -2660,8 +2445,7 @@ export function ResourcesPage({
               <FolderOpen className="mx-auto h-10 w-10 text-muted-foreground mb-3 opacity-50" />
               <h3 className="text-base font-medium">No resources found</h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
-                Try adjusting your search or class filter, or upload a new
-                document.
+                Try adjusting your search or class filter, or upload a new document.
               </p>
             </div>
           ) : (
@@ -2670,12 +2454,8 @@ export function ResourcesPage({
                 <TableHeader>
                   <TableRow className="bg-muted/50">
                     <TableHead>Resource</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Class
-                    </TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Uploaded
-                    </TableHead>
+                    <TableHead className="hidden md:table-cell">Class</TableHead>
+                    <TableHead className="hidden sm:table-cell">Uploaded</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -2742,10 +2522,7 @@ export function ResourcesPage({
       </Card>
 
       {/* Resource Preview Dialog */}
-      <Dialog
-        open={!!previewResource}
-        onOpenChange={(open) => !open && setPreviewResource(null)}
-      >
+      <Dialog open={!!previewResource} onOpenChange={(open) => !open && setPreviewResource(null)}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -2759,20 +2536,14 @@ export function ResourcesPage({
           </DialogHeader>
           <div className="rounded-lg border bg-muted/20 p-4 space-y-3 text-sm">
             <div className="rounded-md bg-background border p-3.5 text-xs space-y-2">
-              <p className="font-semibold text-foreground">
-                Reference Equations & Notes
-              </p>
+              <p className="font-semibold text-foreground">Reference Equations & Notes</p>
               <MarkdownRenderer>
                 {`$$\\sum \\vec{F} = m\\vec{a}, \\quad W_{\\text{net}} = \\Delta K, \\quad \\oint \\vec{E}\\cdot d\\vec{A} = \\frac{Q_{\\text{enc}}}{\\varepsilon_0}$$`}
               </MarkdownRenderer>
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPreviewResource(null)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setPreviewResource(null)}>
               Close
             </Button>
           </DialogFooter>

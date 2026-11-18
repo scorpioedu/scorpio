@@ -7,13 +7,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Building2,
   Users,
@@ -46,21 +60,16 @@ import {
   BarChart3,
   GraduationCap,
   Sparkles,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuLabel
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -95,8 +104,8 @@ export default function NetworkPage() {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [networkMembers, setNetworkMembers] = useState<NetworkMember[]>([]);
   const [newOrgName, setNewOrgName] = useState("");
-  const [memberToKick, setMemberToKick] = useState<{ id: string, name: string } | null>(null);
-  const [ownerToTransfer, setOwnerToTransfer] = useState<{ id: string, name: string } | null>(null);
+  const [memberToKick, setMemberToKick] = useState<{ id: string; name: string } | null>(null);
+  const [ownerToTransfer, setOwnerToTransfer] = useState<{ id: string; name: string } | null>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [joiningOrgId, setJoiningOrgId] = useState("");
   const [updatingBudget, setUpdatingBudget] = useState(false);
@@ -120,8 +129,14 @@ export default function NetworkPage() {
 
   // Limits Assistant
   const [limitsOpen, setLimitsOpen] = useState(false);
-  const [limitsMessages, setLimitsMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
-    { role: "assistant", content: "Hi! I'm your Scorpio guide. Ask me anything about your network's limits, budgets, or capacities — I'll explain what each setting does and suggest optimal values for your class size. 🎯" }
+  const [limitsMessages, setLimitsMessages] = useState<
+    { role: "user" | "assistant"; content: string }[]
+  >([
+    {
+      role: "assistant",
+      content:
+        "Hi! I'm your Scorpio guide. Ask me anything about your network's limits, budgets, or capacities — I'll explain what each setting does and suggest optimal values for your class size. 🎯",
+    },
   ]);
   const [limitsInput, setLimitsInput] = useState("");
   const [limitsLoading, setLimitsLoading] = useState(false);
@@ -130,7 +145,10 @@ export default function NetworkPage() {
   const [renamedOrgName, setRenamedOrgName] = useState("");
   const [updatingName, setUpdatingName] = useState(false);
 
-  useEffect(() => {
+  // Reset the limit drafts whenever the saved organisation changes.
+  const [draftsFor, setDraftsFor] = useState<{ org: Organization | null } | null>(null);
+  if (!draftsFor || draftsFor.org !== organization) {
+    setDraftsFor({ org: organization });
     if (organization?.aiBudgetLimit !== undefined) {
       setTempBudget((organization.aiBudgetLimit / 100).toFixed(2));
     } else {
@@ -154,7 +172,7 @@ export default function NetworkPage() {
     } else {
       setTempTutorLimitPerStudent("30");
     }
-  }, [organization]);
+  }
 
   useEffect(() => {
     if (searchParams?.get("success") === "true") {
@@ -164,14 +182,15 @@ export default function NetworkPage() {
   }, [searchParams, router]);
 
   const handleRenameNetwork = async () => {
-    if (!user || !organization || user.uid !== organization.ownerId || !renamedOrgName.trim()) return;
+    if (!user || !organization || user.uid !== organization.ownerId || !renamedOrgName.trim())
+      return;
     setUpdatingName(true);
     try {
       await updateDoc(doc(db, "organizations", organization.id), {
-        name: renamedOrgName.trim()
+        name: renamedOrgName.trim(),
       });
       toast.success("Department renamed successfully.");
-      setOrganization(prev => prev ? { ...prev, name: renamedOrgName.trim() } : null);
+      setOrganization((prev) => (prev ? { ...prev, name: renamedOrgName.trim() } : null));
       setIsRenaming(false);
     } catch (e) {
       console.error(e);
@@ -191,10 +210,10 @@ export default function NetworkPage() {
     setUpdatingTutor(true);
     try {
       await updateDoc(doc(db, "organizations", organization.id), {
-        aiTutorLimitPerStudent: perMember
+        aiTutorLimitPerStudent: perMember,
       });
       toast.success(`Raise limit updated to ${perMember} messages/month per student.`);
-      setOrganization(prev => prev ? { ...prev, aiTutorLimitPerStudent: perMember } : null);
+      setOrganization((prev) => (prev ? { ...prev, aiTutorLimitPerStudent: perMember } : null));
     } catch (e) {
       console.error(e);
       toast.error("Failed to update Raise limit.");
@@ -206,7 +225,7 @@ export default function NetworkPage() {
   const sendLimitsMessage = async () => {
     if (!limitsInput.trim() || !user || limitsLoading) return;
     const userMsg = { role: "user" as const, content: limitsInput.trim() };
-    setLimitsMessages(prev => [...prev, userMsg]);
+    setLimitsMessages((prev) => [...prev, userMsg]);
     setLimitsInput("");
     setLimitsLoading(true);
     try {
@@ -216,14 +235,20 @@ export default function NetworkPage() {
         body: JSON.stringify({
           message: userMsg.content,
           chatHistory: limitsMessages.slice(-8),
-          userId: user.uid
-        })
+          userId: user.uid,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to get response");
-      setLimitsMessages(prev => [...prev, { role: "assistant", content: data.text }]);
+      setLimitsMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
     } catch (e: unknown) {
-      setLimitsMessages(prev => [...prev, { role: "assistant", content: "Sorry, I couldn't process that right now. Please try again." }]);
+      setLimitsMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Sorry, I couldn't process that right now. Please try again.",
+        },
+      ]);
     } finally {
       setLimitsLoading(false);
     }
@@ -242,13 +267,17 @@ export default function NetworkPage() {
     try {
       const budgetInCents = Math.round(budget * 100);
       await updateDoc(doc(db, "organizations", organization.id), {
-        aiBudgetLimit: budgetInCents
+        aiBudgetLimit: budgetInCents,
       });
       toast.success(`Monthly AI Budget Cap set to $${budget.toFixed(2)}`);
-      setOrganization(prev => prev ? {
-        ...prev,
-        aiBudgetLimit: budgetInCents
-      } : null);
+      setOrganization((prev) =>
+        prev
+          ? {
+              ...prev,
+              aiBudgetLimit: budgetInCents,
+            }
+          : null,
+      );
     } catch (e) {
       console.error(e);
       toast.error("Failed to update budget.");
@@ -271,14 +300,18 @@ export default function NetworkPage() {
     try {
       await updateDoc(doc(db, "organizations", organization.id), {
         notebookLimitPerStudent: perMember,
-        aiNotebookLimitPerStudent: aiPerMember
+        aiNotebookLimitPerStudent: aiPerMember,
       });
       toast.success(`Notebook limits updated!`);
-      setOrganization(prev => prev ? {
-        ...prev,
-        notebookLimitPerStudent: perMember,
-        aiNotebookLimitPerStudent: aiPerMember
-      } : null);
+      setOrganization((prev) =>
+        prev
+          ? {
+              ...prev,
+              notebookLimitPerStudent: perMember,
+              aiNotebookLimitPerStudent: aiPerMember,
+            }
+          : null,
+      );
     } catch (e) {
       console.error(e);
       toast.error("Failed to update notebook limit.");
@@ -291,13 +324,18 @@ export default function NetworkPage() {
     setCreatingInvite(true);
     setInviteError("");
     try {
-      const response = await authenticatedFetch("/api/teacher/network/invites", { method: "POST", body: "{}" });
+      const response = await authenticatedFetch("/api/teacher/network/invites", {
+        method: "POST",
+        body: "{}",
+      });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not create an invite.");
       setInviteUrl(new URL(networkInvitePath(result.code), window.location.origin).href);
       setCopiedLink(false);
     } catch (error) {
-      setInviteError(error instanceof Error ? error.message : "Could not create an invite. Try again.");
+      setInviteError(
+        error instanceof Error ? error.message : "Could not create an invite. Try again.",
+      );
     } finally {
       setCreatingInvite(false);
     }
@@ -333,7 +371,7 @@ export default function NetworkPage() {
 
     try {
       await updateDoc(doc(db, "organizations", organization.id), {
-        ownerId: ownerToTransfer.id
+        ownerId: ownerToTransfer.id,
       });
       toast.success(`Department leadership transferred to ${ownerToTransfer.name}`);
       router.refresh();
@@ -355,9 +393,9 @@ export default function NetworkPage() {
     if (!user || !organization || !memberToKick) return;
 
     try {
-      await membershipAction({ action: 'remove', memberId: memberToKick.id });
+      await membershipAction({ action: "remove", memberId: memberToKick.id });
       toast.success(`${memberToKick.name} has been removed from the department.`);
-      setNetworkMembers(prev => prev.filter(m => m.uid !== memberToKick.id));
+      setNetworkMembers((prev) => prev.filter((m) => m.uid !== memberToKick.id));
     } catch (e) {
       console.error(e);
       toast.error("Failed to remove member.");
@@ -372,6 +410,7 @@ export default function NetworkPage() {
     if (user && profile?.organizationId) {
       fetchNetworkInfo();
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clears the spinner when there is no organisation to load
       setLoading(false);
     }
   }, [user, profile, authLoading]);
@@ -389,21 +428,25 @@ export default function NetworkPage() {
         setOrganization({ id: orgSnap.id, ...orgSnap.data() } as Organization);
       }
 
-      const membersSnap = await getDocs(query(
-        collection(db, "users"),
-        where("organizationId", "==", profile.organizationId),
-        where("role", "==", "teacher")
-      ));
-      const members = membersSnap.docs.map(d => ({ uid: d.id, ...d.data() } as NetworkMember));
+      const membersSnap = await getDocs(
+        query(
+          collection(db, "users"),
+          where("organizationId", "==", profile.organizationId),
+          where("role", "==", "teacher"),
+        ),
+      );
+      const members = membersSnap.docs.map((d) => ({ uid: d.id, ...d.data() }) as NetworkMember);
       setNetworkMembers(members);
 
-      const teacherIds = members.map(m => m.uid);
+      const teacherIds = members.map((m) => m.uid);
       if (teacherIds.length > 0) {
-        const studentsSnap = await getDocs(query(
-          collection(db, "users"),
-          where("teacherId", "in", teacherIds),
-          where("role", "==", "student")
-        ));
+        const studentsSnap = await getDocs(
+          query(
+            collection(db, "users"),
+            where("teacherId", "in", teacherIds),
+            where("role", "==", "student"),
+          ),
+        );
         setStudentCount(studentsSnap.size);
       } else {
         setStudentCount(0);
@@ -416,8 +459,10 @@ export default function NetworkPage() {
   }
 
   async function membershipAction(body: Record<string, string>) {
-    const response = await authenticatedFetch('/api/teacher/network/membership', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    const response = await authenticatedFetch("/api/teacher/network/membership", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error);
@@ -426,19 +471,19 @@ export default function NetworkPage() {
 
   async function createOrganization() {
     try {
-      await membershipAction({ action: 'create', name: newOrgName });
-      toast.success('Department network created!');
+      await membershipAction({ action: "create", name: newOrgName });
+      toast.success("Department network created!");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to create department network');
+      toast.error(error instanceof Error ? error.message : "Unable to create department network");
     }
   }
 
   async function joinOrganization() {
     try {
-      await membershipAction({ action: 'join', code: joiningOrgId.trim() });
-      toast.success('Joined department network!');
+      await membershipAction({ action: "join", code: joiningOrgId.trim() });
+      toast.success("Joined department network!");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to join department network');
+      toast.error(error instanceof Error ? error.message : "Unable to join department network");
     }
   }
 
@@ -447,7 +492,9 @@ export default function NetworkPage() {
 
     const isOwner = user.uid === organization.ownerId;
     if (isOwner) {
-      const confirmName = prompt(`To disband this department network, please type its name: ${organization.name}`);
+      const confirmName = prompt(
+        `To disband this department network, please type its name: ${organization.name}`,
+      );
       if (confirmName !== organization.name) {
         toast.error("Department name did not match. Disband cancelled.");
         return;
@@ -464,7 +511,7 @@ export default function NetworkPage() {
     if (!user || !profile?.organizationId || !organization) return;
     setLoading(true);
     try {
-      await membershipAction({ action: 'leave' });
+      await membershipAction({ action: "leave" });
       router.refresh();
     } catch (e) {
       console.error("Error leaving network:", e);
@@ -498,7 +545,8 @@ export default function NetworkPage() {
   // High-level calculations
   const spentDollars = (organization?.aiUsageCurrent || 0) / 100;
   const budgetCapDollars = (organization?.aiBudgetLimit || 0) / 100;
-  const budgetPercentUsed = budgetCapDollars > 0 ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
+  const budgetPercentUsed =
+    budgetCapDollars > 0 ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
   const budgetRemaining = Math.max(budgetCapDollars - spentDollars, 0);
 
   if (loading || authLoading) {
@@ -520,7 +568,6 @@ export default function NetworkPage() {
   return (
     <TooltipProvider>
       <div className="space-y-6">
-
         {/* ─── Top Department Pulse Header ───────────────────────── */}
         <div className="flex flex-col gap-5 border-b border-border/60 pb-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -530,16 +577,26 @@ export default function NetworkPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Input
                       value={renamedOrgName}
-                      onChange={e => setRenamedOrgName(e.target.value)}
+                      onChange={(e) => setRenamedOrgName(e.target.value)}
                       aria-label="Department name"
                       className="h-9 w-full text-base font-medium sm:w-64"
                       placeholder="Department Name"
                       autoFocus
                     />
-                    <Button size="sm" onClick={handleRenameNetwork} disabled={updatingName} className="h-9 cursor-pointer">
+                    <Button
+                      size="sm"
+                      onClick={handleRenameNetwork}
+                      disabled={updatingName}
+                      className="h-9 cursor-pointer"
+                    >
                       {updatingName ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setIsRenaming(false)} className="h-9 cursor-pointer">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setIsRenaming(false)}
+                      className="h-9 cursor-pointer"
+                    >
                       Cancel
                     </Button>
                   </div>
@@ -553,7 +610,10 @@ export default function NetworkPage() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-primary transition-opacity cursor-pointer"
-                        onClick={() => { setIsRenaming(true); setRenamedOrgName(organization.name); }}
+                        onClick={() => {
+                          setIsRenaming(true);
+                          setRenamedOrgName(organization.name);
+                        }}
                         title="Rename Department"
                       >
                         <Pencil className="h-4 w-4" />
@@ -563,10 +623,15 @@ export default function NetworkPage() {
                 )}
 
                 {organization && (
-                  <Badge variant={isFreePlan ? "outline" : "default"} className={cn(
-                    "text-xs font-bold uppercase tracking-wider",
-                    isFreePlan ? "text-muted-foreground border-border" : "bg-emerald-600 text-white"
-                  )}>
+                  <Badge
+                    variant={isFreePlan ? "outline" : "default"}
+                    className={cn(
+                      "text-xs font-bold uppercase tracking-wider",
+                      isFreePlan
+                        ? "text-muted-foreground border-border"
+                        : "bg-emerald-600 text-white",
+                    )}
+                  >
                     {isFreePlan ? "Free Plan" : "Department License"}
                   </Badge>
                 )}
@@ -577,7 +642,9 @@ export default function NetworkPage() {
                 {organization && (
                   <>
                     <span>•</span>
-                    <span className="font-mono text-xs text-muted-foreground/80">ID: {organization.id}</span>
+                    <span className="font-mono text-xs text-muted-foreground/80">
+                      ID: {organization.id}
+                    </span>
                   </>
                 )}
               </p>
@@ -588,13 +655,21 @@ export default function NetworkPage() {
               {organization && (
                 <>
                   {isOwner && (
-                    <Button onClick={() => changeInviteDialog(true)} className="h-9 gap-2 text-xs font-bold shadow-sm rounded-xl px-4">
+                    <Button
+                      onClick={() => changeInviteDialog(true)}
+                      className="h-9 gap-2 text-xs font-bold shadow-sm rounded-xl px-4"
+                    >
                       <UserPlus className="h-3.5 w-3.5" />
                       Invite Colleague
                     </Button>
                   )}
                   {isOwner && (
-                    <Button asChild variant="outline" size="sm" className="h-9 gap-2 text-xs font-semibold rounded-xl cursor-pointer">
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="h-9 gap-2 text-xs font-semibold rounded-xl cursor-pointer"
+                    >
                       <Link href="/teacher/network/billing">
                         <CreditCard className="h-3.5 w-3.5" />
                         Billing & Plan
@@ -624,7 +699,9 @@ export default function NetworkPage() {
                   <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xl font-black font-mono leading-none">{networkMembers.length}</div>
+                  <div className="text-xl font-black font-mono leading-none">
+                    {networkMembers.length}
+                  </div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-1 truncate">
                     Faculty
                   </div>
@@ -667,7 +744,11 @@ export default function NetworkPage() {
                     <div
                       className={cn(
                         "h-full rounded-full transition-all duration-700",
-                        budgetPercentUsed >= 90 ? "bg-red-500" : budgetPercentUsed >= 70 ? "bg-amber-500" : "bg-emerald-500"
+                        budgetPercentUsed >= 90
+                          ? "bg-red-500"
+                          : budgetPercentUsed >= 70
+                            ? "bg-amber-500"
+                            : "bg-emerald-500",
                       )}
                       style={{ width: `${budgetPercentUsed}%` }}
                     />
@@ -685,7 +766,8 @@ export default function NetworkPage() {
                     {organization.aiTutorLimitPerStudent || 0}
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-1 truncate">
-                    msgs / student ({(organization.aiTutorLimitPerStudent || 0) * studentCount} pool)
+                    msgs / student ({(organization.aiTutorLimitPerStudent || 0) * studentCount}{" "}
+                    pool)
                   </div>
                 </div>
               </div>
@@ -699,9 +781,12 @@ export default function NetworkPage() {
         {!profile?.organizationId ? (
           <div className="max-w-4xl mx-auto py-10">
             <div className="text-center mb-8 space-y-2">
-              <h2 className="text-3xl font-black tracking-tight">Connect with Your Science Department</h2>
+              <h2 className="text-3xl font-black tracking-tight">
+                Connect with Your Science Department
+              </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Collaborate with fellow physics teachers, pool student AI tutoring allowances, and share Waypoints curriculum.
+                Collaborate with fellow physics teachers, pool student AI tutoring allowances, and
+                share Waypoints curriculum.
               </p>
             </div>
 
@@ -718,7 +803,12 @@ export default function NetworkPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="org-name" className="text-xs font-bold uppercase text-muted-foreground">Department / School Name</Label>
+                    <Label
+                      htmlFor="org-name"
+                      className="text-xs font-bold uppercase text-muted-foreground"
+                    >
+                      Department / School Name
+                    </Label>
                     <Input
                       id="org-name"
                       placeholder="e.g. Scarsdale High Physics"
@@ -729,7 +819,10 @@ export default function NetworkPage() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={createOrganization} className="w-full h-11 font-bold cursor-pointer">
+                  <Button
+                    onClick={createOrganization}
+                    className="w-full h-11 font-bold cursor-pointer"
+                  >
                     Create Department
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -748,7 +841,12 @@ export default function NetworkPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="org-id" className="text-xs font-bold uppercase text-muted-foreground">Department invite code</Label>
+                    <Label
+                      htmlFor="org-id"
+                      className="text-xs font-bold uppercase text-muted-foreground"
+                    >
+                      Department invite code
+                    </Label>
                     <Input
                       id="org-id"
                       placeholder="Paste an invite code"
@@ -759,7 +857,11 @@ export default function NetworkPage() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={joinOrganization} variant="outline" className="w-full h-11 font-bold cursor-pointer">
+                  <Button
+                    onClick={joinOrganization}
+                    variant="outline"
+                    className="w-full h-11 font-bold cursor-pointer"
+                  >
                     Join Team
                     <LinkIcon className="ml-2 h-4 w-4" />
                   </Button>
@@ -822,7 +924,11 @@ export default function NetworkPage() {
                       </CardDescription>
                     </div>
                     {isOwner && (
-                      <Button size="sm" className="text-xs font-semibold rounded-xl" onClick={() => changeInviteDialog(true)}>
+                      <Button
+                        size="sm"
+                        className="text-xs font-semibold rounded-xl"
+                        onClick={() => changeInviteDialog(true)}
+                      >
                         <UserPlus className="h-3.5 w-3.5" />
                         Add Teacher
                       </Button>
@@ -844,7 +950,9 @@ export default function NetworkPage() {
                             <TableCell className="pl-6 py-3.5">
                               <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-primary text-xs shrink-0">
-                                  {(member.displayName || member.name || "E").charAt(0).toUpperCase()}
+                                  {(member.displayName || member.name || "E")
+                                    .charAt(0)
+                                    .toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
                                   <div className="font-semibold text-sm truncate">
@@ -857,11 +965,16 @@ export default function NetworkPage() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <span className="text-xs text-muted-foreground">{member.email || "—"}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {member.email || "—"}
+                              </span>
                             </TableCell>
                             <TableCell>
                               {organization.ownerId === member.uid ? (
-                                <Badge variant="default" className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60 font-semibold text-[10px] gap-1">
+                                <Badge
+                                  variant="default"
+                                  className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60 font-semibold text-[10px] gap-1"
+                                >
                                   <Crown className="w-3 h-3 text-amber-600 dark:text-amber-400" />
                                   Lead Admin
                                 </Badge>
@@ -875,7 +988,11 @@ export default function NetworkPage() {
                               {isOwner && member.uid !== user?.uid ? (
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0 cursor-pointer"
+                                    >
                                       <MoreHorizontal className="h-4 w-4" />
                                     </Button>
                                   </DropdownMenuTrigger>
@@ -884,14 +1001,24 @@ export default function NetworkPage() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       className="text-amber-600 focus:text-amber-700 cursor-pointer"
-                                      onClick={() => transferOwnership(member.uid, member.displayName || member.name || "this educator")}
+                                      onClick={() =>
+                                        transferOwnership(
+                                          member.uid,
+                                          member.displayName || member.name || "this educator",
+                                        )
+                                      }
                                     >
                                       <Crown className="h-4 w-4 mr-2" />
                                       Transfer Lead Role
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                       className="text-destructive focus:text-destructive cursor-pointer"
-                                      onClick={() => kickMember(member.uid, member.displayName || member.name || "this educator")}
+                                      onClick={() =>
+                                        kickMember(
+                                          member.uid,
+                                          member.displayName || member.name || "this educator",
+                                        )
+                                      }
                                     >
                                       <UserMinus className="h-4 w-4 mr-2" />
                                       Remove from Department
@@ -917,10 +1044,14 @@ export default function NetworkPage() {
                         <CardTitle className="flex items-center gap-2 text-sm">
                           <Share2 className="size-4 text-primary" /> Invite fellow teachers
                         </CardTitle>
-                        <CardDescription>Share Waypoints and teaching resources with a colleague.</CardDescription>
+                        <CardDescription>
+                          Share Waypoints and teaching resources with a colleague.
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <Button size="sm" onClick={() => changeInviteDialog(true)}>Invite a colleague</Button>
+                        <Button size="sm" onClick={() => changeInviteDialog(true)}>
+                          Invite a colleague
+                        </Button>
                       </CardContent>
                     </Card>
                   )}
@@ -934,16 +1065,24 @@ export default function NetworkPage() {
                             <CreditCard className="h-4 w-4 text-primary" />
                             Department Billing
                           </span>
-                          <Badge variant="outline" className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]">
+                          <Badge
+                            variant="outline"
+                            className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]"
+                          >
                             {organization.planId === "free" ? "Free Tier" : "Pro Active"}
                           </Badge>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          Managed through Polar metered billing. Department spend is tracked centrally.
+                          Managed through Polar metered billing. Department spend is tracked
+                          centrally.
                         </p>
-                        <Button asChild variant="outline" className="w-full text-xs h-9 font-semibold cursor-pointer">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full text-xs h-9 font-semibold cursor-pointer"
+                        >
                           <Link href="/teacher/network/billing">
                             Manage Subscription & Invoices
                           </Link>
@@ -987,11 +1126,15 @@ export default function NetworkPage() {
                     Numerical Safety & Quota Dials
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Precise numerical thresholds to prevent budget overages and calibrate student AI engagement.
+                    Precise numerical thresholds to prevent budget overages and calibrate student AI
+                    engagement.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px] font-mono border-border bg-background">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-mono border-border bg-background"
+                  >
                     Resets Every 30 Days
                   </Badge>
                   <Button
@@ -1008,20 +1151,26 @@ export default function NetworkPage() {
 
               {/* 2x2 Numerical Controls Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
                 {/* 1. Monthly AI Budget Cap ($) */}
-                <Card className={cn(
-                  "border-emerald-200/50 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm relative overflow-hidden",
-                  isFreePlan && "grayscale-[0.5]"
-                )}>
+                <Card
+                  className={cn(
+                    "border-emerald-200/50 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm relative overflow-hidden",
+                    isFreePlan && "grayscale-[0.5]",
+                  )}
+                >
                   {isFreePlan && (
                     <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
                       <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">Unlock Budget Controls on Pro</p>
-                      <Button asChild size="sm" variant="secondary" className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer">
-                        <Link href="/teacher/network/billing">
-                          Upgrade to Pro
-                        </Link>
+                      <p className="text-xs font-bold text-white mb-3">
+                        Unlock Budget Controls on Pro
+                      </p>
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="secondary"
+                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
+                      >
+                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
                       </Button>
                     </div>
                   )}
@@ -1031,12 +1180,16 @@ export default function NetworkPage() {
                         <HandCoins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                         Monthly AI Spending Cap
                       </CardTitle>
-                      <Badge variant="outline" className="text-[10px] font-mono border-emerald-300 text-emerald-700 bg-emerald-100/50 dark:bg-emerald-950 dark:text-emerald-400">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] font-mono border-emerald-300 text-emerald-700 bg-emerald-100/50 dark:bg-emerald-950 dark:text-emerald-400"
+                      >
                         HARD STOP SAFETY
                       </Badge>
                     </div>
                     <CardDescription className="text-xs">
-                      All AI features pause automatically when this exact dollar threshold is reached. No surprise invoices.
+                      All AI features pause automatically when this exact dollar threshold is
+                      reached. No surprise invoices.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1063,11 +1216,20 @@ export default function NetworkPage() {
                     <div className="space-y-1.5">
                       <div className="flex justify-between text-xs font-bold">
                         <span className="text-muted-foreground">Usage Consumption</span>
-                        <span className="font-mono text-emerald-600 dark:text-emerald-400">{budgetPercentUsed.toFixed(0)}%</span>
+                        <span className="font-mono text-emerald-600 dark:text-emerald-400">
+                          {budgetPercentUsed.toFixed(0)}%
+                        </span>
                       </div>
                       <div className="h-2 rounded-full bg-border/40 overflow-hidden">
                         <div
-                          className={cn("h-full rounded-full transition-all duration-700", budgetPercentUsed >= 90 ? "bg-red-500" : budgetPercentUsed >= 70 ? "bg-amber-500" : "bg-emerald-500")}
+                          className={cn(
+                            "h-full rounded-full transition-all duration-700",
+                            budgetPercentUsed >= 90
+                              ? "bg-red-500"
+                              : budgetPercentUsed >= 70
+                                ? "bg-amber-500"
+                                : "bg-emerald-500",
+                          )}
                           style={{ width: `${budgetPercentUsed}%` }}
                         />
                       </div>
@@ -1076,12 +1238,17 @@ export default function NetworkPage() {
                     {isOwner && (
                       <div className="space-y-3 pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30">
                         <div className="space-y-1.5">
-                          <Label htmlFor="ai-budget-input" className="text-xs font-bold text-muted-foreground">
+                          <Label
+                            htmlFor="ai-budget-input"
+                            className="text-xs font-bold text-muted-foreground"
+                          >
                             Set Safety Cap (USD)
                           </Label>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
-                              <span className="absolute left-3 top-2.5 text-sm font-bold text-muted-foreground font-mono">$</span>
+                              <span className="absolute left-3 top-2.5 text-sm font-bold text-muted-foreground font-mono">
+                                $
+                              </span>
                               <Input
                                 id="ai-budget-input"
                                 type="number"
@@ -1098,15 +1265,21 @@ export default function NetworkPage() {
                               onClick={handleUpdateBudget}
                               disabled={updatingBudget}
                             >
-                              {updatingBudget ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Cap"}
+                              {updatingBudget ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                "Save Cap"
+                              )}
                             </Button>
                           </div>
                         </div>
 
                         {/* Quick Step Pills */}
                         <div className="flex items-center gap-1.5 text-xs">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">Quick Add:</span>
-                          {[5, 10, 25].map(amount => (
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">
+                            Quick Add:
+                          </span>
+                          {[5, 10, 25].map((amount) => (
                             <Button
                               key={amount}
                               type="button"
@@ -1125,18 +1298,25 @@ export default function NetworkPage() {
                 </Card>
 
                 {/* 2. Raise AI Tutor Message Allowance */}
-                <Card className={cn(
-                  "border-purple-200/50 dark:border-purple-900/40 bg-purple-50/20 dark:bg-purple-950/10 shadow-sm relative overflow-hidden",
-                  isFreePlan && "grayscale-[0.5]"
-                )}>
+                <Card
+                  className={cn(
+                    "border-purple-200/50 dark:border-purple-900/40 bg-purple-50/20 dark:bg-purple-950/10 shadow-sm relative overflow-hidden",
+                    isFreePlan && "grayscale-[0.5]",
+                  )}
+                >
                   {isFreePlan && (
                     <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
                       <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">Unlock Raise Quotas on Pro</p>
-                      <Button asChild size="sm" variant="secondary" className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer">
-                        <Link href="/teacher/network/billing">
-                          Upgrade to Pro
-                        </Link>
+                      <p className="text-xs font-bold text-white mb-3">
+                        Unlock Raise Quotas on Pro
+                      </p>
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="secondary"
+                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
+                      >
+                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
                       </Button>
                     </div>
                   )}
@@ -1146,7 +1326,10 @@ export default function NetworkPage() {
                         <RaiseLogo size={17} className="text-purple-600 dark:text-purple-400" />
                         Raise AI Tutor Allowance
                       </CardTitle>
-                      <Badge variant="outline" className="text-[10px] font-mono border-purple-300 text-purple-700 bg-purple-100/50 dark:bg-purple-950 dark:text-purple-400">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] font-mono border-purple-300 text-purple-700 bg-purple-100/50 dark:bg-purple-950 dark:text-purple-400"
+                      >
                         PER STUDENT · MONTHLY
                       </Badge>
                     </div>
@@ -1184,7 +1367,10 @@ export default function NetworkPage() {
                     {isOwner && (
                       <div className="space-y-3 pt-2 border-t border-purple-200/40 dark:border-purple-900/30">
                         <div className="space-y-1.5">
-                          <Label htmlFor="tutor-limit-input" className="text-xs font-bold text-muted-foreground">
+                          <Label
+                            htmlFor="tutor-limit-input"
+                            className="text-xs font-bold text-muted-foreground"
+                          >
                             Edit Messages per Student
                           </Label>
                           <div className="flex gap-2">
@@ -1202,7 +1388,11 @@ export default function NetworkPage() {
                               onClick={handleUpdateTutorLimit}
                               disabled={updatingTutor}
                             >
-                              {updatingTutor ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Limit"}
+                              {updatingTutor ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                "Save Limit"
+                              )}
                             </Button>
                           </div>
                         </div>
@@ -1210,8 +1400,10 @@ export default function NetworkPage() {
                         {/* Quick Step Pills + Live Projection */}
                         <div className="flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">Step:</span>
-                            {[5, 10, 20].map(amount => (
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">
+                              Step:
+                            </span>
+                            {[5, 10, 20].map((amount) => (
                               <Button
                                 key={amount}
                                 type="button"
@@ -1225,7 +1417,7 @@ export default function NetworkPage() {
                             ))}
                           </div>
                           <span className="text-[10px] font-mono text-muted-foreground">
-                            = {(parseInt(tempTutorLimitPerStudent || "0") * studentCount)} dept total
+                            = {parseInt(tempTutorLimitPerStudent || "0") * studentCount} dept total
                           </span>
                         </div>
                       </div>
@@ -1234,18 +1426,25 @@ export default function NetworkPage() {
                 </Card>
 
                 {/* 3. Notebook Research Workspaces */}
-                <Card className={cn(
-                  "border-blue-200/50 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/10 shadow-sm relative overflow-hidden",
-                  isFreePlan && "grayscale-[0.5]"
-                )}>
+                <Card
+                  className={cn(
+                    "border-blue-200/50 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/10 shadow-sm relative overflow-hidden",
+                    isFreePlan && "grayscale-[0.5]",
+                  )}
+                >
                   {isFreePlan && (
                     <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
                       <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">Unlock Notebook Limits on Pro</p>
-                      <Button asChild size="sm" variant="secondary" className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer">
-                        <Link href="/teacher/network/billing">
-                          Upgrade to Pro
-                        </Link>
+                      <p className="text-xs font-bold text-white mb-3">
+                        Unlock Notebook Limits on Pro
+                      </p>
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="secondary"
+                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
+                      >
+                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
                       </Button>
                     </div>
                   )}
@@ -1255,12 +1454,16 @@ export default function NetworkPage() {
                         <NotebookPen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         Notebook Capacity & AI Inquiries
                       </CardTitle>
-                      <Badge variant="outline" className="text-[10px] font-mono border-blue-300 text-blue-700 bg-blue-100/50 dark:bg-blue-950 dark:text-blue-400">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] font-mono border-blue-300 text-blue-700 bg-blue-100/50 dark:bg-blue-950 dark:text-blue-400"
+                      >
                         PER STUDENT · WORKSPACE
                       </Badge>
                     </div>
                     <CardDescription className="text-xs">
-                      Number of research derivation notebooks and in-notebook AI inquiries per student.
+                      Number of research derivation notebooks and in-notebook AI inquiries per
+                      student.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1287,7 +1490,12 @@ export default function NetworkPage() {
                       <div className="space-y-3 pt-2 border-t border-blue-200/40 dark:border-blue-900/30">
                         <div className="grid grid-cols-2 gap-3">
                           <div className="space-y-1">
-                            <Label htmlFor="nb-input" className="text-[11px] font-bold text-muted-foreground">Notebooks / Student</Label>
+                            <Label
+                              htmlFor="nb-input"
+                              className="text-[11px] font-bold text-muted-foreground"
+                            >
+                              Notebooks / Student
+                            </Label>
                             <Input
                               id="nb-input"
                               type="number"
@@ -1299,7 +1507,12 @@ export default function NetworkPage() {
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label htmlFor="ai-nb-input" className="text-[11px] font-bold text-muted-foreground">AI Inquiries / Mo</Label>
+                            <Label
+                              htmlFor="ai-nb-input"
+                              className="text-[11px] font-bold text-muted-foreground"
+                            >
+                              AI Inquiries / Mo
+                            </Label>
                             <Input
                               id="ai-nb-input"
                               type="number"
@@ -1339,17 +1552,19 @@ export default function NetworkPage() {
                             onClick={handleUpdateNotebookLimit}
                             disabled={updatingNotebook}
                           >
-                            {updatingNotebook ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save"}
+                            {updatingNotebook ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              "Save"
+                            )}
                           </Button>
                         </div>
                       </div>
                     )}
                   </CardContent>
                 </Card>
-
               </div>
             </TabsContent>
-
 
             {/* ═══════════════════════════════════════════════════════
                 TAB 4: DEEP TOKEN ANALYTICS & LOGS
@@ -1368,23 +1583,31 @@ export default function NetworkPage() {
               <DialogHeader>
                 <DialogTitle>Invite a colleague</DialogTitle>
                 <DialogDescription>
-                  Each link can be used once and expires after seven days. Create a separate link for each teacher.
+                  Each link can be used once and expires after seven days. Create a separate link
+                  for each teacher.
                 </DialogDescription>
               </DialogHeader>
               {inviteUrl && (
                 <div className="space-y-2">
                   <Label htmlFor="network-invite-link">Invitation link</Label>
-                  <Input id="network-invite-link" readOnly value={inviteUrl} onFocus={event => event.target.select()} />
+                  <Input
+                    id="network-invite-link"
+                    readOnly
+                    value={inviteUrl}
+                    onFocus={(event) => event.target.select()}
+                  />
                 </div>
               )}
-              {inviteError && <p role="alert" className="text-sm text-destructive">{inviteError}</p>}
+              {inviteError && (
+                <p role="alert" className="text-sm text-destructive">
+                  {inviteError}
+                </p>
+              )}
               <div className="flex flex-wrap justify-end gap-2">
                 {inviteUrl ? (
                   <>
                     <Button asChild variant="outline">
-                      <a href={inviteEmailDraft}>
-                        Email draft
-                      </a>
+                      <a href={inviteEmailDraft}>Email draft</a>
                     </Button>
                     <Button onClick={copyInviteLink}>
                       {copiedLink ? <Check className="size-4" /> : <Copy className="size-4" />}
@@ -1410,21 +1633,30 @@ export default function NetworkPage() {
                   <RaiseLogo size={20} className="text-purple-500" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-black tracking-tight">Limits & Safety Assistant</DialogTitle>
-                  <DialogDescription className="text-xs">Context-aware recommendations for department caps.</DialogDescription>
+                  <DialogTitle className="text-lg font-black tracking-tight">
+                    Limits & Safety Assistant
+                  </DialogTitle>
+                  <DialogDescription className="text-xs">
+                    Context-aware recommendations for department caps.
+                  </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {limitsMessages.map((msg, i) => (
-                <div key={i} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
-                  <div className={cn(
-                    "max-w-[85%] rounded-2xl p-4 text-sm shadow-sm",
-                    msg.role === "user"
-                      ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 rounded-tr-none"
-                      : "bg-secondary text-foreground rounded-tl-none border border-border/50"
-                  )}>
+                <div
+                  key={i}
+                  className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}
+                >
+                  <div
+                    className={cn(
+                      "max-w-[85%] rounded-2xl p-4 text-sm shadow-sm",
+                      msg.role === "user"
+                        ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 rounded-tr-none"
+                        : "bg-secondary text-foreground rounded-tl-none border border-border/50",
+                    )}
+                  >
                     <MarkdownRenderer>{msg.content}</MarkdownRenderer>
                   </div>
                 </div>
