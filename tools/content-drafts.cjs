@@ -11,6 +11,8 @@
  *   # Load them into another project as approved, UNPUBLISHED drafts (dry run unless --apply)
  *   node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json
  *   node tools/content-drafts.cjs import --project <project-id> --file ... --apply
+ *   # Accept AI-reviewed drafts as they are (reviewKind "owner-accepted"), so they can be published
+ *   node tools/content-drafts.cjs import --project <project-id> --file ... --accept-ai-review
  *
  * Import never publishes and never touches assignments or answer keys. Every imported draft keeps
  * its review note and its reviewKind, so AI-reviewed problems still need a person's approval at
@@ -38,6 +40,7 @@ function parseArgs(argv) {
     file: null,
     sets: null,
     apply: false,
+    acceptAiReview: false,
   };
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
@@ -53,6 +56,7 @@ function parseArgs(argv) {
     else if (a === "--file") out.file = next();
     else if (a === "--sets") out.sets = next();
     else if (a === "--apply") out.apply = true;
+    else if (a === "--accept-ai-review") out.acceptAiReview = true;
     else throw new Error(`Unknown argument: ${a}`);
   }
   if (!["export", "import"].includes(command))
@@ -61,6 +65,8 @@ function parseArgs(argv) {
     throw new Error("Missing --project <project-id>. The project is never inferred.");
   if (command === "export" && !out.out) throw new Error("export needs --out <file>");
   if (command === "import" && !out.file) throw new Error("import needs --file <file>");
+  if (command === "export" && out.acceptAiReview)
+    throw new Error("--accept-ai-review only applies to import");
   return out;
 }
 
@@ -94,7 +100,11 @@ function toRecord(id, data) {
 }
 
 /** A repo record -> the draft written on import: approved (never published), unassigned. */
-function toImportDoc(record, importedAt) {
+function toImportDoc(record, importedAt, opts = {}) {
+  // The owner may accept AI-reviewed problems as they are. This is recorded as its own kind, not as a
+  // person's review, and lets the publish endpoint (which refuses "ai") publish them.
+  const kind = record.reviewKind ?? "ai";
+  const accepted = !!opts.acceptAiReview && kind === "ai";
   if (!record.problem) throw new Error(`Draft ${record.id} has no problem`);
   if (!["approved", "published"].includes(record.status))
     throw new Error(`Draft ${record.id} is ${record.status}; only reviewed drafts are imported`);
@@ -115,7 +125,8 @@ function toImportDoc(record, importedAt) {
     reviewedBy: "import",
     reviewedAt: record.reviewedAt ? new Date(record.reviewedAt) : importedAt,
     reviewNote: record.reviewNote ?? null,
-    reviewKind: record.reviewKind ?? "ai",
+    reviewKind: accepted ? "owner-accepted" : kind,
+    ...(accepted ? { aiReviewAcceptedAt: importedAt } : {}),
     assignmentId: null,
     importedAt,
   };
@@ -158,7 +169,7 @@ async function runExport(opts) {
 async function runImport(opts) {
   const file = JSON.parse(fs.readFileSync(opts.file, "utf8"));
   const now = new Date();
-  const docs = file.drafts.map((r) => [r.id, toImportDoc(r, now)]);
+  const docs = file.drafts.map((r) => [r.id, toImportDoc(r, now, opts)]);
   const firestore = db(opts.project);
   const existing = await firestore.getAll(
     ...docs.map(([id]) => firestore.collection(COLLECTION).doc(id)),
@@ -173,6 +184,11 @@ async function runImport(opts) {
   );
   const ai = todo.filter(([, d]) => d.reviewKind === "ai").length;
   console.log(`  ${ai} are AI-reviewed and still need a person's approval at /admin/content`);
+  const accepted = todo.filter(([, d]) => d.reviewKind === "owner-accepted").length;
+  if (opts.acceptAiReview)
+    console.log(
+      `  ${accepted} are AI-reviewed only and marked owner-accepted: they can be published without a person's review`,
+    );
   if (!opts.apply) return;
   for (let i = 0; i < todo.length; i += 400) {
     const batch = firestore.batch();

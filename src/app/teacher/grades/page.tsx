@@ -1,18 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where, doc, getDoc, type QueryDocumentSnapshot } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+  type QueryDocumentSnapshot,
+} from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowUpRight, BarChart3, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { GradeExportButton } from "@/components/grade-export-button";
@@ -31,37 +57,44 @@ interface Student {
 export default function TeacherGradesPage() {
   const { user } = useAuth();
   // The class is shared with the other teacher pages (remembered, and in the URL as ?class=).
-  const { classes, classId: selectedCourseId, setClassId: setSelectedCourseId } = useSelectedClass({ allowAll: true });
+  const {
+    classes,
+    classId: selectedCourseId,
+    setClassId: setSelectedCourseId,
+  } = useSelectedClass({ allowAll: true });
   const courses = classes ?? [];
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [assignments, setAssignments] = useState<{id: string, title: string, courseId?: string}[]>([]);
+  const [assignments, setAssignments] = useState<
+    { id: string; title: string; courseId?: string }[]
+  >([]);
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>("all");
   const [assignmentsLoaded, setAssignmentsLoaded] = useState(false);
   const [showDistribution, setShowDistribution] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
-
-
   useEffect(() => {
     async function fetchAssignments() {
-        if (!user) return;
-        try {
-            const snap = await getDocs(query(collection(db, "assignments"), where("teacherId", "==", user.uid)));
-            setAssignments(snap.docs.map(d => ({ 
-                id: d.id, 
-                title: d.data().title,
-                courseId: d.data().courseId
-            })));
-        } catch (e) {
-            console.error("Error fetching assignments", e);
-        } finally {
-            setAssignmentsLoaded(true);
-        }
+      if (!user) return;
+      try {
+        const snap = await getDocs(
+          query(collection(db, "assignments"), where("teacherId", "==", user.uid)),
+        );
+        setAssignments(
+          snap.docs.map((d) => ({
+            id: d.id,
+            title: d.data().title,
+            courseId: d.data().courseId,
+          })),
+        );
+      } catch (e) {
+        console.error("Error fetching assignments", e);
+      } finally {
+        setAssignmentsLoaded(true);
+      }
     }
     fetchAssignments();
   }, [user]);
-
 
   useEffect(() => {
     async function fetchStudentsAndGrades() {
@@ -69,78 +102,87 @@ export default function TeacherGradesPage() {
       setLoading(true);
       try {
         // 1. Get relevant assignments based on filters
-        let filteredAssignmentIds = assignments.map(a => a.id);
+        let filteredAssignmentIds = assignments.map((a) => a.id);
         if (selectedCourseId !== "all") {
-            filteredAssignmentIds = assignments
-                .filter(a => a.courseId === selectedCourseId)
-                .map(a => a.id);
+          filteredAssignmentIds = assignments
+            .filter((a) => a.courseId === selectedCourseId)
+            .map((a) => a.id);
         }
-        
+
         if (selectedAssignmentId !== "all") {
-            filteredAssignmentIds = [selectedAssignmentId];
+          filteredAssignmentIds = [selectedAssignmentId];
         }
 
         if (!assignmentsLoaded) {
-            return;
+          return;
         }
 
         if (filteredAssignmentIds.length === 0) {
-            // No assignments for this teacher or filter combination
-            setStudents([]);
-            setLoading(false);
-            return;
+          // No assignments for this teacher or filter combination
+          setStudents([]);
+          setLoading(false);
+          return;
         }
 
         // 2. Query relevant submissions
         let submissionsDocs: QueryDocumentSnapshot[] = [];
         if (selectedAssignmentId !== "all") {
-            const snap = await getDocs(query(collection(db, "submissions"), where("assignmentId", "==", selectedAssignmentId)));
-            submissionsDocs = snap.docs;
+          const snap = await getDocs(
+            query(collection(db, "submissions"), where("assignmentId", "==", selectedAssignmentId)),
+          );
+          submissionsDocs = snap.docs;
         } else {
-            // CHUNKED FETCHING: Only fetch submissions for teacher's assignments
-            // This is critical for security (prevent leaking all submissions) and performance.
-            const chunks = [];
-            for (let i = 0; i < filteredAssignmentIds.length; i += 30) {
-                chunks.push(filteredAssignmentIds.slice(i, i + 30));
-            }
-            
-            if (chunks.length > 0) {
-               const results = await Promise.all(chunks.map(chunk => 
-                  getDocs(query(collection(db, "submissions"), where("assignmentId", "in", chunk)))
-               ));
-               results.forEach(snap => submissionsDocs.push(...snap.docs));
-            }
+          // One query per assignment. firestore.rules authorises a submission read with
+          // ownsAssignment(resource.data.assignmentId), which costs a document lookup per assignment;
+          // an `in` over several ids is refused once it passes 10 lookups ("maximum of 10 document
+          // access calls"), which left this page empty. The Dashboard queries the same way.
+          const results = await Promise.all(
+            filteredAssignmentIds.map((assignmentId) =>
+              getDocs(
+                query(collection(db, "submissions"), where("assignmentId", "==", assignmentId)),
+              ),
+            ),
+          );
+          results.forEach((snap) => submissionsDocs.push(...snap.docs));
         }
-        
-        const studentMap = new Map<string, { name: string; email: string; scores: number[]; count: number }>();
-        const validAssignmentIds = new Set(filteredAssignmentIds);
 
+        const studentMap = new Map<
+          string,
+          { name: string; email: string; scores: number[]; count: number }
+        >();
+        const validAssignmentIds = new Set(filteredAssignmentIds);
 
         // Fetch students in the course to cross-reference (if course selected)
         const courseStudentIds = new Set<string>();
         if (selectedCourseId !== "all") {
-            const snap = await getDocs(query(collection(db, "users"), where("courseId", "==", selectedCourseId), where("role", "==", "student")));
-            snap.docs.forEach(d => courseStudentIds.add(d.id));
+          const snap = await getDocs(
+            query(
+              collection(db, "users"),
+              where("courseId", "==", selectedCourseId),
+              where("role", "==", "student"),
+            ),
+          );
+          snap.docs.forEach((d) => courseStudentIds.add(d.id));
         }
 
         submissionsDocs.forEach((doc) => {
           const data = doc.data();
-          if (data.status === 'draft') return; 
-          
+          if (data.status === "draft") return;
+
           // Verify assignment belongs to filter
           if (!validAssignmentIds.has(data.assignmentId)) return;
 
           const studentId = data.studentId;
-          
+
           // If course is selected, only show students in that course
           if (selectedCourseId !== "all" && !courseStudentIds.has(studentId)) return;
 
           if (!studentMap.has(studentId)) {
-            studentMap.set(studentId, { 
-              name: data.studentName || "Unknown Student", 
+            studentMap.set(studentId, {
+              name: data.studentName || "Unknown Student",
               email: data.studentEmail || "",
               scores: [],
-              count: 0
+              count: 0,
             });
           }
 
@@ -151,11 +193,11 @@ export default function TeacherGradesPage() {
           }
         });
 
-
         // 3. Populate names from student docs if missing
-        const unknownStudents = Array.from(studentMap.entries())
-          .filter(([_, data]) => data.name === "Unknown Student");
-        
+        const unknownStudents = Array.from(studentMap.entries()).filter(
+          ([_, data]) => data.name === "Unknown Student",
+        );
+
         await Promise.all(
           unknownStudents.map(async ([studentId, _]) => {
             try {
@@ -172,14 +214,15 @@ export default function TeacherGradesPage() {
             } catch (error) {
               console.error(`Error fetching student ${studentId}:`, error);
             }
-          })
+          }),
         );
 
         // Convert map to array
         const studentsArray: Student[] = Array.from(studentMap.entries()).map(([id, data]) => {
           const totalScore = data.scores.reduce((a, b) => a + b, 0);
-          const averageScore = data.scores.length > 0 ? Math.round(totalScore / data.scores.length) : 0;
-          
+          const averageScore =
+            data.scores.length > 0 ? Math.round(totalScore / data.scores.length) : 0;
+
           return {
             id,
             name: data.name,
@@ -201,12 +244,14 @@ export default function TeacherGradesPage() {
     fetchStudentsAndGrades();
   }, [selectedAssignmentId, selectedCourseId, user, assignments, assignmentsLoaded]);
 
-
   const deleteStudent = async (studentId: string) => {
     try {
       // 1. Cleanup Storage and Submissions
-      await cleanupStudentData(studentId, selectedCourseId === "all" ? undefined : selectedCourseId);
-      
+      await cleanupStudentData(
+        studentId,
+        selectedCourseId === "all" ? undefined : selectedCourseId,
+      );
+
       setStudents(students.filter((s) => s.id !== studentId));
       toast.success("Student records removed.");
     } catch (error: unknown) {
@@ -215,21 +260,30 @@ export default function TeacherGradesPage() {
     }
   };
 
-  const selectedAssignmentTitle = assignments.find((assignment) => assignment.id === selectedAssignmentId)?.title;
+  const selectedAssignmentTitle = assignments.find(
+    (assignment) => assignment.id === selectedAssignmentId,
+  )?.title;
   const gradedStudents = students.filter((student) => student.gradedCount > 0);
 
   return (
     <div className="space-y-6">
-      <TeacherPageHeader title="Gradebook" description="Review student scores and submission history.">
+      <TeacherPageHeader
+        title="Gradebook"
+        description="Review student scores and submission history."
+      >
         <GradeExportButton
-          data={loading ? [] : students.map((student) => ({
-            studentName: student.name,
-            studentEmail: student.email,
-            assignmentTitle: selectedAssignmentTitle || "All Assignments Summary",
-            score: student.averageScore,
-            totalPoints: 100,
-            submittedAt: new Date().toLocaleDateString(),
-          }))}
+          data={
+            loading
+              ? []
+              : students.map((student) => ({
+                  studentName: student.name,
+                  studentEmail: student.email,
+                  assignmentTitle: selectedAssignmentTitle || "All Assignments Summary",
+                  score: student.averageScore,
+                  totalPoints: 100,
+                  submittedAt: new Date().toLocaleDateString(),
+                }))
+          }
           filename={`grades-${selectedCourseId}-${new Date().toISOString().split("T")[0]}.csv`}
         />
       </TeacherPageHeader>
@@ -238,7 +292,12 @@ export default function TeacherGradesPage() {
         <CardHeader className="flex flex-wrap items-end justify-between gap-4 px-4 py-4 sm:px-5">
           <div className="grid w-full gap-3 sm:w-auto sm:grid-cols-2">
             <div className="min-w-0 space-y-1.5">
-              <label htmlFor="gradebook-class" className="block text-xs font-medium text-muted-foreground">Class</label>
+              <label
+                htmlFor="gradebook-class"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Class
+              </label>
               <Select
                 value={selectedCourseId}
                 onValueChange={(value) => {
@@ -251,20 +310,37 @@ export default function TeacherGradesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Classes</SelectItem>
-                  {courses.map((course) => <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>)}
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="min-w-0 space-y-1.5">
-              <label htmlFor="gradebook-assignment" className="block text-xs font-medium text-muted-foreground">Assignment</label>
+              <label
+                htmlFor="gradebook-assignment"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Assignment
+              </label>
               <Select value={selectedAssignmentId} onValueChange={setSelectedAssignmentId}>
                 <SelectTrigger id="gradebook-assignment" className="w-full cursor-pointer sm:w-52">
                   <SelectValue placeholder="All Assignments" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Assignments</SelectItem>
-                  {assignments.filter((assignment) => selectedCourseId === "all" || assignment.courseId === selectedCourseId)
-                    .map((assignment) => <SelectItem key={assignment.id} value={assignment.id}>{assignment.title}</SelectItem>)}
+                  {assignments
+                    .filter(
+                      (assignment) =>
+                        selectedCourseId === "all" || assignment.courseId === selectedCourseId,
+                    )
+                    .map((assignment) => (
+                      <SelectItem key={assignment.id} value={assignment.id}>
+                        {assignment.title}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -283,7 +359,9 @@ export default function TeacherGradesPage() {
         <div className="border-t" id="grade-distribution" hidden={!showDistribution}>
           {showDistribution && (
             <GradeDistributionChart
-              submissions={loading ? [] : gradedStudents.map((student) => ({ score: student.averageScore }))}
+              submissions={
+                loading ? [] : gradedStudents.map((student) => ({ score: student.averageScore }))
+              }
               title={selectedAssignmentTitle || "Grade distribution"}
               description="Students grouped by their average score"
             />
@@ -301,7 +379,9 @@ export default function TeacherGradesPage() {
                   <TableHead className="pl-4 sm:pl-5">Student</TableHead>
                   <TableHead className="text-right">Submissions</TableHead>
                   <TableHead className="text-right">Average</TableHead>
-                  <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
+                  <TableHead className="w-12">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -312,23 +392,42 @@ export default function TeacherGradesPage() {
                         href={`/teacher/grades/student?studentId=${student.id}`}
                         className="inline-flex items-baseline gap-1.5 break-words font-medium hover:text-primary hover:underline"
                       >
-                        {student.name} <ArrowUpRight aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+                        {student.name}{" "}
+                        <ArrowUpRight
+                          aria-hidden="true"
+                          className="size-3 shrink-0 text-muted-foreground"
+                        />
                       </Link>
-                      {student.email && <p className="break-all text-xs text-muted-foreground">{student.email}</p>}
+                      {student.email && (
+                        <p className="break-all text-xs text-muted-foreground">{student.email}</p>
+                      )}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{student.submissionCount}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {student.submissionCount}
+                    </TableCell>
                     <TableCell className="text-right font-medium tabular-nums">
-                      {student.gradedCount ? `${student.averageScore}%` : <span aria-label="Awaiting a grade">—</span>}
+                      {student.gradedCount ? (
+                        `${student.averageScore}%`
+                      ) : (
+                        <span aria-label="Awaiting a grade">—</span>
+                      )}
                     </TableCell>
                     <TableCell className="pr-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${student.name}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label={`Actions for ${student.name}`}
+                          >
                             <MoreHorizontal />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem variant="destructive" onSelect={() => setStudentToDelete(student.id)}>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={() => setStudentToDelete(student.id)}
+                          >
                             <Trash2 /> Remove records
                           </DropdownMenuItem>
                         </DropdownMenuContent>

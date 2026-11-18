@@ -2,15 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { collection, query, where, getDocs, getDoc, doc, type QueryDocumentSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { GradeExportButton } from "@/components/grade-export-button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -32,7 +45,7 @@ interface AssignmentOption {
 export default function StudentDetailsPage() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
-  const studentId = searchParams ? searchParams.get('studentId') ?? "" : "";
+  const studentId = searchParams ? (searchParams.get("studentId") ?? "") : "";
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [studentName, setStudentName] = useState("Student");
   const [loading, setLoading] = useState(true);
@@ -40,75 +53,85 @@ export default function StudentDetailsPage() {
   const [selectedAssignment, setSelectedAssignment] = useState<string>("");
 
   useEffect(() => {
-    if (!studentId || !user) {
-      setLoading(false);
-      return;
-    }
+    if (!studentId || !user) return;
 
     async function fetchStudentData() {
       try {
         // Fetch all assignments for filter dropdown (filtered by teacher)
-        const assignmentsQuery = query(collection(db, "assignments"), where("teacherId", "==", user!.uid));
+        const assignmentsQuery = query(
+          collection(db, "assignments"),
+          where("teacherId", "==", user!.uid),
+        );
         const assignmentsSnapshot = await getDocs(assignmentsQuery);
         const assignmentOptions: AssignmentOption[] = assignmentsSnapshot.docs.map((doc) => ({
           id: doc.id,
           title: doc.data().title || "Untitled Assignment",
         }));
         setAssignments(assignmentOptions);
-        
+
         // Allowed assignments set for validation
-        const allowedAssignmentIdsArr = Array.from(new Set(assignmentsSnapshot.docs.map(d => d.id)));
+        const allowedAssignmentIdsArr = Array.from(
+          new Set(assignmentsSnapshot.docs.map((d) => d.id)),
+        );
         const allowedAssignmentIdsSet = new Set(allowedAssignmentIdsArr);
 
         // Fetch submissions for this student belonging to the teacher's assignments
         const submissionsDocs: QueryDocumentSnapshot[] = [];
         if (allowedAssignmentIdsArr.length > 0) {
-            const chunks = [];
-            for (let i = 0; i < allowedAssignmentIdsArr.length; i += 30) {
-                chunks.push(allowedAssignmentIdsArr.slice(i, i + 30));
-            }
-            
-            const results = await Promise.all(chunks.map(chunk => 
-                getDocs(query(collection(db, "submissions"), where("studentId", "==", studentId), where("assignmentId", "in", chunk)))
-            ));
-            results.forEach(snap => submissionsDocs.push(...snap.docs));
+          // One query per assignment: the rules look each assignment up, and an `in` over several
+          // ids is refused past 10 lookups (see the Gradebook page).
+          const results = await Promise.all(
+            allowedAssignmentIdsArr.map((assignmentId) =>
+              getDocs(
+                query(
+                  collection(db, "submissions"),
+                  where("studentId", "==", studentId),
+                  where("assignmentId", "==", assignmentId),
+                ),
+              ),
+            ),
+          );
+          results.forEach((snap) => submissionsDocs.push(...snap.docs));
         }
 
-        const processedSubmissions = await Promise.all(submissionsDocs.map(async (docSnapshot) => {
-          const data = docSnapshot.data();
-          
-          // Verify assignment ownership (redundant but safe)
-          if (!allowedAssignmentIdsSet.has(data.assignmentId)) return null;
+        const processedSubmissions = await Promise.all(
+          submissionsDocs.map(async (docSnapshot) => {
+            const data = docSnapshot.data();
 
-          // Try to get student name from first submission if not available elsewhere
-          if (data.studentName) setStudentName(data.studentName);
+            // Verify assignment ownership (redundant but safe)
+            if (!allowedAssignmentIdsSet.has(data.assignmentId)) return null;
 
-          // Fetch assignment title
-          let assignmentTitle = "Unknown Assignment";
-          let assignmentExists = false;
-          if (data.assignmentId) {
-             const assignment = assignmentOptions.find(a => a.id === data.assignmentId);
-             if (assignment) {
-                 assignmentTitle = assignment.title;
-                 assignmentExists = true;
-             }
-          }
+            // Try to get student name from first submission if not available elsewhere
+            if (data.studentName) setStudentName(data.studentName);
 
-          if (!assignmentExists) return null;
-          if (data.status === 'draft') return null;
+            // Fetch assignment title
+            let assignmentTitle = "Unknown Assignment";
+            let assignmentExists = false;
+            if (data.assignmentId) {
+              const assignment = assignmentOptions.find((a) => a.id === data.assignmentId);
+              if (assignment) {
+                assignmentTitle = assignment.title;
+                assignmentExists = true;
+              }
+            }
 
-          return {
-            id: docSnapshot.id,
-            assignmentId: data.assignmentId,
-            assignmentTitle,
-            submittedAt: data.submittedAt?.toDate?.() || (data.submittedAt ? new Date(data.submittedAt) : null),
-            score: data.score,
-            graded: data.graded,
-          };
-        }));
+            if (!assignmentExists) return null;
+            if (data.status === "draft") return null;
+
+            return {
+              id: docSnapshot.id,
+              assignmentId: data.assignmentId,
+              assignmentTitle,
+              submittedAt:
+                data.submittedAt?.toDate?.() ||
+                (data.submittedAt ? new Date(data.submittedAt) : null),
+              score: data.score,
+              graded: data.graded,
+            };
+          }),
+        );
 
         setSubmissions(processedSubmissions.filter((s): s is Submission => s !== null));
-
       } catch (error) {
         console.error("Error fetching student data:", error);
       } finally {
@@ -119,7 +142,8 @@ export default function StudentDetailsPage() {
     fetchStudentData();
   }, [studentId, user]);
 
-  if (loading) {
+  // Nothing to wait for without a student in the address.
+  if (loading && studentId) {
     return <LoadingSpinner fullPage />;
   }
 
@@ -148,7 +172,10 @@ export default function StudentDetailsPage() {
 
   return (
     <div className="space-y-6">
-      <Link href="/teacher/grades" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        href="/teacher/grades"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" /> Gradebook
       </Link>
 
@@ -170,21 +197,35 @@ export default function StudentDetailsPage() {
         <CardHeader className="flex flex-wrap items-end justify-between gap-3 px-4 py-4 sm:px-5">
           <h2 className="text-base font-semibold">Submissions</h2>
           <div className="w-full space-y-1.5 sm:w-52">
-            <label htmlFor="student-assignment" className="block text-xs font-medium text-muted-foreground">Assignment</label>
-            <Select value={selectedAssignment || "all"} onValueChange={(value) => setSelectedAssignment(value === "all" ? "" : value)}>
+            <label
+              htmlFor="student-assignment"
+              className="block text-xs font-medium text-muted-foreground"
+            >
+              Assignment
+            </label>
+            <Select
+              value={selectedAssignment || "all"}
+              onValueChange={(value) => setSelectedAssignment(value === "all" ? "" : value)}
+            >
               <SelectTrigger id="student-assignment" className="w-full cursor-pointer">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Assignments</SelectItem>
-                {assignments.map((assignment) => <SelectItem key={assignment.id} value={assignment.id}>{assignment.title}</SelectItem>)}
+                {assignments.map((assignment) => (
+                  <SelectItem key={assignment.id} value={assignment.id}>
+                    {assignment.title}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         </CardHeader>
         <CardContent className="border-t p-0">
           {filteredSubmissions.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-muted-foreground">No submissions match this filter.</p>
+            <p className="px-5 py-10 text-center text-sm text-muted-foreground">
+              No submissions match this filter.
+            </p>
           ) : (
             <Table aria-label="Student submissions">
               <TableHeader className="bg-muted/40">
@@ -199,10 +240,22 @@ export default function StudentDetailsPage() {
                   <TableRow key={submission.id}>
                     <TableCell className="max-w-72 whitespace-normal py-3 pl-4 sm:pl-5">
                       <p className="break-words font-medium">{submission.assignmentTitle}</p>
-                      <p className="text-xs text-muted-foreground">{submission.submittedAt ? `Submitted ${submission.submittedAt.toLocaleDateString()}` : "No submission date"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {submission.submittedAt
+                          ? `Submitted ${submission.submittedAt.toLocaleDateString()}`
+                          : "No submission date"}
+                      </p>
                     </TableCell>
                     <TableCell className="font-medium tabular-nums">
-                      {submission.graded ? (submission.score == null ? "—" : `${submission.score}%`) : <span className="text-muted-foreground">Pending</span>}
+                      {submission.graded ? (
+                        submission.score == null ? (
+                          "—"
+                        ) : (
+                          `${submission.score}%`
+                        )
+                      ) : (
+                        <span className="text-muted-foreground">Pending</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-right pr-4 sm:pr-5">
                       <Button asChild variant={submission.graded ? "ghost" : "outline"} size="sm">
