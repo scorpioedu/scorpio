@@ -3,13 +3,7 @@
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Metadata } from "next";
 import { useState, useEffect, useCallback } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,11 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Check,
   X,
@@ -106,6 +96,7 @@ export function AccessRequests() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
     fetchRequests();
   }, [fetchRequests]);
 
@@ -226,7 +217,9 @@ export function AccessRequests() {
               >
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-green-500" />
-                  <span className="font-medium text-green-600 dark:text-green-400">Approved! Invite code:</span>
+                  <span className="font-medium text-green-600 dark:text-green-400">
+                    Approved! Invite code:
+                  </span>
                   <code className="font-mono font-bold tracking-widest text-foreground">
                     {justApproved.code}
                   </code>
@@ -239,9 +232,13 @@ export function AccessRequests() {
                     onClick={() => copyToClipboard(justApproved.code)}
                   >
                     {copiedCode === justApproved.code ? (
-                      <><Check className="h-3 w-3" /> Copied</>
+                      <>
+                        <Check className="h-3 w-3" /> Copied
+                      </>
                     ) : (
-                      <><Copy className="h-3 w-3" /> Copy</>
+                      <>
+                        <Copy className="h-3 w-3" /> Copy
+                      </>
                     )}
                   </Button>
                   <Button
@@ -261,7 +258,11 @@ export function AccessRequests() {
           <div className="grid grid-cols-3 gap-3">
             {[
               { label: "Pending", value: pending.length, color: "text-amber-500" },
-              { label: "Approved", value: requests.filter((r) => r.status === "approved").length, color: "text-green-500" },
+              {
+                label: "Approved",
+                value: requests.filter((r) => r.status === "approved").length,
+                color: "text-green-500",
+              },
               { label: "Total", value: requests.length, color: "text-foreground" },
             ].map((s) => (
               <div
@@ -289,7 +290,8 @@ export function AccessRequests() {
                       <TableHead className="text-xs">Institution</TableHead>
                       <TableHead className="text-xs">Role</TableHead>
                       <TableHead className="text-xs">
-                        <Clock className="h-3 w-3 inline mr-1" />Submitted
+                        <Clock className="h-3 w-3 inline mr-1" />
+                        Submitted
                       </TableHead>
                       <TableHead className="text-xs text-right">Actions</TableHead>
                     </TableRow>
@@ -303,7 +305,9 @@ export function AccessRequests() {
                       >
                         <TableCell className="text-sm font-medium">{r.name}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{r.email}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{r.institution}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {r.institution}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {ROLE_LABELS[r.role] ?? r.role}
                         </TableCell>
@@ -374,10 +378,16 @@ export function AccessRequests() {
                   </TableHeader>
                   <TableBody>
                     {reviewed.map((r) => (
-                      <TableRow key={r.id} className="opacity-70 hover:opacity-90 cursor-pointer" onClick={() => setDetailRequest(r)}>
+                      <TableRow
+                        key={r.id}
+                        className="opacity-70 hover:opacity-90 cursor-pointer"
+                        onClick={() => setDetailRequest(r)}
+                      >
                         <TableCell className="text-sm font-medium">{r.name}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{r.email}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{r.institution}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {r.institution}
+                        </TableCell>
                         <TableCell>
                           <Badge
                             variant="secondary"
@@ -385,7 +395,7 @@ export function AccessRequests() {
                               "text-xs",
                               r.status === "approved"
                                 ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
-                                : "bg-destructive/10 text-destructive border-destructive/20"
+                                : "bg-destructive/10 text-destructive border-destructive/20",
                             )}
                           >
                             {r.status === "approved" ? "Approved" : "Rejected"}
@@ -459,7 +469,7 @@ export function AccessRequests() {
                         ? "bg-amber-500/15 text-amber-500 border-amber-500/20"
                         : detailRequest.status === "approved"
                           ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
-                          : "bg-destructive/10 text-destructive border-destructive/20"
+                          : "bg-destructive/10 text-destructive border-destructive/20",
                     )}
                   >
                     {detailRequest.status}

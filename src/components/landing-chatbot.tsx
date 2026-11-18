@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   X,
   ArrowRight,
@@ -15,21 +15,21 @@ import {
   GraduationCap,
   Microscope,
   Compass,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { LazyMarkdownRenderer as MarkdownRenderer } from './lazy-markdown-renderer';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { LazyMarkdownRenderer as MarkdownRenderer } from "./lazy-markdown-renderer";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-import { RaiseLogo } from './ui/raise-logo';
-import reveal from './landing/home-reveal.module.css';
+import { RaiseLogo } from "./ui/raise-logo";
+import reveal from "./landing/home-reveal.module.css";
 
 const LIMIT = 10;
-const VISITOR_KEY = 'scorpio_landing_visitor_id';
-const COUNT_KEY = 'scorpio_landing_msg_count';
+const VISITOR_KEY = "scorpio_landing_visitor_id";
+const COUNT_KEY = "scorpio_landing_msg_count";
 
 function getOrCreateVisitorId(): string {
-  if (typeof window === 'undefined') return '';
+  if (typeof window === "undefined") return "";
   let id = localStorage.getItem(VISITOR_KEY);
   if (!id) {
     id = `v_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -39,18 +39,18 @@ function getOrCreateVisitorId(): string {
 }
 
 function getLocalCount(): number {
-  if (typeof window === 'undefined') return 0;
-  return parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+  if (typeof window === "undefined") return 0;
+  return parseInt(localStorage.getItem(COUNT_KEY) || "0", 10);
 }
 
 function incrementLocalCount() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   const current = getLocalCount();
   localStorage.setItem(COUNT_KEY, String(current + 1));
 }
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   isTyping?: boolean;
 }
@@ -62,16 +62,20 @@ interface SuggestedPrompt {
 }
 
 const suggestedPrompts: SuggestedPrompt[] = [
-  { text: 'How much does Scorpio cost?', category: 'Pricing', icon: CircleDollarSign },
-  { text: 'How does Raise guide students without giving answers?', category: 'Socratic AI', icon: GraduationCap },
-  { text: 'What were the results of the Ph.D. audit?', category: 'Research', icon: Microscope },
-  { text: 'What are Waypoints?', category: 'Curriculum', icon: Compass },
+  { text: "How much does Scorpio cost?", category: "Pricing", icon: CircleDollarSign },
+  {
+    text: "How does Raise guide students without giving answers?",
+    category: "Socratic AI",
+    icon: GraduationCap,
+  },
+  { text: "What were the results of the Ph.D. audit?", category: "Research", icon: Microscope },
+  { text: "What are Waypoints?", category: "Curriculum", icon: Compass },
 ];
 
 const quickLinks = [
-  { label: 'Platform Features', href: '#features' },
-  { label: 'Research & DAR Study', href: '#efficacy' },
-  { label: 'Transparent Pricing', href: '#pricing-teaser' },
+  { label: "Platform Features", href: "#features" },
+  { label: "Research & DAR Study", href: "#efficacy" },
+  { label: "Transparent Pricing", href: "#pricing-teaser" },
 ];
 
 export function LandingChatbot() {
@@ -79,12 +83,12 @@ export function LandingChatbot() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTeaser, setShowTeaser] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [remaining, setRemaining] = useState<number>(LIMIT);
   const [limitReached, setLimitReached] = useState(false);
-  const [visitorId, setVisitorId] = useState('');
+  const [visitorId, setVisitorId] = useState("");
 
   const launcherRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -97,12 +101,13 @@ export function LandingChatbot() {
   // Init visitor ID + local count on mount
   useEffect(() => {
     const id = getOrCreateVisitorId();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
     setVisitorId(id);
     const used = getLocalCount();
     setRemaining(Math.max(0, LIMIT - used));
     if (used >= LIMIT) setLimitReached(true);
     try {
-      if (sessionStorage.getItem('scorpio_teaser_dismissed') === '1') {
+      if (sessionStorage.getItem("scorpio_teaser_dismissed") === "1") {
         setShowTeaser(false);
       }
     } catch {}
@@ -140,17 +145,17 @@ export function LandingChatbot() {
   function dismissTeaser() {
     setShowTeaser(false);
     try {
-      sessionStorage.setItem('scorpio_teaser_dismissed', '1');
+      sessionStorage.setItem("scorpio_teaser_dismissed", "1");
     } catch {}
   }
 
   const animateTyping = (fullText: string) => {
     const tokens = fullText.split(/(\s+)/);
     let i = 0;
-    let accumulated = '';
+    let accumulated = "";
     setIsTyping(true);
 
-    setMessages((prev) => [...prev, { role: 'assistant', content: '', isTyping: true }]);
+    setMessages((prev) => [...prev, { role: "assistant", content: "", isTyping: true }]);
 
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
 
@@ -161,7 +166,7 @@ export function LandingChatbot() {
         setMessages((prev) => {
           const next = [...prev];
           const last = next[next.length - 1];
-          if (last && last.role === 'assistant') {
+          if (last && last.role === "assistant") {
             next[next.length - 1] = { ...last, content: accumulated, isTyping: true };
           }
           return next;
@@ -177,7 +182,7 @@ export function LandingChatbot() {
         setMessages((prev) => {
           const next = [...prev];
           const last = next[next.length - 1];
-          if (last && last.role === 'assistant') {
+          if (last && last.role === "assistant") {
             next[next.length - 1] = { ...last, content: fullText, isTyping: false };
           }
           return next;
@@ -189,14 +194,14 @@ export function LandingChatbot() {
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || isBusy || limitReached || !visitorId) return;
-    setInput('');
-    setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
+    setInput("");
+    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat/landing', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/chat/landing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed, visitorId }),
       });
 
@@ -210,7 +215,7 @@ export function LandingChatbot() {
         }
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: data?.error || 'Something went wrong.' },
+          { role: "assistant", content: data?.error || "Something went wrong." },
         ]);
         return;
       }
@@ -221,14 +226,14 @@ export function LandingChatbot() {
       if (newRemaining <= 0) setLimitReached(true);
 
       if (reduceMotion) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.text }]);
+        setMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
       } else {
         animateTyping(data.text);
       }
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Connection error. Please try again.' },
+        { role: "assistant", content: "Connection error. Please try again." },
       ]);
     } finally {
       setIsLoading(false);
@@ -252,10 +257,14 @@ export function LandingChatbot() {
         )}
       </AnimatePresence>
 
-      <div className={cn(
-        "fixed z-50 transition-all duration-200",
-        isExpanded ? "inset-0 flex items-center justify-center p-3 sm:p-6 md:p-8 pointer-events-none" : "right-4 bottom-4 sm:right-6 sm:bottom-6"
-      )}>
+      <div
+        className={cn(
+          "fixed z-50 transition-all duration-200",
+          isExpanded
+            ? "inset-0 flex items-center justify-center p-3 sm:p-6 md:p-8 pointer-events-none"
+            : "right-4 bottom-4 sm:right-6 sm:bottom-6",
+        )}
+      >
         {/* Launcher Button & Teaser (only when not expanded) */}
         {!isExpanded && (
           <div className="flex flex-col items-end">
@@ -278,8 +287,12 @@ export function LandingChatbot() {
                     <HelpCircle className="size-3.5" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <p className="text-xs font-semibold text-foreground leading-tight">Questions about Scorpio?</p>
-                    <p className="text-[11px] text-muted-foreground leading-snug truncate">Ask Raise · Product Guide & Tutor</p>
+                    <p className="text-xs font-semibold text-foreground leading-tight">
+                      Questions about Scorpio?
+                    </p>
+                    <p className="text-[11px] text-muted-foreground leading-snug truncate">
+                      Ask Raise · Product Guide & Tutor
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -305,11 +318,11 @@ export function LandingChatbot() {
                 else setIsOpen(true);
               }}
               aria-expanded={isOpen}
-              aria-controls={isOpen ? 'landing-raise-chat' : undefined}
-              aria-label={isOpen ? 'Close Raise chat' : 'Ask Raise — Scorpio Product Guide'}
+              aria-controls={isOpen ? "landing-raise-chat" : undefined}
+              aria-label={isOpen ? "Close Raise chat" : "Ask Raise — Scorpio Product Guide"}
               className={cn(
                 reveal.enter,
-                "flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-3.5 sm:px-4 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:scale-[1.02] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none cursor-pointer"
+                "flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-3.5 sm:px-4 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:scale-[1.02] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none cursor-pointer",
               )}
             >
               {isOpen ? (
@@ -335,7 +348,7 @@ export function LandingChatbot() {
               role="dialog"
               aria-labelledby="landing-raise-title"
               onKeyDown={(event) => {
-                if (event.key === 'Escape') {
+                if (event.key === "Escape") {
                   if (isExpanded) {
                     setIsExpanded(false);
                   } else {
@@ -343,15 +356,23 @@ export function LandingChatbot() {
                   }
                 }
               }}
-              initial={reduceMotion ? false : { opacity: 0, y: isExpanded ? 0 : 8, scale: isExpanded ? 0.98 : 1 }}
+              initial={
+                reduceMotion
+                  ? false
+                  : { opacity: 0, y: isExpanded ? 0 : 8, scale: isExpanded ? 0.98 : 1 }
+              }
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={reduceMotion ? undefined : { opacity: 0, y: isExpanded ? 0 : 8, scale: isExpanded ? 0.98 : 1 }}
-              transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
+              exit={
+                reduceMotion
+                  ? undefined
+                  : { opacity: 0, y: isExpanded ? 0 : 8, scale: isExpanded ? 0.98 : 1 }
+              }
+              transition={{ duration: reduceMotion ? 0 : 0.18, ease: "easeOut" }}
               className={cn(
                 "flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl transition-all duration-200 pointer-events-auto",
                 isExpanded
                   ? "w-full max-w-4xl h-[min(90vh,54rem)]"
-                  : "absolute right-0 bottom-full mb-3 h-[34rem] max-h-[calc(100dvh-6rem)] w-[min(26rem,calc(100vw-2rem))]"
+                  : "absolute right-0 bottom-full mb-3 h-[34rem] max-h-[calc(100dvh-6rem)] w-[min(26rem,calc(100vw-2rem))]",
               )}
             >
               {/* Header */}
@@ -361,7 +382,9 @@ export function LandingChatbot() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h2 id="landing-raise-title" className="text-base font-semibold leading-tight">Raise</h2>
+                    <h2 id="landing-raise-title" className="text-base font-semibold leading-tight">
+                      Raise
+                    </h2>
                     <span className="inline-flex items-center rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
                       Product Guide
                     </span>
@@ -375,11 +398,15 @@ export function LandingChatbot() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExpanded(!isExpanded)}
-                  aria-label={isExpanded ? 'Collapse view' : 'Expand view'}
-                  title={isExpanded ? 'Collapse view' : 'Expand view'}
+                  aria-label={isExpanded ? "Collapse view" : "Expand view"}
+                  title={isExpanded ? "Collapse view" : "Expand view"}
                   className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
                 >
-                  {isExpanded ? <Minimize2 className="size-4" aria-hidden="true" /> : <Maximize2 className="size-4" aria-hidden="true" />}
+                  {isExpanded ? (
+                    <Minimize2 className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Maximize2 className="size-4" aria-hidden="true" />
+                  )}
                 </Button>
                 <Button
                   ref={closeRef}
@@ -399,7 +426,7 @@ export function LandingChatbot() {
                 ref={scrollRef}
                 className={cn(
                   "min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 sm:p-5",
-                  isExpanded && "max-w-3xl w-full mx-auto"
+                  isExpanded && "max-w-3xl w-full mx-auto",
                 )}
               >
                 {!hasMessages && (
@@ -410,7 +437,9 @@ export function LandingChatbot() {
                         Welcome to Scorpio!
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                        I&apos;m Raise, Scorpio&apos;s learning assistant. Ask me anything about how we eliminate homework cheating, our zero-markup API billing, or test my Socratic physics tutoring!
+                        I&apos;m Raise, Scorpio&apos;s learning assistant. Ask me anything about how
+                        we eliminate homework cheating, our zero-markup API billing, or test my
+                        Socratic physics tutoring!
                       </p>
                     </div>
 
@@ -431,12 +460,20 @@ export function LandingChatbot() {
                             >
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                  <Icon className="size-3.5 text-primary shrink-0" aria-hidden="true" />
-                                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{item.category}</span>
+                                  <Icon
+                                    className="size-3.5 text-primary shrink-0"
+                                    aria-hidden="true"
+                                  />
+                                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
+                                    {item.category}
+                                  </span>
                                 </div>
                                 <p className="font-medium text-foreground truncate">{item.text}</p>
                               </div>
-                              <ArrowRight aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+                              <ArrowRight
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0 text-muted-foreground"
+                              />
                             </button>
                           );
                         })}
@@ -471,24 +508,30 @@ export function LandingChatbot() {
                 )}
 
                 {/* Conversation Log */}
-                <div role="log" aria-label="Raise conversation" className="space-y-3.5 empty:hidden">
+                <div
+                  role="log"
+                  aria-label="Raise conversation"
+                  className="space-y-3.5 empty:hidden"
+                >
                   {messages.map((message, index) => (
                     <div
                       key={index}
                       className={cn(
-                        'w-fit max-w-[90%] sm:max-w-[85%] break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
-                        message.role === 'user'
-                          ? 'ml-auto bg-primary text-primary-foreground rounded-tr-sm shadow-xs'
-                          : 'bg-muted/80 rounded-tl-sm border border-border/50'
+                        "w-fit max-w-[90%] sm:max-w-[85%] break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+                        message.role === "user"
+                          ? "ml-auto bg-primary text-primary-foreground rounded-tr-sm shadow-xs"
+                          : "bg-muted/80 rounded-tl-sm border border-border/50",
                       )}
                     >
-                      <p className={cn(
-                        "mb-1 text-[11px] font-semibold uppercase tracking-wide",
-                        message.role === 'user' ? "text-primary-foreground/75" : "text-primary"
-                      )}>
-                        {message.role === 'user' ? 'You' : 'Raise'}
+                      <p
+                        className={cn(
+                          "mb-1 text-[11px] font-semibold uppercase tracking-wide",
+                          message.role === "user" ? "text-primary-foreground/75" : "text-primary",
+                        )}
+                      >
+                        {message.role === "user" ? "You" : "Raise"}
                       </p>
-                      {message.role === 'user' ? (
+                      {message.role === "user" ? (
                         <p className="whitespace-pre-wrap">{message.content}</p>
                       ) : (
                         <div className="relative">
@@ -509,7 +552,10 @@ export function LandingChatbot() {
 
                 {/* Thinking / Typing Indicator */}
                 {isLoading && (
-                  <div className="flex items-start gap-2.5 animate-in fade-in-0 duration-150" role="status">
+                  <div
+                    className="flex items-start gap-2.5 animate-in fade-in-0 duration-150"
+                    role="status"
+                  >
                     <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary mt-0.5">
                       <RaiseLogo size={14} aria-hidden="true" />
                     </div>
@@ -526,8 +572,13 @@ export function LandingChatbot() {
 
                 {limitReached && (
                   <div role="status" className="rounded-xl border border-border bg-muted/40 p-3.5">
-                    <p className="text-sm font-semibold text-foreground">You’ve reached the demo limit.</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Create a free teacher account to deploy Raise with custom limits for your classroom.</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      You’ve reached the demo limit.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Create a free teacher account to deploy Raise with custom limits for your
+                      classroom.
+                    </p>
                     <Button asChild size="sm" className="mt-3 rounded-lg">
                       <Link href="/signup" onClick={closeChat}>
                         Sign up for free <ArrowRight aria-hidden="true" className="ml-1 size-3.5" />
@@ -541,7 +592,7 @@ export function LandingChatbot() {
               <form
                 className={cn(
                   "shrink-0 border-t border-border px-4 py-3 bg-muted/10",
-                  isExpanded && "max-w-3xl w-full mx-auto"
+                  isExpanded && "max-w-3xl w-full mx-auto",
                 )}
                 onSubmit={(event) => {
                   event.preventDefault();
@@ -553,13 +604,21 @@ export function LandingChatbot() {
                     value={input}
                     onChange={(event) => setInput(event.target.value)}
                     onKeyDown={(event) => {
-                      if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
+                      if (
+                        event.key === "Enter" &&
+                        !event.shiftKey &&
+                        !event.nativeEvent.isComposing
+                      ) {
                         event.preventDefault();
                         event.currentTarget.form?.requestSubmit();
                       }
                     }}
                     aria-label="Ask about Scorpio"
-                    placeholder={limitReached ? 'Demo limit reached' : 'Ask about Scorpio features, pricing, or physics…'}
+                    placeholder={
+                      limitReached
+                        ? "Demo limit reached"
+                        : "Ask about Scorpio features, pricing, or physics…"
+                    }
                     className="max-h-24 min-h-9 min-w-0 flex-1 resize-none rounded-md border-0 px-2.5 py-1.5 text-sm shadow-none focus-visible:ring-0 dark:bg-transparent"
                     rows={1}
                     maxLength={4000}
@@ -591,4 +650,3 @@ export function LandingChatbot() {
     </>
   );
 }
-

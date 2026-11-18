@@ -49,7 +49,13 @@ function MathPreview({ latex }: { latex: string }) {
 }
 
 // Shows a clear descriptive label & a field, completely abstracted from LaTeX
-function FieldRow({ label, hint, value, onChange, id }: {
+function FieldRow({
+  label,
+  hint,
+  value,
+  onChange,
+  id,
+}: {
   label: string;
   hint?: string;
   value: string;
@@ -58,7 +64,9 @@ function FieldRow({ label, hint, value, onChange, id }: {
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-sm font-semibold">{label}</Label>
+      <Label htmlFor={id} className="text-sm font-semibold">
+        {label}
+      </Label>
       {hint && <p className="text-xs text-muted-foreground leading-snug">{hint}</p>}
       <Input
         id={id}
@@ -145,16 +153,26 @@ export function MathBuilderModal({ open, type, onClose, onInsert }: MathBuilderM
   const [expression, setExpression] = React.useState("");
   const [subscript, setSubscript] = React.useState("");
 
-  React.useEffect(() => {
-    if (open) {
-      setNumerator(""); setDenominator(""); setVariable("");
-      setBase(""); setExponent(""); setExpression(""); setSubscript("");
+  // Start from empty fields each time the builder opens or switches type.
+  const resetKey = open ? String(type) : null;
+  const [seenResetKey, setSeenResetKey] = React.useState<string | null>(null);
+  if (resetKey !== seenResetKey) {
+    setSeenResetKey(resetKey);
+    if (resetKey !== null) {
+      setNumerator("");
+      setDenominator("");
+      setVariable("");
+      setBase("");
+      setExponent("");
+      setExpression("");
+      setSubscript("");
     }
-  }, [open, type]);
+  }
 
   // Builds the internal LaTeX (invisible to student - only used for rendering preview & output)
   const buildLatex = (): string => {
-    if (type === "fraction") return `\\frac{${numerator || "\\square"}}{${denominator || "\\square"}}`;
+    if (type === "fraction")
+      return `\\frac{${numerator || "\\square"}}{${denominator || "\\square"}}`;
     if (type === "vector") return `\\vec{${variable || "v"}}`;
     if (type === "power") return `${base || "x"}^{${exponent || "2"}}`;
     if (type === "sqrt") return `\\sqrt{${expression || "x"}}`;
@@ -197,7 +215,9 @@ export function MathBuilderModal({ open, type, onClose, onInsert }: MathBuilderM
           // Single deliberate focus target: the first field of the dialog.
           // preventScroll avoids a scroll jump while the dialog animates in.
           event.preventDefault();
-          (event.currentTarget as HTMLElement).querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
+          (event.currentTarget as HTMLElement)
+            .querySelector<HTMLInputElement>("input")
+            ?.focus({ preventScroll: true });
         }}
       >
         <DialogHeader>
@@ -216,72 +236,150 @@ export function MathBuilderModal({ open, type, onClose, onInsert }: MathBuilderM
           {/* === Fraction === */}
           {type === "fraction" && (
             <div className="space-y-3">
-              <FieldRow id="numerator" label="Top Number (Numerator)" hint="e.g., 3" value={numerator} onChange={setNumerator} />
-              <FieldRow id="denominator" label="Bottom Number (Denominator)" hint="e.g., 4" value={denominator} onChange={setDenominator} />
+              <FieldRow
+                id="numerator"
+                label="Top Number (Numerator)"
+                hint="e.g., 3"
+                value={numerator}
+                onChange={setNumerator}
+              />
+              <FieldRow
+                id="denominator"
+                label="Bottom Number (Denominator)"
+                hint="e.g., 4"
+                value={denominator}
+                onChange={setDenominator}
+              />
             </div>
           )}
 
           {/* === Vector === */}
           {type === "vector" && (
-            <FieldRow id="variable" label="Variable Name" hint="e.g., v, F, a" value={variable} onChange={setVariable} />
+            <FieldRow
+              id="variable"
+              label="Variable Name"
+              hint="e.g., v, F, a"
+              value={variable}
+              onChange={setVariable}
+            />
           )}
 
           {/* === Power === */}
           {type === "power" && (
             <div className="space-y-3">
-              <FieldRow id="base" label="Base (main symbol)" hint="e.g., x, 10" value={base} onChange={setBase} />
-              <FieldRow id="exponent" label="Exponent (raised number)" hint="e.g., 2, 3" value={exponent} onChange={setExponent} />
+              <FieldRow
+                id="base"
+                label="Base (main symbol)"
+                hint="e.g., x, 10"
+                value={base}
+                onChange={setBase}
+              />
+              <FieldRow
+                id="exponent"
+                label="Exponent (raised number)"
+                hint="e.g., 2, 3"
+                value={exponent}
+                onChange={setExponent}
+              />
             </div>
           )}
 
           {/* === Square Root === */}
           {type === "sqrt" && (
-            <FieldRow id="expression" label="Inside the Square Root" hint="e.g., 25, x+1" value={expression} onChange={setExpression} />
+            <FieldRow
+              id="expression"
+              label="Inside the Square Root"
+              hint="e.g., 25, x+1"
+              value={expression}
+              onChange={setExpression}
+            />
           )}
 
           {/* === Integral === */}
           {type === "integral" && (
-            <FieldRow id="expression" label="Function to Integrate" hint="e.g., f(x), x^2" value={expression} onChange={setExpression} />
+            <FieldRow
+              id="expression"
+              label="Function to Integrate"
+              hint="e.g., f(x), x^2"
+              value={expression}
+              onChange={setExpression}
+            />
           )}
 
           {/* === Partial Derivative === */}
           {type === "partial" && (
-            <FieldRow id="variable" label="Variable to Differentiate" hint="e.g., x, y, t" value={variable} onChange={setVariable} />
+            <FieldRow
+              id="variable"
+              label="Variable to Differentiate"
+              hint="e.g., x, y, t"
+              value={variable}
+              onChange={setVariable}
+            />
           )}
 
           {/* === Nabla === */}
           {type === "nabla" && (
-            <FieldRow id="variable" label="Function" hint="e.g., f, V" value={variable} onChange={setVariable} />
+            <FieldRow
+              id="variable"
+              label="Function"
+              hint="e.g., f, V"
+              value={variable}
+              onChange={setVariable}
+            />
           )}
 
           {/* === Sum === */}
           {type === "sum" && (
-            <FieldRow id="expression" label="Expression Inside Sum" hint="e.g., x_i, n^2" value={expression} onChange={setExpression} />
+            <FieldRow
+              id="expression"
+              label="Expression Inside Sum"
+              hint="e.g., x_i, n^2"
+              value={expression}
+              onChange={setExpression}
+            />
           )}
 
           {/* === Subscript === */}
           {type === "subscript" && (
             <div className="space-y-3">
-              <FieldRow id="base" label="Main Symbol" hint="e.g., v, x" value={base} onChange={setBase} />
-              <FieldRow id="subscript" label="Subscript (small number/letter below)" hint="e.g., 0, i, initial" value={subscript} onChange={setSubscript} />
+              <FieldRow
+                id="base"
+                label="Main Symbol"
+                hint="e.g., v, x"
+                value={base}
+                onChange={setBase}
+              />
+              <FieldRow
+                id="subscript"
+                label="Subscript (small number/letter below)"
+                hint="e.g., 0, i, initial"
+                value={subscript}
+                onChange={setSubscript}
+              />
             </div>
           )}
 
           {/* Live Rendered Preview — student sees the math visually, not as code */}
           <div className="rounded-xl border bg-muted/30 p-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Preview</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+              Preview
+            </p>
             <div className="text-2xl text-center min-h-[56px] flex items-center justify-center">
               {isValid() ? (
                 <MathPreview latex={buildLatex()} />
               ) : (
-                <span className="text-muted-foreground text-sm italic font-normal">Fill in the fields above to see a preview</span>
+                <span className="text-muted-foreground text-sm italic font-normal">
+                  Fill in the fields above to see a preview
+                </span>
               )}
             </div>
           </div>
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
           <Button type="button" onClick={handleInsert} disabled={!isValid()}>
             Insert into Answer
           </Button>

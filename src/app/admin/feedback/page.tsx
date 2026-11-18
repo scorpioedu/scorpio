@@ -169,6 +169,7 @@ export default function FeedbackAdminPage() {
   }, [status, category]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
     if (access === "admin") void load();
   }, [access, load]);
 

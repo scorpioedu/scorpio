@@ -87,7 +87,7 @@ function saveSessionMessages(msgs: Message[]) {
   try {
     sessionStorage.setItem(
       SESSION_MESSAGES_KEY,
-      JSON.stringify(msgs.map((m) => ({ ...m, isStreaming: false })))
+      JSON.stringify(msgs.map((m) => ({ ...m, isStreaming: false }))),
     );
   } catch {}
 }
@@ -123,6 +123,7 @@ export default function AIPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
     setMounted(true);
     const id = getOrCreateVisitorId();
     setVisitorId(id);
@@ -156,7 +157,7 @@ export default function AIPage() {
       if (i < words.length) {
         currentText += (i === 0 ? "" : " ") + words[i];
         setMessages((prev) =>
-          prev.map((m) => (m.id === messageId ? { ...m, content: currentText } : m))
+          prev.map((m) => (m.id === messageId ? { ...m, content: currentText } : m)),
         );
         i++;
         scrollToBottom();
@@ -164,7 +165,7 @@ export default function AIPage() {
         clearInterval(interval);
         setMessages((prev) => {
           const next = prev.map((m) =>
-            m.id === messageId ? { ...m, content: fullText, isStreaming: false } : m
+            m.id === messageId ? { ...m, content: fullText, isStreaming: false } : m,
           );
           saveSessionMessages(next);
           return next;
@@ -217,7 +218,7 @@ export default function AIPage() {
         ]);
         simulateStreaming(
           res.ok ? data.text : data?.error || "Something went wrong. Please try again.",
-          aid
+          aid,
         );
       } catch {
         setIsTyping(false);
@@ -232,7 +233,7 @@ export default function AIPage() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [questionsLeft, isTyping, visitorId]
+    [questionsLeft, isTyping, visitorId],
   );
 
   const reset = () => {
@@ -284,8 +285,11 @@ export default function AIPage() {
                 Ask a physics question.
               </h1>
               <p className="text-[15px] text-muted-foreground leading-[1.7] mb-9 max-w-[500px]">
-                Raise will guide you to the answer — it will not give it to you directly. This is the same approach used in partner physics classrooms.{" "}
-                <span className="text-foreground font-medium">{questionsLeft} questions available.</span>
+                Raise will guide you to the answer — it will not give it to you directly. This is
+                the same approach used in partner physics classrooms.{" "}
+                <span className="text-foreground font-medium">
+                  {questionsLeft} questions available.
+                </span>
               </p>
 
               {/* Starters */}
@@ -349,7 +353,8 @@ export default function AIPage() {
                           "[&_ol]:my-2 [&_ol]:space-y-1",
                           "[&_code]:text-[0.84em] [&_code]:bg-muted [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5",
                           "[&_pre]:bg-muted [&_pre]:rounded-xl [&_pre]:p-4 [&_pre]:my-3 [&_pre]:overflow-x-auto",
-                          m.isStreaming && "after:content-[''] after:inline-block after:w-[2px] after:h-[1em] after:bg-foreground/40 after:ml-0.5 after:align-middle after:animate-pulse"
+                          m.isStreaming &&
+                            "after:content-[''] after:inline-block after:w-[2px] after:h-[1em] after:bg-foreground/40 after:ml-0.5 after:align-middle after:animate-pulse",
                         )}
                         noProse
                       >
@@ -372,9 +377,18 @@ export default function AIPage() {
                   <RaiseLogo size={12} className="text-primary-foreground" />
                 </div>
                 <div className="flex items-center gap-[5px]">
-                  <span className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "140ms" }} />
-                  <span className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "280ms" }} />
+                  <span
+                    className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <span
+                    className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce"
+                    style={{ animationDelay: "140ms" }}
+                  />
+                  <span
+                    className="h-[5px] w-[5px] rounded-full bg-muted-foreground/40 animate-bounce"
+                    style={{ animationDelay: "280ms" }}
+                  />
                 </div>
               </motion.div>
             )}
@@ -392,7 +406,8 @@ export default function AIPage() {
                       Demo limit reached
                     </p>
                     <p className="text-[13px] text-muted-foreground leading-relaxed">
-                      You&apos;ve experienced how Raise supports productive struggle. Ready to deploy this for your class?
+                      You&apos;ve experienced how Raise supports productive struggle. Ready to
+                      deploy this for your class?
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -403,7 +418,11 @@ export default function AIPage() {
                       <RefreshCw className="h-3 w-3" />
                       Reset
                     </button>
-                    <Button asChild size="sm" className="rounded-full h-8 px-4 text-[13px] font-semibold cursor-pointer">
+                    <Button
+                      asChild
+                      size="sm"
+                      className="rounded-full h-8 px-4 text-[13px] font-semibold cursor-pointer"
+                    >
                       <Link href="/signup">
                         Get access
                         <ArrowRight className="h-3 w-3 ml-1" />
@@ -419,7 +438,12 @@ export default function AIPage() {
         )}
 
         {/* ── Input ─────────────────────────────────────────────────────── */}
-        <div className={cn("sticky bottom-0 pb-5 pt-3 bg-background/80 backdrop-blur-xl", isEmpty && "mt-auto")}>
+        <div
+          className={cn(
+            "sticky bottom-0 pb-5 pt-3 bg-background/80 backdrop-blur-xl",
+            isEmpty && "mt-auto",
+          )}
+        >
           <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
 
           <div
@@ -427,7 +451,7 @@ export default function AIPage() {
               "relative rounded-xl border border-border bg-background transition-all duration-200",
               "focus-within:border-foreground/25 focus-within:shadow-[0_0_0_3px_rgba(0,0,0,0.04)]",
               "dark:focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.04)]",
-              isLimitReached && "opacity-40 pointer-events-none select-none"
+              isLimitReached && "opacity-40 pointer-events-none select-none",
             )}
           >
             <Textarea
@@ -445,8 +469,8 @@ export default function AIPage() {
                 isLimitReached
                   ? "Demo limit reached"
                   : isEmpty
-                  ? "Ask a physics question..."
-                  : "Continue the conversation..."
+                    ? "Ask a physics question..."
+                    : "Continue the conversation..."
               }
               className="w-full bg-transparent border-0 resize-none px-4 pt-3.5 pb-2 text-[14.5px] focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 min-h-[52px] max-h-[180px] leading-[1.6]"
               rows={1}
@@ -467,7 +491,7 @@ export default function AIPage() {
                   "h-7 w-7 rounded-lg flex items-center justify-center transition-all cursor-pointer",
                   input.trim() && !isLimitReached && !isTyping
                     ? "bg-foreground text-background hover:opacity-80 active:scale-95"
-                    : "bg-muted text-muted-foreground/40 cursor-not-allowed"
+                    : "bg-muted text-muted-foreground/40 cursor-not-allowed",
                 )}
               >
                 <Send className="h-3.5 w-3.5" />

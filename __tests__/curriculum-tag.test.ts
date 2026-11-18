@@ -1,11 +1,7 @@
 // tools/curriculum-tag.cjs: matching published waypoints to course sets.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const {
-  parseArgs,
-  matchAssignments,
-  displayTitle,
-  loadCurricula,
-} = require("../tools/curriculum-tag.cjs");
+const curriculumTag = require("../tools/curriculum-tag.cjs");
+const { parseArgs, matchAssignments, displayTitle, loadCurricula } = curriculumTag;
 import { getCurriculum, displayTitle as tsDisplayTitle, setSequence } from "../src/data/curricula";
 
 const curricula = loadCurricula();

@@ -23,11 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, RefreshCw, Copy, Check, ShieldX, KeyRound, User, Clock, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -76,6 +72,7 @@ export function TeacherInviteCodes() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
     fetchCodes();
   }, [fetchCodes]);
 
@@ -182,7 +179,8 @@ export function TeacherInviteCodes() {
                 <DialogHeader>
                   <DialogTitle>Generate Teacher Invite Code</DialogTitle>
                   <DialogDescription>
-                    Add an optional label (e.g. the teacher&apos;s name or school) to keep track of who you gave this to.
+                    Add an optional label (e.g. the teacher&apos;s name or school) to keep track of
+                    who you gave this to.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-2">
@@ -196,9 +194,7 @@ export function TeacherInviteCodes() {
                       onKeyDown={(e) => e.key === "Enter" && !generating && handleGenerate()}
                     />
                   </div>
-                  {error && (
-                    <p className="text-sm text-destructive">{error}</p>
-                  )}
+                  {error && <p className="text-sm text-destructive">{error}</p>}
                   <div className="flex justify-end gap-2">
                     <Button
                       variant="outline"
@@ -249,9 +245,13 @@ export function TeacherInviteCodes() {
                 onClick={() => copyToClipboard(lastGenerated)}
               >
                 {copiedCode === lastGenerated ? (
-                  <><Check className="h-3 w-3" /> Copied</>
+                  <>
+                    <Check className="h-3 w-3" /> Copied
+                  </>
                 ) : (
-                  <><Copy className="h-3 w-3" /> Copy</>
+                  <>
+                    <Copy className="h-3 w-3" /> Copy
+                  </>
                 )}
               </Button>
             </motion.div>
@@ -262,10 +262,17 @@ export function TeacherInviteCodes() {
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: "Active", value: activeCodes.length, color: "text-green-500" },
-            { label: "Used", value: usedOrExpiredCodes.filter((c) => c.isUsed && c.usedAt).length, color: "text-muted-foreground" },
+            {
+              label: "Used",
+              value: usedOrExpiredCodes.filter((c) => c.isUsed && c.usedAt).length,
+              color: "text-muted-foreground",
+            },
             { label: "Total Generated", value: codes.length, color: "text-foreground" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-lg border border-border/50 bg-background/50 px-3 py-2 text-center">
+            <div
+              key={stat.label}
+              className="rounded-lg border border-border/50 bg-background/50 px-3 py-2 text-center"
+            >
               <p className={cn("text-2xl font-bold tabular-nums", stat.color)}>{stat.value}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
             </div>
@@ -275,14 +282,22 @@ export function TeacherInviteCodes() {
         {/* Active codes table */}
         {activeCodes.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Codes</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Active Codes
+            </p>
             <div className="rounded-lg border border-border/50 overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead className="text-xs">Code</TableHead>
-                    <TableHead className="text-xs"><Tag className="h-3 w-3 inline mr-1" />Label</TableHead>
-                    <TableHead className="text-xs"><Clock className="h-3 w-3 inline mr-1" />Expires</TableHead>
+                    <TableHead className="text-xs">
+                      <Tag className="h-3 w-3 inline mr-1" />
+                      Label
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      <Clock className="h-3 w-3 inline mr-1" />
+                      Expires
+                    </TableHead>
                     <TableHead className="text-xs text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -293,7 +308,9 @@ export function TeacherInviteCodes() {
                         {c.code}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {c.label ?? <span className="italic text-muted-foreground/50">No label</span>}
+                        {c.label ?? (
+                          <span className="italic text-muted-foreground/50">No label</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {formatDate(c.expiresAt)}
@@ -344,15 +361,26 @@ export function TeacherInviteCodes() {
         {/* Used / expired codes */}
         {usedOrExpiredCodes.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Used / Expired</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Used / Expired
+            </p>
             <div className="rounded-lg border border-border/50 overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead className="text-xs">Code</TableHead>
-                    <TableHead className="text-xs"><Tag className="h-3 w-3 inline mr-1" />Label</TableHead>
-                    <TableHead className="text-xs"><User className="h-3 w-3 inline mr-1" />Used By</TableHead>
-                    <TableHead className="text-xs"><Clock className="h-3 w-3 inline mr-1" />Used At</TableHead>
+                    <TableHead className="text-xs">
+                      <Tag className="h-3 w-3 inline mr-1" />
+                      Label
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      <User className="h-3 w-3 inline mr-1" />
+                      Used By
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      <Clock className="h-3 w-3 inline mr-1" />
+                      Used At
+                    </TableHead>
                     <TableHead className="text-xs">Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -395,7 +423,9 @@ export function TeacherInviteCodes() {
           <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
             <KeyRound className="h-8 w-8 text-muted-foreground/40" />
             <p className="text-sm text-muted-foreground">No invite codes yet.</p>
-            <p className="text-xs text-muted-foreground/60">Generate a code to give a teacher access.</p>
+            <p className="text-xs text-muted-foreground/60">
+              Generate a code to give a teacher access.
+            </p>
           </div>
         )}
       </CardContent>

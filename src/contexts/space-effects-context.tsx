@@ -21,6 +21,7 @@ export function SpaceEffectsProvider({ children }: { children: React.ReactNode }
   React.useEffect(() => {
     const stored = localStorage.getItem("spaceEffectsEnabled");
     if (stored !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
       setSpaceEffectsEnabled(JSON.parse(stored));
     }
     const storedSpacy = localStorage.getItem("spacyLevel");
@@ -52,14 +53,16 @@ export function SpaceEffectsProvider({ children }: { children: React.ReactNode }
   };
 
   return (
-    <SpaceEffectsContext.Provider value={{
-      spaceEffectsEnabled,
-      toggleSpaceEffects,
-      spacyLevel,
-      setSpacyLevel,
-      nebulaBrightness,
-      setNebulaBrightness
-    }}>
+    <SpaceEffectsContext.Provider
+      value={{
+        spaceEffectsEnabled,
+        toggleSpaceEffects,
+        spacyLevel,
+        setSpacyLevel,
+        nebulaBrightness,
+        setNebulaBrightness,
+      }}
+    >
       {children}
     </SpaceEffectsContext.Provider>
   );

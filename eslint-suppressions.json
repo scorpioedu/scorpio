@@ -4,27 +4,14 @@
       "count": 1
     }
   },
-  "src/components/landing/solution-flowchart.tsx": {
-    "react-hooks/purity": {
-      "count": 1
-    }
-  },
   "src/components/math-input.tsx": {
     "react-hooks/refs": {
       "count": 2
     }
   },
   "src/components/motion/animated-sidebar.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    },
     "react-hooks/set-state-in-effect": {
       "count": 2
-    }
-  },
-  "src/components/motion/shared-layout-bg.tsx": {
-    "react-hooks/refs": {
-      "count": 1
     }
   },
   "src/components/route-progress-bar.tsx": {
