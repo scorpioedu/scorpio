@@ -43,7 +43,7 @@ import {
   type RawQuestion,
 } from "@/components/teacher/assignment-editor/types";
 
-export function AdvancedSettings({ children }: { children: React.ReactNode }) {
+function AdvancedSettings({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
