@@ -6,7 +6,8 @@
  *   FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 node tools/seed-emulator-demo.cjs
  *
  * Accounts: teacher@demo.test / demo-teacher-pass, student@demo.test / demo-student-pass,
- * otherteacher@demo.test / demo-other-pass (owns the library waypoints).
+ * otherteacher@demo.test / demo-other-pass (owns the library waypoints),
+ * admin@demo.test / demo-admin-pass (admin claim, for /admin).
  */
 const admin = require("firebase-admin");
 if (!process.env.FIRESTORE_EMULATOR_HOST || !process.env.FIREBASE_AUTH_EMULATOR_HOST) {
@@ -50,19 +51,16 @@ async function account(email, password, displayName, profile) {
     },
     { merge: true },
   );
-  await db
-    .collection("organizations")
-    .doc("other-org")
-    .set(
-      {
-        name: "Other School",
-        planId: "department-monthly",
-        subscriptionStatus: "active",
-        aiBudgetLimit: 100,
-        aiUsageCurrent: 0,
-      },
-      { merge: true },
-    );
+  await db.collection("organizations").doc("other-org").set(
+    {
+      name: "Other School",
+      planId: "department-monthly",
+      subscriptionStatus: "active",
+      aiBudgetLimit: 100,
+      aiUsageCurrent: 0,
+    },
+    { merge: true },
+  );
 
   const teacher = await account("teacher@demo.test", "demo-teacher-pass", "Demo Teacher", {
     role: "teacher",
@@ -72,19 +70,16 @@ async function account(email, password, displayName, profile) {
     role: "teacher",
     organizationId: "other-org",
   });
-  await db
-    .collection("courses")
-    .doc("demo-course")
-    .set(
-      {
-        name: "AP Physics 1",
-        code: "DEMO-AP1",
-        teacherId: teacher,
-        organizationId: "demo-org",
-        createdAt: new Date(),
-      },
-      { merge: true },
-    );
+  await db.collection("courses").doc("demo-course").set(
+    {
+      name: "AP Physics 1",
+      code: "DEMO-AP1",
+      teacherId: teacher,
+      organizationId: "demo-org",
+      createdAt: new Date(),
+    },
+    { merge: true },
+  );
   await account("student@demo.test", "demo-student-pass", "Demo Student", {
     role: "student",
     organizationId: "demo-org",
@@ -118,7 +113,44 @@ async function account(email, password, displayName, profile) {
         },
       ],
     });
-  console.log("Seeded demo-org, demo-course, three accounts and one legacy waypoint.");
+  // Admin console: an operator with the admin claim, AI usage in both orgs, one access request.
+  const adminUid = await account("admin@demo.test", "demo-admin-pass", "Demo Admin", {
+    role: "teacher",
+    organizationId: "other-org",
+  });
+  await auth.setCustomUserClaims(adminUid, { admin: true });
+  const types = ["tutor", "grading", "practice", "notebook", "navigation"];
+  const batch = db.batch();
+  for (let i = 0; i < 60; i++) {
+    const org = i % 3 === 0 ? "other-org" : "demo-org";
+    batch.set(db.collection("usage_analytics").doc(`demo-usage-${i}`), {
+      organizationId: org,
+      userId: org === "demo-org" ? teacher : other,
+      type: types[i % types.length],
+      inputTokens: 800 + (i % 7) * 120,
+      outputTokens: 300 + (i % 5) * 90,
+      costCents: 0.12 + (i % 4) * 0.05,
+      timestamp: new Date(Date.now() - (i % 24) * 24 * 60 * 60 * 1000 - i * 60000),
+    });
+  }
+  batch.set(
+    db.collection("accessRequests").doc("demo-request"),
+    {
+      name: "Jordan Rivera",
+      email: "jordan@lincoln.test",
+      institution: "Lincoln High School",
+      role: "high_school_teacher",
+      message: "Teaching two sections of AP Physics 1 next semester.",
+      status: "pending",
+      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+    },
+    { merge: true },
+  );
+  await batch.commit();
+
+  console.log(
+    "Seeded demo-org, demo-course, four accounts, AI usage, an access request and one legacy waypoint.",
+  );
   await Promise.all(admin.apps.map((a) => a.delete()));
 })().catch((e) => {
   console.error(e);

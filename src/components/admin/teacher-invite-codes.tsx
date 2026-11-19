@@ -145,7 +145,7 @@ export function TeacherInviteCodes() {
   const usedOrExpiredCodes = codes.filter((c) => c.isUsed || isExpired(c.expiresAt));
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="border-border/60 shadow-none">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
