@@ -37,6 +37,21 @@ export const TUTOR_SOLVE_DIAGRAM_RULES = `Diagrams (optional):
    - Never draw the answer or a step the student should do. If the question is about forces, do not draw the free-body diagram: ask the student to describe theirs.
    - No numbers or ticks the problem does not give.`;
 
+/**
+ * Rules for the public Try AI page, where one prompt answers both concept questions and problems.
+ * They follow the two sets above, so the demo draws the way Raise does in class.
+ */
+export const LANDING_DIAGRAM_RULES = `Diagrams (optional, physics questions only):
+   - Include ONE diagram when a picture carries the idea better than words: a physical setup, the forces on an object, or a motion graph. Most replies need none; never draw one for questions about Scorpio itself.
+   - For a problem to solve, draw only what the problem states. Never draw the answer or a step the visitor should do, and do not draw the free-body diagram for a forces problem: ask them to describe theirs.
+   - For a concept question, refer to the diagram in your explanation. Arrow lengths are claims: make them agree with the physics, or make them all 1.
+   - Use only values you state in the text or the problem gives.`;
+
+/** The block appended to the Try AI prompt when diagrams are switched on. */
+export function landingDiagramSection(): string {
+  return `\n\n${LANDING_DIAGRAM_RULES}\n\n=== DIAGRAM LANGUAGE ===\n${DIAGRAM_REFERENCE}\n========================`;
+}
+
 /** The block appended to a tutor prompt when diagrams are switched on. */
 export function tutorDiagramSection(mode: "explain" | "solve"): string {
   return `\n${mode === "explain" ? TUTOR_EXPLAIN_DIAGRAM_RULES : TUTOR_SOLVE_DIAGRAM_RULES}\n\n=== DIAGRAM LANGUAGE ===\n${DIAGRAM_REFERENCE}\n========================`;
