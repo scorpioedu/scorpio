@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Courses list v2</title>
+<style>
+:root{--bg:#f6f6f4;--card:#fff;--fg:#18181b;--mut:#71717a;--bd:#e4e4e7;--soft:#f4f4f5;--acc:#2563eb;--accbg:#eff4ff;--ok:#16a34a;--warn:#b45309;--warnbg:#fef3c7;--bad:#dc2626;--onacc:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0e0e10;--card:#18181b;--fg:#f4f4f5;--mut:#a1a1aa;--bd:#2a2a2e;--soft:#202024;--acc:#60a5fa;--accbg:#172036;--ok:#4ade80;--warn:#fbbf24;--warnbg:#3a2a08;--bad:#f87171;--onacc:#0e0e10}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,sans-serif;padding:24px 16px 64px}
+.wrap{max-width:780px;margin:0 auto}
+h1.page{font-size:20px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 20px}
+.mut{color:var(--mut)}.sm{font-size:12px}.b{font-weight:600}
+.screen-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:36px 0 10px;border-top:1px solid var(--bd);padding-top:14px}
+.btn{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:9px;padding:7px 13px;cursor:pointer}
+.btn.p{background:var(--acc);border-color:var(--acc);color:var(--onacc);font-weight:600}
+.seg{display:inline-flex;background:var(--soft);border-radius:10px;padding:3px}.seg span{padding:4px 12px;border-radius:7px;font-size:13px;color:var(--mut)}.seg span.on{background:var(--card);color:var(--fg);box-shadow:0 1px 2px #0002}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.head h2{margin:0;font-size:22px;letter-spacing:-.01em}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--bd);flex:none;display:inline-block}.dot.d{background:var(--ok)}.dot.a{background:var(--acc)}.dot.o{background:var(--bad)}
+.bar{display:flex;gap:2px;width:84px}.bar i{flex:1;height:6px;border-radius:3px;background:var(--bd)}.bar i.d{background:var(--ok)}.bar i.a{background:var(--acc)}
+.pill{font-size:11px;border-radius:99px;padding:2px 9px;background:var(--soft);color:var(--mut);white-space:nowrap;font-weight:500}
+.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.ok{color:var(--ok)}.pill.bad{color:var(--bad)}
+/* NEXT card */
+.next{background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden}
+.next .top{padding:18px 20px 14px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);font-weight:700}
+.next h3{margin:2px 0 2px;font-size:22px;letter-spacing:-.01em}
+.stats{display:flex;gap:22px;margin:14px 0 0;flex-wrap:wrap}
+.stat .n{font-size:20px;font-weight:650;line-height:1.1}.stat .l{font-size:12px;color:var(--mut)}
+.stat.warn .n{color:var(--warn)}
+.sets{border-top:1px solid var(--bd)}
+.set{display:grid;grid-template-columns:34px 1fr 120px 92px;gap:12px;align-items:center;padding:10px 20px}
+.set+.set{border-top:1px solid var(--bd)}
+.set .k{font:600 12px ui-monospace,monospace;color:var(--mut)}
+.set .st{display:flex;align-items:center;gap:7px;font-size:13px}
+.set .due{font-size:13px;color:var(--mut);text-align:right}
+.set.dim{color:var(--mut)}
+.foot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--bd);background:var(--soft);flex-wrap:wrap}
+/* TABLE */
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:26px 2px 8px}.sec b{font-size:15px}
+.tbl{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.tr{display:grid;grid-template-columns:28px 1fr 130px 100px 20px;gap:12px;align-items:center;padding:12px 18px}
+.tr+.tr{border-top:1px solid var(--bd)}
+.tr.hd{background:var(--soft);padding-top:8px;padding-bottom:8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.tr .num{font-weight:700;color:var(--mut);font-size:15px}
+.tr.fold{color:var(--mut)}
+.chev{color:var(--mut);text-align:center}
+/* GUIDE */
+.crumb{font-size:13px;color:var(--mut);margin-bottom:10px}
+.g-head h1{font-size:30px;letter-spacing:-.02em;margin:0 0 6px}
+.g-head p{margin:0;color:var(--mut);max-width:60ch}
+.facts{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.facts span{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:6px 12px;font-size:13px}
+.facts b{font-weight:650}
+.nav{display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:18px 0 22px;position:sticky;top:0;background:var(--bg)}
+.nav span{padding:9px 14px;color:var(--mut);font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.nav span.on{color:var(--fg);border-color:var(--acc);font-weight:600}
+.g-sec{margin-bottom:28px}
+.g-sec h2{font-size:17px;margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{background:var(--card);border:1px solid var(--bd);border-radius:99px;padding:5px 13px;font-size:13px}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:16px}
+.gset{display:grid;grid-template-columns:34px 1fr auto;gap:14px;padding:14px 18px;align-items:start}
+.gset+.gset{border-top:1px solid var(--bd)}
+.gset .t{font-weight:600}
+.gset .tags{margin-top:3px;font-size:12px;color:var(--mut)}
+.reteach{display:grid;grid-template-columns:1fr auto;gap:14px;padding:14px 18px;align-items:center}
+.reteach+.reteach{border-top:1px solid var(--bd)}
+.share{height:6px;background:var(--bd);border-radius:3px;width:120px;margin-top:6px;overflow:hidden}.share i{display:block;height:100%;background:var(--warn)}
+.other{display:flex;justify-content:space-between;gap:12px}
+@media (max-width:620px){.set{grid-template-columns:30px 1fr 84px}.set .due{display:none}.tr{grid-template-columns:24px 1fr 90px 16px}.tr .bar{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 class="page">Courses list v2 and unit guide</h1>
+<p class="sub">Direction C (what's next first) with B's table for the rest. Same sample class as before.</p>
+
+<div class="screen-label">Screen 1 · List</div>
+
+<div class="head">
+  <h2>AP Physics 1 <span class="pill" style="vertical-align:middle">Period 3</span></h2>
+  <div style="display:flex;gap:10px;align-items:center"><span class="seg"><span class="on">List</span><span>Calendar</span></span><button class="btn">Plan</button></div>
+</div>
+
+<div class="next">
+  <div class="top">
+    <div class="eyebrow">Up next · Unit 3</div>
+    <h3>Circular motion and gravitation</h3>
+    <div class="mut sm">Due Nov 4 to 12</div>
+    <div class="stats">
+      <div class="stat"><div class="n">4 of 6</div><div class="l">sets assigned</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">finished by the class</div></div>
+      <div class="stat warn"><div class="n">1</div><div class="l">overdue</div></div>
+      <div class="stat"><div class="n">72%</div><div class="l">class average so far</div></div>
+    </div>
+  </div>
+  <div class="sets">
+    <div class="set"><span class="k">3.1</span><span>Uniform circular motion</span><span class="st"><i class="dot d"></i>Done</span><span class="due">Nov 4</span></div>
+    <div class="set"><span class="k">3.2</span><span>Centripetal force</span><span class="st"><i class="dot d"></i>Done</span><span class="due">Nov 6</span></div>
+    <div class="set"><span class="k">3.3</span><span>Gravitational force</span><span class="st"><i class="dot a"></i>In progress</span><span class="due">Nov 10</span></div>
+    <div class="set"><span class="k">3.4</span><span>Orbits</span><span class="st" style="color:var(--bad)"><i class="dot o"></i>Overdue</span><span class="due">Nov 8</span></div>
+    <div class="set dim"><span class="k">3.5</span><span>Kepler's laws</span><span class="st"><i class="dot"></i>Not assigned</span><span class="due">-</span></div>
+    <div class="set dim"><span class="k">3.6</span><span>Review: circular motion</span><span class="st"><i class="dot"></i>Not assigned</span><span class="due">-</span></div>
+  </div>
+  <div class="foot"><button class="btn p">Assign the other 2 sets</button><button class="btn">Unit guide</button></div>
+</div>
+
+<div class="sec"><b>All units</b><span class="mut sm">12 units · 2 finished</span></div>
+<div class="tbl">
+  <div class="tr hd"><span>#</span><span>Unit</span><span>Dates</span><span>Progress</span><span></span></div>
+  <div class="tr fold"><span class="num">1</span><div>Kinematics<div class="sm">Finished · avg 81%</div></div><span class="sm">Sep 3 to 20</span><div class="bar"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div><span class="chev">›</span></div>
+  <div class="tr fold"><span class="num">2</span><div>Forces and Newton's laws<div class="sm">Finished · avg 74%</div></div><span class="sm">Sep 23 to Oct 18</span><div class="bar"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div><span class="chev">›</span></div>
+  <div class="tr" style="background:var(--accbg)"><span class="num" style="color:var(--acc)">3</span><div class="b">Circular motion and gravitation<div class="sm mut" style="font-weight:400">Shown above</div></div><span class="sm">Nov 4 to 12</span><div class="bar"><i class="d"></i><i class="d"></i><i class="a"></i><i class="a"></i><i></i><i></i></div><span class="chev">↑</span></div>
+  <div class="tr"><span class="num">4</span><div>Energy<div class="sm mut">6 sets</div></div><span class="sm mut">Nov 15 to 26</span><div class="bar"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="chev">›</span></div>
+  <div class="tr"><span class="num">5</span><div>Momentum<div class="sm mut">5 sets</div></div><span class="sm mut">Dec 1 to 12</span><div class="bar"><i></i><i></i><i></i><i></i><i></i></div><span class="chev">›</span></div>
+  <div class="tr"><span class="num">6</span><div>Rotation<div class="sm mut">6 sets</div></div><span class="sm mut">Dec 15 to Jan 9</span><div class="bar"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="chev">›</span></div>
+</div>
+<p class="mut sm" style="margin:10px 2px">Clicking any row opens its unit guide. Units 7 to 12 continue below. Finished rows are greyed so the eye lands on 3 and beyond.</p>
+
+<div class="screen-label">Screen 2 · Unit guide</div>
+
+<div class="crumb">‹ AP Physics 1 · Unit 3 of 12</div>
+<div class="g-head">
+  <h1>Circular motion and gravitation</h1>
+  <p>Why objects moving in circles accelerate toward the center, and how gravity supplies that force for planets and satellites.</p>
+</div>
+<div class="facts"><span><b>6</b> sets</span><span><b>~9</b> class days</span><span><b>Nov 4 to 12</b></span><span><b>72%</b> class average</span></div>
+<div class="nav"><span class="on">Teach it</span><span>Sets <span class="pill">6</span></span><span>What students got wrong <span class="pill warn">2</span></span></div>
+
+<div class="g-sec">
+  <h2>What this unit covers</h2>
+  <div class="chips"><span>Centripetal acceleration</span><span>Net force toward the center</span><span>Universal gravitation</span><span>Orbital speed</span><span>Kepler's laws</span></div>
+</div>
+
+<div class="g-sec">
+  <h2>Sets, in teaching order</h2>
+  <div class="panel">
+    <div class="gset"><span class="mut b">3.1</span><div><div class="t">Uniform circular motion</div><div class="tags">10 problems · tests: acceleration points outward</div></div><span class="pill ok">Done</span></div>
+    <div class="gset"><span class="mut b">3.2</span><div><div class="t">Centripetal force</div><div class="tags">12 problems · tests: centripetal force as its own force</div></div><span class="pill ok">Done</span></div>
+    <div class="gset"><span class="mut b">3.3</span><div><div class="t">Gravitational force</div><div class="tags">10 problems</div></div><span class="pill">In progress</span></div>
+    <div class="gset"><span class="mut b">3.4</span><div><div class="t">Orbits</div><div class="tags">8 problems</div></div><span class="pill bad">Overdue</span></div>
+    <div class="gset"><span class="mut b">3.5</span><div><div class="t">Kepler's laws</div><div class="tags">8 problems</div></div><button class="btn">Assign</button></div>
+  </div>
+</div>
+
+<div class="g-sec">
+  <h2>What students got wrong</h2>
+  <div class="panel">
+    <div class="reteach"><div><div class="b">"A centrifugal force pushes things out"</div><div class="sm mut">Re-teach to the whole class</div><div class="share"><i style="width:58%"></i></div></div><div class="sm"><b>58%</b> of students</div></div>
+    <div class="reteach"><div><div class="b">"Heavier objects orbit faster"</div><div class="sm mut">Pull a small group</div><div class="share"><i style="width:21%"></i></div></div><div class="sm"><b>21%</b> of students</div></div>
+  </div>
+</div>
+
+<div class="other"><button class="btn">‹ Unit 2 · Forces</button><button class="btn">Unit 4 · Energy ›</button></div>
+</div>
+</body>
+</html>

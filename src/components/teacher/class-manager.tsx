@@ -19,6 +19,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { AssignmentDefaultsFields } from "@/components/teacher/assignment-defaults-fields";
+import { BASE_ASSIGNMENT_DEFAULTS, type AssignmentDefaults } from "@/lib/assignment-defaults";
 import { ClassSettingsDialog } from "@/components/teacher/class-settings-dialog";
 import { CourseSelect } from "@/components/teacher/course-select";
 
@@ -32,6 +34,8 @@ export interface TeacherClass {
   archivedAt?: string | null;
   /** The one course (roadmap) the class follows, if any. */
   curriculumId?: string | null;
+  /** Raw stored class-wide assignment settings; read with parseAssignmentDefaults. */
+  assignmentDefaults?: unknown;
 }
 
 export async function copyClassInvite(course: Pick<TeacherClass, "code">, link: boolean) {
@@ -79,6 +83,7 @@ export function useClassManager({
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [curriculum, setCurriculum] = useState<string | null>(null);
+  const [newDefaults, setNewDefaults] = useState<AssignmentDefaults | null>(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [settingsFor, setSettingsFor] = useState<string | null>(null);
@@ -103,6 +108,7 @@ export function useClassManager({
           name,
           code: trimmedCode,
           ...(curriculum ? { curriculumId: curriculum } : {}),
+          ...(newDefaults ? { assignmentDefaults: newDefaults } : {}),
         }),
       });
       const result = await response.json();
@@ -114,11 +120,13 @@ export function useClassManager({
         code: trimmedCode,
         teacherId: user.uid,
         curriculumId: curriculum,
+        ...(newDefaults ? { assignmentDefaults: newDefaults } : {}),
       };
       setClasses((current) => [created, ...current]);
       setName("");
       setCode("");
       setCurriculum(null);
+      setNewDefaults(null);
       toast.success("Class created.");
       refreshClasses().catch(() => undefined);
       setDialogOpen(false);
@@ -187,6 +195,33 @@ export function useClassManager({
             <p className="text-xs text-muted-foreground">
               Optional. A class follows one course; you can change it later in the class settings.
             </p>
+          </div>
+          <div className="space-y-2">
+            {newDefaults ? (
+              <>
+                <Label>Assignment settings</Label>
+                <AssignmentDefaultsFields
+                  idPrefix="new-class"
+                  value={newDefaults}
+                  onChange={setNewDefaults}
+                />
+                <button
+                  type="button"
+                  className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                  onClick={() => setNewDefaults(null)}
+                >
+                  Use the usual settings instead
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                onClick={() => setNewDefaults(BASE_ASSIGNMENT_DEFAULTS)}
+              >
+                Set assignment settings for this class (optional)
+              </button>
+            )}
           </div>
         </div>
         {error && (

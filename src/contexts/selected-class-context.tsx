@@ -26,6 +26,8 @@ export interface TeacherClass {
   /** Raw stored values; read with normalisePlan / classCalendar. */
   curriculumPlan: unknown;
   daysOff: unknown;
+  /** Raw stored class-wide assignment settings; read with parseAssignmentDefaults. */
+  assignmentDefaults: unknown;
   archived: boolean;
   createdAt: string;
 }
@@ -70,6 +72,7 @@ export function toTeacherClass(id: string, d: Record<string, unknown>): TeacherC
     curriculumId: typeof d.curriculumId === "string" ? d.curriculumId : null,
     curriculumPlan: d.curriculumPlan ?? null,
     daysOff: d.daysOff ?? null,
+    assignmentDefaults: d.assignmentDefaults ?? null,
     archived: d.archivedAt != null,
     createdAt: str(d.createdAt),
   };
