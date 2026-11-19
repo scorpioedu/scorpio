@@ -1,199 +1,213 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useAdminAccess } from "@/lib/use-admin-access";
-import { logout } from "@/lib/firebase";
-import { SpaceBackground } from "@/components/ui/space-background";
-import { Logo } from "@/components/ui/logo";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { RefreshCw, Search } from "lucide-react";
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import type { UserSummary } from "@/lib/admin/summaries";
+import type { TicketSummary } from "@/lib/support/tickets";
+import { AdminHeader, StatTile } from "@/components/admin/admin-shell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AccessRequests } from "@/components/admin/access-requests";
-import { TeacherInviteCodes } from "@/components/admin/teacher-invite-codes";
-import { FirestoreExplorer } from "@/components/admin/firestore-explorer";
-import { GlobalAnalytics } from "@/components/admin/global-analytics";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShieldCheck, Lock, Database, BarChart3, BookCheck, MessageSquarePlus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-export default function AdminPage() {
-  const access = useAdminAccess();
-  const [activeTab, setActiveTab] = useState<"access" | "database" | "analytics">("access");
+interface Overview {
+  users: UserSummary;
+  pendingAccessRequests: number;
+  tickets: TicketSummary;
+  generatedAt: string;
+}
 
-  if (access !== "admin") {
-    const message =
-      access === "loading"
-        ? "Checking your account…"
-        : access === "signed-out"
-          ? "Sign in with an administrator account to continue."
-          : "This account does not have administrator access.";
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative">
-        <SpaceBackground />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-sm"
-        >
-          <Card>
-            <CardHeader className="text-center">
-              <div className="flex justify-center mb-3">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
-                </div>
-              </div>
-              <CardTitle className="text-xl">Admin Access</CardTitle>
-              <CardDescription>{message}</CardDescription>
-            </CardHeader>
-            {access === "signed-out" && (
-              <CardContent>
-                <Button className="w-full" asChild>
-                  <Link href="/login">Sign in</Link>
-                </Button>
-              </CardContent>
-            )}
-          </Card>
-        </motion.div>
-      </div>
-    );
-  }
+const fmt = (n: number) => n.toLocaleString();
+
+export default function AdminOverviewPage() {
+  const [data, setData] = useState<Overview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await authenticatedFetch("/api/admin/overview");
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || "Could not load overview");
+      setData(body);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load overview");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial load; the setState calls happen after the fetch resolves.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
+  }, [load]);
+
+  const orgs = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    const all = data?.users.organizations ?? [];
+    return q ? all.filter((o) => o.name.toLowerCase().includes(q) || o.id.includes(q)) : all;
+  }, [data, filter]);
+
+  const u = data?.users;
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col md:flex-row bg-background">
-      <SpaceBackground />
+    <>
+      <AdminHeader
+        title="Overview"
+        description="How many people use Scorpio, and what is waiting on you."
+        actions={
+          <Button variant="outline" size="sm" onClick={() => void load()} disabled={loading}>
+            <RefreshCw className={cn("size-3.5", loading && "animate-spin")} />
+            Refresh
+          </Button>
+        }
+      />
 
-      {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border/40 relative z-20 bg-background/60 backdrop-blur-xl flex flex-col h-auto md:h-screen sticky top-0"
-      >
-        <div className="p-6 flex items-center gap-3 border-b border-border/40">
-          <Logo size={24} className="text-foreground" />
-          <div>
-            <h1 className="text-lg font-bold leading-tight">Admin</h1>
-            <p className="text-xs text-muted-foreground">Scorpio Platform</p>
+      {error && (
+        <p role="alert" className="mb-6 text-sm text-destructive">
+          {error}{" "}
+          <button type="button" className="underline" onClick={() => void load()}>
+            Try again
+          </button>
+        </p>
+      )}
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium">Users</h2>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatTile
+            label="Total users"
+            value={u ? fmt(u.total) : "—"}
+            hint={u ? `+${fmt(u.newLast7d)} this week · +${fmt(u.newLast30d)} in 30 days` : " "}
+          />
+          <StatTile label="Teachers" value={u ? fmt(u.teachers) : "—"} />
+          <StatTile label="Students" value={u ? fmt(u.students) : "—"} />
+          <StatTile
+            label="Signed in this week"
+            value={u ? fmt(u.activeLast7d) : "—"}
+            hint={
+              u && u.total ? `${Math.round((u.activeLast7d / u.total) * 100)}% of all users` : " "
+            }
+          />
+        </div>
+      </section>
+
+      <section className="mt-8 space-y-3">
+        <h2 className="text-sm font-medium">Waiting on you</h2>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatTile
+            label="Access requests"
+            value={data ? fmt(data.pendingAccessRequests) : "—"}
+            hint="pending review"
+            tone={data && data.pendingAccessRequests > 0 ? "warn" : undefined}
+            href="/admin/access"
+          />
+          <StatTile
+            label="Open tickets"
+            value={data ? fmt(data.tickets.open) : "—"}
+            hint={data ? `${fmt(data.tickets.newLast24h)} new in 24 hours` : " "}
+            href="/admin/feedback"
+          />
+          <StatTile
+            label="Open over 2 days"
+            value={data ? fmt(data.tickets.openOverTwoDays) : "—"}
+            hint="past the answer target"
+            tone={data && data.tickets.openOverTwoDays > 0 ? "danger" : undefined}
+            href="/admin/feedback"
+          />
+          <StatTile
+            label="Organizations"
+            value={u ? fmt(u.organizations.length) : "—"}
+            href="/admin/analytics"
+          />
+        </div>
+      </section>
+
+      <section className="mt-10 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-medium">Users by organization</h2>
+          <div className="relative w-full sm:w-64">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="Filter organizations"
+              aria-label="Filter organizations"
+              className="h-8 pl-8 text-sm"
+            />
           </div>
         </div>
-
-        <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
-            Modules
-          </div>
-          <Button
-            variant={activeTab === "access" ? "secondary" : "ghost"}
-            className="w-full justify-start font-medium"
-            onClick={() => setActiveTab("access")}
-          >
-            <Lock className="mr-2 h-4 w-4" />
-            Access & Security
-          </Button>
-          <Button
-            variant={activeTab === "analytics" ? "secondary" : "ghost"}
-            className="w-full justify-start font-medium"
-            onClick={() => setActiveTab("analytics")}
-          >
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Analytics & Insights
-          </Button>
-          <Button
-            variant={activeTab === "database" ? "secondary" : "ghost"}
-            className="w-full justify-start font-medium"
-            onClick={() => setActiveTab("database")}
-          >
-            <Database className="mr-2 h-4 w-4" />
-            Database Explorer
-          </Button>
-          <Button variant="ghost" className="w-full justify-start font-medium" asChild>
-            <Link href="/admin/content">
-              <BookCheck className="mr-2 h-4 w-4" />
-              Content Review
-            </Link>
-          </Button>
-          <Button variant="ghost" className="w-full justify-start font-medium" asChild>
-            <Link href="/admin/feedback">
-              <MessageSquarePlus className="mr-2 h-4 w-4" />
-              Feedback
-            </Link>
-          </Button>
-        </nav>
-
-        <div className="p-4 border-t border-border/40 mt-auto">
-          <Button
-            variant="outline"
-            className="w-full justify-start text-muted-foreground hover:text-foreground"
-            onClick={() => {
-              void logout();
-            }}
-          >
-            Log Out
-          </Button>
+        <div className="overflow-x-auto rounded-lg border border-border/60">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left text-xs text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2 font-medium">Organization</th>
+                <th className="px-4 py-2 font-medium">Plan</th>
+                <th className="px-4 py-2 text-right font-medium">Teachers</th>
+                <th className="px-4 py-2 text-right font-medium">Students</th>
+                <th className="px-4 py-2 text-right font-medium">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/60">
+              {orgs.map((o) => (
+                <tr key={o.id} className="hover:bg-muted/20">
+                  <td className="px-4 py-2">
+                    <div className="font-medium">{o.name}</div>
+                    {o.name !== o.id && (
+                      <div className="font-mono text-[11px] text-muted-foreground">{o.id}</div>
+                    )}
+                  </td>
+                  <td className="px-4 py-2 capitalize text-muted-foreground">
+                    {o.planId.replace(/[-_]/g, " ")}
+                  </td>
+                  <td className="px-4 py-2 text-right tabular-nums">{fmt(o.teachers)}</td>
+                  <td className="px-4 py-2 text-right tabular-nums">{fmt(o.students)}</td>
+                  <td className="px-4 py-2 text-right font-medium tabular-nums">
+                    {fmt(o.teachers + o.students)}
+                  </td>
+                </tr>
+              ))}
+              {u && !filter && (u.unaffiliated.teachers > 0 || u.unaffiliated.students > 0) && (
+                <tr className="text-muted-foreground">
+                  <td className="px-4 py-2 italic">No organization</td>
+                  <td className="px-4 py-2">—</td>
+                  <td className="px-4 py-2 text-right tabular-nums">
+                    {fmt(u.unaffiliated.teachers)}
+                  </td>
+                  <td className="px-4 py-2 text-right tabular-nums">
+                    {fmt(u.unaffiliated.students)}
+                  </td>
+                  <td className="px-4 py-2 text-right tabular-nums">
+                    {fmt(u.unaffiliated.teachers + u.unaffiliated.students)}
+                  </td>
+                </tr>
+              )}
+              {!loading && orgs.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                    {filter ? "No organization matches that filter." : "No organizations yet."}
+                  </td>
+                </tr>
+              )}
+              {loading && !data && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                    Loading…
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </motion.aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 relative z-10 p-6 md:p-10 h-[calc(100vh-80px)] md:h-screen overflow-y-auto">
-        <TooltipProvider>
-          <AnimatePresence mode="wait">
-            {activeTab === "access" && (
-              <motion.div
-                key="access"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="max-w-4xl mx-auto space-y-8"
-              >
-                <div>
-                  <h2 className="text-2xl font-bold tracking-tight">Access & Security</h2>
-                  <p className="text-muted-foreground">
-                    Manage waitlist access requests and teacher invite codes.
-                  </p>
-                </div>
-
-                <AccessRequests />
-                <TeacherInviteCodes />
-              </motion.div>
-            )}
-
-            {activeTab === "analytics" && (
-              <motion.div
-                key="analytics"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="max-w-6xl mx-auto space-y-8"
-              >
-                <GlobalAnalytics />
-              </motion.div>
-            )}
-
-            {activeTab === "database" && (
-              <motion.div
-                key="database"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="max-w-6xl mx-auto h-[80vh] flex flex-col space-y-4"
-              >
-                <div>
-                  <h2 className="text-2xl font-bold tracking-tight">Database Explorer</h2>
-                  <p className="text-muted-foreground">
-                    Query read-only platform data directly from Firestore.
-                  </p>
-                </div>
-
-                <div className="flex-1 min-h-0">
-                  <FirestoreExplorer />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </TooltipProvider>
-      </main>
-    </div>
+        <p className="text-xs text-muted-foreground">
+          Students without their own organization are counted under their teacher&apos;s.
+          {data && ` Updated ${new Date(data.generatedAt).toLocaleTimeString()}.`}
+        </p>
+      </section>
+    </>
   );
 }

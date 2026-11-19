@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
 import {
-  ArrowLeft,
   CheckCircle2,
   Loader2,
   Plus,
@@ -609,15 +607,9 @@ export default function ContentReviewPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 p-4 sm:p-8">
-      <div className="space-y-2 border-b pb-5">
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" /> Admin
-        </Link>
-        <h1 className="text-3xl font-semibold tracking-tight">Content review</h1>
+    <div className="space-y-6">
+      <div className="space-y-1 border-b border-border/60 pb-6">
+        <h1 className="text-2xl font-semibold tracking-tight">Content review</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
           AI drafts AP Physics 1 problems and a second AI call solves each one without the key. A
           person checks every answer here before it goes live. Solve it yourself; don&apos;t approve
@@ -763,6 +755,6 @@ export default function ContentReviewPage() {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { AdminHeader, StatTile } from "@/components/admin/admin-shell";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import type { SerialisedTicket, TicketStatus, TicketSummary } from "@/lib/support/tickets";
@@ -169,64 +169,30 @@ export default function FeedbackAdminPage() {
   }, [status, category]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
+    // Initial load; the setState calls happen after the fetch resolves.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (access === "admin") void load();
   }, [access, load]);
 
-  if (access !== "admin") {
-    return (
-      <main className="mx-auto max-w-md p-8 text-center text-sm text-muted-foreground">
-        {access === "loading"
-          ? "Checking your account…"
-          : access === "signed-out"
-            ? "Sign in with an administrator account to continue."
-            : "This account does not have administrator access."}
-      </main>
-    );
-  }
+  if (access !== "admin") return null;
 
   return (
-    <main className="mx-auto max-w-5xl space-y-6 p-4 sm:p-8">
-      <div className="space-y-2 border-b pb-5">
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" /> Admin
-        </Link>
-        <h1 className="text-3xl font-semibold tracking-tight">Feedback</h1>
-        <p className="max-w-3xl text-sm text-muted-foreground">
-          Feature ideas and problem reports from the Feedback button and the Support chat. Answer
-          within two days.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <AdminHeader
+        title="Tickets"
+        description="Feature ideas and problem reports from the Feedback button and the Support chat. Answer within two days."
+      />
 
       {summary && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Summary">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-semibold">{summary.open}</div>
-              <div className="text-xs text-muted-foreground">Open</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-semibold">{summary.newLast24h}</div>
-              <div className="text-xs text-muted-foreground">New in 24 hours</div>
-            </CardContent>
-          </Card>
-          <Card className={summary.openOverTwoDays > 0 ? "border-destructive/60" : undefined}>
-            <CardContent className="p-4">
-              <div className="text-2xl font-semibold">{summary.openOverTwoDays}</div>
-              <div className="text-xs text-muted-foreground">Open over 2 days</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-semibold">{summary.triaged}</div>
-              <div className="text-xs text-muted-foreground">Triaged</div>
-            </CardContent>
-          </Card>
+          <StatTile label="Open" value={summary.open} />
+          <StatTile label="New in 24 hours" value={summary.newLast24h} />
+          <StatTile
+            label="Open over 2 days"
+            value={summary.openOverTwoDays}
+            tone={summary.openOverTwoDays > 0 ? "danger" : undefined}
+          />
+          <StatTile label="Triaged" value={summary.triaged} />
         </div>
       )}
 
@@ -286,6 +252,6 @@ export default function FeedbackAdminPage() {
           />
         ))}
       </div>
-    </main>
+    </div>
   );
 }
