@@ -86,3 +86,6 @@ firestore-debug.log
 # Reviewed course problems with their answer keys and worked solutions. The repository is public and
 # this is homework teachers assign, so the files stay private (docs/content-pipeline.md).
 /content/
+
+# Outreach contact data (personal data, never commit)
+/outreach/
