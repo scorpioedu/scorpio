@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { LazyMarkdownRenderer as MarkdownRenderer } from "./lazy-markdown-renderer";
+import { hideOpenDiagramBlock } from "@/lib/diagram/blocks";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -536,7 +537,9 @@ export function LandingChatbot() {
                       ) : (
                         <div className="relative">
                           <MarkdownRenderer className="prose prose-sm max-w-none dark:prose-invert prose-p:my-0 prose-p:leading-relaxed prose-ul:my-1">
-                            {message.content}
+                            {message.isTyping
+                              ? hideOpenDiagramBlock(message.content)
+                              : message.content}
                           </MarkdownRenderer>
                           {message.isTyping && (
                             <span

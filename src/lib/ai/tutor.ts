@@ -5,7 +5,7 @@ import { auditDiagramBlocks } from "../diagram/blocks";
 import { buildExplainPrompt, buildSolvePrompt } from "./tutor-prompts";
 
 /** Raise may draw diagrams only when RAISE_DIAGRAMS is "on" (off by default). */
-function diagramsOn(): boolean {
+export function diagramsOn(): boolean {
   return process.env.RAISE_DIAGRAMS === "on";
 }
 
