@@ -1,21 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Search, 
-  LayoutGrid, 
-  List, 
-  PackageOpen,
-  Copy,
-  Check,
-  BatteryFull
-} from "lucide-react";
+import { Search, LayoutGrid, List, PackageOpen, Copy, Check } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WorkspaceHeader } from "@/components/ui/workspace";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/contexts/auth-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -53,7 +51,7 @@ const FORMULAS: Formula[] = [
     latex: "v = u + at",
     description: "Calculates final velocity with constant acceleration.",
     category: "kinematics",
-    variables: { v: "Final Velocity", u: "Initial Velocity", a: "Acceleration", t: "Time" }
+    variables: { v: "Final Velocity", u: "Initial Velocity", a: "Acceleration", t: "Time" },
   },
   {
     id: "k2",
@@ -62,7 +60,7 @@ const FORMULAS: Formula[] = [
     latex: "s = ut + \\frac{1}{2}at^2",
     description: "Calculates displacement over time with constant acceleration.",
     category: "kinematics",
-    variables: { s: "Displacement", u: "Initial Velocity", t: "Time", a: "Acceleration" }
+    variables: { s: "Displacement", u: "Initial Velocity", t: "Time", a: "Acceleration" },
   },
   {
     id: "k3",
@@ -71,7 +69,7 @@ const FORMULAS: Formula[] = [
     latex: "v^2 = u^2 + 2as",
     description: "Relates velocity, acceleration, and displacement without time.",
     category: "kinematics",
-    variables: { v: "Final Velocity", u: "Initial Velocity", a: "Acceleration", s: "Displacement" }
+    variables: { v: "Final Velocity", u: "Initial Velocity", a: "Acceleration", s: "Displacement" },
   },
   {
     id: "k4",
@@ -80,7 +78,7 @@ const FORMULAS: Formula[] = [
     latex: "v_{avg} = \\frac{u + v}{2}",
     description: "Mean velocity during constant acceleration.",
     category: "kinematics",
-    variables: { v_avg: "Average Velocity", u: "Initial Velocity", v: "Final Velocity" }
+    variables: { v_avg: "Average Velocity", u: "Initial Velocity", v: "Final Velocity" },
   },
   // Dynamics
   {
@@ -90,7 +88,7 @@ const FORMULAS: Formula[] = [
     latex: "F = ma",
     description: "The force on an object is equal to its mass times its acceleration.",
     category: "dynamics",
-    variables: { F: "Net Force", m: "Mass", a: "Acceleration" }
+    variables: { F: "Net Force", m: "Mass", a: "Acceleration" },
   },
   {
     id: "d2",
@@ -99,7 +97,7 @@ const FORMULAS: Formula[] = [
     latex: "f = \\mu N",
     description: "Resistance force acting between two surfaces.",
     category: "dynamics",
-    variables: { f: "Friction Force", μ: "Coefficient of Friction", N: "Normal Force" }
+    variables: { f: "Friction Force", μ: "Coefficient of Friction", N: "Normal Force" },
   },
   {
     id: "d3",
@@ -108,7 +106,7 @@ const FORMULAS: Formula[] = [
     latex: "F_c = \\frac{mv^2}{r}",
     description: "Force required to keep an object moving in a circular path.",
     category: "dynamics",
-    variables: { Fc: "Centripetal Force", m: "Mass", v: "Velocity", r: "Radius" }
+    variables: { Fc: "Centripetal Force", m: "Mass", v: "Velocity", r: "Radius" },
   },
   {
     id: "d4",
@@ -117,7 +115,13 @@ const FORMULAS: Formula[] = [
     latex: "F = G \\frac{m_1 m_2}{r^2}",
     description: "Universal law of gravitation between two masses.",
     category: "dynamics",
-    variables: { F: "Force", G: "Gravitational Constant", m1: "Mass 1", m2: "Mass 2", r: "Distance" }
+    variables: {
+      F: "Force",
+      G: "Gravitational Constant",
+      m1: "Mass 1",
+      m2: "Mass 2",
+      r: "Distance",
+    },
   },
   // Energy
   {
@@ -127,7 +131,7 @@ const FORMULAS: Formula[] = [
     latex: "K.E. = \\frac{1}{2}mv^2",
     description: "Energy possessed by an object due to its motion.",
     category: "energy",
-    variables: { KE: "Kinetic Energy", m: "Mass", v: "Velocity" }
+    variables: { KE: "Kinetic Energy", m: "Mass", v: "Velocity" },
   },
   {
     id: "e3",
@@ -136,7 +140,7 @@ const FORMULAS: Formula[] = [
     latex: "P.E. = mgh",
     description: "Potential energy due to height in a gravity field.",
     category: "energy",
-    variables: { PE: "Potential Energy", m: "Mass", g: "Gravity (9.81)", h: "Height" }
+    variables: { PE: "Potential Energy", m: "Mass", g: "Gravity (9.81)", h: "Height" },
   },
   {
     id: "e4",
@@ -145,7 +149,7 @@ const FORMULAS: Formula[] = [
     latex: "p = mv",
     description: "The quantity of motion of a moving body.",
     category: "energy",
-    variables: { p: "Momentum", m: "Mass", v: "Velocity" }
+    variables: { p: "Momentum", m: "Mass", v: "Velocity" },
   },
   {
     id: "e5",
@@ -154,7 +158,7 @@ const FORMULAS: Formula[] = [
     latex: "U_s = \\frac{1}{2}kx^2",
     description: "Potential energy stored in a spring.",
     category: "energy",
-    variables: { Us: "Potential Energy", k: "Spring Constant", x: "Compression" }
+    variables: { Us: "Potential Energy", k: "Spring Constant", x: "Compression" },
   },
   // Thermodynamics
   {
@@ -164,7 +168,7 @@ const FORMULAS: Formula[] = [
     latex: "\\Delta U = Q - W",
     description: "Conservation of energy in thermal processes.",
     category: "thermo",
-    variables: { U: "Internal Energy", Q: "Heat Added", W: "Work Done" }
+    variables: { U: "Internal Energy", Q: "Heat Added", W: "Work Done" },
   },
   {
     id: "t2",
@@ -173,7 +177,7 @@ const FORMULAS: Formula[] = [
     latex: "PV = nRT",
     description: "Equation of state for a hypothetical ideal gas.",
     category: "thermo",
-    variables: { P: "Pressure", V: "Volume", n: "Moles", R: "Gas Constant", T: "Temperature" }
+    variables: { P: "Pressure", V: "Volume", n: "Moles", R: "Gas Constant", T: "Temperature" },
   },
   {
     id: "t3",
@@ -182,7 +186,7 @@ const FORMULAS: Formula[] = [
     latex: "Q = mc\\Delta T",
     description: "Heat required to change temperature of a mass.",
     category: "thermo",
-    variables: { Q: "Heat Transfer", m: "Mass", c: "Specific Heat", T: "Temp Change" }
+    variables: { Q: "Heat Transfer", m: "Mass", c: "Specific Heat", T: "Temp Change" },
   },
   // Waves & Optics
   {
@@ -192,7 +196,7 @@ const FORMULAS: Formula[] = [
     latex: "v = f\\lambda",
     description: "Relationship between speed, frequency, and wavelength.",
     category: "optics",
-    variables: { v: "Wave Speed", f: "Frequency", λ: "Wavelength" }
+    variables: { v: "Wave Speed", f: "Frequency", λ: "Wavelength" },
   },
   {
     id: "w2",
@@ -201,7 +205,7 @@ const FORMULAS: Formula[] = [
     latex: "n_1 \\sin \\theta_1 = n_2 \\sin \\theta_2",
     description: "Calculates the refraction of light through mediums.",
     category: "optics",
-    variables: { n: "Refractive Index", θ: "Angle of Incidence" }
+    variables: { n: "Refractive Index", θ: "Angle of Incidence" },
   },
   {
     id: "w3",
@@ -210,7 +214,7 @@ const FORMULAS: Formula[] = [
     latex: "\\frac{1}{f} = \\frac{1}{d_o} + \\frac{1}{d_i}",
     description: "Calculates image distance vs object distance.",
     category: "optics",
-    variables: { f: "Focal Length", do: "Object Distance", di: "Image Distance" }
+    variables: { f: "Focal Length", do: "Object Distance", di: "Image Distance" },
   },
   // Electricity
   {
@@ -220,7 +224,7 @@ const FORMULAS: Formula[] = [
     latex: "V = IR",
     description: "Relationship between voltage, current, and resistance.",
     category: "electricity",
-    variables: { V: "Voltage", I: "Current", R: "Resistance" }
+    variables: { V: "Voltage", I: "Current", R: "Resistance" },
   },
   {
     id: "el2",
@@ -229,7 +233,7 @@ const FORMULAS: Formula[] = [
     latex: "P = IV = I^2 R = \\frac{V^2}{R}",
     description: "Rate of electrical energy transfer.",
     category: "electricity",
-    variables: { P: "Power", I: "Current", V: "Voltage", R: "Resistance" }
+    variables: { P: "Power", I: "Current", V: "Voltage", R: "Resistance" },
   },
   {
     id: "el3",
@@ -238,7 +242,7 @@ const FORMULAS: Formula[] = [
     latex: "F = k_e \\frac{q_1 q_2}{r^2}",
     description: "Force between two static electric charges.",
     category: "electricity",
-    variables: { F: "Force", k: "Coulomb Constant", q: "Charge", r: "Separation" }
+    variables: { F: "Force", k: "Coulomb Constant", q: "Charge", r: "Separation" },
   },
   // Nuclear
   {
@@ -248,7 +252,7 @@ const FORMULAS: Formula[] = [
     latex: "E = mc^2",
     description: "Equivalence of mass and energy.",
     category: "nuclear",
-    variables: { E: "Energy", m: "Mass", c: "Speed of Light" }
+    variables: { E: "Energy", m: "Mass", c: "Speed of Light" },
   },
   {
     id: "n2",
@@ -257,7 +261,7 @@ const FORMULAS: Formula[] = [
     latex: "E = hf = \\frac{hc}{\\lambda}",
     description: "Energy of a photon based on frequency.",
     category: "nuclear",
-    variables: { E: "Energy", h: "Planck's Constant", f: "Frequency", λ: "Wavelength" }
+    variables: { E: "Energy", h: "Planck's Constant", f: "Frequency", λ: "Wavelength" },
   },
   {
     id: "n3",
@@ -266,8 +270,8 @@ const FORMULAS: Formula[] = [
     latex: "N(t) = N_0 e^{-\\lambda t}",
     description: "Exponential decay of radioactive substances.",
     category: "nuclear",
-    variables: { N: "Remaining nuclei", N0: "Initial nuclei", λ: "Decay constant", t: "Time" }
-  }
+    variables: { N: "Remaining nuclei", N0: "Initial nuclei", λ: "Decay constant", t: "Time" },
+  },
 ];
 
 export default function Vault() {
@@ -304,21 +308,24 @@ export default function Vault() {
 
   const allFormulas = [...FORMULAS, ...customFormulas];
 
-  const filteredFormulas = allFormulas.filter(formula => {
+  const filteredFormulas = allFormulas.filter((formula) => {
     // Check if formula is restricted by teacher
     if (restrictedIds.includes(formula.id)) return false;
 
-    const matchesSearch = formula.name.toLowerCase().includes(search.toLowerCase()) || 
-                         formula.formula.toLowerCase().includes(search.toLowerCase()) ||
-                         formula.description.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch =
+      formula.name.toLowerCase().includes(search.toLowerCase()) ||
+      formula.formula.toLowerCase().includes(search.toLowerCase()) ||
+      formula.description.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = activeCategory === "all" || formula.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
   return (
     <div className="space-y-6">
-      
-      <WorkspaceHeader title="Equation Vault" description={`Search formulas and constants for ${courseName || "physics"}.`} />
+      <WorkspaceHeader
+        title="Equation Vault"
+        description={`Search formulas and constants for ${courseName || "physics"}.`}
+      />
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-0 flex-1 basis-48 sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -331,20 +338,44 @@ export default function Vault() {
           />
         </div>
         <Select value={activeCategory} onValueChange={setActiveCategory}>
-          <SelectTrigger aria-label="Formula category"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Formula category">
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             {CATEGORIES.map((category) => (
-              <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <div className="flex gap-1" role="group" aria-label="Formula layout">
-          <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")} aria-label="Grid view" aria-pressed={viewMode === "grid"}><LayoutGrid /></Button>
-          <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")} aria-label="List view" aria-pressed={viewMode === "list"}><List /></Button>
+          <Button
+            variant={viewMode === "grid" ? "default" : "outline"}
+            size="icon"
+            onClick={() => setViewMode("grid")}
+            aria-label="Grid view"
+            aria-pressed={viewMode === "grid"}
+          >
+            <LayoutGrid />
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "default" : "outline"}
+            size="icon"
+            onClick={() => setViewMode("list")}
+            aria-label="List view"
+            aria-pressed={viewMode === "list"}
+          >
+            <List />
+          </Button>
         </div>
       </div>
 
-      {restrictedIds.length > 0 && <p className="text-sm text-muted-foreground">Your class can only see formulas approved by your teacher.</p>}
+      {restrictedIds.length > 0 && (
+        <p className="text-sm text-muted-foreground">
+          Your class can only see formulas approved by your teacher.
+        </p>
+      )}
 
       {filteredFormulas.length === 0 ? (
         <div className="rounded-xl border border-border bg-card p-6 text-center">
@@ -354,36 +385,48 @@ export default function Vault() {
         </div>
       ) : viewMode === "grid" ? (
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-          {filteredFormulas.map(formula => (
-            <Card 
-              key={formula.id} 
-              className="min-w-0 gap-3 py-4 shadow-none"
-            >
+          {filteredFormulas.map((formula) => (
+            <Card key={formula.id} className="min-w-0 gap-3 py-4 shadow-none">
               <CardHeader className="px-4">
                 <div className="flex flex-wrap justify-between gap-2">
-                   <CardTitle className="break-words text-base">{formula.name}</CardTitle>
-                   <div className="flex items-center gap-2">
-                     <Badge variant="secondary" className="capitalize">
-                       {formula.category}
-                     </Badge>
-                   </div>
+                  <CardTitle className="break-words text-base">{formula.name}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="capitalize">
+                      {formula.category}
+                    </Badge>
+                  </div>
                 </div>
-                <CardDescription className="break-words text-sm">{formula.description}</CardDescription>
+                <CardDescription className="break-words text-sm">
+                  {formula.description}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 px-4">
                 <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3">
-                  <div className="min-w-0 flex-1 overflow-x-auto py-3 text-center"><Latex math={formula.latex} /></div>
-                  <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(formula)} aria-label={copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`}>
+                  <div className="min-w-0 flex-1 overflow-x-auto py-3 text-center">
+                    <Latex math={formula.latex} />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => handleCopy(formula)}
+                    aria-label={
+                      copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`
+                    }
+                  >
                     {copiedId === formula.id ? <Check /> : <Copy />}
                   </Button>
                 </div>
                 <div className="space-y-1">
-                  {formula.variables && Object.entries(formula.variables).map(([symbol, name]) => (
-                    <div key={symbol} className="flex items-start gap-2 text-xs text-muted-foreground">
-                      <span className="shrink-0 font-mono text-foreground">{symbol}</span>
-                      <span className="break-words">{name}</span>
-                    </div>
-                  ))}
+                  {formula.variables &&
+                    Object.entries(formula.variables).map(([symbol, name]) => (
+                      <div
+                        key={symbol}
+                        className="flex items-start gap-2 text-xs text-muted-foreground"
+                      >
+                        <span className="shrink-0 font-mono text-foreground">{symbol}</span>
+                        <span className="break-words">{name}</span>
+                      </div>
+                    ))}
                   {!formula.variables && (
                     <div className="flex items-start gap-2 text-xs text-muted-foreground italic">
                       No variable definitions provided.
@@ -402,9 +445,20 @@ export default function Vault() {
                 <h2 className="break-words text-sm font-medium">{formula.name}</h2>
                 <p className="break-words text-xs text-muted-foreground">{formula.description}</p>
               </div>
-              <div className="min-w-0 max-w-full overflow-x-auto"><Latex math={formula.latex} /></div>
-              <Badge variant="outline" className="capitalize">{formula.category}</Badge>
-              <Button variant="ghost" size="icon-sm" onClick={() => handleCopy(formula)} aria-label={copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`}>
+              <div className="min-w-0 max-w-full overflow-x-auto">
+                <Latex math={formula.latex} />
+              </div>
+              <Badge variant="outline" className="capitalize">
+                {formula.category}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => handleCopy(formula)}
+                aria-label={
+                  copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`
+                }
+              >
                 {copiedId === formula.id ? <Check /> : <Copy />}
               </Button>
             </li>
@@ -413,7 +467,9 @@ export default function Vault() {
       )}
 
       <details className="rounded-xl border border-border bg-card">
-        <summary className="cursor-pointer px-4 py-3 text-sm font-medium">Universal constants</summary>
+        <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
+          Universal constants
+        </summary>
         <dl className="grid gap-3 border-t border-border p-4 sm:grid-cols-2">
           {[
             { s: "g", v: "9.81 m/s²", n: "Gravity" },
@@ -423,7 +479,9 @@ export default function Vault() {
           ].map((item) => (
             <div key={item.s} className="text-sm">
               <dt className="text-muted-foreground">{item.n}</dt>
-              <dd className="font-mono">{item.s} = {item.v}</dd>
+              <dd className="font-mono">
+                {item.s} = {item.v}
+              </dd>
             </div>
           ))}
         </dl>

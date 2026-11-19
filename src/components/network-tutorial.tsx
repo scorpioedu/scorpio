@@ -10,15 +10,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { 
-  Users, 
-  ShieldCheck, 
-  BrainCircuit, 
-  Zap, 
-  ChevronRight, 
+import {
+  Users,
+  ShieldCheck,
+  BrainCircuit,
+  Zap,
+  ChevronRight,
   ChevronLeft,
-  BookOpen,
-  LayoutDashboard
+  LayoutDashboard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,34 +31,39 @@ interface Step {
 const steps: Step[] = [
   {
     title: "Welcome to Scorpio Network",
-    description: "The Network is where you manage your school's 'Scorpio Collective'. It's built for department heads, lead teachers, and administrators to coordinate AI resources.",
+    description:
+      "The Network is where you manage your school's 'Scorpio Collective'. It's built for department heads, lead teachers, and administrators to coordinate AI resources.",
     icon: <Users className="h-8 w-8 text-blue-500" />,
-    color: "bg-blue-50 dark:bg-blue-950/20"
+    color: "bg-blue-50 dark:bg-blue-950/20",
   },
   {
     title: "Collective Billing",
-    description: "Instead of every teacher paying individually, one person (the Owner) manages a central AI budget. All teachers in the network draw from this shared pool.",
+    description:
+      "Instead of every teacher paying individually, one person (the Owner) manages a central AI budget. All teachers in the network draw from this shared pool.",
     icon: <ShieldCheck className="h-8 w-8 text-emerald-500" />,
-    color: "bg-emerald-50 dark:bg-emerald-950/20"
+    color: "bg-emerald-50 dark:bg-emerald-950/20",
   },
   {
     title: "Setting Student Limits",
-    description: "You have granular control over student usage. Set monthly message caps for Raise and Notebooks to manage costs and focus.",
+    description:
+      "You have granular control over student usage. Set monthly message caps for Raise and Notebooks to manage costs and focus.",
     icon: <BrainCircuit className="h-8 w-8 text-purple-500" />,
-    color: "bg-purple-50 dark:bg-purple-950/20"
+    color: "bg-purple-50 dark:bg-purple-950/20",
   },
   {
     title: "Sharing Curriculum",
-    description: "Networks allow instant sharing of 'Waypoints' (curriculum benchmarks) across all member teachers. Update once, and the whole department stays in sync.",
+    description:
+      "Networks allow instant sharing of 'Waypoints' (curriculum benchmarks) across all member teachers. Update once, and the whole department stays in sync.",
     icon: <Zap className="h-8 w-8 text-amber-500" />,
-    color: "bg-amber-50 dark:bg-amber-950/20"
+    color: "bg-amber-50 dark:bg-amber-950/20",
   },
   {
     title: "Usage Analytics",
-    description: "Track exactly how many AI messages students and teachers are sending. Get real-time feedback on student engagement and AI interaction quality.",
+    description:
+      "Track exactly how many AI messages students and teachers are sending. Get real-time feedback on student engagement and AI interaction quality.",
     icon: <LayoutDashboard className="h-8 w-8 text-indigo-500" />,
-    color: "bg-indigo-50 dark:bg-indigo-950/20"
-  }
+    color: "bg-indigo-50 dark:bg-indigo-950/20",
+  },
 ];
 
 interface NetworkTutorialProps {
@@ -88,10 +92,13 @@ export function NetworkTutorial({ open, onOpenChange }: NetworkTutorialProps) {
   const step = steps[currentStep];
 
   return (
-    <Dialog open={open} onOpenChange={(val) => {
-      onOpenChange(val);
-      if (!val) setTimeout(() => setCurrentStep(0), 300);
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        onOpenChange(val);
+        if (!val) setTimeout(() => setCurrentStep(0), 300);
+      }}
+    >
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl rounded-3xl">
         <div className={cn("p-8 transition-colors duration-500", step.color)}>
           <div className="flex justify-between items-start mb-6">
@@ -102,7 +109,7 @@ export function NetworkTutorial({ open, onOpenChange }: NetworkTutorialProps) {
               Step {currentStep + 1} of {steps.length}
             </span>
           </div>
-          
+
           <DialogHeader className="text-left space-y-3">
             <DialogTitle className="text-3xl font-black tracking-tight leading-none">
               {step.title}
@@ -116,12 +123,12 @@ export function NetworkTutorial({ open, onOpenChange }: NetworkTutorialProps) {
         <div className="p-6 bg-background space-y-6">
           <div className="flex gap-1.5 justify-center">
             {steps.map((_, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  i === currentStep ? "w-8 bg-primary" : "w-1.5 bg-muted-foreground/20"
-                )} 
+                  i === currentStep ? "w-8 bg-primary" : "w-1.5 bg-muted-foreground/20",
+                )}
               />
             ))}
           </div>

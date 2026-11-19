@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { PageTransition } from "@/components/page-transition";
 import { DocsSidebar } from "@/components/docs-sidebar";
-import { SpaceBackground } from "@/components/ui/space-background";
+import { DocsLines } from "@/components/docs-lines";
 import { Logo } from "@/components/ui/logo";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Home } from "lucide-react";
+import { Menu, ChevronLeft } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -16,80 +15,67 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen flex bg-background/50">
-      <SpaceBackground />
-
-      {/* Desktop Sidebar */}
-      <aside className="hidden w-72 flex-col border-r border-border/40 bg-card md:flex fixed inset-y-0 z-50">
-        <div className="flex items-center gap-3 p-8 border-b border-border/10">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-all hover:scale-105 active:scale-95">
-            <Logo size={28} className="text-primary drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
-            <span className="font-black text-xl tracking-tight">Scorpio Docs</span>
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-background">
+      {/* Quiet line background */}
+      <DocsLines className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[70vh] w-full text-primary opacity-[0.3] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+      {/* Top bar */}
+      <header className="relative z-40 shrink-0 flex h-14 items-center justify-between border-b border-border/60 bg-background/90 px-4 backdrop-blur md:px-8">
+        <div className="flex items-center gap-3">
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open documentation menu">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 overflow-y-auto p-0" aria-describedby={undefined}>
+              <div className="flex items-center gap-2.5 border-b border-border/60 p-5">
+                <Logo size={24} className="text-primary" />
+                <SheetTitle className="font-semibold">Scorpio Docs</SheetTitle>
+              </div>
+              <div className="p-5">
+                <DocsSidebar onNavigate={() => setMenuOpen(false)} />
+              </div>
+            </SheetContent>
+          </Sheet>
+          <Link href="/" className="flex items-center gap-2.5">
+            <Logo size={24} className="text-primary" />
+            <span className="font-semibold tracking-tight">Scorpio</span>
           </Link>
+          <span className="text-muted-foreground/40">/</span>
+          <span className="text-sm text-muted-foreground">Docs</span>
         </div>
+        <div className="flex items-center gap-1">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
+            <Link href="/"><ChevronLeft className="h-4 w-4" /> Home</Link>
+          </Button>
+          <ModeToggle />
+        </div>
+      </header>
 
-        <ScrollArea className="flex-1 py-10 px-6">
-          <div className="mb-6 px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
-            <span className="w-4 h-px bg-primary/30" />
-            Docs
-          </div>
+      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto">
+      <div className="mx-auto flex w-full max-w-6xl">
+        {/* Desktop nav */}
+        <aside className="z-10 self-start sticky top-0 hidden h-[calc(100dvh-3.5rem)] w-64 shrink-0 overflow-y-auto py-10 pl-8 pr-4 md:block">
           <DocsSidebar />
-        </ScrollArea>
+        </aside>
 
-        <div className="p-6 border-t border-border/10 bg-background/5">
-          <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" className="flex-1 justify-start">
-              <Link href="/"><Home /> Home</Link>
-            </Button>
-            <ModeToggle />
-          </div>
+        <div className="relative z-10 min-w-0 flex-1 md:border-l md:border-border/60">
+          <main
+            className={[
+              "mx-auto max-w-4xl px-6 py-10 md:px-12 md:py-14",
+              // Doc-style type scale: overrides the marketing-sized headings inside each page.
+              "[&_h1]:!text-3xl [&_h1]:!font-semibold [&_h1]:!tracking-tight [&_h1]:!leading-tight [&_h1_*]:!bg-none [&_h1_*]:!text-foreground [&_h1_*]:![-webkit-text-fill-color:currentColor]",
+              "[&_h2]:!text-xl [&_h2]:!font-semibold [&_h2]:!tracking-tight",
+              "[&_h3]:!text-base [&_h3]:!font-semibold",
+              "[&_p]:!text-sm [&_p]:!leading-relaxed [&_li]:!text-sm",
+              "[&_[data-slot=badge]]:hidden",
+              "[&_[class*=rounded-3xl]]:!rounded-lg [&_[class*=rounded-2xl]]:!rounded-lg",
+            ].join(" ")}
+          >
+            <PageTransition>{children}</PageTransition>
+          </main>
         </div>
-      </aside>
-
-      {/* Mobile Header & Content */}
-      <div className="min-w-0 flex-1 md:ml-72 relative z-10 flex flex-col min-h-screen">
-        {/* Mobile Header */}
-        <header className="md:hidden flex items-center justify-between p-4 border-b border-border/40 bg-background/60 backdrop-blur-md sticky top-0 z-40">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo size={20} className="text-primary" />
-            <span className="font-bold tracking-tighter ">Scorpio Docs</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <ModeToggle />
-            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Open documentation menu">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72 p-0 overflow-y-auto" aria-describedby={undefined}>
-                <div className="flex items-center gap-3 p-8 border-b border-border/10">
-                  <Logo size={28} className="text-primary" />
-                  <SheetTitle>Scorpio Docs</SheetTitle>
-                </div>
-                <div className="p-6">
-                  <div className="mb-6 px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
-                    <span className="w-4 h-px bg-primary/30" />
-                    Docs
-                  </div>
-                  <DocsSidebar onNavigate={() => setMenuOpen(false)} />
-                  <div className="mt-10 pt-8 border-t border-border/10">
-                    <Button asChild variant="ghost" className="w-full justify-start">
-                      <Link href="/"><Home /> Home</Link>
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </header>
-
-        {/* Main Content Area */}
-        <main className="flex-1 container max-w-4xl mx-auto py-12 md:py-20 px-6">
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </main>
+      </div>
       </div>
     </div>
   );

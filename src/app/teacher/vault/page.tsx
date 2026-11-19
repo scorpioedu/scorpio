@@ -450,7 +450,7 @@ export default function TeacherVault() {
     <>
       <div className="space-y-6">
         <TeacherPageHeader
-          title="Vault Controls"
+          title="Formula vault"
           description="Choose which formulas students can use in each class."
         >
           <TooltipProvider>

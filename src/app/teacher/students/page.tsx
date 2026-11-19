@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  deleteDoc,
-  doc,
-  getDoc,
-  setDoc,
-  type QueryDocumentSnapshot,
-} from "firebase/firestore";
+import { collection, getDocs, query, where, type QueryDocumentSnapshot } from "firebase/firestore";
 import { db, cleanupStudentData } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -27,12 +17,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, MoreHorizontal, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import { RosterImport } from "@/components/roster-import";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NetworkStudents } from "@/components/teacher/network-students";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { useClassManager, type TeacherClass } from "@/components/teacher/class-manager";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,18 +42,18 @@ interface Student {
 export default function StudentsPage() {
   const { user, profile } = useAuth();
   const searchParams = useSearchParams();
-  const tabParam = searchParams?.get("tab");
-  const [activeTab, setActiveTab] = useState(tabParam || "roster");
-  // Follow the address bar when ?tab= changes.
-  const [seenTabParam, setSeenTabParam] = useState(tabParam);
-  if (tabParam !== seenTabParam) {
-    setSeenTabParam(tabParam);
-    if (tabParam === "insights" || tabParam === "roster") setActiveTab(tabParam);
-  }
+  // The Classes section tabs (section-tabs.tsx) switch between the two views with ?tab=insights.
+  const view = searchParams?.get("tab") === "insights" ? "insights" : "classes";
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
   const [networkTeacherIds, setNetworkTeacherIds] = useState<string[]>([]);
+  const [classes, setClasses] = useState<TeacherClass[]>([]);
+  const classManager = useClassManager({
+    classes,
+    setClasses,
+    canCreate: !!profile?.organizationId && !loading,
+  });
 
   useEffect(() => {
     async function fetchStudentsAndNetwork() {
@@ -99,6 +88,8 @@ export default function StudentsPage() {
           ),
         ]);
 
+        setClasses(cSnap1.docs.map((d) => ({ id: d.id, ...d.data() }) as TeacherClass));
+
         const courseMap: Record<string, string> = {};
         const myCourseIds = new Set<string>();
         const myCodes = new Set<string>();
@@ -118,15 +109,19 @@ export default function StudentsPage() {
               where("role", "==", "student"),
             ),
           ).catch(() => ({ docs: [] as QueryDocumentSnapshot[] })),
-          myCourseIds.size > 0
-            ? getDocs(
+          // One query per class: the users rule looks up each class (ownsCourse), and an `in` over
+          // more than 10 is refused. Each failed class is skipped rather than emptying the roster.
+          Promise.all(
+            Array.from(myCourseIds).map((courseId) =>
+              getDocs(
                 query(
                   collection(db, "users"),
-                  where("courseId", "in", Array.from(myCourseIds).slice(0, 30)),
+                  where("courseId", "==", courseId),
                   where("role", "==", "student"),
                 ),
-              )
-            : Promise.resolve({ docs: [] as QueryDocumentSnapshot[] }),
+              ).catch(() => ({ docs: [] as QueryDocumentSnapshot[] })),
+            ),
+          ).then((snaps) => ({ docs: snaps.flatMap((snap) => snap.docs) })),
         ]);
 
         const studentsMap = new Map<string, Student>();
@@ -180,30 +175,36 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6">
       <TeacherPageHeader
-        title="Students"
-        description="Manage enrollments and explore how students use Raise."
+        title={view === "insights" ? "Learning insights" : "Classes"}
+        description={
+          view === "insights"
+            ? "How students across your department use Raise."
+            : "Your classes, their join codes and the students in each."
+        }
       >
-        {user && (
-          <Button variant="outline" asChild>
-            <Link href="/teacher">
-              Manage Classes <ArrowUpRight />
-            </Link>
-          </Button>
-        )}
-        <RosterImport />
+        {view === "classes" && <RosterImport />}
       </TeacherPageHeader>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="min-w-0 gap-4">
-        <TabsList className="h-auto max-w-full flex-wrap">
-          <TabsTrigger value="roster" className="min-h-8">
-            Roster
-          </TabsTrigger>
-          <TabsTrigger value="insights" className="min-h-8">
-            Learning insights
-          </TabsTrigger>
-        </TabsList>
+      {view === "classes" ? (
+        <>
+          <Card className="min-w-0 gap-0 py-0 overflow-hidden">
+            <CardHeader className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:px-5">
+              <h2 className="text-base font-semibold">Your classes</h2>
+              {classManager.createButton}
+            </CardHeader>
+            <CardContent className="border-t p-0">
+              {classManager.rows.length > 0 ? (
+                <ul className="divide-y divide-border">{classManager.rows}</ul>
+              ) : (
+                <p role="status" className="px-5 py-6 text-sm text-muted-foreground">
+                  {loading
+                    ? "Loading classes…"
+                    : "No classes yet. Make one to get a code students can join with."}
+                </p>
+              )}
+            </CardContent>
+          </Card>
 
-        <TabsContent value="roster">
           <Card className="min-w-0 gap-0 py-0">
             <CardHeader className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:px-5">
               <h2 className="text-base font-semibold">Class roster</h2>
@@ -269,15 +270,15 @@ export default function StudentsPage() {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        </>
+      ) : (
+        <NetworkStudents
+          organizationId={profile?.organizationId || undefined}
+          teacherIds={networkTeacherIds.length > 0 ? networkTeacherIds : user ? [user.uid] : []}
+        />
+      )}
 
-        <TabsContent value="insights">
-          <NetworkStudents
-            organizationId={profile?.organizationId || undefined}
-            teacherIds={networkTeacherIds.length > 0 ? networkTeacherIds : user ? [user.uid] : []}
-          />
-        </TabsContent>
-      </Tabs>
+      {classManager.dialogs}
 
       <ConfirmDialog
         open={!!studentToDelete}

@@ -1,9 +1,15 @@
 import { Metadata } from "next";
+import { SectionTabs } from "@/components/teacher/section-tabs";
 
 export const metadata: Metadata = {
-  title: "Waypoints",
+  title: "Library",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SectionTabs section="assignments" />
+      {children}
+    </>
+  );
 }

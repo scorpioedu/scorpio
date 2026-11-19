@@ -5,46 +5,58 @@ import { motion } from "framer-motion";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Button } from "@/components/ui/button";
 import {
-  Brain, Calculator, Waypoints, ShieldUser, Users, FileUp, ArrowRight,
-  Sparkles, Orbit, SquareFunction, Github, Info, BookOpen, Mail,
-  Shield, FileText, Activity, PlayCircle, CheckCircle2, Zap, Presentation,
-  MonitorPlay, ShieldCheck, FileDown, Maximize2, Globe, ChartColumnIncreasing, Leaf,
-  Layers, Sliders, Check, KeyRound
+  Brain,
+  Calculator,
+  Waypoints,
+  ShieldUser,
+  Users,
+  FileUp,
+  ArrowRight,
+  Orbit,
+  SquareFunction,
+  Github,
+  Info,
+  BookOpen,
+  Mail,
+  Shield,
+  FileText,
+  Presentation,
+  Maximize2,
+  Leaf,
+  Layers,
+  Check,
+  KeyRound,
 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import Image from "next/image";
 import { AP_UNITS, apUnitLabel } from "@/data/ap";
-import dynamic from "next/dynamic";
 import { useState } from "react";
-
-const DemoCarousel = dynamic(() => import("@/components/demo-carousel").then(m => m.DemoCarousel), {
-  ssr: false,
-  loading: () => <div className="h-[480px] w-full flex items-center justify-center bg-muted/20 rounded-2xl animate-pulse">Loading Demonstrations...</div>,
-});
 
 const MATH_PRESETS = [
   {
     name: "Maxwell's Equations",
     category: "Electromagnetism",
-    latex: "\\nabla \\times \\mathbf{E} = -\\frac{\\partial \\mathbf{B}}{\\partial t} \\quad \\text{and} \\quad \\nabla \\cdot \\mathbf{B} = 0",
+    latex:
+      "\\nabla \\times \\mathbf{E} = -\\frac{\\partial \\mathbf{B}}{\\partial t} \\quad \\text{and} \\quad \\nabla \\cdot \\mathbf{B} = 0",
     description: "Faraday's Law of Induction and Gauss's Law for Magnetism in differential form.",
   },
   {
     name: "Schrödinger Equation",
     category: "Quantum Mechanics",
-    latex: "i\\hbar \\frac{\\partial}{\\partial t} \\Psi(\\mathbf{r}, t) = \\left[ -\\frac{\\hbar^2}{2m} \\nabla^2 + V(\\mathbf{r}, t) \\right] \\Psi(\\mathbf{r}, t)",
+    latex:
+      "i\\hbar \\frac{\\partial}{\\partial t} \\Psi(\\mathbf{r}, t) = \\left[ -\\frac{\\hbar^2}{2m} \\nabla^2 + V(\\mathbf{r}, t) \\right] \\Psi(\\mathbf{r}, t)",
     description: "Time-dependent wave equation describing non-relativistic quantum states.",
   },
   {
     name: "Rotational Dynamics",
     category: "Classical Mechanics",
     latex: "\\vec{\\tau} = \\mathbf{r} \\times \\vec{F} = I\\vec{\\alpha} = \\frac{d\\vec{L}}{dt}",
-    description: "Torque-angular momentum relation with vector cross products and moment of inertia.",
+    description:
+      "Torque-angular momentum relation with vector cross products and moment of inertia.",
   },
   {
     name: "Relativistic Energy",
@@ -61,56 +73,64 @@ export default function FeaturesPage() {
     {
       icon: Brain,
       title: "4-Layer Socratic Scaffolding",
-      description: "Hints follow four steps: diagnostic query, concept priming, guided derivation, and verification.",
+      description:
+        "Hints follow four steps: diagnostic query, concept priming, guided derivation, and verification.",
       tag: "Pedagogical",
       highlight: "0% Direct Answer Rate",
     },
     {
       icon: SquareFunction,
       title: "0.92 LaTeX Notation Density",
-      description: "Real-time, symbolic LaTeX rendering verified for professional academic standards and vector precision.",
+      description:
+        "Real-time, symbolic LaTeX rendering verified for professional academic standards and vector precision.",
       tag: "Mathematical",
       highlight: "Publication-Grade",
     },
     {
       icon: Orbit,
       title: "Inference-Time Guardrails",
-      description: "No black-box retraining. Every Socratic behaviour is enforced at inference time—observable, auditable, reproducible.",
+      description:
+        "No black-box retraining. Every Socratic behaviour is enforced at inference time—observable, auditable, reproducible.",
       tag: "Verifiable",
       highlight: "Audit-Ready",
     },
     {
       icon: Calculator,
       title: "Constraint-Led Derivations",
-      description: "Students are guided through the steps, not handed solutions. Tested on 25 problems, not guaranteed for every question.",
+      description:
+        "Students are guided through the steps, not handed solutions. Tested on 25 problems, not guaranteed for every question.",
       tag: "Architecture",
       highlight: "Tested on 25 problems",
     },
     {
       icon: Waypoints,
       title: "Waypoints Library",
-      description: "Copy any global Waypoint, including the AP Physics 1 problem sets, into your class and edit it. Department Waypoints are shared inside your school network.",
+      description:
+        "Copy any global Waypoint, including the AP Physics 1 problem sets, into your class and edit it. Department Waypoints are shared inside your school network.",
       tag: "Library",
       highlight: "Free to copy",
     },
     {
       icon: ShieldUser,
       title: "Hints, Not Answers",
-      description: "Raise is built to give the next step instead of the solution, so homework still shows what students know.",
+      description:
+        "Raise is built to give the next step instead of the solution, so homework still shows what students know.",
       tag: "Integrity",
       highlight: "0 of 25 test questions answered directly",
     },
     {
       icon: FileUp,
       title: "Auto-Grading",
-      description: "Numeric answers are checked with units and tolerance, multiple choice by exact match, and written answers by an AI grader. Feedback never reveals the answer key.",
+      description:
+        "Numeric answers are checked with units and tolerance, multiple choice by exact match, and written answers by an AI grader. Feedback never reveals the answer key.",
       tag: "Grading",
       highlight: "Free",
     },
     {
       icon: Users,
       title: "Class Misconception Report",
-      description: "Top misconceptions ranked by how many students showed them (for example 8 of 24), by class, assignment and AP unit.",
+      description:
+        "Top misconceptions ranked by how many students showed them (for example 8 of 24), by class, assignment and AP unit.",
       tag: "Insight",
       highlight: "Free",
     },
@@ -127,7 +147,6 @@ export default function FeaturesPage() {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       >
         <main className="relative z-10 pt-24 md:pt-32 pb-24">
-
           {/* Page Hero */}
           <section className="container mx-auto px-4 sm:px-6 max-w-6xl text-center space-y-6">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold tracking-[0.2em] uppercase text-primary">
@@ -139,7 +158,8 @@ export default function FeaturesPage() {
               <span className="text-primary italic">not answer-shortcuts.</span>
             </h1>
             <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              From hint-only tutoring to auto-grading and the class misconception report, built for AP Physics 1 homework.
+              From hint-only tutoring to auto-grading and the class misconception report, built for
+              AP Physics 1 homework.
             </p>
 
             {/* Quick Link Pills */}
@@ -166,7 +186,10 @@ export default function FeaturesPage() {
           </section>
 
           {/* Feature Grid Bento */}
-          <section id="features-grid" className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative">
+          <section
+            id="features-grid"
+            className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative"
+          >
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-primary/5 rounded-full blur-[140px] pointer-events-none -z-10" />
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -180,7 +203,10 @@ export default function FeaturesPage() {
                       <div className="h-10 w-10 rounded-xl bg-background/80 border border-border flex items-center justify-center group-hover:border-primary/40 transition-colors shadow-inner">
                         <feature.icon className="h-5 w-5 text-primary" />
                       </div>
-                      <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-primary/20 text-primary/80 px-2 py-0.5">
+                      <Badge
+                        variant="outline"
+                        className="text-[9px] font-bold uppercase tracking-widest border-primary/20 text-primary/80 px-2 py-0.5"
+                      >
                         {feature.tag}
                       </Badge>
                     </div>
@@ -193,7 +219,9 @@ export default function FeaturesPage() {
                   </div>
 
                   <div className="pt-3 border-t border-border/30 flex items-center justify-between text-[11px] font-bold text-foreground/80">
-                    <span className="text-muted-foreground/70 font-mono uppercase tracking-wider text-[10px]">Benchmark</span>
+                    <span className="text-muted-foreground/70 font-mono uppercase tracking-wider text-[10px]">
+                      Benchmark
+                    </span>
                     <span className="text-primary">{feature.highlight}</span>
                   </div>
                 </div>
@@ -202,7 +230,10 @@ export default function FeaturesPage() {
           </section>
 
           {/* Interactive Math Fidelity Playground */}
-          <section id="math-fidelity" className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative">
+          <section
+            id="math-fidelity"
+            className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative"
+          >
             <div className="rounded-[2.5rem] border border-border/70 bg-card/30 backdrop-blur-2xl overflow-hidden p-6 sm:p-12 lg:p-16 relative shadow-2xl">
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
@@ -217,7 +248,9 @@ export default function FeaturesPage() {
                     Publication-Grade <span className="text-primary italic">Fidelity.</span>
                   </h2>
                   <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-                    Scorpio features a dedicated KaTeX symbolic rendering pipeline designed for the rigorous demands of university physics. From differential vectors to operator commutators, notation is rendered instantly with 0.92 density.
+                    Scorpio features a dedicated KaTeX symbolic rendering pipeline designed for the
+                    rigorous demands of university physics. From differential vectors to operator
+                    commutators, notation is rendered instantly with 0.92 density.
                   </p>
 
                   <div className="space-y-2">
@@ -280,7 +313,10 @@ export default function FeaturesPage() {
                           KaTeX Live Engine • 0.92 Density
                         </span>
                       </div>
-                      <Badge variant="outline" className="border-primary/30 text-primary text-[9px] uppercase font-bold tracking-widest">
+                      <Badge
+                        variant="outline"
+                        className="border-primary/30 text-primary text-[9px] uppercase font-bold tracking-widest"
+                      >
                         {MATH_PRESETS[selectedMathIndex].category}
                       </Badge>
                     </div>
@@ -313,7 +349,10 @@ export default function FeaturesPage() {
           </section>
 
           {/* Ablation Study Comparison Table */}
-          <section id="comparison" className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative">
+          <section
+            id="comparison"
+            className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative"
+          >
             <div className="text-center space-y-4 mb-16">
               <div className="text-xs font-black text-primary uppercase tracking-[0.25em]">
                 Independent Research • 125-Response Ablation Study
@@ -322,11 +361,15 @@ export default function FeaturesPage() {
                 Hints, not answers: what we measured.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                Every metric below is sourced from our published ablation study—blinded scoring by an independent Physics Ph.D. auditor across 25 procedural physics problems.
+                Every metric below is sourced from our published ablation study—blinded scoring by
+                an independent Physics Ph.D. auditor across 25 procedural physics problems.
               </p>
               <div className="flex justify-center pt-2">
                 <Link href="/research">
-                  <Badge variant="outline" className="px-4 py-1.5 rounded-full border-primary/30 text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary/5 transition-colors cursor-pointer">
+                  <Badge
+                    variant="outline"
+                    className="px-4 py-1.5 rounded-full border-primary/30 text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary/5 transition-colors cursor-pointer"
+                  >
                     Read the full methodology →
                   </Badge>
                 </Link>
@@ -335,23 +378,63 @@ export default function FeaturesPage() {
 
             <div className="rounded-3xl border border-border/60 overflow-hidden bg-card/30 backdrop-blur-xl shadow-xl">
               <div className="grid grid-cols-3 bg-muted/30 border-b border-border/50 px-6 py-4">
-                <div className="col-span-1 text-xs font-black uppercase tracking-[0.15em] text-muted-foreground">Capability</div>
+                <div className="col-span-1 text-xs font-black uppercase tracking-[0.15em] text-muted-foreground">
+                  Capability
+                </div>
                 <div className="col-span-1 text-center">
                   <div className="inline-flex flex-col items-center gap-1">
-                    <span className="text-xs font-black uppercase tracking-widest text-primary">Scorpio</span>
-                    <span className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Full Stack</span>
+                    <span className="text-xs font-black uppercase tracking-widest text-primary">
+                      Scorpio
+                    </span>
+                    <span className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">
+                      Full Stack
+                    </span>
                   </div>
                 </div>
-                <div className="col-span-1 text-center"><span className="text-xs font-black uppercase tracking-widest text-muted-foreground/70">ChatGPT / Gemini</span></div>
+                <div className="col-span-1 text-center">
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground/70">
+                    ChatGPT / Gemini
+                  </span>
+                </div>
               </div>
 
               {[
-                { capability: "Direct Answer Rate", footnote: "25 procedural physics problems", scorpio: { val: "0%" }, chatgpt: { val: "~100%", dim: true } },
-                { capability: "Pedagogical Quality Score", footnote: "Ph.D. blinded holistic audit, 5-pt scale", scorpio: { val: "4.62 / 5" }, chatgpt: { val: "4.38 / 5¹", dim: true } },
-                { capability: "LaTeX Notation Density", footnote: "Per 100 words, ablation study", scorpio: { val: "0.92" }, chatgpt: { val: "0.22¹", dim: true } },
-                { capability: "Socratic Questions / Response", footnote: "Avg. across 125-response study", scorpio: { val: "1.25" }, chatgpt: { val: "1.00¹", dim: true } },
-                { capability: "Constraint Architecture", footnote: "Inference-time, verifiable", scorpio: { val: "4-Layer Enforced" }, chatgpt: { val: "None", dim: true } },
-                { capability: "Verifiable & Auditable", footnote: "Published methodology, reproducible", scorpio: { val: "Open Methodology" }, chatgpt: { val: "No", dim: true } },
+                {
+                  capability: "Direct Answer Rate",
+                  footnote: "25 procedural physics problems",
+                  scorpio: { val: "0%" },
+                  chatgpt: { val: "~100%", dim: true },
+                },
+                {
+                  capability: "Pedagogical Quality Score",
+                  footnote: "Ph.D. blinded holistic audit, 5-pt scale",
+                  scorpio: { val: "4.62 / 5" },
+                  chatgpt: { val: "4.38 / 5¹", dim: true },
+                },
+                {
+                  capability: "LaTeX Notation Density",
+                  footnote: "Per 100 words, ablation study",
+                  scorpio: { val: "0.92" },
+                  chatgpt: { val: "0.22¹", dim: true },
+                },
+                {
+                  capability: "Socratic Questions / Response",
+                  footnote: "Avg. across 125-response study",
+                  scorpio: { val: "1.25" },
+                  chatgpt: { val: "1.00¹", dim: true },
+                },
+                {
+                  capability: "Constraint Architecture",
+                  footnote: "Inference-time, verifiable",
+                  scorpio: { val: "4-Layer Enforced" },
+                  chatgpt: { val: "None", dim: true },
+                },
+                {
+                  capability: "Verifiable & Auditable",
+                  footnote: "Published methodology, reproducible",
+                  scorpio: { val: "Open Methodology" },
+                  chatgpt: { val: "No", dim: true },
+                },
               ].map((row, i) => (
                 <div
                   key={i}
@@ -359,7 +442,9 @@ export default function FeaturesPage() {
                 >
                   <div className="col-span-1 pr-4">
                     <p className="text-sm font-bold text-foreground">{row.capability}</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5 leading-tight">{row.footnote}</p>
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5 leading-tight">
+                      {row.footnote}
+                    </p>
                   </div>
                   <div className="col-span-1 flex items-center justify-center">
                     <span className="text-sm font-black text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full">
@@ -367,7 +452,9 @@ export default function FeaturesPage() {
                     </span>
                   </div>
                   <div className="col-span-1 flex items-center justify-center">
-                    <span className={`text-sm font-semibold ${row.chatgpt.dim ? "text-muted-foreground/50" : "text-foreground"}`}>
+                    <span
+                      className={`text-sm font-semibold ${row.chatgpt.dim ? "text-muted-foreground/50" : "text-foreground"}`}
+                    >
                       {row.chatgpt.val}
                     </span>
                   </div>
@@ -383,13 +470,17 @@ export default function FeaturesPage() {
                 Full methodology, blinded rubrics, and raw ablation outputs published at{" "}
                 <Link href="/research" className="text-primary hover:underline">
                   scorpioedu.org/research
-                </Link>.
+                </Link>
+                .
               </p>
             </div>
           </section>
 
           {/* Workflow: Two Interfaces, One System */}
-          <section id="workflow" className="container mx-auto px-4 sm:px-6 max-w-6xl py-24 relative">
+          <section
+            id="workflow"
+            className="container mx-auto px-4 sm:px-6 max-w-6xl py-24 relative"
+          >
             <div className="text-center mb-16 space-y-4">
               <div className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">
                 Two Interfaces. One System.
@@ -398,7 +489,8 @@ export default function FeaturesPage() {
                 Your Classroom. Reimagined.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                Teachers assign, grade and see class misconceptions. Students get hints, not answers.
+                Teachers assign, grade and see class misconceptions. Students get hints, not
+                answers.
               </p>
             </div>
 
@@ -411,8 +503,12 @@ export default function FeaturesPage() {
                       <Presentation className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">Instructional Design</h3>
-                      <p className="text-xs font-bold text-primary uppercase tracking-widest">Faculty Interface</p>
+                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">
+                        Instructional Design
+                      </h3>
+                      <p className="text-xs font-bold text-primary uppercase tracking-widest">
+                        Faculty Interface
+                      </p>
                     </div>
                   </div>
 
@@ -454,7 +550,10 @@ export default function FeaturesPage() {
                       "Review submissions that auto-grading flags for your attention",
                       "See which misconceptions your class has, ranked by number of students",
                     ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85">
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85"
+                      >
                         <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
@@ -477,8 +576,12 @@ export default function FeaturesPage() {
                       <Users className="h-6 w-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">Conceptual Discovery</h3>
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Student Interface</p>
+                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">
+                        Conceptual Discovery
+                      </h3>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                        Student Interface
+                      </p>
                     </div>
                   </div>
 
@@ -520,7 +623,10 @@ export default function FeaturesPage() {
                       "Instant auto-grading with unit and sign feedback",
                       "Join your class with a class code",
                     ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85">
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85"
+                      >
                         <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
@@ -538,7 +644,10 @@ export default function FeaturesPage() {
           </section>
 
           {/* Waypoints Network Section */}
-          <section id="waypoints" className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative">
+          <section
+            id="waypoints"
+            className="container mx-auto px-4 sm:px-6 max-w-6xl py-20 relative"
+          >
             <div className="rounded-[2.5rem] border border-border/60 bg-card/25 backdrop-blur-xl p-8 sm:p-12 space-y-12">
               <div className="text-center space-y-3 max-w-2xl mx-auto">
                 <div className="text-xs font-black text-primary uppercase tracking-[0.25em]">
@@ -554,12 +663,23 @@ export default function FeaturesPage() {
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  ...AP_UNITS.slice(0, 4).map((u) => ({ title: apUnitLabel(u.unit), tag: "AP Physics 1", note: "Copy and edit in your class", badge: "Free" })),
+                  ...AP_UNITS.slice(0, 4).map((u) => ({
+                    title: apUnitLabel(u.unit),
+                    tag: "AP Physics 1",
+                    note: "Copy and edit in your class",
+                    badge: "Free",
+                  })),
                 ].map((item, i) => (
-                  <div key={i} className="p-4 rounded-2xl border border-border/50 bg-background/50 space-y-3 flex flex-col justify-between">
+                  <div
+                    key={i}
+                    className="p-4 rounded-2xl border border-border/50 bg-background/50 space-y-3 flex flex-col justify-between"
+                  >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="text-[9px] uppercase tracking-wider text-muted-foreground">
+                        <Badge
+                          variant="outline"
+                          className="text-[9px] uppercase tracking-wider text-muted-foreground"
+                        >
                           {item.tag}
                         </Badge>
                         <span className="text-[9px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -592,18 +712,26 @@ export default function FeaturesPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button asChild size="lg" className="rounded-full px-8 font-semibold shadow-lg shadow-primary/20">
+                <Button
+                  asChild
+                  size="lg"
+                  className="rounded-full px-8 font-semibold shadow-lg shadow-primary/20"
+                >
                   <Link href="/signup">
                     Get Faculty Access <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="rounded-full px-8 font-semibold">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="rounded-full px-8 font-semibold"
+                >
                   <Link href="/pricing">View Flat Pricing</Link>
                 </Button>
               </div>
             </div>
           </section>
-
         </main>
 
         {/* Global Footer */}
@@ -616,35 +744,61 @@ export default function FeaturesPage() {
               </div>
 
               <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0">
-                <Link href="https://github.com/RushilMahadevu/scorpio" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="https://github.com/RushilMahadevu/scorpio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Github className="h-5 w-5" />
                   <span className="text-sm font-medium">GitHub</span>
                 </Link>
-                <Link href="/about" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/about"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Info className="h-5 w-5" />
                   <span className="text-sm font-medium">About</span>
                 </Link>
-                <Link href="/research" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/research"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <BookOpen className="h-5 w-5" />
                   <span className="text-sm font-medium">Research</span>
                 </Link>
-                <Link href="/sustainability" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/sustainability"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Leaf className="h-5 w-5 text-emerald-500" />
                   <span className="text-sm font-medium">Sustainability</span>
                 </Link>
-                <Link href="/privacy" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/privacy"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Shield className="h-5 w-5" />
                   <span className="text-sm font-medium">Privacy</span>
                 </Link>
-                <Link href="/terms" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/terms"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <FileText className="h-5 w-5" />
                   <span className="text-sm font-medium">Terms</span>
                 </Link>
-                <Link href="/request-access" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/request-access"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <KeyRound className="h-5 w-5" />
                   <span className="text-sm font-medium">Request Access</span>
                 </Link>
-                <Link href="/contact" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/contact"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Mail className="h-5 w-5" />
                   <span className="text-sm font-medium">Contact</span>
                 </Link>

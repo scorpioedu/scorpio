@@ -11,7 +11,6 @@ import {
   Minimize2,
   Copy,
   Check,
-  Sparkles,
   ExternalLink,
   Layers,
   LineChart
@@ -59,15 +58,33 @@ export interface ScientificCalculatorProps {
   isOpen: boolean;
   onClose: () => void;
   className?: string;
+  /** Set these to choose the tab from outside (for example a Graph button on a question). */
+  mode?: CalculatorMode;
+  onModeChange?: (mode: CalculatorMode) => void;
+  /** Change this number to bring a minimized calculator back up. */
+  restoreSignal?: number;
 }
 
 export function ScientificCalculator({
   isOpen,
   onClose,
   className,
+  mode: controlledMode,
+  onModeChange,
+  restoreSignal = 0,
 }: ScientificCalculatorProps) {
-  const [mode, setMode] = useState<CalculatorMode>("desmos-sci");
+  const [ownMode, setOwnMode] = useState<CalculatorMode>("desmos-sci");
+  const mode = controlledMode ?? ownMode;
+  const setMode = (next: CalculatorMode) => {
+    setOwnMode(next);
+    onModeChange?.(next);
+  };
   const [isMinimized, setIsMinimized] = useState(false);
+  const [seenRestore, setSeenRestore] = useState(restoreSignal);
+  if (restoreSignal !== seenRestore) {
+    setSeenRestore(restoreSignal);
+    setIsMinimized(false);
+  }
   const [isExpanded, setIsExpanded] = useState(false);
   const [copiedSymbol, setCopiedSymbol] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -161,7 +178,6 @@ export function ScientificCalculator({
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Sparkles className="h-3 w-3 text-amber-500" />
                 <span>Constants</span>
               </button>
             </div>

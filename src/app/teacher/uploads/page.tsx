@@ -198,7 +198,7 @@ export default function ResourcesPage() {
   return (
     <div className="space-y-6">
       <TeacherPageHeader
-        title="Resource Uploads"
+        title="Uploads"
         description="Share files, videos, and links with your classes."
       >
         <Dialog

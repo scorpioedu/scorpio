@@ -6,17 +6,7 @@ import {
   assertFails,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getBytes } from 'firebase/storage';
 import * as fs from 'node:fs';
 
@@ -51,7 +41,6 @@ import { POST as gradeSubmission } from '../../src/app/api/grade/route';
 import { POST as tutorChat } from '../../src/app/api/student/tutor/route';
 import { POST as notebookChat } from '../../src/app/api/notebook/chat/route';
 import { POST as generatePortfolio } from '../../src/app/api/teacher/network/portfolio/route';
-import { POST as networkMembership } from '../../src/app/api/teacher/network/membership/route';
 import { POST as cleanupStudent } from '../../src/app/api/teacher/students/cleanup/route';
 import { GET as exportAccount, DELETE as deleteAccount } from '../../src/app/api/account/route';
 import { adminDb } from '../../src/lib/firebase-admin';

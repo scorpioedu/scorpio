@@ -287,7 +287,7 @@ function CreateAssignmentForm() {
         <ArrowLeft className="size-4" />
         Assignments
       </Link>
-      <TeacherPageHeader title="Create assignment" />
+      <TeacherPageHeader title="New assignment" />
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <form onSubmit={handleSubmit} className="space-y-6">

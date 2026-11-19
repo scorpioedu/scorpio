@@ -4,6 +4,7 @@ import * as React from "react";
 import { TeacherSidebar } from "@/components/teacher-sidebar";
 import { TeacherDashboardContent } from "@/components/teacher/dashboard-content";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { SectionTabs, sectionForPath } from "@/components/teacher/section-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -85,33 +86,24 @@ function isPreviewPathname(path: string): path is PreviewPathname {
 }
 
 export function WorkspacePreview() {
-  const [activePath, setActivePath] =
-    React.useState<PreviewPathname>("/teacher");
+  const [activePath, setActivePath] = React.useState<PreviewPathname>("/teacher");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
   // Shared interactive state across all tabs
   const [courses, setCourses] = React.useState<PreviewCourse[]>(initialCourses);
-  const [students, setStudents] =
-    React.useState<PreviewStudent[]>(initialStudents);
+  const [students, setStudents] = React.useState<PreviewStudent[]>(initialStudents);
   const [portfolios, setPortfolios] =
     React.useState<Record<string, StudentPortfolio>>(initialPortfolios);
-  const [assignments, setAssignments] =
-    React.useState<Assignment[]>(initialAssignments);
-  const [submissions, setSubmissions] =
-    React.useState<Submission[]>(initialSubmissions);
-  const [resources, setResources] =
-    React.useState<PreviewResource[]>(initialResources);
+  const [assignments, setAssignments] = React.useState<Assignment[]>(initialAssignments);
+  const [submissions, setSubmissions] = React.useState<Submission[]>(initialSubmissions);
+  const [resources, setResources] = React.useState<PreviewResource[]>(initialResources);
 
   // Deep-link state between tabs
-  const [selectedSubmissionId, setSelectedSubmissionId] = React.useState<
-    string | null
-  >(null);
-  const [selectedAssignmentId, setSelectedAssignmentId] = React.useState<
-    string | null
-  >(null);
-  const [studentsInitialTab, setStudentsInitialTab] = React.useState<
-    "roster" | "insights"
-  >("roster");
+  const [selectedSubmissionId, setSelectedSubmissionId] = React.useState<string | null>(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = React.useState<string | null>(null);
+  const [studentsInitialTab, setStudentsInitialTab] = React.useState<"roster" | "insights">(
+    "roster",
+  );
   const [createDraft, setCreateDraft] = React.useState<{
     title: string;
     description: string;
@@ -125,8 +117,7 @@ export function WorkspacePreview() {
   const [newClassName, setNewClassName] = React.useState("");
   const [newClassCode, setNewClassCode] = React.useState("");
   const [copiedCode, setCopiedCode] = React.useState<string | null>(null);
-  const [courseToDelete, setCourseToDelete] =
-    React.useState<PreviewCourse | null>(null);
+  const [courseToDelete, setCourseToDelete] = React.useState<PreviewCourse | null>(null);
 
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
@@ -149,12 +140,12 @@ export function WorkspacePreview() {
 
   const assignmentById = React.useMemo(
     () => new Map(assignments.map((a) => [a.id, a])),
-    [assignments]
+    [assignments],
   );
 
   const ungradedSubmissions = React.useMemo(
     () => submissions.filter((s) => !s.graded),
-    [submissions]
+    [submissions],
   );
 
   const gradedCount = submissions.length - ungradedSubmissions.length;
@@ -204,7 +195,7 @@ export function WorkspacePreview() {
   const handleSaveGrade = (
     submissionId: string,
     score: number,
-    updatedAnswers: SubmissionAnswer[]
+    updatedAnswers: SubmissionAnswer[],
   ) => {
     setSubmissions((prev) =>
       prev.map((sub) =>
@@ -215,8 +206,8 @@ export function WorkspacePreview() {
               score,
               answers: updatedAnswers,
             }
-          : sub
-      )
+          : sub,
+      ),
     );
   };
 
@@ -282,20 +273,13 @@ export function WorkspacePreview() {
     viewportRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleUpdateVisibility = (
-    assignmentId: string,
-    visibility: Assignment["visibility"]
-  ) => {
-    setAssignments((prev) =>
-      prev.map((a) => (a.id === assignmentId ? { ...a, visibility } : a))
-    );
+  const handleUpdateVisibility = (assignmentId: string, visibility: Assignment["visibility"]) => {
+    setAssignments((prev) => prev.map((a) => (a.id === assignmentId ? { ...a, visibility } : a)));
   };
 
   const handleDeleteAssignment = (assignmentId: string) => {
     setAssignments((prev) => prev.filter((a) => a.id !== assignmentId));
-    setSubmissions((prev) =>
-      prev.filter((s) => s.assignmentId !== assignmentId)
-    );
+    setSubmissions((prev) => prev.filter((s) => s.assignmentId !== assignmentId));
   };
 
   // Student handlers
@@ -325,21 +309,17 @@ export function WorkspacePreview() {
   const handleUpdateCourseVault = (
     courseId: string,
     restrictedIds: string[],
-    customFormulas: PreviewFormula[]
+    customFormulas: PreviewFormula[],
   ) => {
     setCourses((prev) =>
       prev.map((c) =>
-        c.id === courseId
-          ? { ...c, restrictedFormulaIds: restrictedIds, customFormulas }
-          : c
-      )
+        c.id === courseId ? { ...c, restrictedFormulaIds: restrictedIds, customFormulas } : c,
+      ),
     );
   };
 
   // Resource handlers
-  const handleAddResource = (
-    resource: Omit<PreviewResource, "id" | "createdAt">
-  ) => {
+  const handleAddResource = (resource: Omit<PreviewResource, "id" | "createdAt">) => {
     setResources((prev) => [
       {
         ...resource,
@@ -375,10 +355,24 @@ export function WorkspacePreview() {
         >
           <div className="w-full px-4 py-6 sm:px-6 md:p-8">
             <div className="max-w-6xl mx-auto">
+              {(() => {
+                const section = sectionForPath(activePath);
+                return section ? (
+                  <SectionTabs
+                    section={section}
+                    sample={{
+                      activeHref: activePath,
+                      onSelect: navigate,
+                      availableHrefs: PREVIEW_PATHS,
+                    }}
+                  />
+                ) : null;
+              })()}
+
               {activePath === "/teacher" && (
                 <div className="space-y-6">
                   <TeacherPageHeader
-                    title="Dashboard"
+                    title="Home"
                     description="Review submissions, manage physics sections, and track assignment progress."
                   >
                     <RundownDialog
@@ -453,21 +447,15 @@ export function WorkspacePreview() {
                           >
                             <div className="min-w-0">
                               <div className="flex items-center gap-2">
-                                <p className="font-medium truncate">
-                                  {st?.name || "Student"}
-                                </p>
+                                <p className="font-medium truncate">{st?.name || "Student"}</p>
                                 {(sub.unfocusCount ?? 0) > 0 && (
-                                  <Badge
-                                    variant="destructive"
-                                    className="text-[10px] h-4 px-1.5"
-                                  >
+                                  <Badge variant="destructive" className="text-[10px] h-4 px-1.5">
                                     {sub.unfocusCount} focus alert
                                   </Badge>
                                 )}
                               </div>
                               <p className="text-xs text-muted-foreground truncate">
-                                {assign?.title} ·{" "}
-                                {courseName(courses, assign?.courseId)}
+                                {assign?.title} · {courseName(courses, assign?.courseId)}
                               </p>
                             </div>
                             <Button
@@ -502,9 +490,7 @@ export function WorkspacePreview() {
                             className="w-full text-left flex items-center justify-between gap-3 px-5 py-3 text-sm hover:bg-muted/50 transition-colors cursor-pointer"
                           >
                             <div className="min-w-0">
-                              <p className="font-medium truncate">
-                                {assignment.title}
-                              </p>
+                              <p className="font-medium truncate">{assignment.title}</p>
                               <p className="text-xs text-muted-foreground truncate">
                                 {courseName(courses, assignment.courseId)}
                               </p>
@@ -518,10 +504,7 @@ export function WorkspacePreview() {
                     }}
                     classes={{
                       action: (
-                        <Dialog
-                          open={createClassOpen}
-                          onOpenChange={setCreateClassOpen}
-                        >
+                        <Dialog open={createClassOpen} onOpenChange={setCreateClassOpen}>
                           <DialogTrigger asChild>
                             <Button
                               variant="outline"
@@ -542,32 +525,24 @@ export function WorkspacePreview() {
                               </DialogHeader>
                               <div className="grid gap-4 py-4">
                                 <div className="space-y-2">
-                                  <Label htmlFor="dash-class-name">
-                                    Class Name
-                                  </Label>
+                                  <Label htmlFor="dash-class-name">Class Name</Label>
                                   <Input
                                     id="dash-class-name"
                                     placeholder="e.g., AP Physics C: Mechanics"
                                     value={newClassName}
-                                    onChange={(e) =>
-                                      setNewClassName(e.target.value)
-                                    }
+                                    onChange={(e) => setNewClassName(e.target.value)}
                                     required
                                   />
                                 </div>
                                 <div className="space-y-2">
-                                  <Label htmlFor="dash-class-code">
-                                    Class Code
-                                  </Label>
+                                  <Label htmlFor="dash-class-code">Class Code</Label>
                                   <div className="flex gap-2">
                                     <Input
                                       id="dash-class-code"
                                       placeholder="e.g., AP1P2X"
                                       value={newClassCode}
                                       onChange={(e) =>
-                                        setNewClassCode(
-                                          e.target.value.toUpperCase()
-                                        )
+                                        setNewClassCode(e.target.value.toUpperCase())
                                       }
                                       required
                                       className="font-mono"
@@ -582,8 +557,7 @@ export function WorkspacePreview() {
                                     </Button>
                                   </div>
                                   <p className="text-[11px] text-muted-foreground">
-                                    Students use this 6-character code to enroll
-                                    in your class.
+                                    Students use this 6-character code to enroll in your class.
                                   </p>
                                 </div>
                               </div>
@@ -597,10 +571,7 @@ export function WorkspacePreview() {
                         </Dialog>
                       ),
                       rows: courses.map((course) => (
-                        <li
-                          key={course.id}
-                          className="px-5 py-3.5 flex flex-col gap-2.5"
-                        >
+                        <li key={course.id} className="px-5 py-3.5 flex flex-col gap-2.5">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
                               <div className="flex items-center gap-1.5">
@@ -610,7 +581,8 @@ export function WorkspacePreview() {
                                 </span>
                               </div>
                             </div>
-                            <Button aria-label="Delete course"
+                            <Button
+                              aria-label="Delete course"
                               variant="ghost"
                               size="icon"
                               className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0 cursor-pointer"
@@ -639,8 +611,7 @@ export function WorkspacePreview() {
                               )}
                             </button>
                             <div className="flex items-center gap-2">
-                              {(course.restrictedFormulaIds?.length ?? 0) >
-                                0 && (
+                              {(course.restrictedFormulaIds?.length ?? 0) > 0 && (
                                 <Badge
                                   variant="outline"
                                   className="text-[10px] gap-1 font-normal text-muted-foreground"
@@ -649,9 +620,7 @@ export function WorkspacePreview() {
                                   {course.restrictedFormulaIds?.length} locked
                                 </Badge>
                               )}
-                              <span className="text-[11px] text-muted-foreground">
-                                Join code
-                              </span>
+                              <span className="text-[11px] text-muted-foreground">Join code</span>
                             </div>
                           </div>
                         </li>
@@ -747,15 +716,10 @@ export function WorkspacePreview() {
                 />
               )}
 
-              {activePath === "/teacher/waypoints" && (
-                <WaypointsPage onFork={handleForkWaypoint} />
-              )}
+              {activePath === "/teacher/waypoints" && <WaypointsPage onFork={handleForkWaypoint} />}
 
               {activePath === "/teacher/vault" && (
-                <VaultPage
-                  courses={courses}
-                  onUpdateCourseVault={handleUpdateCourseVault}
-                />
+                <VaultPage courses={courses} onUpdateCourseVault={handleUpdateCourseVault} />
               )}
 
               {activePath === "/teacher/uploads" && (

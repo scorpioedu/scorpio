@@ -4,17 +4,14 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { inviteAuthPath } from "@/lib/onboarding-links";
 import { register } from "@/lib/firebase";
-import { AuthPageNav } from "@/components/landing/auth-page-nav";
+import { AuthSplit } from "@/components/landing/auth-split";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SpaceBackground } from "@/components/ui/space-background";
 import Link from "next/link";
 import { GraduationCap, Presentation, Eye, EyeOff, Info } from "lucide-react";
 import { motion } from "framer-motion";
-import { Logo } from "@/components/ui/logo";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { errorCode } from "@/lib/error-utils";
 
@@ -149,29 +146,11 @@ function SignupForm() {
   };
 
   return (
-    <div className="min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative">
-      <SpaceBackground />
-      <AuthPageNav />
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
-        <Card>
-          <CardHeader className="text-center">
-            <motion.div
-              className="flex justify-center mb-4"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <Logo size={48} className="text-primary" />
-            </motion.div>
-            <CardTitle className="text-2xl font-inter font-bold tracking-tighter">Join Scorpio</CardTitle>
-            <CardDescription>Create your account to get started</CardDescription>
-          </CardHeader>
-          <CardContent>
+    <AuthSplit side="left" wide>
+      <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+        <h1 className="font-semibold text-4xl tracking-tight">Join Scorpio.</h1>
+        <p className="mt-2 mb-8 text-sm text-muted-foreground">Create your account to get started.</p>
+        <div>
             <TooltipProvider>
               <Tabs defaultValue={teacherInvite ? "teacher" : "student"} className="w-full" onValueChange={() => setError("")}>
                 <TabsList className="grid w-full grid-cols-2">
@@ -498,9 +477,9 @@ function SignupForm() {
                 Sign in
               </Link>
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </motion.div>
-    </div>
+    </AuthSplit>
   );
+
 }

@@ -251,6 +251,9 @@ export default function TeacherInsightsPage() {
         title="Misconceptions"
         description="The wrong ideas showing up in your students' graded work, ranked by how many students show each one. Use it to pick what to reteach."
       >
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/teacher/courses">By unit in Course</Link>
+        </Button>
         <Button variant="ghost" size="sm" onClick={load} disabled={loading}>
           <RefreshCw className={loading ? "animate-spin" : ""} />
           Refresh
@@ -368,10 +371,10 @@ export default function TeacherInsightsPage() {
             <Lightbulb className="size-8 text-muted-foreground" aria-hidden />
             <p className="font-medium">No misconceptions recorded yet</p>
             <p className="max-w-md text-sm text-muted-foreground">
-              Each time Scorpio grades a submission it records the misconceptions it finds. Assign
-              an AP unit from{" "}
-              <Link href="/teacher/waypoints" className="text-primary hover:underline">
-                Waypoints
+              Each time Scorpio grades a submission it records the misconceptions it finds. Assign a
+              unit from your{" "}
+              <Link href="/teacher/courses" className="text-primary hover:underline">
+                Course
               </Link>{" "}
               and this report fills in as students submit.
             </p>

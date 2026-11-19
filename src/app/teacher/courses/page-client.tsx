@@ -327,7 +327,7 @@ export default function CoursesClient() {
   return (
     <div className="space-y-6 md:pb-16">
       <TeacherPageHeader
-        title="Courses"
+        title="Course"
         description={
           needsCourse ? (
             "A class follows one course: its units in order, each with short auto-graded sets."
@@ -625,9 +625,9 @@ export default function CoursesClient() {
             <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
               No students have joined {selected.name} yet. Share its join code{" "}
               <span className="font-mono font-semibold text-foreground">{selected.code}</span> with
-              them, or copy an invite link from the{" "}
-              <Link className="underline underline-offset-2" href="/teacher">
-                Dashboard
+              them, or copy an invite link from{" "}
+              <Link className="underline underline-offset-2" href="/teacher/students">
+                Classes
               </Link>
               . You can assign sets now; they will be waiting.
             </p>

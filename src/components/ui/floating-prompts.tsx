@@ -1,10 +1,10 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
-import { MessageSquare, Sparkles, Brain, Calculator, GraduationCap, type LucideIcon } from "lucide-react";
+import { MessageSquare, Brain, Calculator, GraduationCap, type LucideIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import "katex/dist/katex.min.css";
-import { InlineMath, BlockMath } from "react-katex";
+import { InlineMath } from "react-katex";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 
 interface PromptCardProps {
@@ -18,7 +18,15 @@ interface PromptCardProps {
   top: string;
 }
 
-const PromptCard = ({ icon: Icon, userText, aiText, delay, rotation, side, top }: PromptCardProps) => {
+const PromptCard = ({
+  icon: Icon,
+  userText,
+  aiText,
+  delay,
+  rotation,
+  side,
+  top,
+}: PromptCardProps) => {
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
 
@@ -49,28 +57,35 @@ const PromptCard = ({ icon: Icon, userText, aiText, delay, rotation, side, top }
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8, filter: "brightness(2) blur(10px)", y: 50, rotate: rotation }}
+      initial={{
+        opacity: 0,
+        scale: 0.8,
+        filter: "brightness(2) blur(10px)",
+        y: 50,
+        rotate: rotation,
+      }}
       animate={{
         opacity: 1,
         scale: 1,
         y: 0,
         rotate: rotation,
-        filter: "brightness(1) blur(0px)"
+        filter: "brightness(1) blur(0px)",
       }}
       exit={{
         opacity: 0,
         scale: 0.9,
         filter: "brightness(1.5) blur(8px)",
         y: -30,
-        transition: { duration: 0.8, ease: "easeInOut" }
+        transition: { duration: 0.8, ease: "easeInOut" },
       }}
       transition={{
         duration: 2,
         delay: delay,
-        ease: [0.22, 1, 0.36, 1]
+        ease: [0.22, 1, 0.36, 1],
       }}
-      className={`absolute w-full max-w-[180px] xl:max-w-[240px] z-[30] pointer-events-auto group ${side === "left" ? "left-4 xl:left-8" : "right-4 xl:right-8"
-        }`}
+      className={`absolute w-full max-w-[180px] xl:max-w-[240px] z-[30] pointer-events-auto group ${
+        side === "left" ? "left-4 xl:left-8" : "right-4 xl:right-8"
+      }`}
       style={{ top, perspective: 1200 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -78,11 +93,11 @@ const PromptCard = ({ icon: Icon, userText, aiText, delay, rotation, side, top }
       <motion.div
         animate={{
           y: [0, -12, 0],
-          rotate: [0, 1, 0, -1, 0]
+          rotate: [0, 1, 0, -1, 0],
         }}
         transition={{
           y: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-          rotate: { duration: 7, repeat: Infinity, ease: "easeInOut" }
+          rotate: { duration: 7, repeat: Infinity, ease: "easeInOut" },
         }}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="relative p-3 xl:p-4 rounded-2xl bg-background/65 backdrop-blur-3xl border border-primary/20 shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-visible group-hover:scale-105 group-hover:bg-background/85 group-hover:border-primary/45 group-hover:shadow-[0_30px_80px_rgba(var(--primary),0.3)] transition-all duration-500 cursor-default"
@@ -95,21 +110,30 @@ const PromptCard = ({ icon: Icon, userText, aiText, delay, rotation, side, top }
               <Icon className="h-3.5 w-3.5 xl:h-4.5 xl:w-4.5 text-primary" />
             </div>
             <div className="space-y-0.5 mt-0.5">
-              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-muted-foreground/50 leading-none">Perspective</p>
-              <p className="text-[10px] xl:text-[12px] font-bold text-foreground leading-tight italic pr-2">&quot;{userText}&quot;</p>
+              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-muted-foreground/50 leading-none">
+                Perspective
+              </p>
+              <p className="text-[10px] xl:text-[12px] font-bold text-foreground leading-tight italic pr-2">
+                &quot;{userText}&quot;
+              </p>
             </div>
           </div>
         </div>
 
-        <div style={{ transform: "translateZ(30px)" }} className="relative z-10 pl-[38px] xl:pl-[46px]">
+        <div
+          style={{ transform: "translateZ(30px)" }}
+          className="relative z-10 pl-[38px] xl:pl-[46px]"
+        >
           <div className="absolute left-[18px] xl:left-[22px] top-[-10px] bottom-0 w-[1.5px] bg-gradient-to-b from-primary/40 to-transparent" />
           <div className="space-y-1.5 pt-0.5">
             <div className="flex items-center gap-1.5">
               <RaiseLogo className="size-2 xl:size-2.5" />
-              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-primary leading-none font-mono">Raise</p>
+              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-primary leading-none font-mono">
+                Raise
+              </p>
             </div>
             <div className="text-[10.5px] xl:text-[12px] font-medium text-muted-foreground/90 leading-relaxed pr-1">
-              {typeof aiText === 'string' ? aiText : aiText}
+              {typeof aiText === "string" ? aiText : aiText}
             </div>
           </div>
         </div>
@@ -128,7 +152,8 @@ export const FloatingPrompts = () => {
       userText: "What's the answer to question 4?",
       aiText: (
         <>
-          I can&apos;t give you the answer, but let&apos;s look at the free-body diagram first. The sum of forces is:
+          I can&apos;t give you the answer, but let&apos;s look at the free-body diagram first. The
+          sum of forces is:
           <div className="mt-2 py-1 px-2.5 bg-primary/8 rounded-lg border border-primary/20 overflow-x-hidden text-xs">
             <InlineMath math="\sum F_y = N - mg \cos \theta = 0" />
           </div>
@@ -137,7 +162,7 @@ export const FloatingPrompts = () => {
       delay: 0,
       side: "left" as const,
       top: "10%",
-      rotation: -8
+      rotation: -8,
     },
     {
       icon: Calculator,
@@ -153,7 +178,7 @@ export const FloatingPrompts = () => {
       delay: 0.6,
       side: "right" as const,
       top: "45%",
-      rotation: 6
+      rotation: 6,
     },
     // Cycle 2: Top-Right & Mid-Left (Raised above stats)
     {
@@ -170,7 +195,7 @@ export const FloatingPrompts = () => {
       delay: 0,
       side: "right" as const,
       top: "12%",
-      rotation: 10
+      rotation: 10,
     },
     {
       icon: GraduationCap,
@@ -186,8 +211,8 @@ export const FloatingPrompts = () => {
       delay: 0.4,
       side: "left" as const,
       top: "48%",
-      rotation: -10
-    }
+      rotation: -10,
+    },
   ];
 
   useEffect(() => {

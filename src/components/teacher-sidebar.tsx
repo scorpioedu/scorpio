@@ -3,54 +3,48 @@
 import {
   LayoutDashboard,
   FileText,
-  Upload,
   Users,
-  PlusCircle,
   ChartColumnBig,
   Building2,
-  Waypoints,
   Route,
-  PackageCheck,
   Presentation,
-  Lightbulb,
 } from "lucide-react";
 import { AppSidebar, type AppSidebarProps, type NavSection } from "./app-sidebar";
 
-// Ordered by what a teacher does most: plan and hand out work, see how it went, then the
-// occasional school-wide setup.
+// Five pages for the teaching loop; department and sustainability sit at the bottom.
+// `match` lists the routes each page groups, so the item stays active on them
+// (the in-page tabs for those groups live in components/teacher/section-tabs.tsx).
 const navSections: NavSection[] = [
   {
-    label: "Overview",
-    items: [{ href: "/teacher", label: "Dashboard", icon: LayoutDashboard }],
-  },
-  {
-    label: "Teach",
     items: [
-      { href: "/teacher/courses", label: "Courses", icon: Route },
-      { href: "/teacher/assignments", label: "My Assignments", icon: FileText },
-      { href: "/teacher/create", label: "Create Assignment", icon: PlusCircle },
-      { href: "/teacher/waypoints", label: "Waypoints", icon: Waypoints },
+      { href: "/teacher", label: "Home", icon: LayoutDashboard },
+      { href: "/teacher/courses", label: "Course", icon: Route },
+      {
+        href: "/teacher/assignments",
+        label: "Assignments",
+        icon: FileText,
+        match: ["/teacher/waypoints", "/teacher/create", "/teacher/assignment-view"],
+      },
+      {
+        href: "/teacher/grades",
+        label: "Grading",
+        icon: ChartColumnBig,
+        match: ["/teacher/insights", "/teacher/submission"],
+      },
+      {
+        href: "/teacher/students",
+        label: "Classes",
+        icon: Users,
+        match: ["/teacher/uploads", "/teacher/vault"],
+      },
     ],
   },
   {
-    label: "Results",
+    placement: "bottom",
     items: [
-      { href: "/teacher/grades", label: "Gradebook", icon: ChartColumnBig },
-      { href: "/teacher/insights", label: "Misconceptions", icon: Lightbulb },
-      { href: "/teacher/students", label: "Students", icon: Users },
+      { href: "/teacher/network", label: "Department", icon: Building2 },
+      { dialog: "sustainability", label: "Sustainability" },
     ],
-  },
-  {
-    label: "School",
-    items: [
-      { href: "/teacher/network", label: "Network", icon: Building2 },
-      { href: "/teacher/uploads", label: "Resource Uploads", icon: Upload },
-      { href: "/teacher/vault", label: "Vault Controls", icon: PackageCheck },
-    ],
-  },
-  {
-    label: "Impact",
-    items: [{ dialog: "sustainability", label: "Sustainability" }],
   },
 ];
 

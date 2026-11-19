@@ -43,20 +43,39 @@ const SustainabilityContent = dynamic(() => import("@/components/sustainability-
   ),
 });
 
-const SettingsDialog = dynamic(() => import("@/components/settings-dialog").then((module) => module.SettingsDialog));
+const SettingsDialog = dynamic(() =>
+  import("@/components/settings-dialog").then((module) => module.SettingsDialog),
+);
 
 interface NavLink {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  /** Other route prefixes that also mark this item active (pages grouped under it). */
+  match?: string[];
 }
 
 type NavItem = NavLink | { dialog: "sustainability"; label: string };
 
 export interface NavSection {
-  label: string;
+  /** Omit for an unlabeled group. */
+  label?: string;
   items: NavItem[];
+  /** "bottom" pins the group to the bottom of the nav, above the profile footer. */
+  placement?: "bottom";
+}
+
+const ROOT_ROUTES = new Set(["/teacher", "/student", "/admin"]);
+
+function routeMatches(path: string, href: string): boolean {
+  if (ROOT_ROUTES.has(href)) return path === href;
+  return path === href || path.startsWith(href + "/");
+}
+
+function isNavLinkActive(item: NavLink, path: string | null): boolean {
+  if (!path) return false;
+  return [item.href, ...(item.match ?? [])].some((href) => routeMatches(path, href));
 }
 
 export interface AppSidebarProps {
@@ -99,9 +118,7 @@ function SustainabilityDialogItem({ label }: { label: string }) {
         aria-describedby={undefined}
         className="flex max-h-[85dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-5xl"
       >
-        <DialogTitle className="border-b px-5 py-4 pr-12 text-lg font-bold">
-          {label}
-        </DialogTitle>
+        <DialogTitle className="border-b px-5 py-4 pr-12 text-lg font-bold">{label}</DialogTitle>
         <div
           role="region"
           aria-label="Sustainability information"
@@ -265,9 +282,11 @@ export function AppSidebar({
         ariaLabel={`${roleLabel} workspace`}
         collapsible="icon"
         className="min-h-0"
-        panelClassName={sample
-          ? "static h-full border-border/40 bg-card"
-          : "h-dvh border-border/40 bg-card/60 backdrop-blur-xl"}
+        panelClassName={
+          sample
+            ? "static h-full border-border/40 bg-card"
+            : "h-dvh border-border/40 bg-card/60 backdrop-blur-xl"
+        }
       >
         {/* Minimal, clean top header without slop */}
         <AnimatedSidebarHeader className="p-4 pb-3">
@@ -285,11 +304,14 @@ export function AppSidebar({
         </AnimatedSidebarHeader>
 
         <AnimatedSidebarContent className="px-2.5 py-2">
-          {navSections.map((section) => (
-            <AnimatedSidebarGroup key={section.label} className="py-1">
-              <AnimatedSidebarGroupLabel>
-                {section.label}
-              </AnimatedSidebarGroupLabel>
+          {navSections.map((section, sectionIndex) => (
+            <AnimatedSidebarGroup
+              key={section.label ?? `section-${sectionIndex}`}
+              className={section.placement === "bottom" ? "mt-auto py-1" : "py-1"}
+            >
+              {section.label && (
+                <AnimatedSidebarGroupLabel>{section.label}</AnimatedSidebarGroupLabel>
+              )}
               <AnimatedSidebarGroupContent>
                 <AnimatedSidebarMenu>
                   {section.items.map((item) => {
@@ -297,23 +319,14 @@ export function AppSidebar({
                       return <SustainabilityDialogItem key={item.dialog} label={item.label} />;
                     }
 
-                    const isRootRoute =
-                      item.href === "/teacher" ||
-                      item.href === "/student" ||
-                      item.href === "/admin";
-                    const isActive = pathname
-                      ? isRootRoute
-                        ? pathname === item.href
-                        : pathname === item.href ||
-                          pathname.startsWith(item.href + "/")
-                      : false;
+                    const isActive = isNavLinkActive(item, sample ? sample.activeHref : pathname);
 
                     const Icon = item.icon;
                     return (
                       <AnimatedSidebarMenuItem key={item.href}>
                         <AnimatedSidebarMenuButton
                           href={sample ? undefined : item.href}
-                          isActive={sample ? sample.activeHref === item.href : isActive}
+                          isActive={isActive}
                           onSelect={sample ? () => sample.onSelect(item.href) : undefined}
                           icon={<Icon className="size-5" />}
                           badge={
@@ -345,9 +358,7 @@ export function AppSidebar({
                 <p className="truncate text-sm font-semibold text-foreground leading-tight">
                   Dr. Maya Chen
                 </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  Sample teacher
-                </p>
+                <p className="truncate text-xs text-muted-foreground">Sample teacher</p>
               </div>
             </div>
 

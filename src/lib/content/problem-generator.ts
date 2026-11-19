@@ -4,6 +4,8 @@
 
 import { DEFAULT_AP_COURSE, apCourseName, apTopic, apUnit, type ApCourseId } from "@/data/ap";
 import { misconceptionsForUnit } from "../../../functions/src/misconceptions";
+import { DIAGRAM_REFERENCE } from "../diagram/prompt";
+import { attachDiagram, type DiagramOutcome } from "./problem-diagram";
 import {
   answerAgrees,
   validateDraftProblem,
@@ -55,8 +57,12 @@ Rules:
 - "distractors" lists common wrong answers and the misconception behind each, using only ids from the MISCONCEPTION TAGS list. For multiple choice, give one entry per wrong option that reflects a misconception (copy the option text exactly). For numeric, give 1-3 wrong values a student with that misconception would compute, with units. A distractor must never equal the correct answer.
 - "solution" is a short worked solution a teacher can check line by line, ending with the final answer.
 - Mix conceptual and quantitative problems when asked for several, and vary the situations (carts, sports, astronauts, lab setups, everyday objects); do not reuse the same scenario, such as a truck hitting a car, across problems.
+- "diagram": add ONE diagram in the diagram language below whenever the problem involves any of: a graph described in words (position, velocity, acceleration or force against time or position); an incline, ramp, curved track or loop; a pulley or a string over something; a spring; a pendulum; a lever, beam, door, wrench or hinge; a force at an angle; two objects that touch or collide. Leave it out only when there is no geometry to show (for example a formula with numbers, or an orbit described only by numbers). The text must still state every value, so the problem works without the picture. The diagram shows only what the text states: never the answer, never a step the student must do (no free-body diagram when the question is about the forces), and no numbers the text does not give. Write only the diagram source, without a fence.
 
-Return ONLY JSON: {"problems": [{"text": string, "type": "numeric" | "multiple-choice", "options"?: string[], "correctAnswer": string, "solution": string, "distractors": [{"answer": string, "misconception": string}], "difficulty": "easy" | "medium" | "hard"}]}`;
+DIAGRAM LANGUAGE:
+${DIAGRAM_REFERENCE}
+
+Return ONLY JSON: {"problems": [{"text": string, "type": "numeric" | "multiple-choice", "options"?: string[], "correctAnswer": string, "solution": string, "distractors": [{"answer": string, "misconception": string}], "difficulty": "easy" | "medium" | "hard", "diagram"?: string}]}`;
 }
 
 /** The AP Physics 1 instruction, as it was before there were other courses. */
@@ -156,6 +162,43 @@ export async function independentlySolve(
   }
 }
 
+/**
+ * One more try at a diagram the renderer found problems with (an error, or a warning about physics,
+ * readability or label markup). Batch content can afford the extra call; the lab measured that a
+ * repair with the renderer's own messages fixes most of these. Never throws: on any failure the
+ * first outcome stands.
+ */
+async function repairDiagram(
+  problem: DraftProblem,
+  first: DiagramOutcome,
+  call: ModelCall,
+): Promise<DiagramOutcome> {
+  if (!first.repair) return first;
+  try {
+    const reply = await call({
+      systemInstruction: `You fix diagrams for physics problems. Keep what is right; change only what the messages point at. The diagram shows only what the problem text states: never the answer, and no numbers the text does not give.\n\nReturn ONLY JSON: {"diagram": string}\n\nDIAGRAM LANGUAGE:\n${DIAGRAM_REFERENCE}`,
+      prompt: `PROBLEM:\n${problem.text}\n\nDIAGRAM:\n${first.repair.src}\n\nMESSAGES FROM THE RENDERER:\n${first.repair.report}`,
+      temperature: 0.2,
+      maxOutputTokens: 1500,
+    });
+    const parsed = parseJson(reply.text) as { diagram?: unknown } | undefined;
+    const second = attachDiagram(problem, parsed?.diagram);
+    // Better only means a drawable diagram that is attached, and either the first wasn't or this one
+    // has nothing left to fix. A reply with no diagram at all is never better.
+    const better = second.attached && (!first.attached || !second.repair);
+    if (!better) return first;
+    return {
+      ...second,
+      warnings: [
+        "The AI's first diagram had problems; this is its corrected version.",
+        ...second.warnings,
+      ],
+    };
+  } catch {
+    return first;
+  }
+}
+
 export async function generateProblems(
   input: { apTopic: string; count: number; difficulty?: Difficulty; apCourse?: ApCourseId },
   call: ModelCall,
@@ -171,16 +214,27 @@ export async function generateProblems(
   const parsed = parseJson(reply.text) as { problems?: unknown } | undefined;
   if (!parsed || !Array.isArray(parsed.problems))
     throw new Error("The model did not return a problems list");
-  const drafts: GeneratedDraft[] = parsed.problems.slice(0, count).map((raw) => {
-    // Tolerance is the reviewer's call (models send fractions like 0.05 meaning 5%); default 3% applies.
-    const { tolerance: _t, ...rest } = (raw && typeof raw === "object" ? raw : {}) as Record<
-      string,
-      unknown
-    >;
-    void _t;
-    const v = validateDraftProblem(rest, input.apTopic, course);
-    return { problem: v.problem, raw, errors: v.errors, warnings: v.warnings };
-  });
+  const drafts: GeneratedDraft[] = await Promise.all(
+    parsed.problems.slice(0, count).map(async (raw) => {
+      // Tolerance is the reviewer's call (models send fractions like 0.05 meaning 5%); default 3% applies.
+      const {
+        tolerance: _t,
+        diagram,
+        ...rest
+      } = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+      void _t;
+      const v = validateDraftProblem(rest, input.apTopic, course);
+      if (!v.problem) return { problem: v.problem, raw, errors: v.errors, warnings: v.warnings };
+      // A usable diagram is appended to the text as a dg block; the reviewer sees it and its notes.
+      const d = await repairDiagram(v.problem, attachDiagram(v.problem, diagram), call);
+      return {
+        problem: { ...v.problem, text: d.text },
+        raw,
+        errors: v.errors,
+        warnings: [...v.warnings, ...d.warnings],
+      };
+    }),
+  );
   await Promise.all(
     drafts.map(async (d) => {
       if (d.problem) d.check = await independentlySolve(d.problem, call, course);

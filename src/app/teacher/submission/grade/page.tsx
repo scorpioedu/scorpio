@@ -19,13 +19,10 @@ import {
   FileText,
   Image as ImageIcon,
   Download,
-  Brain,
   Sparkles,
   AlertTriangle,
   CheckCircle,
-  XCircle,
 } from "lucide-react";
-import Link from "next/link";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { motion, AnimatePresence } from "framer-motion";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -52,12 +49,6 @@ interface Answer {
   score?: number;
   feedback?: string;
   reasoning?: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  organizationId: string;
 }
 
 interface Submission {

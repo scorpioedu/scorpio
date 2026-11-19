@@ -36,32 +36,35 @@ export function NetworkStudents({
       setLoading(true);
       setLoadFailed(false);
       try {
-        const studentsSnap = await getDocs(
-          query(
-            collection(db, "users"),
-            where("teacherId", "in", teacherIds),
-            where("role", "==", "student"),
+        // One query per teacher and one per student. firestore.rules authorises these reads with a
+        // document lookup per distinct teacher (users) and per student (portfolios: user(studentId));
+        // an `in` over many ids is refused once it passes 10 lookups ("maximum of 10 document access
+        // calls"), even when nothing matches. Same fix as the Gradebook and the Dashboard.
+        const studentSnaps = await Promise.all(
+          teacherIds.map((teacherId) =>
+            getDocs(
+              query(
+                collection(db, "users"),
+                where("teacherId", "==", teacherId),
+                where("role", "==", "student"),
+              ),
+            ),
           ),
         );
-        const fetchedStudents = studentsSnap.docs.map((doc) => {
-          const { displayName, name, email } = doc.data();
-          return { id: doc.id, name: displayName || name || "Student", email };
-        });
+        const fetchedStudents = studentSnaps
+          .flatMap((snap) => snap.docs)
+          .map((doc) => {
+            const { displayName, name, email } = doc.data();
+            return { id: doc.id, name: displayName || name || "Student", email };
+          });
         const portsData: Record<string, StudentPortfolio> = {};
 
         if (fetchedStudents.length > 0) {
-          const studentIds = fetchedStudents.map((student) => student.id);
-          // Firestore 'in' query supports up to 30 items.
-          // If there are more students, we'll need to chunk the requests.
-          const portfolioChunks = [];
-          for (let i = 0; i < studentIds.length; i += 30) {
-            const chunk = studentIds.slice(i, i + 30);
-            portfolioChunks.push(
-              getDocs(query(collection(db, "portfolios"), where("studentId", "in", chunk))),
-            );
-          }
-
-          const portfolioSnaps = await Promise.all(portfolioChunks);
+          const portfolioSnaps = await Promise.all(
+            fetchedStudents.map((student) =>
+              getDocs(query(collection(db, "portfolios"), where("studentId", "==", student.id))),
+            ),
+          );
           portfolioSnaps.forEach((snap) => {
             snap.docs.forEach((doc) => {
               portsData[doc.id] = doc.data() as StudentPortfolio;
