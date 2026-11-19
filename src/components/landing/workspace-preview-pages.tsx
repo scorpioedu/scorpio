@@ -2328,7 +2328,7 @@ export function ResourcesPage({
   return (
     <div className="space-y-6">
       <TeacherPageHeader
-        title="Resource Uploads"
+        title="Uploads"
         description="Share syllabi, formula sheets, and reference materials with your classes."
       >
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

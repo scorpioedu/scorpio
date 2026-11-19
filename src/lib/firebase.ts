@@ -1,11 +1,34 @@
 import { initializeApp, getApps } from "firebase/app";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider, getToken } from "firebase/app-check";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+  ReCaptchaV3Provider,
+  getToken,
+} from "firebase/app-check";
 import { connectClientEmulators } from "./firebase-emulator";
-import { getAuth, connectAuthEmulator,signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User, sendPasswordResetEmail, updateEmail, updatePassword, deleteUser } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator,doc, setDoc, getDoc, collection, getDocs, query, where, writeBatch, deleteDoc } from "firebase/firestore";
-import { getStorage, connectStorageEmulator,ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
+import {
+  getAuth,
+  connectAuthEmulator,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User,
+  sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
+  deleteUser,
+} from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator, doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  getStorage,
+  connectStorageEmulator,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { getAI, GoogleAIBackend } from "firebase/ai";
-import { UserProfile, UserRole } from "./types";
+import { UserProfile } from "./types";
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,7 +37,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-
 
 // Initialize Firebase (prevent multiple instances)
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
@@ -26,17 +48,21 @@ const useEmulators = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS;
 let appCheck: ReturnType<typeof initializeAppCheck> | null = null;
 // App Check (reCAPTCHA) is skipped in emulator mode: emulators do not enforce it and the demo project has no site key.
 if (typeof window !== "undefined" && useEmulators !== "true") {
-  if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN) {
+  if (
+    process.env.NODE_ENV === "development" ||
+    process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN
+  ) {
     // The App Check SDK reads this well-known global; it is not part of the Window typings.
-    (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string }).FIREBASE_APPCHECK_DEBUG_TOKEN =
+    (
+      self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string }
+    ).FIREBASE_APPCHECK_DEBUG_TOKEN =
       process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN === "true"
         ? true
-        : (process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN || true);
+        : process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN || true;
   }
 
   const recaptchaKey =
-    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
-    "6LdmeKAtAAAAAJl2vM5DGedgtV3rH2Y0d_F3JR-u";
+    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LdmeKAtAAAAAJl2vM5DGedgtV3rH2Y0d_F3JR-u";
 
   if (recaptchaKey) {
     try {
@@ -77,7 +103,7 @@ connectClientEmulators(
     auth: process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT,
     firestore: process.env.NEXT_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_PORT,
     storage: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_EMULATOR_PORT,
-  }
+  },
 );
 
 let _genAI: ReturnType<typeof getAI> | null = null;
@@ -99,7 +125,7 @@ const genAI = new Proxy({} as ReturnType<typeof getAI>, {
       return val.bind(instance);
     }
     return val;
-  }
+  },
 });
 
 // --- File Upload Helpers ---
@@ -123,11 +149,11 @@ export async function compressImage(
   file: File,
   maxWidth: number = 1920,
   maxHeight: number = 1080,
-  quality: number = 0.8
+  quality: number = 0.8,
 ): Promise<File> {
   return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
     const img = new Image();
 
     img.onload = () => {
@@ -162,15 +188,15 @@ export async function compressImage(
             });
             resolve(compressedFile);
           } else {
-            reject(new Error('Failed to compress image'));
+            reject(new Error("Failed to compress image"));
           }
         },
         file.type,
-        quality
+        quality,
       );
     };
 
-    img.onerror = () => reject(new Error('Failed to load image'));
+    img.onerror = () => reject(new Error("Failed to load image"));
     img.src = URL.createObjectURL(file);
   });
 }
@@ -186,33 +212,37 @@ export async function uploadFilesToStorage(
   files: File[],
   userId: string,
   onProgress?: (fileIndex: number, progress: number) => void,
-  basePath: "submissions" | "resources" = "submissions"
+  basePath: "submissions" | "resources" = "submissions",
 ): Promise<WorkFile[]> {
   const uploadPromises = files.map(async (file, index) => {
     let fileToUpload = file;
 
     // Compress images automatically
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       try {
         onProgress?.(index, 10); // 10% for compression
-        
+
         // More aggressive compression for larger files
         let quality = 0.8;
         let maxWidth = 1920;
         let maxHeight = 1080;
-        
-        if (file.size > 2 * 1024 * 1024) { // > 2MB
+
+        if (file.size > 2 * 1024 * 1024) {
+          // > 2MB
           quality = 0.6;
           maxWidth = 1600;
           maxHeight = 900;
-        } else if (file.size > 1024 * 1024) { // > 1MB
+        } else if (file.size > 1024 * 1024) {
+          // > 1MB
           quality = 0.7;
           maxWidth = 1800;
           maxHeight = 1000;
         }
-        
+
         fileToUpload = await compressImage(file, maxWidth, maxHeight, quality);
-        console.log(`Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`);
+        console.log(
+          `Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`,
+        );
         onProgress?.(index, 20); // 20% after compression
       } catch (error) {
         console.warn(`Failed to compress ${file.name}, uploading original:`, error);
@@ -222,8 +252,8 @@ export async function uploadFilesToStorage(
 
     // Create a unique filename with timestamp to avoid conflicts
     const timestamp = Date.now();
-    const fileExtension = fileToUpload.name.split('.').pop() || '';
-    const baseName = fileToUpload.name.replace(/\.[^/.]+$/, ''); // Remove extension
+    const fileExtension = fileToUpload.name.split(".").pop() || "";
+    const baseName = fileToUpload.name.replace(/\.[^/.]+$/, ""); // Remove extension
     const fileName = `${timestamp}_${baseName}.${fileExtension}`;
     const storageRef = ref(storage, `${basePath}/${userId}/${fileName}`);
 
@@ -232,7 +262,7 @@ export async function uploadFilesToStorage(
 
     return new Promise<WorkFile>((resolve, reject) => {
       uploadTask.on(
-        'state_changed',
+        "state_changed",
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 80 + 20; // 20-100%
           onProgress?.(index, progress);
@@ -256,7 +286,7 @@ export async function uploadFilesToStorage(
           } catch (error) {
             reject(error);
           }
-        }
+        },
       );
     });
   });
@@ -291,16 +321,25 @@ export async function convertFilesToBase64(files: File[]): Promise<WorkFile[]> {
   return Promise.all(files.map(fileToBase64));
 }
 
-
 // Auth functions
-export const register = async (email: string, password: string, role: "teacher" | "student", name: string, code?: string) => {
+export const register = async (
+  email: string,
+  password: string,
+  role: "teacher" | "student",
+  name: string,
+  code?: string,
+) => {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await credential.user.getIdToken()}` },
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await credential.user.getIdToken()}`,
+      },
       body: JSON.stringify({ role, name, code }),
     });
-    if (!response.ok) throw new Error((await response.json()).error || 'Registration failed');
+    if (!response.ok) throw new Error((await response.json()).error || "Registration failed");
     return credential;
   } catch (error) {
     await deleteUser(credential.user).catch(() => {});
@@ -313,7 +352,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const logout = async () => {
-  await fetch('/api/auth/session', { method: 'DELETE' });
+  await fetch("/api/auth/session", { method: "DELETE" });
   return signOut(auth);
 };
 
@@ -323,18 +362,22 @@ export const onAuthChange = (callback: (user: User | null) => void) => {
 
 /**
  * Deletes all submissions and stored files for a specific student to save storage space.
- * 
+ *
  * @param studentId The UID of the student
  * @param courseId Optional course ID to target specific class data (if provided)
  */
 export async function cleanupStudentData(studentId: string, courseId?: string, unlink = false) {
   const user = auth.currentUser;
-  if (!user) throw new Error('Sign in first');
-  const response = await fetch('/api/teacher/students/cleanup', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await user.getIdToken()}` },
+  if (!user) throw new Error("Sign in first");
+  const response = await fetch("/api/teacher/students/cleanup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${await user.getIdToken()}`,
+    },
     body: JSON.stringify({ studentId, courseId, unlink }),
   });
-  if (!response.ok) throw new Error((await response.json()).error || 'Cleanup failed');
+  if (!response.ok) throw new Error((await response.json()).error || "Cleanup failed");
 }
 
 /**
@@ -343,8 +386,11 @@ export async function cleanupStudentData(studentId: string, courseId?: string, u
  */
 export async function deleteFullAccount(uid: string, role: string) {
   const user = auth.currentUser;
-  if (!user || user.uid !== uid) throw new Error('Sign in to delete your account');
-  const response = await fetch('/api/account', { method: 'DELETE', headers: { Authorization: `Bearer ${await user.getIdToken()}` } });
+  if (!user || user.uid !== uid) throw new Error("Sign in to delete your account");
+  const response = await fetch("/api/account", {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${await user.getIdToken()}` },
+  });
   if (!response.ok) throw new Error((await response.json()).error);
   await logout();
 }
@@ -367,7 +413,7 @@ export const changePassword = async (newPassword: string) => {
 
 /**
  * Updates a user's profile in the unified collection.
- * 
+ *
  * @param uid The UID of the user
  * @param data Changes to apply to the user profile
  */
@@ -387,7 +433,7 @@ export const signInWithGoogleForTeacher = async () => {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/forms.body.readonly");
   const result = await signInWithPopup(auth, provider);
-  
+
   const profile = await getDoc(doc(db, "users", result.user.uid));
   if (!profile.exists() || profile.data().role !== "teacher") {
     await signOut(auth);

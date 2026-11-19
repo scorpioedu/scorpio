@@ -105,7 +105,7 @@ The page explains this in a notice, and admins get a link to **Admin → Content
 
 ## Teachers: `/teacher/courses`
 
-"Courses" is the first item under **Teach** in the sidebar (Teach: Courses, My Assignments, Create Assignment, Waypoints; then Results and School). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`), the Calendar's unit filter (`?unit=`) and the Schedule sheet (`?tab=schedule`) are kept in the address bar.
+"Course" is the second item in the teacher sidebar (Home, Course, Assignments, Grading, Classes; Department and Sustainability at the bottom). The page is built around one class, chosen with the class picker in the header; it is the same selected class as every other teacher page (see [teacher-editing.md](teacher-editing.md)). The view (`?view=calendar`), the Calendar's unit filter (`?unit=`) and the Schedule sheet (`?tab=schedule`) are kept in the address bar.
 
 **One course per class.** A class follows one course, or none (`curriculumId` on the class doc). The Courses page shows the chosen class's course and names it on a highlighted **course button** beside the class picker; there is no way to look at a different course from the one the class follows, so a teacher never looks at one course while a class follows another. Where the course is set:
 

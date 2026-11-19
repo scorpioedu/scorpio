@@ -370,7 +370,20 @@ export default function TeacherGradesPage() {
         <CardContent className="border-t p-0">
           {loading || students.length === 0 ? (
             <p role="status" className="px-5 py-10 text-center text-sm text-muted-foreground">
-              {loading ? "Loading grades…" : "No submissions match these filters."}
+              {loading ? (
+                "Loading grades…"
+              ) : selectedCourseId === "all" && selectedAssignmentId === "all" ? (
+                // Nothing filtered and still nothing: say what fills this page, not "match these filters".
+                <>
+                  No grades yet. Scores appear here as students turn in work; assign a unit from{" "}
+                  <Link href="/teacher/courses" className="text-primary hover:underline">
+                    Courses
+                  </Link>{" "}
+                  to get started.
+                </>
+              ) : (
+                "No submissions match these filters."
+              )}
             </p>
           ) : (
             <Table aria-label="Student grades">

@@ -236,7 +236,6 @@ export default function StudentAssignmentsPage() {
 
   const renderItem = (assignment: Assignment) => {
     const isSubmitted = submissions.has(assignment.id);
-    const pastDue = !isSubmitted && isPastDue(assignment.dueDate);
     const dateInfo = formatDueDate(assignment.dueDate, isSubmitted);
 
     return (

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/ui/logo";
 import { LandingFAQ } from "@/components/landing-faq";
 import {
@@ -13,7 +12,6 @@ import {
   ArrowRight,
   Shield,
   Zap,
-  Building2,
   Sparkles,
   Github,
   Info,
@@ -51,7 +49,9 @@ export default function PricingPage() {
           </h1>
 
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Free for a single teacher: every global Waypoint, auto-grading and the misconception report. The Department License adds department sharing and higher AI limits for $10/mo plus at-cost AI usage, with no per-student fees.
+            Free for a single teacher: every global Waypoint, auto-grading and the misconception
+            report. The Department License adds department sharing and higher AI limits for $10/mo
+            plus at-cost AI usage, with no per-student fees.
           </p>
 
           {/* Billing Switcher Toggle */}
@@ -62,7 +62,9 @@ export default function PricingPage() {
                 onClick={() => setIsAnnual(false)}
                 className={cn(
                   "relative px-4 py-1.5 text-xs font-semibold rounded-full transition-colors cursor-pointer",
-                  !isAnnual ? "text-foreground font-bold" : "text-muted-foreground hover:text-foreground"
+                  !isAnnual
+                    ? "text-foreground font-bold"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {!isAnnual && (
@@ -80,7 +82,9 @@ export default function PricingPage() {
                 onClick={() => setIsAnnual(true)}
                 className={cn(
                   "relative px-4 py-1.5 text-xs font-semibold rounded-full transition-colors cursor-pointer flex items-center gap-1.5",
-                  isAnnual ? "text-foreground font-bold" : "text-muted-foreground hover:text-foreground"
+                  isAnnual
+                    ? "text-foreground font-bold"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {isAnnual && (
@@ -108,16 +112,21 @@ export default function PricingPage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Starter</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    Everything an individual AP Physics 1 teacher needs to assign, auto-grade and see misconceptions.
+                    Everything an individual AP Physics 1 teacher needs to assign, auto-grade and
+                    see misconceptions.
                   </p>
                 </div>
 
                 <div className="pt-2 pb-1 border-y border-border/40">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-foreground">$0</span>
+                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-foreground">
+                      $0
+                    </span>
                     <span className="text-xs font-semibold text-muted-foreground">/ month</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1">Free forever. No card required.</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Free forever. No card required.
+                  </p>
                 </div>
 
                 <ul className="space-y-3 text-xs sm:text-[13px]">
@@ -171,7 +180,9 @@ export default function PricingPage() {
                     <span>Flat $10/mo + raw AI metering</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-1">
-                    {isAnnual ? "Flat $100/yr department subscription + at-cost AI tokens" : "Flat $10/mo department subscription + at-cost AI tokens"}
+                    {isAnnual
+                      ? "Flat $100/yr department subscription + at-cost AI tokens"
+                      : "Flat $10/mo department subscription + at-cost AI tokens"}
                   </p>
                 </div>
 
@@ -194,7 +205,10 @@ export default function PricingPage() {
                 </ul>
               </div>
 
-              <Button asChild className="w-full py-5 rounded-2xl font-bold shadow-lg shadow-primary/20">
+              <Button
+                asChild
+                className="w-full py-5 rounded-2xl font-bold shadow-lg shadow-primary/20"
+              >
                 <Link href="/signup" className="flex items-center justify-center gap-1.5">
                   Get Started <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -213,7 +227,9 @@ export default function PricingPage() {
 
                 <div className="pt-2 pb-1 border-y border-border/40">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-foreground">Custom</span>
+                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-foreground">
+                      Custom
+                    </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-1">Arranged case by case.</p>
                 </div>
@@ -243,7 +259,9 @@ export default function PricingPage() {
         <section className="container mx-auto px-4 sm:px-6 max-w-5xl py-12">
           <div className="text-center space-y-2 mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">How the pricing works</h2>
-            <p className="text-sm text-muted-foreground">What is free, and what the Department License adds.</p>
+            <p className="text-sm text-muted-foreground">
+              What is free, and what the Department License adds.
+            </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-6">
@@ -253,7 +271,8 @@ export default function PricingPage() {
               </div>
               <h3 className="font-bold text-sm text-foreground">Zero Per-Seat Penalties</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Scorpio never charges per seat. The free plan has no student cap, and the Department License is one flat fee for 25 or 250 students.
+                Scorpio never charges per seat. The free plan has no student cap, and the Department
+                License is one flat fee for 25 or 250 students.
               </p>
             </div>
 
@@ -263,7 +282,8 @@ export default function PricingPage() {
               </div>
               <h3 className="font-bold text-sm text-foreground">Direct Compute Pass-Through</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Raw Gemini 3.8 Flash rates ($0.75 / 1M input, $3.75 / 1M output). We pass API costs through with zero middleman markup.
+                Raw Gemini 3.8 Flash rates ($0.75 / 1M input, $3.75 / 1M output). We pass API costs
+                through with zero middleman markup.
               </p>
             </div>
 
@@ -283,7 +303,9 @@ export default function PricingPage() {
         <section className="container mx-auto px-4 sm:px-6 max-w-5xl py-16">
           <div className="text-center space-y-2 mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Plan Comparison</h2>
-            <p className="text-sm text-muted-foreground">Full breakdown of capabilities across all tiers.</p>
+            <p className="text-sm text-muted-foreground">
+              Full breakdown of capabilities across all tiers.
+            </p>
           </div>
 
           <div className="rounded-2xl border border-border/60 bg-card/20 backdrop-blur-xl overflow-hidden shadow-sm">
@@ -301,18 +323,53 @@ export default function PricingPage() {
               { name: "Student & Instructor Accounts", starter: true, dept: true, district: true },
               { name: "Assignment Builder with LaTeX", starter: true, dept: true, district: true },
               { name: "Class Codes & CSV Grade Export", starter: true, dept: true, district: true },
-              { name: "Global Waypoints (all AP Physics 1 sets)", starter: "All", dept: "All", district: "All" },
-              { name: "Department Waypoints & Network Sharing", starter: false, dept: true, district: true },
+              {
+                name: "Global Waypoints (all AP Physics 1 sets)",
+                starter: "All",
+                dept: "All",
+                district: "All",
+              },
+              {
+                name: "Department Waypoints & Network Sharing",
+                starter: false,
+                dept: true,
+                district: true,
+              },
               { name: "AI-Written Student Portfolios", starter: false, dept: true, district: true },
               { category: "Socratic AI & Grading" },
-              { name: "Auto-Grading (numeric with units, multiple choice)", starter: true, dept: true, district: true },
+              {
+                name: "Auto-Grading (numeric with units, multiple choice)",
+                starter: true,
+                dept: true,
+                district: true,
+              },
               { name: "Class Misconception Report", starter: true, dept: true, district: true },
-              { name: "Raise Hints (Socratic Assistant)", starter: "Starter budget", dept: "Higher limits", district: "Higher limits" },
-              { name: "AI Grading of Written Answers", starter: "Starter budget", dept: "Higher limits", district: "Higher limits" },
+              {
+                name: "Raise Hints (Socratic Assistant)",
+                starter: "Starter budget",
+                dept: "Higher limits",
+                district: "Higher limits",
+              },
+              {
+                name: "AI Grading of Written Answers",
+                starter: "Starter budget",
+                dept: "Higher limits",
+                district: "Higher limits",
+              },
               { name: "AI-Assisted Rubric Drafting", starter: false, dept: true, district: true },
               { category: "Pricing & Metering" },
-              { name: "Base Department Fee", starter: "$0", dept: "$10/mo or $100/yr", district: "Custom" },
-              { name: "Zero-Markup AI Metering (Gemini 3.8 Flash)", starter: false, dept: "$0.75 / $3.75 per 1M", district: "Included / Custom" },
+              {
+                name: "Base Department Fee",
+                starter: "$0",
+                dept: "$10/mo or $100/yr",
+                district: "Custom",
+              },
+              {
+                name: "Zero-Markup AI Metering (Gemini 3.8 Flash)",
+                starter: false,
+                dept: "$0.75 / $3.75 per 1M",
+                district: "Included / Custom",
+              },
               { name: "Hard Monthly Spend Caps", starter: false, dept: true, district: true },
               { category: "Billing" },
               { name: "Itemized Receipts", starter: false, dept: true, district: true },
@@ -329,7 +386,8 @@ export default function PricingPage() {
               }
 
               const renderValue = (val: boolean | string | undefined) => {
-                if (typeof val === "string") return <span className="font-semibold text-xs text-foreground">{val}</span>;
+                if (typeof val === "string")
+                  return <span className="font-semibold text-xs text-foreground">{val}</span>;
                 if (val) return <Check className="h-4 w-4 text-emerald-500 mx-auto" />;
                 return <Minus className="h-3.5 w-3.5 text-muted-foreground/30 mx-auto" />;
               };
@@ -357,7 +415,9 @@ export default function PricingPage() {
         {/* ── Direct Minimal Bottom CTA ───────────────────────────────────── */}
         <section className="container mx-auto px-4 sm:px-6 max-w-4xl py-16">
           <div className="p-8 sm:p-12 rounded-3xl border border-border/70 bg-card/30 backdrop-blur-xl text-center space-y-6 shadow-sm">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Ready to setup your physics classroom?</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              Ready to setup your physics classroom?
+            </h2>
             <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
               Create your account in under a minute. No credit card required to start free.
             </p>
@@ -367,7 +427,12 @@ export default function PricingPage() {
                   Get Started Free <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full px-7 font-semibold">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="rounded-full px-7 font-semibold"
+              >
                 <Link href="/request-access">Request Institutional Access</Link>
               </Button>
             </div>
@@ -385,35 +450,61 @@ export default function PricingPage() {
             </div>
 
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0">
-              <Link href="https://github.com/RushilMahadevu/scorpio" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="https://github.com/RushilMahadevu/scorpio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <Github className="h-5 w-5" />
                 <span className="text-sm font-medium">GitHub</span>
               </Link>
-              <Link href="/about" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/about"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <Info className="h-5 w-5" />
                 <span className="text-sm font-medium">About</span>
               </Link>
-              <Link href="/research" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/research"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <BookOpen className="h-5 w-5" />
                 <span className="text-sm font-medium">Research</span>
               </Link>
-              <Link href="/sustainability" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/sustainability"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <Leaf className="h-5 w-5 text-emerald-500" />
                 <span className="text-sm font-medium">Sustainability</span>
               </Link>
-              <Link href="/privacy" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/privacy"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <Shield className="h-5 w-5" />
                 <span className="text-sm font-medium">Privacy</span>
               </Link>
-              <Link href="/terms" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/terms"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <FileText className="h-5 w-5" />
                 <span className="text-sm font-medium">Terms</span>
               </Link>
-              <Link href="/request-access" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/request-access"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <KeyRound className="h-5 w-5" />
                 <span className="text-sm font-medium">Request Access</span>
               </Link>
-              <Link href="/contact" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+              <Link
+                href="/contact"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 <Mail className="h-5 w-5" />
                 <span className="text-sm font-medium">Contact</span>
               </Link>

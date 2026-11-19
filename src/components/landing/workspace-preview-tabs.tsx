@@ -59,7 +59,14 @@ import "katex/dist/katex.min.css";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog,
@@ -81,8 +88,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RaiseLogo } from "@/components/ui/raise-logo";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -145,7 +165,9 @@ export function NetworkPage({
   // Limits Assistant dialog
   const [limitsOpen, setLimitsOpen] = useState(false);
   const [limitsInput, setLimitsInput] = useState("");
-  const [limitsMessages, setLimitsMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
+  const [limitsMessages, setLimitsMessages] = useState<
+    { role: "user" | "assistant"; content: string }[]
+  >([
     {
       role: "assistant",
       content:
@@ -158,7 +180,8 @@ export function NetworkPage({
 
   const orgId = "demo-phys-8492a";
   const inviteUrl = `https://scorpioedu.org/join/${orgId}`;
-  const budgetPercentUsed = budgetCapDollars > 0 ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
+  const budgetPercentUsed =
+    budgetCapDollars > 0 ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
   const budgetRemaining = Math.max(budgetCapDollars - spentDollars, 0);
 
   const copyLink = async () => {
@@ -227,13 +250,22 @@ export function NetworkPage({
                     >
                       Save
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setIsRenaming(false)} className="h-9 cursor-pointer">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setIsRenaming(false)}
+                      className="h-9 cursor-pointer"
+                    >
                       Cancel
                     </Button>
                   </div>
                 ) : (
                   <div className="flex min-w-0 items-center gap-2">
-                    <h1 id="dashboard-preview-heading" tabIndex={-1} className="min-w-0 break-words text-3xl font-semibold tracking-tight">
+                    <h1
+                      id="dashboard-preview-heading"
+                      tabIndex={-1}
+                      className="min-w-0 break-words text-3xl font-semibold tracking-tight"
+                    >
                       {orgName}
                     </h1>
                     <Button
@@ -340,7 +372,11 @@ export function NetworkPage({
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-700",
-                      budgetPercentUsed >= 90 ? "bg-red-500" : budgetPercentUsed >= 70 ? "bg-amber-500" : "bg-emerald-500"
+                      budgetPercentUsed >= 90
+                        ? "bg-red-500"
+                        : budgetPercentUsed >= 70
+                          ? "bg-amber-500"
+                          : "bg-emerald-500",
                     )}
                     style={{ width: `${budgetPercentUsed}%` }}
                   />
@@ -468,7 +504,12 @@ export function NetworkPage({
                             {!member.isOwner ? (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer" aria-label={`Manage ${member.name}`}>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 cursor-pointer"
+                                    aria-label={`Manage ${member.name}`}
+                                  >
                                     <MoreHorizontal className="h-4 w-4" />
                                   </Button>
                                 </DropdownMenuTrigger>
@@ -479,9 +520,11 @@ export function NetworkPage({
                                     className="text-amber-600 focus:text-amber-700 cursor-pointer"
                                     onClick={() => {
                                       setMembers((prev) =>
-                                        prev.map((m) => ({ ...m, isOwner: m.uid === member.uid }))
+                                        prev.map((m) => ({ ...m, isOwner: m.uid === member.uid })),
                                       );
-                                      toast.success(`Department leadership transferred to ${member.name}`);
+                                      toast.success(
+                                        `Department leadership transferred to ${member.name}`,
+                                      );
                                     }}
                                   >
                                     <Crown className="h-4 w-4 mr-2" />
@@ -490,8 +533,12 @@ export function NetworkPage({
                                   <DropdownMenuItem
                                     className="text-destructive focus:text-destructive cursor-pointer"
                                     onClick={() => {
-                                      setMembers((prev) => prev.filter((m) => m.uid !== member.uid));
-                                      toast.success(`${member.name} has been removed from the department.`);
+                                      setMembers((prev) =>
+                                        prev.filter((m) => m.uid !== member.uid),
+                                      );
+                                      toast.success(
+                                        `${member.name} has been removed from the department.`,
+                                      );
                                     }}
                                   >
                                     <UserMinus className="h-4 w-4 mr-2" />
@@ -524,14 +571,33 @@ export function NetworkPage({
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center gap-2 p-2.5 bg-background border rounded-xl text-xs font-mono">
-                      <span className="flex-1 truncate text-muted-foreground select-all">{inviteUrl}</span>
-                      <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" aria-label="Copy invite link" onClick={copyLink}>
-                        {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span className="flex-1 truncate text-muted-foreground select-all">
+                        {inviteUrl}
+                      </span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7 shrink-0 cursor-pointer"
+                        aria-label="Copy invite link"
+                        onClick={copyLink}
+                      >
+                        {copiedLink ? (
+                          <Check className="h-3.5 w-3.5 text-emerald-500" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
                       </Button>
                     </div>
                     <div className="flex gap-2">
-                      <Button className="flex-1 h-9 text-xs font-bold cursor-pointer gap-2" onClick={copyLink}>
-                        {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <Button
+                        className="flex-1 h-9 text-xs font-bold cursor-pointer gap-2"
+                        onClick={copyLink}
+                      >
+                        {copiedLink ? (
+                          <Check className="h-3.5 w-3.5" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
                         {copiedLink ? "Copied!" : "Copy Link"}
                       </Button>
                       <Button
@@ -553,7 +619,10 @@ export function NetworkPage({
                         <CreditCard className="h-4 w-4 text-primary" />
                         Department Billing
                       </span>
-                      <Badge variant="outline" className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]">
+                      <Badge
+                        variant="outline"
+                        className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]"
+                      >
                         Pro Active
                       </Badge>
                     </CardTitle>
@@ -604,11 +673,15 @@ export function NetworkPage({
                   Numerical Safety & Quota Dials
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Precise numerical thresholds to prevent budget overages and calibrate student AI engagement.
+                  Precise numerical thresholds to prevent budget overages and calibrate student AI
+                  engagement.
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-[10px] font-mono border-border bg-background">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] font-mono border-border bg-background"
+                >
                   Resets Every 30 Days
                 </Badge>
                 <Button
@@ -632,12 +705,16 @@ export function NetworkPage({
                       <HandCoins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                       Monthly AI Spending Cap
                     </CardTitle>
-                    <Badge variant="outline" className="text-[10px] font-mono border-emerald-300 text-emerald-700 bg-emerald-100/50 dark:bg-emerald-950 dark:text-emerald-400">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] font-mono border-emerald-300 text-emerald-700 bg-emerald-100/50 dark:bg-emerald-950 dark:text-emerald-400"
+                    >
                       HARD STOP SAFETY
                     </Badge>
                   </div>
                   <CardDescription className="text-xs">
-                    All AI features pause automatically when this exact dollar threshold is reached. No surprise invoices.
+                    All AI features pause automatically when this exact dollar threshold is reached.
+                    No surprise invoices.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -663,13 +740,19 @@ export function NetworkPage({
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs font-bold">
                       <span className="text-muted-foreground">Usage Consumption</span>
-                      <span className="font-mono text-emerald-600 dark:text-emerald-400">{budgetPercentUsed.toFixed(0)}%</span>
+                      <span className="font-mono text-emerald-600 dark:text-emerald-400">
+                        {budgetPercentUsed.toFixed(0)}%
+                      </span>
                     </div>
                     <div className="h-2 rounded-full bg-border/40 overflow-hidden">
                       <div
                         className={cn(
                           "h-full rounded-full transition-all duration-700",
-                          budgetPercentUsed >= 90 ? "bg-red-500" : budgetPercentUsed >= 70 ? "bg-amber-500" : "bg-emerald-500"
+                          budgetPercentUsed >= 90
+                            ? "bg-red-500"
+                            : budgetPercentUsed >= 70
+                              ? "bg-amber-500"
+                              : "bg-emerald-500",
                         )}
                         style={{ width: `${budgetPercentUsed}%` }}
                       />
@@ -678,12 +761,17 @@ export function NetworkPage({
 
                   <div className="space-y-3 pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30">
                     <div className="space-y-1.5">
-                      <Label htmlFor="preview-ai-budget" className="text-xs font-bold text-muted-foreground">
+                      <Label
+                        htmlFor="preview-ai-budget"
+                        className="text-xs font-bold text-muted-foreground"
+                      >
                         Set Safety Cap (USD)
                       </Label>
                       <div className="flex gap-2">
                         <div className="relative flex-1">
-                          <span className="absolute left-3 top-2.5 text-sm font-bold text-muted-foreground font-mono">$</span>
+                          <span className="absolute left-3 top-2.5 text-sm font-bold text-muted-foreground font-mono">
+                            $
+                          </span>
                           <Input
                             id="preview-ai-budget"
                             type="number"
@@ -710,7 +798,9 @@ export function NetworkPage({
                     </div>
 
                     <div className="flex items-center gap-1.5 text-xs">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">Quick Add:</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">
+                        Quick Add:
+                      </span>
                       {[5, 10, 25].map((amount) => (
                         <Button
                           key={amount}
@@ -739,7 +829,10 @@ export function NetworkPage({
                       <RaiseLogo size={17} className="text-purple-600 dark:text-purple-400" />
                       Raise AI Tutor Allowance
                     </CardTitle>
-                    <Badge variant="outline" className="text-[10px] font-mono border-purple-300 text-purple-700 bg-purple-100/50 dark:bg-purple-950 dark:text-purple-400">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] font-mono border-purple-300 text-purple-700 bg-purple-100/50 dark:bg-purple-950 dark:text-purple-400"
+                    >
                       PER STUDENT · MONTHLY
                     </Badge>
                   </div>
@@ -775,7 +868,10 @@ export function NetworkPage({
 
                   <div className="space-y-3 pt-2 border-t border-purple-200/40 dark:border-purple-900/30">
                     <div className="space-y-1.5">
-                      <Label htmlFor="preview-tutor-limit" className="text-xs font-bold text-muted-foreground">
+                      <Label
+                        htmlFor="preview-tutor-limit"
+                        className="text-xs font-bold text-muted-foreground"
+                      >
                         Edit Messages per Student
                       </Label>
                       <div className="flex gap-2">
@@ -793,7 +889,9 @@ export function NetworkPage({
                             const parsed = parseInt(tempTutorLimit, 10);
                             if (!Number.isNaN(parsed) && parsed >= 0) {
                               setTutorLimit(parsed);
-                              toast.success(`Raise limit updated to ${parsed} messages/month per student.`);
+                              toast.success(
+                                `Raise limit updated to ${parsed} messages/month per student.`,
+                              );
                             }
                           }}
                         >
@@ -804,7 +902,9 @@ export function NetworkPage({
 
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">Step:</span>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-1">
+                          Step:
+                        </span>
                         {[5, 10, 20].map((amount) => (
                           <Button
                             key={amount}
@@ -813,7 +913,10 @@ export function NetworkPage({
                             size="sm"
                             className="h-6 px-2 text-[10px] font-mono font-bold cursor-pointer rounded-full"
                             onClick={() => {
-                              const next = Math.max(0, (parseInt(tempTutorLimit, 10) || 0) + amount);
+                              const next = Math.max(
+                                0,
+                                (parseInt(tempTutorLimit, 10) || 0) + amount,
+                              );
                               setTempTutorLimit(String(next));
                             }}
                           >
@@ -837,12 +940,16 @@ export function NetworkPage({
                       <NotebookPen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Notebook Capacity & AI Inquiries
                     </CardTitle>
-                    <Badge variant="outline" className="text-[10px] font-mono border-blue-300 text-blue-700 bg-blue-100/50 dark:bg-blue-950 dark:text-blue-400">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] font-mono border-blue-300 text-blue-700 bg-blue-100/50 dark:bg-blue-950 dark:text-blue-400"
+                    >
                       PER STUDENT · WORKSPACE
                     </Badge>
                   </div>
                   <CardDescription className="text-xs">
-                    Number of research derivation notebooks and in-notebook AI inquiries per student.
+                    Number of research derivation notebooks and in-notebook AI inquiries per
+                    student.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4 md:grid-cols-2 md:items-center">
@@ -868,7 +975,10 @@ export function NetworkPage({
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <Label htmlFor="preview-nb-input" className="text-[11px] font-bold text-muted-foreground">
+                        <Label
+                          htmlFor="preview-nb-input"
+                          className="text-[11px] font-bold text-muted-foreground"
+                        >
                           Notebooks / Student
                         </Label>
                         <Input
@@ -881,7 +991,10 @@ export function NetworkPage({
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label htmlFor="preview-ai-nb-input" className="text-[11px] font-bold text-muted-foreground">
+                        <Label
+                          htmlFor="preview-ai-nb-input"
+                          className="text-[11px] font-bold text-muted-foreground"
+                        >
                           AI Inquiries / Mo
                         </Label>
                         <Input
@@ -902,7 +1015,9 @@ export function NetworkPage({
                           variant="outline"
                           size="sm"
                           className="h-6 px-2 text-[10px] font-mono font-bold cursor-pointer"
-                          onClick={() => setTempNotebookLimit(String((parseInt(tempNotebookLimit, 10) || 0) + 1))}
+                          onClick={() =>
+                            setTempNotebookLimit(String((parseInt(tempNotebookLimit, 10) || 0) + 1))
+                          }
                         >
                           +1 NB
                         </Button>
@@ -911,7 +1026,11 @@ export function NetworkPage({
                           variant="outline"
                           size="sm"
                           className="h-6 px-2 text-[10px] font-mono font-bold cursor-pointer"
-                          onClick={() => setTempAiNotebookLimit(String((parseInt(tempAiNotebookLimit, 10) || 0) + 10))}
+                          onClick={() =>
+                            setTempAiNotebookLimit(
+                              String((parseInt(tempAiNotebookLimit, 10) || 0) + 10),
+                            )
+                          }
                         >
                           +10 Inquiries
                         </Button>
@@ -938,13 +1057,33 @@ export function NetworkPage({
           <TabsContent value="analytics" className="space-y-6 outline-none">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { label: "Estimated Spend", val: `$${spentDollars.toFixed(4)}`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-                { label: "AI Interactions", val: "171", icon: Activity, color: "text-purple-500", bg: "bg-purple-500/10" },
-                { label: "Token Volume", val: "184.2k", icon: Zap, color: "text-blue-500", bg: "bg-blue-500/10" },
+                {
+                  label: "Estimated Spend",
+                  val: `$${spentDollars.toFixed(4)}`,
+                  icon: DollarSign,
+                  color: "text-emerald-500",
+                  bg: "bg-emerald-500/10",
+                },
+                {
+                  label: "AI Interactions",
+                  val: "171",
+                  icon: Activity,
+                  color: "text-purple-500",
+                  bg: "bg-purple-500/10",
+                },
+                {
+                  label: "Token Volume",
+                  val: "184.2k",
+                  icon: Zap,
+                  color: "text-blue-500",
+                  bg: "bg-blue-500/10",
+                },
               ].map((stat, i) => (
                 <Card key={i} className="bg-card/50 backdrop-blur-sm border-border/40">
                   <CardHeader className="p-4 flex flex-row items-center justify-between pb-2 space-y-0">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</CardTitle>
+                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {stat.label}
+                    </CardTitle>
                     <div className={`p-1.5 rounded-lg ${stat.bg}`}>
                       <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
                     </div>
@@ -970,7 +1109,10 @@ export function NetworkPage({
                       AI engagement grouped by calendar date.
                     </CardDescription>
                   </div>
-                  <Badge variant="outline" className="text-[9px] px-2 py-0 border-purple-500/30 text-purple-400 bg-purple-500/5 uppercase font-bold tracking-tight">
+                  <Badge
+                    variant="outline"
+                    className="text-[9px] px-2 py-0 border-purple-500/30 text-purple-400 bg-purple-500/5 uppercase font-bold tracking-tight"
+                  >
                     Live
                   </Badge>
                 </div>
@@ -992,8 +1134,12 @@ export function NetworkPage({
                   const yQ = (v: number) => PAD.top + (1 - v / maxQ) * cH;
                   const yC = (v: number) => PAD.top + (1 - v / maxC) * cH;
 
-                  const qPts = dailyData.map((d, i) => `${xAt(i).toFixed(1)},${yQ(d.queries).toFixed(1)}`);
-                  const cPts = dailyData.map((d, i) => `${xAt(i).toFixed(1)},${yC(d.totalCost).toFixed(1)}`);
+                  const qPts = dailyData.map(
+                    (d, i) => `${xAt(i).toFixed(1)},${yQ(d.queries).toFixed(1)}`,
+                  );
+                  const cPts = dailyData.map(
+                    (d, i) => `${xAt(i).toFixed(1)},${yC(d.totalCost).toFixed(1)}`,
+                  );
 
                   const smoothCurve = (pts: string[]) => {
                     if (pts.length === 1) return `M ${pts[0]}`;
@@ -1002,7 +1148,8 @@ export function NetworkPage({
                       return { x, y };
                     });
                     const np = points.length;
-                    if (np === 2) return `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)} L ${points[1].x.toFixed(1)},${points[1].y.toFixed(1)}`;
+                    if (np === 2)
+                      return `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)} L ${points[1].x.toFixed(1)},${points[1].y.toFixed(1)}`;
                     const h: number[] = [];
                     const delta: number[] = [];
                     for (let i = 0; i < np - 1; i++) {
@@ -1043,15 +1190,27 @@ export function NetworkPage({
                     <div className="space-y-3">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] uppercase font-bold tracking-widest text-blue-500/60">Peak</span>
-                          <span className="text-xs font-black font-mono text-blue-500 tabular-nums">{maxQ}</span>
-                          <span className="text-[9px] uppercase font-bold tracking-widest text-blue-500/60">interactions</span>
+                          <span className="text-[9px] uppercase font-bold tracking-widest text-blue-500/60">
+                            Peak
+                          </span>
+                          <span className="text-xs font-black font-mono text-blue-500 tabular-nums">
+                            {maxQ}
+                          </span>
+                          <span className="text-[9px] uppercase font-bold tracking-widest text-blue-500/60">
+                            interactions
+                          </span>
                         </div>
                         <div className="w-px h-3 bg-border/50" />
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] uppercase font-bold tracking-widest text-purple-500/60">Spend</span>
-                          <span className="text-xs font-black font-mono text-purple-500 tabular-nums">${spentDollars.toFixed(4)}</span>
-                          <span className="text-[9px] uppercase font-bold tracking-widest text-purple-500/60">USD</span>
+                          <span className="text-[9px] uppercase font-bold tracking-widest text-purple-500/60">
+                            Spend
+                          </span>
+                          <span className="text-xs font-black font-mono text-purple-500 tabular-nums">
+                            ${spentDollars.toFixed(4)}
+                          </span>
+                          <span className="text-[9px] uppercase font-bold tracking-widest text-purple-500/60">
+                            USD
+                          </span>
                         </div>
                       </div>
 
@@ -1139,32 +1298,81 @@ export function NetworkPage({
 
                         {dailyData.map((d, i) => (
                           <g key={i}>
-                            <circle cx={xAt(i)} cy={yQ(d.queries)} r={hi === i ? 7 : 4} fill="#3b82f6" stroke="white" strokeWidth="2" />
-                            <circle cx={xAt(i)} cy={yC(d.totalCost)} r={hi === i ? 5 : 3} fill="#a855f7" stroke="white" strokeWidth="1.5" />
+                            <circle
+                              cx={xAt(i)}
+                              cy={yQ(d.queries)}
+                              r={hi === i ? 7 : 4}
+                              fill="#3b82f6"
+                              stroke="white"
+                              strokeWidth="2"
+                            />
+                            <circle
+                              cx={xAt(i)}
+                              cy={yC(d.totalCost)}
+                              r={hi === i ? 5 : 3}
+                              fill="#a855f7"
+                              stroke="white"
+                              strokeWidth="1.5"
+                            />
                           </g>
                         ))}
 
-                        {hi !== null && hiDay && (() => {
-                          const tx = xAt(hi);
-                          const TW = 164;
-                          const TH = 64;
-                          const TX = Math.min(Math.max(tx - TW / 2, PAD.left), PAD.left + cW - TW);
-                          const TY = PAD.top - TH - 8;
-                          return (
-                            <g>
-                              <rect x={TX} y={TY} width={TW} height={TH} rx="8" ry="8" fill="#18181b" opacity="0.95" />
-                              <text x={TX + 12} y={TY + 16} fontSize="12" fontWeight="600" fill="white" fillOpacity="0.45">
-                                {hiDay.date}
-                              </text>
-                              <text x={TX + 12} y={TY + 36} fontSize="12" fontFamily="monospace" fontWeight="800" fill="#60a5fa">
-                                {hiDay.queries} interactions
-                              </text>
-                              <text x={TX + 12} y={TY + 52} fontSize="12" fontFamily="monospace" fontWeight="600" fill="#c084fc">
-                                ${hiDay.totalCost.toFixed(4)} USD
-                              </text>
-                            </g>
-                          );
-                        })()}
+                        {hi !== null &&
+                          hiDay &&
+                          (() => {
+                            const tx = xAt(hi);
+                            const TW = 164;
+                            const TH = 64;
+                            const TX = Math.min(
+                              Math.max(tx - TW / 2, PAD.left),
+                              PAD.left + cW - TW,
+                            );
+                            const TY = PAD.top - TH - 8;
+                            return (
+                              <g>
+                                <rect
+                                  x={TX}
+                                  y={TY}
+                                  width={TW}
+                                  height={TH}
+                                  rx="8"
+                                  ry="8"
+                                  fill="#18181b"
+                                  opacity="0.95"
+                                />
+                                <text
+                                  x={TX + 12}
+                                  y={TY + 16}
+                                  fontSize="12"
+                                  fontWeight="600"
+                                  fill="white"
+                                  fillOpacity="0.45"
+                                >
+                                  {hiDay.date}
+                                </text>
+                                <text
+                                  x={TX + 12}
+                                  y={TY + 36}
+                                  fontSize="12"
+                                  fontFamily="monospace"
+                                  fontWeight="800"
+                                  fill="#60a5fa"
+                                >
+                                  {hiDay.queries} interactions
+                                </text>
+                                <text
+                                  x={TX + 12}
+                                  y={TY + 52}
+                                  fontSize="12"
+                                  fontFamily="monospace"
+                                  fontWeight="600"
+                                  fill="#c084fc"
+                                >
+                                  ${hiDay.totalCost.toFixed(4)} USD
+                                </text>
+                              </g>
+                            );
+                          })()}
 
                         {dailyData.map((_, i) => {
                           const colW = cW / (n - 1);
@@ -1201,15 +1409,36 @@ export function NetworkPage({
                       <div className="flex items-center gap-4 px-0.5">
                         <div className="flex items-center gap-1.5">
                           <svg width="16" height="3" viewBox="0 0 16 3">
-                            <line x1="0" y1="1.5" x2="16" y2="1.5" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
+                            <line
+                              x1="0"
+                              y1="1.5"
+                              x2="16"
+                              y2="1.5"
+                              stroke="#3b82f6"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
                           </svg>
-                          <span className="text-[10px] text-muted-foreground/70 font-medium">Interactions</span>
+                          <span className="text-[10px] text-muted-foreground/70 font-medium">
+                            Interactions
+                          </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <svg width="16" height="3" viewBox="0 0 16 3">
-                            <line x1="0" y1="1.5" x2="16" y2="1.5" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 2.5" />
+                            <line
+                              x1="0"
+                              y1="1.5"
+                              x2="16"
+                              y2="1.5"
+                              stroke="#a855f7"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeDasharray="4 2.5"
+                            />
                           </svg>
-                          <span className="text-[10px] text-muted-foreground/70 font-medium">Cost (independent scale)</span>
+                          <span className="text-[10px] text-muted-foreground/70 font-medium">
+                            Cost (independent scale)
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1244,12 +1473,19 @@ export function NetworkPage({
                             <span className="text-[11px] font-bold capitalize">{item.name}</span>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-[10px] text-muted-foreground font-mono tabular-nums">{item.value}</span>
-                            <span className="text-[10px] font-black tabular-nums font-mono w-9 text-right">{pct}%</span>
+                            <span className="text-[10px] text-muted-foreground font-mono tabular-nums">
+                              {item.value}
+                            </span>
+                            <span className="text-[10px] font-black tabular-nums font-mono w-9 text-right">
+                              {pct}%
+                            </span>
                           </div>
                         </div>
                         <div className="h-1.5 rounded-full bg-muted/40 overflow-hidden">
-                          <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                          <div
+                            className="h-full rounded-full"
+                            style={{ width: `${pct}%`, backgroundColor: item.color }}
+                          />
                         </div>
                       </div>
                     );
@@ -1272,7 +1508,11 @@ export function NetworkPage({
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-wider gap-2 cursor-pointer">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-[10px] font-bold uppercase tracking-wider gap-2 cursor-pointer"
+                    >
                       <Download className="h-3 w-3" />
                       Export Audit Log
                     </Button>
@@ -1299,10 +1539,18 @@ export function NetworkPage({
                 <Table>
                   <TableHeader className="bg-muted/10">
                     <TableRow>
-                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground">Type</TableHead>
-                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground">Tokens</TableHead>
-                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground font-mono">Cost</TableHead>
-                      <TableHead className="text-right text-[10px] uppercase font-bold text-muted-foreground">Time</TableHead>
+                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground">
+                        Type
+                      </TableHead>
+                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground">
+                        Tokens
+                      </TableHead>
+                      <TableHead className="text-[10px] uppercase font-bold text-muted-foreground font-mono">
+                        Cost
+                      </TableHead>
+                      <TableHead className="text-right text-[10px] uppercase font-bold text-muted-foreground">
+                        Time
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1325,7 +1573,9 @@ export function NetworkPage({
                           </span>
                         </TableCell>
                         <TableCell className="text-right py-2">
-                          <span className="text-[10px] text-muted-foreground font-medium">{entry.timestamp}</span>
+                          <span className="text-[10px] text-muted-foreground font-medium">
+                            {entry.timestamp}
+                          </span>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1345,7 +1595,9 @@ export function NetworkPage({
                   <UserPlus className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-black tracking-tight">Invite Teachers to Department</DialogTitle>
+                  <DialogTitle className="text-lg font-black tracking-tight">
+                    Invite Teachers to Department
+                  </DialogTitle>
                   <DialogDescription className="text-xs">
                     Collaborate with physics teachers across your school or district.
                   </DialogDescription>
@@ -1354,20 +1606,44 @@ export function NetworkPage({
             </DialogHeader>
             <div className="p-6 space-y-5">
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-muted-foreground">Department Invitation Link</Label>
+                <Label className="text-xs font-bold uppercase text-muted-foreground">
+                  Department Invitation Link
+                </Label>
                 <div className="flex items-center gap-2 p-2.5 bg-secondary/30 border rounded-xl text-xs font-mono">
                   <span className="flex-1 truncate select-all">{inviteUrl}</span>
-                  <Button aria-label="Copy invite link" size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyLink}>
-                    {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                  <Button
+                    aria-label="Copy invite link"
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 shrink-0 cursor-pointer"
+                    onClick={copyLink}
+                  >
+                    {copiedLink ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
                   </Button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-muted-foreground">Department Identifier (ID)</Label>
+                <Label className="text-xs font-bold uppercase text-muted-foreground">
+                  Department Identifier (ID)
+                </Label>
                 <div className="flex items-center gap-2 p-2.5 bg-secondary/30 border rounded-xl text-xs font-mono">
                   <span className="flex-1 truncate select-all">{orgId}</span>
-                  <Button aria-label="Copy department ID" size="icon" variant="ghost" className="h-7 w-7 shrink-0 cursor-pointer" onClick={copyId}>
-                    {copiedId ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                  <Button
+                    aria-label="Copy department ID"
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 shrink-0 cursor-pointer"
+                    onClick={copyId}
+                  >
+                    {copiedId ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
                   </Button>
                 </div>
               </div>
@@ -1448,20 +1724,27 @@ export function NetworkPage({
                   <RaiseLogo size={20} className="text-purple-500" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-black tracking-tight">Limits & Safety Assistant</DialogTitle>
-                  <DialogDescription className="text-xs">Context-aware recommendations for department caps.</DialogDescription>
+                  <DialogTitle className="text-lg font-black tracking-tight">
+                    Limits & Safety Assistant
+                  </DialogTitle>
+                  <DialogDescription className="text-xs">
+                    Context-aware recommendations for department caps.
+                  </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {limitsMessages.map((msg, i) => (
-                <div key={i} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
+                <div
+                  key={i}
+                  className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}
+                >
                   <div
                     className={cn(
                       "max-w-[85%] rounded-2xl p-4 text-sm shadow-sm",
                       msg.role === "user"
                         ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 rounded-tr-none"
-                        : "bg-secondary text-foreground rounded-tl-none border border-border/50"
+                        : "bg-secondary text-foreground rounded-tl-none border border-border/50",
                     )}
                   >
                     {msg.content}
@@ -1554,11 +1837,16 @@ export function StudentsPage({
   const [newStudentCourse, setNewStudentCourse] = useState(courses[0]?.id ?? "mechanics");
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
-  const filteredRoster = students.filter((s) => selectedCourse === "all" || s.courseId === selectedCourse);
+  const filteredRoster = students.filter(
+    (s) => selectedCourse === "all" || s.courseId === selectedCourse,
+  );
 
   return (
     <div className="space-y-6">
-      <TeacherPageHeader title="Students" description="Manage enrollments and explore how students use Raise.">
+      <TeacherPageHeader
+        title="Classes"
+        description="Your classes, their join codes and the students in each."
+      >
         <Button variant="outline" onClick={onManageClasses} className="cursor-pointer">
           Manage Classes <ArrowUpRight />
         </Button>
@@ -1571,7 +1859,9 @@ export function StudentsPage({
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Enroll Student in Roster</DialogTitle>
-              <DialogDescription>Add a student directly to one of your physics classes.</DialogDescription>
+              <DialogDescription>
+                Add a student directly to one of your physics classes.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-2">
@@ -1649,10 +1939,15 @@ export function StudentsPage({
             <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
               <div className="flex items-center gap-3">
                 <h2 className="text-base font-semibold">Class roster</h2>
-                <span className="text-sm text-muted-foreground">{filteredRoster.length} enrolled</span>
+                <span className="text-sm text-muted-foreground">
+                  {filteredRoster.length} enrolled
+                </span>
               </div>
               <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                <SelectTrigger aria-label="Filter by class" className="w-full sm:w-56 cursor-pointer">
+                <SelectTrigger
+                  aria-label="Filter by class"
+                  className="w-full sm:w-56 cursor-pointer"
+                >
                   <SelectValue placeholder="All Classes" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1689,12 +1984,20 @@ export function StudentsPage({
                       <TableCell className="pr-3">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm" className="cursor-pointer" aria-label={`Actions for ${student.name}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              className="cursor-pointer"
+                              aria-label={`Actions for ${student.name}`}
+                            >
                               <MoreHorizontal />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onSelect={() => setActiveTab("insights")} className="cursor-pointer">
+                            <DropdownMenuItem
+                              onSelect={() => setActiveTab("insights")}
+                              className="cursor-pointer"
+                            >
                               <Sparkles /> View AI portfolio
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -1720,7 +2023,7 @@ export function StudentsPage({
             students={students}
             portfolios={portfolios}
             updatingStudentId={null}
-            onUpdate={studentId => {
+            onUpdate={(studentId) => {
               onRefreshPortfolio(studentId);
               toast.success("Sample profile refreshed.");
             }}
@@ -1779,7 +2082,11 @@ export function WaypointsPage({ onFork }: { onFork: (waypoint: WaypointTemplate)
               <Sparkles className="h-3 w-3" />
               Template library
             </div>
-            <h1 id="dashboard-preview-heading" tabIndex={-1} className="text-3xl font-semibold tracking-tight text-foreground">
+            <h1
+              id="dashboard-preview-heading"
+              tabIndex={-1}
+              className="text-3xl font-semibold tracking-tight text-foreground"
+            >
               Waypoints
             </h1>
             <p className="text-muted-foreground text-sm leading-relaxed">
@@ -1828,7 +2135,10 @@ export function WaypointsPage({ onFork }: { onFork: (waypoint: WaypointTemplate)
         </Tabs>
 
         <Select value={topicFilter} onValueChange={setTopicFilter}>
-          <SelectTrigger aria-label="Topic" className="cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border">
+          <SelectTrigger
+            aria-label="Topic"
+            className="cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border"
+          >
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               <SelectValue placeholder="All Topics" />
@@ -1853,7 +2163,9 @@ export function WaypointsPage({ onFork }: { onFork: (waypoint: WaypointTemplate)
             <MapPinned className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-bold text-foreground mb-1">No templates found</h3>
-          <p className="text-sm text-muted-foreground max-w-sm px-4">Try another search or topic filter.</p>
+          <p className="text-sm text-muted-foreground max-w-sm px-4">
+            Try another search or topic filter.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1933,20 +2245,29 @@ export function VaultPage({
   onUpdateCourseVault,
 }: {
   courses: PreviewCourse[];
-  onUpdateCourseVault: (courseId: string, restrictedIds: string[], customFormulas: PreviewFormula[]) => void;
+  onUpdateCourseVault: (
+    courseId: string,
+    restrictedIds: string[],
+    customFormulas: PreviewFormula[],
+  ) => void;
 }) {
   const [selectedCourseId, setSelectedCourseId] = useState(courses[0]?.id ?? "mechanics");
   const currentCourse = courses.find((c) => c.id === selectedCourseId) ?? courses[0];
 
-  const [restrictedIds, setRestrictedIds] = useState<string[]>(currentCourse?.restrictedFormulaIds ?? []);
-  const [customFormulas, setCustomFormulas] = useState<PreviewFormula[]>(currentCourse?.customFormulas ?? []);
+  const [restrictedIds, setRestrictedIds] = useState<string[]>(
+    currentCourse?.restrictedFormulaIds ?? [],
+  );
+  const [customFormulas, setCustomFormulas] = useState<PreviewFormula[]>(
+    currentCourse?.customFormulas ?? [],
+  );
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [isAddingFormula, setIsAddingFormula] = useState(false);
   const [newFormula, setNewFormula] = useState({ name: "", latex: "", category: "custom" });
 
   const hasUnsavedChanges =
-    JSON.stringify([...restrictedIds].sort()) !== JSON.stringify([...(currentCourse?.restrictedFormulaIds ?? [])].sort()) ||
+    JSON.stringify([...restrictedIds].sort()) !==
+      JSON.stringify([...(currentCourse?.restrictedFormulaIds ?? [])].sort()) ||
     JSON.stringify(customFormulas) !== JSON.stringify(currentCourse?.customFormulas ?? []);
 
   const handleSelectCourse = (nextId: string) => {
@@ -1957,7 +2278,9 @@ export function VaultPage({
   };
 
   const toggleFormula = (id: string) => {
-    setRestrictedIds((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
+    setRestrictedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
   };
 
   const allFormulas = [...DEFAULT_VAULT_FORMULAS, ...customFormulas];
@@ -1971,7 +2294,10 @@ export function VaultPage({
 
   return (
     <div className="space-y-6">
-      <TeacherPageHeader title="Vault Controls" description="Choose which formulas students can use in each class.">
+      <TeacherPageHeader
+        title="Formula vault"
+        description="Choose which formulas students can use in each class."
+      >
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -1980,7 +2306,8 @@ export function VaultPage({
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-72" side="bottom">
-              Choose a class, click any equation card to lock or unlock it for students, then save your changes.
+              Choose a class, click any equation card to lock or unlock it for students, then save
+              your changes.
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -2035,7 +2362,10 @@ export function VaultPage({
                 <Label htmlFor="vault-formula-category" className="font-bold ml-1">
                   Category
                 </Label>
-                <Select value={newFormula.category} onValueChange={(v) => setNewFormula({ ...newFormula, category: v })}>
+                <Select
+                  value={newFormula.category}
+                  onValueChange={(v) => setNewFormula({ ...newFormula, category: v })}
+                >
                   <SelectTrigger id="vault-formula-category" className="h-11 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
@@ -2083,7 +2413,10 @@ export function VaultPage({
       <div className="bg-muted/50 p-2 rounded-[2rem] border border-border flex flex-col lg:flex-row items-center gap-2">
         <div className="w-full lg:w-72">
           <Select value={selectedCourseId} onValueChange={handleSelectCourse}>
-            <SelectTrigger aria-label="Class" className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4 cursor-pointer">
+            <SelectTrigger
+              aria-label="Class"
+              className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4 cursor-pointer"
+            >
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-primary" />
                 <SelectValue placeholder="Select Class" />
@@ -2091,7 +2424,11 @@ export function VaultPage({
             </SelectTrigger>
             <SelectContent className="rounded-2xl">
               {courses.map((course) => (
-                <SelectItem key={course.id} value={course.id} className="rounded-xl cursor-pointer py-3">
+                <SelectItem
+                  key={course.id}
+                  value={course.id}
+                  className="rounded-xl cursor-pointer py-3"
+                >
                   {course.name}
                 </SelectItem>
               ))}
@@ -2112,7 +2449,10 @@ export function VaultPage({
 
         <div className="w-full lg:w-64">
           <Select value={activeCategory} onValueChange={setActiveCategory}>
-            <SelectTrigger aria-label="Formula category" className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4 cursor-pointer">
+            <SelectTrigger
+              aria-label="Formula category"
+              className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4 cursor-pointer"
+            >
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-primary" />
                 <SelectValue placeholder="Filter Category" />
@@ -2180,8 +2520,8 @@ export function VaultPage({
                 isRestricted
                   ? "bg-red-50 dark:bg-red-950/20 ring-1 ring-red-200 dark:ring-red-900/50"
                   : isCustom
-                  ? "bg-primary/5 ring-1 ring-primary/20"
-                  : "bg-muted/40 hover:ring-2 hover:ring-primary/50"
+                    ? "bg-primary/5 ring-1 ring-primary/20"
+                    : "bg-muted/40 hover:ring-2 hover:ring-primary/50",
               )}
             >
               <CardHeader className="pb-2">
@@ -2189,16 +2529,25 @@ export function VaultPage({
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-lg font-black truncate">{formula.name}</CardTitle>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md"
+                      >
                         {formula.category}
                       </Badge>
                       {isCustom && (
-                        <Badge variant="secondary" className="bg-primary/20 text-primary border-none text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md">
+                        <Badge
+                          variant="secondary"
+                          className="bg-primary/20 text-primary border-none text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md"
+                        >
                           Custom
                         </Badge>
                       )}
                       {isRestricted && (
-                        <Badge variant="destructive" className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md">
+                        <Badge
+                          variant="destructive"
+                          className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-md"
+                        >
                           Hidden
                         </Badge>
                       )}
@@ -2227,7 +2576,10 @@ export function VaultPage({
                       aria-label={`Visible to students: ${formula.name}`}
                       aria-pressed={!isRestricted}
                       title={isRestricted ? "Show formula" : "Hide formula"}
-                      className={cn("cursor-pointer", isRestricted ? "text-destructive" : "text-primary")}
+                      className={cn(
+                        "cursor-pointer",
+                        isRestricted ? "text-destructive" : "text-primary",
+                      )}
                       onClick={(event) => {
                         event.stopPropagation();
                         toggleFormula(formula.id);

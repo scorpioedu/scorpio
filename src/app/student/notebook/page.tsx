@@ -34,7 +34,6 @@ import {
   Save,
   PenLine,
   Eye,
-  Cpu,
   Trash2,
   Maximize2,
   BookMarked,
@@ -69,7 +68,7 @@ import { toast } from "sonner";
 import TurndownService from "turndown";
 import Showdown from "showdown";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { RaiseLogo } from "@/components/ui/raise-logo";
+import { RaiseImpactNote } from "@/components/student/raise-impact-note";
 
 const turndown = new TurndownService();
 const converter = new Showdown.Converter();
@@ -569,7 +568,7 @@ export default function NotebookPage() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant={showCopilot ? "secondary" : "outline"} size="sm" aria-pressed={showCopilot} onClick={() => setShowCopilot(!showCopilot)}>
-            <RaiseLogo size={16} aria-hidden /> Raise help
+            Raise help
           </Button>
           <Button size="sm" onClick={saveNotebook} disabled={!hasUnsavedChanges || isSaving}>
             <Save /> {isSaving ? "Saving…" : "Save"}
@@ -750,9 +749,7 @@ export default function NotebookPage() {
         {showCopilot && (
           <section ref={helpPanelRef} aria-label="Raise help" className="flex h-[60dvh] min-h-96 min-w-0 flex-col border-t border-border lg:col-span-2 xl:col-span-1 xl:border-l xl:border-t-0">
               <div className="p-4 border-b border-border flex items-center justify-between bg-muted ">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] flex items-center gap-2">
-                  <RaiseLogo className="h-3 w-3" /> Raise Help
-                </Label>
+                <Label className="text-sm font-semibold text-foreground">Raise help</Label>
                 <div className="flex items-center gap-1">
                   {notebookAiLimit > 0 && (
                     <div className="flex flex-col items-end mr-2">
@@ -772,7 +769,7 @@ export default function NotebookPage() {
                       </div>
                     </div>
                   )}
-                  <Cpu className="h-3.5 w-3.5 text-muted-foreground " />
+                  <RaiseImpactNote className="size-6" />
                   <Button
                     variant="ghost"
                     size="icon"
@@ -802,14 +799,11 @@ export default function NotebookPage() {
                   )}
                   {messages.length === 0 && (
                     <div className="text-center py-12 px-4 space-y-4">
-                      <div className="inline-flex p-3 bg-muted rounded-2xl">
-                        <RaiseLogo className="h-6 w-6 text-muted-foreground" />
-                      </div>
                       <div>
-                        <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-1">Ask about your notes</h3>
+                        <h3 className="text-sm font-medium text-foreground mb-1">Ask about your notes</h3>
                         <p className="text-[11px] text-muted-foreground leading-relaxed">
-                          I can help you summarize your notes, suggest research topics,
-                          or explain concepts you&apos;ve written about.
+                          Optional. Raise can summarize your notes, suggest what to look into
+                          next, or explain something you&apos;ve written about.
                         </p>
                       </div>
                       <div className="grid grid-cols-1 gap-2 pt-2">
@@ -874,7 +868,7 @@ export default function NotebookPage() {
                       }
                     }}
                     disabled={isAiDisabled}
-                    placeholder={isAiDisabled ? "AI Assistant Disabled" : "Ask Copilot..."}
+                    placeholder={isAiDisabled ? "Raise is unavailable" : "Ask about your notes…"}
                     className="min-h-[60px] max-h-[120px] pr-12 text-[12px] rounded-2xl border-border bg-background  shadow-sm transition-all focus-visible:ring-ring  disabled:opacity-50"
                   />
                   <Button
@@ -887,9 +881,6 @@ export default function NotebookPage() {
                     <Send className="h-3.5 w-3.5" />
                   </Button>
                 </div>
-                <p className="mt-2 text-[9px] text-center text-muted-foreground uppercase tracking-widest font-bold">
-                  AI uses network budget. Use wisely.
-                </p>
               </div>
           </section>
         )}

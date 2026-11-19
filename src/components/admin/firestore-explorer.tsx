@@ -70,6 +70,9 @@ export function FirestoreExplorer() {
   const loadDocuments = async (
     cursor: string | null = null,
     direction: "next" | "prev" | "refresh" = "refresh",
+    // The filter to use; defaults to the boxes. Clear passes empty values because state set in the
+    // same click isn't visible to this call yet (it used to reload with the old filter).
+    filter: { field: string; value: string } = { field: filterField, value: filterValue },
   ) => {
     if (!selectedCollection) return;
     setLoading(true);
@@ -86,8 +89,8 @@ export function FirestoreExplorer() {
           collectionName: selectedCollection,
           limit: 20,
           lastDocId: cursor,
-          filterField: filterField.trim(),
-          filterValue: filterValue.trim(),
+          filterField: filter.field.trim(),
+          filterValue: filter.value.trim(),
         }),
       });
 
@@ -211,7 +214,7 @@ export function FirestoreExplorer() {
               onClick={() => {
                 setFilterField("");
                 setFilterValue("");
-                setTimeout(() => loadDocuments(null, "refresh"), 0);
+                loadDocuments(null, "refresh", { field: "", value: "" });
               }}
             >
               Clear

@@ -41,6 +41,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { withArticle } from "@/lib/article";
 import {
   Select,
   SelectContent,
@@ -372,7 +373,7 @@ export default function WelcomeClient() {
 
       <Card className={`shadow-none ${course ? "" : "opacity-60"}`}>
         <CardHeader>
-          <CardTitle>2. Assign a {courseName} unit</CardTitle>
+          <CardTitle>2. Assign {withArticle(courseName)} unit</CardTitle>
           <CardDescription>
             Ready-made, auto-graded, answer keys included. Each assignment gets a due date.
           </CardDescription>
@@ -528,7 +529,7 @@ export default function WelcomeClient() {
                   Copy message
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/teacher">Go to dashboard</Link>
+                  <Link href="/teacher">Go to Home</Link>
                 </Button>
               </div>
             </>

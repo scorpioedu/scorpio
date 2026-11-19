@@ -4,7 +4,7 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import * as React from "react";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/auth-context";
 import { ChatContainerContent, ChatContainerRoot } from "@/components/prompt-kit/chat-container";
@@ -23,7 +23,6 @@ import {
 import { ScrollButton } from "@/components/prompt-kit/scroll-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -42,6 +41,8 @@ import {
 } from "@/components/ui/dialog";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { RaiseLogo } from "@/components/ui/raise-logo";
+import { RaiseImpactNote } from "@/components/student/raise-impact-note";
+import { hideOpenDiagramBlock } from "@/lib/diagram/blocks";
 import { cn } from "@/lib/utils";
 import { Organization } from "@/lib/types";
 import { db } from "@/lib/firebase";
@@ -60,29 +61,26 @@ import {
 import { toast } from "sonner";
 import {
   ArrowLeft,
+  Activity,
   ArrowUp,
-  Calculator,
   Check,
-  ChevronLeft,
-  ChevronRight,
   Copy,
   Edit2,
-  Lightbulb,
+  LineChart,
   Lock,
   MessageSquare,
   Mic,
   MicOff,
   MoreHorizontal,
+  Move,
+  PanelLeft,
   Pencil,
   PlusIcon,
   Search,
-  Sparkles,
-  ThumbsDown,
-  ThumbsUp,
   Trash,
   Trash2,
+  Triangle,
   X,
-  Zap,
 } from "lucide-react";
 
 // Typewriter effect for fresh assistant responses
@@ -111,7 +109,8 @@ function Typewriter({ text, onDone }: { text: string; onDone?: () => void }) {
     };
   }, [text, onDone]);
 
-  return <MarkdownRenderer>{displayed}</MarkdownRenderer>;
+  // A diagram appears whole once its block has finished typing.
+  return <MarkdownRenderer>{hideOpenDiagramBlock(displayed)}</MarkdownRenderer>;
 }
 
 interface ChatMessage {
@@ -162,32 +161,106 @@ function groupSessionsByPeriod(sessions: ChatSession[]) {
   return groups.filter((g) => g.conversations.length > 0);
 }
 
+// Each example asks for something Raise can draw (a graph, the forces on an object, a setup), so a
+// first reply shows a diagram and not only text. They use Concept mode: in Problem mode Raise asks
+// the student to draw their own free-body diagram.
 const STARTER_PROMPTS = [
   {
-    title: "Newton's First Law",
-    prompt: "Can you explain Newton's first law of motion and give real-world examples?",
-    mode: "concept" as const,
-    icon: Sparkles,
-  },
-  {
-    title: "Kinetic & Potential Energy",
-    prompt: "How do I calculate kinetic and gravitational potential energy for a rollercoaster?",
-    mode: "problem" as const,
-    icon: Calculator,
-  },
-  {
-    title: "Electromagnetic Induction",
-    prompt: "Explain electromagnetic induction and Faraday's Law step by step.",
-    mode: "concept" as const,
-    icon: Zap,
-  },
-  {
-    title: "Projectile Motion Problem",
+    tag: "Motion graph",
+    icon: LineChart,
     prompt:
-      "How do I break down a 2D projectile motion problem into horizontal and vertical components?",
-    mode: "problem" as const,
-    icon: Calculator,
+      "Show me a velocity–time graph for a ball thrown straight up, and explain what the slope and the area tell me.",
   },
+  {
+    tag: "Forces",
+    icon: Move,
+    prompt: "Draw the forces on a box sliding down a rough 30° ramp and explain each one.",
+  },
+  {
+    tag: "Setup",
+    icon: Triangle,
+    prompt:
+      "Sketch a cart on a table tied over a pulley to a hanging mass, and explain why they share one acceleration.",
+  },
+  {
+    tag: "Oscillation",
+    icon: Activity,
+    prompt:
+      "Graph position against time for a mass on a spring and show where amplitude and period appear on it.",
+  },
+];
+
+const FOLLOW_UPS = [
+  "Can you show that as a diagram?",
+  "Give me a worked example.",
+  "Quiz me on this.",
+];
+
+/** A short chat title from the student's first question, cut at a word. */
+function titleFromQuestion(question: string): string {
+  const text = question.replace(/\s+/g, " ").trim();
+  if (text.length <= 42) return text || "New chat";
+  const cut = text.slice(0, 42);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 20 ? cut.lastIndexOf(" ") : 42)}…`;
+}
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+const RISE = {
+  hidden: { opacity: 0, y: 10 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } },
+};
+
+/** Raise's mark, shown beside its messages. */
+function RaiseAvatar({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex size-7 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary",
+        className,
+      )}
+    >
+      <RaiseLogo size={14} />
+    </span>
+  );
+}
+
+/** "Thinking" with a highlight sweeping across the words while a reply is on its way. */
+function ThinkingLine() {
+  return (
+    <motion.div
+      role="status"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25, ease: EASE }}
+      className="flex items-center gap-3"
+    >
+      <motion.span
+        animate={{ scale: [1, 1.08, 1] }}
+        transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <RaiseAvatar />
+      </motion.span>
+      <motion.span
+        className="bg-clip-text text-sm font-medium text-transparent"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, var(--muted-foreground) 35%, var(--foreground) 50%, var(--muted-foreground) 65%)",
+          backgroundSize: "200% 100%",
+        }}
+        animate={{ backgroundPosition: ["100% 0%", "-100% 0%"] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+      >
+        Working through it…
+      </motion.span>
+    </motion.div>
+  );
+}
+
+const MODES = [
+  { value: "concept" as const, label: "Concept", hint: "Explain an idea" },
+  { value: "problem" as const, label: "Problem", hint: "Work through a problem with hints" },
 ];
 
 export default function TutorPage() {
@@ -196,18 +269,18 @@ export default function TutorPage() {
 
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const openedNewest = useRef(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"concept" | "problem">("concept");
   const [typingId, setTypingId] = useState<string | null>(null);
 
-  // Feedback state: messageId -> "up" | "down"
-  const [feedback, setFeedback] = useState<Record<string, "up" | "down">>({});
-
   // Sidebar & Search state
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Chat history starts open on a wide screen and closed on a phone, until the student chooses.
+  const [sidebarChoice, setSidebarOpen] = useState<boolean | null>(null);
   const isMobile = useIsMobile();
+  const sidebarOpen = sidebarChoice ?? !isMobile;
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
 
@@ -302,10 +375,12 @@ export default function TutorPage() {
         loaded.sort((a, b) => b.updatedAt - a.updatedAt);
         setSessions(loaded);
 
-        setActiveSessionId((curr) => {
-          if (!curr && loaded.length > 0) return loaded[0].id;
-          return curr;
-        });
+        // Open the newest conversation once, when the page loads. Later changes to the list (a
+        // delete, a rename, a save from another tab) must not pull the student out of New Chat.
+        if (!openedNewest.current) {
+          openedNewest.current = true;
+          setActiveSessionId((curr) => curr ?? loaded[0]?.id ?? null);
+        }
       },
       (error) => {
         console.error("Sessions listener error:", error);
@@ -352,7 +427,6 @@ export default function TutorPage() {
     setPrompt("");
     setRateLimitError(null);
     setTypingId(null);
-    toast.success("Ready for a new conversation");
   }, []);
 
   // Delete chat session
@@ -434,15 +508,6 @@ export default function TutorPage() {
   const handleCopyMessage = useCallback((content: string) => {
     navigator.clipboard.writeText(content);
     toast.success("Copied to clipboard");
-  }, []);
-
-  // Upvote / Downvote reaction
-  const handleFeedback = useCallback((messageId: string, type: "up" | "down") => {
-    setFeedback((prev) => ({
-      ...prev,
-      [messageId]: prev[messageId] === type ? undefined! : type,
-    }));
-    toast.success(type === "up" ? "Thanks for the positive feedback!" : "Feedback recorded");
   }, []);
 
   // Keyboard shortcut: Cmd+N / Ctrl+N for new chat, Cmd+K for search
@@ -566,6 +631,7 @@ export default function TutorPage() {
 
     // Create session in Firestore if none active
     let sessionId = activeSessionId;
+    const createdForThisMessage = !sessionId;
     if (!sessionId) {
       try {
         const newRef = await addDoc(collection(db, "tutor_sessions"), {
@@ -614,7 +680,9 @@ export default function TutorPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to get response");
+      // A plain 500 says only "Internal server error"; the generic text below reads better. Other
+      // statuses (budget limits, 502/503 "please try again") carry a message meant for students.
+      if (!res.ok) throw new Error(res.status === 500 ? "" : data.error || "");
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -627,32 +695,9 @@ export default function TutorPage() {
       setMessages(finalMessages);
       setTypingId(assistantMessage.id);
 
-      // Auto-title on first exchange
-      let newTitle: string | undefined = undefined;
-      if (finalMessages.length === 2) {
-        try {
-          const titleRes = await authenticatedFetch("/api/ai/generate-title", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userMessage: inputContent,
-              aiResponse: assistantMessage.content,
-              context: "Raise",
-            }),
-          });
-          if (titleRes.ok) {
-            const titleData = await titleRes.json();
-            if (titleData.title) {
-              newTitle = (titleData.title as string).slice(0, 35);
-            }
-          }
-        } catch (e) {
-          console.error("Auto-title error:", e);
-        }
-        if (!newTitle) {
-          newTitle = inputContent.slice(0, 35) + (inputContent.length > 35 ? "..." : "");
-        }
-      }
+      // Title the chat after its first question. (The title endpoint is a placeholder that answers
+      // "Physics conversation" for everything, which made every chat in the list look the same.)
+      const newTitle = finalMessages.length === 2 ? titleFromQuestion(inputContent) : undefined;
 
       if (sessionId) {
         await updateDoc(doc(db, "tutor_sessions", sessionId), {
@@ -679,6 +724,13 @@ export default function TutorPage() {
       setTypingId(null);
       setPrompt(inputContent);
       setRateLimitError(errMessage);
+      // A conversation created just for this message would stay in the list with nothing in it.
+      if (createdForThisMessage && sessionId) {
+        setActiveSessionId(null);
+        deleteDoc(doc(db, "tutor_sessions", sessionId)).catch((e) =>
+          console.error("Could not remove the empty conversation:", e),
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -713,14 +765,14 @@ export default function TutorPage() {
               <Lock className="h-8 w-8 text-amber-500" />
             </div>
             <div className="space-y-2">
-              <CardTitle className="text-xl font-bold">Raise AI Assistant Restricted</CardTitle>
+              <CardTitle className="text-xl font-bold">Raise isn&apos;t available</CardTitle>
               <CardDescription>
-                Your network is on the **Free tier**. Raise features require an active Department
-                Network subscription.
+                Your network is on the Free tier. Raise needs an active Department Network
+                subscription. Everything else in Scorpio works without it.
               </CardDescription>
             </div>
             <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground border border-border/40">
-              Ask your teacher or department lead to upgrade the network for AI access.
+              Ask your teacher or department lead if you would like Raise turned on.
             </div>
             <Button
               variant="outline"
@@ -737,822 +789,763 @@ export default function TutorPage() {
     );
   }
 
-  const tutorUsage =
-    (profile as (typeof profile & { tutorUsageCurrent?: number }) | null)?.tutorUsageCurrent || 0;
+  // The counter is per calendar month; one left over from an earlier month counts as zero.
+  const usageProfile = profile as
+    (typeof profile & { tutorUsageCurrent?: number; usageMonth?: string }) | null;
+  const usageIsCurrent =
+    !usageProfile?.usageMonth || usageProfile.usageMonth === new Date().toISOString().slice(0, 7);
+  const tutorUsage = usageIsCurrent ? usageProfile?.tutorUsageCurrent || 0 : 0;
+  const tutorLimit = orgData?.aiTutorLimitPerStudent ?? 0;
+  const firstName = profile?.displayName?.split(" ")[0];
+
+  const usageMeter = (
+    <div className="mt-2 flex items-center justify-between gap-3 px-1 text-[11px] text-muted-foreground">
+      {tutorLimit > 0 ? (
+        <div
+          className="flex items-center gap-2"
+          title="Your teacher's department sets this monthly allowance"
+        >
+          <div
+            role="progressbar"
+            aria-label="Raise messages used this month"
+            aria-valuemin={0}
+            aria-valuemax={tutorLimit}
+            aria-valuenow={Math.min(tutorUsage, tutorLimit)}
+            className="h-1.5 w-24 overflow-hidden rounded-full bg-muted"
+          >
+            <motion.div
+              className={cn(
+                "h-full rounded-full",
+                tutorUsage / tutorLimit > 0.8 ? "bg-amber-500" : "bg-primary",
+              )}
+              initial={false}
+              animate={{ width: `${Math.min(100, (tutorUsage / tutorLimit) * 100)}%` }}
+              transition={{ duration: 0.5, ease: EASE }}
+            />
+          </div>
+          <span>
+            <span className="font-medium tabular-nums text-foreground">
+              {tutorUsage} of {tutorLimit}
+            </span>{" "}
+            messages used this month
+          </span>
+        </div>
+      ) : (
+        <span>
+          <span className="font-medium tabular-nums text-foreground">{tutorUsage}</span>{" "}
+          {tutorUsage === 1 ? "message" : "messages"} used this month
+        </span>
+      )}
+      <span className="hidden sm:inline">Enter to send · Shift + Enter for a new line</span>
+    </div>
+  );
+
+  const composer = (
+    <PromptInput
+      isLoading={isLoading}
+      value={prompt}
+      onValueChange={setPrompt}
+      onSubmit={() => handleSubmit()}
+      className="relative w-full rounded-2xl border border-border bg-card p-0 pt-1 shadow-sm transition-shadow focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10"
+    >
+      <div className="flex flex-col">
+        <PromptInputTextarea
+          aria-label="Message Raise"
+          placeholder={
+            mode === "concept"
+              ? "Ask about a physics concept…"
+              : "Describe the problem and what you’ve tried…"
+          }
+          className="min-h-[48px] pt-3.5 pl-5 pr-4 text-[14px] leading-relaxed"
+        />
+
+        <PromptInputActions className="mt-2 flex w-full items-center justify-between gap-2 px-3 pb-3">
+          {/* Left Actions */}
+          <div className="flex items-center gap-1.5">
+            <div
+              role="group"
+              aria-label="Kind of help"
+              className="flex items-center rounded-full border border-border bg-muted/50 p-0.5"
+            >
+              {MODES.map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  title={item.hint}
+                  onClick={() => setMode(item.value)}
+                  aria-pressed={mode === item.value}
+                  className={cn(
+                    "cursor-pointer rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
+                    mode === item.value
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-1.5">
+            <PromptInputAction tooltip={isRecording ? "Stop listening" : "Voice input"}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "size-8 rounded-full text-muted-foreground transition-colors cursor-pointer",
+                  isRecording && "bg-destructive/10 text-destructive animate-pulse",
+                )}
+                aria-label={isRecording ? "Stop listening" : "Voice input"}
+                onClick={toggleVoiceRecording}
+              >
+                {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
+              </Button>
+            </PromptInputAction>
+
+            <Button
+              type="button"
+              size="icon"
+              aria-label="Send message"
+              disabled={!prompt.trim() || isLoading}
+              onClick={() => handleSubmit()}
+              className="size-8 rounded-full shadow-xs transition-transform active:scale-95 cursor-pointer"
+            >
+              {!isLoading ? (
+                <ArrowUp size={16} />
+              ) : (
+                <span className="size-2 rounded-2xs bg-background animate-spin" />
+              )}
+            </Button>
+          </div>
+        </PromptInputActions>
+      </div>
+    </PromptInput>
+  );
+
+  const rateLimitBanner = rateLimitError && (
+    <div className="mx-auto w-full max-w-3xl shrink-0 px-4 py-2">
+      <div className="flex items-center justify-between rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+        <span>{rateLimitError}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 text-xs text-destructive hover:bg-destructive/20"
+          onClick={() => setRateLimitError(null)}
+        >
+          Dismiss
+        </Button>
+      </div>
+    </div>
+  );
+
+  const showWelcome = messages.length === 0 && !isLoading;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.992, filter: "blur(4px)" }}
-      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-      className="relative flex min-h-0 flex-1 w-full overflow-hidden bg-background text-foreground"
-    >
-      {/* ========================================================================= */}
-      {/* SIDEBAR: Chat History (Full Height Left Panel)                           */}
-      {/* ========================================================================= */}
-      {sidebarOpen && (
-        <button
-          type="button"
-          aria-label="Dismiss chat history"
-          tabIndex={-1}
-          className="absolute inset-0 z-20 bg-black/40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-      <aside
-        aria-label="Chat history"
-        inert={!sidebarOpen}
-        className={cn(
-          "absolute inset-y-0 left-0 z-30 flex h-full shrink-0 flex-col border-r border-border bg-card md:relative",
-          sidebarOpen ? "w-[min(19rem,85vw)]" : "hidden",
+    <MotionConfig reducedMotion="user">
+      <div className="relative flex min-h-0 flex-1 w-full overflow-hidden bg-background text-foreground">
+        {/* ========================================================================= */}
+        {/* SIDEBAR: Chat History (Full Height Left Panel)                           */}
+        {/* ========================================================================= */}
+        {sidebarOpen && (
+          <button
+            type="button"
+            aria-label="Dismiss chat history"
+            tabIndex={-1}
+            className="absolute inset-0 z-20 bg-black/40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
         )}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border/40 p-3 shrink-0 h-14">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-              onClick={() => router.push("/student")}
-              aria-label="Back to student dashboard"
-            >
-              <ArrowLeft className="size-4" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <div className="bg-primary/10 border border-primary/25 size-8 rounded-xl flex items-center justify-center shadow-xs">
-                <RaiseLogo size={16} className="text-primary" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold tracking-tight text-foreground leading-none">
-                  Raise
-                </span>
-                <span className="text-[10px] text-muted-foreground mt-0.5">
-                  Physics learning guide
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "size-7 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
-                showSearchInput && "bg-muted text-foreground",
-              )}
-              onClick={() => setShowSearchInput(!showSearchInput)}
-              title="Search chats (⌘K)"
-            >
-              <Search className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              onClick={() => setSidebarOpen(false)}
-              aria-label="Close chat history"
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* New Chat & Search Toolbar */}
-        <div className="p-3 space-y-2 shrink-0 border-b border-border/30">
-          <Button
-            variant="outline"
-            className="w-full justify-between h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/70 hover:border-border shadow-2xs font-medium text-xs transition-all cursor-pointer"
-            onClick={() => {
-              createNewSession();
-              if (isMobile) setSidebarOpen(false);
-            }}
-          >
-            <span className="flex items-center gap-2">
-              <PlusIcon className="size-3.5 text-primary" />
-              <span>New Chat</span>
+        <aside
+          aria-label="Chat history"
+          inert={!sidebarOpen}
+          className={cn(
+            "absolute inset-y-0 left-0 z-30 flex h-full shrink-0 flex-col border-r border-border bg-card md:relative",
+            sidebarOpen ? "w-[min(19rem,85vw)]" : "hidden",
+          )}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-3 pt-2 shrink-0 h-12">
+            <span className="pl-1.5 text-sm font-semibold tracking-tight text-foreground">
+              Chats
             </span>
-            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-0.5 rounded border border-border/50 bg-background/60 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-              ⌘N
-            </kbd>
-          </Button>
 
-          {showSearchInput && (
-            <div className="relative flex items-center animate-in fade-in slide-in-from-top-1 duration-150">
-              <Search className="absolute left-2.5 size-3.5 text-muted-foreground pointer-events-none" />
-              <Input
-                placeholder="Search conversations..."
-                value={sidebarSearch}
-                onChange={(e) => setSidebarSearch(e.target.value)}
-                className="h-8 pl-8 pr-7 text-xs rounded-lg border-border/60 bg-background focus-visible:ring-1 focus-visible:ring-primary/40"
-                autoFocus
-              />
-              {sidebarSearch && (
-                <button
-                  type="button"
-                  className="absolute right-2 text-muted-foreground hover:text-foreground cursor-pointer"
-                  onClick={() => setSidebarSearch("")}
-                >
-                  <X className="size-3" />
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Scrollable Conversation List */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-3">
-          {groupedSessions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-              <MessageSquare className="size-8 text-muted-foreground/30 mb-2 stroke-[1.5]" />
-              <p className="text-xs font-medium text-muted-foreground">
-                {sidebarSearch ? "No matching chats found" : "No conversation history"}
-              </p>
-              <p className="text-[11px] text-muted-foreground/60 mt-0.5">
-                {sidebarSearch
-                  ? "Try a different search query"
-                  : "Your past discussions will appear here"}
-              </p>
-            </div>
-          ) : (
-            groupedSessions.map((group) => (
-              <div key={group.period} className="space-y-1">
-                <div className="text-[11px] font-bold tracking-wider text-muted-foreground/60 uppercase px-2.5 py-1">
-                  {group.period}
-                </div>
-                <div className="space-y-0.5">
-                  {group.conversations.map((conversation) => {
-                    const isActive = conversation.id === activeSessionId;
-                    const isEditing = editingTitleId === conversation.id;
-
-                    if (isEditing) {
-                      return (
-                        <div
-                          key={conversation.id}
-                          className="flex items-center gap-1 rounded-xl border border-primary/40 bg-primary/10 p-1 px-1.5 shadow-xs"
-                        >
-                          <Input
-                            value={editingTitleText}
-                            onChange={(e) => setEditingTitleText(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter")
-                                handleRename(conversation.id, editingTitleText);
-                              if (e.key === "Escape") setEditingTitleId(null);
-                            }}
-                            className="h-7 text-xs px-2 bg-background border-none focus-visible:ring-0"
-                            autoFocus
-                            maxLength={50}
-                          />
-                          <Button
-                            aria-label="Save conversation title"
-                            size="icon"
-                            variant="ghost"
-                            className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
-                            onClick={() => handleRename(conversation.id, editingTitleText)}
-                          >
-                            <Check className="size-3.5" />
-                          </Button>
-                          <Button
-                            aria-label="Cancel renaming"
-                            size="icon"
-                            variant="ghost"
-                            className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
-                            onClick={() => setEditingTitleId(null)}
-                          >
-                            <X className="size-3.5" />
-                          </Button>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div
-                        key={conversation.id}
-                        className={cn(
-                          "group relative flex items-center justify-between rounded-xl px-2.5 py-2 text-xs transition-all cursor-pointer",
-                          isActive
-                            ? "bg-primary/10 font-semibold text-primary border border-primary/20 shadow-2xs"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
-                        )}
-                      >
-                        <button
-                          type="button"
-                          aria-current={isActive ? "true" : undefined}
-                          onClick={() => {
-                            switchSession(conversation);
-                            if (isMobile) setSidebarOpen(false);
-                          }}
-                          className="flex min-w-0 flex-1 items-center gap-2 rounded-sm py-1 pr-1 text-left focus-visible:outline-2 focus-visible:outline-ring"
-                        >
-                          <MessageSquare
-                            className={cn(
-                              "size-3.5 shrink-0 transition-colors",
-                              isActive ? "text-primary" : "text-muted-foreground/60",
-                            )}
-                          />
-                          <span className="truncate font-normal">{conversation.title}</span>
-                        </button>
-
-                        {/* Dropdown Menu for Rename & Delete */}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className={cn(
-                                "size-6 rounded-full transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 hover:bg-muted/80 cursor-pointer",
-                                isActive && "opacity-100",
-                              )}
-                              aria-label={`Options for ${conversation.title}`}
-                            >
-                              <MoreHorizontal className="size-3.5" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-36">
-                            <DropdownMenuItem
-                              className="gap-2 cursor-pointer text-xs"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingTitleId(conversation.id);
-                                setEditingTitleText(conversation.title);
-                              }}
-                            >
-                              <Edit2 className="size-3.5" /> Rename
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSessionToDelete(conversation);
-                                setDeleteDialogOpen(true);
-                              }}
-                            >
-                              <Trash2 className="size-3.5" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer: Usage Quota Widget */}
-        {orgData && (orgData.aiTutorLimitPerStudent ?? 0) > 0 && (
-          <div className="border-t border-border/40 p-3 bg-muted/20 shrink-0">
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="font-semibold text-muted-foreground tracking-tight">
-                  Raise Messages
-                </span>
-                <span className="font-mono text-xs font-semibold text-foreground">
-                  {tutorUsage}{" "}
-                  <span className="text-muted-foreground font-normal">
-                    / {orgData.aiTutorLimitPerStudent}
-                  </span>
-                </span>
-              </div>
-              <div className="h-1.5 w-full bg-muted/80 rounded-full overflow-hidden">
-                <div
-                  className={cn(
-                    "h-full rounded-full transition-all duration-500",
-                    tutorUsage / orgData.aiTutorLimitPerStudent! > 0.8
-                      ? "bg-amber-500"
-                      : "bg-primary",
-                  )}
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      (tutorUsage / orgData.aiTutorLimitPerStudent!) * 100,
-                    )}%`,
-                  }}
-                />
-              </div>
-              <span className="text-[10px] text-muted-foreground/60">Department Quota</span>
-            </div>
-          </div>
-        )}
-      </aside>
-
-      {/* ========================================================================= */}
-      {/* MAIN CHAT CONTENT AREA (Rigid Flex Column)                                */}
-      {/* ========================================================================= */}
-      <section
-        inert={sidebarOpen && isMobile}
-        aria-label="Raise conversation"
-        className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
-      >
-        {/* Top Header */}
-        <header className="z-10 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2 sm:px-4">
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            {!sidebarOpen && (
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-8 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                onClick={() => setSidebarOpen(true)}
-                aria-label="Open chat history"
+                className={cn(
+                  "size-7 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+                  showSearchInput && "bg-muted text-foreground",
+                )}
+                onClick={() => setShowSearchInput(!showSearchInput)}
+                title="Search chats (⌘K)"
               >
-                <ChevronRight className="size-4" />
+                <Search className="size-3.5" />
               </Button>
-            )}
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="truncate text-sm font-semibold text-foreground">
-                {activeSession?.title || "New Physics Chat"}
-              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Close chat history"
+              >
+                <PanelLeft className="size-4" />
+              </Button>
             </div>
           </div>
 
-          {/* Mode Switcher & Actions */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-full bg-muted/60 p-0.5 border border-border/50 shadow-2xs">
-              <button
-                type="button"
-                onClick={() => setMode("concept")}
-                aria-pressed={mode === "concept"}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer",
-                  mode === "concept"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Lightbulb className="size-3.5 text-amber-500" />
-                <span>Concept</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode("problem")}
-                aria-pressed={mode === "problem"}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer",
-                  mode === "problem"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Calculator className="size-3.5 text-primary" />
-                <span>Problem</span>
-              </button>
-            </div>
-
-            {activeSession && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Conversation options">
-                    <MoreHorizontal className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem
-                    className="gap-2 cursor-pointer text-xs"
-                    onClick={() => {
-                      setSidebarOpen(true);
-                      setEditingTitleId(activeSession.id);
-                      setEditingTitleText(activeSession.title);
-                    }}
-                  >
-                    <Edit2 className="size-3.5" /> Rename
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive"
-                    onClick={() => {
-                      setSessionToDelete(activeSession);
-                      setDeleteDialogOpen(true);
-                    }}
-                  >
-                    <Trash2 className="size-3.5" /> Delete Chat
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-
+          {/* New Chat & Search Toolbar */}
+          <div className="p-3 space-y-2 shrink-0">
             <Button
               variant="outline"
-              size="sm"
-              className="h-8 gap-1.5"
-              aria-label="Back to dashboard"
-              onClick={() => router.push("/student")}
+              className="w-full justify-start h-9 font-medium text-xs cursor-pointer"
+              onClick={() => {
+                createNewSession();
+                if (isMobile) setSidebarOpen(false);
+              }}
             >
-              <ArrowLeft className="size-3.5" />
-              <span className="hidden sm:inline">Dashboard</span>
+              <span className="flex items-center gap-2">
+                <PlusIcon className="size-3.5" />
+                <span>New chat</span>
+              </span>
             </Button>
+
+            {showSearchInput && (
+              <div className="relative flex items-center animate-in fade-in slide-in-from-top-1 duration-150">
+                <Search className="absolute left-2.5 size-3.5 text-muted-foreground pointer-events-none" />
+                <Input
+                  placeholder="Search conversations..."
+                  value={sidebarSearch}
+                  onChange={(e) => setSidebarSearch(e.target.value)}
+                  className="h-8 pl-8 pr-7 text-xs rounded-lg border-border/60 bg-background focus-visible:ring-1 focus-visible:ring-primary/40"
+                  autoFocus
+                />
+                {sidebarSearch && (
+                  <button
+                    type="button"
+                    className="absolute right-2 text-muted-foreground hover:text-foreground cursor-pointer"
+                    onClick={() => setSidebarSearch("")}
+                  >
+                    <X className="size-3" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
-        </header>
 
-        {/* Scrollable Messages Container (Pure Flex-1 Scrollable Area) */}
-        <ChatContainerRoot
-          ref={chatContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto relative w-full"
-        >
-          <ChatContainerContent className="mx-auto max-w-3xl space-y-6 px-4 py-8 md:px-6">
-            {messages.length === 0 ? (
-              /* Empty State / Welcome Screen */
-              <div className="flex flex-col items-center justify-center py-5 text-center sm:py-10">
-                <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary shadow-xs">
-                  <RaiseLogo size={28} className="text-primary" />
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Ask Raise
-                </h2>
-                <p className="mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
-                  Ask a physics question or choose a prompt to get started.
+          {/* Scrollable Conversation List */}
+          <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-3">
+            {groupedSessions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                <MessageSquare className="size-8 text-muted-foreground/30 mb-2 stroke-[1.5]" />
+                <p className="text-xs font-medium text-muted-foreground">
+                  {sidebarSearch ? "No matching chats found" : "No conversation history"}
                 </p>
-
-                {/* Starter Chips */}
-                <div className="mt-5 grid w-full gap-2 sm:grid-cols-2">
-                  {STARTER_PROMPTS.map((item, idx) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => {
-                          setMode(item.mode);
-                          setPrompt(item.prompt);
-                          handleSubmit(item.prompt);
-                        }}
-                        className="group flex flex-col items-start rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:bg-accent cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2 text-xs font-semibold text-foreground ">
-                          <div className="size-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                            <Icon className="size-3.5" />
-                          </div>
-                          <span>{item.title}</span>
-                        </div>
-                        <span className="mt-1.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                          {item.prompt}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                  {sidebarSearch
+                    ? "Try a different search query"
+                    : "Your past discussions will appear here"}
+                </p>
               </div>
             ) : (
-              /* Message List */
-              messages.map((message, index) => {
-                const isAssistant = message.role === "assistant";
-                const isLastMessage = index === messages.length - 1;
-                const isTyping = isAssistant && isLastMessage && message.id === typingId;
+              groupedSessions.map((group) => (
+                <div key={group.period} className="space-y-1">
+                  <div className="text-[11px] font-medium text-muted-foreground px-2.5 py-1">
+                    {group.period}
+                  </div>
+                  <div className="space-y-0.5">
+                    {group.conversations.map((conversation) => {
+                      const isActive = conversation.id === activeSessionId;
+                      const isEditing = editingTitleId === conversation.id;
 
-                return (
-                  <PromptMessage
-                    key={message.id}
-                    className={cn(
-                      "flex w-full flex-col gap-2",
-                      isAssistant ? "items-start" : "items-end",
-                    )}
-                  >
-                    {isAssistant ? (
-                      /* Assistant Message */
-                      <div className="group flex w-full flex-col gap-1.5">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="flex size-6 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-2xs">
-                            <RaiseLogo size={12} className="text-primary" />
+                      if (isEditing) {
+                        return (
+                          <div
+                            key={conversation.id}
+                            className="flex items-center gap-1 rounded-xl border border-border bg-muted p-1 px-1.5"
+                          >
+                            <Input
+                              value={editingTitleText}
+                              onChange={(e) => setEditingTitleText(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter")
+                                  handleRename(conversation.id, editingTitleText);
+                                if (e.key === "Escape") setEditingTitleId(null);
+                              }}
+                              className="h-7 text-xs px-2 bg-background border-none focus-visible:ring-0"
+                              autoFocus
+                              maxLength={50}
+                            />
+                            <Button
+                              aria-label="Save conversation title"
+                              size="icon"
+                              variant="ghost"
+                              className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
+                              onClick={() => handleRename(conversation.id, editingTitleText)}
+                            >
+                              <Check className="size-3.5" />
+                            </Button>
+                            <Button
+                              aria-label="Cancel renaming"
+                              size="icon"
+                              variant="ghost"
+                              className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
+                              onClick={() => setEditingTitleId(null)}
+                            >
+                              <X className="size-3.5" />
+                            </Button>
                           </div>
-                          <span className="text-xs font-semibold text-foreground">Raise</span>
-                          {message.type && (
-                            <Badge
-                              variant="outline"
-                              className="h-4 px-1.5 text-[9px] font-normal uppercase tracking-wider text-muted-foreground"
-                            >
-                              {message.type}
-                            </Badge>
-                          )}
-                        </div>
+                        );
+                      }
 
-                        <MessageContent
-                          className="prose dark:prose-invert max-w-none text-[15px] leading-relaxed pl-8"
-                          markdown={!isTyping}
-                        >
-                          {isTyping ? (
-                            <Typewriter text={message.content} onDone={() => setTypingId(null)} />
-                          ) : (
-                            message.content
-                          )}
-                        </MessageContent>
-
-                        {/* Assistant Actions */}
-                        <MessageActions
+                      return (
+                        <div
+                          key={conversation.id}
                           className={cn(
-                            "pl-8 flex gap-1 pt-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100",
-                            (isLastMessage || feedback[message.id]) && "opacity-100",
+                            "group relative flex items-center justify-between rounded-lg px-2.5 py-1 text-[13px] transition-colors cursor-pointer",
+                            isActive
+                              ? "bg-muted text-foreground border border-transparent"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
                           )}
                         >
-                          <MessageAction tooltip="Copy message">
-                            <Button
-                              aria-label="Copy message"
-                              variant="ghost"
-                              size="icon"
-                              className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() => handleCopyMessage(message.content)}
-                            >
-                              <Copy className="size-3.5" />
-                            </Button>
-                          </MessageAction>
+                          <button
+                            type="button"
+                            aria-current={isActive ? "true" : undefined}
+                            onClick={() => {
+                              switchSession(conversation);
+                              if (isMobile) setSidebarOpen(false);
+                            }}
+                            className="flex min-w-0 flex-1 items-center gap-2 rounded-sm py-1 pr-1 text-left focus-visible:outline-2 focus-visible:outline-ring"
+                          >
+                            <span className="truncate font-normal">{conversation.title}</span>
+                          </button>
 
-                          <MessageAction tooltip="Good response">
-                            <Button
-                              aria-label="Mark response as helpful"
-                              variant="ghost"
-                              size="icon"
-                              className={cn(
-                                "size-7 rounded-full transition-colors cursor-pointer",
-                                feedback[message.id] === "up"
-                                  ? "text-primary bg-primary/10"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
-                              onClick={() => handleFeedback(message.id, "up")}
-                            >
-                              <ThumbsUp className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-
-                          <MessageAction tooltip="Bad response">
-                            <Button
-                              aria-label="Mark response as not helpful"
-                              variant="ghost"
-                              size="icon"
-                              className={cn(
-                                "size-7 rounded-full transition-colors cursor-pointer",
-                                feedback[message.id] === "down"
-                                  ? "text-destructive bg-destructive/10"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
-                              onClick={() => handleFeedback(message.id, "down")}
-                            >
-                              <ThumbsDown className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-
-                          <MessageAction tooltip="Delete message">
-                            <Button
-                              aria-label="Delete message"
-                              variant="ghost"
-                              size="icon"
-                              className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
-                              onClick={() => handleDeleteMessage(message.id)}
-                            >
-                              <Trash className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-                        </MessageActions>
-                      </div>
-                    ) : (
-                      /* User Message */
-                      <div className="group flex flex-col items-end gap-1 max-w-[85%] sm:max-w-[75%]">
-                        <MessageContent className="rounded-3xl bg-muted/80 text-foreground border border-border/40 px-5 py-2.5 text-[14px] shadow-2xs leading-relaxed whitespace-pre-wrap">
-                          {message.content}
-                        </MessageContent>
-
-                        {/* User Actions */}
-                        <MessageActions className="flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 pr-1">
-                          <MessageAction tooltip="Edit prompt">
-                            <Button
-                              aria-label="Edit message"
-                              variant="ghost"
-                              size="icon"
-                              className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() => handleEditMessage(message.content)}
-                            >
-                              <Pencil className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-
-                          <MessageAction tooltip="Copy text">
-                            <Button
-                              aria-label="Copy message"
-                              variant="ghost"
-                              size="icon"
-                              className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-                              onClick={() => handleCopyMessage(message.content)}
-                            >
-                              <Copy className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-
-                          <MessageAction tooltip="Delete prompt">
-                            <Button
-                              aria-label="Delete message"
-                              variant="ghost"
-                              size="icon"
-                              className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
-                              onClick={() => handleDeleteMessage(message.id)}
-                            >
-                              <Trash className="size-3.5" />
-                            </Button>
-                          </MessageAction>
-                        </MessageActions>
-                      </div>
-                    )}
-                  </PromptMessage>
-                );
-              })
-            )}
-
-            {/* Loading Indicator */}
-            {isLoading && (
-              <div className="flex w-full items-start gap-3 pl-1 animate-pulse">
-                <div className="flex size-6 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-xs">
-                  <RaiseLogo size={12} className="text-primary" />
+                          {/* Dropdown Menu for Rename & Delete */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                  "size-6 rounded-full transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 hover:bg-muted/80 cursor-pointer",
+                                  isActive && "opacity-100",
+                                )}
+                                aria-label={`Options for ${conversation.title}`}
+                              >
+                                <MoreHorizontal className="size-3.5" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-36">
+                              <DropdownMenuItem
+                                className="gap-2 cursor-pointer text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingTitleId(conversation.id);
+                                  setEditingTitleText(conversation.title);
+                                }}
+                              >
+                                <Edit2 className="size-3.5" /> Rename
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSessionToDelete(conversation);
+                                  setDeleteDialogOpen(true);
+                                }}
+                              >
+                                <Trash2 className="size-3.5" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-2xl bg-card/60 border border-border/40 px-4 py-2.5 text-xs text-muted-foreground">
-                  <span className="size-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
-                  <span className="size-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
-                  <span className="size-1.5 rounded-full bg-primary/60 animate-bounce" />
-                  <span className="ml-1.5">Thinking & solving...</span>
-                </div>
-              </div>
+              ))
             )}
-
-            <div ref={messagesEndRef} />
-          </ChatContainerContent>
-
-          {/* Floating Scroll to Bottom Button */}
-          <div className="sticky bottom-4 right-4 flex justify-end px-6 pointer-events-none">
-            <div className="pointer-events-auto">
-              <ScrollButton
-                containerRef={chatContainerRef}
-                className="shadow-lg border-border/60 bg-card/90"
-              />
-            </div>
           </div>
-        </ChatContainerRoot>
+        </aside>
 
-        {/* Rate Limit Banner */}
-        {rateLimitError && (
-          <div className="mx-auto max-w-3xl px-4 py-2 w-full shrink-0">
-            <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive flex items-center justify-between">
-              <span>{rateLimitError}</span>
+        {/* ========================================================================= */}
+        {/* MAIN CHAT CONTENT AREA (Rigid Flex Column)                                */}
+        {/* ========================================================================= */}
+        <section
+          inert={sidebarOpen && isMobile}
+          aria-label="Raise conversation"
+          className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+        >
+          {/* Top Header */}
+          <header className="z-10 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2 sm:px-4">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              {!sidebarOpen && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
+                  onClick={() => setSidebarOpen(true)}
+                  aria-label="Open chat history"
+                >
+                  <PanelLeft className="size-4" />
+                </Button>
+              )}
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="truncate text-sm font-medium text-foreground">
+                  {activeSession?.title || "New chat"}
+                </span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-1">
+              <RaiseImpactNote linkToSustainability />
+
+              {activeSession && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" aria-label="Conversation options">
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer text-xs"
+                      onClick={() => {
+                        setSidebarOpen(true);
+                        setEditingTitleId(activeSession.id);
+                        setEditingTitleText(activeSession.title);
+                      }}
+                    >
+                      <Edit2 className="size-3.5" /> Rename
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive"
+                      onClick={() => {
+                        setSessionToDelete(activeSession);
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      <Trash2 className="size-3.5" /> Delete Chat
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 text-xs text-destructive hover:bg-destructive/20"
-                onClick={() => setRateLimitError(null)}
+                className="h-8 gap-1.5 text-muted-foreground hover:text-foreground"
+                aria-label="Back to dashboard"
+                onClick={() => router.push("/student")}
               >
-                Dismiss
+                <ArrowLeft className="size-3.5" />
+                <span className="hidden sm:inline">Dashboard</span>
               </Button>
             </div>
-          </div>
-        )}
+          </header>
 
-        {/* ===================================================================== */}
-        {/* LOCKED BOTTOM PROMPT BAR                                              */}
-        {/* ===================================================================== */}
-        <div className="z-10 shrink-0 border-t border-border bg-background p-3 md:p-4">
-          <div className="mx-auto max-w-3xl">
-            <PromptInput
-              isLoading={isLoading}
-              value={prompt}
-              onValueChange={setPrompt}
-              onSubmit={() => handleSubmit()}
-              className="relative w-full rounded-xl border border-border bg-card p-0 pt-1 focus-within:ring-2 focus-within:ring-ring/40"
-            >
-              <div className="flex flex-col">
-                <PromptInputTextarea
-                  aria-label="Message Raise"
-                  placeholder={
-                    mode === "concept"
-                      ? "Ask about a physics concept…"
-                      : "Describe the problem and what you’ve tried…"
-                  }
-                  className="min-h-[48px] pt-3.5 pl-5 pr-4 text-[14px] leading-relaxed"
-                />
+          {showWelcome ? (
+            <div className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-4 pt-[8vh] pb-8 sm:pt-[12vh]">
+              <motion.div
+                key={activeSessionId ?? "new"}
+                className="w-full max-w-2xl"
+                initial="hidden"
+                animate="shown"
+                variants={{ shown: { transition: { staggerChildren: 0.06 } } }}
+              >
+                <motion.div variants={RISE} className="flex items-center gap-3">
+                  <RaiseAvatar className="size-10 rounded-xl [&_svg]:size-5" />
+                  <span className="text-sm font-medium text-muted-foreground">Raise</span>
+                </motion.div>
+                <motion.h2
+                  variants={RISE}
+                  className="mt-4 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
+                >
+                  {firstName ? `Hi ${firstName}, what are you stuck on?` : "What are you stuck on?"}
+                </motion.h2>
+                <motion.p
+                  variants={RISE}
+                  className="mt-2 text-sm leading-relaxed text-muted-foreground"
+                >
+                  Ask about an idea or a problem. Raise explains, draws diagrams and gives hints,
+                  not answers. It is optional.
+                </motion.p>
 
-                <PromptInputActions className="mt-2 flex w-full items-center justify-between gap-2 px-3 pb-3">
-                  {/* Left Actions */}
-                  <div className="flex items-center gap-1.5">
-                    <PromptInputAction tooltip="Formula suggestions">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            aria-label="Formula suggestions"
-                            className="size-8 rounded-full border-border/60 cursor-pointer"
-                          >
-                            <Sparkles size={14} className="text-primary" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-56">
-                          <DropdownMenuItem
-                            className="text-xs cursor-pointer"
-                            onClick={() =>
-                              setPrompt(
-                                (prev) =>
-                                  `${prev ? prev + " " : ""}Explain how kinetic energy K = 1/2 m v^2 is derived.`,
-                              )
-                            }
-                          >
-                            Kinetic Energy Derivation
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-xs cursor-pointer"
-                            onClick={() =>
-                              setPrompt(
-                                (prev) =>
-                                  `${prev ? prev + " " : ""}How do I use Newton's 2nd Law F = ma for an inclined plane?`,
-                              )
-                            }
-                          >
-                            Inclined Plane with F = ma
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-xs cursor-pointer"
-                            onClick={() =>
-                              setPrompt(
-                                (prev) =>
-                                  `${prev ? prev + " " : ""}Explain Faraday's Law of Induction step by step.`,
-                              )
-                            }
-                          >
-                            Faraday&apos;s Law of Induction
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </PromptInputAction>
-                  </div>
+                <motion.div variants={RISE} className="mt-6">
+                  {composer}
+                  {usageMeter}
+                </motion.div>
+                {rateLimitBanner}
 
-                  {/* Right Actions */}
-                  <div className="flex items-center gap-1.5">
-                    <PromptInputAction tooltip={isRecording ? "Stop listening" : "Voice input"}>
-                      <Button
+                <motion.p
+                  variants={RISE}
+                  className="mt-8 text-xs font-medium text-muted-foreground"
+                >
+                  Try one. Raise can draw these.
+                </motion.p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  {STARTER_PROMPTS.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <motion.button
+                        key={item.prompt}
                         type="button"
-                        variant="outline"
-                        size="icon"
-                        className={cn(
-                          "size-8 rounded-full border-border/60 transition-colors cursor-pointer",
-                          isRecording &&
-                            "bg-destructive/10 text-destructive border-destructive/40 animate-pulse",
-                        )}
-                        aria-label={isRecording ? "Stop listening" : "Voice input"}
-                        onClick={toggleVoiceRecording}
+                        variants={RISE}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setMode("concept");
+                          setPrompt(item.prompt);
+                          handleSubmit(item.prompt);
+                        }}
+                        className="group flex cursor-pointer flex-col gap-2 rounded-xl border border-border bg-card p-3.5 text-left transition-colors hover:border-primary/40 hover:bg-muted/40"
                       >
-                        {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
-                      </Button>
-                    </PromptInputAction>
+                        <span className="flex items-center gap-2 text-xs font-medium text-foreground">
+                          <span className="flex size-6 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                            <Icon className="size-3.5" />
+                          </span>
+                          {item.tag}
+                        </span>
+                        <span className="text-[13px] leading-relaxed text-muted-foreground">
+                          {item.prompt}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </div>
+          ) : (
+            <>
+              {/* Scrollable messages */}
+              <ChatContainerRoot
+                ref={chatContainerRef}
+                className="flex-1 min-h-0 overflow-y-auto relative w-full"
+              >
+                <ChatContainerContent className="mx-auto max-w-3xl space-y-6 px-4 py-8 md:px-6">
+                  {
+                    /* Message List */
+                    messages.map((message, index) => {
+                      const isAssistant = message.role === "assistant";
+                      const isLastMessage = index === messages.length - 1;
+                      const isTyping = isAssistant && isLastMessage && message.id === typingId;
 
-                    <Button
-                      type="button"
-                      size="icon"
-                      aria-label="Send message"
-                      disabled={!prompt.trim() || isLoading}
-                      onClick={() => handleSubmit()}
-                      className="size-8 rounded-full shadow-xs transition-transform active:scale-95 cursor-pointer"
-                    >
-                      {!isLoading ? (
-                        <ArrowUp size={16} />
-                      ) : (
-                        <span className="size-2 rounded-2xs bg-background animate-spin" />
-                      )}
-                    </Button>
+                      return (
+                        <motion.div
+                          // older saved messages may have no id
+                          key={message.id || `m${index}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, ease: EASE }}
+                        >
+                          <PromptMessage
+                            className={cn(
+                              "flex w-full flex-col gap-2",
+                              isAssistant ? "items-start" : "items-end",
+                            )}
+                          >
+                            {isAssistant ? (
+                              /* Assistant Message */
+                              <div className="group flex w-full flex-col gap-1.5">
+                                <div className="flex items-center gap-2">
+                                  <RaiseAvatar />
+                                  <span className="text-sm font-semibold text-foreground">
+                                    Raise
+                                  </span>
+                                </div>
+
+                                <MessageContent
+                                  className="prose dark:prose-invert max-w-none bg-transparent p-0 pl-9 text-[15px] leading-relaxed"
+                                  markdown={!isTyping}
+                                >
+                                  {isTyping ? (
+                                    <Typewriter
+                                      text={message.content}
+                                      onDone={() => setTypingId(null)}
+                                    />
+                                  ) : (
+                                    message.content
+                                  )}
+                                </MessageContent>
+
+                                {/* Assistant Actions */}
+                                <MessageActions
+                                  className={cn(
+                                    "pl-7.5 flex gap-1 pt-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100",
+                                    isLastMessage && "opacity-100",
+                                  )}
+                                >
+                                  <MessageAction tooltip="Copy message">
+                                    <Button
+                                      aria-label="Copy message"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
+                                      onClick={() => handleCopyMessage(message.content)}
+                                    >
+                                      <Copy className="size-3.5" />
+                                    </Button>
+                                  </MessageAction>
+
+                                  <MessageAction tooltip="Delete message">
+                                    <Button
+                                      aria-label="Delete message"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
+                                      onClick={() => handleDeleteMessage(message.id)}
+                                    >
+                                      <Trash className="size-3.5" />
+                                    </Button>
+                                  </MessageAction>
+                                </MessageActions>
+                              </div>
+                            ) : (
+                              /* User Message */
+                              <div className="group flex flex-col items-end gap-1 max-w-[85%] sm:max-w-[75%]">
+                                <MessageContent className="rounded-2xl rounded-br-md border border-primary/15 bg-primary/10 text-foreground px-4 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap">
+                                  {message.content}
+                                </MessageContent>
+
+                                {/* User Actions */}
+                                <MessageActions className="flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 pr-1">
+                                  <MessageAction tooltip="Edit prompt">
+                                    <Button
+                                      aria-label="Edit message"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
+                                      onClick={() => handleEditMessage(message.content)}
+                                    >
+                                      <Pencil className="size-3.5" />
+                                    </Button>
+                                  </MessageAction>
+
+                                  <MessageAction tooltip="Copy text">
+                                    <Button
+                                      aria-label="Copy message"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
+                                      onClick={() => handleCopyMessage(message.content)}
+                                    >
+                                      <Copy className="size-3.5" />
+                                    </Button>
+                                  </MessageAction>
+
+                                  <MessageAction tooltip="Delete prompt">
+                                    <Button
+                                      aria-label="Delete message"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
+                                      onClick={() => handleDeleteMessage(message.id)}
+                                    >
+                                      <Trash className="size-3.5" />
+                                    </Button>
+                                  </MessageAction>
+                                </MessageActions>
+                              </div>
+                            )}
+                          </PromptMessage>
+                        </motion.div>
+                      );
+                    })
+                  }
+
+                  <AnimatePresence>{isLoading && <ThinkingLine key="thinking" />}</AnimatePresence>
+
+                  {/* Quick replies once Raise has finished answering */}
+                  {!isLoading &&
+                    !typingId &&
+                    messages.length > 0 &&
+                    messages[messages.length - 1].role === "assistant" && (
+                      <motion.div
+                        initial="hidden"
+                        animate="shown"
+                        variants={{ shown: { transition: { staggerChildren: 0.05 } } }}
+                        className="flex flex-wrap gap-2 pl-9"
+                      >
+                        {FOLLOW_UPS.map((text) => (
+                          <motion.button
+                            key={text}
+                            type="button"
+                            variants={RISE}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => handleSubmit(text)}
+                            className="cursor-pointer rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                          >
+                            {text}
+                          </motion.button>
+                        ))}
+                      </motion.div>
+                    )}
+
+                  <div ref={messagesEndRef} />
+                </ChatContainerContent>
+
+                {/* Floating Scroll to Bottom Button */}
+                <div className="sticky bottom-4 right-4 flex justify-end px-6 pointer-events-none">
+                  <div className="pointer-events-auto">
+                    <ScrollButton
+                      containerRef={chatContainerRef}
+                      className="shadow-lg border-border/60 bg-card/90"
+                    />
                   </div>
-                </PromptInputActions>
-              </div>
-            </PromptInput>
-          </div>
-        </div>
-      </section>
+                </div>
+              </ChatContainerRoot>
 
-      {/* ========================================================================= */}
-      {/* CONFIRM DELETE DIALOG                                                     */}
-      {/* ========================================================================= */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle className="text-base">Delete Conversation</DialogTitle>
-            <DialogDescription className="text-xs">
-              Are you sure you want to delete &quot;{sessionToDelete?.title}&quot;? This action
-              cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" size="sm" onClick={() => setDeleteDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                if (sessionToDelete) {
-                  handleDeleteSession(sessionToDelete);
-                }
-                setDeleteDialogOpen(false);
-                setSessionToDelete(null);
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </motion.div>
+              {rateLimitBanner}
+
+              <div className="shrink-0 px-3 pb-3 md:px-4 md:pb-4">
+                <div className="mx-auto max-w-3xl">
+                  {composer}
+                  {usageMeter}
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+
+        {/* ========================================================================= */}
+        {/* CONFIRM DELETE DIALOG                                                     */}
+        {/* ========================================================================= */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent className="sm:max-w-[400px]">
+            <DialogHeader>
+              <DialogTitle className="text-base">Delete Conversation</DialogTitle>
+              <DialogDescription className="text-xs">
+                Are you sure you want to delete &quot;{sessionToDelete?.title}&quot;? This action
+                cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" size="sm" onClick={() => setDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  if (sessionToDelete) {
+                    handleDeleteSession(sessionToDelete);
+                  }
+                  setDeleteDialogOpen(false);
+                  setSessionToDelete(null);
+                }}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </MotionConfig>
   );
 }

@@ -1,7 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MonitorPlay, PlayCircle, Sparkles, BookOpen, FileDown, ShieldCheck, ArrowRight, CheckCircle2, Video } from "lucide-react";
+import {
+  MonitorPlay,
+  PlayCircle,
+  Sparkles,
+  BookOpen,
+  FileDown,
+  ShieldCheck,
+  ArrowRight,
+} from "lucide-react";
 import { SiteHeader } from "@/components/landing/site-header";
 import { SystemAccordion } from "@/components/system-accordion";
 import { SpaceBackground } from "@/components/ui/space-background";
@@ -34,7 +42,6 @@ export default function DemosPage() {
       >
         <main className="relative z-10 pt-24 md:pt-32 pb-24">
           <div className="container mx-auto px-4 sm:px-6 max-w-6xl space-y-24">
-
             {/* Header Section */}
             <div className="text-center space-y-5 max-w-3xl mx-auto">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold tracking-[0.2em] uppercase text-primary">
@@ -45,7 +52,8 @@ export default function DemosPage() {
                 See Socratic Physics <span className="text-primary italic">in Motion.</span>
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                Discover how Scorpio scaffolds authentic student derivations, blocks homework solvers, and provides physics faculty with continuous conceptual telemetry.
+                Discover how Scorpio scaffolds authentic student derivations, blocks homework
+                solvers, and provides physics faculty with continuous conceptual telemetry.
               </p>
             </div>
 
@@ -63,7 +71,10 @@ export default function DemosPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="border-primary/30 text-primary text-[10px] font-bold tracking-widest uppercase">
+                    <Badge
+                      variant="outline"
+                      className="border-primary/30 text-primary text-[10px] font-bold tracking-widest uppercase"
+                    >
                       1080p High-Fidelity
                     </Badge>
                   </div>
@@ -120,7 +131,8 @@ export default function DemosPage() {
                   Explore Primary Pedagogical Modules
                 </h2>
                 <p className="text-muted-foreground text-sm sm:text-base">
-                  Click through the core workflows to inspect the Socratic student workspace and faculty management tools.
+                  Click through the core workflows to inspect the Socratic student workspace and
+                  faculty management tools.
                 </p>
               </div>
 
@@ -132,18 +144,27 @@ export default function DemosPage() {
               <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none -z-10" />
               <div className="grid md:grid-cols-[1fr_auto] gap-8 items-center">
                 <div className="space-y-4">
-                  <Badge variant="outline" className="border-primary/40 text-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1">
+                  <Badge
+                    variant="outline"
+                    className="border-primary/40 text-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1"
+                  >
                     Live Public Sandbox
                   </Badge>
                   <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                     Want to test Raise yourself?
                   </h3>
                   <p className="text-muted-foreground text-sm sm:text-base max-w-2xl leading-relaxed">
-                    Test how our Socratic engine handles real physics queries—from incline acceleration and normal force misconceptions to Newton&apos;s Third Law—without creating an account.
+                    Test how our Socratic engine handles real physics queries—from incline
+                    acceleration and normal force misconceptions to Newton&apos;s Third Law—without
+                    creating an account.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button asChild size="lg" className="rounded-full font-semibold shadow-lg shadow-primary/20">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="rounded-full font-semibold shadow-lg shadow-primary/20"
+                  >
                     <Link href="/ai" className="flex items-center gap-2">
                       Launch AI Playground <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -180,20 +201,39 @@ export default function DemosPage() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
-                  { value: "0%", label: "Direct Answer Rate", desc: "Ablation study across 25 procedural physics problems" },
-                  { value: "4.62 / 5", label: "Pedagogical Quality", desc: "Ph.D. blinded holistic audit scoring" },
-                  { value: "0.92", label: "LaTeX Notation Density", desc: "Symbolic precision per 100 words" },
-                  { value: "625", label: "Assessment Passes", desc: "Rigorous internal test battery" },
+                  {
+                    value: "0%",
+                    label: "Direct Answer Rate",
+                    desc: "Ablation study across 25 procedural physics problems",
+                  },
+                  {
+                    value: "4.62 / 5",
+                    label: "Pedagogical Quality",
+                    desc: "Ph.D. blinded holistic audit scoring",
+                  },
+                  {
+                    value: "0.92",
+                    label: "LaTeX Notation Density",
+                    desc: "Symbolic precision per 100 words",
+                  },
+                  {
+                    value: "625",
+                    label: "Assessment Passes",
+                    desc: "Rigorous internal test battery",
+                  },
                 ].map((stat, i) => (
                   <div key={i} className="space-y-1.5">
-                    <div className="text-2xl sm:text-3xl font-black text-foreground">{stat.value}</div>
+                    <div className="text-2xl sm:text-3xl font-black text-foreground">
+                      {stat.value}
+                    </div>
                     <div className="text-xs font-bold text-foreground/80">{stat.label}</div>
-                    <div className="text-[11px] text-muted-foreground leading-snug">{stat.desc}</div>
+                    <div className="text-[11px] text-muted-foreground leading-snug">
+                      {stat.desc}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-
           </div>
         </main>
 
@@ -207,35 +247,61 @@ export default function DemosPage() {
               </div>
 
               <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0">
-                <Link href="https://github.com/RushilMahadevu/scorpio" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="https://github.com/RushilMahadevu/scorpio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Github className="h-5 w-5" />
                   <span className="text-sm font-medium">GitHub</span>
                 </Link>
-                <Link href="/about" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/about"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Info className="h-5 w-5" />
                   <span className="text-sm font-medium">About</span>
                 </Link>
-                <Link href="/research" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/research"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <BookOpen className="h-5 w-5" />
                   <span className="text-sm font-medium">Research</span>
                 </Link>
-                <Link href="/sustainability" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/sustainability"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Leaf className="h-5 w-5 text-emerald-500" />
                   <span className="text-sm font-medium">Sustainability</span>
                 </Link>
-                <Link href="/privacy" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/privacy"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Shield className="h-5 w-5" />
                   <span className="text-sm font-medium">Privacy</span>
                 </Link>
-                <Link href="/terms" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/terms"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <FileText className="h-5 w-5" />
                   <span className="text-sm font-medium">Terms</span>
                 </Link>
-                <Link href="/request-access" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/request-access"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <KeyRound className="h-5 w-5" />
                   <span className="text-sm font-medium">Request Access</span>
                 </Link>
-                <Link href="/contact" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <Link
+                  href="/contact"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
                   <Mail className="h-5 w-5" />
                   <span className="text-sm font-medium">Contact</span>
                 </Link>

@@ -411,10 +411,13 @@ export function RoadmapTab({
                     </span>
                     <span className="block text-xs font-normal text-muted-foreground">
                       Unit {u.unit} ·{" "}
-                      {hasClass
-                        ? `${assigned} of ${wanted.length} sets assigned`
-                        : `${u.sets.length} sets`}
-                      {u.sets.length !== wanted.length
+                      {hasClass && wanted.length === 0
+                        ? // every set skipped: "0 of 0 sets assigned · 4 skipped" said it backwards
+                          `All ${u.sets.length} ${u.sets.length === 1 ? "set" : "sets"} skipped`
+                        : hasClass
+                          ? `${assigned} of ${wanted.length} ${wanted.length === 1 ? "set" : "sets"} assigned`
+                          : `${u.sets.length} ${u.sets.length === 1 ? "set" : "sets"}`}
+                      {wanted.length > 0 && u.sets.length !== wanted.length
                         ? ` · ${u.sets.length - wanted.length} skipped`
                         : ""}
                       {when}

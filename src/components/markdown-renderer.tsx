@@ -9,6 +9,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Diagram } from "@/components/diagram";
 
 interface MarkdownRendererProps {
   children: string;
@@ -17,24 +18,44 @@ interface MarkdownRendererProps {
   onLinkClick?: (href: string) => void;
 }
 
-export function MarkdownRenderer({ children, className, noProse, onLinkClick }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+  children,
+  className,
+  noProse,
+  onLinkClick,
+}: MarkdownRendererProps) {
   return (
-    <div className={cn(
-      !noProse && "prose prose-sm dark:prose-invert break-words max-w-none",
-      "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold prose-a:transition-all",
-      className
-    )}>
+    <div
+      className={cn(
+        !noProse && "prose prose-sm dark:prose-invert break-words max-w-none",
+        "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold prose-a:transition-all",
+        className,
+      )}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
         components={{
+          // A fenced ```dg block is a diagram, not code.
+          pre: ({ node, children, ...rest }) => {
+            void node;
+            const child = React.Children.toArray(children)[0];
+            if (
+              React.isValidElement<{ className?: string; children?: React.ReactNode }>(child) &&
+              /\blanguage-dg\b/.test(child.props.className ?? "")
+            ) {
+              return <Diagram source={String(child.props.children ?? "")} />;
+            }
+            return <pre {...rest}>{children}</pre>;
+          },
           a: (props) => {
-            const isInternal = props.href?.startsWith('/') || props.href?.includes('scorpioedu.org');
+            const isInternal =
+              props.href?.startsWith("/") || props.href?.includes("scorpioedu.org");
             if (isInternal) {
-              const href = props.href?.replace(/^https?:\/\/scorpioedu\.org/, '') || '/';
+              const href = props.href?.replace(/^https?:\/\/scorpioedu\.org/, "") || "/";
               return (
-                <Link 
-                  href={href} 
+                <Link
+                  href={href}
                   onClick={(e) => {
                     if (onLinkClick) {
                       e.preventDefault();
@@ -48,14 +69,14 @@ export function MarkdownRenderer({ children, className, noProse, onLinkClick }: 
               );
             }
             return (
-              <a 
-                {...props} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                {...props}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 font-bold transition-colors cursor-pointer"
               />
             );
-          }
+          },
         }}
       >
         {children || ""}

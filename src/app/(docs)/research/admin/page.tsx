@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -8,16 +8,16 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { withAuthenticatedResearchFetch } from "@/lib/research-admin-fetch";
-import { 
-  runComprehensiveStudy, 
-  aggregateByConstraintLevel, 
+import {
+  runComprehensiveStudy,
+  aggregateByConstraintLevel,
   aggregateByDifficulty,
   exportToCSV,
   generateComprehensiveLatexTables,
   estimateStudyCost,
   type ConstraintLevelAggregate,
   type DifficultyAggregate,
-  type StudyResult
+  type StudyResult,
 } from "@/lib/ai/research";
 
 interface StudyReport {
@@ -41,48 +41,50 @@ export default function ResearchPage() {
   const runFullStudy = async () => {
     setIsRunning(true);
     setProgress("Initializing comprehensive study...");
-    
+
     try {
-      const studyResults = await withAuthenticatedResearchFetch(() => runComprehensiveStudy(
-        (current, total, status, timeLeft) => {
+      const studyResults = await withAuthenticatedResearchFetch(() =>
+        runComprehensiveStudy((current, total, status, timeLeft) => {
           setCurrentCall(current);
           setTotalCalls(total);
           setProgress(status);
           setTimeRemaining(timeLeft);
-        }
-      ));
-      
+        }),
+      );
+
       setProgress("Analyzing results...");
-      
+
       const constraintMetrics = aggregateByConstraintLevel(studyResults);
       const difficultyMetrics = aggregateByDifficulty(studyResults);
-      
+
       const csv = exportToCSV(studyResults);
       const latex = generateComprehensiveLatexTables(constraintMetrics, difficultyMetrics);
-      
+
       setResults({
         raw: studyResults,
         constraintMetrics,
-        difficultyMetrics
+        difficultyMetrics,
       });
       setCsvData(csv);
       setLatexTables(latex);
-      
-      setProgress(`✅ Study complete! Collected ${studyResults.length} responses across all constraint levels.`);
+
+      setProgress(
+        `✅ Study complete! Collected ${studyResults.length} responses across all constraint levels.`,
+      );
     } catch (error) {
       console.error("Error running study:", error);
-      setProgress(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setProgress(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsRunning(false);
     }
   };
 
   const downloadCSV = () => {
-    const blob = new Blob([csvData], { type: 'text/csv' });
+    const blob = new Blob([csvData], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `scorpio_research_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `scorpio_research_${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
   };
 
@@ -99,11 +101,17 @@ export default function ResearchPage() {
         <div className="space-y-4 p-8 border rounded shadow bg-background text-center">
           <h2 className="text-2xl font-bold mb-2">Admin Access</h2>
           <p className="text-muted-foreground">
-            {access === "loading" ? "Checking your account…"
-              : access === "signed-out" ? "Sign in with an administrator account to access the research lab."
-              : "This account does not have administrator access."}
+            {access === "loading"
+              ? "Checking your account…"
+              : access === "signed-out"
+                ? "Sign in with an administrator account to access the research lab."
+                : "This account does not have administrator access."}
           </p>
-          {access === "signed-out" && <Link href="/login" className="btn btn-primary w-full">Sign in</Link>}
+          {access === "signed-out" && (
+            <Link href="/login" className="btn btn-primary w-full">
+              Sign in
+            </Link>
+          )}
         </div>
       </div>
     );
@@ -143,14 +151,15 @@ export default function ResearchPage() {
 
           <Alert>
             <AlertDescription>
-              <strong>⏱️ Time Commitment:</strong> This study takes {estimate.estimatedTimeHours} hours to complete (1-minute delays between calls).
-              You can close this tab and come back later - progress is saved.
+              <strong>⏱️ Time Commitment:</strong> This study takes {estimate.estimatedTimeHours}{" "}
+              hours to complete (1-minute delays between calls). You can close this tab and come
+              back later - progress is saved.
             </AlertDescription>
           </Alert>
 
           <div className="pt-4">
-            <Button 
-              onClick={runFullStudy} 
+            <Button
+              onClick={runFullStudy}
               disabled={isRunning}
               size="lg"
               className="w-full text-lg h-14"
@@ -222,25 +231,25 @@ export default function ResearchPage() {
             {isRunning && (
               <div className="space-y-4">
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Response {currentCall} of {totalCalls}</span>
+                  <span>
+                    Response {currentCall} of {totalCalls}
+                  </span>
                   <span>{Math.round((currentCall / totalCalls) * 100)}%</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-3">
-                  <div 
-                    className="bg-primary h-3 rounded-full transition-all duration-300" 
+                  <div
+                    className="bg-primary h-3 rounded-full transition-all duration-300"
                     style={{ width: `${(currentCall / totalCalls) * 100}%` }}
                   ></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">⏱️ {timeRemaining}</span>
-                  <span className="text-muted-foreground">
-                    Next call in: ~60 seconds
-                  </span>
+                  <span className="text-muted-foreground">Next call in: ~60 seconds</span>
                 </div>
                 <Alert>
                   <AlertDescription>
-                    💡 <strong>Tip:</strong> You can safely close this tab. The study will continue in the background.
-                    Your browser needs to stay open, but you can use other tabs.
+                    💡 <strong>Tip:</strong> You can safely close this tab. The study will continue
+                    in the background. Your browser needs to stay open, but you can use other tabs.
                   </AlertDescription>
                 </Alert>
               </div>
@@ -282,7 +291,9 @@ export default function ResearchPage() {
                         <td className="text-right p-2">{data.directAnswerRate.toFixed(1)}%</td>
                         <td className="text-right p-2">{data.latexUsageRate.toFixed(1)}%</td>
                         <td className="text-right p-2">{data.avgQuestionCount.toFixed(2)}</td>
-                        <td className="text-right p-2">{data.avgPedagogicalQuality.toFixed(2)}/5</td>
+                        <td className="text-right p-2">
+                          {data.avgPedagogicalQuality.toFixed(2)}/5
+                        </td>
                         <td className="text-right p-2">{data.totalViolations}</td>
                       </tr>
                     ))}
@@ -296,9 +307,7 @@ export default function ResearchPage() {
           <Card className="mb-8">
             <CardHeader>
               <CardTitle>Results by Difficulty Level</CardTitle>
-              <CardDescription>
-                How the AI handles different complexity levels
-              </CardDescription>
+              <CardDescription>How the AI handles different complexity levels</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -317,9 +326,15 @@ export default function ResearchPage() {
                       <tr key={diff} className="border-b hover:bg-muted/50">
                         <td className="p-2 font-medium capitalize">{diff}</td>
                         <td className="text-right p-2">{data.totalQuestions}</td>
-                        <td className="text-right p-2">{data.avgPedagogicalQuality.toFixed(2)}/5</td>
-                        <td className="text-right p-2">{data.appropriateDifficultyRate.toFixed(1)}%</td>
-                        <td className="text-right p-2">{data.avgResponseLength.toFixed(0)} chars</td>
+                        <td className="text-right p-2">
+                          {data.avgPedagogicalQuality.toFixed(2)}/5
+                        </td>
+                        <td className="text-right p-2">
+                          {data.appropriateDifficultyRate.toFixed(1)}%
+                        </td>
+                        <td className="text-right p-2">
+                          {data.avgResponseLength.toFixed(0)} chars
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -346,7 +361,7 @@ export default function ResearchPage() {
                     Opens in Excel/Google Sheets for detailed analysis and manual coding
                   </p>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Button onClick={copyLatex} variant="outline" className="w-full" size="lg">
                     📋 Copy LaTeX Tables
@@ -391,9 +406,7 @@ export default function ResearchPage() {
                         {result.constraintLevel}
                       </span>
                     </div>
-                    <p className="font-semibold">
-                      {result.question.question}
-                    </p>
+                    <p className="font-semibold">{result.question.question}</p>
                     <p className="text-sm text-muted-foreground">
                       Type: {result.question.type} • Difficulty: {result.question.difficulty}
                     </p>
@@ -405,7 +418,9 @@ export default function ResearchPage() {
                       <span className={result.metrics.onTopic ? "text-green-600" : "text-red-600"}>
                         {result.metrics.onTopic ? "✅" : "❌"} On-topic
                       </span>
-                      <span className={result.metrics.usedLatex ? "text-green-600" : "text-yellow-600"}>
+                      <span
+                        className={result.metrics.usedLatex ? "text-green-600" : "text-yellow-600"}
+                      >
                         {result.metrics.usedLatex ? "✅" : "⚠️"} LaTeX
                       </span>
                       <span>Questions: {result.metrics.questionCount}</span>

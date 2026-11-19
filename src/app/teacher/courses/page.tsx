@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import CoursesClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Courses",
+  title: "Course",
 };
 
 export default function Page() {

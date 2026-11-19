@@ -262,7 +262,7 @@ export default function WaypointsPage() {
               className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary border border-primary/20 dark:border-primary/30 uppercase tracking-widest"
             >
               <Sparkles className="h-3 w-3" />
-              Template library
+              Waypoints
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
@@ -270,7 +270,7 @@ export default function WaypointsPage() {
               transition={{ delay: 0.1 }}
               className="text-3xl font-semibold tracking-tight text-foreground"
             >
-              Waypoints
+              Library
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 15 }}

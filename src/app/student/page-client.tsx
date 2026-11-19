@@ -7,7 +7,7 @@ import { collection, getDocs, query, where, doc, getDoc } from "firebase/firesto
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { WorkspaceHeader, WorkspaceSummary } from "@/components/ui/workspace";
+import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -421,17 +421,16 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               icon: PackageOpen,
             },
             {
-              title: "7. Raise & Learning Library",
+              title: "7. Learning Library & Raise",
               description:
-                "Access general conceptual help outside of specific assignments. If you're confused about a fundamental law of physics, use Raise for a deep-dive explanation or browse curated resources.",
+                "Browse curated resources for any topic. Raise is there too if you want an explanation talked through. It is optional, and nothing in your coursework requires it.",
               icon: RaiseLogo,
             },
             {
-              title: "8. Working with the Socratic AI",
+              title: "8. If you use Raise",
               description:
-                "To succeed, share your logic with the AI. If you're stuck, describe what you've tried or provide a partial derivation. The AI will analyze your work and provide a targeted hint to help you reach the next step.",
+                "Say what you've tried or share a partial derivation, and Raise will give a hint toward the next step rather than the answer. Each message uses energy and water, so ask when it actually helps.",
               icon: ShieldCheck,
-              isSpecial: true,
             },
           ]}
         />
@@ -646,19 +645,6 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Link
-            href="/student/tutor"
-            className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                <RaiseLogo size={16} aria-hidden /> Ask Raise
-              </span>
-              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">Socratic physics AI guidance</p>
-          </Link>
-
-          <Link
             href="/student/vault"
             className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
           >
@@ -695,6 +681,19 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Course materials & references</p>
+          </Link>
+
+          <Link
+            href="/student/tutor"
+            className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                Raise
+              </span>
+              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">Optional hints when you’re stuck</p>
           </Link>
         </div>
       </section>

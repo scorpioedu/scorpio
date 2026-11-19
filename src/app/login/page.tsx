@@ -5,17 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { classInvitePath, inviteAuthPath, networkInvitePath } from "@/lib/onboarding-links";
 import { login, logout } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
-import { AuthPageNav } from "@/components/landing/auth-page-nav";
+import { AuthSplit } from "@/components/landing/auth-split";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SpaceBackground } from "@/components/ui/space-background";
 import Link from "next/link";
 import { GraduationCap, Presentation, Eye, EyeOff } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Logo } from "@/components/ui/logo";
+import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { errorMessage } from "@/lib/error-utils";
 
@@ -33,29 +30,16 @@ export default function LoginPage() {
  */
 function LoginShell() {
   return (
-    <div className="min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative">
-      <SpaceBackground />
-      <AuthPageNav />
-      <div className="w-full max-w-md">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Logo size={48} className="text-primary" />
-            </div>
-            <CardTitle className="text-2xl font-inter font-black tracking-tighter">
-              Welcome Back
-            </CardTitle>
-            <CardDescription>Sign in to Scorpio</CardDescription>
-          </CardHeader>
-          {/* min-h matches the real form so swapping it in does not shift the card */}
-          <CardContent className="min-h-[300px] space-y-4" aria-busy="true">
-            <Skeleton className="h-9 w-full" />
-            <Skeleton className="h-9 w-full" />
-            <Skeleton className="h-9 w-full" />
-          </CardContent>
-        </Card>
+    <AuthSplit>
+      <h1 className="font-semibold text-4xl tracking-tight">Welcome back.</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Sign in to Scorpio</p>
+      {/* min-h matches the real form so swapping it in does not shift the layout */}
+      <div className="mt-8 min-h-[300px] space-y-4" aria-busy="true">
+        <Skeleton className="h-9 w-full" />
+        <Skeleton className="h-9 w-full" />
+        <Skeleton className="h-9 w-full" />
       </div>
-    </div>
+    </AuthSplit>
   );
 }
 
@@ -77,7 +61,7 @@ function LoginForm() {
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [recoveryRole, setRecoveryRole] = useState<"student" | "teacher">("student");
   const [recoveryAccessCode, setRecoveryAccessCode] = useState("");
-  const [isRecovering, setIsRecovering] = useState(false);
+  const [isRecovering] = useState(false);
 
   // An empty field falls back to the signed-in account's email.
   const recoveryEmailValue = recoveryEmail || user?.email || "";
@@ -121,11 +105,16 @@ function LoginForm() {
       window.location.href = target;
     } catch (err: unknown) {
       console.error("[Login] Detailed Error:", err);
-      setError(
-        errorMessage(err) === "Failed to create session"
-          ? "Session creation failed. Please try again."
-          : "Invalid email or password",
-      );
+      const message = errorMessage(err);
+      // The password was right but the profile is unfinished: the Account Recovery screen that
+      // appears says what to do, so don't also claim the password was wrong.
+      if (message === "Complete registration first") setError("");
+      else
+        setError(
+          message === "Failed to create session"
+            ? "Session creation failed. Please try again."
+            : "Invalid email or password",
+        );
       setLoading(false);
     }
   };
@@ -146,20 +135,13 @@ function LoginForm() {
   };
   if (user && role === null) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-background px-4 pt-20 pb-8 relative">
-        <SpaceBackground />
-        <AuthPageNav />
-        <Card className="w-full max-w-md relative z-10">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Logo size={48} className="text-primary animate-pulse" />
-            </div>
-            <CardTitle className="text-2xl font-bold">Account Recovery</CardTitle>
-            <CardDescription>
-              Profile setup was interrupted. Complete it now to continue.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <AuthSplit>
+        <div>
+          <h1 className="font-semibold text-3xl tracking-tight">Account recovery</h1>
+          <p className="mt-2 mb-6 text-sm text-muted-foreground">
+            Profile setup was interrupted. Complete it now to continue.
+          </p>
+          <div className="space-y-4">
             {error && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -241,38 +223,19 @@ function LoginForm() {
                 Sign Out & Start Over
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </div>
+      </AuthSplit>
     );
   }
 
   return (
-    <div className="min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative">
-      <SpaceBackground />
-      <AuthPageNav />
-      <motion.div
-        initial={{ y: 20 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
-        <Card>
-          <CardHeader className="text-center">
-            <motion.div
-              className="flex justify-center mb-4"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <Logo size={48} className="text-primary" />
-            </motion.div>
-            <CardTitle className="text-2xl font-inter font-black tracking-tighter">
-              Welcome Back
-            </CardTitle>
-            <CardDescription>Sign in to Scorpio</CardDescription>
-          </CardHeader>
-          <CardContent>
+    <AuthSplit>
+      <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+        <div>
+          <h1 className="font-semibold text-4xl tracking-tight">Welcome back.</h1>
+          <p className="mt-2 mb-8 text-sm text-muted-foreground">Sign in to Scorpio to pick up where you left off.</p>
+          <div>
             <Tabs defaultValue={teacherInvite ? "teacher" : "student"} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="student" className="flex items-center gap-2 cursor-pointer">
@@ -480,9 +443,9 @@ function LoginForm() {
                 Sign up
               </Link>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </motion.div>
-    </div>
+    </AuthSplit>
   );
 }

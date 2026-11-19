@@ -3,7 +3,6 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useState, useRef, useEffect, useId } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   X,
   Send,
@@ -14,7 +13,7 @@ import {
   Users,
   BookOpen,
   Rocket,
-  Zap,
+  Route,
   NotebookPen,
   Building2,
   LifeBuoy,
@@ -71,14 +70,13 @@ const studentQuickActions: QuickAction[] = [
 ];
 
 const teacherQuickActions: QuickAction[] = [
-  { icon: Home, label: "Dashboard", path: "/teacher" },
+  { icon: Home, label: "Home", path: "/teacher" },
+  { icon: Route, label: "Course", path: "/teacher/courses" },
   { icon: FileText, label: "Assignments", path: "/teacher/assignments" },
-  { icon: Rocket, label: "Create", path: "/teacher/create" },
-  { icon: BarChart, label: "Grades", path: "/teacher/grades" },
-  { icon: Users, label: "Students", path: "/teacher/students" },
-  { icon: Upload, label: "Uploads", path: "/teacher/uploads" },
-  { icon: Zap, label: "Waypoints", path: "/teacher/waypoints" },
-  { icon: Building2, label: "Network", path: "/teacher/network" },
+  { icon: Rocket, label: "New assignment", path: "/teacher/create" },
+  { icon: BarChart, label: "Grading", path: "/teacher/grades" },
+  { icon: Users, label: "Classes", path: "/teacher/students" },
+  { icon: Building2, label: "Department", path: "/teacher/network" },
 ];
 
 const studentSuggested = [
@@ -192,7 +190,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
       profile?.displayName?.split(" ")[0] || (userRole === "teacher" ? "Teacher" : "there");
     const roleBlurb =
       userRole === "teacher"
-        ? `I can help you navigate [Assignments](/teacher/assignments), [Create Assignment](/teacher/create), [Gradebook](/teacher/grades), [Network Limits](/teacher/network), [Waypoints](/teacher/waypoints), and more.`
+        ? `I can help you find your [Course](/teacher/courses), [Assignments](/teacher/assignments), [Grading](/teacher/grades), [Classes](/teacher/students), the [Library](/teacher/waypoints), and more.`
         : `I can help you navigate [Assignments](/student/assignments), your [Raise](/student/tutor), [Notebook](/student/notebook), and [Grades](/student/grades).`;
 
     setMessages([

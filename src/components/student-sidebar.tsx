@@ -9,12 +9,13 @@ import {
   PackageOpen,
   ChartColumnBig,
   NotebookPen,
+  Leaf,
 } from "lucide-react";
 import { RaiseLogo } from "./ui/raise-logo";
 import { AppSidebar, NavSection } from "./app-sidebar";
 
 const SidebarRaiseIcon = ({ className }: { className?: string }) => (
-  <RaiseLogo size={22} className={className} />
+  <RaiseLogo size={20} strokeWidth={2} className={className} />
 );
 
 const navSections: NavSection[] = [
@@ -35,14 +36,18 @@ const navSections: NavSection[] = [
     items: [
       { href: "/student/notebook", label: "Notebook", icon: NotebookPen },
       { href: "/student/vault", label: "Equation Vault", icon: PackageOpen },
-      { href: "/student/tutor", label: "Raise", icon: SidebarRaiseIcon },
       { href: "/student/resources", label: "Resources", icon: Library },
     ],
   },
   {
+    // Raise sits apart from the everyday tools: coursework never requires it.
+    label: "Optional help",
+    items: [{ href: "/student/tutor", label: "Raise", icon: SidebarRaiseIcon }],
+  },
+  {
     label: "Impact",
     items: [
-      { dialog: "sustainability", label: "Green Impact" },
+      { href: "/student/sustainability", label: "Green Impact", icon: Leaf },
     ],
   },
 ];

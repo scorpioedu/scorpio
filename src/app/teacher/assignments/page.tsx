@@ -38,6 +38,7 @@ import { ClassPicker } from "@/components/teacher/class-picker";
 import { InlineTitle } from "@/components/teacher/inline-title";
 import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
+import { isLibrarySet, isPutAway } from "@/lib/assignment-listing";
 
 type Visibility = "private" | "network" | "global";
 
@@ -67,7 +68,13 @@ const time = (d: Date | null, missing: number) => (d ? d.getTime() : missing);
 
 export default function AssignmentsPage() {
   const { user } = useAuth();
-  const { classes, classId } = useSelectedClass({ allowAll: true });
+  const { classes, archivedClasses, classId } = useSelectedClass({ allowAll: true });
+  // Archiving a class puts its assignments away too: they leave "All but archived" and show under
+  // "Archived", marked "Class archived".
+  const archivedClassIds = useMemo(
+    () => new Set((archivedClasses ?? []).map((c) => c.id)),
+    [archivedClasses],
+  );
   const [rows, setRows] = useState<Row[] | null>(null);
   const [status, setStatus] = useState<Status>("all");
   const [sort, setSort] = useState("dueDateAsc");
@@ -78,13 +85,9 @@ export default function AssignmentsPage() {
   const load = useCallback(async () => {
     if (!uid) return;
     const snap = await getDocs(query(collection(db, "assignments"), where("teacherId", "==", uid)));
-    // Published course sets (the library every teacher assigns from) belong to the admin who published
-    // them and are managed in Admin → Content. They are not that teacher's own assignments, so they
-    // stay out of this list; the copies assigned to a class have a courseId and are listed.
-    const own = snap.docs.filter((d) => {
-      const a = d.data();
-      return !(a.visibility === "global" && a.curriculumSetKey && typeof a.courseId !== "string");
-    });
+    // Published course sets (the library every teacher assigns from) are managed in Admin → Content,
+    // so they stay out of this list; the copies assigned to a class have a courseId and are listed.
+    const own = snap.docs.filter((d) => !isLibrarySet(d.data()));
     return own.map((d) => {
       const a = d.data();
       return {
@@ -119,14 +122,22 @@ export default function AssignmentsPage() {
   const patchRow = (id: string, patch: Partial<Row>) =>
     setRows((cur) => (cur ?? []).map((r) => (r.id === id ? { ...r, ...patch } : r)));
 
-  const classNames = useMemo(() => new Map((classes ?? []).map((c) => [c.id, c.name])), [classes]);
+  // Archived classes keep their names here, so their assignments still say which class they were in.
+  const classNames = useMemo(
+    () => new Map([...(classes ?? []), ...(archivedClasses ?? [])].map((c) => [c.id, c.name])),
+    [classes, archivedClasses],
+  );
 
   const visible = useMemo(() => {
     const now = new Date();
     const list = (rows ?? []).filter((r) => {
       if (classId !== ALL_CLASSES && r.courseId !== classId) return false;
-      if (status === "archived") return r.archived;
-      if (r.archived) return false;
+      const putAway = isPutAway(
+        r.archived ? { archivedAt: true } : { courseId: r.courseId },
+        archivedClassIds,
+      );
+      if (status === "archived") return putAway;
+      if (putAway) return false;
       const state = dueState(r.dueDate, now);
       if (status === "open") return state === "soon" || state === "later";
       if (status === "pastDue") return state === "past";
@@ -139,7 +150,7 @@ export default function AssignmentsPage() {
       if (sort === "titleAsc") return a.title.localeCompare(b.title, undefined, { numeric: true });
       return b.title.localeCompare(a.title, undefined, { numeric: true });
     });
-  }, [rows, classId, status, sort]);
+  }, [rows, classId, status, sort, archivedClassIds]);
 
   const selectedRows = visible.filter((r) => selected.has(r.id));
   const toggle = (id: string, on: boolean) =>
@@ -404,7 +415,11 @@ export default function AssignmentsPage() {
                             <ShieldAlert aria-hidden="true" className="size-3" /> Lockdown
                           </span>
                         )}
-                        {row.archived && <span>Archived</span>}
+                        {row.archived ? (
+                          <span>Archived</span>
+                        ) : row.courseId && archivedClassIds.has(row.courseId) ? (
+                          <span>Class archived</span>
+                        ) : null}
                       </div>
                     </TableCell>
                     <TableCell>

@@ -235,7 +235,8 @@ export const courseBodyMessage = (issues: { path: string }[]) =>
 // ─── POST /api/student/enrollment ──────────────────────────────────────────
 // `code` is validated further by findClassByCode; it is absent for action "leave".
 export const enrollmentBody = z.object({
-  action: z.enum(["join", "leave"]).optional(),
+  // "switch": leave the current class and join this one in one step (the join page offers it).
+  action: z.enum(["join", "leave", "switch"]).optional(),
   code: z.string().max(128).optional(),
 });
 

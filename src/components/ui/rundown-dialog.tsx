@@ -4,15 +4,12 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Info, BrainCircuit, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +28,12 @@ interface RundownDialogProps {
   userRole: "teacher" | "student";
 }
 
-export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works", userRole }: RundownDialogProps) {
+export function RundownDialog({
+  steps,
+  title,
+  triggerLabel = "How Scorpio Works",
+  userRole,
+}: RundownDialogProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [open, setOpen] = useState(false);
 
@@ -60,7 +62,10 @@ export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works"
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2 cursor-pointer shadow-sm hover:bg-primary/5 transition-all">
+        <Button
+          variant="outline"
+          className="gap-2 cursor-pointer shadow-sm hover:bg-primary/5 transition-all"
+        >
           <Info className="h-4 w-4" />
           {triggerLabel}
         </Button>
@@ -69,7 +74,7 @@ export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works"
         <div className="relative">
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 w-full h-1.5 bg-muted/30 z-50">
-            <motion.div 
+            <motion.div
               className="h-full bg-primary"
               initial={{ width: 0 }}
               animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -88,10 +93,13 @@ export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works"
                 className="space-y-6"
               >
                 <div className="flex items-center justify-between">
-                   <div className={cn(
-                     "p-3 rounded-2xl bg-primary/10 flex items-center justify-center",
-                     step.isSpecial && "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                   )}>
+                  <div
+                    className={cn(
+                      "p-3 rounded-2xl bg-primary/10 flex items-center justify-center",
+                      step.isSpecial &&
+                        "bg-primary text-primary-foreground shadow-lg shadow-primary/20",
+                    )}
+                  >
                     <step.icon className={cn("h-8 w-8", !step.isSpecial && "text-primary")} />
                   </div>
                   <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
@@ -100,10 +108,13 @@ export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works"
                 </div>
 
                 <div className="space-y-3">
-                  <h2 className={cn(
-                    "text-3xl font-black tracking-tight",
-                    step.isSpecial && "bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent"
-                  )}>
+                  <h2
+                    className={cn(
+                      "text-3xl font-black tracking-tight",
+                      step.isSpecial &&
+                        "bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent",
+                    )}
+                  >
                     {step.title}
                   </h2>
                   <p className="text-lg text-muted-foreground leading-relaxed font-medium">
@@ -146,9 +157,7 @@ export function RundownDialog({ steps, title, triggerLabel = "How Scorpio Works"
               </Button>
             ) : (
               <DialogClose asChild>
-                <Button
-                  className="px-8 font-black rounded-full shadow-lg shadow-primary/30 hover:scale-[1.05] active:scale-[0.95] transition-all bg-primary"
-                >
+                <Button className="px-8 font-black rounded-full shadow-lg shadow-primary/30 hover:scale-[1.05] active:scale-[0.95] transition-all bg-primary">
                   Start Exploring
                 </Button>
               </DialogClose>

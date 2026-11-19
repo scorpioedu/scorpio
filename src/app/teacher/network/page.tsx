@@ -2,7 +2,7 @@
 import { networkInvitePath } from "@/lib/onboarding-links";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -29,10 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Building2,
   Users,
   ShieldAlert,
-  AlertTriangle,
   HandCoins,
   Info,
   PlusCircle,
@@ -43,15 +41,12 @@ import {
   ChevronRight,
   ArrowRight,
   Loader2,
-  TrendingUp,
   NotebookPen,
-  CheckCircle2,
   MoreHorizontal,
   Crown,
   UserMinus,
   Lock,
   CreditCard,
-  HelpCircle,
   Send,
   Pencil,
   Share2,
@@ -59,10 +54,8 @@ import {
   Sliders,
   BarChart3,
   GraduationCap,
-  Sparkles,
-  RefreshCw,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -440,14 +433,20 @@ export default function NetworkPage() {
 
       const teacherIds = members.map((m) => m.uid);
       if (teacherIds.length > 0) {
-        const studentsSnap = await getDocs(
-          query(
-            collection(db, "users"),
-            where("teacherId", "in", teacherIds),
-            where("role", "==", "student"),
+        // One query per teacher: the users rule looks up each teacher, and an `in` over more than
+        // 10 is refused. A student has one teacherId, so the sizes add up without double counting.
+        const snaps = await Promise.all(
+          teacherIds.map((teacherId) =>
+            getDocs(
+              query(
+                collection(db, "users"),
+                where("teacherId", "==", teacherId),
+                where("role", "==", "student"),
+              ),
+            ),
           ),
         );
-        setStudentCount(studentsSnap.size);
+        setStudentCount(snaps.reduce((n, snap) => n + snap.size, 0));
       } else {
         setStudentCount(0);
       }
@@ -572,6 +571,9 @@ export default function NetworkPage() {
         <div className="flex flex-col gap-5 border-b border-border/60 pb-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 space-y-1">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Department
+              </p>
               <div className="flex flex-wrap items-center gap-3">
                 {organization && isRenaming && isOwner ? (
                   <div className="flex flex-wrap items-center gap-2">
@@ -603,7 +605,7 @@ export default function NetworkPage() {
                 ) : (
                   <div className="flex min-w-0 items-center gap-2">
                     <h1 className="min-w-0 break-words text-3xl font-semibold tracking-tight">
-                      {organization ? organization.name : "Scorpio Network"}
+                      {organization ? organization.name : "Your department"}
                     </h1>
                     {organization && isOwner && (
                       <Button

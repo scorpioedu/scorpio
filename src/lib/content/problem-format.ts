@@ -42,7 +42,8 @@ export interface ValidationResult {
   warnings: string[];
 }
 
-const MAX_TEXT = 4000;
+/** Longest problem text; publishing trims to this, so a diagram must fit inside it. */
+export const MAX_TEXT = 4000;
 const MAX_SOLUTION = 6000;
 const MAX_OPTION = 300;
 

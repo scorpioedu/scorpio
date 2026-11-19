@@ -11,7 +11,7 @@
  */
 
 import { type LucideIcon } from "lucide-react";
-import { Cloud, Code, Cpu, Globe, Lock, Zap, AlertTriangle, Brain, Shield } from "lucide-react";
+import { AlertTriangle, Brain, Shield } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -34,21 +34,23 @@ export interface SpotlightItem {
 const DEFAULT_ITEMS: SpotlightItem[] = [
   {
     title: "Copying the answer",
-    description: "When a chatbot gives the full solution, students can copy the steps without having to work out where they came from.",
+    description:
+      "When a chatbot gives the full solution, students can copy the steps without having to work out where they came from.",
     icon: AlertTriangle,
-    color: "#ef4444"
+    color: "#ef4444",
   },
   {
     title: "Seeing where students get stuck",
     description: "A finished worksheet can hide the step a student never understood.",
     icon: Brain,
-    color: "#ef4444"
+    color: "#ef4444",
   },
   {
     title: "Knowing what students can do on their own",
-    description: "It’s harder to tell what someone has learned when the tool does the reasoning for them.",
+    description:
+      "It’s harder to tell what someone has learned when the tool does the reasoning for them.",
     icon: Shield,
-    color: "#ef4444"
+    color: "#ef4444",
   },
 ];
 
@@ -116,7 +118,7 @@ const Card = ({ item, dimmed, onHoverStart, onHoverEnd }: CardProps) => {
         // Dark
         "dark:border-white/5 dark:bg-white/3 dark:shadow-none",
         "transition-[border-color] duration-300",
-        "hover:border-zinc-300"
+        "hover:border-zinc-300",
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -185,7 +187,7 @@ const Card = ({ item, dimmed, onHoverStart, onHoverEnd }: CardProps) => {
       />
     </motion.div>
   );
-}
+};
 
 Card.displayName = "Card";
 
@@ -206,12 +208,7 @@ export default function SpotlightCards({
   const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
 
   return (
-    <div
-      className={cn(
-        "relative w-full px-0",
-        className
-      )}
-    >
+    <div className={cn("relative w-full px-0", className)}>
       {/* Card grid */}
       <div className={cn("relative grid grid-cols-1 md:grid-cols-3 gap-6 p-4", gridClassName)}>
         {items.map((item) => (
