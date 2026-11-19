@@ -13,7 +13,6 @@ import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,7 +31,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { PreviewTarget } from "./set-preview-dialog";
-import { SetSegments, StatusMark, TopicChips, UnitTile } from "./unit-look";
+import { SetSegments, StatusMark, TopicChips } from "./unit-look";
 import { shortDate, type ClassProgress } from "./use-course-data";
 import { setDisplayTitle, type SetRowActions } from "./use-set-actions";
 
@@ -71,26 +70,69 @@ function MisconceptionList({ insight }: { insight: UnitInsight }) {
   );
 }
 
-type UnitTone = "done" | "started" | "plain";
+/** Where a unit stands for the class. Each has its own pill, so no one has to read colours. */
+type UnitState = "done" | "progress" | "next" | "later" | "skipped";
 
-/**
- * The number tile's colour says how far along the unit is: green when the class has finished every
- * set, amber while sets are out with students, grey when nothing is assigned yet.
- */
-const TILE: Record<UnitTone, string> = {
-  done: "bg-green-500/15 text-green-700 dark:text-green-300",
-  started: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-  plain: "bg-muted text-muted-foreground",
+const UNIT_PILL: Record<UnitState, { label: string; cls: string }> = {
+  done: { label: "Done", cls: "bg-green-500/15 text-green-700 dark:text-green-300" },
+  progress: { label: "In progress", cls: "bg-primary/10 text-primary" },
+  next: { label: "Up next", cls: "bg-primary text-primary-foreground" },
+  later: { label: "Later", cls: "bg-muted text-muted-foreground" },
+  skipped: {
+    label: "Skipped",
+    cls: "border border-dashed border-muted-foreground/60 text-muted-foreground",
+  },
 };
 
-/** A badge for what the tile's colour does not say. */
-function unitBadge(u: RoadmapUnit, isNext: boolean): string | null {
-  const wanted = u.sets.filter((s) => !s.skipped);
-  if (wanted.length === 0) return "Skipped";
-  if (wanted.every((s) => !s.published && !s.assigned))
-    return wanted.every((s) => s.availability === "planned") ? "Planned" : "Not published yet";
-  return isNext ? "Assign next" : null;
+/** The row's left edge, so the state also reads down the page. */
+const UNIT_EDGE: Record<UnitState, string> = {
+  done: "border-l-green-500",
+  progress: "border-l-primary",
+  next: "border-l-primary",
+  later: "border-l-transparent",
+  skipped: "border-l-transparent",
+};
+
+const SET_LABEL: Record<SetStatus, string> = {
+  upNext: "Not assigned",
+  assigned: "In progress",
+  needsYou: "Needs you",
+  done: "Done",
+  skipped: "Skipped",
+  unpublished: "Not published yet",
+  planned: "Planned",
+};
+
+const SET_TONE: Record<SetStatus, string> = {
+  upNext: "text-muted-foreground",
+  assigned: "text-primary",
+  needsYou: "text-amber-700 dark:text-amber-400",
+  done: "text-green-700 dark:text-green-300",
+  skipped: "text-muted-foreground",
+  unpublished: "text-muted-foreground",
+  planned: "text-muted-foreground",
+};
+
+function UnitPill({ state }: { state: UnitState }) {
+  const { label, cls } = UNIT_PILL[state];
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        cls,
+      )}
+    >
+      {state !== "skipped" && state !== "later" && (
+        <span aria-hidden className="size-1.5 rounded-full bg-current" />
+      )}
+      {label}
+    </span>
+  );
 }
+
+/** Columns shared by the header row and every unit row. The chevron sits after the last one. */
+const COLS =
+  "grid w-full min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-x-3 md:grid-cols-[2rem_minmax(0,1fr)_7.5rem_8.5rem_5.5rem]";
 
 const day = (d: Date) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 /** "Nov 18", or "Nov 18 – Dec 1". */
@@ -139,11 +181,11 @@ function SetRow({
   // Nobody is on the roster (or nobody had joined when this was handed in).
   const outOf = p ? Math.max(students, p.submitted) : 0;
   return (
-    <li className="relative flex flex-wrap items-start justify-between gap-x-4 gap-y-1.5 py-2.5 pl-7 text-sm sm:pl-8">
-      {/* Sits on the rail. */}
+    <li className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1.5 py-3 text-sm">
       <StatusMark
         status={hasClass || !s.published ? status : "upNext"}
-        className="absolute -left-[9px] top-3.5 ring-4 ring-background"
+        label={false}
+        className="mt-0.5"
       />
       <div className={cn("min-w-0 flex-1 basis-64 space-y-1", skipped && "opacity-60")}>
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 break-words">
@@ -169,6 +211,9 @@ function SetRow({
             </button>
           )}
           <TopicChips topics={s.set.topics} course={course} />
+          {hasClass && (
+            <span className={cn("text-xs font-medium", SET_TONE[status])}>{SET_LABEL[status]}</span>
+          )}
         </p>
         <p className="break-words text-[13px] leading-snug text-muted-foreground">
           {s.set.description}
@@ -189,9 +234,7 @@ function SetRow({
               ) : (
                 <>Assigned{s.dueDate ? ` · due ${shortDate(s.dueDate)}` : ""}</>
               )
-            ) : s.skipped ? (
-              "Skipped for this class"
-            ) : !s.published ? (
+            ) : s.skipped ? null : !s.published ? (
               AVAILABILITY_LABEL[s.availability]
             ) : hasClass ? (
               s.archivedId ? (
@@ -314,12 +357,52 @@ export function RoadmapTab({
   const students = progress?.students ?? 0;
   const status = setStatuses(boardColumns(roadmap, progress?.sets, students));
   const course = courseLook(curriculum.id);
-  const open = String(
-    nextUnitNumber ??
-      roadmap.find((u) => u.sets.some((s) => s.assigned))?.unit ??
-      roadmap[0]?.unit ??
-      "",
+
+  // Work out where every unit stands. "Up next" is a single unit: the first one not started yet.
+  const standing = (u: RoadmapUnit): UnitState | "unstarted" => {
+    const wanted = u.sets.filter((s) => !s.skipped);
+    const out = u.sets.filter((s) => s.assigned);
+    const finished = out.filter((s) => status.get(s.set.key) === "done").length;
+    if (wanted.length === 0) return "skipped";
+    if (finished === wanted.length) return "done";
+    return out.length > 0 ? "progress" : "unstarted";
+  };
+  const firstNext = hasClass
+    ? roadmap.find((u) => standing(u) === "unstarted" && u.assignable.length > 0)?.unit
+    : undefined;
+  const rows = roadmap.map((u) => {
+    const st = standing(u);
+    const state: UnitState = !hasClass
+      ? "later"
+      : st === "unstarted"
+        ? u.unit === firstNext
+          ? "next"
+          : "later"
+        : st;
+    return {
+      u,
+      wanted: u.sets.filter((s) => !s.skipped),
+      out: u.sets.filter((s) => s.assigned),
+      state,
+    };
+  });
+  const current = rows.find((r) => r.state === "progress") ?? rows.find((r) => r.state === "next");
+  const open = String(current?.u.unit ?? nextUnitNumber ?? roadmap[0]?.unit ?? "");
+
+  const doneUnits = rows.filter((r) => r.state === "done").length;
+  const overdueSets = roadmap.reduce(
+    (n, u) =>
+      n + u.sets.filter((s) => s.assigned && (progress?.sets[s.set.key]?.overdue ?? 0) > 0).length,
+    0,
   );
+  const upNext = rows.find((r) => r.state === "next");
+  const upNextWhen = upNext
+    ? (() => {
+        const plan = upNext.u.sets.flatMap((s) => planned?.get(s.set.key) ?? []);
+        return plan.length ? dayRange(plan) : null;
+      })()
+    : null;
+
   return (
     <div className="space-y-5">
       {/* Which course this is, in its own colour. */}
@@ -332,6 +415,12 @@ export function RoadmapTab({
         <div className="min-w-0 flex-1 basis-64">
           <h2 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold tracking-tight">
             {curriculum.name}
+            {className && (
+              <span className="font-normal text-muted-foreground">
+                <span aria-hidden>· </span>
+                {className}
+              </span>
+            )}
             {course.level && (
               <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", course.tint)}>
                 {course.level}
@@ -343,113 +432,175 @@ export function RoadmapTab({
           </p>
         </div>
       </div>
-      {hasClass && actions && (
-        <p className="text-xs text-muted-foreground">
-          Click a set&apos;s name to preview it, or a due date to change it. Every change can be
-          undone.
-        </p>
+
+      {/* Where the class is, before the table. */}
+      {hasClass && (
+        <dl className="flex flex-wrap gap-2">
+          <Fact
+            value={current && current.state === "progress" ? `Unit ${current.u.unit}` : "None"}
+            label="in progress"
+          />
+          <Fact value={`${doneUnits} of ${roadmap.length}`} label="units done" />
+          <Fact
+            value={String(overdueSets)}
+            label={overdueSets === 1 ? "set overdue" : "sets overdue"}
+            warn={overdueSets > 0}
+          />
+          {upNext && (
+            <Fact
+              value={`Unit ${upNext.u.unit}`}
+              label={upNextWhen ? `up next · ${upNextWhen}` : "up next"}
+            />
+          )}
+        </dl>
       )}
-      <Accordion
-        type="multiple"
-        defaultValue={open ? [open] : []}
-        // Re-open the right unit when the class changes.
-        key={`${className}-${open}`}
-        className="space-y-3"
-      >
-        {roadmap.map((u) => {
-          const isNext = u.unit === nextUnitNumber;
-          const badge = unitBadge(u, isNext);
-          const wanted = u.sets.filter((s) => !s.skipped);
-          const assigned = wanted.filter((s) => s.assigned).length;
-          const insight = progress?.units.find((x) => x.unit === u.unit);
-          const statuses = u.sets.map((s) => status.get(s.set.key) ?? "upNext");
-          const averages = u.sets
-            .map((s) => (s.assigned ? progress?.sets[s.set.key]?.averageScore : null))
-            .filter((n): n is number => typeof n === "number");
-          const average = averages.length
-            ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
-            : null;
-          const needsYou = statuses.filter((x) => x === "needsYou").length;
-          // Green only when the class has finished the unit; being assigned is not being done.
-          const out = u.sets.filter((s) => s.assigned);
-          const finished = out.filter((s) => status.get(s.set.key) === "done").length;
-          const tone: UnitTone = !hasClass
-            ? "plain"
-            : wanted.length > 0 && finished === wanted.length
-              ? "done"
-              : out.length > 0
-                ? "started"
-                : "plain";
-          // When the unit happens: its real due dates, or where the pacing guide puts it.
-          const due = out.flatMap((s) => (s.dueDate ? [s.dueDate] : []));
-          const plan = u.sets.flatMap((s) => planned?.get(s.set.key) ?? []);
-          const when = !hasClass
-            ? ""
-            : tone === "done"
-              ? " · finished"
-              : due.length
-                ? ` · due ${dayRange(due)}`
-                : plan.length
-                  ? ` · planned ${dayRange(plan)}`
-                  : "";
-          return (
-            <AccordionItem
-              key={u.unit}
-              value={String(u.unit)}
-              className={cn(
-                "rounded-3xl border border-b border-transparent px-3 transition-colors last:border-b sm:px-4",
-                "data-[state=open]:border-border data-[state=open]:bg-card data-[state=open]:pb-2",
-                "data-[state=closed]:hover:bg-muted/40",
-              )}
-            >
-              <AccordionTrigger className="items-center gap-3 py-3 hover:no-underline sm:gap-4">
-                <UnitTile curriculumId={curriculum.id} unit={u.unit} tone={TILE[tone]} />
-                <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1.5 text-left">
-                  <span className="min-w-0">
-                    <span className="block break-words text-lg font-semibold leading-tight tracking-tight sm:text-xl">
-                      {u.info?.title ?? `Unit ${u.unit}`}
-                    </span>
-                    <span className="block text-xs font-normal text-muted-foreground">
-                      Unit {u.unit} ·{" "}
-                      {hasClass && wanted.length === 0
-                        ? // every set skipped: "0 of 0 sets assigned · 4 skipped" said it backwards
-                          `All ${u.sets.length} ${u.sets.length === 1 ? "set" : "sets"} skipped`
-                        : hasClass
-                          ? `${assigned} of ${wanted.length} ${wanted.length === 1 ? "set" : "sets"} assigned`
-                          : `${u.sets.length} ${u.sets.length === 1 ? "set" : "sets"}`}
-                      {wanted.length > 0 && u.sets.length !== wanted.length
-                        ? ` · ${u.sets.length - wanted.length} skipped`
-                        : ""}
-                      {when}
-                      {average !== null ? ` · average ${average}%` : ""}
-                      {needsYou > 0 && (
-                        <span className="font-medium text-amber-700 dark:text-amber-400">
-                          {" "}
-                          · {needsYou} {needsYou === 1 ? "needs" : "need"} you
-                        </span>
+
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <div
+          className={cn(
+            "border-l-[3px] border-l-transparent bg-muted/50 py-2 pl-4 pr-4 text-[11px] font-medium uppercase tracking-wider text-muted-foreground",
+            "pr-[calc(1rem+1rem+0.75rem)]",
+          )}
+        >
+          <div className={COLS}>
+            <span className="text-center">#</span>
+            <span>Unit</span>
+            <span>{hasClass ? "Status" : ""}</span>
+            <span className="hidden md:block">Dates</span>
+            <span className="hidden md:block">Progress</span>
+          </div>
+        </div>
+        <Accordion
+          type="multiple"
+          defaultValue={open ? [open] : []}
+          // Re-open the right unit when the class changes.
+          key={`${className}-${open}`}
+        >
+          {rows.map(({ u, wanted, out, state }) => {
+            const isNext = state === "next";
+            const assigned = wanted.filter((s) => s.assigned).length;
+            const insight = progress?.units.find((x) => x.unit === u.unit);
+            const statuses = u.sets.map((s) => status.get(s.set.key) ?? "upNext");
+            const averages = u.sets
+              .map((s) => (s.assigned ? progress?.sets[s.set.key]?.averageScore : null))
+              .filter((n): n is number => typeof n === "number");
+            const average = averages.length
+              ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length)
+              : null;
+            const needsYou = statuses.filter((x) => x === "needsYou").length;
+            const overdue = u.sets.filter(
+              (s) => s.assigned && (progress?.sets[s.set.key]?.overdue ?? 0) > 0,
+            ).length;
+            // When the unit happens: its real due dates, or where the pacing guide puts it.
+            const due = out.flatMap((s) => (s.dueDate ? [s.dueDate] : []));
+            const plan = u.sets.flatMap((s) => planned?.get(s.set.key) ?? []);
+            const dates =
+              !hasClass || state === "skipped"
+                ? null
+                : due.length
+                  ? dayRange(due)
+                  : plan.length
+                    ? dayRange(plan)
+                    : null;
+            const skippedSets = u.sets.length - wanted.length;
+            const sub = !hasClass
+              ? `${u.sets.length} sets`
+              : state === "skipped"
+                ? "Left out of this class's plan"
+                : state === "next" || state === "later"
+                  ? `${u.sets.length} sets${assigned === 0 ? " · not assigned yet" : ""}`
+                  : `${assigned} of ${wanted.length} sets assigned`;
+            return (
+              <AccordionItem
+                key={u.unit}
+                value={String(u.unit)}
+                className={cn(
+                  "border-b-0 border-l-[3px] transition-colors [&:not(:first-child)]:border-t [&:not(:first-child)]:border-t-border",
+                  UNIT_EDGE[state],
+                  state === "progress" && "bg-primary/[0.04]",
+                  state === "skipped" &&
+                    "bg-[repeating-linear-gradient(135deg,transparent_0_7px,var(--muted)_7px_8px)]",
+                )}
+              >
+                <AccordionTrigger className="items-center gap-3 rounded-none py-3 pl-3 pr-4 hover:bg-muted/40 hover:no-underline data-[state=open]:hover:bg-transparent">
+                  <span className={COLS}>
+                    <span
+                      className={cn(
+                        "text-center text-base font-bold tabular-nums",
+                        state === "progress" || isNext ? "text-primary" : "text-muted-foreground",
+                        state === "skipped" && "opacity-50",
                       )}
+                    >
+                      {u.unit}
+                    </span>
+                    <span className="min-w-0">
+                      <span
+                        className={cn(
+                          "block break-words text-[15px] font-semibold leading-snug",
+                          state === "done" && "font-medium text-muted-foreground",
+                          state === "skipped" &&
+                            "font-medium text-muted-foreground line-through decoration-muted-foreground/60",
+                        )}
+                      >
+                        {u.info?.title ?? `Unit ${u.unit}`}
+                      </span>
+                      <span className="block text-xs font-normal text-muted-foreground">
+                        {sub}
+                        {skippedSets > 0 && state !== "skipped" ? ` · ${skippedSets} skipped` : ""}
+                        {average !== null ? ` · avg ${average}%` : ""}
+                        {overdue > 0 && (
+                          <span className="font-semibold text-destructive">
+                            {" "}
+                            · {overdue} overdue
+                          </span>
+                        )}
+                        {needsYou > 0 && (
+                          <span className="font-semibold text-amber-700 dark:text-amber-400">
+                            {" "}
+                            · {needsYou} to check
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                    <span className="justify-self-end md:justify-self-start">
+                      {hasClass && <UnitPill state={state} />}
+                    </span>
+                    <span className="hidden text-xs font-normal text-muted-foreground md:block">
+                      {dates ?? (state === "done" ? "" : "-")}
+                    </span>
+                    <span className="hidden md:block">
+                      {hasClass && state !== "skipped" ? (
+                        <SetSegments statuses={statuses} className="w-full" />
+                      ) : null}
                     </span>
                   </span>
-                  <span className="flex shrink-0 items-center gap-3">
-                    {hasClass && <SetSegments statuses={statuses} className="w-20 sm:w-24" />}
-                    {/* Only what the colour does not already say. */}
-                    {hasClass && badge && (
-                      <Badge variant={isNext ? "default" : "secondary"}>{badge}</Badge>
-                    )}
-                  </span>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="space-y-3 pb-3">
-                {/* Everything under the heading hangs off the unit's rail. */}
-                <div className="ml-[21px] space-y-3 border-l-2 border-border">
-                  <div className="space-y-3 pl-7 sm:pl-8">
+                </AccordionTrigger>
+                <AccordionContent className="border-t border-dashed border-border bg-muted/40 px-4 pb-4 sm:pl-[3.75rem]">
+                  <div className="space-y-3 pt-3">
                     {u.info?.summary && <p className="text-muted-foreground">{u.info.summary}</p>}
+                    <ul className="divide-y divide-border/60">
+                      {u.sets.map((s) => (
+                        <SetRow
+                          key={s.set.key}
+                          curriculumId={curriculum.id}
+                          course={curriculum.apCourse}
+                          s={s}
+                          status={status.get(s.set.key) ?? "upNext"}
+                          hasClass={hasClass}
+                          students={students}
+                          progress={progress}
+                          onPreview={onPreview}
+                          actions={actions}
+                        />
+                      ))}
+                    </ul>
+                    {insight && insight.top.length > 0 && <MisconceptionList insight={insight} />}
                     <div className="flex flex-wrap items-center gap-2">
                       {hasClass && u.assignable.length > 0 && (
                         <Button
                           size="sm"
-                          // The unit that is up next is the one obvious thing to press.
-                          variant={isNext ? "default" : "outline"}
+                          // The one obvious thing to press: the unit that is current.
+                          variant={isNext || state === "progress" ? "default" : "outline"}
                           onClick={() => onAssign(u)}
                           disabled={busy}
                         >
@@ -465,33 +616,47 @@ export function RoadmapTab({
                       </Button>
                     </div>
                   </div>
-                  <ul className="divide-y divide-border/60">
-                    {u.sets.map((s) => (
-                      <SetRow
-                        key={s.set.key}
-                        curriculumId={curriculum.id}
-                        course={curriculum.apCourse}
-                        s={s}
-                        status={status.get(s.set.key) ?? "upNext"}
-                        hasClass={hasClass}
-                        students={students}
-                        progress={progress}
-                        onPreview={onPreview}
-                        actions={actions}
-                      />
-                    ))}
-                  </ul>
-                  {insight && insight.top.length > 0 && (
-                    <div className="pl-7 sm:pl-8">
-                      <MisconceptionList insight={insight} />
-                    </div>
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+      </div>
+
+      {hasClass && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          {(["done", "progress", "next", "later", "skipped"] as const).map((k) => (
+            <span key={k} className="inline-flex items-center gap-1.5">
+              <UnitPill state={k} />
+              {LEGEND[k]}
+            </span>
+          ))}
+        </div>
+      )}
+      {hasClass && actions && (
+        <p className="text-xs text-muted-foreground">
+          Open a unit to preview a set, change a due date or skip it. Every change can be undone.
+        </p>
+      )}
+    </div>
+  );
+}
+
+const LEGEND: Record<UnitState, string> = {
+  done: "every set finished",
+  progress: "sets out, work open",
+  next: "first to assign",
+  later: "planned, not yet",
+  skipped: "left out on purpose",
+};
+
+function Fact({ value, label, warn }: { value: string; label: string; warn?: boolean }) {
+  return (
+    <div className="rounded-xl border border-border bg-card px-3.5 py-2">
+      <dd className={cn("text-lg font-semibold leading-tight", warn && "text-destructive")}>
+        {value}
+      </dd>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
     </div>
   );
 }

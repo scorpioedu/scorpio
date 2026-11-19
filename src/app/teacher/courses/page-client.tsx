@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CalendarDays,
   CalendarRange,
+  ChartNoAxesColumn,
   ChevronDown,
   List as ListIcon,
   ListOrdered,
@@ -130,6 +131,8 @@ export default function CoursesClient() {
   const [assigning, setAssigning] = useState<Assigning | null>(null);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const [editing, setEditing] = useState(false);
+  // The progress strip is out of the way until asked for, from the ⋯ menu.
+  const [showProgress, setShowProgress] = useState(false);
 
   const setCurriculum = (c: Curriculum) => {
     setBrowse(c);
@@ -404,6 +407,11 @@ export default function CoursesClient() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-72">
+              {ready && !editing && (
+                <DropdownMenuItem onSelect={() => setShowProgress((v) => !v)}>
+                  <ChartNoAxesColumn /> {showProgress ? "Hide" : "Show"} course progress
+                </DropdownMenuItem>
+              )}
               {ready && (
                 <DropdownMenuItem onSelect={() => setScheduleOpen(true)}>
                   <CalendarDays /> Schedule &amp; days off
@@ -612,7 +620,7 @@ export default function CoursesClient() {
             </div>
           )}
 
-          {canView && !editing && (
+          {canView && !editing && showProgress && (
             <CourseStats
               stats={stats}
               finish={pacing.finish}
