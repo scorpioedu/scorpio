@@ -6,17 +6,23 @@ import { SiteHeader } from "@/components/landing/site-header";
 
 export const HomeChatbot = dynamic(
   () => import("@/components/landing-chatbot").then((m) => m.LandingChatbot),
-  { ssr: false }
+  { ssr: false },
 );
 
 export function HomeScrollReveal() {
   useEffect(() => {
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (
+      !("IntersectionObserver" in window) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
 
     const elements = document.querySelectorAll("#home-page [data-scroll-reveal]");
     const viewportHeight = window.innerHeight;
-    const offscreen = Array.from(elements).filter((element) =>
-      !element.hasAttribute("data-revealed") && element.getBoundingClientRect().top >= viewportHeight
+    const offscreen = Array.from(elements).filter(
+      (element) =>
+        !element.hasAttribute("data-revealed") &&
+        element.getBoundingClientRect().top >= viewportHeight,
     );
     const observer = new IntersectionObserver((entries) => {
       for (const { isIntersecting, target } of entries) {
@@ -42,7 +48,7 @@ export function HomeScrollReveal() {
   return null;
 }
 
-const HOME_SECTIONS = ["home", "partners", "features", "solution", "problem", "efficacy", "pricing-teaser", "faq", "cta"];
+const HOME_SECTIONS = ["home", "features", "partners", "efficacy", "faq", "cta"];
 
 export function HomeHeader() {
   const [activeNav, setActiveNav] = useState("home");

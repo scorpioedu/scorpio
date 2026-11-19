@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apiError, undoToast } from "@/lib/undo-toast";
 import { getCurriculum } from "@/data/curricula";
+import { AssignmentDefaultsFields } from "@/components/teacher/assignment-defaults-fields";
+import { resolveAssignmentDefaults, type AssignmentDefaults } from "@/lib/assignment-defaults";
 import { CourseSelect } from "@/components/teacher/course-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +34,8 @@ export interface ClassSettingsValue {
   archived?: boolean;
   /** The one course the class follows, or null. */
   curriculumId?: string | null;
+  /** Raw stored class-wide assignment settings. */
+  assignmentDefaults?: unknown;
 }
 
 async function call(path: string, method: string, body?: unknown) {
@@ -60,8 +64,11 @@ export function ClassSettingsDialog({
   const [name, setName] = useState(value.name);
   const [period, setPeriod] = useState(value.period ?? "");
   const [description, setDescription] = useState(value.description ?? "");
-  const [busy, setBusy] = useState<"" | "save" | "code" | "archive" | "course">("");
+  const [busy, setBusy] = useState<"" | "save" | "code" | "archive" | "course" | "defaults">("");
   const [confirm, setConfirm] = useState<"" | "code" | "delete">("");
+  const [defaults, setDefaults] = useState<AssignmentDefaults>(() =>
+    resolveAssignmentDefaults(value.assignmentDefaults),
+  );
   const path = `/api/courses/${encodeURIComponent(value.id)}`;
   const dirty =
     name.trim() !== value.name ||
@@ -96,6 +103,22 @@ export function ClassSettingsDialog({
       onOpenChange(false);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  /** The class's assignment settings save on their own button; new assignments in the class start from them. */
+  const saveDefaults = async () => {
+    setBusy("defaults");
+    try {
+      const result = await call(`${path}/assignment-defaults`, "PATCH", {
+        assignmentDefaults: defaults,
+      });
+      onChanged({ assignmentDefaults: result.assignmentDefaults });
+      toast.success("Assignment settings saved. New assignments in this class will use them.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save the settings");
     } finally {
       setBusy("");
     }
@@ -223,6 +246,23 @@ export function ClassSettingsDialog({
                 A class follows one course, or none. Changing it saves at once and keeps every
                 assignment; sets from the old course show under Other assignments.
               </p>
+            </div>
+            <div className="space-y-2">
+              <Label>Assignment settings</Label>
+              <AssignmentDefaultsFields
+                idPrefix="class-defaults"
+                value={defaults}
+                onChange={setDefaults}
+              />
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs text-muted-foreground">
+                  New assignments in this class start with these. You can still change one
+                  assignment.
+                </p>
+                <Button variant="outline" size="sm" disabled={!!busy} onClick={saveDefaults}>
+                  {busy === "defaults" && <Loader2 className="animate-spin" />} Save settings
+                </Button>
+              </div>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-muted/30 px-3 py-2.5">
               <div>

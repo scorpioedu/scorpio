@@ -22,6 +22,16 @@ export const assignmentQuestionSchema = z.looseObject({
   points: z.number().optional(),
   correctAnswer: z.string().optional(),
 });
+// Shapes only; parseAssignmentDefaults in src/lib/assignment-defaults.ts normalises what is stored.
+export const assignmentDefaultsSchema = z.object({
+  timeLimit: z.number().int().min(1).max(600).nullable(),
+  gradingType: z.enum(["ai", "manual"]),
+  allowCalculator: z.boolean(),
+  allowAIHelp: z.boolean(),
+  requireWorkSubmission: z.boolean(),
+  enableTabDetection: z.boolean(),
+  lockdownMode: z.boolean(),
+});
 export const createAssignmentBody = z
   .object({
     title: z.string().min(1).max(1000),
@@ -183,6 +193,11 @@ export const courseBody = z.object({
   code: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
   /** Optional: the class follows this course roadmap (a known id from src/data/curricula). */
   curriculumId: z.string().trim().min(1).max(64).optional(),
+  /** Optional: settings every assignment in the class starts with (see src/lib/assignment-defaults.ts). */
+  assignmentDefaults: assignmentDefaultsSchema.optional(),
+});
+export const courseAssignmentDefaultsBody = z.object({
+  assignmentDefaults: assignmentDefaultsSchema.nullable(),
 });
 // PATCH /api/courses/{id}: the owner edits a class. Only what is sent changes.
 export const updateCourseBody = z
@@ -230,7 +245,9 @@ export const courseBodyMessage = (issues: { path: string }[]) =>
     ? "Enter a class name"
     : issues[0]?.path === "curriculumId"
       ? "Unknown course"
-      : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
+      : issues[0]?.path.startsWith("assignmentDefaults")
+        ? "Check the assignment settings"
+        : "Use a class code of 6–64 letters, numbers, dashes, or underscores";
 
 // ─── POST /api/student/enrollment ──────────────────────────────────────────
 // `code` is validated further by findClassByCode; it is absent for action "leave".

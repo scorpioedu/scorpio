@@ -1,7 +1,8 @@
 "use client";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { parseAssignmentDefaults } from "@/lib/assignment-defaults";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
@@ -75,6 +76,7 @@ interface CourseItem {
   id: string;
   name?: string;
   code?: string;
+  assignmentDefaults?: unknown;
 }
 
 export default function CreateAssignmentPage() {
@@ -111,6 +113,33 @@ function CreateAssignmentForm() {
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [settings, setSettings] = useState<AssignmentSettingsValue>(DEFAULT_SETTINGS);
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  // A class's assignment settings are where a new assignment's settings start. A copied assignment keeps
+  // the settings it came with, so only a class chosen by hand (or linked from the Courses page) applies them.
+  const applyClassDefaults = (courseId: string) => {
+    const defaults = parseAssignmentDefaults(
+      courses.find((course) => course.id === courseId)?.assignmentDefaults,
+    );
+    if (!defaults) return;
+    setSettings((current) => ({
+      ...current,
+      timeLimit: defaults.timeLimit ?? "",
+      gradingType: defaults.gradingType,
+      allowCalculator: defaults.allowCalculator,
+      allowAIHelp: defaults.allowAIHelp,
+      requireWorkSubmission: defaults.requireWorkSubmission,
+      enableTabDetection: defaults.enableTabDetection,
+      lockdownMode: defaults.lockdownMode,
+    }));
+  };
+  // The class linked from the Courses page (?courseId=) applies once its settings have loaded.
+  const appliedLinkedRef = useRef(false);
+  useEffect(() => {
+    if (appliedLinkedRef.current || forkId === "true" || !initialCourseId || !classes) return;
+    appliedLinkedRef.current = true;
+    applyClassDefaults(initialCourseId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classes, initialCourseId, forkId]);
   const [assignmentPoints, setAssignmentPoints] = useState(100);
   const [customPoints, setCustomPoints] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -236,7 +265,7 @@ function CreateAssignmentForm() {
           requireWorkSubmission: settings.requireWorkSubmission,
           enableTabDetection: settings.enableTabDetection,
           lockdownMode: settings.lockdownMode,
-          allowAIHelp: settings.allowAIHelp,
+          allowAIHelp: settings.allowAIHelp && !isFreePlan,
           allowCalculator: settings.allowCalculator,
           totalPoints: assignmentPoints,
           questions: scoredQuestions,
@@ -310,7 +339,14 @@ function CreateAssignmentForm() {
               <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_8rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_8rem]">
                 <div className="space-y-2 sm:col-span-2 lg:col-span-1">
                   <Label htmlFor="course">Class</Label>
-                  <Select value={selectedCourseId} onValueChange={setChosenCourseId} required>
+                  <Select
+                    value={selectedCourseId}
+                    onValueChange={(value) => {
+                      setChosenCourseId(value);
+                      applyClassDefaults(value);
+                    }}
+                    required
+                  >
                     <SelectTrigger id="course" className="w-full">
                       <SelectValue placeholder="Choose a class" />
                     </SelectTrigger>

@@ -42,7 +42,15 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   preload: true,
-  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+  fallback: [
+    "system-ui",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "Helvetica Neue",
+    "Arial",
+    "sans-serif",
+  ],
 });
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -68,7 +76,15 @@ const atkinson = Atkinson_Hyperlegible({
   subsets: ["latin"],
   display: "swap",
   preload: false,
-  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+  fallback: [
+    "system-ui",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "Helvetica Neue",
+    "Arial",
+    "sans-serif",
+  ],
 });
 
 const robotoMono = Roboto_Mono({
@@ -80,25 +96,22 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Scorpio • Socratic Guidance for Physics Education",
+    default: "Scorpio • AP Physics homework, graded for you",
     template: "%s • Scorpio",
   },
-  description: "The Socratic AI Learning Management System (LMS) built to empower the physics classroom. Restore integrity, stop the solvers, and reclaim the derivation process.",
+  description:
+    "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Free for individual teachers.",
   keywords: [
-    "Physics Teacher Tool",
-    "Socratic AI",
-    "Physics Education",
+    "AP Physics homework",
+    "AP Physics 1",
+    "AP Physics 2",
+    "AP Physics C: Mechanics",
+    "Auto-graded physics problems",
+    "Physics teacher tool",
+    "Socratic AI tutor",
+    "Raise AI tutor",
     "Physics LMS",
-    "Socratic LMS",
-    "Stop AI Cheating",
-    "Physics Classroom AI",
-    "Socratic Method AI",
-    "Raise AI Learning Assistant",
-    "AI Physics Assistant",
-    "Academic Integrity",
-    "Physics Scaffolding",
-    "Classroom Empowerment",
-    "Scorpio Physics"
+    "Scorpio Physics",
   ],
   icons: [
     { rel: "icon", url: "/favicon.ico" },
@@ -109,8 +122,9 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL("https://scorpioedu.org"),
   openGraph: {
-    title: "Scorpio • Socratic Guidance for Physics Education",
-    description: "The Socratic AI Learning Management System (LMS) for physics classrooms. Restore integrity, stop the solvers, and reclaim the derivation process.",
+    title: "Scorpio • AP Physics homework, graded for you",
+    description:
+      "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Free for individual teachers.",
     url: "https://scorpioedu.org",
     siteName: "Scorpio",
     images: [
@@ -118,14 +132,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Scorpio - Socratic AI for Physics",
+        alt: "Scorpio: AP Physics homework, graded for you",
       },
     ],
     locale: "en_US",
     type: "website",
   },
   other: {
-    "language": "en",
+    language: "en",
   },
   appleWebApp: {
     capable: true,
@@ -147,7 +161,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${lora.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${plusJakarta.variable} ${lora.variable} ${ibmPlexMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -173,17 +191,14 @@ export default function RootLayout({
         />
         {/* tweakcn design-preview — dev only, never load in production */}
         {process.env.NODE_ENV === "development" && (
-          <script
-            async
-            crossOrigin="anonymous"
-            src="https://tweakcn.com/live-preview.min.js"
-          />
+          <script async crossOrigin="anonymous" src="https://tweakcn.com/live-preview.min.js" />
         )}
       </head>
-      <body suppressHydrationWarning className={`${inter.variable} ${ibmPlexSans.variable} ${ptSerif.variable} ${atkinson.variable} ${robotoMono.variable} antialiased bg-background text-foreground`}>
-        <Providers>
-          {children}
-        </Providers>
+      <body
+        suppressHydrationWarning
+        className={`${inter.variable} ${ibmPlexSans.variable} ${ptSerif.variable} ${atkinson.variable} ${robotoMono.variable} antialiased bg-background text-foreground`}
+      >
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

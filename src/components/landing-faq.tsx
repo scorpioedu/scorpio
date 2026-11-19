@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Mail, Github, BookOpen } from "lucide-react";
+import { ChevronDown, Mail, Github, BookOpen } from "lucide-react";
+import { Eyebrow } from "@/components/landing/line-art";
+import reveal from "@/components/landing/home-reveal.module.css";
 import Link from "next/link";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 
 const faqs = [
@@ -30,7 +37,7 @@ const faqs = [
     index: "04",
     question: "What physics topics and grade levels are supported?",
     answer:
-      "Our pilot is AP Physics 1. Ready-made problems are tagged by AP unit and released unit by unit, and a person checks every answer before it goes live. Teachers can also write their own questions for any physics course.",
+      "Scorpio is built for high school AP Physics 1, AP Physics 2 and AP Physics C: Mechanics. Ready-made problem sets are organized by AP unit, and teachers can also write their own questions for any physics course.",
   },
   {
     index: "05",
@@ -60,39 +67,66 @@ const faqs = [
 
 const contactLinks = [
   { icon: Mail, label: "Email", href: "/contact" },
-  { icon: Github, label: "GitHub", href: "https://github.com/RushilMahadevu/scorpio", external: true },
+  {
+    icon: Github,
+    label: "GitHub",
+    href: "https://github.com/RushilMahadevu/scorpio",
+    external: true,
+  },
   { icon: BookOpen, label: "Research", href: "/research" },
 ];
 
 export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggle = (i: number) => setOpenIndex(prev => (prev === i ? null : i));
+  const toggle = (i: number) => setOpenIndex((prev) => (prev === i ? null : i));
 
   if (minimal) {
     return (
-      <section id="faq" data-scroll-reveal aria-labelledby="faq-heading" className="mx-auto grid max-w-6xl gap-6 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_2fr] lg:gap-12">
-        <div>
-          <h2 id="faq-heading" className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Common questions</h2>
-          <p className="mt-3 max-w-xs leading-relaxed text-muted-foreground">
-            Using Scorpio in class, working with Raise, and getting your school set up.
-          </p>
-          <Link href="/contact" className="mt-4 inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
-            Contact us <ArrowUpRight aria-hidden="true" className="size-4" />
-          </Link>
+      <section
+        id="faq"
+        aria-labelledby="faq-heading"
+        className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28"
+      >
+        <div data-scroll-reveal className={reveal.stagger}>
+          <Eyebrow>Questions</Eyebrow>
+          <h2
+            id="faq-heading"
+            className="mt-2 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl"
+          >
+            Common questions
+          </h2>
         </div>
-        <Accordion type="single" collapsible className="min-w-0 border-y border-border motion-reduce:[&_[data-slot=accordion-content]]:animate-none">
-          {faqs.map(({ index, question, answer }) => (
-            <AccordionItem key={index} value={index}>
-              <AccordionTrigger className="cursor-pointer items-center rounded-md px-1 py-4 text-base leading-snug transition-colors hover:text-primary hover:no-underline data-[state=open]:text-primary motion-reduce:transition-none sm:px-2 [&>svg]:size-5 [&>svg]:translate-y-0 motion-reduce:[&>svg]:transition-none">
+        <Accordion
+          type="single"
+          collapsible
+          className="mt-10 border-t border-border motion-reduce:[&_[data-slot=accordion-content]]:animate-none"
+        >
+          {faqs.map(({ index, question, answer }, i) => (
+            <AccordionItem
+              key={index}
+              value={index}
+              data-scroll-reveal
+              style={{ "--reveal-delay": `${Math.min(i * 70, 420)}ms` } as React.CSSProperties}
+            >
+              <AccordionTrigger className="cursor-pointer items-center py-5 text-base font-medium leading-snug transition-colors hover:text-primary hover:no-underline data-[state=open]:text-primary motion-reduce:transition-none [&>svg]:size-5 [&>svg]:translate-y-0 motion-reduce:[&>svg]:transition-none">
                 {question}
               </AccordionTrigger>
-              <AccordionContent className="max-w-prose px-1 pr-8 leading-relaxed text-muted-foreground sm:pl-2">
+              <AccordionContent className="max-w-3xl pr-8 leading-relaxed text-muted-foreground">
                 {answer}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
+        <p data-scroll-reveal className="mt-6 text-sm text-muted-foreground">
+          Still have a question?{" "}
+          <Link
+            href="/contact"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Contact us
+          </Link>
+        </p>
       </section>
     );
   }
@@ -112,7 +146,6 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
         {/* Outer card */}
         <div className="rounded-[2.5rem] border border-border/50 bg-card/60 backdrop-blur-xl overflow-hidden shadow-2xl">
           <div className="grid lg:grid-cols-[420px_1fr]">
-
             {/* ── Left: Header + contact ── */}
             <div className="relative flex flex-col justify-between p-10 lg:p-14 border-b lg:border-b-0 lg:border-r border-border/40 overflow-hidden">
               {/* Watermark */}
@@ -128,12 +161,15 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
                   Support
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1] text-foreground">
-                  Frequently<br />
-                  Asked<br />
+                  Frequently
+                  <br />
+                  Asked
+                  <br />
                   <span className="text-primary italic">Questions.</span>
                 </h2>
                 <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-xs">
-                  Common questions about using Scorpio in a physics class. Can&rsquo;t find your answer?
+                  Common questions about using Scorpio in a physics class. Can&rsquo;t find your
+                  answer?
                 </p>
               </div>
 
@@ -144,7 +180,13 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
                 </p>
                 <div className="flex items-center gap-3">
                   {contactLinks.map(({ icon: Icon, label, href, external }) => (
-                    <Button key={label} asChild variant="outline" size="icon-lg" className="rounded-full text-muted-foreground">
+                    <Button
+                      key={label}
+                      asChild
+                      variant="outline"
+                      size="icon-lg"
+                      className="rounded-full text-muted-foreground"
+                    >
                       <Link
                         href={href}
                         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -173,9 +215,10 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
                     className={`
                       group rounded-2xl border transition-all duration-300
                       bg-card
-                      ${isOpen
-                        ? "border-primary/40 shadow-md shadow-primary/5"
-                        : "border-border/40 hover:border-border/80 hover:shadow-sm"
+                      ${
+                        isOpen
+                          ? "border-primary/40 shadow-md shadow-primary/5"
+                          : "border-border/40 hover:border-border/80 hover:shadow-sm"
                       }
                     `}
                   >
@@ -221,7 +264,6 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
                 );
               })}
             </div>
-
           </div>
         </div>
       </motion.div>

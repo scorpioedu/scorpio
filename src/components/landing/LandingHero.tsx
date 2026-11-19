@@ -1,23 +1,77 @@
-import { DoorOpen } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import Link from "next/link";
-import { TeacherDemoLink } from "@/components/landing/teacher-demo-link";
+import { Fragment } from "react";
+import { DocsLines } from "@/components/docs-lines";
+import { StarField } from "@/components/landing/line-art";
 import { Button } from "@/components/ui/button";
+import intro from "./hero-intro.module.css";
 import reveal from "./home-reveal.module.css";
+
+const at = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
+
+const LINE_ONE = ["Assign", "AP", "Physics", "in", "minutes."];
+const LINE_TWO = ["The", "grading’s", "already", "done."];
+/** Line two starts after line one's last word has begun to settle. */
+const LINE_TWO_AT = 120 + LINE_ONE.length * 55 + 160;
+
+function Words({ words, start }: { words: string[]; start: number }) {
+  return words.map((word, i) => (
+    <Fragment key={word}>
+      {i > 0 && " "}
+      <span className={intro.word} style={{ "--d": start, "--i": i } as React.CSSProperties}>
+        {word}
+      </span>
+    </Fragment>
+  ));
+}
+
+const facts = [
+  ["3 AP courses", "every unit planned"],
+  ["Free", "for one teacher"],
+  ["Class code", "no LMS setup"],
+] as const;
 
 export function LandingHero() {
   return (
-    <section id="home" className="pb-16 pt-28 sm:pb-24 sm:pt-36">
-      <div className="mx-auto max-w-4xl px-5 text-center sm:px-8">
-        <h1 className={`${reveal.enter} mx-auto max-w-[20ch] text-balance text-[clamp(2.4rem,6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.06em]`}>
-          The workspace for physics teachers
+    <section
+      id="home"
+      className="relative isolate flex min-h-[92svh] flex-col justify-center overflow-hidden border-b border-border/60 pb-16 pt-28 sm:pb-20 sm:pt-32"
+    >
+      {/* Stars with Scorpius in the upper right, over the same quiet contour lines as the docs, login and sign up pages. */}
+      <div aria-hidden="true" className={`${intro.sky} pointer-events-none absolute inset-0 -z-10`}>
+        <StarField
+          constellation
+          motion={{ edge: intro.edge, star: intro.star, antares: intro.antares }}
+          className={`${reveal.heroSky} size-full text-foreground [mask-image:radial-gradient(ellipse_80%_100%_at_75%_0%,black,transparent_80%)]`}
+        />
+      </div>
+      <DocsLines
+        className={`${intro.lines} pointer-events-none absolute inset-0 -z-10 size-full text-primary opacity-30 [mask-image:linear-gradient(to_bottom,transparent,black_45%,black_70%,transparent)]`}
+      />
+      <div className={`${reveal.heroOut} mx-auto max-w-6xl px-5 text-center sm:px-8`}>
+        <h1
+          className={`mx-auto max-w-[24ch] text-balance text-[clamp(2.4rem,5.4vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.06em]`}
+        >
+          <span className="sm:block">
+            <Words words={LINE_ONE} start={120} />
+          </span>{" "}
+          <span className="text-muted-foreground sm:block">
+            <Words words={LINE_TWO} start={LINE_TWO_AT} />
+          </span>
         </h1>
-        <p className={`${reveal.enter} ${reveal.description} mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg`}>
-          AP Physics 1 homework that grades itself, gives students hints instead of answers, and shows you which misconceptions your class has.
+        <p
+          style={at(900)}
+          className={`${intro.step} mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg`}
+        >
+          Ready-made problem sets for AP Physics 1, AP Physics 2 and AP Physics C: Mechanics.
+          Scorpio grades on submit, tutors with hints instead of answers, and shows you what to
+          reteach.
         </p>
-        <div className={`${reveal.enter} ${reveal.actions} mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-4`}>
+        <div className={`mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-4`}>
           <Button
             asChild
-            className="group relative isolate h-12 gap-2 rounded-xl pl-4 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none"
+            style={at(1060)}
+            className={`${intro.step} group relative isolate h-12 gap-2 rounded-xl pl-4 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
           >
             <Link href="/request-access">
               {/* The beUI-style accent expands behind the label without moving it. */}
@@ -48,27 +102,28 @@ export function LandingHero() {
           <Button
             asChild
             variant="outline"
-            className="group h-12 rounded-xl pl-2 pr-4 motion-safe:active:scale-[0.98] motion-reduce:transition-none"
+            style={at(1140)}
+            className={`${intro.step} group h-12 rounded-xl bg-background/80 px-4 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
           >
-            <TeacherDemoLink>
-              <div
+            <Link href="#features">
+              See how it works
+              <ArrowDown
                 aria-hidden="true"
-                className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20 group-focus-visible:bg-primary/20 motion-reduce:transition-none"
-              >
-                <DoorOpen className="size-4" />
-              </div>
-              Open sample workspace
-            </TeacherDemoLink>
+                className="size-4 text-primary motion-safe:transition-transform motion-safe:group-hover:translate-y-0.5"
+              />
+            </Link>
           </Button>
         </div>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-[86rem] px-4 sm:mt-16 sm:px-8 lg:mt-20 lg:px-12">
-        <TeacherDemoLink
-          id="dashboard-preview"
-          aria-label="Explore the sample teacher dashboard"
-          className={`${reveal.preview} mx-auto block aspect-[358/590] max-w-md scroll-mt-20 rounded-xl border border-border bg-card bg-[url('/demos/teacher-dashboard-mobile-light.webp')] bg-cover bg-center transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none dark:bg-[url('/demos/teacher-dashboard-mobile-dark.webp')] md:aspect-[16/9] md:max-w-none md:bg-[url('/demos/teacher-dashboard-light.webp')] dark:md:bg-[url('/demos/teacher-dashboard-dark.webp')]`}
-        />
+        <dl
+          className={`mx-auto mt-10 grid max-w-lg grid-cols-3 gap-4 text-sm text-muted-foreground`}
+        >
+          {facts.map(([value, label], i) => (
+            <div key={value} style={at(1260 + i * 80)} className={`${intro.step} flex flex-col`}>
+              <dt className="order-last">{label}</dt>
+              <dd className="font-semibold text-foreground">{value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

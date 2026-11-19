@@ -68,8 +68,9 @@ service cloud.firestore {
 
       allow update: if ownsCourse(id) && request.resource.data.teacherId == resource.data.teacherId && request.resource.data.get('organizationId', null) == resource.data.get('organizationId', null) && request.resource.data.get('curriculumId', null) == resource.data.get('curriculumId', null) &&
         // The course plan and school calendar are validated by PATCH /api/courses/{id}/plan; the join code
-        // (reserved in course_codes) and archiving go through /api/courses/{id}/code and PATCH /api/courses/{id}.
-        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['curriculumPlan', 'daysOff', 'code', 'archivedAt']);
+        // (reserved in course_codes) and archiving go through /api/courses/{id}/code and PATCH /api/courses/{id}; the class-wide assignment
+        // settings by PATCH /api/courses/{id}/assignment-defaults.
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['curriculumPlan', 'daysOff', 'code', 'archivedAt', 'assignmentDefaults']);
       allow delete: if ownsCourse(id);
     }
     match /resources/{id} {

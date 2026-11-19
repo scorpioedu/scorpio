@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing Redesign Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(0.994 0 0); --fg:oklch(0.16 0 0); --muted:oklch(0.52 0.01 270); --border:oklch(0.91 0.005 270);
+  --card:#fff; --soft:oklch(0.975 0.004 280); --primary:oklch(0.5393 0.2713 286.7462); --primary-soft:oklch(0.5393 0.2713 286.7462 / .08);
+  --ok:oklch(0.6 0.15 150); --warn:oklch(0.68 0.16 60);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:oklch(0.2223 0.006 271); --fg:oklch(0.955 0 0); --muted:oklch(0.7 0.01 270); --border:oklch(0.32 0.01 271);
+  --card:oklch(0.25 0.008 271); --soft:oklch(0.245 0.008 271); --primary:oklch(0.6132 0.2294 291.7437); --primary-soft:oklch(0.6132 0.2294 291.7437 / .12);
+}}
+:root[data-theme="dark"]{
+  --bg:oklch(0.2223 0.006 271); --fg:oklch(0.955 0 0); --muted:oklch(0.7 0.01 270); --border:oklch(0.32 0.01 271);
+  --card:oklch(0.25 0.008 271); --soft:oklch(0.245 0.008 271); --primary:oklch(0.6132 0.2294 291.7437); --primary-soft:oklch(0.6132 0.2294 291.7437 / .12);
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:"Plus Jakarta Sans",system-ui,sans-serif;line-height:1.5}
+.bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border)}
+.bar strong{margin-right:8px;font-size:14px}
+.bar button{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--fg);cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--primary);color:#fff;border-color:var(--primary)}
+.bar .theme{margin-left:auto}
+.note{max-width:1100px;margin:20px auto 0;padding:14px 16px;border:1px dashed var(--border);border-radius:12px;font-size:14px;color:var(--muted)}
+.note b{color:var(--fg)}
+.mock{display:none;max-width:1100px;margin:16px auto 64px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg)}
+.mock.on{display:block}
+.pad{padding:0 40px}
+@media (max-width:700px){.pad{padding:0 16px}}
+nav.top{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;font-size:14px}
+@media (max-width:700px){nav.top{padding:14px 16px}}
+nav.top .brand{display:flex;gap:8px;align-items:center;font-weight:600}
+nav.top .links{display:flex;gap:18px;color:var(--muted)}
+@media (max-width:700px){nav.top .links span:not(:last-child){display:none}}
+.logo{width:20px;height:20px;border-radius:6px;background:var(--primary)}
+h1{font-weight:600;letter-spacing:-0.05em;line-height:1.04}
+h2{font-weight:600;letter-spacing:-0.035em;line-height:1.15}
+.lede{color:var(--muted);font-size:18px;max-width:34rem}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 18px;border-radius:12px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid transparent}
+.btn.p{background:var(--primary);color:#fff}
+.btn.o{border-color:var(--border);color:var(--fg);background:var(--card)}
+.link{color:var(--primary);font-weight:500;font-size:14px}
+svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;color:var(--primary)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--primary)}
+.small{font-size:13px;color:var(--muted)}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-weight:600}
+footer.f{border-top:1px solid var(--border);padding:20px 40px;display:flex;justify-content:space-between;font-size:13px;color:var(--muted);flex-wrap:wrap;gap:8px}
+.callout{position:absolute;font-size:12px;font-weight:600;background:var(--fg);color:var(--bg);padding:4px 8px;border-radius:6px;white-space:nowrap}
+
+/* A */
+.a-hero{display:grid;grid-template-columns:1.05fr 1fr;min-height:560px;border-bottom:1px solid var(--border)}
+.a-copy{padding:72px 40px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.a-copy h1{font-size:clamp(38px,5vw,60px)}
+.a-art{position:relative;background:var(--soft);border-left:1px solid var(--border);overflow:hidden}
+.a-still{position:absolute;right:-40px;bottom:-30px;width:78%;padding:14px;box-shadow:0 20px 50px -20px rgb(0 0 0/.25)}
+.row{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.row:last-child{border:0}
+.bar-mini{height:6px;border-radius:3px;background:var(--primary);opacity:.8}
+.a-steps{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border)}
+.a-steps div{padding:28px 40px;border-right:1px solid var(--border)}
+.a-steps div:last-child{border:0}
+.a-steps .n{font-size:13px;color:var(--primary);font-weight:700}
+.a-steps h3{margin:6px 0 4px;font-size:17px}
+@media (max-width:800px){.a-hero{grid-template-columns:1fr}.a-art{min-height:300px;border-left:0;border-top:1px solid var(--border)}.a-steps{grid-template-columns:1fr}.a-steps div{border-right:0;border-bottom:1px solid var(--border);padding:22px 16px}.a-copy{padding:48px 16px}}
+
+/* B */
+.b-hero{position:relative;text-align:center;padding:88px 16px 40px;overflow:hidden}
+.b-hero h1{font-size:clamp(38px,6vw,68px);max-width:16ch;margin:0 auto}
+.b-hero .lede{margin:18px auto 0}
+.b-hero .ctas{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.b-path{position:relative;padding:20px 40px 72px}
+.b-path svg{position:absolute;inset:0;width:100%;height:100%;color:var(--primary)}
+.b-stops{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.b-stop .dot{width:14px;height:14px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 6px var(--primary-soft);margin-bottom:16px}
+.b-stop .card{padding:14px;margin-top:14px;font-size:13px}
+.bubble{padding:8px 10px;border-radius:10px;margin-top:6px}
+.bubble.s{background:var(--soft);margin-left:20%}
+.bubble.r{background:var(--primary-soft);border:1px solid color-mix(in oklch,var(--primary) 25%,transparent);margin-right:12%}
+@media (max-width:800px){.b-stops{grid-template-columns:1fr}.b-path{padding:12px 16px 48px}}
+
+/* C */
+.c-hero{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;padding:64px 40px 56px;align-items:center}
+.c-hero h1{font-size:clamp(36px,4.6vw,56px)}
+.c-chart{position:relative;height:380px}
+.c-chart svg{position:absolute;inset:0;width:100%;height:100%;color:var(--primary);overflow:visible}
+.c-label{position:absolute;right:0;font-size:13px;text-align:right}
+.c-label b{display:block;font-size:14px}
+.c-band{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)}
+.c-band div{padding:26px 40px;border-right:1px solid var(--border)}
+.c-band div:last-child{border:0}
+.c-band h3{font-size:16px;margin-bottom:4px}
+@media (max-width:800px){.c-hero{grid-template-columns:1fr;padding:44px 16px}.c-band{grid-template-columns:1fr}.c-band div{border-right:0;border-bottom:1px solid var(--border);padding:20px 16px}.c-chart{height:300px}}
+
+/* D */
+.d-band{position:relative;height:200px;overflow:hidden;border-bottom:1px solid var(--border)}
+.d-body{max-width:680px;margin:0 auto;padding:48px 16px 64px}
+.d-body h1{font-size:clamp(34px,5vw,52px)}
+.d-body p{margin-top:14px;font-size:17px;color:var(--muted)}
+.d-body h2{font-size:22px;margin-top:44px}
+.d-list{margin-top:16px;border-top:1px solid var(--border);list-style:none;padding:0}
+.d-list li{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);font-size:15px}
+.d-list li span:first-child{font-weight:600}
+@media (max-width:600px){.d-list li{grid-template-columns:1fr;gap:2px}}
+.d-cta{margin-top:40px;display:flex;gap:12px;flex-wrap:wrap}
+
+
+/* E */
+.e-hero{display:grid;grid-template-columns:1.1fr 1fr;border-bottom:1px solid var(--border)}
+.e-copy{padding:64px 40px 48px;display:flex;flex-direction:column;gap:20px}
+.e-copy h1{font-size:clamp(34px,4.4vw,52px)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:15px;margin-top:4px}
+.facts dt{color:var(--muted)}
+.facts dd{font-weight:600}
+.e-art{background:var(--soft);border-left:1px solid var(--border);padding:40px 24px 24px;display:flex;flex-direction:column;justify-content:center}
+.e-chart{position:relative;height:300px;color:var(--primary)}
+.e-chart svg{position:absolute;left:0;top:0;width:55%;height:100%;overflow:visible}
+.e-lab{color:var(--fg);position:absolute;left:58%;right:0;transform:translateY(-50%);font-size:13px;line-height:1.3}
+.e-lab b{display:block;font-size:14px}
+.e-cap{border-top:1px solid var(--border);padding-top:12px;margin-top:20px}
+.e-sec{padding:44px 40px;border-bottom:1px solid var(--border)}
+.e-sec h2{font-size:26px;margin-bottom:6px}
+.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.course{padding:18px}
+.course h3{font-size:18px;margin-bottom:2px}
+.course ol{margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--muted);columns:1}
+.course ol li{padding:2px 0}
+.course .meta{font-size:13px;color:var(--muted)}
+.course .go{display:inline-block;margin-top:12px}
+.does{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:20px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.does div{padding:18px;border-right:1px solid var(--border)}
+.does div:last-child{border:0}
+.does h3{font-size:15px;margin-bottom:4px}
+.notfor{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:14px;font-size:14px}
+.notfor span::before{content:"✕ ";color:var(--muted)}
+.notfor span.y::before{content:"✓ ";color:var(--ok)}
+@media (max-width:900px){.e-hero{grid-template-columns:1fr}.e-art{border-left:0;border-top:1px solid var(--border)}.courses{grid-template-columns:1fr}.does{grid-template-columns:1fr 1fr}.does div{border-bottom:1px solid var(--border)}.e-copy,.e-sec{padding:36px 16px}}
+
+/* F */
+.f-hero{text-align:center;padding:72px 16px 24px}
+.f-hero h1{font-size:clamp(34px,5vw,56px);max-width:18ch;margin:0 auto}
+.f-hero .lede{margin:16px auto 0}
+.f-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+.f-chips span{font-size:13px;padding:5px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+.f-hero .ctas{margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.f-path{position:relative;max-width:920px;margin:0 auto;padding:40px 40px 64px}
+.f-path svg.thread{position:absolute;inset:0;width:100%;height:100%;color:var(--primary);pointer-events:none;overflow:visible}
+.f-stop{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;min-height:200px}
+.f-stop + .f-stop{margin-top:28px}
+.f-text{max-width:300px}
+.f-stop:nth-child(odd) .f-text{justify-self:end;text-align:right}
+.f-stop:nth-child(even) .f-text{order:2}
+.f-stop .num{font-size:12px;font-weight:700;color:var(--primary);letter-spacing:.04em}
+.f-stop h3{font-size:22px;letter-spacing:-.02em;margin:4px 0 6px}
+.f-dot{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--bg);border:3px solid var(--primary);z-index:1}
+.f-ui{padding:14px;font-size:13px;width:100%;max-width:340px;position:relative;z-index:1}
+.f-stop:nth-child(odd) .f-ui{justify-self:start}
+.f-stop:nth-child(even) .f-ui{justify-self:end}
+.tiles{display:grid;gap:6px}
+.tile{display:flex;justify-content:space-between;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.tile.sel{border-color:var(--primary);background:var(--primary-soft)}
+.tile.sel b{color:var(--primary)}
+.cal{display:grid;grid-template-columns:52px 1fr;gap:6px 8px;align-items:center}
+.cal .wk{font-size:11px;color:var(--muted)}
+.cal .u{white-space:nowrap;min-width:fit-content;height:20px;border-radius:6px;font-size:11px;padding:0 8px;display:flex;align-items:center;font-weight:600}
+.u1{background:var(--primary-soft);color:var(--primary)}
+.u2{background:var(--primary);color:#fff}
+.code{font-family:ui-monospace,monospace;font-weight:700;letter-spacing:.08em;padding:3px 8px;background:var(--soft);border-radius:6px}
+.score{display:flex;align-items:center;gap:8px;padding:5px 0}
+.score span:first-child{width:70px}
+.score .track{flex:1;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}
+.score .track i{display:block;height:100%;background:var(--primary)}
+.f-end{text-align:center;padding:8px 16px 64px}
+.f-end h2{font-size:28px}
+@media (max-width:760px){
+  .f-path{padding:24px 16px 48px 44px}
+  .f-stop{grid-template-columns:1fr;gap:12px;min-height:0}
+  .f-stop .f-text,.f-stop:nth-child(odd) .f-text,.f-stop:nth-child(even) .f-text{justify-self:start;text-align:left;order:0;max-width:none}
+  .f-stop .f-ui,.f-stop:nth-child(even) .f-ui{justify-self:stretch;order:1;max-width:none}
+  .f-dot{left:-28px;top:10px;margin:0}
+}
+
+/* G */
+.g-hero{position:relative;text-align:center;padding:80px 16px 56px;overflow:hidden;border-bottom:1px solid var(--border)}
+.g-hero svg{position:absolute;inset:0;width:100%;height:100%;color:var(--primary);-webkit-mask-image:linear-gradient(to bottom,transparent,black 40%,black 70%,transparent);mask-image:linear-gradient(to bottom,transparent,black 40%,black 70%,transparent);opacity:.55}
+.g-hero > div{position:relative}
+.g-hero h1{font-size:clamp(34px,5vw,56px);max-width:19ch;margin:0 auto}
+.g-hero .lede{margin:16px auto 0}
+.g-hero .ctas{margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.g-row{padding:44px 40px 8px}
+.g-row + .g-row{padding-top:28px}
+.g-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px}
+.g-head h2{font-size:22px}
+.g-track{position:relative;height:36px;color:var(--primary)}
+.g-track svg{position:absolute;inset:0;width:100%;height:100%;-webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
+.g-track .dots{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.g-track .dots span{justify-self:center;align-self:center;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--bg);border:2px solid var(--primary);color:var(--primary)}
+.g-row.auto .g-track .dots span{background:var(--primary);color:#fff}
+.g-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:14px}
+.g-step{text-align:center}
+.g-step h3{font-size:17px;margin-bottom:4px}
+.g-step > p{max-width:30ch;margin:0 auto}
+.g-step .card{text-align:left;margin-top:14px;padding:14px;font-size:13px}
+.g-end{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;margin:44px 40px 40px;padding:24px;border-radius:14px;background:var(--soft);border:1px solid var(--border)}
+.g-end h2{font-size:22px}
+@media (max-width:760px){
+  .g-row{padding:32px 16px 0}
+  .g-track{display:none}
+  .g-cols{grid-template-columns:1fr;gap:28px}
+  .g-step{text-align:left}
+  .g-step > p{margin:0;max-width:none}
+  .g-step h3::before{content:attr(data-n);display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:50%;border:2px solid var(--primary);color:var(--primary);font-size:12px;vertical-align:2px}
+  .g-end{margin:32px 16px}
+}
+
+/* H */
+#m-h{--guide:color-mix(in oklch,var(--border) 70%,transparent);position:relative}
+#m-h .guides{position:absolute;inset:0;pointer-events:none;display:flex;justify-content:space-between;max-width:1020px;margin:0 auto;padding:0 40px;z-index:0}
+#m-h .guides i{width:1px;background:repeating-linear-gradient(to bottom,var(--guide) 0 6px,transparent 6px 12px)}
+#m-h > *{position:relative;z-index:1}
+#m-h .guides{z-index:0}
+.h-wrap{max-width:1020px;margin:0 auto;padding:0 40px}
+@media (max-width:760px){.h-wrap{padding:0 16px}#m-h .guides{display:none}}
+.h-hero{position:relative;overflow:hidden;padding:64px 0 72px;border-bottom:1px solid var(--border)}
+.h-hero .sky{position:absolute;inset:0;width:100%;height:100%;color:var(--fg);-webkit-mask-image:radial-gradient(ellipse 70% 90% at 80% 20%,black,transparent 75%);mask-image:radial-gradient(ellipse 80% 100% at 75% 10%,black,transparent 80%)}
+.h-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
+.h-hero h1{font-size:clamp(36px,4.6vw,58px);letter-spacing:-.045em;line-height:1.03}
+.h-hero .lede{margin-top:18px;font-size:18px}
+.h-ctas{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.h-ctas .btn{height:42px;border-radius:999px;padding:0 18px;font-size:14px}
+.h-facts{display:flex;gap:22px;margin-top:28px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.h-facts b{display:block;color:var(--fg);font-size:15px}
+.app{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 30px 60px -30px rgb(20 20 50/.35),0 0 0 1px rgb(0 0 0/.02);overflow:hidden;font-size:13px}
+.app-top{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--soft)}
+.app-top i{width:9px;height:9px;border-radius:50%;background:var(--border)}
+.app-top span{margin-left:8px;font-size:12px;color:var(--muted)}
+.app-body{padding:16px}
+.app-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.app-kpis div{border:1px solid var(--border);border-radius:8px;padding:10px}
+.app-kpis b{display:block;font-size:20px;letter-spacing:-.02em}
+.mis{display:grid;grid-template-columns:1fr 90px 52px;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--border)}
+.mis .t{height:6px;border-radius:3px;background:var(--soft);overflow:hidden}
+.mis .t i{display:block;height:100%;background:var(--primary)}
+.h-sec{padding:88px 0;border-bottom:1px solid var(--border)}
+.h-eyebrow{font-size:14px;font-weight:600;color:var(--primary)}
+.h-sec h2{font-size:clamp(28px,3.2vw,38px);letter-spacing:-.035em;margin-top:6px;max-width:22ch}
+.h-sec .sub{color:var(--muted);margin-top:10px;max-width:46ch}
+.flow{margin-top:44px}
+.flow + .flow{margin-top:56px}
+.flow-head{display:flex;align-items:baseline;gap:10px;font-size:14px}
+.flow-head b{font-size:15px}
+.rail{position:relative;height:28px;margin:16px 0 18px;display:grid;grid-template-columns:repeat(3,1fr)}
+.rail::before{content:"";position:absolute;left:calc(100%/6);right:0;top:50%;height:1px;background:linear-gradient(to right,color-mix(in oklch,var(--primary) 55%,transparent),color-mix(in oklch,var(--primary) 25%,transparent))}
+.rail::after{content:"";position:absolute;right:0;top:50%;width:7px;height:7px;border-top:1px solid color-mix(in oklch,var(--primary) 45%,transparent);border-right:1px solid color-mix(in oklch,var(--primary) 45%,transparent);transform:translateY(-50%) rotate(45deg)}
+.rail .pulse{position:absolute;top:50%;left:calc(100%/6);width:80px;height:1px;margin-top:-.5px;background:linear-gradient(to right,transparent,var(--primary),transparent);animation:pulse 3.2s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes pulse{from{left:calc(100%/6);opacity:0}15%{opacity:1}85%{opacity:1}to{left:calc(100% - 90px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.rail .pulse{display:none}}
+.rail .n{justify-self:center;align-self:center;position:relative;z-index:1;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--bg);border:1px solid color-mix(in oklch,var(--primary) 50%,transparent);color:var(--primary)}
+.flow.auto .rail .n{background:var(--primary);border-color:var(--primary);color:#fff}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.steps3 h3{font-size:16px;text-align:center}
+.steps3 p.small{text-align:center;margin:4px auto 0;max-width:30ch}
+.steps3 .card{margin-top:14px;padding:14px;font-size:13px;border-radius:10px}
+.h-stats{display:grid;grid-template-columns:1fr 1fr;margin-top:40px;border-top:1px solid var(--border)}
+.h-stats div{padding:28px 0}
+.h-stats div + div{border-left:1px solid var(--border);padding-left:32px}
+.h-stats b{display:block;font-size:56px;letter-spacing:-.05em;line-height:1}
+.h-stats b.p{color:var(--primary)}
+.h-partner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:36px 0;border-bottom:1px solid var(--border)}
+.h-logo{font-family:Georgia,serif;letter-spacing:.12em;font-size:18px;color:var(--muted)}
+.h-faq{margin-top:32px;border-top:1px solid var(--border)}
+.h-faq details{border-bottom:1px solid var(--border)}
+.h-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font-weight:500}
+.h-faq summary::after{content:"+";color:var(--muted);font-size:20px;line-height:1}
+.h-faq details[open] summary::after{content:"–"}
+.h-faq details p{padding:0 0 18px;color:var(--muted);max-width:70ch}
+.h-close{position:relative;overflow:hidden;background:oklch(0.2 0.03 285);color:#fff;padding:80px 0}
+.h-close .sky{position:absolute;inset:0;width:100%;height:100%;color:#fff;opacity:.9}
+.h-close h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.035em}
+.h-close p{color:oklch(0.82 0.02 285);margin-top:10px}
+.h-close .btn.p{background:#fff;color:oklch(0.25 0.05 285)}
+.h-close .btn.o{background:transparent;color:#fff;border-color:rgb(255 255 255/.3)}
+@media (max-width:860px){.h-grid{grid-template-columns:1fr}.steps3{grid-template-columns:1fr;gap:28px}.rail{display:none}.steps3 h3,.steps3 p.small{text-align:left;margin-left:0}.steps3 h3::before{content:attr(data-n);display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:50%;border:1px solid var(--primary);color:var(--primary);font-size:12px}.flow.auto .steps3 h3::before{background:var(--primary);color:#fff}.h-stats{grid-template-columns:1fr}.h-stats div+div{border-left:0;border-top:1px solid var(--border);padding-left:0}.h-sec{padding:56px 0}.h-partner{flex-direction:column;align-items:flex-start}}
+.verdict{max-width:1100px;margin:-40px auto 64px;padding:0 16px;font-size:14px;color:var(--muted)}
+.verdict b{color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="bar" role="tablist">
+  <strong>Landing mockups</strong>
+  <button data-m="h" aria-pressed="true">H · Stripe-clean</button>
+  <button data-m="g" aria-pressed="false">G · Horizontal, you vs Scorpio</button>
+  <button data-m="f" aria-pressed="false">F · Workflow path</button>
+  <button data-m="e" aria-pressed="false">E · Plain facts + courses</button>
+  <button data-m="a" aria-pressed="false">A · Split, like login</button>
+  <button data-m="b" aria-pressed="false">B · Lines as the path</button>
+  <button data-m="c" aria-pressed="false">C · Lines as the data</button>
+  <button data-m="d" aria-pressed="false">D · Plain letter</button>
+  <button class="theme" id="theme">Toggle dark</button>
+</div>
+
+<div class="note">
+  <b>Shared across all four:</b> no "Open sample workspace" button and no big clickable dashboard screenshot. One primary action (<b>Request classroom access</b>), the field lines from login/signup/docs as the only decoration (the space background goes), and the page answers three teacher questions in order: <i>what is it, how does it fit my week, what do I get back.</i> Sage Ridge, pricing line, FAQ and footer stay but get shorter.
+</div>
+
+<!-- ============ H ============ -->
+<section class="mock on" id="m-h">
+  <div class="guides" aria-hidden="true"><i></i><i></i><i></i></div>
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>How it works</span><span>Pricing</span><span>Log in</span></span></nav>
+
+  <div class="h-hero">
+    <svg class="sky" id="h-sky" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="h-wrap h-grid">
+      <div>
+        <h1>AP Physics homework that grades itself</h1>
+        <p class="lede">For high school teachers of AP Physics 1, AP Physics 2 and AP Physics C: Mechanics. Assign a ready-made set; students get hints, not answers; you see what the class got wrong.</p>
+        <div class="h-ctas"><a class="btn p" href="#">Request classroom access →</a><a class="btn o" href="#">See how it works</a></div>
+        <div class="h-facts"><span><b>3 AP courses</b>every unit planned</span><span><b>Free</b>for one teacher</span><span><b>Class code</b>no LMS setup</span></div>
+      </div>
+      <div class="app">
+        <div class="app-top"><i></i><i></i><i></i><span>Period 3 · Unit 2 report</span></div>
+        <div class="app-body">
+          <div class="app-kpis"><div><span class="small">Submitted</span><b>24/24</b></div><div><span class="small">Average</span><b>7.4</b></div><div><span class="small">Hints used</span><b>41</b></div></div>
+          <div class="small" style="margin-bottom:4px">Most common mistakes</div>
+          <div class="mis"><span>Friction drawn the wrong way</span><span class="t"><i style="width:66%"></i></span><b>8 of 24</b></div>
+          <div class="mis"><span>Mass mixed up with weight</span><span class="t"><i style="width:42%"></i></span><b>5 of 24</b></div>
+          <div class="mis"><span>Net force skipped</span><span class="t"><i style="width:25%"></i></span><b>3 of 24</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-sec"><div class="h-wrap">
+    <div class="h-eyebrow">How it works</div>
+    <h2>Six steps. You do three, Scorpio does three.</h2>
+    <div class="flow">
+      <div class="flow-head"><b>You</b><span class="small">before class</span></div>
+      <div class="rail"><span class="pulse"></span><span class="n">1</span><span class="n">2</span><span class="n">3</span></div>
+      <div class="steps3">
+        <div><h3 data-n="1">Pick your course</h3><p class="small">Every AP unit, with sets already written.</p><div class="card"><div class="tiles"><div class="tile sel"><b>AP Physics 1</b><span class="small">8 units</span></div><div class="tile"><span>AP Physics 2</span><span class="small">7 units</span></div><div class="tile"><span>AP Physics C: Mech</span><span class="small">7 units</span></div></div></div></div>
+        <div><h3 data-n="2">Plan the year</h3><p class="small">Put units on your calendar.</p><div class="card"><div class="cal"><span class="wk">Sep 2</span><span class="u u1" style="width:70%">Unit 1 · Kinematics</span><span class="wk">Sep 22</span><span class="u u2" style="width:85%">Unit 2 · Forces</span><span class="wk">Oct 13</span><span class="u u1" style="width:60%">Unit 3 · Energy</span></div></div></div>
+        <div><h3 data-n="3">Assign a set</h3><p class="small">Pick a class and a due date.</p><div class="card"><b>Newton's second law</b><div class="row" style="margin-top:6px"><span>Class</span><b>Period 3</b></div><div class="row"><span>Code</span><span class="code">K7Q29P</span></div></div></div>
+      </div>
+    </div>
+    <div class="flow auto">
+      <div class="flow-head"><b>Scorpio</b><span class="small">while students work</span></div>
+      <div class="rail"><span class="pulse" style="animation-delay:1.2s"></span><span class="n">4</span><span class="n">5</span><span class="n">6</span></div>
+      <div class="steps3">
+        <div><h3 data-n="4">Hints, not answers</h3><p class="small">A nudge toward the next step.</p><div class="card"><div class="bubble s">Is the normal force just mg?</div><div class="bubble r"><b style="color:var(--primary)">Hint</b> · Tilt your axes to match the ramp.</div></div></div>
+        <div><h3 data-n="5">Grades on submit</h3><p class="small">Numeric and multiple choice.</p><div class="card"><div class="score"><span>Student A</span><span class="track"><i style="width:90%"></i></span><b>9/10</b></div><div class="score"><span>Student B</span><span class="track"><i style="width:70%"></i></span><b>7/10</b></div></div></div>
+        <div><h3 data-n="6">Shows what to reteach</h3><p class="small">Mistakes ranked by student count.</p><div class="card"><div class="row"><span>Friction direction</span><b>8 of 24</b></div><div class="row"><span>Mass vs weight</span><b>5 of 24</b></div></div></div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="h-sec"><div class="h-wrap">
+    <div class="h-eyebrow">What we tested</div>
+    <h2>Raise doesn't hand students the answer</h2>
+    <p class="sub">Same AI model, 25 physics questions that asked for a worked solution. Only the tutoring rules changed.</p>
+    <div class="h-stats"><div><b>100%</b><span class="small">gave the answer without tutoring rules</span></div><div><b class="p">0%</b><span class="small">gave the answer with all Raise rules</span></div></div>
+    <a class="link" href="#">Read the study →</a>
+  </div></div>
+
+  <div class="h-wrap h-partner"><div><div class="small">School partner</div><b style="font-size:20px">Sage Ridge School</b></div><span class="h-logo">SAGE RIDGE</span></div>
+
+  <div class="h-sec" style="border-bottom:0"><div class="h-wrap">
+    <div class="h-eyebrow">Questions</div>
+    <h2>Common questions</h2>
+    <div class="h-faq">
+      <details open><summary>What is Scorpio?</summary><p>A homework tool for high school AP Physics. Assign ready-made or custom problems, graded automatically; students ask Raise for a hint instead of an answer.</p></details>
+      <details><summary>Can students get direct answers from Raise?</summary><p>…</p></details>
+      <details><summary>Which courses are supported?</summary><p>…</p></details>
+      <details><summary>How is pricing structured?</summary><p>…</p></details>
+      <details><summary>Does Scorpio integrate with my LMS?</summary><p>…</p></details>
+      <details><summary>How is student data protected?</summary><p>…</p></details>
+    </div>
+  </div></div>
+
+  <div class="h-close">
+    <svg class="sky" id="h-sky2" viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="h-wrap" style="position:relative;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:end">
+      <div><h2>Try it with one unit</h2><p>Free for individual teachers. Departments get a flat plan.</p></div>
+      <div class="h-ctas" style="margin:0"><a class="btn p" href="#">Request classroom access →</a><a class="btn o" href="#">Talk to us</a></div>
+    </div>
+  </div>
+  <footer class="f"><span>Scorpio</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ G ============ -->
+<section class="mock" id="m-g">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>Courses</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="g-hero">
+    <svg id="g-lines" viewBox="0 0 1000 400" preserveAspectRatio="none"></svg>
+    <div>
+      <h1>AP Physics homework that grades itself</h1>
+      <p class="lede">For high school teachers of AP Physics 1, AP Physics 2 and AP Physics C: Mechanics. You set it up in three steps. Scorpio does the next three.</p>
+      <div class="ctas"><a class="btn p" href="#">Request classroom access →</a><a class="btn o" href="#">See the courses</a></div>
+      <p class="small" style="margin-top:14px">Free for individual teachers · Students join with a class code</p>
+    </div>
+  </div>
+
+  <div class="g-row">
+    <div class="g-head"><h2>You do this</h2><span class="small">before class</span></div>
+    <div class="g-track"><svg class="g-thread"></svg><div class="dots"><span>1</span><span>2</span><span>3</span></div></div>
+    <div class="g-cols">
+      <div class="g-step"><h3 data-n="1">Pick your course</h3><p class="small">Every AP unit, with problem sets already written.</p>
+        <div class="card"><div class="tiles">
+          <div class="tile sel"><b>AP Physics 1</b><span class="small">8 units</span></div>
+          <div class="tile"><span>AP Physics 2</span><span class="small">7 units</span></div>
+          <div class="tile"><span>AP Physics C: Mech</span><span class="small">7 units</span></div>
+        </div></div></div>
+      <div class="g-step"><h3 data-n="2">Plan the year</h3><p class="small">Put units on your calendar. Move them if you fall behind.</p>
+        <div class="card"><div class="cal">
+          <span class="wk">Sep 2</span><span class="u u1" style="width:70%">Unit 1 · Kinematics</span>
+          <span class="wk">Sep 22</span><span class="u u2" style="width:85%">Unit 2 · Forces</span>
+          <span class="wk">Oct 13</span><span class="u u1" style="width:60%">Unit 3 · Energy</span>
+        </div></div></div>
+      <div class="g-step"><h3 data-n="3">Assign a set</h3><p class="small">Choose a class and a due date. Share the class code.</p>
+        <div class="card"><b>Newton's second law</b>
+          <div class="row" style="margin-top:6px"><span>Class</span><b>Period 3</b></div>
+          <div class="row"><span>Due</span><b>Fri, Sep 26</b></div>
+          <div class="row"><span>Code</span><span class="code">K7Q29P</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="g-row auto">
+    <div class="g-head"><h2>Scorpio does this</h2><span class="small">while students work</span></div>
+    <div class="g-track"><svg class="g-thread"></svg><div class="dots"><span>4</span><span>5</span><span>6</span></div></div>
+    <div class="g-cols">
+      <div class="g-step"><h3 data-n="4">Gives hints, not answers</h3><p class="small">A stuck student gets a nudge toward the next step.</p>
+        <div class="card"><div class="bubble s">Do I divide 12 by 2?</div><div class="bubble r"><b style="color:var(--primary)">Hint</b> · Which way does friction point?</div></div></div>
+      <div class="g-step"><h3 data-n="5">Grades the answers</h3><p class="small">Numeric and multiple-choice are marked on submit.</p>
+        <div class="card">
+          <div class="score"><span>Student A</span><span class="track"><i style="width:90%"></i></span><b>9/10</b></div>
+          <div class="score"><span>Student B</span><span class="track"><i style="width:70%"></i></span><b>7/10</b></div>
+          <div class="score"><span>Student C</span><span class="track"><i style="width:50%"></i></span><b>5/10</b></div></div></div>
+      <div class="g-step"><h3 data-n="6">Shows what to reteach</h3><p class="small">The class's most common mistakes, by how many students made them.</p>
+        <div class="card">
+          <div class="row"><span>Friction direction</span><b>8 of 24</b></div>
+          <div class="row"><span>Mass vs weight</span><b>5 of 24</b></div>
+          <div class="row"><span>Net force skipped</span><b>3 of 24</b></div></div></div>
+    </div>
+  </div>
+
+  <div class="g-end"><div><h2>Try it with one unit</h2><p class="small">Free for one teacher. Departments get a flat plan.</p></div><a class="btn p" href="#">Request classroom access →</a></div>
+  <footer class="f"><span>Used at Sage Ridge School</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ F ============ -->
+<section class="mock" id="m-f">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>Courses</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="f-hero">
+    <h1>AP Physics homework, from course plan to what to reteach</h1>
+    <p class="lede">Built for high school physics teachers. Here is the whole thing, step by step.</p>
+    <div class="f-chips"><span>AP Physics 1</span><span>AP Physics 2</span><span>AP Physics C: Mechanics</span><span>Free for teachers</span></div>
+    <div class="ctas"><a class="btn p" href="#">Request classroom access →</a></div>
+  </div>
+
+  <div class="f-path" id="f-path">
+    <svg class="thread" id="f-thread"></svg>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 1</div><h3>Pick your course</h3><p class="small">Every AP unit, with problem sets already written.</p></div>
+      <div class="card f-ui"><div class="tiles">
+        <div class="tile sel"><b>AP Physics 1</b><span class="small">8 units · 32 sets</span></div>
+        <div class="tile"><span>AP Physics 2</span><span class="small">7 units · 28 sets</span></div>
+        <div class="tile"><span>AP Physics C: Mechanics</span><span class="small">7 units · 28 sets</span></div>
+      </div></div>
+      <span class="f-dot"></span>
+    </div>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 2</div><h3>Plan the year</h3><p class="small">Drop units on your calendar. Move them when the schedule slips.</p></div>
+      <div class="card f-ui"><div class="cal">
+        <span class="wk">Sep 2</span><span class="u u1" style="width:70%">Unit 1 · Kinematics</span>
+        <span class="wk">Sep 22</span><span class="u u2" style="width:85%">Unit 2 · Forces</span>
+        <span class="wk">Oct 13</span><span class="u u1" style="width:60%">Unit 3 · Energy</span>
+        <span class="wk">Nov 3</span><span class="u u1" style="width:50%;opacity:.6">Unit 4 · Momentum</span>
+      </div></div>
+      <span class="f-dot"></span>
+    </div>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 3</div><h3>Assign a set</h3><p class="small">Pick a class and a due date. Students join with a code.</p></div>
+      <div class="card f-ui">
+        <b>Newton's second law</b><div class="small">Unit 2 · 10 problems</div>
+        <div class="row" style="margin-top:8px"><span>Class</span><b>Period 3</b></div>
+        <div class="row"><span>Due</span><b>Fri, Sep 26</b></div>
+        <div class="row"><span>Class code</span><span class="code">K7Q29P</span></div>
+      </div>
+      <span class="f-dot"></span>
+    </div>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 4</div><h3>Students work, with hints</h3><p class="small">Stuck? They get a nudge for the next step, never the answer.</p></div>
+      <div class="card f-ui"><div class="bubble s">Do I divide 12 by 2?</div><div class="bubble r"><b style="color:var(--primary)">Hint</b> · Which way does friction point? Find the net force first.</div></div>
+      <span class="f-dot"></span>
+    </div>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 5</div><h3>It grades itself</h3><p class="small">Numeric and multiple-choice answers are marked when students submit.</p></div>
+      <div class="card f-ui">
+        <div class="score"><span>Student A</span><span class="track"><i style="width:90%"></i></span><b>9/10</b></div>
+        <div class="score"><span>Student B</span><span class="track"><i style="width:70%"></i></span><b>7/10</b></div>
+        <div class="score"><span>Student C</span><span class="track"><i style="width:50%"></i></span><b>5/10</b></div>
+        <div class="small" style="margin-top:6px">24 of 24 submitted · class average 7.4</div>
+      </div>
+      <span class="f-dot"></span>
+    </div>
+
+    <div class="f-stop">
+      <div class="f-text"><div class="num">STEP 6</div><h3>See what to reteach</h3><p class="small">The class's most common mistakes, ranked by how many students made them.</p></div>
+      <div class="card f-ui">
+        <div class="row"><span>Friction drawn the wrong way</span><b>8 of 24</b></div>
+        <div class="row"><span>Mixed up mass and weight</span><b>5 of 24</b></div>
+        <div class="row"><span>Skipped the net force</span><b>3 of 24</b></div>
+      </div>
+      <span class="f-dot"></span>
+    </div>
+  </div>
+
+  <div class="f-end">
+    <h2>Start with one unit</h2>
+    <p class="small" style="margin:8px 0 20px">Free for individual teachers. Departments get a flat plan.</p>
+    <a class="btn p" href="#">Request classroom access →</a>
+  </div>
+  <footer class="f"><span>Used at Sage Ridge School</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ E ============ -->
+<section class="mock" id="m-e">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>Courses</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="e-hero">
+    <div class="e-copy">
+      <h1>Homework and grading for high school AP Physics teachers</h1>
+      <p class="lede">You assign problem sets. Students work them online and get a hint when they're stuck. Answers are graded for you, and you see which ideas the class got wrong.</p>
+      <dl class="facts">
+        <dt>Who it's for</dt><dd>High school physics teachers, grades 10–12</dd>
+        <dt>Courses</dt><dd>AP Physics 1 · AP Physics 2 · AP Physics C: Mechanics</dd>
+        <dt>Students join</dt><dd>With a class code. No LMS or rosters needed</dd>
+        <dt>Cost</dt><dd>Free for one teacher. Flat plan for departments</dd>
+      </dl>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <a class="btn p" href="#">Request classroom access →</a>
+        <a class="link" href="#">See the courses ↓</a>
+      </div>
+    </div>
+    <div class="e-art">
+      <div class="e-chart">
+        <svg id="e-lines" viewBox="0 0 330 300" preserveAspectRatio="none"></svg>
+        <div class="e-lab" style="top:13%"><b>Got it right</b>13 students</div>
+        <div class="e-lab" style="top:47%;color:var(--primary)"><b>Friction drawn the wrong way</b>8 students</div>
+        <div class="e-lab" style="top:74%"><b>Mixed up mass and weight</b>3 students</div>
+      </div>
+      <p class="small e-cap">What you see after an assignment: <b style="color:var(--fg)">AP Physics 1 · Unit 2 · 24 students</b></p>
+    </div>
+  </div>
+
+  <div class="e-sec">
+    <h2>Courses</h2>
+    <p class="small">Each course is the full AP unit list with ready-made problem sets. Copy a set and assign it, or write your own.</p>
+    <div class="courses">
+      <div class="card course"><h3>AP Physics 1</h3><div class="meta">8 units · 32 problem sets</div>
+        <ol><li>Kinematics</li><li>Force and Translational Dynamics</li><li>Work, Energy, and Power</li><li>Linear Momentum</li><li>Torque and Rotational Dynamics</li><li>Energy and Momentum of Rotating Systems</li><li>Oscillations</li><li>Fluids</li></ol>
+        <a class="link go" href="#">View course →</a></div>
+      <div class="card course"><h3>AP Physics 2</h3><div class="meta">7 units · 28 problem sets</div>
+        <ol start="9"><li>Thermodynamics</li><li>Electric Force, Field, and Potential</li><li>Electric Circuits</li><li>Magnetism and Electromagnetism</li><li>Geometric Optics</li><li>Waves, Sound, and Physical Optics</li><li>Modern Physics</li></ol>
+        <a class="link go" href="#">View course →</a></div>
+      <div class="card course"><h3>AP Physics C: Mechanics</h3><div class="meta">7 units · 28 problem sets</div>
+        <ol><li>Kinematics</li><li>Force and Translational Dynamics</li><li>Work, Energy, and Power</li><li>Linear Momentum</li><li>Torque and Rotational Dynamics</li><li>Energy and Momentum of Rotating Systems</li><li>Oscillations</li></ol>
+        <a class="link go" href="#">View course →</a></div>
+    </div>
+  </div>
+
+  <div class="e-sec">
+    <h2>What Scorpio does</h2>
+    <div class="does">
+      <div><h3>1. You assign</h3><p class="small">Pick a set from a course and give students the class code.</p></div>
+      <div><h3>2. Students work</h3><p class="small">One problem at a time, online, on any device.</p></div>
+      <div><h3>3. It grades</h3><p class="small">Numeric and multiple-choice answers are marked on submit. Stuck students can ask for a hint, never the answer.</p></div>
+      <div><h3>4. You review</h3><p class="small">Scores per student, and the mistakes the class made most, by unit.</p></div>
+    </div>
+    <div class="notfor">
+      <span class="y">Works next to Canvas, Schoology or Google Classroom</span>
+      <span>Not a full LMS</span>
+      <span>Not for intro (non-AP) physics yet</span>
+    </div>
+  </div>
+  <footer class="f"><span>Used at Sage Ridge School</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ A ============ -->
+<section class="mock" id="m-a">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>How it works</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="a-hero">
+    <div class="a-copy">
+      <span class="eyebrow">For AP Physics 1 teachers</span>
+      <h1>Homework that grades itself and tells you where the class is stuck</h1>
+      <p class="lede">Assign a ready-made set. Students get hints, not answers. You get a short list of misconceptions on Monday.</p>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <a class="btn p" href="#">Request classroom access →</a>
+        <a class="link" href="#">How it works ↓</a>
+      </div>
+      <p class="small">Free for individual teachers · Students join with a class code</p>
+    </div>
+    <div class="a-art">
+      <svg class="lines" id="a-lines" viewBox="0 0 540 560" preserveAspectRatio="xMidYMid slice"></svg>
+      <div class="card a-still">
+        <div class="small" style="margin-bottom:6px">Period 3 · Unit 2 Forces</div>
+        <div class="row"><span>Friction drawn the wrong way</span><b>8 of 24</b></div>
+        <div class="row"><span>Mass used as weight</span><b>5 of 24</b></div>
+        <div class="row"><span>Net force skipped</span><b>3 of 24</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="a-steps">
+    <div><span class="n">01</span><h3>Pick a set</h3><p class="small">Copy one from the AP Physics 1 course, or write your own.</p></div>
+    <div><span class="n">02</span><h3>Students work</h3><p class="small">Answers are checked on submit. Stuck students get one hint at a time.</p></div>
+    <div><span class="n">03</span><h3>You read one list</h3><p class="small">Misconceptions ranked by how many students showed them.</p></div>
+  </div>
+  <footer class="f"><span>Sage Ridge School pilot · Free for teachers</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ B ============ -->
+<section class="mock" id="m-b">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>How it works</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="b-hero">
+    <svg class="lines" id="b-lines" viewBox="0 0 1000 420" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(to bottom,black,transparent 90%);mask-image:linear-gradient(to bottom,black,transparent 90%);opacity:.6"></svg>
+    <div style="position:relative">
+      <h1>Physics homework, start to finish, in one place</h1>
+      <p class="lede">Three things happen. That's the whole product.</p>
+      <div class="ctas"><a class="btn p" href="#">Request classroom access →</a><a class="btn o" href="#">See pricing</a></div>
+    </div>
+  </div>
+  <div class="b-path">
+    <svg viewBox="0 0 1000 100" preserveAspectRatio="none" style="height:60px;top:20px"><path id="b-thread" d="M 20 7 C 300 7, 340 7, 1000 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 5" vector-effect="non-scaling-stroke" opacity=".5"/></svg>
+    <div class="b-stops">
+      <div class="b-stop"><div class="dot"></div><h3>1 · You assign</h3><p class="small">Pick from the course or write your own.</p>
+        <div class="card"><b>Unit 2 · Newton's laws</b><div class="small">12 problems · due Fri</div><div style="margin-top:8px" class="pill">Assigned to Period 3</div></div></div>
+      <div class="b-stop"><div class="dot"></div><h3>2 · Students get hints</h3><p class="small">Never the answer. Graded on submit.</p>
+        <div class="card"><div class="bubble s">Do I divide 12 by 2?</div><div class="bubble r">Which way does friction point first?</div></div></div>
+      <div class="b-stop"><div class="dot"></div><h3>3 · You see what's missing</h3><p class="small">One list, ranked by student count.</p>
+        <div class="card"><div class="row"><span>Friction direction</span><b>8/24</b></div><div class="row"><span>Mass vs weight</span><b>5/24</b></div></div></div>
+    </div>
+  </div>
+  <footer class="f"><span>Sage Ridge School pilot · Free for teachers</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ C ============ -->
+<section class="mock" id="m-c">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>How it works</span><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="c-hero">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <span class="eyebrow">AP Physics 1 · free for teachers</span>
+      <h1>24 students. One assignment. Three things to reteach.</h1>
+      <p class="lede">Scorpio checks the work, coaches students with hints, and sorts their mistakes into a short list you can teach from tomorrow.</p>
+      <div><a class="btn p" href="#">Request classroom access →</a></div>
+    </div>
+    <div class="c-chart" id="c-chart">
+      <svg id="c-lines" viewBox="0 0 600 380" preserveAspectRatio="none"></svg>
+      <div class="c-label" style="top:22px"><b>Got it</b>13 students</div>
+      <div class="c-label" style="top:160px;color:var(--primary)"><b>Friction direction</b>8 students</div>
+      <div class="c-label" style="top:262px"><b>Mass vs weight</b>3 students</div>
+      <div class="small" style="position:absolute;left:0;bottom:-6px">Start of Unit 2 set</div>
+    </div>
+  </div>
+  <div class="c-band">
+    <div><h3>Ready-made sets</h3><p class="small">The AP Physics 1 course, unit by unit. Copy and assign.</p></div>
+    <div><h3>Hints, not answers</h3><p class="small">Raise nudges a stuck student one step. You can turn it off.</p></div>
+    <div><h3>No LMS setup</h3><p class="small">Students join with a class code.</p></div>
+  </div>
+  <footer class="f"><span>Sage Ridge School pilot · Free for teachers</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<!-- ============ D ============ -->
+<section class="mock" id="m-d">
+  <nav class="top"><span class="brand"><span class="logo"></span>Scorpio</span><span class="links"><span>Pricing</span><span>Log in</span></span></nav>
+  <div class="d-band"><svg class="lines" id="d-lines" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg></div>
+  <div class="d-body">
+    <h1>A homework tool for physics teachers</h1>
+    <p>Scorpio is built for AP Physics 1. You assign problems, students work through them with hints when they get stuck, and you see which ideas the class is missing. It is free for individual teachers.</p>
+    <h2>What a week looks like</h2>
+    <ul class="d-list">
+      <li><span>Monday</span><span>Copy the Unit 2 set from the course and share the class code.</span></li>
+      <li><span>Tue – Thu</span><span>Students work. Answers are checked on submit; stuck students get a hint.</span></li>
+      <li><span>Friday</span><span>Open the report: "Friction drawn the wrong way, 8 of 24."</span></li>
+    </ul>
+    <h2>What you don't have to do</h2>
+    <ul class="d-list">
+      <li><span>Grade</span><span>Numeric and multiple-choice answers are graded for you.</span></li>
+      <li><span>Set up</span><span>No LMS connection. A class code is enough.</span></li>
+      <li><span>Pay</span><span>Free for one teacher. Departments can add a flat plan.</span></li>
+    </ul>
+    <div class="d-cta"><a class="btn p" href="#">Request classroom access →</a><a class="btn o" href="#">Talk to us</a></div>
+  </div>
+  <footer class="f"><span>Sage Ridge School pilot</span><span>About · Research · Privacy · Contact</span></footer>
+</section>
+
+<div class="verdict" id="verdict"></div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function path(svg,d,op,w=0.8){const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("fill","none");p.setAttribute("stroke","currentColor");p.setAttribute("stroke-width",w);p.setAttribute("stroke-opacity",op);p.setAttribute("vector-effect","non-scaling-stroke");svg.appendChild(p)}
+// A: same field lines as AuthSplit, bending toward the card
+(()=>{const s=document.getElementById("a-lines");for(let i=0;i<44;i++){const t=i/43,y0=320+t*150,b=60+t*170;path(s,`M -20 ${y0-190+t*40} C 180 ${y0-150-b*.2}, 360 ${y0-70}, 560 ${y0+b}`,.14+(1-Math.abs(t-.35))*.5)}})();
+// B: docs contour lines behind the hero
+(()=>{const s=document.getElementById("b-lines");for(let i=0;i<34;i++){const t=i/33,y=40+t*260;path(s,`M -10 ${y+60} C 260 ${y-40+t*40}, 560 ${y+120-t*50}, 1010 ${y-30-t*30}`,.15+(1-Math.abs(t-.5)*2)*.6)}})();
+// C: 24 lines (one per student) start together and split into three bundles
+(()=>{const s=document.getElementById("c-lines");const groups=[[13,40],[8,175],[3,278]];let k=0;groups.forEach(([n,yEnd],g)=>{for(let j=0;j<n;j++,k++){const y0=180+(k-12)*2.2,ye=yEnd+(j-n/2)*4;path(s,`M 0 ${y0} C 200 ${y0}, 260 ${ye}, 440 ${ye}`,g===1?.85:.3,g===1?1.1:.8)}})})();
+// D: thin band of contour lines, like the docs background
+(()=>{const s=document.getElementById("d-lines");for(let i=0;i<30;i++){const t=i/29,y=10+t*170;path(s,`M -10 ${y+30} C 260 ${y-30}, 560 ${y+60}, 1010 ${y-20}`,.12+(1-Math.abs(t-.5)*2)*.5)}})();
+
+// E: one line per student, splitting into what they got wrong (ends match label tops 13/47/74%)
+(()=>{const s=document.getElementById("e-lines");const groups=[[13,39],[8,141],[3,222]];let k=0;groups.forEach(([n,yEnd],g)=>{for(let j=0;j<n;j++,k++){const y0=150+(k-12)*2.4,ye=yEnd+(j-(n-1)/2)*3.2;path(s,`M 0 ${y0} C 140 ${y0}, 180 ${ye}, 330 ${ye}`,g===1?.85:.28,g===1?1.1:.8)}})})();
+// F: a ribbon of field lines winding through each step's dot; redrawn on resize
+function drawThread(){const box=document.getElementById("f-path");if(!box.offsetParent)return;const svg=document.getElementById("f-thread");svg.innerHTML="";
+ const r=box.getBoundingClientRect();const pts=[...box.querySelectorAll(".f-dot")].map(d=>{const b=d.getBoundingClientRect();return[b.left+b.width/2-r.left,b.top+b.height/2-r.top]});
+ svg.setAttribute("viewBox",`0 0 ${r.width} ${r.height}`);
+ const narrow=r.width<700;const swing=narrow?0:Math.min(170,r.width*.2);
+ const start=[pts[0][0],0],end=[pts.at(-1)[0],r.height];const all=[start,...pts,end];
+ for(let k=-4;k<=4;k++){let d=`M ${all[0][0]+k*2.2} ${all[0][1]}`;
+  for(let i=1;i<all.length;i++){const[a,b]=[all[i-1],all[i]];const dir=i%2?1:-1;const mid=(a[1]+b[1])/2;
+   d+=` C ${a[0]+dir*swing+k*2.2} ${mid-((b[1]-a[1])*.1)}, ${b[0]+dir*swing+k*2.2} ${mid+((b[1]-a[1])*.1)}, ${b[0]+k*(i===all.length-1?2.2:0.6)} ${b[1]}`}
+  path(svg,d,k===0?.9:.12+(1-Math.abs(k)/4)*.35,k===0?1.4:.8)}}
+addEventListener("resize",drawThread);
+// G: soft docs contour lines in the hero, and a calm 5-line horizontal thread under each row
+(()=>{const s=document.getElementById("g-lines");for(let i=0;i<30;i++){const t=i/29,y=60+t*260;path(s,`M -10 ${y+50} C 260 ${y-30+t*30}, 560 ${y+90-t*40}, 1010 ${y-20-t*20}`,.12+(1-Math.abs(t-.5)*2)*.5)}})();
+document.querySelectorAll(".g-thread").forEach((s,r)=>{s.setAttribute("viewBox","0 0 1000 36");s.setAttribute("preserveAspectRatio","none");
+ for(let k=-2;k<=2;k++){const y=18+k*3,w=r?2.5:3.5;path(s,`M 0 ${y} C 250 ${y-w*k}, 420 ${y+w*k}, 500 ${y} S 760 ${y-w*k}, 1000 ${y}`,k===0?.9:.25,k===0?1.4:.8)}});
+// H: a faint starfield with the Scorpius constellation drawn in thin lines
+function sky(svg,w,h,n,seed,constellation){let r=seed;const rnd=()=>(r=(r*16807)%2147483647)/2147483647;
+ for(let i=0;i<n;i++){const c=document.createElementNS(NS,"circle");c.setAttribute("cx",rnd()*w);c.setAttribute("cy",rnd()*h);c.setAttribute("r",rnd()<.1?1.4:.7);c.setAttribute("fill","currentColor");c.setAttribute("opacity",(.15+rnd()*.45).toFixed(2));svg.appendChild(c)}
+ if(!constellation)return;const S0=[[640,90],[668,70],[700,62],[676,118],[712,128],[760,150],[790,186],[806,226],[822,268],[856,296],[896,304],[928,290],[938,262],[922,240]];const S=S0.map(([x,y])=>[x+10,14+(y-62)*0.48]);
+ const ed=[[0,3],[1,3],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13]];
+ ed.forEach(([a,b])=>path(svg,`M ${S[a][0]} ${S[a][1]} L ${S[b][0]} ${S[b][1]}`,.28,.8));
+ S.forEach(([x,y],i)=>{const c=document.createElementNS(NS,"circle");c.setAttribute("cx",x);c.setAttribute("cy",y);c.setAttribute("r",i===5?3:1.8);c.setAttribute("fill",i===5?"var(--primary)":"currentColor");c.setAttribute("opacity",i===5?.9:.6);svg.appendChild(c)})}
+sky(document.getElementById("h-sky"),1000,520,90,7,true);
+sky(document.getElementById("h-sky2"),1000,300,70,11,false);
+const verdicts={
+ h:"<b>H — Stripe-clean.</b> Left-aligned hero with the real product (a Unit 2 report) in an app window, stars and the Scorpius constellation faint behind it. Faint dashed column guides instead of decorative lines. Steps as numbered rails that read left to right with a slow pulse and an arrowhead. Big plain numbers for research, a one-line partner row, a full-width FAQ, and a dark starry closing band.",
+ g:"<b>G — Horizontal, you vs Scorpio.</b> B's clean hero lines and horizontal thread, with F's six steps split into two rows a teacher can read at a glance: <i>You do this</i> (course, plan, assign) and <i>Scorpio does this</i> (hints, grading, reteach). Filled dots mark the automatic steps. On a phone the threads drop away and the steps stack with their numbers.",
+ f:"<b>F — Workflow path.</b> Plain headline, course chips, then the whole product as six stops on one winding ribbon of field lines: course, plan, assign, hints, grading, reteach. Each stop has a tiny real-looking piece of UI. On a phone the ribbon becomes a straight rail on the left.",
+ e:"<b>E — Plain facts + courses.</b> No slogan. The headline says who it's for and what it does; a facts list answers grade level, courses, setup and cost. The three courses are shown with their real unit lists and set counts. The 24-lines picture stays, but it's labeled so it reads as a report. Last line says plainly what it isn't.",
+ a:"<b>A — Split, like login.</b> Reuses AuthSplit's field lines exactly, so home → signup feels like one product. Still image is a tiny real-looking report, not a clickable fake workspace. Safest, least work.",
+ b:"<b>B — Lines as the path.</b> Docs contour lines in the hero, then a single thread connecting three stops with small UI snippets. Most explanatory for a teacher skimming; slightly longer page.",
+ c:"<b>C — Lines as the data.</b> 24 lines = 24 students splitting into misconceptions. Most distinctive and on-message, but the metaphor needs a label to land and is the most custom code.",
+ d:"<b>D — Plain letter.</b> Docs-style: a lines band on top, then a 'what a week looks like' table. Easiest to read and the most honest; least 'marketing'. Good fit if the audience is mostly referred teachers."};
+const v=document.getElementById("verdict");
+function show(m){document.querySelectorAll(".mock").forEach(e=>e.classList.toggle("on",e.id==="m-"+m));document.querySelectorAll("[data-m]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===m));v.innerHTML=verdicts[m];if(m==="f")requestAnimationFrame(drawThread)}
+document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>show(b.dataset.m));
+document.getElementById("theme").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);r.dataset.theme=dark?"light":"dark"};
+show("h");
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import { mergeAnswerKey, splitAssignmentQuestions } from "@/lib/assignment-secur
 import { parseJsonBody } from "@/lib/api-schema";
 import { cloneAssignmentBody } from "@/lib/schemas/api-bodies";
 import { errorResponse } from "@/lib/api-errors";
+import { parseAssignmentDefaults } from "@/lib/assignment-defaults";
 import {
   assertValidAnswerKeys,
   assignmentAccess,
@@ -57,10 +58,12 @@ export const POST = withAuthorizedRequest(
     const source = (await sourceRef.get()).data();
     if (!source || !assignmentAccess(source, caller.uid, profile))
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
+    let classDefaults: ReturnType<typeof parseAssignmentDefaults> = null;
     if (courseId) {
       const course = (await adminDb.collection("courses").doc(courseId).get()).data();
       if (course?.teacherId !== caller.uid)
         return NextResponse.json({ error: "Invalid class" }, { status: 403 });
+      classDefaults = parseAssignmentDefaults(course.assignmentDefaults);
     }
 
     let split: ReturnType<typeof splitAssignmentQuestions>;
@@ -109,6 +112,11 @@ export const POST = withAuthorizedRequest(
         title ?? (typeof source.title === "string" && source.title ? source.title : "Untitled"),
       gradingType:
         typeof source.gradingType === "string" && source.gradingType ? source.gradingType : "ai",
+      // The class's own settings win over the source's, so every assignment in it behaves alike.
+      // No class time limit leaves the source's own limit (e.g. a timed unit test) alone.
+      ...(classDefaults
+        ? { ...classDefaults, timeLimit: classDefaults.timeLimit ?? copied.timeLimit ?? null }
+        : {}),
       teacherId: caller.uid,
       organizationId: profile.organizationId || null,
       courseId: courseId || null,

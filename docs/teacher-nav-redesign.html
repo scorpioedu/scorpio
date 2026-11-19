@@ -1,0 +1,307 @@
+<title>Scorpio Teacher Nav</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: mock app window (sidebar + page) on top, click-through; route map and build order below */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --sunk:#eef2f3; --fg:#14201f; --muted:#5b6b69; --line:#d9e1e0;
+  --accent:#0e7a6f; --accent-soft:#dff1ee; --new:#9a5b00; --new-soft:#fbefd9; --moved:#2f5aa8; --moved-soft:#e3ebfa;
+  --display:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; --body:"Inter",ui-sans-serif,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1514; --surface:#162020; --sunk:#1c2827; --fg:#e4ecea; --muted:#93a5a2; --line:#2a3836;
+  --accent:#4cc3b3; --accent-soft:#163a35; --new:#f0b65a; --new-soft:#3a2c14; --moved:#8fb2f0; --moved-soft:#1d2a44; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1514; --surface:#162020; --sunk:#1c2827; --fg:#e4ecea; --muted:#93a5a2; --line:#2a3836;
+  --accent:#4cc3b3; --accent-soft:#163a35; --new:#f0b65a; --new-soft:#3a2c14; --moved:#8fb2f0; --moved-soft:#1d2a44; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:30px;letter-spacing:-.01em}
+h2{font-size:21px}
+h3{font-size:15px}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch;margin-top:8px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;padding:1px 8px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.chip.from{background:var(--moved-soft);color:var(--moved)}
+.chip.new{background:var(--new-soft);color:var(--new)}
+.chip.same{background:var(--accent-soft);color:var(--accent)}
+
+/* app window */
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);min-height:560px}
+.side{background:var(--sunk);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px;gap:4px}
+.brand{font-family:var(--display);font-weight:700;font-size:16px;padding:4px 10px 14px;display:flex;align-items:center;gap:8px}
+.brand small{font-family:var(--body);font-weight:500;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.nav{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;font-weight:500;color:var(--fg)}
+.nav:hover{background:var(--surface)}
+.nav:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.nav[aria-current="true"]{background:var(--surface);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.nav svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav .q{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.spacer{flex:1}
+.usermenu{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--line)}
+.picker{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-weight:500;background:var(--surface)}
+.picker .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.picker.off{opacity:.55}
+.pickernote{font-size:12px;color:var(--muted)}
+.page{padding:20px;display:grid;gap:16px;align-content:start}
+.pagehead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.pagehead p{color:var(--muted);margin-top:2px}
+.btn{all:unset;box-sizing:border-box;padding:6px 12px;border-radius:7px;background:var(--accent);color:var(--surface);font-weight:600;font-size:13px;cursor:default}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{all:unset;box-sizing:border-box;padding:8px 12px;cursor:pointer;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent)}
+.panel{display:grid;gap:14px}
+.origin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.wire{display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.row b{font-weight:600}
+.row span.m{color:var(--muted);font-size:12.5px}
+.row .r{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.grp{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-top:4px}
+.note{font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:10px;max-width:70ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg);display:grid;gap:4px;align-content:start}
+.card .big{font-family:var(--display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.card .m{color:var(--muted);font-size:12.5px}
+
+/* sections below */
+.section{display:grid;gap:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--sunk)}
+tr:last-child td{border-bottom:none}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--sunk);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.step{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface);display:grid;gap:6px;align-content:start}
+.step .n{font-family:var(--display);font-weight:700;color:var(--accent)}
+.step ul,.open ul{margin:0;padding-left:18px;color:var(--muted)}
+.open{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface)}
+.open li{margin:4px 0}
+
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  .side{border-right:none;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;gap:4px}
+  .brand{width:100%;padding-bottom:6px}
+  .nav .q{display:none}
+  .spacer{display:none}
+  .usermenu{border-top:none;margin-top:0;padding-top:0}
+}
+@media (prefers-reduced-motion:no-preference){.tab,.nav{transition:background .12s,color .12s,border-color .12s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Scorpio · teacher side · proposal</div>
+    <h1>New teacher sidebar and what each page holds</h1>
+    <p class="lede">Eleven sidebar links plus a Sustainability dialog become five pages and a user menu. Click a page in the sidebar, then its tabs, to see what it contains and where each part comes from today. Nothing here is built yet.</p>
+    <div class="legend">
+      <span class="chip same">Same as today</span>
+      <span class="chip from">From an existing page</span>
+      <span class="chip new">New work</span>
+    </div>
+  </header>
+
+  <div class="app" id="app">
+    <nav class="side" aria-label="Mock sidebar">
+      <div class="brand">Scorpio <small>Teacher</small></div>
+      <div id="navlist" style="display:contents"></div>
+      <div class="spacer"></div>
+      <div class="usermenu" id="usermenu"></div>
+    </nav>
+    <section class="main" aria-live="polite">
+      <div class="topbar">
+        <span class="picker" id="picker"><span class="dot"></span><span id="pickerlabel">AP Physics 1 · Period 3</span> ▾</span>
+        <span class="pickernote" id="pickernote"></span>
+      </div>
+      <div class="page" id="page"></div>
+    </section>
+  </div>
+
+  <section class="section">
+    <div>
+      <h2>Where every current page goes</h2>
+      <p class="lede">Old URLs keep working through redirects. Routes stay the same where the page itself is unchanged, so links in emails, billing banners and the chatbot don't break.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Today (sidebar label)</th><th>Today's route</th><th>Goes to</th><th>New route</th></tr></thead>
+        <tbody id="maprows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Build order</h2>
+    <div class="steps">
+      <div class="step"><span class="n">Step 1</span><h3>Nav, tab shells and redirects</h3>
+        <ul><li>New 5-item sidebar and user menu in <code>teacher-sidebar.tsx</code></li><li>Grading and Classes pages that host today's pages as tabs, unchanged inside</li><li>Redirects for every old route</li><li>Update <code>navigation-chatbot.tsx</code>, <code>chatbot-config.json</code>, <code>landing/workspace-preview.tsx</code></li></ul></div>
+      <div class="step"><span class="n">Step 2</span><h3>Library and Materials</h3>
+        <ul><li>Waypoints becomes Assignments › Library</li><li>"New assignment" offers Start blank / Start from library</li><li>Uploads and Vault merge into one Materials tab, per class</li><li>Assignments list gets a source tag (Course, Library, Custom)</li></ul></div>
+      <div class="step"><span class="n">Step 3</span><h3>Shared class picker</h3>
+        <ul><li>Course's picker moves into the header</li><li>"All classes" option on every page except Course</li><li>Choice kept in the URL so a shared link opens the same class</li></ul></div>
+      <div class="step"><span class="n">Step 4</span><h3>Home and To grade</h3>
+        <ul><li>"Next up in your course" card on Home</li><li>To grade queue in Grading (today only a count on the dashboard)</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Open questions</h2>
+    <div class="open"><ul>
+      <li><b>Name:</b> "Course" here, not "Plan", because Plan reads as a billing tier next to the upgrade dialogs. Easy to switch.</li>
+      <li><b>Department students</b> (today's Students › Insights tab, department-wide) moves to Department. Is that tab used by teachers who aren't department admins?</li>
+      <li><b>Misconceptions</b> sits in Grading for the full report and stays inline per unit in Course › Roadmap. Both stay, linked to each other.</li>
+      <li><b>Course without a course:</b> teachers outside the three AP courses see a "Pick a course" screen there, and Home skips the "Next up" card.</li>
+    </ul></div>
+  </section>
+</div>
+
+<script>
+const I={
+  home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  course:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h8"/>',
+  assignments:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  grading:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  classes:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14a5 5 0 0 1 5 6"/>',
+  account:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+};
+const C=(t,k)=>`<span class="chip ${k}">${t}</span>`;
+const row=(title,meta,right='')=>`<div class="row"><div><b>${title}</b>${meta?`<br><span class="m">${meta}</span>`:''}</div><div class="r">${right}</div></div>`;
+const card=(label,big,m)=>`<div class="card"><span class="eyebrow">${label}</span><span class="big">${big}</span><span class="m">${m}</span></div>`;
+
+const PAGES=[
+ {id:'home',label:'Home',q:'What needs me today?',picker:'all',pickerNote:'Home always shows all classes.',
+  desc:'The landing page. Short: what is due, what to grade, what is next in the course, and setup steps for new teachers.',
+  tabs:[{name:'Home',origin:[C('Dashboard','from'),C('Next up card','new')],body:
+   `<div class="cards">${card('Next up · AP Physics 1','Unit 4','Energy & Work: 2 of 5 sets assigned. Open in Course →')}${card('To grade','14','submissions across 3 classes. Open Grading →')}${card('Due this week','3','assignments in Period 3 and Period 5')}</div>
+   ${row('Setup checklist','Add a class · Invite students · Pick a course · Assign your first set',C('Dashboard','from'))}
+   <p class="note">The "Next up" card is the link into Course. It is hidden for teachers without a course, so Home is never empty for them.</p>`}]},
+
+ {id:'course',label:'Course',q:'What are we teaching, and when?',picker:'one',pickerNote:'Course needs one class: pacing and the calendar are per class.',
+  desc:'Today\'s Courses page, renamed. The course roadmap for the picked class, with assigning, pacing and unit misconceptions inline.',
+  tabs:[
+   {name:'Roadmap',origin:[C('Courses › Roadmap','same')],body:
+    `<div class="grp">Unit 4 · Energy & Work</div>
+    ${row('4.1 Work done by a force','Assigned · due Nov 21 · class avg 78%',C('Preview','')+C('Assigned','same'))}
+    ${row('4.2 Kinetic energy theorem','Not assigned',C('Preview','')+C('Assign','same'))}
+    ${row('What students got wrong in Unit 4','Sign of work on a decelerating object · 41% of answers',C('Full report → Grading','from'))}
+    <p class="note">Unchanged. Unit guide pages stay at <code>/teacher/courses/[curriculumId]/[unit]</code>.</p>`},
+   {name:'Calendar',origin:[C('Courses › Schedule','from')],body:
+    `${row('Pacing','Unit 4 ends Dec 5 · 1 week behind the suggested pace','')}
+    ${row('School calendar','Thanksgiving break Nov 26 to 28 · Winter break Dec 21 to Jan 2','')}
+    <p class="note">Today's Schedule tab with a clearer name. Contents unchanged.</p>`},
+   {name:'Customize',origin:[C('Courses › Customize','same')],body:
+    `${row('Reorder units','Drag to change the order this class follows','')}
+    ${row('Edit unit','Rename, hide sets, add your own set to a unit','')}`}
+  ]},
+
+ {id:'assignments',label:'Assignments',q:'What have I given out?',picker:'all',pickerNote:'Filters by class; "All classes" allowed.',
+  desc:'Everything assigned, wherever it came from, plus the library to start new work from.',action:'New assignment',
+  tabs:[
+   {name:'All',origin:[C('My Assignments','from'),C('Source tag','new')],body:
+    `${row('4.1 Work done by a force','Period 3 · due Nov 21 · 22/28 submitted',C('Course','same'))}
+    ${row('Lab: cart on an incline','Period 3 · due Nov 24 · 3/28 submitted',C('Custom',''))}
+    ${row('Momentum warm-up','Period 5 · due Nov 20 · 25/26 submitted',C('Library','from'))}
+    <p class="note">Course sets assigned from Course land here too, tagged with where they came from. Opening one still goes to today's assignment view and submission pages.</p>`},
+   {name:'Library',origin:[C('Waypoints › Global','from'),C('Waypoints › Department','from')],body:
+    `<div class="grp">Global sets</div>
+    ${row('Circular motion: banked curves','12 problems · AP Physics 1',C('Use this',''))}
+    <div class="grp">Shared in your department</div>
+    ${row('Ms. Rivera · Rotational inertia review','8 problems',C('Use this',''))}
+    <p class="note">Today's Waypoints page. "Use this" opens the builder with a copy.</p>`},
+   {name:'New assignment',origin:[C('Create Assignment','from'),C('Start from library','new')],body:
+    `${row('Start blank','Today\'s builder','')}
+    ${row('Start from library','Pick a Library set, then edit it in the builder','')}
+    <p class="note">Opened from the "New assignment" button, not a sidebar link. Route <code>/teacher/assignments/new</code>.</p>`}
+  ]},
+
+ {id:'grading',label:'Grading',q:'How did they do?',picker:'all',pickerNote:'Filters by class; "All classes" allowed.',
+  desc:'Gradebook and the misconception report under one page, plus a queue of work waiting to be graded.',
+  tabs:[
+   {name:'To grade',origin:[C('Dashboard count','from'),C('Queue','new')],body:
+    `${row('Lab: cart on an incline','3 waiting · free response',C('Grade','same'))}
+    ${row('Momentum warm-up','11 waiting · AI-graded, needs review',C('Review','same'))}
+    <p class="note">New page work. Today this is only the grading-progress card on the dashboard.</p>`},
+   {name:'Gradebook',origin:[C('Gradebook','from')],body:
+    `${row('Students × assignments grid','Today\'s /teacher/grades, unchanged','')}
+    ${row('Student detail','Today\'s /teacher/grades/student, unchanged','')}`},
+   {name:'Misconceptions',origin:[C('Misconceptions','from')],body:
+    `${row('Full misconception report','Today\'s /teacher/insights, unchanged','')}
+    <p class="note">Course › Roadmap keeps the per-unit summary and links here.</p>`}
+  ]},
+
+ {id:'classes',label:'Classes',q:'Who is in each class, and what can they see?',picker:'all',pickerNote:'Roster allows "All classes"; Materials needs one class.',
+  desc:'Students and the files and vault items each class can see.',
+  tabs:[
+   {name:'Roster',origin:[C('Students › Roster','from')],body:
+    `${row('Period 3','28 students · join code K7Q-2M',C('Invite','same'))}
+    ${row('Period 5','26 students · join code P2X-9D',C('Invite','same'))}`},
+   {name:'Materials',origin:[C('Resource Uploads','from'),C('Vault Controls','from')],body:
+    `<div class="grp">Uploads</div>
+    ${row('Unit 4 notes.pdf','Visible to Period 3','')}
+    <div class="grp">Vault</div>
+    ${row('Formula sheet unlocks','Locked until Unit 5 test','')}
+    <p class="note">Both are per class today, so they sit together under the class picker. Merging them into one list is step 2; step 1 can show them as two sections.</p>`}
+  ]},
+];
+const ACCOUNT={id:'account',label:'Your account',q:'Opens a menu',picker:'none',pickerNote:'Not class-specific.',
+  desc:'The user menu at the bottom of the sidebar. Department-level and personal things that are not part of the teaching loop.',
+  tabs:[{name:'Menu',origin:[C('Network','from'),C('Sustainability','from')],body:
+   `${row('Department','Faculty · Limits · Analytics · Students · Billing',C('Network','from'))}
+   ${row('Sustainability','Same dialog as today',C('Sustainability','from'))}
+   ${row('Profile and preferences','',C('Same','same'))}
+   ${row('Sign out','','')}
+   <p class="note">Department keeps the <code>/teacher/network</code> routes so billing banners and upgrade links still work. Today's Students › Insights tab (department-wide students) moves here.</p>`}]};
+
+const ALL=[...PAGES,ACCOUNT];
+const navBtn=p=>`<button class="nav" data-id="${p.id}"><svg viewBox="0 0 24 24" aria-hidden="true">${I[p.id]}</svg><span>${p.label}<span class="q">${p.q}</span></span></button>`;
+document.getElementById('navlist').innerHTML=PAGES.map(navBtn).join('');
+document.getElementById('usermenu').innerHTML=navBtn(ACCOUNT);
+
+let cur='home',tab=0;
+function render(){
+  const p=ALL.find(x=>x.id===cur);
+  document.querySelectorAll('.nav').forEach(b=>b.setAttribute('aria-current',b.dataset.id===cur));
+  const pk=document.getElementById('picker');
+  pk.classList.toggle('off',p.picker==='none');
+  document.getElementById('pickerlabel').textContent=p.picker==='all'&&cur==='home'?'All classes':p.picker==='none'?'All classes':'AP Physics 1 · Period 3';
+  document.getElementById('pickernote').textContent=p.pickerNote;
+  const t=p.tabs[tab]||p.tabs[0];
+  document.getElementById('page').innerHTML=`
+   <div class="pagehead"><div><h2>${p.label}</h2><p>${p.desc}</p></div>${p.action?`<span class="btn">${p.action}</span>`:''}</div>
+   ${p.tabs.length>1?`<div class="tabs" role="tablist">${p.tabs.map((x,i)=>`<button class="tab" role="tab" aria-selected="${i===tab}" data-i="${i}">${x.name}</button>`).join('')}</div>`:''}
+   <div class="panel"><div class="origin">Comes from: ${t.origin.join('')}</div><div class="wire">${t.body}</div></div>`;
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{tab=+b.dataset.i;render()});
+}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{cur=b.dataset.id;tab=0;try{history.replaceState(null,'','#'+cur)}catch(e){}render()});
+function fromHash(){const h=location.hash.slice(1);if(ALL.some(p=>p.id===h)){cur=h;tab=0}render()}
+window.addEventListener('hashchange',fromHash);fromHash();
+
+const MAP=[
+ ['Dashboard','/teacher','Home','/teacher (same)'],
+ ['Courses','/teacher/courses','Course › Roadmap','/teacher/courses (same)'],
+ ['Courses › Schedule tab','/teacher/courses','Course › Calendar','/teacher/courses?tab=calendar'],
+ ['Unit guide','/teacher/courses/[id]/[unit]','Course unit guide','same'],
+ ['My Assignments','/teacher/assignments','Assignments › All','/teacher/assignments (same)'],
+ ['Create Assignment','/teacher/create','Assignments › New','/teacher/assignments/new (redirect)'],
+ ['Waypoints','/teacher/waypoints','Assignments › Library','/teacher/assignments?tab=library (redirect)'],
+ ['Gradebook','/teacher/grades','Grading › Gradebook','/teacher/grading?tab=gradebook (redirect)'],
+ ['Gradebook › student','/teacher/grades/student','Grading › student detail','same'],
+ ['Misconceptions','/teacher/insights','Grading › Misconceptions','/teacher/grading?tab=misconceptions (redirect)'],
+ ['Students › Roster','/teacher/students','Classes › Roster','/teacher/classes (redirect)'],
+ ['Students › Insights','/teacher/students','Account › Department › Students','/teacher/network?tab=students'],
+ ['Resource Uploads','/teacher/uploads','Classes › Materials','/teacher/classes?tab=materials (redirect)'],
+ ['Vault Controls','/teacher/vault','Classes › Materials','/teacher/classes?tab=materials (redirect)'],
+ ['Network (+ billing, investment)','/teacher/network','Account › Department','/teacher/network (same)'],
+ ['Sustainability (dialog)','none','Account › Sustainability','none'],
+];
+document.getElementById('maprows').innerHTML=MAP.map(r=>`<tr><td>${r[0]}</td><td><code>${r[1]}</code></td><td><b>${r[2]}</b></td><td><code>${r[3]}</code></td></tr>`).join('');
+</script>

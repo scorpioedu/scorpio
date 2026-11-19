@@ -1,0 +1,32 @@
+/* A short glow that travels along a step rail, left to right. Off for reduced motion. */
+.pulse {
+  position: absolute;
+  top: 50%;
+  left: 16.667%;
+  width: 5rem;
+  height: 1px;
+  margin-top: -0.5px;
+  background: linear-gradient(to right, transparent, var(--primary), transparent);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulse {
+    animation: travel 3.2s cubic-bezier(0.4, 0, 0.2, 1) var(--pulse-delay, 0s) infinite;
+  }
+}
+
+@keyframes travel {
+  0% {
+    left: 16.667%;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 5.5rem);
+    opacity: 0;
+  }
+}
