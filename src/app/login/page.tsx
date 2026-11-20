@@ -231,12 +231,23 @@ function LoginForm() {
 
   return (
     <AuthSplit>
-      <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+      <motion.div
+        initial={{ y: 12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <div>
           <h1 className="font-semibold text-4xl tracking-tight">Welcome back.</h1>
-          <p className="mt-2 mb-8 text-sm text-muted-foreground">Sign in to Scorpio to pick up where you left off.</p>
+          <p className="mt-2 mb-8 text-sm text-muted-foreground">
+            Sign in to Scorpio to pick up where you left off.
+          </p>
           <div>
-            <Tabs defaultValue={teacherInvite ? "teacher" : "student"} className="w-full">
+            <Tabs
+              defaultValue={
+                teacherInvite || params.get("role") === "teacher" ? "teacher" : "student"
+              }
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="student" className="flex items-center gap-2 cursor-pointer">
                   <GraduationCap className="h-4 w-4" />

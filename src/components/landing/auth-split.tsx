@@ -3,7 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 
 /** Flowing field lines that bend toward a focal point, drawn once on the server. */
-function FieldLines({ flip }: { flip: boolean }) {
+export function FieldLines({ flip }: { flip: boolean }) {
   const count = 44;
   const lines = Array.from({ length: count }, (_, i) => {
     const t = i / (count - 1);
@@ -30,12 +30,22 @@ function FieldLines({ flip }: { flip: boolean }) {
 }
 
 /** `side` is where the brand panel sits; login and sign up use opposite sides so they read as different pages. */
-export function AuthSplit({ children, wide = false, side = "right" }: { children: React.ReactNode; wide?: boolean; side?: "left" | "right" }) {
+export function AuthSplit({
+  children,
+  wide = false,
+  side = "right",
+}: {
+  children: React.ReactNode;
+  wide?: boolean;
+  side?: "left" | "right";
+}) {
   const right = side === "right";
   return (
     <div className="min-h-dvh grid lg:grid-cols-2 bg-background">
       {/* Brand panel */}
-      <aside className={`relative hidden lg:flex flex-col overflow-hidden border-border/60 bg-muted/20 p-10 ${right ? "border-l lg:order-2" : "border-r"}`}>
+      <aside
+        className={`relative hidden lg:flex flex-col overflow-hidden border-border/60 bg-muted/20 p-10 ${right ? "border-l lg:order-2" : "border-r"}`}
+      >
         <Link href="/" className="relative z-10 flex items-center gap-2.5 w-fit">
           <Logo size={32} className="text-primary" />
           <span className="text-lg font-semibold tracking-tight">Scorpio</span>
