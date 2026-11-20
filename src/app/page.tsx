@@ -5,6 +5,7 @@ import { CourseGrid } from "@/components/landing/course-grid";
 import { HomeChatbot, HomeHeader, HomeScrollReveal } from "@/components/landing/home-interactions";
 import reveal from "@/components/landing/home-reveal.module.css";
 import { LandingHero } from "@/components/landing/LandingHero";
+import { RoleGate } from "@/components/landing/role-gate";
 import { ProductShot } from "@/components/landing/product-shot";
 import { ColumnGuides } from "@/components/landing/line-art";
 import { WorkflowRows } from "@/components/landing/workflow-rows";
@@ -135,6 +136,7 @@ export default function Home() {
         </div>
       </footer>
 
+      <RoleGate />
       <HomeChatbot />
     </div>
   );
