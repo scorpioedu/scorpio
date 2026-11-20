@@ -3,21 +3,27 @@ import styles from "./loading-screen.module.css";
 
 const introScript = `
   (() => {
-    if (location.hash || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Signed-in students go straight to their portal; the landing page is never shown.
+    const toPortal = /(?:^|; )scorpio_role=student(?:;|$)/.test(document.cookie);
+    const go = () => location.replace("/student");
+    if (toPortal) document.documentElement.setAttribute("data-to-portal", "");
+    if (location.hash && !toPortal) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return toPortal ? go() : undefined;
     const dialog = document.getElementById("scorpio-intro");
-    if (!dialog || typeof dialog.showModal !== "function") return;
+    if (!dialog || typeof dialog.showModal !== "function") return toPortal ? go() : undefined;
     try {
       const key = "scorpio_splash_shown";
-      if (sessionStorage.getItem(key)) return;
+      if (sessionStorage.getItem(key)) return toPortal ? go() : undefined;
       sessionStorage.setItem(key, "true");
     } catch {
-      return;
+      return toPortal ? go() : undefined;
     }
 
     const listeners = new AbortController();
     function finish() {
       clearTimeout(fallback);
       listeners.abort();
+      if (toPortal) return go();
       dialog.close();
     }
     dialog.addEventListener("animationend", (event) => {
@@ -42,17 +48,20 @@ export function LoadingScreen() {
         suppressHydrationWarning
         className={`${styles.splash} fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-background text-foreground backdrop:bg-transparent open:grid open:place-items-center`}
       >
-        <div
-          aria-hidden="true"
-          className={`${styles.grid} pointer-events-none absolute inset-0`}
-        />
+        <div aria-hidden="true" className={`${styles.grid} pointer-events-none absolute inset-0`} />
 
         <div className="relative flex flex-col items-center gap-8 sm:gap-10" aria-hidden="true">
           <div className="relative grid place-items-center">
-            <span className={`${styles.ring} absolute inset-0 rounded-full border border-foreground/25`} />
+            <span
+              className={`${styles.ring} absolute inset-0 rounded-full border border-foreground/25`}
+            />
             <Logo size={90} strokeWidth={3} className={styles.logo}>
               <circle className={styles.compass} cx="12" cy="12" r="10" pathLength={1} />
-              <path className={styles.needle} d="M16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88Z" pathLength={1} />
+              <path
+                className={styles.needle}
+                d="M16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88Z"
+                pathLength={1}
+              />
             </Logo>
           </div>
 
@@ -68,7 +77,9 @@ export function LoadingScreen() {
                 </span>
               ))}
             </div>
-            <p className={`${styles.caption} mt-4 text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground`}>
+            <p
+              className={`${styles.caption} mt-4 text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground`}
+            >
               Physics LMS
             </p>
           </div>
@@ -85,6 +96,9 @@ export function LoadingScreen() {
           Skip intro
         </button>
       </dialog>
+      <style>
+        {"html[data-to-portal] #home-page > :not(#scorpio-intro, script) { visibility: hidden; }"}
+      </style>
       {/* Run while the browser parses the homepage, before its content or hydration. */}
       <script dangerouslySetInnerHTML={{ __html: introScript }} />
     </>

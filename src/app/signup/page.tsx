@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { inviteAuthPath } from "@/lib/onboarding-links";
 import { register } from "@/lib/firebase";
+import { InviteCelebration } from "@/components/invite-celebration";
 import { AuthSplit } from "@/components/landing/auth-split";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,6 +164,12 @@ function SignupForm() {
 
   return (
     <AuthSplit side="left" wide>
+      {(teacherInvite || classInvite) && (
+        <InviteCelebration
+          kind={teacherInvite ? "network" : "class"}
+          code={teacherInvite || classInvite}
+        />
+      )}
       <motion.div
         initial={{ y: 12, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

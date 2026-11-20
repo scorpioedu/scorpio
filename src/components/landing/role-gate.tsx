@@ -23,7 +23,7 @@ const subscribe = (cb: () => void) => {
   };
 };
 const hasSeen = () => {
-  if (dismissed) return true;
+  if (dismissed || document.documentElement.hasAttribute("data-to-portal")) return true;
   try {
     return !!localStorage.getItem(SEEN_KEY);
   } catch {
