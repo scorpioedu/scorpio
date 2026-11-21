@@ -54,6 +54,7 @@ A teacher can attach a course to a class. Classes that follow no course behave e
 | AP Physics 1            | Eight units, 32 sets, 160 problems.                                          |
 | AP Physics 2            | Outlined: units 9 to 15, 28 sets. Problems are not yet written.              |
 | AP Physics C: Mechanics | Outlined: units 1 to 7, 28 sets. Problems are not yet written.               |
+| AP Physics C: Electricity and Magnetism | Outlined: units 8 to 13, 24 sets. Problems are not yet written. |
 
 Problems are drafted with AI assistance, validated automatically, independently re-solved by a second model call, and then reviewed by a person. A set is published only after a person has approved every problem in it. Planned courses can be read and browsed, but nothing in them can be assigned until sets are published.
 
