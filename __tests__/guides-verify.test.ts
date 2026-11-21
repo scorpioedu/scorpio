@@ -227,7 +227,7 @@ describe("verifyUnitGuide", () => {
   });
 
   test("a diagram that cannot be drawn, or that says something false", () => {
-    expect(errorsOf((g) => (g.picture!.diagram = "circuit\nresistor 1"))).toEqual([
+    expect(errorsOf((g) => (g.picture!.diagram = "blueprint\nresistor 1"))).toEqual([
       expect.stringContaining("4.1 picture: diagram line 1"),
     ]);
     // An arrow drawn through the block it acts on is a "physics" warning: an error here.
