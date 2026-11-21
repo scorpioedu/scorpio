@@ -349,6 +349,7 @@ describe("guideCoverage", () => {
       "ap-physics-1",
       "ap-physics-2",
       "ap-physics-c-mech",
+      "ap-physics-c-em",
     ]);
     expect(coverage[0].withGuide).toEqual([4]);
     expect(coverage[0].missing).toEqual([1, 2, 3, 5, 6, 7, 8]);
