@@ -13,11 +13,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const SEEN_KEY = "scorpio-raise-impact-seen";
+type Context = "demo" | "student" | "teacher";
 
-function readSeen() {
+// The public demo and the signed-in app remember the notice separately, so someone who saw it on
+// /ai still sees it once in their class.
+const SEEN_KEYS: Record<Context, string> = {
+  demo: "scorpio-raise-impact-seen",
+  student: "scorpio-raise-impact-seen-app",
+  teacher: "scorpio-raise-impact-seen-app",
+};
+
+const SUSTAINABILITY_HREF: Record<Context, string> = {
+  demo: "/sustainability",
+  student: "/student/sustainability",
+  teacher: "/teacher/sustainability",
+};
+
+const LIMIT_NOTE: Record<Context, string> = {
+  demo: "this demo allows three questions.",
+  student: "your class has an AI budget, and departments set a monthly spend limit.",
+  teacher: "Raise draws on your department's AI budget, with a monthly spend limit.",
+};
+
+function readSeen(key: string) {
   try {
-    return window.localStorage.getItem(SEEN_KEY) === "1";
+    return window.localStorage.getItem(key) === "1";
   } catch {
     // Storage blocked: show the notice and don't try to remember it.
     return false;
@@ -27,18 +47,20 @@ function readSeen() {
 const noSubscribe = () => () => {};
 
 /*
- * Shown the first time someone opens Test Raise in this browser: every hint has an energy and
- * water cost, and this says so plainly before they start. Figures match /sustainability.
+ * Shown the first time someone opens Raise in this browser (Test Raise, or Raise for students and
+ * teachers): every hint has an energy and water cost, and this says so plainly before they start.
+ * Figures match the Sustainability page.
  */
-export function RaiseImpactNotice() {
+export function RaiseImpactNotice({ context = "demo" }: { context?: Context }) {
+  const key = SEEN_KEYS[context];
   // The server render says "seen" so nothing flashes; the browser then reads the real value.
-  const seen = useSyncExternalStore(noSubscribe, readSeen, () => true);
+  const seen = useSyncExternalStore(noSubscribe, () => readSeen(key), () => true);
   const [dismissed, setDismissed] = useState(false);
   const open = !seen && !dismissed;
 
   const dismiss = () => {
     try {
-      window.localStorage.setItem(SEEN_KEY, "1");
+      window.localStorage.setItem(key, "1");
     } catch {
       // Ignore; the notice just shows again next time.
     }
@@ -67,7 +89,7 @@ export function RaiseImpactNotice() {
             fewer tokens per hint.
           </li>
           <li>
-            <span className="text-foreground">We cap usage</span>: this demo allows three questions.
+            <span className="text-foreground">We cap usage</span>: {LIMIT_NOTE[context]}
           </li>
           <li>
             <span className="text-foreground">We are not carbon neutral yet</span>, and plan to fund
@@ -77,7 +99,7 @@ export function RaiseImpactNotice() {
 
         <DialogFooter className="mt-7 flex-col-reverse gap-2 border-t border-border p-4 sm:flex-row sm:justify-end sm:px-7">
           <Button asChild variant="ghost" className="rounded-full">
-            <Link href="/sustainability" onClick={dismiss}>
+            <Link href={SUSTAINABILITY_HREF[context]} onClick={dismiss}>
               How we measure it
             </Link>
           </Button>

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { SiteHeader } from "@/components/landing/site-header";
-import { RaiseImpactNotice } from "@/components/landing/raise-impact-notice";
+import { RaiseImpactNotice } from "@/components/raise/raise-impact-notice";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { render } from "@/lib/diagram";
 import { isSafeSvg } from "@/lib/diagram/safe";
