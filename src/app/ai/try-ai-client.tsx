@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { SiteHeader } from "@/components/landing/site-header";
-import { SpaceBackground } from "@/components/ui/space-background";
+import { RaiseImpactNotice } from "@/components/raise/raise-impact-notice";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { render } from "@/lib/diagram";
 import { isSafeSvg } from "@/lib/diagram/safe";
@@ -144,9 +144,9 @@ function StarterCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.08 + index * 0.05, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card/40 text-left backdrop-blur-sm cursor-pointer",
+        "group flex flex-col overflow-hidden rounded-xl border border-border bg-muted/40 text-left cursor-pointer dark:bg-card",
         "transition-[border-color,background-color,transform] duration-200",
-        "hover:border-foreground/25 hover:bg-card/70 hover:-translate-y-0.5",
+        "hover:border-foreground/25",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
       )}
     >
@@ -319,9 +319,9 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex flex-col relative font-medium">
-      <SpaceBackground />
+    <div className="min-h-screen flex flex-col relative bg-background">
       <SiteHeader />
+      <RaiseImpactNotice />
 
       <div
         className={cn(
@@ -357,7 +357,7 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
                 )}
               </div>
 
-              <h1 className="text-[30px] sm:text-[40px] font-bold tracking-[-0.035em] text-foreground leading-[1.1] mb-4">
+              <h1 className="text-pretty text-[clamp(1.75rem,3.2vw,2.5rem)] font-medium tracking-[-0.035em] text-foreground leading-[1.15] mb-4">
                 Ask a physics question.
                 <br />
                 <span className="text-muted-foreground">

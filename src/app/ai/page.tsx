@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { TryAiClient } from "./try-ai-client";
 
 export const metadata: Metadata = {
-  title: "Try Raise",
+  title: "Test Raise",
   description:
     "Ask Raise, Scorpio's physics tutor, a question. It guides you with hints and questions instead of handing over the answer.",
 };

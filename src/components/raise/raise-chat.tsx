@@ -46,6 +46,7 @@ import {
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { RaiseImpactNote } from "@/components/student/raise-impact-note";
+import { RaiseImpactNotice } from "@/components/raise/raise-impact-notice";
 import { hideOpenDiagramBlock } from "@/lib/diagram/blocks";
 import { cn } from "@/lib/utils";
 import { Organization } from "@/lib/types";
@@ -1018,6 +1019,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
   return (
     <MotionConfig reducedMotion="user">
       <div className="relative flex min-h-0 flex-1 w-full overflow-hidden bg-background text-foreground">
+        <RaiseImpactNotice context={variant} />
         {/* ========================================================================= */}
         {/* SIDEBAR: Chat History (Full Height Left Panel)                           */}
         {/* ========================================================================= */}

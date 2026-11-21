@@ -1,244 +1,65 @@
 "use client";
 
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useMotionValueEvent,
-} from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { useState, useRef, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
-import { ModeToggle } from "@/components/mode-toggle";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Brain,
-  Sparkles,
-  KeyRound,
-  MessageCircle,
-  ArrowRight,
-  ArrowUpRight,
-  ChevronDown,
-  Orbit,
-  Menu,
-  Info,
-  BookOpen,
-  Mail,
-  AlertCircle,
-  Lightbulb,
-  PlayCircle,
-  BarChart3,
-  ChartColumnIncreasing,
-  X,
-  Leaf,
-  Layers,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 import reveal from "./home-reveal.module.css";
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
-
-type NavItem = {
-  id: string;
-  label: string;
-  href?: string;
-  action?: () => void;
-  target?: string;
-  isDropdown?: boolean;
-  isExternal?: boolean;
-};
+/*
+ * The marketing header, after Polar: logo and nav on the left, account actions on the right,
+ * and small dropdowns that open under their own trigger. One style on every page.
+ */
 
 type MenuItem = {
   label: string;
   desc: string;
-  icon: React.ElementType;
-  target?: string;
+  /** A page to open. */
   href?: string;
+  /** A section id on the home page. */
+  target?: string;
 };
 
-// ─── Nav Link ─────────────────────────────────────────────────────────────────
+type NavItem =
+  | { id: string; label: string; href: string; menu?: undefined }
+  | { id: string; label: string; href?: undefined; menu: MenuItem[] };
 
-function NavLink({
-  item,
-  isActive,
-  isHovered,
-  onMouseEnter,
-  onClick,
-  delay,
-  isHomePage,
-}: {
-  item: NavItem;
-  isActive: boolean;
-  isHovered: boolean;
-  onMouseEnter: () => void;
-  onClick: () => void;
-  delay: number;
-  isHomePage: boolean;
-}) {
-  const active = isHovered || isActive;
+const platformItems: MenuItem[] = [
+  { href: "/demos", label: "Demos", desc: "The tour video and a sample classroom" },
+  { href: "/demos/teacher", label: "Teacher demo", desc: "Click around a class with sample data" },
+  { target: "solution", label: "How Raise works", desc: "Hints and questions instead of answers" },
+  { target: "features", label: "Classroom workflow", desc: "Assign, hint and review in one place" },
+  { target: "efficacy", label: "Research results", desc: "How often Raise gave the answer away" },
+];
 
-  const content = (
-    <>
-      <span className="flex items-center gap-1.5">
-        {item.label}
-        {!isHomePage && item.id === "ai" && (
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
-        )}
-      </span>
+const resourcesItems: MenuItem[] = [
+  { href: "/research", label: "Research", desc: "How we tested Raise" },
+  { href: "/sustainability", label: "Sustainability", desc: "Energy, water and paper, measured" },
+  { href: "/about", label: "About", desc: "Why we built Scorpio" },
+  { target: "faq", label: "FAQ", desc: "Pricing, data and getting started" },
+  { href: "/request-access", label: "Request access", desc: "Classroom and department access" },
+  { href: "/contact", label: "Contact", desc: "Talk to us about your department" },
+];
 
-      {item.isExternal && (
-        <ArrowUpRight
-          className={cn(
-            "h-3 w-3 transition-all duration-200",
-            active
-              ? "opacity-70 translate-x-0 -translate-y-0"
-              : "opacity-0 -translate-x-0.5 translate-y-0.5 group-hover:opacity-50 group-hover:translate-x-0 group-hover:-translate-y-0"
-          )}
-        />
-      )}
+const navItems: NavItem[] = [
+  { id: "platform", label: "Platform", menu: platformItems },
+  { id: "raise", label: "Test Raise", href: "/ai" },
+  { id: "pricing", label: "Pricing", href: "/pricing" },
+  { id: "resources", label: "Resources", menu: resourcesItems },
+];
 
-      {item.isDropdown && (
-        <ChevronDown
-          className={cn(
-            "opacity-50 transition-transform duration-300",
-            isHomePage ? "size-3" : "size-3.5",
-            isHovered ? "rotate-180 opacity-100" : ""
-          )}
-        />
-      )}
+const linkClass =
+  "flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring";
 
-      {!isHomePage && (
-        <span className="absolute bottom-0 left-3 right-3 h-px overflow-hidden">
-          <span
-            className={cn(
-              "block h-full bg-foreground transition-all duration-300 ease-out",
-              active ? "w-full" : "w-0"
-            )}
-            style={{ transitionProperty: "width" }}
-          />
-        </span>
-      )}
-    </>
-  );
-
-  const sharedClassName = cn(
-    "relative group py-2 text-[13.5px] font-medium tracking-[-0.01em] cursor-pointer flex items-center gap-1.5 transition-colors duration-200",
-    isHomePage
-      ? cn(
-        "rounded-md px-3 focus-visible:outline-2 focus-visible:outline-ring",
-        active ? "bg-muted/60 text-foreground" : "text-muted-foreground hover:text-foreground"
-      )
-      : cn("px-4", active ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground")
-  );
-
-  if (item.href && !item.isDropdown) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Link
-          href={item.href}
-          onClick={onClick}
-          onMouseEnter={onMouseEnter}
-          className={sharedClassName}
-        >
-          {content}
-        </Link>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.button
-      initial={{ opacity: 0, y: -6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay, ease: [0.22, 1, 0.36, 1] }}
-      type="button"
-      aria-expanded={item.isDropdown ? isHovered : undefined}
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
-      className={sharedClassName}
-    >
-      {content}
-    </motion.button>
-  );
+function reducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
-
-// ─── Mega Menu Card ────────────────────────────────────────────────────────────
-
-function MegaMenuCard({
-  icon: Icon,
-  label,
-  desc,
-  onClick,
-  href,
-  delay,
-}: {
-  icon: React.ElementType;
-  label: string;
-  desc: string;
-  onClick?: () => void;
-  href?: string;
-  delay: number;
-}) {
-  const innerContent = (
-    <>
-      <div className="mt-0.5 h-8 w-8 rounded-lg bg-muted/80 flex items-center justify-center shrink-0
-                      group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200">
-        <Icon className="h-4 w-4" />
-      </div>
-
-      <div className="min-w-0">
-        <p className="text-[13.5px] font-semibold text-foreground group-hover:text-primary
-                      transition-colors duration-150 leading-tight mb-0.5 flex items-center gap-1">
-          {label}
-          <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0
-                                  transition-all duration-200" />
-        </p>
-        <p className="text-[11.5px] text-muted-foreground/80 leading-snug">{desc}</p>
-
-        <span className="absolute bottom-3 left-4 right-4 h-px overflow-hidden">
-          <span className="block h-full w-0 bg-primary/30 group-hover:w-full transition-all duration-300 ease-out" />
-        </span>
-      </div>
-    </>
-  );
-
-  const className = "group relative flex w-full items-start gap-3.5 p-4 rounded-xl cursor-pointer text-left hover:bg-accent hover:text-accent-foreground transition-colors border border-transparent hover:border-border/40 focus-visible:outline-2 focus-visible:outline-ring";
-
-  if (href) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay, duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Link href={href} onClick={onClick} className={className}>
-          {innerContent}
-        </Link>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.button
-      type="button"
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      onClick={onClick}
-      className={className}
-    >
-      {innerContent}
-    </motion.button>
-  );
-}
-
-// ─── Main Component ─────────────────────────────────────────────────────────────
 
 interface SiteHeaderProps {
   activeSection?: string;
@@ -246,7 +67,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ activeSection }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -254,466 +75,302 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
-  // Active navigation matching 4 core pillars
-  const currentActiveNav = (() => {
-    if (pathname === "/features" || pathname === "/demos") return "platform";
-    if (pathname === "/ai") return "ai";
+  const currentNav = (() => {
+    if (pathname.startsWith("/demos")) return "platform";
+    if (pathname === "/ai") return "raise";
     if (pathname === "/pricing") return "pricing";
     if (
-      pathname === "/sustainability" ||
-      pathname.startsWith("/about") ||
-      pathname.startsWith("/research") ||
-      pathname.startsWith("/contact") ||
-      pathname.startsWith("/privacy") ||
-      pathname.startsWith("/terms") ||
-      pathname === "/request-access"
-    ) return "resources";
+      ["/sustainability", "/about", "/research", "/contact", "/privacy", "/terms", "/request-access"].some(
+        (p) => pathname.startsWith(p),
+      )
+    )
+      return "resources";
     if (isHomePage) {
-      if (activeSection === "features" || activeSection === "problem" || activeSection === "solution" || activeSection === "efficacy") return "platform";
+      if (["features", "solution", "efficacy"].includes(activeSection ?? "")) return "platform";
       if (activeSection === "faq") return "resources";
-      if (activeSection === "pricing-teaser") return "pricing";
-      return "";
+      if (activeSection === "pricing") return "pricing";
     }
     return "";
   })();
 
   const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (y) => {
-    setIsScrolled(y > 20);
-  });
+  useMotionValueEvent(scrollY, "change", (y) => setIsScrolled(y > 8));
 
   const scheduleClose = useCallback(() => {
-    closeTimeoutRef.current = setTimeout(() => setHoveredNav(null), 200);
+    closeTimeoutRef.current = setTimeout(() => setOpenMenu(null), 160);
   }, []);
-
   const cancelClose = useCallback(() => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const goToSection = (id: string) => {
+    if (!isHomePage) {
+      router.push("/#" + id);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       const y = el.getBoundingClientRect().top + window.scrollY - 64;
-      window.scrollTo({ top: y, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      window.scrollTo({ top: y, behavior: reducedMotion() ? "instant" : "smooth" });
     }
   };
 
-  // 4 Core Navigation Pillars
-  const navItems: NavItem[] = [
-    { id: "platform", label: "Platform", isDropdown: true },
-    { id: "ai", label: "Try AI", href: "/ai" },
-    { id: "pricing", label: "Pricing", href: "/pricing" },
-    { id: "resources", label: "Resources", isDropdown: true },
-  ];
-
-  const platformItems: MenuItem[] = [
-    { href: "/features", label: "Platform Features", desc: "4-layer Socratic scaffolding, KaTeX engine, and telemetry.", icon: Layers },
-    { href: "/demos", label: "System Demos", desc: "Interactive module studio, video walkthroughs, and workflows.", icon: PlayCircle },
-    { target: "solution", label: "How Raise Works", desc: "Diagnostic query, conceptual priming, and guided derivation.", icon: Lightbulb },
-    { target: "features", label: "Classroom workflow", desc: "Post assignments, give hints, and review class progress.", icon: AlertCircle },
-    { target: "efficacy", label: "Research & Efficacy", desc: "What we tested and how often Raise gave away the answer.", icon: BarChart3 },
-  ];
-
-  const resourcesItems: MenuItem[] = [
-    { href: "/research", label: "Research & Methodology", desc: "Comprehensive ablation study data and Ph.D. audit methodology.", icon: Brain },
-    { href: "/sustainability", label: "Sustainability & Climate", desc: "Measured compute, water, and paper efficiency benchmarks.", icon: Leaf },
-    { href: "/about", label: "About Scorpio", desc: "Why we built the Socratic Learning Management System.", icon: Info },
-    { target: "faq", label: "Frequently Asked Questions", desc: "Common questions about pricing, data security, and adoption.", icon: MessageCircle },
-    { href: "/request-access", label: "Request Access", desc: "Institutional licenses, trial codes, and LMS integrations.", icon: KeyRound },
-    { href: "/contact", label: "Contact Us", desc: "Direct support for physics departments and deans.", icon: Mail },
-  ];
-
   return (
-    <motion.header
-      className="fixed top-0 left-0 right-0 z-50 flex flex-col justify-center"
-      onMouseLeave={scheduleClose}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setHoveredNav(null);
-      }}
+    <header
+      className="fixed inset-x-0 top-0 z-50"
       onKeyDown={(event) => {
-        if (event.key === "Escape") setHoveredNav(null);
+        if (event.key === "Escape") setOpenMenu(null);
       }}
     >
-      {/* ── Backdrop ────────────────────────────────────────────────────────── */}
       <div
+        aria-hidden="true"
         className={cn(
-          "absolute inset-0 pointer-events-none transition-opacity duration-300 motion-reduce:transition-none",
-          isHomePage
-            ? "bg-background/65 backdrop-blur-lg"
-            : "bg-background/80 backdrop-blur-xl border-b border-border/40 shadow-sm",
-          isScrolled ? "opacity-100" : isHomePage ? "opacity-70" : "opacity-0"
+          "pointer-events-none absolute inset-0 border-b bg-background/80 backdrop-blur-lg transition-[opacity,border-color] duration-200 motion-reduce:transition-none",
+          isScrolled || openMenu ? "border-border/60 opacity-100" : "border-transparent opacity-0",
         )}
       />
 
-      {/* ── Inner Row ───────────────────────────────────────────────────────── */}
-      <div className={cn(
-        "relative z-10 grid grid-cols-[1fr_auto] items-center mx-auto w-full transition-[height] duration-300 motion-reduce:transition-none",
-        isHomePage
-          ? cn(reveal.enter, "gap-2 px-3 sm:px-6 lg:px-8 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]")
-          : "max-w-[1440px] gap-6 px-4 sm:px-6 md:px-10 xl:grid-cols-[auto_1fr_auto]",
-        isScrolled ? "h-[54px]" : "h-[64px]"
-      )}>
-
-        {/* Logo Area */}
-        <div className="flex justify-start">
-          <Link
-            href="/"
-            onClick={(e) => {
-              if (isHomePage) {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
-              }
-            }}
-            className={cn(
-              "flex items-center gap-2.5 group shrink-0",
-              isHomePage && "gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-            )}
-          >
-            <div className="relative">
-              {!isHomePage && <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 opacity-0 group-hover:opacity-100" />}
-              <Logo
-                size={22}
-                className="text-foreground relative z-10 group-hover:rotate-[20deg] transition-transform duration-400"
-              />
-            </div>
-            <span className="font-black text-[15px] tracking-[-0.03em] text-foreground group-hover:text-primary transition-colors duration-200">
-              Scorpio
-            </span>
-          </Link>
-        </div>
-
-        {/* ── Desktop Nav (4 Streamlined Pillars) ──────────────────────────────── */}
-        <nav
-          className="hidden xl:flex items-center justify-center gap-1.5 h-full mx-auto"
-          onMouseEnter={cancelClose}
+      <div
+        className={cn(
+          "relative mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-5 sm:px-8",
+          isHomePage && reveal.enter,
+        )}
+      >
+        <Link
+          href="/"
+          onClick={(e) => {
+            if (isHomePage) {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: reducedMotion() ? "instant" : "smooth" });
+            }
+          }}
+          className="flex shrink-0 items-center gap-2 rounded-md text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
         >
-          {navItems.map((item, i) => (
-            <NavLink
-              key={item.id}
-              item={item}
-              isActive={!hoveredNav && currentActiveNav === item.id}
-              isHovered={hoveredNav === item.id}
-              delay={0.04 + i * 0.03}
-              isHomePage={isHomePage}
-              onMouseEnter={() => {
-                cancelClose();
-                setHoveredNav(item.id);
-              }}
-              onClick={() => {
-                if (item.isDropdown) {
-                  setHoveredNav(hoveredNav === item.id ? null : item.id);
-                } else {
-                  setHoveredNav(null);
-                  if (item.action) item.action();
-                  else if (item.target) {
-                    if (isHomePage) {
-                      scrollToSection(item.target);
-                    } else {
-                      router.push("/#" + item.target);
-                    }
-                  }
-                }
-              }}
-            />
-          ))}
+          <Logo size={20} aria-hidden="true" />
+          <span className="font-inter text-[17px] font-black tracking-tight">Scorpio</span>
+        </Link>
+
+        <nav
+          aria-label="Main"
+          className="hidden items-center lg:flex"
+          onMouseLeave={scheduleClose}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setOpenMenu(null);
+          }}
+        >
+          {navItems.map((item) => {
+            const active = openMenu === item.id || (!openMenu && currentNav === item.id);
+            const tone = active ? "text-foreground" : "text-muted-foreground hover:text-foreground";
+
+            if (!item.menu) {
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onMouseEnter={() => setOpenMenu(null)}
+                  aria-current={currentNav === item.id ? "page" : undefined}
+                  className={cn(linkClass, tone)}
+                >
+                  {item.label}
+                </Link>
+              );
+            }
+
+            const isOpen = openMenu === item.id;
+            return (
+              <div
+                key={item.id}
+                className="relative"
+                onMouseEnter={() => {
+                  cancelClose();
+                  setOpenMenu(item.id);
+                }}
+              >
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`${item.id}-menu`}
+                  onClick={() => setOpenMenu(isOpen ? null : item.id)}
+                  className={cn(linkClass, tone)}
+                >
+                  {item.label}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      "size-3.5 opacity-60 transition-transform duration-200",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      id={`${item.id}-menu`}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.14, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute left-0 top-full pt-2"
+                    >
+                      <ul
+                        role="list"
+                        className="w-72 list-none rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg shadow-black/5"
+                      >
+                        {item.menu.map((entry) => {
+                          const body = (
+                            <>
+                              <span className="block text-sm font-medium text-foreground">{entry.label}</span>
+                              <span className="block text-[13px] text-muted-foreground">{entry.desc}</span>
+                            </>
+                          );
+                          const cls =
+                            "block w-full rounded-lg px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none";
+                          return (
+                            <li key={entry.label}>
+                              {entry.href ? (
+                                <Link href={entry.href} onClick={() => setOpenMenu(null)} className={cls}>
+                                  {body}
+                                </Link>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className={cls}
+                                  onClick={() => {
+                                    setOpenMenu(null);
+                                    goToSection(entry.target!);
+                                  }}
+                                >
+                                  {body}
+                                </button>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </nav>
 
-        {/* ── Right Actions ────────────────────────────────────────────────── */}
-        <div
-          className={cn(
-            "flex justify-end items-center gap-2",
-            isHomePage && "gap-1 sm:gap-2"
-          )}
-          onMouseEnter={isHomePage ? () => setHoveredNav(null) : undefined}
-        >
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <ModeToggle />
-
-          <div
-            aria-hidden="true"
-            className={cn("h-4 w-px shrink-0", isHomePage ? "mx-1 bg-border/70" : "mx-1 hidden bg-border/40 sm:block")}
-          />
-
           <Button
             asChild
             variant="ghost"
             size="sm"
-            className={cn(
-              "hidden text-muted-foreground hover:text-foreground",
-              isHomePage ? "min-[360px]:inline-flex h-9 px-2 hover:bg-transparent sm:px-3" : "sm:inline-flex"
-            )}
+            className="hidden h-9 px-3 text-muted-foreground hover:bg-transparent hover:text-foreground min-[380px]:inline-flex"
           >
-            <Link href="/login" prefetch={isHomePage ? false : undefined}>{isHomePage ? "Log in" : "Login"}</Link>
+            <Link href="/login" prefetch={false}>
+              Log in
+            </Link>
           </Button>
-          <Button
-            asChild
-            size="sm"
-            className={isHomePage ? "h-9 rounded-lg px-3 font-semibold sm:px-4" : "rounded-full shadow-sm shadow-primary/10"}
-          >
-            <Link href="/signup" prefetch={isHomePage ? false : undefined}>Sign up</Link>
+          <Button asChild size="sm" className="h-9 rounded-full px-4">
+            <Link href="/signup" prefetch={false}>
+              Sign up
+            </Link>
           </Button>
 
-          {/* Mobile hamburger */}
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant={isHomePage ? "ghost" : "outline"}
-                size="icon"
-                className="xl:hidden"
-                aria-label="Open menu"
-              >
-                <Menu className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+                <Menu className="size-4" />
               </Button>
             </SheetTrigger>
 
             <SheetContent
               side="right"
-              className="w-full max-w-[320px] h-full flex flex-col z-50 p-0 bg-background/95 backdrop-blur-2xl shadow-2xl xl:hidden border-l border-border/40"
               hideClose
               aria-describedby={undefined}
+              className="flex h-full w-full max-w-[320px] flex-col gap-0 border-l border-border bg-background p-0 lg:hidden"
             >
-              <div className="flex items-center justify-between px-6 py-5 border-b border-border/30">
-                <div className="flex items-center gap-2">
-                  <Logo size={20} className="text-foreground" />
-                  <SheetTitle className="text-base font-bold">Scorpio</SheetTitle>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMenuOpen(false)}
-                  aria-label="Close menu"
-                >
-                  <X className="h-4 w-4" />
+              <div className="flex h-14 items-center justify-between border-b border-border px-5">
+                <SheetTitle className="flex items-center gap-2">
+                  <Logo size={18} aria-hidden="true" />
+                  <span className="font-inter text-base font-black tracking-tight">Scorpio</span>
+                </SheetTitle>
+                <Button variant="ghost" size="icon" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+                  <X className="size-4" />
                 </Button>
               </div>
 
-              <nav className="flex flex-col gap-6 px-5 py-6 flex-1 overflow-y-auto">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/60 px-2 mb-2">
-                    Platform
-                  </p>
+              <nav aria-label="Main" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-5">
+                <ul role="list" className="list-none">
                   {[
-                    { label: "Platform Features", href: "/features", icon: Layers },
-                    { label: "System Demos", href: "/demos", icon: PlayCircle },
-                    { label: "Try AI Playground", href: "/ai", icon: Sparkles, highlight: true },
-                    { label: "Pricing & Plans", href: "/pricing", icon: ChartColumnIncreasing },
-                  ].map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      className={cn(
-                        "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-all duration-150",
-                        pathname === item.href
-                          ? "bg-primary/10 text-primary font-semibold"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="h-7 w-7 rounded-lg bg-muted/80 flex items-center justify-center shrink-0">
-                          <item.icon className="h-3.5 w-3.5 text-primary" />
-                        </div>
-                        <span>{item.label}</span>
-                      </div>
-                      {item.highlight && (
-                        <span className="text-[9px] font-black uppercase tracking-wider bg-primary/15 text-primary px-2 py-0.5 rounded-full">
-                          Live
-                        </span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/60 px-2 mb-2">
-                    Resources & Research
-                  </p>
-                  {resourcesItems.map((item) => {
-                    const href = item.href || (item.target ? (isHomePage ? undefined : `/#${item.target}`) : "#");
-                    if (item.target && isHomePage) {
-                      return (
-                        <button
-                          key={item.label}
-                          onClick={() => {
-                            setMenuOpen(false);
-                            scrollToSection(item.target!);
-                          }}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
-                        >
-                          <div className="h-6 w-6 rounded-md bg-muted/60 flex items-center justify-center shrink-0">
-                            <item.icon className="h-3 w-3 text-muted-foreground" />
-                          </div>
-                          <span>{item.label}</span>
-                        </button>
-                      );
-                    }
-                    return (
+                    { label: "Test Raise", href: "/ai" },
+                    { label: "Pricing", href: "/pricing" },
+                  ].map((l) => (
+                    <li key={l.href}>
                       <Link
-                        key={item.label}
-                        href={href || "#"}
+                        href={l.href}
                         onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                        aria-current={pathname === l.href ? "page" : undefined}
+                        className={cn(
+                          "block rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-muted",
+                          pathname === l.href ? "text-foreground" : "text-muted-foreground",
+                        )}
                       >
-                        <div className="h-6 w-6 rounded-md bg-muted/60 flex items-center justify-center shrink-0">
-                          <item.icon className="h-3 w-3 text-muted-foreground" />
-                        </div>
-                        <span>{item.label}</span>
+                        {l.label}
                       </Link>
-                    );
-                  })}
-                </div>
+                    </li>
+                  ))}
+                </ul>
+
+                {[
+                  { title: "Platform", items: platformItems },
+                  { title: "Resources", items: resourcesItems },
+                ].map((group) => (
+                  <div key={group.title}>
+                    <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground/70">{group.title}</p>
+                    <ul role="list" className="list-none">
+                      {group.items.map((entry) => {
+                        const cls =
+                          "block w-full rounded-lg px-3 py-2 text-left text-[15px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
+                        return (
+                          <li key={entry.label}>
+                            {entry.href ? (
+                              <Link href={entry.href} onClick={() => setMenuOpen(false)} className={cls}>
+                                {entry.label}
+                              </Link>
+                            ) : (
+                              <button
+                                type="button"
+                                className={cls}
+                                onClick={() => {
+                                  setMenuOpen(false);
+                                  goToSection(entry.target!);
+                                }}
+                              >
+                                {entry.label}
+                              </button>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
               </nav>
 
-              <div className="px-5 pb-6 pt-4 border-t border-border/30 grid grid-cols-2 gap-2">
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/login" prefetch={isHomePage ? false : undefined} onClick={() => setMenuOpen(false)}>{isHomePage ? "Log in" : "Login"}</Link>
+              <div className="grid grid-cols-2 gap-2 border-t border-border p-4">
+                <Button asChild variant="secondary" className="rounded-full">
+                  <Link href="/login" prefetch={false} onClick={() => setMenuOpen(false)}>
+                    Log in
+                  </Link>
                 </Button>
-                <Button asChild className="w-full">
-                  <Link href="/signup" prefetch={isHomePage ? false : undefined} onClick={() => setMenuOpen(false)}>Sign up</Link>
+                <Button asChild className="rounded-full">
+                  <Link href="/signup" prefetch={false} onClick={() => setMenuOpen(false)}>
+                    Sign up
+                  </Link>
                 </Button>
               </div>
             </SheetContent>
           </Sheet>
         </div>
       </div>
-
-      {/* ── Mega Menus ──────────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {hoveredNav === "platform" && (
-          <motion.div
-            key="platform-menu"
-            initial={{ opacity: 0, y: -6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-1
-                     w-[calc(100%-2rem)] max-w-[860px]
-                     bg-popover text-popover-foreground border border-border
-                     rounded-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.3)]
-                     overflow-hidden"
-          >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-
-            <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
-              {/* Left Column */}
-              <div className="space-y-4">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Orbit className="h-4.5 w-4.5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-[15px] font-black tracking-tight text-foreground">The Platform</h3>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed mt-1">
-                    Explore how Scorpio transforms physics pedagogy from passive solving into active derivation.
-                  </p>
-                </div>
-                <div className="pt-1">
-                  <Link
-                    href="/features"
-                    onClick={() => setHoveredNav(null)}
-                    className="group inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary hover:text-primary/80 transition-colors"
-                  >
-                    View All Features
-                    <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Right Grid */}
-              <div className="grid grid-cols-2 gap-2">
-                {platformItems.map((item, i) => (
-                  <MegaMenuCard
-                    key={item.target || item.href}
-                    icon={item.icon}
-                    label={item.label}
-                    desc={item.desc}
-                    href={item.href}
-                    delay={i * 0.03}
-                    onClick={() => {
-                      setHoveredNav(null);
-                      if (item.target) {
-                        if (isHomePage) {
-                          scrollToSection(item.target);
-                        } else {
-                          router.push("/#" + item.target);
-                        }
-                      }
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {hoveredNav === "resources" && (
-          <motion.div
-            key="resources-menu"
-            initial={{ opacity: 0, y: -6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-1
-                     w-[calc(100%-2rem)] max-w-[860px]
-                     bg-popover text-popover-foreground border border-border
-                     rounded-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.3)]
-                     overflow-hidden"
-          >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-
-            <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
-              {/* Left Column */}
-              <div className="space-y-4">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <BookOpen className="h-4.5 w-4.5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-[15px] font-black tracking-tight text-foreground">Resources & Research</h3>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed mt-1">
-                    Independent ablation research, climate impact metrics, FAQs, and institutional pilot access.
-                  </p>
-                </div>
-                <div className="pt-1">
-                  <Link
-                    href="/research"
-                    onClick={() => setHoveredNav(null)}
-                    className="group inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary hover:text-primary/80 transition-colors"
-                  >
-                    Read Methodology <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Right Grid */}
-              <div className="grid grid-cols-2 gap-2">
-                {resourcesItems.map((item, i) => (
-                  <MegaMenuCard
-                    key={item.label}
-                    icon={item.icon}
-                    label={item.label}
-                    desc={item.desc}
-                    href={item.href}
-                    delay={i * 0.03}
-                    onClick={() => {
-                      setHoveredNav(null);
-                      if (item.target) {
-                        if (isHomePage) {
-                          scrollToSection(item.target);
-                        } else {
-                          router.push("/#" + item.target);
-                        }
-                      }
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }
