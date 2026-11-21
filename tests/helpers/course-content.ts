@@ -4,12 +4,14 @@
 // they do not (a fresh clone, CI).
 import fs from "fs";
 import path from "path";
+import { CONTENT_FILES } from "../../src/data/curricula/content-files";
 
 const ROOT = path.join(__dirname, "..", "..");
 
-export const hasCourseContent = fs.existsSync(
-  path.join(ROOT, "content", "ap-physics-1", "units-4-6.json"),
-);
+/** True only when every content file of every course is here; a partial copy would fail tests for the wrong reason. */
+export const hasCourseContent = Object.values(CONTENT_FILES)
+  .flat()
+  .every((file) => fs.existsSync(path.join(ROOT, file)));
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CourseContentFile {

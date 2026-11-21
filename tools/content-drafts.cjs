@@ -17,7 +17,8 @@
  * Import never publishes and never touches assignments or answer keys. Every imported draft keeps
  * its review note and its reviewKind, so AI-reviewed problems still need a person's approval at
  * /admin/content before they can be published (the publish route enforces this outside the
- * emulator). Document ids are kept, so running an import twice overwrites rather than duplicates;
+ * emulator). Drafts the verifier marked "verified" (tools/verify-content.cjs --write) keep the mark
+ * and their verification record, and can be published while the problem still matches it. Document ids are kept, so running an import twice overwrites rather than duplicates;
  * a draft that is already published in the target project is skipped.
  *
  * Credentials: Application Default Credentials for a real project, or FIRESTORE_EMULATOR_HOST.
@@ -96,6 +97,9 @@ function toRecord(id, data) {
     batchId: data.batchId ?? null,
     createdAt: iso(data.createdAt),
     reviewedAt: iso(data.reviewedAt),
+    // The verifier's record and the blind solves it rests on (tools/verify-content.cjs).
+    ...(data.verification ? { verification: data.verification } : {}),
+    ...(data.solves ? { solves: data.solves } : {}),
   };
 }
 
@@ -127,6 +131,9 @@ function toImportDoc(record, importedAt, opts = {}) {
     reviewNote: record.reviewNote ?? null,
     reviewKind: accepted ? "owner-accepted" : kind,
     ...(accepted ? { aiReviewAcceptedAt: importedAt } : {}),
+    // A "verified" draft is only publishable with its record, which holds the hash it was verified at.
+    ...(record.verification ? { verification: record.verification } : {}),
+    ...(record.solves ? { solves: record.solves } : {}),
     assignmentId: null,
     importedAt,
   };
@@ -184,6 +191,8 @@ async function runImport(opts) {
   );
   const ai = todo.filter(([, d]) => d.reviewKind === "ai").length;
   console.log(`  ${ai} are AI-reviewed and still need a person's approval at /admin/content`);
+  const verified = todo.filter(([, d]) => d.reviewKind === "verified").length;
+  if (verified) console.log(`  ${verified} are verified (answer key recomputed and solved blind)`);
   const accepted = todo.filter(([, d]) => d.reviewKind === "owner-accepted").length;
   if (opts.acceptAiReview)
     console.log(
