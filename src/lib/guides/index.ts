@@ -51,9 +51,14 @@ export function topicAnchor(topicId: string): string {
   return `topic-${topicId.replace(".", "-")}`;
 }
 
-/** "4.1" from "#topic-4-1" or "topic-4-1"; null for anything else. */
+/** "topic-4-2-mistake-impulse-force-confusion": a tagged "Common mistakes" entry of a topic's guide. */
+export function misconceptionAnchor(topicId: string, tag: string): string {
+  return `${topicAnchor(topicId)}-mistake-${tag}`;
+}
+
+/** "4.1" from "#topic-4-1", "topic-4-1" or a mistake anchor inside that topic; null for anything else. */
 export function topicFromAnchor(hash: string): string | null {
-  const m = hash.replace(/^#/, "").match(/^topic-(\d{1,2})-(\d{1,2})$/);
+  const m = hash.replace(/^#/, "").match(/^topic-(\d{1,2})-(\d{1,2})(?:-mistake-[a-z0-9-]+)?$/);
   return m ? `${m[1]}.${m[2]}` : null;
 }
 

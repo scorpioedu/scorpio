@@ -48,20 +48,27 @@ export function UnitGuideTopics({
   // The topic named in the address (#topic-4-1) opens and scrolls into view, on arrival and when
   // the address changes.
   const listed = topics.join(",");
+  const loaded = !!guide;
   useEffect(() => {
     const show = () => {
       const id = topicFromAnchor(window.location.hash);
       if (!id || !listed.split(",").includes(id)) return;
       setOpen((o) => (o.has(id) ? o : new Set(o).add(id)));
+      // A link to one "Common mistakes" entry (#topic-4-2-mistake-…) lands on that entry once the
+      // guide has drawn; otherwise on the topic.
+      const exact = window.location.hash.slice(1);
       window.setTimeout(
-        () => document.getElementById(topicAnchor(id))?.scrollIntoView({ behavior: "smooth" }),
+        () =>
+          (
+            document.getElementById(exact) ?? document.getElementById(topicAnchor(id))
+          )?.scrollIntoView({ behavior: "smooth" }),
         50,
       );
     };
     show();
     window.addEventListener("hashchange", show);
     return () => window.removeEventListener("hashchange", show);
-  }, [listed]);
+  }, [listed, loaded]);
 
   const toggle = (id: string) => {
     const next = new Set(open);
