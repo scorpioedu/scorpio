@@ -1,16 +1,16 @@
-import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { apUnits } from "@/data/ap";
+import { CURRICULA } from "@/data/curricula";
 import { DocsLines } from "@/components/docs-lines";
-import { StarField } from "@/components/landing/line-art";
+import { HeroLiveClass } from "@/components/landing/hero-live-class";
 import { Button } from "@/components/ui/button";
 import intro from "./hero-intro.module.css";
-import reveal from "./home-reveal.module.css";
 
 const at = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
 
-const LINE_ONE = ["Assign", "AP", "Physics", "in", "minutes."];
-const LINE_TWO = ["The", "grading’s", "already", "done."];
+const LINE_ONE = ["AP", "Physics", "1,", "2", "and", "C:", "Mechanics."];
+const LINE_TWO = ["A", "problem", "set", "for", "every", "unit."];
 /** Line two starts after line one's last word has begun to settle. */
 const LINE_TWO_AT = 120 + LINE_ONE.length * 55 + 160;
 
@@ -25,33 +25,27 @@ function Words({ words, start }: { words: string[]; start: number }) {
   ));
 }
 
-const facts = [
-  ["3 AP courses", "every unit planned"],
-  ["Free", "for one teacher"],
-  ["Class code", "no LMS setup"],
+const course = CURRICULA[0];
+const unit = apUnits(course.apCourse).find((u) => u.unit === 2);
+const unitLabel = unit?.title ?? "Dynamics";
+
+/** The features, as a plain list beside the window. */
+const features = [
+  "Every AP unit planned",
+  "Hints instead of answers",
+  "Graded as students work",
+  "A reteach list for you",
+  "Students join with a code",
 ] as const;
 
 export function LandingHero() {
   return (
     <section
       id="home"
-      className="relative isolate flex min-h-[92svh] flex-col justify-center overflow-hidden border-b border-border/60 pb-16 pt-28 sm:pb-20 sm:pt-32"
+      className="relative isolate flex min-h-svh flex-col justify-center border-b border-border/60 pb-10 pt-24 sm:pb-12 lg:pt-28"
     >
-      {/* Stars with Scorpius in the upper right, over the same quiet contour lines as the docs, login and sign up pages. */}
-      <div aria-hidden="true" className={`${intro.sky} pointer-events-none absolute inset-0 -z-10`}>
-        <StarField
-          constellation
-          motion={{ edge: intro.edge, star: intro.star, antares: intro.antares }}
-          className={`${reveal.heroSky} size-full text-foreground [mask-image:radial-gradient(ellipse_80%_100%_at_75%_0%,black,transparent_80%)]`}
-        />
-      </div>
-      <DocsLines
-        className={`${intro.lines} pointer-events-none absolute inset-0 -z-10 size-full text-primary opacity-30 [mask-image:linear-gradient(to_bottom,transparent,black_45%,black_70%,transparent)]`}
-      />
-      <div className={`${reveal.heroOut} mx-auto max-w-6xl px-5 text-center sm:px-8`}>
-        <h1
-          className={`mx-auto max-w-[24ch] text-balance text-[clamp(2.4rem,5.4vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.06em]`}
-        >
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <h1 className="max-w-[24ch] text-balance text-[clamp(2.1rem,4.2vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.045em]">
           <span className="sm:block">
             <Words words={LINE_ONE} start={120} />
           </span>{" "}
@@ -59,25 +53,18 @@ export function LandingHero() {
             <Words words={LINE_TWO} start={LINE_TWO_AT} />
           </span>
         </h1>
-        <p
-          style={at(900)}
-          className={`${intro.step} mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg`}
-        >
-          Ready-made problem sets for AP Physics 1, AP Physics 2 and AP Physics C: Mechanics.
-          Scorpio grades on submit, tutors with hints instead of answers, and shows you what to
-          reteach.
-        </p>
-        <div className={`mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-4`}>
+
+        <div className="mt-7 flex flex-col gap-4 sm:mt-8 sm:flex-row sm:items-center sm:gap-6">
           <Button
             asChild
-            style={at(1060)}
-            className={`${intro.step} group relative isolate h-12 gap-2 rounded-xl pl-4 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
+            style={at(900)}
+            className={`${intro.step} group relative isolate h-12 w-full gap-2 rounded-full pl-5 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary sm:w-auto dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
           >
             <Link href="/request-access">
-              {/* The beUI-style accent expands behind the label without moving it. */}
+              {/* The accent expands behind the label without moving it. */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-1.5 right-1.5 -z-10 w-9 rounded-lg bg-black/12 transition-[width] duration-300 ease-out group-hover:w-[calc(100%-0.75rem)] group-focus-visible:w-[calc(100%-0.75rem)] motion-reduce:transition-none"
+                className="pointer-events-none absolute inset-y-1.5 right-1.5 -z-10 w-9 rounded-full bg-black/12 transition-[width] duration-300 ease-out group-hover:w-[calc(100%-0.75rem)] group-focus-visible:w-[calc(100%-0.75rem)] motion-reduce:transition-none"
               />
               Request classroom access
               <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center">
@@ -99,31 +86,44 @@ export function LandingHero() {
               </span>
             </Link>
           </Button>
-          <Button
-            asChild
-            variant="outline"
-            style={at(1140)}
-            className={`${intro.step} group h-12 rounded-xl bg-background/80 px-4 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
-          >
-            <Link href="#features">
-              See how it works
-              <ArrowDown
-                aria-hidden="true"
-                className="size-4 text-primary motion-safe:transition-transform motion-safe:group-hover:translate-y-0.5"
-              />
-            </Link>
-          </Button>
+          <p style={at(980)} className={`${intro.step} text-sm text-muted-foreground`}>
+            Free for one teacher
+          </p>
         </div>
-        <dl
-          className={`mx-auto mt-10 grid max-w-lg grid-cols-3 gap-4 text-sm text-muted-foreground`}
-        >
-          {facts.map(([value, label], i) => (
-            <div key={value} style={at(1260 + i * 80)} className={`${intro.step} flex flex-col`}>
-              <dt className="order-last">{label}</dt>
-              <dd className="font-semibold text-foreground">{value}</dd>
+
+        <div className="mt-10 grid items-center gap-10 sm:mt-12 xl:grid-cols-12 xl:gap-12">
+          {/* The window sits on the same contour lines as the docs and sign-in pages. */}
+          <div
+            style={at(1100)}
+            className={`${intro.step} ${intro.frame} relative isolate overflow-hidden rounded-2xl border border-border bg-muted p-3 sm:p-8 xl:col-span-8 xl:px-10 xl:py-9`}
+          >
+            <DocsLines className="pointer-events-none absolute inset-x-0 -top-[45%] -z-10 h-[190%] w-full text-foreground opacity-35 dark:opacity-55" />
+            <HeroLiveClass
+              unitLabel={unitLabel}
+              courseName={`Unit ${unit?.unit ?? 2} · ${course.name}`}
+            />
+          </div>
+
+          <div
+            style={at(1240)}
+            className={`${intro.step} gap-10 sm:grid sm:grid-cols-2 xl:col-span-4 xl:block`}
+          >
+            <p className="text-pretty text-[clamp(1.4rem,2.2vw,1.85rem)] font-medium leading-[1.2] tracking-[-0.03em]">
+              Assign a unit today.{" "}
+              <span className="text-muted-foreground">
+                Hints instead of answers, grading as students work, and a list of what to reteach.
+              </span>
+            </p>
+            <div className="mt-8 sm:mt-0 xl:mt-8">
+              <p className="text-sm text-muted-foreground">Features</p>
+              <ul className="mt-3 grid gap-y-2 text-[15px]">
+                {features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </dl>
+          </div>
+        </div>
       </div>
     </section>
   );

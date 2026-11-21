@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Mail, Github, BookOpen } from "lucide-react";
-import { Eyebrow } from "@/components/landing/line-art";
 import reveal from "@/components/landing/home-reveal.module.css";
+import { CircleLink, label } from "@/components/landing/split-kit";
 import Link from "next/link";
 import {
   Accordion,
@@ -86,47 +86,48 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
       <section
         id="faq"
         aria-labelledby="faq-heading"
-        className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28"
+        className="scroll-mt-20 border-b border-border/60"
       >
-        <div data-scroll-reveal className={reveal.stagger}>
-          <Eyebrow>Questions</Eyebrow>
-          <h2
-            id="faq-heading"
-            className="mt-2 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl"
+        <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 sm:py-28 md:grid-cols-2">
+          <div data-scroll-reveal className={`${reveal.stagger} flex flex-col`}>
+            <h2 id="faq-heading" className={label}>
+              Questions
+              <span className="block text-muted-foreground">What teachers ask us first</span>
+            </h2>
+            <CircleLink href="/contact" className="mt-10">
+              Ask us something else
+            </CircleLink>
+          </div>
+          <Accordion
+            type="single"
+            collapsible
+            className="border-t border-border motion-reduce:[&_[data-slot=accordion-content]]:animate-none"
           >
-            Common questions
-          </h2>
+            {faqs.map(({ index, question, answer }, i) => (
+              <AccordionItem
+                key={index}
+                value={index}
+                data-scroll-reveal
+                style={{ "--reveal-delay": `${Math.min(i * 70, 420)}ms` } as React.CSSProperties}
+              >
+                <AccordionTrigger className="cursor-pointer items-center gap-4 py-5 text-[17px] font-medium leading-snug tracking-[-0.01em] transition-colors hover:text-primary hover:no-underline data-[state=open]:text-primary motion-reduce:transition-none [&>svg]:size-5 [&>svg]:translate-y-0 motion-reduce:[&>svg]:transition-none">
+                  <span className="flex items-baseline gap-4">
+                    <span
+                      aria-hidden="true"
+                      className="font-mono text-xs tabular-nums text-muted-foreground"
+                    >
+                      {index}
+                    </span>
+                    {question}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pl-9 pr-8 text-[15px] leading-relaxed text-muted-foreground">
+                  {answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
-        <Accordion
-          type="single"
-          collapsible
-          className="mt-10 border-t border-border motion-reduce:[&_[data-slot=accordion-content]]:animate-none"
-        >
-          {faqs.map(({ index, question, answer }, i) => (
-            <AccordionItem
-              key={index}
-              value={index}
-              data-scroll-reveal
-              style={{ "--reveal-delay": `${Math.min(i * 70, 420)}ms` } as React.CSSProperties}
-            >
-              <AccordionTrigger className="cursor-pointer items-center py-5 text-base font-medium leading-snug transition-colors hover:text-primary hover:no-underline data-[state=open]:text-primary motion-reduce:transition-none [&>svg]:size-5 [&>svg]:translate-y-0 motion-reduce:[&>svg]:transition-none">
-                {question}
-              </AccordionTrigger>
-              <AccordionContent className="max-w-3xl pr-8 leading-relaxed text-muted-foreground">
-                {answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <p data-scroll-reveal className="mt-6 text-sm text-muted-foreground">
-          Still have a question?{" "}
-          <Link
-            href="/contact"
-            className="font-medium text-primary underline-offset-4 hover:underline"
-          >
-            Contact us
-          </Link>
-        </p>
       </section>
     );
   }

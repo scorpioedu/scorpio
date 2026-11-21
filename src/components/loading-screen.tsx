@@ -7,6 +7,13 @@ const introScript = `
     const toPortal = /(?:^|; )scorpio_role=student(?:;|$)/.test(document.cookie);
     const go = () => location.replace("/student");
     if (toPortal) document.documentElement.setAttribute("data-to-portal", "");
+    // The first-visit role gate opens at hydration; hold the hero's entrance until it closes
+    // (RoleGate removes this attribute once the visitor has picked a path).
+    try {
+      if (!toPortal && !localStorage.getItem("scorpio-role-gate-seen")) {
+        document.documentElement.setAttribute("data-hero-hold", "");
+      }
+    } catch {}
     if (location.hash && !toPortal) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return toPortal ? go() : undefined;
     const dialog = document.getElementById("scorpio-intro");
