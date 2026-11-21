@@ -37,6 +37,7 @@ The API does not refuse a planned course (`PATCH /api/courses/{id}/curriculum` o
 | Calendar: sets on days, month and week grids, runs of days off, what dropping a set on a day means | `src/lib/course-calendar.ts` |
 | Unit colours, status marks, topic chips (shared by List, Calendar, unit guide) | `src/app/teacher/courses/unit-look.tsx` |
 | Student dashboard roadmap | `src/lib/student-roadmap.ts` |
+| Topic guides (content, schema, loader, verifier) | `src/data/guides/<id>/unit-<n>.json`, `src/lib/guides/`, `src/components/guide/`, `tools/verify-guides.cjs`; see [Guides](#guides) |
 | Set profiles (time, difficulty, misconceptions) | `src/data/curricula/profiles.ts`, `src/data/curricula/profiles/<id>.json`, `tools/curriculum-profile.cjs` |
 | Reviewed problems (exported drafts) and review logs | `content/<id>/` |
 | Misconception tags per course | `functions/src/misconceptions.ts` (`misconceptionUnits`, `misconceptionsForUnit`) |
@@ -223,7 +224,7 @@ The first-run page (`/teacher/welcome`) has a Course dropdown, lists the chosen 
 A unit's home page, linked from each unit on the List (**Unit guide**). From top to bottom:
 
 - **Header** in the unit's colour: the unit number on a large tile, the course's icon and name, the unit's title and summary, and the facts (sets, problems, student time, AP topics). With a class chosen it adds the class's line (the per-set progress bar, "2 of 4 sets assigned · average 81%", answers to check) and the one filled button, **Assign this unit / the rest (n sets)**, which opens the assign dialog on `/teacher/courses` (`?assign={unit}`).
-- **What this unit covers**: one card per AP topic with its number, name and summary, and the sets that practise it (links down the page).
+- **What this unit covers**: one card per AP topic with its number, name and summary, and the sets that practise it (links down the page). When the unit has a guide file, each topic also has **Read the guide**, which opens the topic's full guide in place (see [Guides](#guides)); `#topic-4-2` in the address opens the tab on that topic. A unit with no guide file looks as it did before.
 - **Sets in this unit**, on the unit's rail. Each set has, on the left, what it practises: title (opens the preview), description, its AP topics by name, problem count, question types, difficulty mix and time, and the misconceptions its wrong answers catch (highlighted when this class has hit them). On the right, how the class did: the status mark, due date, a hand-in bar ("12 of 13"), the average, answers waiting and students overdue, with **Results** (or **Review**), **Preview** and, for a set not assigned yet, **Assign** (`?assign=4C` opens the one-set dialog on `/teacher/courses`).
 - **What students got wrong, and what to re-teach** (with a class): up to three misconceptions, each with how many students hit it, a bar, and the rule-based suggestion labelled **Re-teach to the whole class**, **Pull a small group** or **Check in one to one** (see below). Before anything is graded it says so instead.
 - **Misconceptions this unit is built to catch**: every one the unit targets with the sets that target it; those this class has hit are marked "Seen in this class".
@@ -285,7 +286,82 @@ FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:909
 
 **Dashboard (`/student`).** If the student's class follows a course, a roadmap card shows the units in the class's order: sets handed in out of sets planned, the student's own average per unit, the state (done, in progress, assigned, not assigned yet) and the next set with its due date; **Continue** opens whatever is due first. It appears once at least one course set is assigned. Only the student's own work is used. `src/lib/student-roadmap.ts`, `src/components/dashboard/student-course-roadmap.tsx`.
 
+**Unit guides (`/student/courses/{curriculumId}/{unit}`).** A unit that has a guide file gets a page listing its topics, each with **Read the guide**; `#topic-4-2` opens that topic. On the dashboard roadmap the unit's heading links to it (units without a guide are plain text). "Practise this" links to the class's own assignment for a set that covers the topic, when the class has one. See [Guides](#guides).
+
 **Assignments (`/student/assignments`).** If the class has a `curriculumId`, assignments are grouped under unit headings (`Unit 4: Linear momentum`) in the class's order (its plan, else `curriculumSequence`, then due date). Anything without a set key goes under "Other assignments". Status filters still apply. A class that follows no course shows the flat list with the sort menu as before.
+
+## Guides
+
+A guide teaches one AP topic: the idea, a picture, the equations, two worked examples, the usual mistakes, three questions to check yourself, and sometimes a diagram with sliders. Guides are public, committed content: one file per unit, `src/data/guides/<curriculumId>/unit-<n>.json`, with one guide for every AP topic of that unit. Today there is one file, the exemplar every later unit should copy: **AP Physics 1, Unit 4** (topics 4.1–4.4).
+
+| What | Where |
+|---|---|
+| Content | `src/data/guides/<curriculumId>/unit-<n>.json` |
+| Schema and types | `src/lib/guides/schema.ts` (zod) |
+| Which units have a guide, and loading one (a dynamic import per file, so a page downloads only the unit it shows) | `src/lib/guides/index.ts` (`hasUnitGuide`, `loadUnitGuide`, `topicAnchor`, `studentGuideHref`, `requiresDerivation`) |
+| Checks | `src/lib/guides/verify.ts` (pure), `tools/verify-guides.cjs` |
+| "Try it" templates | `src/lib/guides/try-it.ts` |
+| Rendering | `src/components/guide/topic-guide.tsx` (`TopicGuide`), `unit-guide-topics.tsx` (the list with **Read the guide**), `use-unit-guide.ts` |
+| Pages | Teacher: the "What it covers" tab of `/teacher/courses/{curriculumId}/{unit}`. Student: `/student/courses/{curriculumId}/{unit}`. Both take `#topic-4-2`. |
+
+### Schema
+
+File: `{ "curriculumId": "ap-physics-1", "unit": 4, "guides": [ … ] }`. Each guide (unknown fields are refused, so a misspelt field is an error):
+
+| Field | What it is |
+|---|---|
+| `topic` | The AP topic id in the file's course ("4.2") |
+| `bigIdea` | One sentence |
+| `picture?` | `{ diagram, caption }`: a diagram source (the `dg` language, without the fence) and a caption. Leave out only where no picture helps |
+| `explanation` | Markdown, 2–4 short paragraphs |
+| `equations[]` | `{ latex, meaning, variables[{ symbol, name, unit }], useWhen, notWhen }`. `latex` and `symbol` are KaTeX without dollar signs |
+| `derivation?` | Markdown, shown collapsed. Required for the calculus-based courses (`requiresDerivation`: any AP course whose id starts `physics-c`) |
+| `workedExamples[]` | Exactly 2: `{ title, prompt, steps[], answer, style, spec? }`. `style` is `"stepped"` (one step per press, then the answer) or `"ap"` (written out like an exam answer). An answer with a digit in it is numeric and must have a `spec` |
+| `spec` | `{ givens: { name: { value, unit } }, expr, unit }`: arithmetic over the givens whose value, in `unit`, is the answer |
+| `misconceptions[]` | `{ tag?, wrong, right }`. `tag` is a misconception tag of the course (`functions/src/misconceptions.ts`); teachers see its label |
+| `checkYourself[]` | Exactly 3: `{ q, a }` |
+| `tryIt?` | `{ diagram, caption?, params[{ name, label, min, max, step, default, unit }] }`. The diagram source has `{{…}}` placeholders: a parameter's name, or arithmetic over parameters (`{{300/t}}`, `{{round(100*m/(m+2))}}`; + - * / ^, parentheses, `pi`, `sqrt abs sin cos tan min max round`). One slider per parameter |
+| `prerequisites?` | Topic ids earlier in the same course |
+| `teacherNotes?` | Markdown. Shown only where the page passes `teacher` (the teacher's unit guide) |
+
+Every text field is Markdown and may use LaTeX (`$…$`, and `$$` on its own lines for display); write `\$` for a dollar sign. A Markdown field may hold a fenced `dg` diagram. The rule that problems avoid LaTeX does not apply to guides. Paragraphs are separated by a blank line; a single line break inside a paragraph shows as a line break. The diagram kinds in use are `plot`, `fbd` and `scene` (`src/lib/diagram/prompt.ts`).
+
+`teacherNotes` is hidden by the page, not by access control: the file is public content that any signed-in user's browser can load. Do not put answer keys or anything private in it.
+
+### What the verifier checks
+
+```bash
+node tools/verify-guides.cjs --all                            # every guide file
+node tools/verify-guides.cjs --course ap-physics-1            # one course
+node tools/verify-guides.cjs --course ap-physics-1 --unit 4   # one unit
+npx jest guides topic-guide                                   # the same checks, plus the component tests
+```
+
+It exits 1 on any error. For each file:
+
+- the schema; the file's course and unit exist, and match its folder and name;
+- **one guide for every AP topic of the unit**, none twice, none for another unit;
+- every LaTeX string compiles in KaTeX with `throwOnError` (equation cards, variable symbols, and all `$…$` / `$$…$$` in every Markdown field, teacher notes included); a stray `$` or an unclosed code fence is an error;
+- every diagram (the picture, `dg` blocks in Markdown, the try-it diagram) draws with `ok === true`, is safe to show, and has no "physics" warning. Readability warnings are printed, not failed;
+- a try-it diagram draws with every parameter at its minimum, default and maximum, and with each parameter alone at each end; every placeholder has a parameter and every parameter is used;
+- every symbol in an equation is explained by its `variables`. The heuristic (`latexSymbols`): a symbol is a Latin letter or Greek command with its subscript; `\vec{}`, `\hat{}` and the like are looked through; `\Delta`, `\Sigma`, function names, numbers and anything in `\text{}` are not symbols; `d` directly before a letter is a differential. A listed symbol with no subscript covers its subscripted forms (`v` covers `v_i`, `v_f`); `v_i` alone does not cover `v_f`. List several symbols in one entry as `m_1,\ m_2`. Units inside an equation belong in `\text{}`;
+- misconception tags belong to the course; prerequisites exist and come earlier;
+- the calculus-based courses have a derivation;
+- the big idea is one sentence and the explanation has 2–4 paragraphs;
+- **length: 400–900 words per topic** across the big idea, the explanation, the derivation, the worked examples, the misconceptions and check-yourself. Equation cards, captions, labels, teacher notes and diagram sources are not counted; a piece of math counts as one word (`COUNTED` and `countWords` in `verify.ts`).
+
+It ends with a coverage report: for each course, which units have no guide file yet. That is not a failure.
+
+**Worked-example numbers.** `checkWorkedExample(example, evaluate?)` takes the evaluator as a parameter. With one, the spec is evaluated and the answer must state that value, to the digits it is written with (`6.0` accepts 5.95–6.05; `8.7 × 10^3` accepts 8650–8750), in the spec's unit. Without one it checks shape only: a numeric answer has a spec, the expression reads only its givens, the answer states a number and names the spec's unit. The evaluator is meant to be `evaluateSpec` from `src/lib/content/spec.ts`; it is **not connected yet** (two places marked `INTEGRATION HOOK`: `tools/verify-guides.cjs` and `__tests__/guides-content.test.ts`). Until it is, the command-line tool checks shape only, and the test run recomputes every answer with a small test-only arithmetic evaluator (`tests/helpers/guide-fixture.ts`).
+
+### Adding a unit
+
+1. Copy `src/data/guides/ap-physics-1/unit-4.json` to `src/data/guides/<curriculumId>/unit-<n>.json` and write a guide for every topic of the unit in `src/data/ap/`. Teach, do not summarise; original wording; check every number by hand.
+2. Register the file in `LOADERS` in `src/lib/guides/index.ts` (one line; a test fails if the list and the files on disk differ).
+3. Run `node tools/verify-guides.cjs --course <curriculumId> --unit <n>` until it passes, then `npx jest guides`.
+4. Look at it in the browser: the teacher's unit guide ("What it covers") and `/student/courses/<curriculumId>/<n>`, at phone width and in dark mode, and drag every slider end to end.
+
+Nothing else changes: the teacher tab, the student page and the roadmap link appear for any unit that has a file.
 
 ## Backfill: `tools/curriculum-tag.cjs`
 
@@ -295,4 +371,4 @@ FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 node tools/curriculum-tag.cjs --project d
 FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 node tools/curriculum-tag.cjs --project demo-scorpio --apply
 node tools/curriculum-tag.cjs --project <project-id>                                                # real project: ADC, dry run
 ```
-Tests: `__tests__/curricula.test.ts`, `curriculum-routes`, `curriculum-tag`, `course-availability`, `school-calendar`, `curriculum-plan` (plan, pacing, bulk moves), `course-progress` (profiles, progress, re-teach), `course-plan-routes`, `student-roadmap`, and the class rules in `tests/security/rules-rt14.test.ts`.
+Tests: `__tests__/curricula.test.ts`, `curriculum-routes`, `curriculum-tag`, `course-availability`, `school-calendar`, `curriculum-plan` (plan, pacing, bulk moves), `course-progress` (profiles, progress, re-teach), `course-plan-routes`, `student-roadmap`, `guides-verify`, `guides-content`, `topic-guide`, and the class rules in `tests/security/rules-rt14.test.ts`.

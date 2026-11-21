@@ -24,11 +24,14 @@ import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course
 import type { ReteachAction, UnitInsight } from "@/lib/course-progress";
 import { deriveRoadmap, type RoadmapSet } from "@/lib/curriculum-roadmap";
 import { normalisePlan } from "@/lib/curriculum-plan";
+import { hasUnitGuide, topicAnchor, topicFromAnchor } from "@/lib/guides";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClassPicker } from "@/components/teacher/class-picker";
 import { CourseBadge } from "@/components/teacher/course-icon";
+import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
+import { useUnitGuide } from "@/components/guide/use-unit-guide";
 import { SetPreviewDialog, type PreviewTarget } from "../../set-preview-dialog";
 import {
   SetSegments,
@@ -189,7 +192,13 @@ export default function UnitGuideClient({
   const data = useCourseData(curriculumId);
   const { classes, selected, published, classAssignments, progress, classLoaded } = data;
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
-  const [tab, setTab] = useState<GuideTab>("sets");
+  // A link to #topic-4-1 opens "What it covers" on that topic. (Nothing of the tabs is rendered
+  // until the classes have loaded in the browser, so reading the address here is safe.)
+  const [tab, setTab] = useState<GuideTab>(() =>
+    typeof window !== "undefined" && topicFromAnchor(window.location.hash) ? "topics" : "sets",
+  );
+  // The unit's topic guides, when it has a guide file (src/data/guides).
+  const topicGuides = useUnitGuide(curriculumId, unit);
 
   const follows = selected?.curriculumId === curriculumId;
   const roadmap = useMemo(
@@ -490,30 +499,40 @@ export default function UnitGuideClient({
           </ol>
         </TabsContent>
 
-        <TabsContent value="topics">
-          <ol className="grid gap-3 sm:grid-cols-2">
-            {topics.map((id) => {
-              const t = apTopic(id, curriculum.apCourse);
-              const sets = roadmapUnit.sets.filter((s) => s.set.topics.includes(id));
-              return (
-                <li key={id} className="space-y-2 rounded-2xl border border-border bg-card p-4">
-                  <p className="flex items-baseline gap-2">
-                    <span
-                      className={cn(
-                        "rounded-lg px-1.5 py-0.5 text-sm font-semibold tabular-nums",
-                        look.tile,
-                      )}
-                    >
-                      {id}
-                    </span>
-                    <span className="min-w-0 break-words font-semibold">{t?.title}</span>
-                  </p>
-                  {t?.summary && (
-                    <p className="text-sm leading-relaxed text-muted-foreground">{t.summary}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Practised in{" "}
-                    {sets.map((s, i) => (
+        <TabsContent value="topics" className="space-y-3">
+          {topicGuides.failed && (
+            <p role="alert" className="text-sm text-muted-foreground">
+              The topic guides could not be loaded. Reload the page to try again.
+            </p>
+          )}
+          {topicGuides.exists ? (
+            <UnitGuideTopics
+              course={curriculum.apCourse}
+              topics={topics}
+              guide={topicGuides.guide}
+              teacher
+              chipClassName={look.tile}
+              practiceFor={(id) =>
+                roadmapUnit.sets
+                  .filter((s) => s.set.topics.includes(id))
+                  .map((s) => ({
+                    label: `${s.set.key} · ${s.set.title}`,
+                    href: `#set-${s.set.key}`,
+                    onClick: toSet(s.set.key),
+                  }))
+              }
+              prerequisiteHref={(id) => {
+                const at = apTopic(id, curriculum.apCourse);
+                return at && hasUnitGuide(curriculumId, at.unit)
+                  ? `/teacher/courses/${curriculumId}/${at.unit}#${topicAnchor(id)}`
+                  : undefined;
+              }}
+              meta={(id) => (
+                <p className="text-xs text-muted-foreground">
+                  Practised in{" "}
+                  {roadmapUnit.sets
+                    .filter((s) => s.set.topics.includes(id))
+                    .map((s, i) => (
                       <span key={s.set.key}>
                         {i > 0 && ", "}
                         <a
@@ -525,11 +544,50 @@ export default function UnitGuideClient({
                         </a>
                       </span>
                     ))}
-                  </p>
-                </li>
-              );
-            })}
-          </ol>
+                </p>
+              )}
+            />
+          ) : (
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {topics.map((id) => {
+                const t = apTopic(id, curriculum.apCourse);
+                const sets = roadmapUnit.sets.filter((s) => s.set.topics.includes(id));
+                return (
+                  <li key={id} className="space-y-2 rounded-2xl border border-border bg-card p-4">
+                    <p className="flex items-baseline gap-2">
+                      <span
+                        className={cn(
+                          "rounded-lg px-1.5 py-0.5 text-sm font-semibold tabular-nums",
+                          look.tile,
+                        )}
+                      >
+                        {id}
+                      </span>
+                      <span className="min-w-0 break-words font-semibold">{t?.title}</span>
+                    </p>
+                    {t?.summary && (
+                      <p className="text-sm leading-relaxed text-muted-foreground">{t.summary}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      Practised in{" "}
+                      {sets.map((s, i) => (
+                        <span key={s.set.key}>
+                          {i > 0 && ", "}
+                          <a
+                            href={`#set-${s.set.key}`}
+                            onClick={toSet(s.set.key)}
+                            className="font-medium text-foreground underline-offset-2 hover:underline"
+                          >
+                            {s.set.key}
+                          </a>
+                        </span>
+                      ))}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </TabsContent>
 
         <TabsContent value="wrong" className="space-y-8">
