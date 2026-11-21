@@ -76,7 +76,7 @@ const suggestedPrompts: SuggestedPrompt[] = [
 const quickLinks = [
   { label: "Platform Features", href: "#features" },
   { label: "Research & DAR Study", href: "#efficacy" },
-  { label: "Transparent Pricing", href: "#pricing-teaser" },
+  { label: "Transparent Pricing", href: "#pricing" },
 ];
 
 export function LandingChatbot() {

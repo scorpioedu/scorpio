@@ -1,11 +1,10 @@
-/* A short glow that travels along a step rail, left to right. Off for reduced motion. */
+/* A short glow that runs along a step group's hairline, left to right. Off for reduced motion. */
 .pulse {
   position: absolute;
-  top: 50%;
-  left: 16.667%;
+  top: 0;
+  left: -5rem;
   width: 5rem;
   height: 1px;
-  margin-top: -0.5px;
   background: linear-gradient(to right, transparent, var(--primary), transparent);
   opacity: 0;
 }
@@ -18,7 +17,7 @@
 
 @keyframes travel {
   0% {
-    left: 16.667%;
+    left: -5rem;
     opacity: 0;
   }
   15%,
@@ -26,7 +25,7 @@
     opacity: 1;
   }
   100% {
-    left: calc(100% - 5.5rem);
+    left: 100%;
     opacity: 0;
   }
 }

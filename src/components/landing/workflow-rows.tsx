@@ -1,8 +1,8 @@
 import { apUnits } from "@/data/ap";
 import { CURRICULA } from "@/data/curricula";
-import { Eyebrow } from "@/components/landing/line-art";
 import rail from "./workflow-rail.module.css";
 import reveal from "./home-reveal.module.css";
+import { card, Section, Split, statement } from "./split-kit";
 
 /** A block on a 30° ramp with gravity split into its two parts, drawn in theme colors. */
 function InclineDiagram() {
@@ -47,24 +47,13 @@ function InclineDiagram() {
 
 type Step = { title: string; text: string; preview: React.ReactNode };
 
-function Num({ n, filled, className = "" }: { n: number; filled: boolean; className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`grid size-7 shrink-0 place-items-center rounded-full border text-xs font-bold tabular-nums ${filled ? "border-primary bg-primary text-primary-foreground" : "border-primary/50 bg-background text-primary"} ${className}`}
-    >
-      {n}
-    </span>
-  );
-}
-
 function Row({
   id,
   who,
   when,
   steps,
   start,
-  filled = false,
+  accent = false,
   pulseDelay = "0s",
 }: {
   id: string;
@@ -72,63 +61,51 @@ function Row({
   when: string;
   steps: Step[];
   start: number;
-  filled?: boolean;
+  accent?: boolean;
   pulseDelay?: string;
 }) {
   return (
     <div id={id} className="scroll-mt-24">
-      <h3 data-scroll-reveal className="flex items-baseline gap-2.5">
-        <span className="font-semibold">{who}</span>
-        <span className="text-sm text-muted-foreground">{when}</span>
-      </h3>
-
-      {/* One straight rail from step 1 to an arrowhead on the right; desktop only. */}
-      <div
-        data-scroll-reveal
-        aria-hidden="true"
-        className="relative mt-4 hidden h-7 grid-cols-3 md:grid"
-      >
-        <span
-          className={`${reveal.draw} absolute left-[16.667%] right-0 top-1/2 h-px bg-gradient-to-r from-primary/60 to-primary/20`}
-        />
-        <span
-          className={`${reveal.pop} absolute right-px top-1/2 -mt-1 size-2 rotate-45 border-r border-t border-primary/40`}
-          style={{ "--pop-delay": "1100ms" } as React.CSSProperties}
-        />
-        <span
-          className={rail.pulse}
-          style={{ "--pulse-delay": pulseDelay } as React.CSSProperties}
-        />
-        {steps.map((step, i) => (
+      {/* Who does these three, then a hairline with a pulse running toward the step count. */}
+      <div data-scroll-reveal className="flex items-center gap-4">
+        <h3 className="flex shrink-0 items-baseline gap-2">
+          <span className="text-lg font-medium tracking-tight">{who}</span>
+          <span className="text-sm text-muted-foreground">{when}</span>
+        </h3>
+        <span aria-hidden="true" className="relative h-px flex-1 overflow-hidden bg-border">
           <span
-            key={step.title}
-            className={`${reveal.pop} relative place-self-center`}
-            style={{ "--pop-delay": `${200 + i * 380}ms` } as React.CSSProperties}
-          >
-            <Num n={start + i} filled={filled} />
-          </span>
-        ))}
+            className={rail.pulse}
+            style={{ "--pulse-delay": pulseDelay } as React.CSSProperties}
+          />
+        </span>
+        <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
+          Steps {start}–{start + steps.length - 1}
+        </span>
       </div>
 
-      <ol role="list" className="mt-5 grid list-none gap-10 md:grid-cols-3 md:gap-6">
+      <ol role="list" className="mt-5 grid list-none gap-2 md:grid-cols-3">
         {steps.map(({ title, text, preview }, i) => (
           <li
             key={title}
             data-scroll-reveal
-            className="md:text-center"
+            className={`${card} flex flex-col ${accent ? "ring-1 ring-primary/15" : ""}`}
             style={{ "--reveal-delay": `${i * 120}ms` } as React.CSSProperties}
           >
-            <h4 className="flex items-center gap-2.5 font-semibold tracking-tight md:block">
-              <Num n={start + i} filled={filled} className="md:hidden" />
+            <p
+              aria-hidden="true"
+              className={`font-mono text-xs tabular-nums ${accent ? "text-primary" : "text-muted-foreground"}`}
+            >
+              {String(start + i).padStart(2, "0")}
+            </p>
+            <h4 className="mt-3 text-lg font-medium tracking-tight">
               <span className="sr-only">Step {start + i}: </span>
               {title}
             </h4>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground md:mx-auto md:max-w-[30ch]">
-              {text}
-            </p>
+            <p className="mt-1.5 text-[15px] leading-relaxed text-muted-foreground">{text}</p>
+            <span aria-hidden="true" className="min-h-6 flex-1" />
             <div
               aria-hidden="true"
-              className="mt-4 rounded-xl border border-border bg-card p-3.5 text-left text-[13px] shadow-xs"
+              className="rounded-lg border border-border bg-background/80 p-3.5 text-left text-[13px] dark:bg-muted/30"
             >
               {preview}
             </div>
@@ -272,34 +249,27 @@ const autoSteps: Step[] = [
 
 export function WorkflowRows() {
   return (
-    <section
-      id="features"
-      aria-labelledby="features-heading"
-      className="scroll-mt-20 border-b border-border/60"
-    >
-      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
-        <div data-scroll-reveal className={reveal.stagger}>
-          <Eyebrow>How it works</Eyebrow>
-          <h2
-            id="features-heading"
-            className="mt-2 max-w-[22ch] text-3xl font-semibold tracking-[-0.035em] sm:text-4xl"
-          >
-            Six steps. You do three, Scorpio does three.
-          </h2>
-        </div>
-        <div className="mt-12 space-y-14 sm:mt-14 sm:space-y-16">
-          <Row id="setup" who="You" when="before class" steps={setupSteps} start={1} />
-          <Row
-            id="solution"
-            who="Scorpio"
-            when="while students work"
-            steps={autoSteps}
-            start={4}
-            filled
-            pulseDelay="1.2s"
-          />
-        </div>
+    <Section id="features" labelledBy="features-heading">
+      <div data-scroll-reveal className={reveal.stagger}>
+        <Split id="features-heading" heading="How it works">
+          <p className={statement}>
+            Six steps.
+            <span className="block text-muted-foreground">You do three, Scorpio does three.</span>
+          </p>
+        </Split>
       </div>
-    </section>
+      <div className="mt-16 space-y-14 sm:mt-20 sm:space-y-16">
+        <Row id="setup" who="You" when="before class" steps={setupSteps} start={1} />
+        <Row
+          id="solution"
+          who="Scorpio"
+          when="while students work"
+          steps={autoSteps}
+          start={4}
+          accent
+          pulseDelay="1.2s"
+        />
+      </div>
+    </Section>
   );
 }
