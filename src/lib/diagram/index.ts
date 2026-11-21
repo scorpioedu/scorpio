@@ -2,7 +2,11 @@
 // No DOM, no dependencies, so it runs the same in the browser, in a Next
 // server component, and in the content pipeline's checks.
 
+import { renderBars } from "./bars";
+import { renderCircuit } from "./circuit";
 import { renderFbd } from "./fbd";
+import { renderField } from "./field";
+import { renderMotion } from "./motion";
 import { type DgError, parse } from "./parse";
 import { renderPlot, type PlotModel } from "./plot";
 import { renderScene } from "./scene";
@@ -41,6 +45,18 @@ export function render(src: string, opts: RenderOptions = {}): Result {
     case "scene":
       r = renderScene(doc, errors, warnings);
       break;
+    case "bars":
+      r = renderBars(doc, errors, warnings);
+      break;
+    case "motion":
+      r = renderMotion(doc, errors, warnings);
+      break;
+    case "circuit":
+      r = renderCircuit(doc, errors, warnings);
+      break;
+    case "field":
+      r = renderField(doc, errors, warnings);
+      break;
     default:
       return {
         ok: false,
@@ -48,7 +64,10 @@ export function render(src: string, opts: RenderOptions = {}): Result {
         alt: "",
         warnings,
         errors: [
-          { line: doc.head.line, msg: `unknown diagram "${doc.kind}" (use plot, fbd or scene)` },
+          {
+            line: doc.head.line,
+            msg: `unknown diagram "${doc.kind}" (use plot, fbd, scene, bars, motion, circuit or field)`,
+          },
           ...errors,
         ],
       };
