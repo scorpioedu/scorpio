@@ -1,6 +1,7 @@
 "use client";
 
-import { SpaceBackground } from "@/components/ui/space-background";
+import { SiteFooter } from "@/components/landing/site-footer";
+import { Split, statement } from "@/components/landing/split-kit";
 import { motion } from "framer-motion";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Button } from "@/components/ui/button";
@@ -14,21 +15,11 @@ import {
   ArrowRight,
   Orbit,
   SquareFunction,
-  Github,
-  Info,
-  BookOpen,
-  Mail,
-  Shield,
-  FileText,
   Presentation,
   Maximize2,
-  Leaf,
-  Layers,
   Check,
-  KeyRound,
 } from "lucide-react";
 import Link from "next/link";
-import { Logo } from "@/components/ui/logo";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -137,8 +128,7 @@ export default function FeaturesPage() {
   ];
 
   return (
-    <div className="min-h-screen relative font-medium scroll-smooth">
-      <SpaceBackground />
+    <div className="min-h-screen relative scroll-smooth bg-background">
       <SiteHeader />
 
       <motion.div
@@ -146,24 +136,20 @@ export default function FeaturesPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       >
-        <main className="relative z-10 pt-24 md:pt-32 pb-24">
+        <main className="relative z-10 pt-28 md:pt-36 pb-24">
           {/* Page Hero */}
-          <section className="container mx-auto px-4 sm:px-6 max-w-6xl text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold tracking-[0.2em] uppercase text-primary">
-              <Layers className="h-3.5 w-3.5" />
-              <span>Platform Architecture • v2.5</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-foreground max-w-4xl mx-auto">
-              Engineered for pedagogical rigor, <br className="hidden sm:inline" />
-              <span className="text-primary italic">not answer-shortcuts.</span>
-            </h1>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              From hint-only tutoring to auto-grading and the class misconception report, built for
-              AP Physics 1 homework.
-            </p>
+          <section className="mx-auto max-w-6xl px-5 sm:px-8">
+            <Split id="features-heading" heading="Features">
+              <p className={statement}>
+                Built for AP Physics homework
+                <span className="block text-muted-foreground">
+                  Hint-only tutoring, auto-grading and the class misconception report
+                </span>
+              </p>
+            </Split>
 
             {/* Quick Link Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <div className="mt-10 flex flex-wrap items-center gap-2">
               {[
                 { label: "Core Architecture", target: "features-grid" },
                 { label: "LaTeX Precision Engine", target: "math-fidelity" },
@@ -196,7 +182,7 @@ export default function FeaturesPage() {
               {features.map((feature, i) => (
                 <div
                   key={i}
-                  className="group p-6 rounded-3xl border border-border/60 bg-card/30 backdrop-blur-xl hover:bg-card/50 hover:border-primary/30 transition-all duration-300 space-y-4 shadow-sm flex flex-col justify-between"
+                  className="group p-6 rounded-xl border border-border bg-muted/40 dark:bg-card hover:border-foreground/25 transition-all duration-300 space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -244,7 +230,7 @@ export default function FeaturesPage() {
                     <SquareFunction className="h-3.5 w-3.5" />
                     <span>Mathematical Precision</span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-none text-foreground">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-[-0.035em] leading-none text-foreground">
                     Publication-Grade <span className="text-primary italic">Fidelity.</span>
                   </h2>
                   <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
@@ -264,7 +250,7 @@ export default function FeaturesPage() {
                           onClick={() => setSelectedMathIndex(idx)}
                           className={`p-2.5 rounded-xl border text-left text-xs font-medium transition-all cursor-pointer ${
                             selectedMathIndex === idx
-                              ? "border-primary bg-primary/10 text-primary font-bold shadow-sm"
+                              ? "border-primary bg-primary/10 text-primary font-bold"
                               : "border-border/50 bg-background/40 hover:bg-muted/40 text-muted-foreground"
                           }`}
                         >
@@ -357,7 +343,7 @@ export default function FeaturesPage() {
               <div className="text-xs font-black text-primary uppercase tracking-[0.25em]">
                 Independent Research • 125-Response Ablation Study
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.035em]">
                 Hints, not answers: what we measured.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
@@ -376,7 +362,7 @@ export default function FeaturesPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border/60 overflow-hidden bg-card/30 backdrop-blur-xl shadow-xl">
+            <div className="rounded-xl border border-border overflow-hidden bg-muted/40 dark:bg-card">
               <div className="grid grid-cols-3 bg-muted/30 border-b border-border/50 px-6 py-4">
                 <div className="col-span-1 text-xs font-black uppercase tracking-[0.15em] text-muted-foreground">
                   Capability
@@ -485,7 +471,7 @@ export default function FeaturesPage() {
               <div className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">
                 Two Interfaces. One System.
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.035em]">
                 Your Classroom. Reimagined.
               </h2>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
@@ -496,14 +482,14 @@ export default function FeaturesPage() {
 
             <div className="grid lg:grid-cols-2 gap-12">
               {/* Faculty Card */}
-              <div className="p-8 sm:p-10 rounded-3xl border border-border/60 bg-card/30 backdrop-blur-xl space-y-6 shadow-xl flex flex-col justify-between">
+              <div className="p-8 sm:p-10 rounded-xl border border-border bg-muted/40 dark:bg-card space-y-6 flex flex-col justify-between">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
                       <Presentation className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">
+                      <h3 className="text-2xl font-medium tracking-[-0.035em] text-foreground">
                         Instructional Design
                       </h3>
                       <p className="text-xs font-bold text-primary uppercase tracking-widest">
@@ -569,14 +555,14 @@ export default function FeaturesPage() {
               </div>
 
               {/* Student Card */}
-              <div className="p-8 sm:p-10 rounded-3xl border border-border/60 bg-card/30 backdrop-blur-xl space-y-6 shadow-xl flex flex-col justify-between">
+              <div className="p-8 sm:p-10 rounded-xl border border-border bg-muted/40 dark:bg-card space-y-6 flex flex-col justify-between">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-2xl bg-secondary/20 border border-secondary/30 flex items-center justify-center">
                       <Users className="h-6 w-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold tracking-tight text-foreground">
+                      <h3 className="text-2xl font-medium tracking-[-0.035em] text-foreground">
                         Conceptual Discovery
                       </h3>
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
@@ -653,7 +639,7 @@ export default function FeaturesPage() {
                 <div className="text-xs font-black text-primary uppercase tracking-[0.25em]">
                   Ready-Made Curriculum
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.035em]">
                   The Waypoints Library
                 </h2>
                 <p className="text-muted-foreground text-sm sm:text-base">
@@ -703,7 +689,7 @@ export default function FeaturesPage() {
           <section className="container mx-auto px-4 sm:px-6 max-w-5xl py-16">
             <div className="rounded-[2.5rem] p-8 sm:p-14 md:p-20 border border-primary/30 bg-gradient-to-br from-primary/10 via-card/40 to-background backdrop-blur-2xl relative overflow-hidden text-center shadow-2xl space-y-8">
               <div className="space-y-4 max-w-xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-none text-foreground">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.035em] leading-none text-foreground">
                   Ready to upgrade your physics classroom?
                 </h2>
                 <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
@@ -735,86 +721,7 @@ export default function FeaturesPage() {
         </main>
 
         {/* Global Footer */}
-        <footer className="relative z-10 bg-background/50 backdrop-blur-sm border-t border-border/50">
-          <div className="container mx-auto px-6 py-12">
-            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-              <div className="flex items-center space-x-3 justify-center md:justify-start mb-6 md:mb-0">
-                <Logo size={24} className="text-foreground" />
-                <span className="text-md font-extrabold">Scorpio</span>
-              </div>
-
-              <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0">
-                <Link
-                  href="https://github.com/RushilMahadevu/scorpio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Github className="h-5 w-5" />
-                  <span className="text-sm font-medium">GitHub</span>
-                </Link>
-                <Link
-                  href="/about"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Info className="h-5 w-5" />
-                  <span className="text-sm font-medium">About</span>
-                </Link>
-                <Link
-                  href="/research"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <BookOpen className="h-5 w-5" />
-                  <span className="text-sm font-medium">Research</span>
-                </Link>
-                <Link
-                  href="/sustainability"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Leaf className="h-5 w-5 text-emerald-500" />
-                  <span className="text-sm font-medium">Sustainability</span>
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Shield className="h-5 w-5" />
-                  <span className="text-sm font-medium">Privacy</span>
-                </Link>
-                <Link
-                  href="/terms"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <FileText className="h-5 w-5" />
-                  <span className="text-sm font-medium">Terms</span>
-                </Link>
-                <Link
-                  href="/request-access"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <KeyRound className="h-5 w-5" />
-                  <span className="text-sm font-medium">Request Access</span>
-                </Link>
-                <Link
-                  href="/contact"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span className="text-sm font-medium">Contact</span>
-                </Link>
-              </div>
-
-              <div className="text-center md:text-right space-y-2">
-                <div className="text-sm text-muted-foreground font-medium">
-                  Built by <span className="text-foreground font-semibold">Rushil Mahadevu</span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} Scorpio. All rights reserved.
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter />
       </motion.div>
     </div>
   );

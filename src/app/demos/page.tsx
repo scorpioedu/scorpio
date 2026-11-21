@@ -1,24 +1,59 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  MonitorPlay,
-  PlayCircle,
-  Sparkles,
-  BookOpen,
-  FileDown,
-  ShieldCheck,
-  ArrowRight,
-} from "lucide-react";
-import { SiteHeader } from "@/components/landing/site-header";
-import { SystemAccordion } from "@/components/system-accordion";
-import { SpaceBackground } from "@/components/ui/space-background";
-import { Logo } from "@/components/ui/logo";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Github, Info, Mail, Shield, FileText, KeyRound, Leaf } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
+import { SiteFooter } from "@/components/landing/site-footer";
+import { SiteHeader } from "@/components/landing/site-header";
+import {
+  card,
+  CircleLink,
+  PrimaryPill,
+  SecondaryPill,
+  Section,
+  Split,
+  statement,
+} from "@/components/landing/split-kit";
+
+const chapters = [
+  { time: 0, label: "Tour", sub: "Classes, assignments, the student view" },
+  { time: 75, label: "Hints, not answers", sub: "How Raise responds to a stuck student" },
+  { time: 160, label: "Math input", sub: "Writing equations and units" },
+  { time: 230, label: "Teacher workflow", sub: "Assigning, grading and reteaching" },
+];
+
+const screens = [
+  {
+    title: "Raise",
+    body: "Students ask for help and get a question or a hint back, never the final answer.",
+    src: "/ai-tutor.png",
+  },
+  {
+    title: "Problem sets",
+    body: "Pick a published set or write your own, then assign it to a class with a due date.",
+    src: "/demos/teacher-editor.png",
+  },
+  {
+    title: "Math input",
+    body: "Students write equations with units, and answers are checked symbolically.",
+    src: "/demos/math-builder.png",
+  },
+  {
+    title: "Class results",
+    body: "See who is stuck, on which step, and what to reteach tomorrow.",
+    src: "/dashboard.png",
+  },
+];
+
+const stats = [
+  { value: "0%", label: "Answers given away", desc: "25 physics problems, all Raise rules on" },
+  { value: "4.62 / 5", label: "Teaching quality", desc: "Blind review by a physics PhD" },
+  { value: "0.92", label: "Math notation", desc: "Typeset symbols per 100 words" },
+  { value: "625", label: "Test runs", desc: "Internal checks of Raise's rules" },
+];
+
+function formatTime(seconds: number) {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
 
 export default function DemosPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -31,294 +66,189 @@ export default function DemosPage() {
   };
 
   return (
-    <div className="min-h-screen relative font-medium scroll-smooth">
-      <SpaceBackground />
+    <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <main className="relative z-10 pt-24 md:pt-32 pb-24">
-          <div className="container mx-auto px-4 sm:px-6 max-w-6xl space-y-24">
-            {/* Header Section */}
-            <div className="text-center space-y-5 max-w-3xl mx-auto">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold tracking-[0.2em] uppercase text-primary">
-                <MonitorPlay className="h-3.5 w-3.5" />
-                <span>Interactive Studio & Demonstrations</span>
-              </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-foreground">
-                See Socratic Physics <span className="text-primary italic">in Motion.</span>
-              </h1>
-              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                Discover how Scorpio scaffolds authentic student derivations, blocks homework
-                solvers, and provides physics faculty with continuous conceptual telemetry.
-              </p>
+      <main className="overflow-x-clip pt-14">
+        {/* ── Intro + video ─────────────────────────────────────────────── */}
+        <Section labelledBy="demos-heading">
+          <Split id="demos-heading" heading="Demos">
+            <p className={statement}>
+              See Scorpio in a real class
+              <span className="block text-muted-foreground">
+                Watch the tour, or open the sample classroom
+              </span>
+            </p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <PrimaryPill href="/demos/teacher">Open teacher demo</PrimaryPill>
+              <SecondaryPill href="/ai">Test Raise</SecondaryPill>
             </div>
+          </Split>
 
-            {/* Video Showcase Frame */}
-            <div className="space-y-6">
-              <div className="relative rounded-3xl overflow-hidden border border-border/70 bg-card/60 backdrop-blur-2xl shadow-2xl">
-                {/* macOS / Glass Browser Header Chrome */}
-                <div className="px-5 py-3.5 border-b border-border/50 bg-muted/30 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-red-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-green-500/80 inline-block" />
-                    <span className="ml-3 text-xs text-muted-foreground font-mono hidden sm:inline-block">
-                      scorpioedu.org/demo-preview
+          <figure className="mt-16 sm:mt-20">
+            <div className="overflow-hidden rounded-xl border border-border bg-black">
+              <video
+                ref={videoRef}
+                controls
+                preload="metadata"
+                poster="/demos/scorpio-demo-poster.jpg"
+                aria-label="Scorpio tour video. Chapters are listed below the video."
+                className="aspect-video w-full"
+              >
+                <source src="/demos/scorpio-demo.webm" type="video/webm" />
+                <source src="/demos/scorpio-demo.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <figcaption className="sr-only">Video chapters</figcaption>
+            <ol role="list" className="mt-2 grid list-none gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {chapters.map((c) => (
+                <li key={c.label}>
+                  <button
+                    type="button"
+                    onClick={() => seekTo(c.time)}
+                    className="group flex w-full flex-col rounded-xl border border-border px-4 py-3.5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
+                  >
+                    <span className="flex items-baseline justify-between gap-3">
+                      <span className="text-[15px] font-medium">{c.label}</span>
+                      <span className="text-sm tabular-nums text-muted-foreground group-hover:text-primary">
+                        {formatTime(c.time)}
+                      </span>
                     </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="border-primary/30 text-primary text-[10px] font-bold tracking-widest uppercase"
-                    >
-                      1080p High-Fidelity
-                    </Badge>
-                  </div>
-                </div>
+                    <span className="mt-1 text-sm text-muted-foreground">{c.sub}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </figure>
+        </Section>
 
-                {/* Video Player */}
-                <div className="relative bg-black aspect-video">
-                  <video
-                    ref={videoRef}
-                    controls
-                    aria-label="Scorpio platform tour video. A captions file is not yet available; chapter titles are listed below the video."
-                    className="w-full h-full aspect-video cursor-pointer"
-                    preload="metadata"
-                    poster="/demos/scorpio-demo-poster.jpg"
-                  >
-                    <source src="/demos/scorpio-demo.webm" type="video/webm" />
-                    <source src="/demos/scorpio-demo.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
+        {/* ── Try it yourself ───────────────────────────────────────────── */}
+        <Section labelledBy="try-heading">
+          <Split id="try-heading" heading="Try it yourself">
+            <p className={statement}>
+              Two demos, no account needed
+              <span className="block text-muted-foreground">
+                A sample class with data, and Raise answering your own questions
+              </span>
+            </p>
+          </Split>
 
-                {/* Quick Chapter Selector Bar */}
-                <div className="p-4 sm:p-5 border-t border-border/50 bg-background/50 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {[
-                    { time: 0, label: "01 Platform Tour", sub: "Architecture Overview" },
-                    { time: 75, label: "02 Socratic Scaffolding", sub: "Anti-Solver Enforcement" },
-                    { time: 160, label: "03 KaTeX Engine", sub: "0.92 Math Density" },
-                    { time: 230, label: "04 Faculty Workflow", sub: "Constraint Parameters" },
-                  ].map((chapter) => (
-                    <button
-                      key={chapter.label}
-                      onClick={() => seekTo(chapter.time)}
-                      className="text-left p-2.5 rounded-xl border border-border/40 hover:border-primary/40 hover:bg-muted/40 transition-all text-xs cursor-pointer group"
-                    >
-                      <div className="font-bold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
-                        <span>{chapter.label}</span>
-                        <PlayCircle className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
-                      </div>
-                      <div className="text-[10px] text-muted-foreground mt-0.5">{chapter.sub}</div>
-                    </button>
-                  ))}
-                </div>
+          <div className="mt-16 grid gap-2 sm:mt-20 md:grid-cols-2">
+            <article className={`${card} flex flex-col`}>
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="text-lg font-medium">Teacher dashboard</h3>
+                <span className="text-sm text-muted-foreground">Sample data</span>
               </div>
-            </div>
-
-            {/* Interactive System Studio */}
-            <div className="space-y-8">
-              <div className="text-center space-y-3 max-w-2xl mx-auto">
-                <div className="inline-flex items-center space-x-1.5 text-xs font-black uppercase tracking-widest text-primary">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>Interactive Walkthrough Studio</span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                  Explore Primary Pedagogical Modules
-                </h2>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                  Click through the core workflows to inspect the Socratic student workspace and
-                  faculty management tools.
-                </p>
+              <p className="mt-3 text-[15px] text-muted-foreground">
+                Click through a physics class: assignments, grades and the reteach list.
+              </p>
+              <div className="mt-8 overflow-hidden rounded-lg border border-border">
+                <Image
+                  src="/demos/teacher-dashboard-light.webp"
+                  alt="Scorpio teacher dashboard with a sample class"
+                  width={1920}
+                  height={1080}
+                  className="h-auto w-full dark:hidden"
+                />
+                <Image
+                  src="/demos/teacher-dashboard-dark.webp"
+                  alt="Scorpio teacher dashboard with a sample class"
+                  width={1920}
+                  height={1080}
+                  className="hidden h-auto w-full dark:block"
+                />
               </div>
+              <span aria-hidden="true" className="min-h-8 flex-1" />
+              <CircleLink href="/demos/teacher">Open the teacher demo</CircleLink>
+            </article>
 
-              <SystemAccordion />
-            </div>
-
-            {/* Live AI Playground Callout Banner */}
-            <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card/50 to-background/50 backdrop-blur-xl p-8 sm:p-12 relative overflow-hidden shadow-xl">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none -z-10" />
-              <div className="grid md:grid-cols-[1fr_auto] gap-8 items-center">
-                <div className="space-y-4">
-                  <Badge
-                    variant="outline"
-                    className="border-primary/40 text-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1"
-                  >
-                    Live Public Sandbox
-                  </Badge>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                    Want to test Raise yourself?
-                  </h3>
-                  <p className="text-muted-foreground text-sm sm:text-base max-w-2xl leading-relaxed">
-                    Test how our Socratic engine handles real physics queries—from incline
-                    acceleration and normal force misconceptions to Newton&apos;s Third Law—without
-                    creating an account.
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="rounded-full font-semibold shadow-lg shadow-primary/20"
-                  >
-                    <Link href="/ai" className="flex items-center gap-2">
-                      Launch AI Playground <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+            <article className={`${card} flex flex-col`}>
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="text-lg font-medium">Test Raise</h3>
+                <span className="text-sm text-muted-foreground">Three questions</span>
               </div>
-            </div>
-
-            {/* Validated Efficacy & Ph.D. Study Strip */}
-            <div className="rounded-3xl border border-border/50 bg-card/20 backdrop-blur-xl p-8 sm:p-10 space-y-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-border/40 pb-6">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-1">
-                    <ShieldCheck className="h-4 w-4" />
-                    <span>Independent Ph.D. Ablation Study</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-                    Evidence-Based Pedagogical Outcomes
-                  </h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <Button asChild variant="outline" size="sm" className="rounded-full">
-                    <Link href="/research">
-                      <BookOpen className="h-4 w-4 mr-1.5" /> Read Methodology
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="sm" className="rounded-full">
-                    <Link href="/demos/comprehensive_metrics.pdf" target="_blank">
-                      <FileDown className="h-4 w-4 mr-1.5" /> Download Metrics PDF
-                    </Link>
-                  </Button>
-                </div>
+              <p className="mt-3 text-[15px] text-muted-foreground">
+                Ask a physics question and see how Raise guides you with hints instead of
+                giving the answer.
+              </p>
+              <div className="relative mt-8 aspect-video overflow-hidden rounded-lg border border-border">
+                <Image
+                  src="/ai-tutor.png"
+                  alt="Raise answering a student's physics question with a hint"
+                  fill
+                  sizes="(min-width: 768px) 560px, 100vw"
+                  className="object-cover object-left-top"
+                />
               </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[
-                  {
-                    value: "0%",
-                    label: "Direct Answer Rate",
-                    desc: "Ablation study across 25 procedural physics problems",
-                  },
-                  {
-                    value: "4.62 / 5",
-                    label: "Pedagogical Quality",
-                    desc: "Ph.D. blinded holistic audit scoring",
-                  },
-                  {
-                    value: "0.92",
-                    label: "LaTeX Notation Density",
-                    desc: "Symbolic precision per 100 words",
-                  },
-                  {
-                    value: "625",
-                    label: "Assessment Passes",
-                    desc: "Rigorous internal test battery",
-                  },
-                ].map((stat, i) => (
-                  <div key={i} className="space-y-1.5">
-                    <div className="text-2xl sm:text-3xl font-black text-foreground">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs font-bold text-foreground/80">{stat.label}</div>
-                    <div className="text-[11px] text-muted-foreground leading-snug">
-                      {stat.desc}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+              <span aria-hidden="true" className="min-h-8 flex-1" />
+              <CircleLink href="/ai">Test Raise</CircleLink>
+            </article>
           </div>
-        </main>
+        </Section>
 
-        {/* Global Footer */}
-        <footer className="relative z-10 bg-background/50 backdrop-blur-sm border-t border-border/50">
-          <div className="container mx-auto px-6 py-12">
-            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-              <div className="flex items-center space-x-3 justify-center md:justify-start mb-6 md:mb-0">
-                <Logo size={24} className="text-foreground" />
-                <span className="text-md font-extrabold">Scorpio</span>
-              </div>
+        {/* ── Screens ───────────────────────────────────────────────────── */}
+        <Section labelledBy="screens-heading">
+          <Split id="screens-heading" heading="Inside Scorpio">
+            <p className={statement}>
+              One place for the whole unit
+              <span className="block text-muted-foreground">
+                What students and teachers see day to day
+              </span>
+            </p>
+          </Split>
 
-              <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-6 md:mb-0">
-                <Link
-                  href="https://github.com/RushilMahadevu/scorpio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Github className="h-5 w-5" />
-                  <span className="text-sm font-medium">GitHub</span>
-                </Link>
-                <Link
-                  href="/about"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Info className="h-5 w-5" />
-                  <span className="text-sm font-medium">About</span>
-                </Link>
-                <Link
-                  href="/research"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <BookOpen className="h-5 w-5" />
-                  <span className="text-sm font-medium">Research</span>
-                </Link>
-                <Link
-                  href="/sustainability"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Leaf className="h-5 w-5 text-emerald-500" />
-                  <span className="text-sm font-medium">Sustainability</span>
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Shield className="h-5 w-5" />
-                  <span className="text-sm font-medium">Privacy</span>
-                </Link>
-                <Link
-                  href="/terms"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <FileText className="h-5 w-5" />
-                  <span className="text-sm font-medium">Terms</span>
-                </Link>
-                <Link
-                  href="/request-access"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <KeyRound className="h-5 w-5" />
-                  <span className="text-sm font-medium">Request Access</span>
-                </Link>
-                <Link
-                  href="/contact"
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span className="text-sm font-medium">Contact</span>
-                </Link>
-              </div>
-
-              <div className="text-center md:text-right space-y-2">
-                <div className="text-sm text-muted-foreground font-medium">
-                  Built by <span className="text-foreground font-semibold">Rushil Mahadevu</span>
+          <ul role="list" className="mt-16 grid list-none gap-2 sm:mt-20 md:grid-cols-2">
+            {screens.map((s) => (
+              <li key={s.title} className={card}>
+                <h3 className="text-lg font-medium">{s.title}</h3>
+                <p className="mt-2 text-[15px] text-muted-foreground">{s.body}</p>
+                <div className="relative mt-6 aspect-[16/10] overflow-hidden rounded-lg border border-border bg-background">
+                  <Image
+                    src={s.src}
+                    alt={`${s.title} in Scorpio`}
+                    fill
+                    sizes="(min-width: 768px) 560px, 100vw"
+                    className="object-cover object-left-top"
+                  />
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} Scorpio. All rights reserved.
-                </div>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        {/* ── Results ───────────────────────────────────────────────────── */}
+        <Section labelledBy="results-heading">
+          <Split id="results-heading" heading="Results">
+            <p className={statement}>
+              Tested before it reaches a class
+              <span className="block text-muted-foreground">
+                How Raise did on our own test set
+              </span>
+            </p>
+          </Split>
+
+          <dl className="mt-16 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map((s) => (
+              <div key={s.label} className="flex flex-col bg-background p-6">
+                <dt className="text-[15px] font-medium">{s.label}</dt>
+                <dd className="order-first mb-6 text-[clamp(2rem,3.4vw,2.6rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+                  {s.value}
+                </dd>
+                <dd className="mt-1 text-sm text-muted-foreground">{s.desc}</dd>
               </div>
-            </div>
+            ))}
+          </dl>
+
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-8">
+            <CircleLink href="/research">Read the study</CircleLink>
+            <CircleLink href="/demos/comprehensive_metrics.pdf" external>
+              Metrics (PDF)
+            </CircleLink>
           </div>
-        </footer>
-      </motion.div>
+        </Section>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

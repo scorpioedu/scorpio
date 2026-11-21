@@ -1,8 +1,8 @@
-import { Check } from "lucide-react";
 import Image from "next/image";
 import { Logo } from "@/components/ui/logo";
 import reveal from "./home-reveal.module.css";
-import { card, CircleLink, label, PrimaryPill, SecondaryPill, Split, statement } from "./split-kit";
+import { PlanCards } from "./plan-cards";
+import { CircleLink, label, PrimaryPill, SecondaryPill, Split, statement } from "./split-kit";
 
 /*
  * Three quiet split sections in the same voice as the hero: a short label on the left, a two-tone
@@ -50,46 +50,6 @@ export function PilotStory() {
 
 /* ── Pricing ────────────────────────────────────────────────────────────── */
 
-type Plan = {
-  name: string;
-  audience: string;
-  price: string;
-  per?: string;
-  ai: string;
-  includes: string[];
-};
-
-/** Mirrors /pricing; change both together. */
-const plans: Plan[] = [
-  {
-    name: "Starter",
-    audience: "For one teacher",
-    price: "Free",
-    ai: "Starter budget",
-    includes: ["Every published problem set", "Auto-grading", "Class misconception report"],
-  },
-  {
-    name: "Department",
-    audience: "For a physics department",
-    price: "$10",
-    per: "/month",
-    ai: "At cost",
-    includes: [
-      "Everything in Starter",
-      "Department sharing",
-      "Higher AI limits",
-      "Monthly spend caps",
-    ],
-  },
-  {
-    name: "District",
-    audience: "For several schools",
-    price: "Custom",
-    ai: "Arranged",
-    includes: ["Everything in Department", "Data-protection review with your school"],
-  },
-];
-
 export function PricingOverview() {
   return (
     <section aria-labelledby="pricing-heading" className="scroll-mt-20 border-b border-border/60">
@@ -117,36 +77,7 @@ export function PricingOverview() {
             </span>
             <span className="text-muted-foreground">No per-student fees</span>
           </div>
-          <ul role="list" className="grid list-none gap-2 md:grid-cols-3">
-            {plans.map((p) => (
-              <li key={p.name} className={`${card} flex flex-col`}>
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="text-lg font-medium">{p.name}</h3>
-                  <p className="text-right text-sm text-muted-foreground">{p.audience}</p>
-                </div>
-                <p className="mt-6 flex items-baseline gap-2">
-                  <span className="text-[2.1rem] font-medium tracking-tight">{p.price}</span>
-                  {p.per && <span className="text-muted-foreground">{p.per}</span>}
-                </p>
-                <p className="mt-5 flex items-baseline justify-between gap-4 text-[15px]">
-                  <span className="text-muted-foreground">AI usage</span>
-                  <span>{p.ai}</span>
-                </p>
-                <span aria-hidden="true" className="min-h-8 flex-1" />
-                <ul
-                  role="list"
-                  className="grid list-none gap-3 border-t border-border pt-5 text-[15px]"
-                >
-                  {p.includes.map((f) => (
-                    <li key={f} className="flex items-start gap-3">
-                      <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-primary" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
+          <PlanCards />
         </div>
       </div>
     </section>

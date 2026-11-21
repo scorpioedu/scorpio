@@ -48,7 +48,7 @@ export function HomeScrollReveal() {
   return null;
 }
 
-const HOME_SECTIONS = ["home", "features", "partners", "efficacy", "faq", "cta"];
+const HOME_SECTIONS = ["home", "features", "efficacy", "pricing", "faq", "cta"];
 
 export function HomeHeader() {
   const [activeNav, setActiveNav] = useState("home");
