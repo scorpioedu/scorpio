@@ -10,6 +10,7 @@ import { assertValidAnswerKeys } from "@/lib/answer-key-access";
 import { compareTopicIds, normaliseApTags, type ApCourseId } from "@/data/ap";
 import { toAssignmentQuestion, validateDraftProblem } from "@/lib/content/problem-format";
 import { CONTENT_DRAFTS, draftCourse } from "@/lib/content/drafts";
+import { verificationIsCurrent } from "@/lib/content/verify";
 import { curriculumSet, displayTitle, getCurriculum, setSequence } from "@/data/curricula";
 
 /** The library's older topic filter, so reviewed AP sets also show under it. */
@@ -100,17 +101,34 @@ async function handlePublish(req: NextRequest, { caller, requestId }: Authorized
         { error: "Only approved problems can be published", ids: notApproved.map((d) => d.id) },
         { status: 409 },
       );
-    // An AI may approve a draft to save a person time, but only a person's approval can go live.
+    // An AI may approve a draft to save a person time, but that alone cannot go live. What can: a
+    // person's approval ("human"), the owner's acceptance ("owner-accepted"), or the verifier's mark
+    // ("verified") for as long as the problem is the one that was verified.
     // The local emulator is the exception, so AI-reviewed sets can be tried end to end there.
-    const aiOnly = drafts.filter((d) => d.data?.reviewKind === "ai");
-    if (aiOnly.length && !process.env.FIRESTORE_EMULATOR_HOST)
-      return NextResponse.json(
-        {
-          error: "These problems were only checked by AI. A person must approve them first.",
-          ids: aiOnly.map((d) => d.id),
-        },
-        { status: 409 },
+    if (!process.env.FIRESTORE_EMULATOR_HOST) {
+      const aiOnly = drafts.filter((d) => d.data?.reviewKind === "ai");
+      if (aiOnly.length)
+        return NextResponse.json(
+          {
+            error: "These problems were only checked by AI. A person must approve them first.",
+            ids: aiOnly.map((d) => d.id),
+          },
+          { status: 409 },
+        );
+      // Editing a verified problem leaves its mark behind; the stored hash is what shows it.
+      const stale = drafts.filter(
+        (d) => d.data?.reviewKind === "verified" && !verificationIsCurrent(d.data),
       );
+      if (stale.length)
+        return NextResponse.json(
+          {
+            error:
+              "These problems changed after they were verified (or have no verification record). Verify them again or have a person approve them.",
+            ids: stale.map((d) => d.id),
+          },
+          { status: 409 },
+        );
+    }
     const units = new Set(drafts.map((d) => d.data!.apUnit));
     const courses = new Set(drafts.map((d) => draftCourse(d.data)));
     if (units.size !== 1 || courses.size !== 1)
