@@ -15,6 +15,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MathInputField } from "@/components/math-input";
 import { NumericAnswerEditor } from "./numeric-answer-editor";
 import { moveItem, QUESTION_TYPES, removeChoice, type PointsSummary, type Question } from "./types";
+import { AnswerCheckBadge } from "./answer-check-badge";
+import {
+  activeAnswerFlag,
+  dismissAnswerCheck,
+  settleAnswerChecks,
+  useAnswerFlags,
+} from "./answer-checks";
 
 export function QuestionsEditor({
   questions,
@@ -42,6 +49,10 @@ export function QuestionsEditor({
       questionToFocus.current = null;
     }
   }, [questions]);
+
+  // "Check this answer" on generated questions; gone for good once that answer is edited.
+  const answerFlags = useAnswerFlags();
+  useEffect(() => settleAnswerChecks(questions), [questions, answerFlags]);
 
   const addQuestion = () => {
     const question: Question = {
@@ -267,6 +278,13 @@ export function QuestionsEditor({
               rows={3}
               defaultPreviewOpen={false}
             />
+            {activeAnswerFlag(question, answerFlags) && (
+              <AnswerCheckBadge
+                flag={activeAnswerFlag(question, answerFlags)!}
+                questionNumber={index + 1}
+                onDismiss={() => dismissAnswerCheck(question.id)}
+              />
+            )}
             {(question.type === "text" || question.type === "short-answer") && (
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">

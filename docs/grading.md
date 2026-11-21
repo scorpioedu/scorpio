@@ -25,6 +25,13 @@ Submissions are final and there are no extensions, so nothing else moves the dat
 
 On a course set each question also links to its topic's guide ("Study guide"; hidden while lockdown or tab detection is watching an unsubmitted attempt). After grading, an answer tagged with a misconception that the topic's guide covers links to that entry ("Why this is a common mistake").
 
+## Answer keys of AI-generated questions
+"Generate with AI" in the assignment editor (`POST /api/ai/generate`, 1 to 20 questions) asks the model for at most 10 questions per call. Later calls are told the earlier questions so they do not repeat; near-duplicates are dropped and the list is cut to the number asked for. If the model comes back short there is one top-up call, and if the list is still short the reply says how many were made.
+
+Each batch's answers then get a second opinion (`src/lib/ai/answer-check.ts`): one more call at temperature 0 that sees only the questions and options, never the proposed answers. Its answer is compared with the key without the AI: by option for multiple choice and true/false; for short answers, a number within the grader's tolerance or closely matching words. Free-response questions are not checked. Every question comes back with `answerCheck`: `agrees`, `disagrees` or `unchecked` (also when the check call fails; generation still succeeds). In the editor a `disagrees` question shows **Check this answer** with what the second solve got, until the teacher changes the answer or dismisses it. The flag is kept beside the editor, not on the question, so it is never saved and never blocks saving.
+
+A 20-question request makes 4 model calls (2 to generate, 2 to check), 5 with a top-up, each with its own budget reservation; it uses one of the teacher's 5 generations per minute.
+
 ## Misconceptions
 Each graded answer carries `misconceptions`: tag ids from `functions/src/misconceptions.ts`. Wrong multiple-choice options and common wrong numeric values can be tagged in the key (`distractors`, stored with the answer key). The AI grader picks tags for written answers. Every grade also writes rows to the server-only `misconception_events` collection, which feeds the class report at `/teacher/insights`. See [content-pipeline.md](content-pipeline.md).
 

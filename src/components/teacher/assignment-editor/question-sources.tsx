@@ -20,7 +20,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { fromGenerated, type Question, type RawQuestion } from "./types";
+import { AI_COUNT, clampAiCount, fromGenerated, type Question, type RawQuestion } from "./types";
+import { flagAnswerChecks } from "./answer-checks";
 
 export function QuestionSources({
   isFreePlan,
@@ -34,7 +35,8 @@ export function QuestionSources({
   const [aiOpen, setAiOpen] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [aiContext, setAiContext] = useState("");
-  const [aiCount, setAiCount] = useState(3);
+  // Text, so the box can be empty while typing; clampAiCount reads it when generating.
+  const [aiCount, setAiCount] = useState(String(AI_COUNT.fallback));
   const [aiDifficulty, setAiDifficulty] = useState("Medium");
   const [aiQuestionType, setAiQuestionType] = useState("mixed");
   const [aiLoading, setAiLoading] = useState(false);
@@ -98,6 +100,8 @@ export function QuestionSources({
 
   const handleAiGenerate = async () => {
     if (!aiTopic) return;
+    const count = clampAiCount(aiCount);
+    setAiCount(String(count));
     setAiLoading(true);
     try {
       const res = await authenticatedFetch("/api/ai/generate", {
@@ -105,7 +109,7 @@ export function QuestionSources({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           topic: aiTopic,
-          count: aiCount,
+          count,
           difficulty: aiDifficulty,
           questionType: aiQuestionType,
           userId,
@@ -125,12 +129,19 @@ export function QuestionSources({
       }
 
       const result = await res.json();
-      const generatedQuestions = result.questions;
+      const generatedQuestions: RawQuestion[] = result.questions;
       const newQuestions: Question[] = generatedQuestions.map(fromGenerated);
       onAdd(newQuestions);
+      const flagged = flagAnswerChecks(generatedQuestions, newQuestions);
       setAiOpen(false);
       setAiTopic("");
-      toast.success(`Successfully generated ${newQuestions.length} questions!`);
+      const check = flagged
+        ? ` ${flagged === 1 ? "1 answer needs" : `${flagged} answers need`} a second look.`
+        : "";
+      // Fewer than asked for: say how many, not "success".
+      if (typeof result.message === "string" && result.message)
+        toast.warning(`${result.message}${check}`);
+      else toast.success(`Successfully generated ${newQuestions.length} questions!${check}`);
     } catch (error: unknown) {
       console.error("Failed to generate questions", error);
       const msg =
@@ -180,11 +191,18 @@ export function QuestionSources({
                 <Input
                   id="ai-count"
                   type="number"
-                  min={1}
-                  max={10}
+                  min={AI_COUNT.min}
+                  max={AI_COUNT.max}
+                  step={1}
+                  inputMode="numeric"
                   value={aiCount}
-                  onChange={(e) => setAiCount(parseInt(e.target.value))}
+                  onChange={(e) => setAiCount(e.target.value)}
+                  onBlur={() => setAiCount(String(clampAiCount(aiCount)))}
+                  aria-describedby="ai-count-hint"
                 />
+                <p id="ai-count-hint" className="text-xs text-muted-foreground">
+                  {AI_COUNT.min} to {AI_COUNT.max}. Larger sets take longer.
+                </p>
               </div>
             </div>
 
