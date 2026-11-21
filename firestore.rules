@@ -119,7 +119,7 @@ service cloud.firestore {
     match /organizations/{id} {
       allow read: if member(id);
       allow update: if teacher() && resource.data.ownerId == request.auth.uid && (
-        (resource.data.get('planId', 'free') != 'free' || request.resource.data.get('aiBudgetLimit', 0) <= resource.data.get('aiBudgetLimit', 0)) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','aiBudgetLimit','practiceLimitPerStudent','practiceLimit','notebookLimitPerStudent','aiNotebookLimitPerStudent','aiTutorLimitPerStudent','notebookLimit']) ||
+        (!(resource.data.get('planId', 'free') in ['free', 'pilot']) || request.resource.data.get('aiBudgetLimit', 0) <= resource.data.get('aiBudgetLimit', 0)) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','aiBudgetLimit','practiceLimitPerStudent','practiceLimit','notebookLimitPerStudent','aiNotebookLimitPerStudent','aiTutorLimitPerStudent','notebookLimit']) ||
         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ownerId']) && user(request.resource.data.ownerId).role == 'teacher' && user(request.resource.data.ownerId).organizationId == id));
     }
     match /portfolios/{id} {

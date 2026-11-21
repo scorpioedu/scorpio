@@ -34,6 +34,17 @@ test('teacher invite is consumed atomically and cannot be reused',async()=>{
  const results=await Promise.all(['wta','wtb'].map(u=>register(req('auth/register',u,{role:'teacher',name:u,code:'INVITE'}))));
  expect(results.map(r=>r.status).sort()).toEqual([200,400]);
 });
+test('a pilot invite creates the new network as a pilot; a pilot invite into an existing network does not',async()=>{
+ await adminDb.collection('teacherInviteCodes').doc('PILOTNEW').set({organizationId:null,isPilot:true,pilot:{cohort:'fall-2026',budgetCents:1000,endsAt:'2027-06-15T00:00:00.000Z'},expiresAt:new Date(Date.now()+60000),isUsed:false});
+ expect((await register(req('auth/register','wpilot',{role:'teacher',name:'Pia',code:'PILOTNEW'}))).status).toBe(200);
+ const orgId=(await adminDb.collection('users').doc('wpilot').get()).data()!.organizationId;
+ const org=(await adminDb.collection('organizations').doc(orgId).get()).data()!;
+ expect(org).toMatchObject({planId:'pilot',subscriptionStatus:'active',aiBudgetLimit:1000,ownerId:'wpilot'});
+ expect(org.pilot).toMatchObject({cohort:'fall-2026',status:'active',budgetCents:1000,endsAt:'2027-06-15T00:00:00.000Z',source:'invite'});
+ await adminDb.collection('teacherInviteCodes').doc('PILOTJOIN').set({organizationId:'worg',isPilot:true,pilot:{cohort:'fall-2026',budgetCents:1000},expiresAt:new Date(Date.now()+60000),isUsed:false});
+ expect((await register(req('auth/register','wpilotjoin',{role:'teacher',name:'Jo',code:'PILOTJOIN'}))).status).toBe(200);
+ expect((await adminDb.collection('organizations').doc('worg').get()).data()!.planId).toBe('free');
+});
 test('teacher invite attribution is copied onto the server-managed profile in the same transaction',async()=>{
  await adminDb.collection('teacherInviteCodes').doc('ATTRIB').set({organizationId:null,contactEmail:'ann@school.test',label:'Dec outreach',expiresAt:new Date(Date.now()+60000),isUsed:false});
  expect((await register(req('auth/register','wattrib',{role:'teacher',name:'Ann',code:'attrib'}))).status).toBe(200);

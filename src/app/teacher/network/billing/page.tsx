@@ -128,6 +128,14 @@ export default function BillingPage() {
     user?.uid === organization.ownerId || (profile?.role as string) === "school_admin";
   const isFreePlan = !organization.planId || organization.planId === "free";
   const isYearlyActive = organization.planId?.includes("yearly");
+  const isPilot = organization.planId === "pilot";
+  const pilotEnds = organization.pilot?.endsAt
+    ? new Date(organization.pilot.endsAt).toLocaleDateString(undefined, {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   const budgetCapDollars = (organization.aiBudgetLimit || 0) / 100;
   const currentUsageDollars = (organization.aiUsageCurrent || 0) / 100;
@@ -167,15 +175,15 @@ export default function BillingPage() {
             <div className="text-xs">
               <span className="text-muted-foreground">Current Plan: </span>
               <span className="font-semibold text-foreground">
-                {isFreePlan ? "Free Starter" : "Department License"}
+                {isFreePlan ? "Free Starter" : isPilot ? "Founding Pilot" : "Department License"}
               </span>
-              {!isFreePlan && (
+              {!isFreePlan && !isPilot && (
                 <span className="ml-1 text-muted-foreground">
                   ({isYearlyActive ? "Annual" : "Monthly"})
                 </span>
               )}
             </div>
-            {!isFreePlan && (
+            {!isFreePlan && !isPilot && (
               <Button asChild variant="outline" size="sm" className="h-7 text-xs ml-1">
                 <Link
                   href="https://polar.sh/scorpio/portal"
@@ -189,6 +197,24 @@ export default function BillingPage() {
           </div>
         </div>
       </div>
+
+      {isPilot && (
+        <div className="rounded-xl border border-primary/20 bg-accent/40 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground">You&apos;re in the Scorpio pilot</p>
+          <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+            Your network has the full Department License at no cost
+            {pilotEnds ? (
+              <>
+                {" "}
+                until <span className="font-medium text-foreground">{pilotEnds}</span>
+              </>
+            ) : null}
+            , with a ${budgetCapDollars.toFixed(2)} AI budget for the pilot ($
+            {currentUsageDollars.toFixed(2)} used so far). If you run low, email the Scorpio team
+            and we&apos;ll top it up.
+          </p>
+        </div>
+      )}
 
       {/* ── Billing Cycle Toggle ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
