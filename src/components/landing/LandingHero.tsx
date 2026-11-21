@@ -54,40 +54,50 @@ export function LandingHero() {
           </span>
         </h1>
 
-        <div className="mt-7 flex flex-col gap-4 sm:mt-8 sm:flex-row sm:items-center sm:gap-6">
-          <Button
-            asChild
-            style={at(900)}
-            className={`${intro.step} group relative isolate h-12 w-full gap-2 rounded-full pl-5 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary sm:w-auto dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
-          >
-            <Link href="/request-access">
-              {/* The accent expands behind the label without moving it. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-1.5 right-1.5 -z-10 w-9 rounded-full bg-black/12 transition-[width] duration-300 ease-out group-hover:w-[calc(100%-0.75rem)] group-focus-visible:w-[calc(100%-0.75rem)] motion-reduce:transition-none"
-              />
-              Request classroom access
-              <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center">
-                <svg
-                  viewBox="0 0 24 20"
-                  className="size-5 transition-transform duration-300 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeDasharray="0.01 4.2"
-                >
-                  <path
-                    d="m4 4 6 6-6 6"
-                    className="opacity-35 transition-opacity group-hover:opacity-65 group-focus-visible:opacity-65 motion-reduce:transition-none"
-                  />
-                  <path d="m12 4 6 6-6 6" />
-                </svg>
-              </span>
-            </Link>
-          </Button>
-          <p style={at(980)} className={`${intro.step} text-sm text-muted-foreground`}>
-            Free for one teacher
+        <div className="mt-7 flex flex-col gap-4 sm:mt-8 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button
+              asChild
+              style={at(900)}
+              className={`${intro.step} group relative isolate h-12 w-full gap-2 rounded-full pl-5 pr-1.5 shadow-sm shadow-primary/20 hover:bg-primary sm:w-auto dark:bg-primary/80 dark:hover:bg-primary/80 motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
+            >
+              <Link href="/request-access">
+                {/* The accent expands behind the label without moving it. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-1.5 right-1.5 -z-10 w-9 rounded-full bg-black/12 transition-[width] duration-300 ease-out group-hover:w-[calc(100%-0.75rem)] group-focus-visible:w-[calc(100%-0.75rem)] motion-reduce:transition-none"
+                />
+                Request teacher access
+                <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center">
+                  <svg
+                    viewBox="0 0 24 20"
+                    className="size-5 transition-transform duration-300 ease-out motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="0.01 4.2"
+                  >
+                    <path
+                      d="m4 4 6 6-6 6"
+                      className="opacity-35 transition-opacity group-hover:opacity-65 group-focus-visible:opacity-65 motion-reduce:transition-none"
+                    />
+                    <path d="m12 4 6 6-6 6" />
+                  </svg>
+                </span>
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="secondary"
+              style={at(940)}
+              className={`${intro.step} h-12 w-full rounded-full px-6 sm:w-auto motion-safe:active:scale-[0.98] motion-reduce:transition-none`}
+            >
+              <Link href="/signup?role=student">Join as a student</Link>
+            </Button>
+          </div>
+          <p style={at(1000)} className={`${intro.step} text-sm text-muted-foreground`}>
+            Not for profit. Built by a high school junior.
           </p>
         </div>
 

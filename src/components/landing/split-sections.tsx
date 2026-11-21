@@ -48,6 +48,39 @@ export function PilotStory() {
   );
 }
 
+/* ── Not for profit ─────────────────────────────────────────────────────── */
+
+/*
+ * How Scorpio is run, in plain words. It is not a registered nonprofit, so the copy says "not for
+ * profit" about how it is run and never "nonprofit organization", "charity" or "donate".
+ */
+export function NotForProfit() {
+  return (
+    <section aria-labelledby="not-for-profit" className="scroll-mt-20 border-b border-border/60">
+      <div id="mission" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div data-scroll-reveal className={reveal.stagger}>
+          <Split id="not-for-profit" heading="Not for profit">
+            <p className={statement}>
+              Built by a high school junior
+              <span className="block text-muted-foreground">
+                Fees pay for servers and AI. Nobody takes a profit.
+              </span>
+            </p>
+            <p className="mt-10 max-w-xl text-pretty text-[clamp(1.05rem,1.4vw,1.2rem)] leading-[1.55] text-muted-foreground">
+              Scorpio has no investors and no shareholders. A Department plan covers hosting and the
+              AI your students use, at cost. Scorpio is not a registered nonprofit yet; we are
+              applying for 501(c)(3) status.
+            </p>
+            <CircleLink href="/about" className="mt-10">
+              Read about Scorpio
+            </CircleLink>
+          </Split>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Pricing ────────────────────────────────────────────────────────────── */
 
 export function PricingOverview() {
@@ -58,12 +91,10 @@ export function PricingOverview() {
           <Split id="pricing-heading" heading="Pricing">
             <p className={statement}>
               Pricing a department can approve
-              <span className="block text-muted-foreground">
-                Free for one teacher, flat after that
-              </span>
+              <span className="block text-muted-foreground">One flat price, AI at cost</span>
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <PrimaryPill href="/request-access">Request classroom access</PrimaryPill>
+              <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
               <SecondaryPill href="/pricing">See full pricing</SecondaryPill>
             </div>
           </Split>

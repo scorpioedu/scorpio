@@ -4,9 +4,13 @@ import { HomeChatbot, HomeHeader, HomeScrollReveal } from "@/components/landing/
 import reveal from "@/components/landing/home-reveal.module.css";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { SiteFooter } from "@/components/landing/site-footer";
-import { RoleGate } from "@/components/landing/role-gate";
 import { ColumnGuides } from "@/components/landing/line-art";
-import { PilotProgram, PilotStory, PricingOverview } from "@/components/landing/split-sections";
+import {
+  NotForProfit,
+  PilotProgram,
+  PilotStory,
+  PricingOverview,
+} from "@/components/landing/split-sections";
 import { PrimaryPill, SecondaryPill, Split, statement } from "@/components/landing/split-kit";
 import { WorkflowRows } from "@/components/landing/workflow-rows";
 import { LandingFAQ } from "@/components/landing-faq";
@@ -37,6 +41,8 @@ export default function Home() {
           <Comparison />
         </section>
 
+        <NotForProfit />
+
         <PricingOverview />
 
         <PilotProgram />
@@ -50,11 +56,11 @@ export default function Home() {
                 <p className={statement}>
                   Try it with one unit
                   <span className="block text-muted-foreground">
-                    Free for one teacher, no card required
+                    Teachers request access, students join with a class code
                   </span>
                 </p>
                 <div className="mt-10 flex flex-wrap gap-3">
-                  <PrimaryPill href="/request-access">Request classroom access</PrimaryPill>
+                  <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
                   <SecondaryPill href="/contact">Request a department demo</SecondaryPill>
                 </div>
               </Split>
@@ -65,7 +71,6 @@ export default function Home() {
 
       <SiteFooter reveal />
 
-      <RoleGate />
       <HomeChatbot />
     </div>
   );

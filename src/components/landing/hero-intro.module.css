@@ -63,7 +63,7 @@
   }
 
   /* Hold everything at its first frame while the splash or the first-visit role gate covers the page. */
-  :global(html:is([data-hero-hold], :has(#scorpio-intro[open]))) :is(.word, .step, .livePulse) {
+  :global(html:has(#scorpio-intro[open])) :is(.word, .step, .livePulse) {
     animation-play-state: paused;
   }
 
@@ -148,7 +148,7 @@
     animation: end-glow 2400ms ease-in-out infinite;
   }
 
-  :global(html:is([data-hero-hold], :has(#scorpio-intro[open]))) .endDot {
+  :global(html:has(#scorpio-intro[open])) .endDot {
     animation-play-state: paused;
   }
 }

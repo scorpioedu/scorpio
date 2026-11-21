@@ -102,7 +102,7 @@ export const metadata: Metadata = {
     template: "%s • Scorpio",
   },
   description:
-    "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Free for individual teachers.",
+    "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Run not for profit.",
   keywords: [
     "AP Physics homework",
     "AP Physics 1",
@@ -126,7 +126,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Scorpio • AP Physics homework, graded for you",
     description:
-      "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Free for individual teachers.",
+      "Ready-made AP Physics 1, 2 and C: Mechanics problem sets that grade themselves and tutor with hints, not answers. Run not for profit.",
     url: "https://scorpioedu.org",
     siteName: "Scorpio",
     images: [
