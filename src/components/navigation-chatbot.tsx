@@ -9,9 +9,7 @@ import {
   Home,
   FileText,
   BarChart,
-  Upload,
   Users,
-  BookOpen,
   Rocket,
   Route,
   NotebookPen,
@@ -60,13 +58,11 @@ interface QuickAction {
 }
 
 const studentQuickActions: QuickAction[] = [
-  { icon: Home, label: "Dashboard", path: "/student" },
+  { icon: Home, label: "Home", path: "/student" },
   { icon: FileText, label: "Assignments", path: "/student/assignments" },
   { icon: BarChart, label: "Grades", path: "/student/grades" },
+  { icon: NotebookPen, label: "Study", path: "/student/notebook" },
   { icon: Hand, label: "Raise", path: "/student/tutor" },
-  { icon: NotebookPen, label: "Notebook", path: "/student/notebook" },
-  { icon: Upload, label: "Submissions", path: "/student/submissions" },
-  { icon: BookOpen, label: "Resources", path: "/student/resources" },
 ];
 
 const teacherQuickActions: QuickAction[] = [
@@ -191,7 +187,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
     const roleBlurb =
       userRole === "teacher"
         ? `I can help you find your [Course](/teacher/courses), [Assignments](/teacher/assignments), [Grading](/teacher/grades), [Classes](/teacher/students), the [Library](/teacher/waypoints), and more.`
-        : `I can help you navigate [Assignments](/student/assignments), your [Raise](/student/tutor), [Notebook](/student/notebook), and [Grades](/student/grades).`;
+        : `I can help you navigate [Assignments](/student/assignments), [Grades](/student/grades), [Study](/student/notebook) (Notebook, Formula vault and Resources) and [Raise](/student/tutor).`;
 
     setMessages([
       {

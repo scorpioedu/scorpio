@@ -15,9 +15,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import {
   FileText,
-  FileCheck,
   ArrowRight,
-  PackageOpen,
   LayoutDashboard,
   GraduationCap,
   NotebookPen,
@@ -364,7 +362,8 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
     }
   };
 
-  const firstAssignment = recentAssignments.find((assignment) => !assignment.isSubmitted);
+  // The list is sorted unsubmitted first, then by due date, so this is the most urgent open one.
+  const nextAssignment = recentAssignments.find((assignment) => !assignment.isSubmitted) ?? null;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -376,58 +375,46 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
   return (
     <div className="space-y-6">
       <WorkspaceHeader
-        title="Dashboard"
+        title="Home"
         description={`${getGreeting()}, ${profile?.displayName?.split(" ")[0] || "Student"}.`}
       >
         <RundownDialog
           userRole="student"
           triggerLabel="Student Tutorial"
-          title="System Navigation Guide"
+          title="How Scorpio is laid out"
           steps={[
             {
-              title: "1. The Student Dashboard",
+              title: "1. Home",
               description:
-                "Your primary overview page. See your class, coursework progress, and study tools.",
+                "Start here. Next up names the one assignment to do now, and below it you see your class, your course and how you're doing.",
               icon: LayoutDashboard,
             },
             {
-              title: "2. Working on Assignments",
+              title: "2. Assignments",
               description:
-                "The core of the system. Select an assignment to begin solving problems. Use the Socratic AI chat to get help—but remember, the system is designed to guide you through steps, not give away answers.",
+                "Everything your teacher has set, with what is due soon at the top. Open one to work through its problems.",
               icon: FileText,
             },
             {
-              title: "3. Reviewing Submissions",
+              title: "3. Grades",
               description:
-                "Access your completed work. Review your answers and any feedback your instructor has shared.",
-              icon: FileCheck,
-            },
-            {
-              title: "4. Grade Tracking",
-              description:
-                "View your current academic standing. See your scores and open feedback for each assignment.",
+                "Everything you turned in. Work waiting for your teacher says Awaiting grade; graded work shows your score, and Details opens the feedback on each answer.",
               icon: GraduationCap,
             },
             {
-              title: "5. Digital Notebook",
+              title: "4. Study",
               description:
-                "A persistent, Markdown-supported space for your notes. Use it to document derivations, save conceptual explanations, and prep for exams without switching platforms.",
+                "Your study tools, in three tabs: Notebook for your own notes and derivations, Formula vault for the equations and constants in your course, and Resources for files your teacher shared.",
               icon: NotebookPen,
             },
             {
-              title: "6. The Equation Vault",
+              title: "5. Raise (optional)",
               description:
-                "Your searchable database for physics formulas and constants. You can quickly search for specific equations and reference them while working on problems.",
-              icon: PackageOpen,
-            },
-            {
-              title: "7. Learning Library & Raise",
-              description:
-                "Browse curated resources for any topic. Raise is there too if you want an explanation talked through. It is optional, and nothing in your coursework requires it.",
+                "Raise is there if you want an idea talked through. Nothing in your coursework requires it.",
               icon: RaiseLogo,
             },
             {
-              title: "8. If you use Raise",
+              title: "6. If you use Raise",
               description:
                 "Say what you've tried or share a partial derivation, and Raise will give a hint toward the next step rather than the answer. Each message uses energy and water, so ask when it actually helps.",
               icon: ShieldCheck,
@@ -523,29 +510,9 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           <p role="status" className="text-sm text-muted-foreground">
             Loading your assignments…
           </p>
-        ) : !firstSubmissionDone ? (
-          <Card className="shadow-none">
-            <CardHeader>
-              <CardTitle>
-                {firstAssignment ? "Start your first assignment" : "You’re enrolled"}
-              </CardTitle>
-              <CardDescription className="break-words">
-                {firstAssignment?.title || "Your teacher hasn’t posted an assignment yet."}
-              </CardDescription>
-            </CardHeader>
-            {firstAssignment && (
-              <CardContent>
-                <Button asChild>
-                  <Link
-                    href={`/student/assignment-view?id=${encodeURIComponent(firstAssignment.id)}`}
-                  >
-                    Start your first assignment
-                  </Link>
-                </Button>
-              </CardContent>
-            )}
-          </Card>
-        ) : null)}
+        ) : (
+          <NextUpCard assignment={nextAssignment} anySubmitted={firstSubmissionDone} />
+        ))}
 
       <ConfirmDialog
         open={showLeaveConfirm}
@@ -594,7 +561,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
                   <Link
                     href={
                       assignment.isSubmitted
-                        ? `/student/submissions`
+                        ? `/student/grades`
                         : `/student/assignment-view?id=${assignment.id}`
                     }
                     className="group flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-muted/30 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
@@ -641,7 +608,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
 
       <section aria-labelledby="study-heading" className="space-y-3 pt-1">
         <h2 id="study-heading" className="text-sm font-semibold tracking-tight text-foreground">
-          Study Tools
+          Study
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Link
@@ -650,7 +617,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                Equation Vault
+                Formula vault
               </span>
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
@@ -698,5 +665,74 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         </div>
       </section>
     </div>
+  );
+}
+
+/** "3 days overdue", "Due today", "Due in 4 days", or the date when it is further out. */
+function dueText(dueDate: FirestoreDate): { text: string; overdue: boolean } {
+  const ms = dateMs(dueDate, NaN);
+  if (Number.isNaN(ms)) return { text: "No due date", overdue: false };
+  const due = new Date(ms);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate()).getTime();
+  const days = Math.round((dueDay - today) / 86_400_000);
+  if (days < 0) return { text: days === -1 ? "1 day overdue" : `${-days} days overdue`, overdue: true };
+  if (days === 0) return { text: "Due today", overdue: false };
+  if (days === 1) return { text: "Due tomorrow", overdue: false };
+  if (days <= 7) return { text: `Due in ${days} days`, overdue: false };
+  return { text: `Due ${due.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`, overdue: false };
+}
+
+/** The one thing to do now: the most urgent open assignment, or a note that nothing is open. */
+function NextUpCard({
+  assignment,
+  anySubmitted,
+}: {
+  assignment: RecentAssignment | null;
+  anySubmitted: boolean;
+}) {
+  if (!assignment) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <CardTitle className="text-lg">
+              {anySubmitted ? "You’re all caught up" : "You’re enrolled"}
+            </CardTitle>
+            <CardDescription>
+              {anySubmitted
+                ? "Nothing is open right now. Your teacher’s next assignment will show up here."
+                : "Your teacher hasn’t posted an assignment yet."}
+            </CardDescription>
+          </div>
+          {anySubmitted && (
+            <Button asChild variant="outline">
+              <Link href="/student/grades">See your grades</Link>
+            </Button>
+          )}
+        </CardHeader>
+      </Card>
+    );
+  }
+  const due = dueText(assignment.dueDate);
+  return (
+    <Card className="shadow-none">
+      <CardHeader className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Next up</p>
+          <CardTitle className="mt-1 break-words text-lg">{assignment.title}</CardTitle>
+          <CardDescription className={due.overdue ? "font-medium text-destructive" : undefined}>
+            {due.text}
+          </CardDescription>
+        </div>
+        <Button asChild>
+          <Link href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}`}>
+            {anySubmitted ? "Start" : "Start your first assignment"}
+            <ArrowRight className="size-4" />
+          </Link>
+        </Button>
+      </CardHeader>
+    </Card>
   );
 }

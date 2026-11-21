@@ -64,7 +64,7 @@ KEY DIFFERENTIATORS:
 FEATURES:
 - Raise (scorpioedu.org/student/tutor): Socratic physics learning assistant. Students ask questions, Raise guides them — never tells them the answer. Teacher-controlled message limits per student.
 - Notebook (scorpioedu.org/student/notebook): AI-powered note-taking workspace with full LaTeX support for complex derivations.
-- Vault (scorpioedu.org/student/vault): Secure personal file and material library.
+- Formula vault (scorpioedu.org/student/vault): The equations and constants for the student's course; teachers choose which ones students see.
 - Waypoints (scorpioedu.org/teacher/waypoints): Ready-made assignments, including AP Physics 1 sets. Every global Waypoint is free to copy on the free plan; department waypoints shared inside a school network need a Department License.
 - Auto-grading: numeric answers with units and tolerance, multiple choice, and AI grading of written answers. Free.
 - Class misconception report (scorpioedu.org/teacher/insights): top misconceptions ranked by how many students showed them (for example 8 of 24 students), by class, assignment and AP unit. Free.

@@ -3,10 +3,7 @@
 import {
   LayoutDashboard,
   FileText,
-  FileCheck,
-  Library,
   GraduationCap,
-  PackageOpen,
   ChartColumnBig,
   NotebookPen,
   Leaf,
@@ -18,25 +15,31 @@ const SidebarRaiseIcon = ({ className }: { className?: string }) => (
   <RaiseLogo size={20} strokeWidth={2} className={className} />
 );
 
+// Five pages, one question each: what now (Home), what's due (Assignments), how did I do
+// (Grades), my study tools (Study), help if I want it (Raise). `match` lists the routes each
+// page groups; the Study tabs live in components/student/section-tabs.tsx.
 const navSections: NavSection[] = [
   {
-    label: "Overview",
-    items: [{ href: "/student", label: "Dashboard", icon: LayoutDashboard }],
-  },
-  {
-    label: "Coursework",
     items: [
-      { href: "/student/assignments", label: "Assignments", icon: FileText },
-      { href: "/student/submissions", label: "My Submissions", icon: FileCheck },
-      { href: "/student/grades", label: "Grades", icon: ChartColumnBig },
-    ],
-  },
-  {
-    label: "Study",
-    items: [
-      { href: "/student/notebook", label: "Notebook", icon: NotebookPen },
-      { href: "/student/vault", label: "Equation Vault", icon: PackageOpen },
-      { href: "/student/resources", label: "Resources", icon: Library },
+      { href: "/student", label: "Home", icon: LayoutDashboard },
+      {
+        href: "/student/assignments",
+        label: "Assignments",
+        icon: FileText,
+        match: ["/student/assignment-view"],
+      },
+      {
+        href: "/student/grades",
+        label: "Grades",
+        icon: ChartColumnBig,
+        match: ["/student/submissions"],
+      },
+      {
+        href: "/student/notebook",
+        label: "Study",
+        icon: NotebookPen,
+        match: ["/student/vault", "/student/resources"],
+      },
     ],
   },
   {
@@ -45,10 +48,8 @@ const navSections: NavSection[] = [
     items: [{ href: "/student/tutor", label: "Raise", icon: SidebarRaiseIcon }],
   },
   {
-    label: "Impact",
-    items: [
-      { href: "/student/sustainability", label: "Green Impact", icon: Leaf },
-    ],
+    placement: "bottom",
+    items: [{ href: "/student/sustainability", label: "Green Impact", icon: Leaf }],
   },
 ];
 

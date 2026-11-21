@@ -226,7 +226,7 @@ Scorpio prioritizes reducing energy and paper use. We plan to support long-term 
             { term: "Short hints", description: "We keep hints short so the model generates fewer tokens and students can get back to the problem." },
             { term: "Cutting emissions first", description: "We focus on reducing the energy and materials Scorpio uses. Our plan is to support carbon removal that can be measured and verified." },
             { term: "Google Cloud TPUs", description: "The model runs on processors designed for the kinds of calculations it performs." },
-            { term: "Equation Vault", description: "Formulas are stored on your device, so you can look up a constant or an equation without running the model." },
+            { term: "Formula vault", description: "Formulas are stored on your device, so you can look up a constant or an equation without running the model." },
             { term: "Long-term carbon removal", description: "Planned once profitable: projects that can verify how much carbon they remove and how long it stays stored." },
             { term: "Digital assignments", description: "Teachers can post and grade assignments online, and students can turn them in without printing a copy." },
           ]}
@@ -238,7 +238,7 @@ Scorpio prioritizes reducing energy and paper use. We plan to support long-term 
         <ol className="list-decimal space-y-1.5 pl-5">
           <li><span className="font-medium text-foreground">Ask about the step you&apos;re stuck on.</span> Point to the equation or step that&apos;s giving you trouble, for example how to split a force into horizontal and vertical components.</li>
           <li><span className="font-medium text-foreground">Try the hint before asking again.</span> Spend a minute working through the hint on scratch paper. If you&apos;re still stuck, say what you tried.</li>
-          <li><span className="font-medium text-foreground">Look up formulas in the Equation Vault.</span> Constants, formulas, and units are there without sending an AI request.</li>
+          <li><span className="font-medium text-foreground">Look up formulas in the Formula vault.</span> Constants, formulas, and units are there without sending an AI request.</li>
         </ol>
         <h3 className="pt-3 text-base font-semibold text-foreground">For teachers: use less paper and help students get unstuck</h3>
         <ol className="list-decimal space-y-1.5 pl-5">

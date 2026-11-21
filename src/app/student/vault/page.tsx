@@ -323,7 +323,7 @@ export default function Vault() {
   return (
     <div className="space-y-6">
       <WorkspaceHeader
-        title="Equation Vault"
+        title="Formula vault"
         description={`Search formulas and constants for ${courseName || "physics"}.`}
       />
       <div className="flex flex-wrap items-center gap-2">
