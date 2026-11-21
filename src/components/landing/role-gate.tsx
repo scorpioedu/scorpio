@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ArrowLeft, ArrowRight, GraduationCap, Presentation } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -52,6 +52,12 @@ export function RoleGate() {
   // The server snapshot is "seen" so the dialog never renders into the static HTML.
   const seen = useSyncExternalStore(subscribe, hasSeen, () => true);
   const open = !seen;
+
+  // Release the hero's entrance (held by the intro script) once the gate is gone. Reads the store
+  // directly: during hydration `seen` is briefly the server's "true" while the gate is about to open.
+  useEffect(() => {
+    if (hasSeen()) document.documentElement.removeAttribute("data-hero-hold");
+  }, [seen]);
 
   // Remember the visit once they pick a path (or choose to just browse).
   const leave = () => {

@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Comparison } from "@/components/landing/comparison";
 import { CourseGrid } from "@/components/landing/course-grid";
@@ -6,12 +6,12 @@ import { HomeChatbot, HomeHeader, HomeScrollReveal } from "@/components/landing/
 import reveal from "@/components/landing/home-reveal.module.css";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { RoleGate } from "@/components/landing/role-gate";
-import { ProductShot } from "@/components/landing/product-shot";
 import { ColumnGuides } from "@/components/landing/line-art";
+import { PilotProgram, PilotStory, PricingOverview } from "@/components/landing/split-sections";
+import { PrimaryPill, SecondaryPill, Split, statement } from "@/components/landing/split-kit";
 import { WorkflowRows } from "@/components/landing/workflow-rows";
 import { LandingFAQ } from "@/components/landing-faq";
 import { LoadingScreen } from "@/components/loading-screen";
-import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 
 const footerLinks = [
@@ -35,7 +35,7 @@ export default function Home() {
         <HomeScrollReveal />
         <LandingHero />
 
-        <ProductShot />
+        <PilotStory />
 
         <WorkflowRows />
 
@@ -49,54 +49,27 @@ export default function Home() {
           <Comparison />
         </section>
 
+        <PricingOverview />
+
+        <PilotProgram />
+
         <LandingFAQ minimal />
 
-        <section
-          id="cta"
-          aria-labelledby="cta-heading"
-          className="mx-auto max-w-6xl px-5 pb-20 sm:px-8 sm:pb-28"
-        >
-          <div
-            data-scroll-reveal
-            className={`${reveal.stagger} flex flex-col gap-6 rounded-2xl border border-border bg-muted/40 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10`}
-          >
-            <div>
-              <h2
-                id="cta-heading"
-                className="text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
-              >
-                Try it with one unit
-              </h2>
-              <p className="mt-2 max-w-lg text-pretty leading-relaxed text-muted-foreground">
-                Free for individual teachers. Departments get a flat plan with sharing and higher AI
-                limits.{" "}
-                <Link
-                  href="/pricing"
-                  className="font-medium text-primary underline-offset-4 hover:underline"
-                >
-                  See pricing
-                </Link>
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-col gap-3 sm:items-end">
-              <Button
-                asChild
-                className="group h-12 rounded-xl px-5 shadow-sm shadow-primary/20 motion-reduce:transition-none"
-              >
-                <Link href="/request-access" prefetch={false}>
-                  Request classroom access
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="size-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
-                  />
-                </Link>
-              </Button>
-              <Link
-                href="/contact"
-                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-              >
-                Or request a department demo
-              </Link>
+        <section id="cta" aria-labelledby="cta-heading" className="scroll-mt-20">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+            <div data-scroll-reveal className={reveal.stagger}>
+              <Split id="cta-heading" heading="Get started">
+                <p className={statement}>
+                  Try it with one unit
+                  <span className="block text-muted-foreground">
+                    Free for one teacher, no card required
+                  </span>
+                </p>
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <PrimaryPill href="/request-access">Request classroom access</PrimaryPill>
+                  <SecondaryPill href="/contact">Request a department demo</SecondaryPill>
+                </div>
+              </Split>
             </div>
           </div>
         </section>

@@ -14,7 +14,7 @@ export default function TeacherDemoPage() {
     <main className="flex h-dvh flex-col overflow-hidden">
       <header className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-border bg-background px-4 py-2 sm:px-6">
         <Link
-          href="/#dashboard-preview"
+          href="/#home"
           className="inline-flex min-h-9 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
         >
           <ArrowLeft aria-hidden="true" className="size-4" />

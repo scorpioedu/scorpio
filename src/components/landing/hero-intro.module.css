@@ -1,48 +1,69 @@
 /*
- * The hero's entrance, in order: contour lines, the headline developing word by word, the description,
- * the buttons, the facts, then Scorpius drawing itself claw to stinger with Antares lighting last.
- * Every step waits while the splash dialog is open, so the sequence starts when the page is seen.
- * Each element sets its own start in `--d` (ms); words and stars also set `--i`.
+ * The hero's entrance, in order: the headline developing word by word, the button, then the live
+ * class window and the pitch beside it. Every step waits while the splash or the role gate is open, so the
+ * sequence starts when the page is seen. Each element sets its own start in `--d` (ms); words also
+ * set `--i`. The window's own clock (hero-live-class.tsx) also waits for the splash.
  */
 @media (prefers-reduced-motion: no-preference) {
-  .lines {
-    animation: lines-in 1400ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  }
-
-  .sky {
-    animation: fade-in 900ms ease-out 200ms backwards;
-  }
-
   .word {
     display: inline-block;
-    animation: develop 820ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--d, 0) * 1ms + var(--i, 0) * 55ms) backwards;
+    animation: develop 820ms cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--d, 0) * 1ms + var(--i, 0) * 55ms) backwards;
   }
 
   .step {
     animation: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--d, 0) * 1ms) backwards;
   }
 
-  .edge {
-    stroke-dasharray: 1;
-    animation: trace 300ms cubic-bezier(0.65, 0, 0.35, 1) calc(1150ms + var(--i, 0) * 75ms) backwards;
+  /* The window lifts a touch under the pointer. */
+  .frame {
+    transition:
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 400ms ease;
   }
 
-  .star {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: star-on 360ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(1100ms + var(--i, 0) * 75ms) backwards;
+  .frame:hover {
+    transform: translateY(-2px);
   }
 
-  .antares {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation:
-      star-on 520ms cubic-bezier(0.34, 1.56, 0.64, 1) 2150ms backwards,
-      glow 1600ms ease-out 2300ms 1;
+  /* A new answer: the list steps down one row and the new row comes up out of a soft blur. */
+  .feed {
+    animation: feed-step 520ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Hold everything at its first frame while the splash covers the page. */
-  :global(html:has(#scorpio-intro[open])) :is(.lines, .sky, .word, .step, .edge, .star, .antares) {
+  .feedNew {
+    animation: develop-row 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .swap {
+    animation: rise 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal {
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dot {
+    transition:
+      left 900ms cubic-bezier(0.22, 1, 0.36, 1),
+      top 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .livePulse {
+    animation: live 2400ms ease-in-out infinite;
+  }
+
+  /* When the period starts over, everything jumps back at once instead of running backwards. */
+  .resetting :is(.reveal, .dot) {
+    transition: none;
+  }
+
+  .resetting {
+    animation: fade-in 500ms ease-out;
+  }
+
+  /* Hold everything at its first frame while the splash or the first-visit role gate covers the page. */
+  :global(html:is([data-hero-hold], :has(#scorpio-intro[open]))) :is(.word, .step, .livePulse) {
     animation-play-state: paused;
   }
 
@@ -52,11 +73,9 @@
   }
 }
 
-@keyframes lines-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scaleY(0.92);
-  }
+.reveal {
+  transform-box: fill-box;
+  transform-origin: left center;
 }
 
 @keyframes fade-in {
@@ -96,30 +115,50 @@
   }
 }
 
-@keyframes trace {
+@keyframes feed-step {
   from {
-    stroke-dashoffset: 1;
+    transform: translateY(-34px);
+  }
+}
+
+@keyframes develop-row {
+  from {
+    filter: blur(6px);
+    opacity: 0;
   }
   to {
-    stroke-dashoffset: 0;
+    filter: none;
+    opacity: 1;
   }
 }
 
-@keyframes star-on {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-}
-
-@keyframes glow {
-  0% {
-    filter: drop-shadow(0 0 0 var(--primary));
-  }
-  40% {
-    filter: drop-shadow(0 0 6px var(--primary));
-  }
+@keyframes live {
+  0%,
   100% {
-    filter: drop-shadow(0 0 0 var(--primary));
+    box-shadow: 0 0 0 0 rgb(52 211 153 / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgb(52 211 153 / 0);
+  }
+}
+
+/* Live dot of the chart's end point. */
+@media (prefers-reduced-motion: no-preference) {
+  .endDot {
+    animation: end-glow 2400ms ease-in-out infinite;
+  }
+
+  :global(html:is([data-hero-hold], :has(#scorpio-intro[open]))) .endDot {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes end-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklch, var(--primary) 0%, transparent);
   }
 }
