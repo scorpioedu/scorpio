@@ -20,23 +20,35 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   const { isCollapsed, setIsCollapsed } = useSidebarState("teacher");
   // Get started (/teacher/welcome) is a focused setup flow: no sidebar, banner or help chat to wander
   // off into. The page has its own "Skip for now" and "Go to Home" exits.
-  const onboarding = usePathname()?.startsWith("/teacher/welcome") ?? false;
+  const pathname = usePathname();
+  const onboarding = pathname?.startsWith("/teacher/welcome") ?? false;
+  // Raise is full-screen like the student version: it has its own chat list and a way back.
+  const fullScreen = pathname?.startsWith("/teacher/raise") ?? false;
 
   return (
     <ProtectedRoute allowedRole="teacher">
       <SelectedClassProvider>
         <SpaceBackground />
         <div className="flex h-dvh flex-col md:flex-row">
-          {!onboarding && <TeacherSidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />}
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-background/50">
-            {!onboarding && <DepartmentBanner />}
-            <div className="w-full px-4 pb-24 sm:px-6 md:px-8 md:pt-8">
-              <div className="max-w-7xl mx-auto">
-                <PageTransition>{children}</PageTransition>
+          {!onboarding && !fullScreen && (
+            <TeacherSidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
+          )}
+          {fullScreen ? (
+            // The template's fade-in wrapper must fill the height too.
+            <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background [&>.page-enter]:flex [&>.page-enter]:min-h-0 [&>.page-enter]:flex-1 [&>.page-enter]:flex-col">
+              {children}
+            </main>
+          ) : (
+            <main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-background/50">
+              {!onboarding && <DepartmentBanner />}
+              <div className="w-full px-4 pb-24 sm:px-6 md:px-8 md:pt-8">
+                <div className="max-w-7xl mx-auto">
+                  <PageTransition>{children}</PageTransition>
+                </div>
               </div>
-            </div>
-          </main>
-          {!onboarding && <NavigationChatbot userRole="teacher" />}
+            </main>
+          )}
+          {!onboarding && !fullScreen && <NavigationChatbot userRole="teacher" />}
         </div>
       </SelectedClassProvider>
     </ProtectedRoute>

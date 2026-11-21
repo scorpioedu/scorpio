@@ -221,6 +221,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
       case "navigation":
         return <MessageCircle className="h-4 w-4 text-blue-500" />;
       case "tutor":
+      case "teacher_raise":
         return <RaiseLogo className="h-4 w-4 text-purple-500" size={17} />;
       case "grading":
         return <GraduationCap className="h-4 w-4 text-emerald-500" />;

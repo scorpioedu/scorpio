@@ -393,6 +393,13 @@ export const tutorBody = z.object({
   assignmentContext: z.string().max(100000).nullish(),
 });
 
+// ─── POST /api/teacher/raise ───────────────────────────────────────────────
+export const teacherRaiseBody = z.object({
+  message: z.string().max(20000),
+  userId: z.string().max(256),
+  chatHistory: chatHistory.optional(),
+});
+
 // ─── POST /api/auth/teacher-code ───────────────────────────────────────────
 // One route, several actions (generate/list/revoke are admin-only, validate is public); each action's
 // own required fields stay in the route with its messages ("Missing code"). usedBy/usedByEmail were

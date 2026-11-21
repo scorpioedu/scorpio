@@ -2,7 +2,7 @@ import { model, CONTEXT_WINDOW_SIZE } from "./config";
 import { scrubPII } from "./utils";
 import { CONSTRAINT_LEVELS, ConstraintLevel } from "./constants";
 import { auditDiagramBlocks } from "../diagram/blocks";
-import { buildExplainPrompt, buildSolvePrompt } from "./tutor-prompts";
+import { buildExplainPrompt, buildSolvePrompt, buildTeacherPrompt } from "./tutor-prompts";
 
 /** Raise may draw diagrams only when RAISE_DIAGRAMS is "on" (off by default). */
 export function diagramsOn(): boolean {
@@ -39,12 +39,12 @@ export interface ChatMessage {
   content: string;
 }
 
-function formatChatHistory(messages: ChatMessage[]): string {
+function formatChatHistory(messages: ChatMessage[], userLabel = "Student"): string {
   // Take last N messages for context
   const recentMessages = messages.slice(-CONTEXT_WINDOW_SIZE);
 
   return recentMessages
-    .map((msg) => `${msg.role === "user" ? "Student" : "Raise"}: ${msg.content}`)
+    .map((msg) => `${msg.role === "user" ? userLabel : "Raise"}: ${msg.content}`)
     .join("\n\n");
 }
 
@@ -122,6 +122,40 @@ export async function helpSolveProblem(
   });
   const response = await result.response;
   noteCutOff("solve", response);
+  return {
+    text: cleanDiagrams(response.text()),
+    usage: {
+      inputTokens: response.usageMetadata?.promptTokenCount || 0,
+      outputTokens: response.usageMetadata?.candidatesTokenCount || 0,
+    },
+  };
+}
+
+/** Raise for teachers: full answers, problem writing, diagrams. Student names are still scrubbed. */
+export async function assistTeacher(
+  message: string,
+  chatHistory: ChatMessage[] = [],
+  studentNames: string[] = [],
+): Promise<{ text: string; usage?: { inputTokens: number; outputTokens: number } }> {
+  const scrubbedMessage = scrubPII(message, studentNames);
+  const historyContext =
+    chatHistory.length > 0
+      ? `=== PREVIOUS CONVERSATION HISTORY ===\n${formatChatHistory(chatHistory.map((m) => ({ ...m, content: scrubPII(m.content, studentNames) })), "Teacher")}\n=====================================\n\n`
+      : "";
+
+  const prompt = buildTeacherPrompt({ historyContext, message: scrubbedMessage, diagrams: diagramsOn() });
+
+  const result = await model.generateContent({
+    scrubLevel: "full",
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: {
+      // Full worked solutions and problem sets run longer than student replies.
+      maxOutputTokens: 2048,
+      temperature: 0.5,
+    },
+  });
+  const response = await result.response;
+  noteCutOff("teacher", response);
   return {
     text: cleanDiagrams(response.text()),
     usage: {

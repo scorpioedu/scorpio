@@ -4,7 +4,7 @@ import { Presentation } from "lucide-react";
 import { NAV_ICONS } from "./nav-icons";
 import { AppSidebar, type AppSidebarProps, type NavSection } from "./app-sidebar";
 
-// Five pages for the teaching loop; department and sustainability sit at the bottom.
+// Five pages for the teaching loop, then Raise; department and sustainability sit at the bottom.
 // `match` lists the routes each page groups, so the item stays active on them
 // (the in-page tabs for those groups live in components/teacher/section-tabs.tsx).
 const navSections: NavSection[] = [
@@ -31,6 +31,11 @@ const navSections: NavSection[] = [
         match: ["/teacher/uploads", "/teacher/vault"],
       },
     ],
+  },
+  {
+    // Teachers' Raise: full answers, practice sets and diagrams for lesson prep.
+    label: "Assistant",
+    items: [{ href: "/teacher/raise", label: "Raise", icon: NAV_ICONS.raise }],
   },
   {
     placement: "bottom",
