@@ -90,8 +90,8 @@ const STATUS: Record<Status, [string, string]> = {
 };
 
 const TICK = 2800;
-/** The intro splash, the first-visit role gate, or any dialog marked to hold the hero. */
-const HOLD_SELECTOR = "#scorpio-intro[open], [data-hero-hold]";
+/** The intro splash holds the hero until it closes. */
+const HOLD_SELECTOR = "#scorpio-intro[open]";
 const HOLD = 5600;
 
 /** A number that eases to its new value instead of jumping. */
