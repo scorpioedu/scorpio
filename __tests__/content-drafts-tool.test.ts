@@ -46,6 +46,53 @@ describeWithContent("content-drafts tool", () => {
   });
 });
 
+// Made-up drafts, so these run without the private content files.
+describe("verified drafts through export and import", () => {
+  const verification = {
+    textHash: "abc",
+    checks: { recompute: { pass: true } },
+    solvers: [{ id: "s1", answer: "2.0 m/s", agrees: true }],
+    verifiedAt: "2026-11-21T00:00:00.000Z",
+  };
+  const solves = [{ id: "s1", answer: "2.0 m/s", textHash: "abc" }];
+  const stored = {
+    course: "physics-1",
+    apUnit: 4,
+    apTopic: "4.1",
+    status: "approved",
+    reviewKind: "verified",
+    problem: { text: "t", spec: { givens: {}, expr: "1", unit: "" } },
+    verification,
+    solves,
+  };
+
+  test("the mark, the record, the solves and the spec all survive the round trip", () => {
+    const record = toRecord("d1", stored);
+    expect(record).toMatchObject({ reviewKind: "verified", verification, solves });
+    expect(record.problem.spec).toEqual(stored.problem.spec);
+    const doc = toImportDoc(record, new Date("2026-12-01T00:00:00Z"));
+    expect(doc).toMatchObject({ status: "approved", reviewKind: "verified", verification, solves });
+    expect(doc.problem.spec).toEqual(stored.problem.spec);
+    // Accepting AI reviews does not touch a verified draft.
+    expect(toImportDoc(record, new Date(), { acceptAiReview: true }).reviewKind).toBe("verified");
+  });
+
+  test("drafts without a verification get no empty fields", () => {
+    const record = toRecord("d1", {
+      ...stored,
+      reviewKind: "ai",
+      verification: undefined,
+      solves: undefined,
+    });
+    expect("verification" in record || "solves" in record).toBe(false);
+    const doc = toImportDoc(record, new Date());
+    expect("verification" in doc || "solves" in doc).toBe(false);
+    expect(toImportDoc(record, new Date(), { acceptAiReview: true }).reviewKind).toBe(
+      "owner-accepted",
+    );
+  });
+});
+
 describeWithContent("Units 4–6 content file", () => {
   test("60 AI-reviewed problems in 12 sets of 5, one AP unit per set, every draft in exactly one set", () => {
     expect(file.drafts).toHaveLength(60);
@@ -58,7 +105,8 @@ describeWithContent("Units 4–6 content file", () => {
       expect(s.draftIds).toHaveLength(5);
       expect(new Set(s.draftIds.map((id: string) => unit[id])).size).toBe(1);
     }
-    expect(file.drafts.every((d) => d.reviewKind === "ai")).toBe(true);
+    // "verified" once tools/verify-content.cjs --write has stamped a draft.
+    expect(file.drafts.every((d) => ["ai", "verified"].includes(d.reviewKind))).toBe(true);
   });
 
   test("every problem still passes the pipeline's checks with no errors", () => {
@@ -86,7 +134,7 @@ describeWithContent("Units 1–3, 7, 8 content file", () => {
     expect(new Set(ids)).toEqual(new Set(drafts.map((d) => d.id)));
     expect(ids).toHaveLength(100);
     expect(new Set(drafts.map((d) => d.apUnit))).toEqual(new Set([1, 2, 3, 7, 8]));
-    expect(drafts.every((d) => d.reviewKind === "ai")).toBe(true);
+    expect(drafts.every((d) => ["ai", "verified"].includes(d.reviewKind))).toBe(true);
   });
 
   test("every problem passes the pipeline's checks", () => {

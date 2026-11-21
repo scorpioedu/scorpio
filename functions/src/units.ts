@@ -8,6 +8,21 @@ export interface Unit {
   /** Multiply a value in this unit by `factor` to get SI. */
   factor: number;
   dims: Dims;
+  /**
+   * Absolute temperature scales only ("°C"): SI = value × factor + offset. A unit keeps its offset only
+   * when it stands alone; "J/(kg·°C)" and "°C/s" are about temperature differences and have none.
+   */
+  offset?: number;
+}
+
+/** Options for reading units. The grader passes none, so its behaviour does not depend on them. */
+export interface UnitOptions {
+  /**
+   * Also read Celsius: "°C", "degC", "celsius", "degrees Celsius" as an absolute temperature
+   * (20 °C is 293.15 K), and "C°", "Cdeg", "celsius degrees" as a temperature difference (20 C° is 20 K).
+   * Off by default: without it "°C" is not a unit, exactly as before.
+   */
+  temperature?: boolean;
 }
 
 const D = (m = 0, kg = 0, s = 0, A = 0, K = 0, mol = 0, cd = 0): Dims => [m, kg, s, A, K, mol, cd];
@@ -81,6 +96,20 @@ const PLAIN: Record<string, Unit> = {
   rpm: u((2 * Math.PI) / 60, D(0, 0, -1)),
   cc: u(1e-6, D(3)),
   ml: u(1e-6, D(3)),
+};
+
+const KELVIN = D(0, 0, 0, 0, 1);
+/** 0 °C in kelvin. */
+export const CELSIUS_OFFSET = 273.15;
+
+/** Celsius, read only when UnitOptions.temperature is set. Kelvin ("K") is in PREFIXABLE. */
+const TEMPERATURE: Record<string, Unit> = {
+  "°C": { factor: 1, dims: KELVIN, offset: CELSIUS_OFFSET },
+  degC: { factor: 1, dims: KELVIN, offset: CELSIUS_OFFSET },
+  celsius: { factor: 1, dims: KELVIN, offset: CELSIUS_OFFSET },
+  // A difference of one Celsius degree is one kelvin.
+  "C°": u(1, KELVIN),
+  Cdeg: u(1, KELVIN),
 };
 
 /** Spelled-out names, matched case-insensitively. */
@@ -211,8 +240,12 @@ const CASE_ALIASES: Record<string, string> = {
   MPH: "mph",
 };
 
-function lookupSymbol(raw: string): Unit | undefined {
+function lookupSymbol(raw: string, opts?: UnitOptions): Unit | undefined {
   const cleaned = raw.replace(/[µμ]/g, "u").replace(/^ohms?$/i, "Ω");
+  if (opts?.temperature) {
+    const temperature = TEMPERATURE[cleaned] ?? TEMPERATURE[cleaned.toLowerCase()];
+    if (temperature) return temperature;
+  }
   const symbol = CASE_ALIASES[cleaned] ?? cleaned;
   if (PLAIN[symbol]) return PLAIN[symbol];
   if (PREFIXABLE[symbol]) return PREFIXABLE[symbol];
@@ -278,8 +311,13 @@ function multiply(a: Unit, b: Unit, power: number): Unit {
  * "meters per second". "/" applies to the next factor or parenthesised group only.
  * Returns undefined when any part is not a known unit.
  */
-export function parseUnit(input: string): Unit | undefined {
-  const text = normaliseMathText(input)
+export function parseUnit(input: string, opts?: UnitOptions): Unit | undefined {
+  let source = normaliseMathText(input);
+  if (opts?.temperature)
+    source = source
+      .replace(/\bcelsius\s+degrees?\b/gi, "C°")
+      .replace(/(?:°|\bdegrees?|\bdeg)\s*(?:celsius|centigrade|C)\b/gi, "°C");
+  const text = source
     .replace(/\bper\b/gi, "/")
     .replace(/\bsquared\b/gi, "^2")
     .replace(/\bcubed\b/gi, "^3")
@@ -321,7 +359,7 @@ export function parseUnit(input: string): Unit | undefined {
       if (!base || tokens[pos] !== ")") return undefined;
       pos++;
     } else if (tok && /^[A-Za-zΩµμ°%]+$/.test(tok)) {
-      base = lookupSymbol(tok);
+      base = lookupSymbol(tok, opts);
       if (!base) return undefined;
       pos++;
     } else {
@@ -337,6 +375,8 @@ export function parseUnit(input: string): Unit | undefined {
 
   const result = parseGroup();
   if (!result || pos !== tokens.length) return undefined;
+  // A temperature scale on its own keeps its zero point; inside a larger unit it is a difference.
+  if (opts?.temperature && tokens.length === 1) return lookupSymbol(tokens[0], opts) ?? result;
   return result;
 }
 
@@ -386,7 +426,7 @@ function readFraction(text: string): { value: number; rest: string } | undefined
  * Only the final "=" segment is read, so shown work ("v = d/t = 100/8 = 12.5 m/s") still parses.
  * Returns undefined when no number can be read.
  */
-export function parseQuantity(input: string): ParsedQuantity | undefined {
+export function parseQuantity(input: string, opts?: UnitOptions): ParsedQuantity | undefined {
   let text = normaliseMathText(input);
   if (text.includes("=")) text = text.slice(text.lastIndexOf("=") + 1);
   text = text.replace(/^\s*(?:≈|~|about|approximately|approx\.?|roughly|around)\s*/i, "").trim();
@@ -436,7 +476,7 @@ export function parseQuantity(input: string): ParsedQuantity | undefined {
       .slice(0, n)
       .join(" ")
       .replace(/[.,;]$/, "");
-    const parsed = parseUnit(candidate);
+    const parsed = parseUnit(candidate, opts);
     if (parsed) {
       unit = parsed;
       unitText = candidate;
@@ -448,7 +488,20 @@ export function parseQuantity(input: string): ParsedQuantity | undefined {
   return { value, unit, unitText, sigFigs, halfLastPlace, trailingText };
 }
 
-/** Converts `value` in unit `from` to unit `to`. Only valid when the dimensions match. */
+/**
+ * Converts `value` in unit `from` to unit `to`. Only valid when the dimensions match. Zero points are
+ * ignored, so for temperatures this converts a difference; use toSI and fromSI for a reading on a scale.
+ */
 export function convert(value: number, from: Unit, to: Unit): number {
   return (value * from.factor) / to.factor;
+}
+
+/** A reading in `unit` as an SI value: 20 °C is 293.15 (K), 5 km is 5000 (m). */
+export function toSI(value: number, unit: Unit): number {
+  return value * unit.factor + (unit.offset ?? 0);
+}
+
+/** An SI value as a reading in `unit`: 293.15 (K) is 20 °C. */
+export function fromSI(value: number, unit: Unit): number {
+  return (value - (unit.offset ?? 0)) / unit.factor;
 }

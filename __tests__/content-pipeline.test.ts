@@ -3,7 +3,10 @@ import {
   answerAgrees,
   toAssignmentQuestion,
   validateDraftProblem,
+  type DraftProblem,
+  type Verification,
 } from "../src/lib/content/problem-format";
+import { contentHash, verifyProblem } from "../src/lib/content/verify";
 import {
   buildGeneratorPrompt,
   generateProblems,
@@ -386,6 +389,168 @@ describe("AI review", () => {
     expect(
       (await PATCH(req({ id: "d1", action: "approve", reviewer: "bot" }, "PATCH"))).status,
     ).toBe(400);
+  });
+});
+
+describe("publishing verified and owner-accepted drafts", () => {
+  const saved = process.env.FIRESTORE_EMULATOR_HOST;
+  beforeEach(() => {
+    delete process.env.FIRESTORE_EMULATOR_HOST;
+  });
+  afterEach(() => {
+    if (saved === undefined) delete process.env.FIRESTORE_EMULATOR_HOST;
+    else process.env.FIRESTORE_EMULATOR_HOST = saved;
+  });
+
+  /** Marks d1 approved and "verified", with the record the verifier would have stamped. */
+  const verify = (patch: (v: Verification) => unknown = (v) => v) => {
+    const d1 = {
+      ...mockDocs.get("content_drafts/d1")!,
+      problem: validateDraftProblem(numeric, "4.3").problem,
+    };
+    const { verification, verdict } = verifyProblem(
+      { apTopic: "4.3", problem: d1.problem as DraftProblem },
+      [
+        { id: "solver-a", answer: "2.0 m/s" },
+        { id: "solver-b", answer: "2.0 m/s" },
+      ],
+    );
+    // No spec on this draft, so the real verifier would call it incomplete; the gate only reads the record.
+    expect(verdict).toBe("incomplete");
+    const passing = {
+      ...verification,
+      checks: Object.fromEntries(Object.keys(verification.checks).map((k) => [k, { pass: true }])),
+    };
+    mockDocs.set("content_drafts/d1", {
+      ...d1,
+      status: "approved",
+      reviewKind: "verified",
+      verification: patch(passing),
+    });
+  };
+  const publishBoth = () => publish(req({ draftIds: ["d1", "d2"], title: "T" }));
+
+  test("a verified draft publishes while its hash matches the problem", async () => {
+    verify();
+    const d1 = mockDocs.get("content_drafts/d1")!;
+    expect((d1.verification as Verification).textHash).toBe(
+      contentHash(d1.problem as DraftProblem),
+    );
+    expect((await publishBoth()).status).toBe(200);
+  });
+
+  test("editing the problem after verification blocks it, by id, until it is verified again", async () => {
+    verify();
+    // An edit through the review screen: the key changes, the mark and the old record stay.
+    const edit = await PATCH(
+      req({ id: "d1", action: "save", problem: { ...numeric, correctAnswer: "2.5 m/s" } }, "PATCH"),
+    );
+    expect(edit.status).toBe(200);
+    expect(mockDocs.get("content_drafts/d1")).toMatchObject({
+      reviewKind: "verified",
+      problem: { correctAnswer: "2.5 m/s" },
+    });
+    mockWrites.length = 0;
+    const blocked = await publishBoth();
+    expect(blocked.status).toBe(409);
+    const body = await blocked.json();
+    expect(body.ids).toEqual(["d1"]);
+    expect(body.error).toMatch(/changed after they were verified/);
+    expect(mockWrites).toEqual([]);
+    // A person approving the edited problem makes it publishable again.
+    await PATCH(req({ id: "d1", action: "approve" }, "PATCH"));
+    expect((await publishBoth()).status).toBe(200);
+  });
+
+  test("a changed text, option list or spec is caught as well as a changed key", async () => {
+    for (const change of [
+      { text: numeric.text + " (Ignore friction.)" },
+      { spec: { givens: {}, expr: "2", unit: "m/s" } },
+    ]) {
+      verify();
+      const d1 = mockDocs.get("content_drafts/d1")!;
+      mockDocs.set("content_drafts/d1", {
+        ...d1,
+        problem: { ...(d1.problem as object), ...change },
+      });
+      expect((await publishBoth()).status).toBe(409);
+    }
+    // The solution is not part of the hash: rewording it keeps the verification.
+    verify();
+    const d1 = mockDocs.get("content_drafts/d1")!;
+    mockDocs.set("content_drafts/d1", {
+      ...d1,
+      problem: { ...(d1.problem as object), solution: "By conservation of momentum, v = 2.0 m/s." },
+    });
+    expect((await publishBoth()).status).toBe(200);
+  });
+
+  test("the mark alone is not enough: no record, a failed check, or too few solvers all block", async () => {
+    for (const patch of [
+      () => undefined,
+      () => null,
+      (v: Verification) => ({ ...v, textHash: "0".repeat(64) }),
+      (v: Verification) => ({ ...v, checks: { ...v.checks, recompute: { pass: false } } }),
+      (v: Verification) => ({ ...v, checks: {} }),
+      (v: Verification) => ({ ...v, solvers: v.solvers.slice(0, 1) }),
+      (v: Verification) => ({ ...v, solvers: v.solvers.map((s) => ({ ...s, agrees: false })) }),
+    ]) {
+      verify(patch);
+      mockWrites.length = 0;
+      const res = await publishBoth();
+      expect(res.status).toBe(409);
+      expect((await res.json()).ids).toEqual(["d1"]);
+      expect(mockWrites).toEqual([]);
+    }
+  });
+
+  test("owner-accepted drafts publish; AI-only drafts are named first when both kinds are blocked", async () => {
+    const d1 = mockDocs.get("content_drafts/d1")!;
+    mockDocs.set("content_drafts/d1", { ...d1, status: "approved", reviewKind: "owner-accepted" });
+    expect((await publishBoth()).status).toBe(200);
+
+    verify((v) => ({ ...v, textHash: "stale" }));
+    mockDocs.set("content_drafts/d2", { ...mockDocs.get("content_drafts/d2")!, reviewKind: "ai" });
+    const res = await publishBoth();
+    expect(res.status).toBe(409);
+    expect(await res.json()).toMatchObject({
+      ids: ["d2"],
+      error: expect.stringMatching(/only checked by AI/),
+    });
+  });
+
+  test("the local emulator publishes a stale verified draft, as it does an AI-reviewed one", async () => {
+    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
+    verify((v) => ({ ...v, textHash: "stale" }));
+    expect((await publishBoth()).status).toBe(200);
+  });
+
+  test("a spec never reaches the published assignment or its key", async () => {
+    const d1 = mockDocs.get("content_drafts/d1")!;
+    const spec = {
+      givens: {
+        m1: { value: 2.0, unit: "kg" },
+        v: { value: 3.0, unit: "m/s" },
+        m2: { value: 1.0, unit: "kg" },
+      },
+      expr: "m1*v/(m1 + m2)",
+      unit: "m/s",
+    };
+    const withSpec = validateDraftProblem({ ...numeric, spec }, "4.3");
+    expect(withSpec.problem!.spec).toEqual(spec);
+    expect(validateDraftProblem({ ...numeric, spec: { expr: 5 } }, "4.3")).toMatchObject({
+      problem: expect.not.objectContaining({ spec: expect.anything() }),
+      warnings: expect.arrayContaining([expect.stringMatching(/^Spec dropped: /)]),
+    });
+    expect(toAssignmentQuestion(withSpec.problem!, "q1")).not.toHaveProperty("spec");
+    mockDocs.set("content_drafts/d1", {
+      ...d1,
+      status: "approved",
+      reviewKind: "human",
+      problem: withSpec.problem,
+    });
+    expect((await publishBoth()).status).toBe(200);
+    expect(JSON.stringify(mockWrites.filter((w) => w.op === "set"))).not.toMatch(/givens|m1\*v/);
   });
 });
 

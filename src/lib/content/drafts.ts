@@ -4,11 +4,12 @@
 import { model } from "@/lib/ai/config";
 import { DEFAULT_AP_COURSE, isApCourseId, type ApCourseId } from "@/data/ap";
 import type { ModelCall } from "./problem-generator";
-import type { DraftProblem } from "./problem-format";
+import type { DraftProblem, Verification } from "./problem-format";
 
 export const CONTENT_DRAFTS = "content_drafts";
 
 export type DraftStatus = "draft" | "approved" | "rejected" | "published";
+export type ReviewKind = "human" | "ai" | "verified" | "owner-accepted";
 
 export interface ContentDraft {
   /** The AP course `apUnit` and `apTopic` belong to. */
@@ -30,8 +31,17 @@ export interface ContentDraft {
   reviewedBy?: string | null;
   reviewedAt?: Date | null;
   reviewNote?: string | null;
-  /** "ai": an AI solved and approved it; a person must approve it again before it can go live. */
-  reviewKind?: "human" | "ai" | null;
+  /**
+   * Who stands behind the approval. "ai": an AI solved and approved it; it cannot go live as it is.
+   * "verified": it passed every check of the verifier (`verification` below); publishable while the
+   * problem still matches the hash that was verified. "owner-accepted": the owner took the AI review
+   * as it is (tools/content-drafts.cjs import --accept-ai-review).
+   */
+  reviewKind?: ReviewKind | null;
+  /** Set with reviewKind "verified" by tools/verify-content.cjs --write. */
+  verification?: Verification | null;
+  /** Blind solver answers recorded by tools/verify-content.cjs record-solve, each for one version of the text. */
+  solves?: { id: string; answer: string; textHash: string; recordedAt?: string }[];
   assignmentId?: string | null;
 }
 

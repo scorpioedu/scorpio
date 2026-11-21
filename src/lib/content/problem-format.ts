@@ -13,6 +13,9 @@ import {
   parseNumericKey,
   type GradableQuestion,
 } from "../../../functions/src/grading-core";
+import { specShapeErrors, type ProblemSpec } from "./spec";
+
+export type { ProblemSpec } from "./spec";
 
 export type ProblemType = "numeric" | "multiple-choice";
 export type Difficulty = "easy" | "medium" | "hard";
@@ -31,6 +34,25 @@ export interface DraftProblem {
   difficulty: Difficulty;
   points: number;
   apTopic: string;
+  /**
+   * The machine-checkable form of the problem (see spec.ts): the answer recomputed from the givens.
+   * For the verifier only; like the solution it never reaches students.
+   */
+  spec?: ProblemSpec;
+}
+
+/**
+ * The record `tools/verify-content.cjs --write` stamps on a draft that passed every check
+ * (src/lib/content/verify.ts). It sits on the draft, beside `problem`, not inside it: it is a
+ * statement about the problem, and editing the problem must not carry it along.
+ */
+export interface Verification {
+  /** Hash of the problem's text, options, key and spec when it was verified (contentHash in verify.ts). */
+  textHash: string;
+  checks: Record<string, { pass: boolean; detail?: string }>;
+  /** The blind solves: what each solver answered and whether the grader accepts it for the key. */
+  solvers: { id: string; answer: string; agrees: boolean }[];
+  verifiedAt: string;
 }
 
 export interface ValidationResult {
@@ -121,6 +143,13 @@ export function validateDraftProblem(
       distractors.push({ answer, misconception });
     }
   }
+  // A spec is kept as written when it is well formed; verify.ts decides whether it is right.
+  let spec: ProblemSpec | undefined;
+  if (r.spec !== undefined && r.spec !== null) {
+    const specErrors = specShapeErrors(r.spec);
+    if (specErrors.length) warnings.push(`Spec dropped: ${specErrors.join("; ")}`);
+    else spec = r.spec as ProblemSpec;
+  }
   // Problem text and options reach students as written; LaTeX commands would show as backslashes.
   if ([text, ...(options ?? [])].some((t) => /\\[a-zA-Z]+/.test(t)))
     warnings.push("The text or an option contains LaTeX; write the mathematics as plain text");
@@ -178,6 +207,7 @@ export function validateDraftProblem(
       difficulty,
       points,
       apTopic: topicId,
+      ...(spec ? { spec } : {}),
     },
     errors,
     warnings,
