@@ -179,6 +179,10 @@ describe("physics checks (wrong but drawable)", () => {
     // all arrows the same length: no claim about sizes, so a ramp diagram is not flagged
     const ramp = "fbd box tilt=30\nf down F_g\nf 120 F_N\nf 30 f_s";
     expect(render(ramp, { equilibrium: true }).warnings).toEqual([]);
+    // a slope falling to the right (the prompt documents tilt=-30 for it) draws the same way
+    const fallingRamp = "fbd box tilt=-30\nf down F_g\nf 60 F_N\nf 150 f_k";
+    expect(render(fallingRamp).ok).toBe(true);
+    expect(render(fallingRamp, { equilibrium: true }).warnings).toEqual([]);
     // the same unbalanced diagram is fine when nothing says the body is at rest
     expect(render("fbd box\nf down F_g 1\nf up F_N 1.4").warnings).toEqual([]);
   });
