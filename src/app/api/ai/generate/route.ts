@@ -35,7 +35,9 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
     }
 
-    // 3. Perform AI Generation
+    // 3. Perform AI Generation. One request makes up to ceil(count / 10) + 1 generation calls and
+    //    one answer-check call per batch; each call reserves and settles its own budget (ai/config.ts),
+    //    and the whole request costs one "generate" rate-limit token.
     const result = await generateAssignmentQuestions(topic, count, difficulty, questionType, context ?? undefined);
 
     // 4. Record usage (Silent fail to not block response)
@@ -52,7 +54,12 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       }
     }
 
-    return NextResponse.json({ questions: result.questions });
+    // Each question carries `answerCheck` ("agrees" | "disagrees" | "unchecked") for the editor;
+    // `message` is set when fewer questions were made than asked for.
+    return NextResponse.json({
+      questions: result.questions,
+      ...(result.message ? { message: result.message } : {}),
+    });
   } catch (error: unknown) {
     return errorResponse(error, "ai-generate", requestId);
   }

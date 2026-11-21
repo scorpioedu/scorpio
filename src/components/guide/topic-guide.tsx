@@ -8,6 +8,7 @@ import { useId, useMemo, useState, type MouseEvent, type ReactNode } from "react
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
 import { apTopicLabel, misconceptionTag, type ApCourseId } from "@/data/ap";
+import { misconceptionAnchor } from "@/lib/guides";
 import type { TopicGuide as TopicGuideData, WorkedExample } from "@/lib/guides/schema";
 import { defaultValues, fillTemplate, formatValue, type TryItParam } from "@/lib/guides/try-it";
 import { cn } from "@/lib/utils";
@@ -317,8 +318,17 @@ export function TopicGuide({
 
       <Section level={level} title="Common mistakes">
         <ul className="space-y-3">
-          {guide.misconceptions.map((m) => (
-            <li key={m.wrong} className="space-y-2 rounded-2xl border border-border bg-card p-4">
+          {guide.misconceptions.map((m, i) => (
+            <li
+              key={m.wrong}
+              // The first entry of a tag is where a graded answer's "common mistake" link lands.
+              id={
+                m.tag && guide.misconceptions.findIndex((o) => o.tag === m.tag) === i
+                  ? misconceptionAnchor(guide.topic, m.tag)
+                  : undefined
+              }
+              className="scroll-mt-24 space-y-2 rounded-2xl border border-border bg-card p-4"
+            >
               <div className="flex gap-3">
                 <X className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
                 <div className="min-w-0 flex-1">

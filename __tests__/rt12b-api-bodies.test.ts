@@ -93,7 +93,7 @@ describe('supportReportBody', () => {
 });
 
 // ─── batch 3: AI and chat routes ───────────────────────────────────────────
-import { aiGenerateBody, aiParseBody, synthesizeRubricBody, navigationChatBody, limitsChatBody, landingChatBody, tutorBody } from '../src/lib/schemas/api-bodies';
+import { AI_GENERATE_MAX, aiGenerateBody, aiParseBody, synthesizeRubricBody, navigationChatBody, limitsChatBody, landingChatBody, tutorBody } from '../src/lib/schemas/api-bodies';
 
 describe('aiGenerateBody', () => {
   it('accepts the teacher/create payload', () => {
@@ -102,8 +102,12 @@ describe('aiGenerateBody', () => {
   it('defaults count and difficulty when omitted', () => {
     expect(aiGenerateBody.parse({ topic: 't', userId: 'u1' })).toMatchObject({ count: 3, difficulty: 'Medium' });
   });
-  it.each([{ userId: 'u1' }, { topic: '', userId: 'u1' }, { topic: 't' }, { topic: 't', userId: 'u1', count: 'many' }, { topic: 't', userId: 'u1', count: 500 }, { topic: 'x'.repeat(2001), userId: 'u1' }])('rejects %j', b => {
+  it.each([{ userId: 'u1' }, { topic: '', userId: 'u1' }, { topic: 't' }, { topic: 't', userId: 'u1', count: 'many' }, { topic: 't', userId: 'u1', count: 500 }, { topic: 't', userId: 'u1', count: 21 }, { topic: 't', userId: 'u1', count: 0 }, { topic: 't', userId: 'u1', count: 2.5 }, { topic: 't', userId: 'u1', count: null }, { topic: 'x'.repeat(2001), userId: 'u1' }])('rejects %j', b => {
     expect(aiGenerateBody.safeParse(b).success).toBe(false);
+  });
+  it('accepts 1 to 20 questions, the same range as the editor field', () => {
+    expect(AI_GENERATE_MAX).toBe(20);
+    for (const count of [1, 10, 20]) expect(aiGenerateBody.safeParse({ topic: 't', userId: 'u1', count }).success).toBe(true);
   });
 });
 
