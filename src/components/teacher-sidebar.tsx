@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  ChartColumnBig,
-  Building2,
-  Route,
-  Presentation,
-} from "lucide-react";
+import { Presentation } from "lucide-react";
+import { NAV_ICONS } from "./nav-icons";
 import { AppSidebar, type AppSidebarProps, type NavSection } from "./app-sidebar";
 
 // Five pages for the teaching loop; department and sustainability sit at the bottom.
@@ -17,24 +10,24 @@ import { AppSidebar, type AppSidebarProps, type NavSection } from "./app-sidebar
 const navSections: NavSection[] = [
   {
     items: [
-      { href: "/teacher", label: "Home", icon: LayoutDashboard },
-      { href: "/teacher/courses", label: "Course", icon: Route },
+      { href: "/teacher", label: "Home", icon: NAV_ICONS.home },
+      { href: "/teacher/courses", label: "Course", icon: NAV_ICONS.course },
       {
         href: "/teacher/assignments",
         label: "Assignments",
-        icon: FileText,
+        icon: NAV_ICONS.assignments,
         match: ["/teacher/waypoints", "/teacher/create", "/teacher/assignment-view"],
       },
       {
         href: "/teacher/grades",
         label: "Grading",
-        icon: ChartColumnBig,
+        icon: NAV_ICONS.grading,
         match: ["/teacher/insights", "/teacher/submission"],
       },
       {
         href: "/teacher/students",
         label: "Classes",
-        icon: Users,
+        icon: NAV_ICONS.classes,
         match: ["/teacher/uploads", "/teacher/vault"],
       },
     ],
@@ -42,7 +35,7 @@ const navSections: NavSection[] = [
   {
     placement: "bottom",
     items: [
-      { href: "/teacher/network", label: "Department", icon: Building2 },
+      { href: "/teacher/network", label: "Department", icon: NAV_ICONS.department },
       { dialog: "sustainability", label: "Sustainability" },
     ],
   },

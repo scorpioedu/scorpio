@@ -14,15 +14,11 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import {
-  FileText,
   ArrowRight,
-  LayoutDashboard,
-  GraduationCap,
-  NotebookPen,
   ShieldCheck,
 } from "lucide-react";
-import { RaiseLogo } from "@/components/ui/raise-logo";
 import Link from "next/link";
+import { NAV_ICONS } from "@/components/nav-icons";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import { StudentProgressChart } from "@/components/dashboard/student-progress-chart";
 import { errorMessage } from "@/lib/error-utils";
@@ -387,31 +383,31 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               title: "1. Home",
               description:
                 "Start here. Next up names the one assignment to do now, and below it you see your class, your course and how you're doing.",
-              icon: LayoutDashboard,
+              icon: NAV_ICONS.home,
             },
             {
               title: "2. Assignments",
               description:
                 "Everything your teacher has set, with what is due soon at the top. Open one to work through its problems.",
-              icon: FileText,
+              icon: NAV_ICONS.assignments,
             },
             {
               title: "3. Grades",
               description:
                 "Everything you turned in. Work waiting for your teacher says Awaiting grade; graded work shows your score, and Details opens the feedback on each answer.",
-              icon: GraduationCap,
+              icon: NAV_ICONS.grading,
             },
             {
               title: "4. Study",
               description:
                 "Your study tools, in three tabs: Notebook for your own notes and derivations, Formula vault for the equations and constants in your course, and Resources for files your teacher shared.",
-              icon: NotebookPen,
+              icon: NAV_ICONS.study,
             },
             {
               title: "5. Raise (optional)",
               description:
                 "Raise is there if you want an idea talked through. Nothing in your coursework requires it.",
-              icon: RaiseLogo,
+              icon: NAV_ICONS.raise,
             },
             {
               title: "6. If you use Raise",

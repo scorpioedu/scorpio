@@ -1,19 +1,8 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  FileText,
-  GraduationCap,
-  ChartColumnBig,
-  NotebookPen,
-  Leaf,
-} from "lucide-react";
-import { RaiseLogo } from "./ui/raise-logo";
+import { GraduationCap } from "lucide-react";
 import { AppSidebar, NavSection } from "./app-sidebar";
-
-const SidebarRaiseIcon = ({ className }: { className?: string }) => (
-  <RaiseLogo size={20} strokeWidth={2} className={className} />
-);
+import { NAV_ICONS } from "./nav-icons";
 
 // Five pages, one question each: what now (Home), what's due (Assignments), how did I do
 // (Grades), my study tools (Study), help if I want it (Raise). `match` lists the routes each
@@ -21,23 +10,23 @@ const SidebarRaiseIcon = ({ className }: { className?: string }) => (
 const navSections: NavSection[] = [
   {
     items: [
-      { href: "/student", label: "Home", icon: LayoutDashboard },
+      { href: "/student", label: "Home", icon: NAV_ICONS.home },
       {
         href: "/student/assignments",
         label: "Assignments",
-        icon: FileText,
+        icon: NAV_ICONS.assignments,
         match: ["/student/assignment-view"],
       },
       {
         href: "/student/grades",
         label: "Grades",
-        icon: ChartColumnBig,
+        icon: NAV_ICONS.grading,
         match: ["/student/submissions"],
       },
       {
         href: "/student/notebook",
         label: "Study",
-        icon: NotebookPen,
+        icon: NAV_ICONS.study,
         match: ["/student/vault", "/student/resources"],
       },
     ],
@@ -45,11 +34,11 @@ const navSections: NavSection[] = [
   {
     // Raise sits apart from the everyday tools: coursework never requires it.
     label: "Optional help",
-    items: [{ href: "/student/tutor", label: "Raise", icon: SidebarRaiseIcon }],
+    items: [{ href: "/student/tutor", label: "Raise", icon: NAV_ICONS.raise }],
   },
   {
     placement: "bottom",
-    items: [{ href: "/student/sustainability", label: "Green Impact", icon: Leaf }],
+    items: [{ href: "/student/sustainability", label: "Green Impact", icon: NAV_ICONS.impact }],
   },
 ];
 

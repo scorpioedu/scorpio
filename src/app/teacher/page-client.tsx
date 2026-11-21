@@ -19,18 +19,13 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
-  FileText,
-  Users,
   PlusCircle,
   Upload,
-  GraduationCap,
-  Building2,
-  Route,
   PackageCheck,
-  LayoutDashboard,
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
+import { NAV_ICONS } from "@/components/nav-icons";
 import { useRouter } from "next/navigation";
 import { isCurrentAssignment, timeOf } from "@/lib/assignment-listing";
 import { WELCOME_SKIPPED_KEY } from "@/lib/first-run";
@@ -359,19 +354,19 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               title: "1. Home",
               description:
                 "What needs you today: work waiting to be graded, recent assignments, your classes and their join codes, and the setup steps for a new term.",
-              icon: LayoutDashboard,
+              icon: NAV_ICONS.home,
             },
             {
               title: "2. Course",
               description:
                 "The roadmap your class follows through the year, unit by unit. Assign a set, move due dates on the Calendar, skip or reorder sets, and see what students got wrong in each unit.",
-              icon: Route,
+              icon: NAV_ICONS.course,
             },
             {
               title: "3. Assignments",
               description:
                 "Everything you have assigned, wherever it came from. The Library tab has ready-made Waypoint sets from Scorpio and your department that you can copy and edit.",
-              icon: FileText,
+              icon: NAV_ICONS.assignments,
             },
             {
               title: "4. New assignment",
@@ -383,13 +378,13 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               title: "5. Grading",
               description:
                 "The Gradebook shows every student and assignment; open a submission to check the automatic grade, change it and leave feedback. Misconceptions ranks the wrong ideas showing up across your classes.",
-              icon: GraduationCap,
+              icon: NAV_ICONS.grading,
             },
             {
               title: "6. Classes",
               description:
                 "Make classes, share join codes and invite links, change class settings, and manage each roster. Learning insights shows how students use Raise.",
-              icon: Users,
+              icon: NAV_ICONS.classes,
             },
             {
               title: "7. Formula vault",
@@ -405,7 +400,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
             {
               title: "9. Department",
               description: "Your department: colleagues, invites, Raise usage limits and billing.",
-              icon: Building2,
+              icon: NAV_ICONS.department,
             },
             {
               title: "10. How Socratic AI Works",
