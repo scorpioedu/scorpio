@@ -6,7 +6,9 @@
   "mutate": [
     "src/lib/assignment-validation.ts",
     "src/lib/auth-verify.ts",
-    "src/lib/usage-limit.ts"
+    "src/lib/usage-limit.ts",
+    "src/lib/content/spec.ts",
+    "src/lib/content/verify.ts"
   ],
   "reporters": ["clear-text", "json"],
   "coverageAnalysis": "perTest"
