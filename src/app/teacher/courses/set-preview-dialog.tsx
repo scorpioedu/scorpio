@@ -67,11 +67,19 @@ export function SetPreviewDialog({
   target,
   onClose,
   onAssign,
+  assignLabel = "Assign this set",
+  assignBusy = false,
+  keyNote = "Answers are shown once the set is assigned to your class.",
 }: {
   target: PreviewTarget | null;
   onClose: () => void;
   /** Assign this set to the chosen class (shown when it is published and not assigned yet). */
   onAssign?: () => void;
+  /** The main button's words where it does something else (the Library copies the set). */
+  assignLabel?: string;
+  assignBusy?: boolean;
+  /** Where the answers can be seen, for a set that is not the class's own copy. */
+  keyNote?: string;
 }) {
   const [questions, setQuestions] = useState<PreviewQuestion[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -130,7 +138,7 @@ export function SetPreviewDialog({
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="break-words">
-            {set.key} · {set.title}
+            {set.key ? `${set.key} · ${set.title}` : set.title}
           </DialogTitle>
           <DialogDescription>{set.description}</DialogDescription>
         </DialogHeader>
@@ -149,8 +157,8 @@ export function SetPreviewDialog({
           ) : (
             target.publishedId &&
             onAssign && (
-              <Button size="sm" onClick={onAssign}>
-                <Plus aria-hidden /> Assign this set
+              <Button size="sm" onClick={onAssign} disabled={assignBusy}>
+                <Plus aria-hidden /> {assignBusy ? "Copying…" : assignLabel}
               </Button>
             )
           )}
@@ -204,7 +212,7 @@ export function SetPreviewDialog({
                   )
                 ) : (
                   <span className="text-xs text-muted-foreground">
-                    Answers are shown once the set is assigned to your class.
+                    {keyNote}
                   </span>
                 )}
               </div>

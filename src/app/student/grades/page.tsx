@@ -128,7 +128,7 @@ export default function StudentGradesPage() {
 
   return (
     <div className="space-y-6">
-      <WorkspaceHeader title="Grades" description="See your scores and review instructor feedback." />
+      <WorkspaceHeader title="Grades" description="Everything you turned in, with your scores and your teacher’s feedback." />
       <WorkspaceSummary label="Grade summary" items={[
         { label: "Average", value: stats.hasScores ? `${stats.average.toFixed(1)}%` : "—" },
         { label: "Highest score", value: stats.hasScores ? `${stats.highest}%` : "—" },
@@ -137,11 +137,11 @@ export default function StudentGradesPage() {
       ]} />
 
       <section aria-labelledby="grade-history" className="space-y-3">
-        <h2 id="grade-history" className="text-lg font-semibold">Assignment results</h2>
+        <h2 id="grade-history" className="text-lg font-semibold">Turned in</h2>
         <Card className="overflow-hidden py-0 shadow-none">
           <CardContent className="p-0">
             {submissions.length === 0 ? (
-              <p className="p-6 text-sm text-muted-foreground">Your scores will appear here after you submit coursework.</p>
+              <p className="p-6 text-sm text-muted-foreground">Work you turn in shows up here, with its score once your teacher grades it.</p>
             ) : (
               <Table aria-labelledby="grade-history">
                 <TableHeader className="bg-muted/40">
@@ -162,7 +162,7 @@ export default function StudentGradesPage() {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric'
-                          }) : "N/A"}
+                          }) : "—"}
                         </div>
                       </TableCell>
                       <TableCell className="py-3 text-center">
@@ -172,7 +172,7 @@ export default function StudentGradesPage() {
                           </Badge>
                         ) : (
                           <Badge variant="outline">
-                            Pending
+                            Awaiting grade
                           </Badge>
                         )}
                       </TableCell>
@@ -204,7 +204,7 @@ export default function StudentGradesPage() {
                                       year: 'numeric',
                                       month: 'long',
                                       day: 'numeric'
-                                    }) : "N/A"}
+                                    }) : "—"}
                                   </DialogDescription>
                                 </div>
                                 <div className="text-right">

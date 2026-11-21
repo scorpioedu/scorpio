@@ -1,4 +1,4 @@
-// Pure row-building for the student "My Submissions" page (RT-29 / I-014).
+// Pure row-building for the student Grades page (it replaced "My Submissions") (RT-29 / I-014).
 // The page used to call getDoc() for every submission inside every onSnapshot callback.
 // Now the listener only stores raw submissions; assignments are fetched once per id and cached,
 // and these functions derive the displayed rows from both.

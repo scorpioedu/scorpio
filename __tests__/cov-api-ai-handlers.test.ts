@@ -35,9 +35,10 @@ jest.mock('../src/lib/firebase-admin', () => {
 });
 
 const mockVerifyCaller = jest.fn();
+let mockCtxOrg = '';
 jest.mock('../src/lib/auth-verify', () => ({
   withAuthorizedRequest: (handler: (req: NextRequest, ctx: unknown) => Promise<Response>) =>
-    (req: NextRequest) => handler(req, { caller: { uid: 'u1' }, profile: {}, organizationId: '', body: {}, requestId: 'req-1' }),
+    (req: NextRequest) => handler(req, { caller: { uid: 'u1' }, profile: {}, organizationId: mockCtxOrg, body: {}, requestId: 'req-1' }),
   verifyCallerIdentity: (...a: unknown[]) => mockVerifyCaller(...a),
 }));
 
@@ -51,9 +52,11 @@ const mockNotebook = jest.fn();
 jest.mock('../src/lib/ai/notebook', () => ({ getNotebookAssistantResponse: (...a: unknown[]) => mockNotebook(...a) }));
 const mockExplain = jest.fn();
 const mockSolve = jest.fn();
+const mockAssistTeacher = jest.fn();
 jest.mock('../src/lib/ai/tutor', () => ({
   explainPhysicsConcept: (...a: unknown[]) => mockExplain(...a),
   helpSolveProblem: (...a: unknown[]) => mockSolve(...a),
+  assistTeacher: (...a: unknown[]) => mockAssistTeacher(...a),
 }));
 const mockCheckBudget = jest.fn();
 const mockRecordUsage = jest.fn();
@@ -72,6 +75,7 @@ import { POST as titlePost } from '../src/app/api/ai/generate-title/route';
 import { POST as navPost } from '../src/app/api/chat/route';
 import { POST as notebookPost } from '../src/app/api/notebook/chat/route';
 import { POST as tutorPost } from '../src/app/api/student/tutor/route';
+import { POST as teacherRaisePost } from '../src/app/api/teacher/raise/route';
 import { POST as checkoutPost } from '../src/app/api/checkout/route';
 import { POST as supportPost } from '../src/app/api/support/report/route';
 import { POST as adminFirestorePost } from '../src/app/api/admin/firestore/route';
@@ -88,7 +92,8 @@ beforeEach(() => {
   mockDbNull = false;
   mockSetThrows = false;
   mockPolarNull = false;
-  for (const m of [mockVerifyCaller, mockGenerateQuestions, mockSynthRubric, mockNav, mockNotebook, mockExplain, mockSolve, mockCheckoutCreate, mockRecordUsage]) m.mockReset();
+  for (const m of [mockVerifyCaller, mockGenerateQuestions, mockSynthRubric, mockNav, mockNotebook, mockExplain, mockSolve, mockAssistTeacher, mockCheckoutCreate, mockRecordUsage]) m.mockReset();
+  mockCtxOrg = '';
   mockCheckBudget.mockReset().mockResolvedValue({ allowed: true });
   mockVerifyCaller.mockResolvedValue({ authorized: true });
   jest.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -697,5 +702,41 @@ describe('POST /api/admin/firestore', () => {
 
   test.each([[{ action: 'queryCollection', collectionName: 'users', limit: 'all' }], [{ action: 'queryCollection', collectionName: 'users', lastDocId: 'a/b' }], [{ action: 'queryCollection', collectionName: 'users', filterValue: { $ne: 1 } }]])('400 for %j', async b => {
     expect((await call(adminFirestorePost, b)).status).toBe(400);
+  });
+});
+
+describe('POST /api/teacher/raise', () => {
+  const body = { message: 'Write a torque problem', userId: 'u1', chatHistory: [{ role: 'user', content: 'hi' }] };
+
+  test('400 for a bad body or a blank message', async () => {
+    expect((await call(teacherRaisePost, { userId: 'u1' })).status).toBe(400);
+    expect((await call(teacherRaisePost, { ...body, message: '   ' })).status).toBe(400);
+    expect(mockAssistTeacher).not.toHaveBeenCalled();
+  });
+
+  test('403 without a department', async () => {
+    expect((await call(teacherRaisePost, body)).status).toBe(403);
+    expect(mockCheckBudget).not.toHaveBeenCalled();
+  });
+
+  test('403 when the department budget is spent', async () => {
+    mockCtxOrg = 'o1';
+    mockCheckBudget.mockResolvedValue({ allowed: false, error: 'Over budget' });
+    const res = await call(teacherRaisePost, body);
+    expect(res.status).toBe(403);
+    expect(mockCheckBudget).toHaveBeenCalledWith('o1', 'teacher_raise', 'u1');
+    expect(mockAssistTeacher).not.toHaveBeenCalled();
+  });
+
+  test('answers with the roster scrubbed and records usage under teacher_raise', async () => {
+    mockCtxOrg = 'o1';
+    mockQueryDocs = [{ id: 'a', data: () => ({ displayName: 'Bob' }) }, { id: 'b', data: () => ({}) }];
+    mockAssistTeacher.mockResolvedValue({ text: 'Problem 1 ...', usage: { inputTokens: 5, outputTokens: 9 } });
+    const res = await call(teacherRaisePost, body);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ response: 'Problem 1 ...' });
+    expect(mockAssistTeacher).toHaveBeenCalledWith('Write a torque problem', body.chatHistory, ['Bob']);
+    expect(mockQueryLog).toEqual(expect.arrayContaining(['where:teacherId,==,u1', 'where:role,==,student']));
+    expect(mockRecordUsage).toHaveBeenCalledWith('o1', 'teacher_raise', 5, 9, 'u1');
   });
 });

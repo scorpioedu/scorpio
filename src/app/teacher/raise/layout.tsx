@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "My Submissions",
+  title: "Raise",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

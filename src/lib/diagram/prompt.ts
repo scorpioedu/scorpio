@@ -16,6 +16,8 @@ xt 1:T 2:2T   yt 1:F_0      ticks with symbolic labels; xt none for a shape-only
 
 fbd box "m" (tilt=30)       free-body diagram (or fbd dot)
 f down F_g 1                direction, label, relative length; f 30 T ang=\theta marks the angle
+                            tilt=30 is a slope rising to the right: normal 120, up-slope 30, down-slope 210.
+                            Falling to the right: tilt=-30, normal 60, up-slope 150, down-slope -30.
 
 scene                       world units, y up; a block is 1 wide; keep scenes 3–8 wide
 ground 0..5 (y=0)  wall 0 0..2  ceil 3 -1..1  surf x,y x,y (x,y..)

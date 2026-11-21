@@ -277,7 +277,7 @@ export function AnimatedSidebarProvider({
         data-slot="sidebar-wrapper"
         data-state={desktopOpen ? "expanded" : "collapsed"}
         style={{
-          "--sidebar-width": "17rem",
+          "--sidebar-width": "14rem",
           "--sidebar-width-icon": "4.75rem",
           "--sidebar-width-mobile": "18rem",
           ...style,

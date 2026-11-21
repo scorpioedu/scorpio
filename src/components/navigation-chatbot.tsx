@@ -6,22 +6,12 @@ import { Button } from "@/components/ui/button";
 import {
   X,
   Send,
-  Home,
-  FileText,
-  BarChart,
-  Upload,
-  Users,
-  BookOpen,
   Rocket,
-  Route,
-  NotebookPen,
-  Building2,
   LifeBuoy,
   Compass,
   ArrowRight,
   Image as ImageIcon,
   Trash2,
-  Hand,
   Maximize2,
   Minimize2,
 } from "lucide-react";
@@ -30,6 +20,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { LazyMarkdownRenderer as MarkdownRenderer } from "./lazy-markdown-renderer";
 import { cn } from "@/lib/utils";
 import { RaiseLogo } from "./ui/raise-logo";
+import { NAV_ICONS } from "./nav-icons";
 import { toast } from "sonner";
 import Image from "next/image";
 
@@ -60,23 +51,21 @@ interface QuickAction {
 }
 
 const studentQuickActions: QuickAction[] = [
-  { icon: Home, label: "Dashboard", path: "/student" },
-  { icon: FileText, label: "Assignments", path: "/student/assignments" },
-  { icon: BarChart, label: "Grades", path: "/student/grades" },
-  { icon: Hand, label: "Raise", path: "/student/tutor" },
-  { icon: NotebookPen, label: "Notebook", path: "/student/notebook" },
-  { icon: Upload, label: "Submissions", path: "/student/submissions" },
-  { icon: BookOpen, label: "Resources", path: "/student/resources" },
+  { icon: NAV_ICONS.home, label: "Home", path: "/student" },
+  { icon: NAV_ICONS.assignments, label: "Assignments", path: "/student/assignments" },
+  { icon: NAV_ICONS.grading, label: "Grades", path: "/student/grades" },
+  { icon: NAV_ICONS.study, label: "Study", path: "/student/notebook" },
+  { icon: NAV_ICONS.raise, label: "Raise", path: "/student/tutor" },
 ];
 
 const teacherQuickActions: QuickAction[] = [
-  { icon: Home, label: "Home", path: "/teacher" },
-  { icon: Route, label: "Course", path: "/teacher/courses" },
-  { icon: FileText, label: "Assignments", path: "/teacher/assignments" },
+  { icon: NAV_ICONS.home, label: "Home", path: "/teacher" },
+  { icon: NAV_ICONS.course, label: "Course", path: "/teacher/courses" },
+  { icon: NAV_ICONS.assignments, label: "Assignments", path: "/teacher/assignments" },
   { icon: Rocket, label: "New assignment", path: "/teacher/create" },
-  { icon: BarChart, label: "Grading", path: "/teacher/grades" },
-  { icon: Users, label: "Classes", path: "/teacher/students" },
-  { icon: Building2, label: "Department", path: "/teacher/network" },
+  { icon: NAV_ICONS.grading, label: "Grading", path: "/teacher/grades" },
+  { icon: NAV_ICONS.classes, label: "Classes", path: "/teacher/students" },
+  { icon: NAV_ICONS.department, label: "Department", path: "/teacher/network" },
 ];
 
 const studentSuggested = [
@@ -88,7 +77,7 @@ const studentSuggested = [
 
 const teacherSuggested = [
   "How do I create an assignment?",
-  "What are Waypoints?",
+  "What is the Library?",
   "How does AI grading work?",
   "How do I manage my AI budget?",
 ];
@@ -191,7 +180,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
     const roleBlurb =
       userRole === "teacher"
         ? `I can help you find your [Course](/teacher/courses), [Assignments](/teacher/assignments), [Grading](/teacher/grades), [Classes](/teacher/students), the [Library](/teacher/waypoints), and more.`
-        : `I can help you navigate [Assignments](/student/assignments), your [Raise](/student/tutor), [Notebook](/student/notebook), and [Grades](/student/grades).`;
+        : `I can help you navigate [Assignments](/student/assignments), [Grades](/student/grades), [Study](/student/notebook) (Notebook, Formula vault and Resources) and [Raise](/student/tutor).`;
 
     setMessages([
       {
@@ -433,7 +422,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-border/70 bg-muted/30 shrink-0">
-              {/* Tab Switcher: Nav Help first, Support / Ticket after Nav Help */}
+              {/* Tab Switcher: Nav Help first, then Feedback & support */}
               <div className="flex items-center gap-1 bg-muted p-1 rounded-full">
                 <button
                   type="button"
@@ -459,7 +448,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                   )}
                 >
                   <LifeBuoy className="h-3.5 w-3.5" />
-                  <span>Support / Ticket</span>
+                  <span>Feedback &amp; support</span>
                 </button>
               </div>
 

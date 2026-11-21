@@ -10,7 +10,6 @@ import {
   Leaf,
   PanelLeftClose,
   PanelLeftOpen,
-  DoorClosedLocked,
   PlaneLanding,
 } from "lucide-react";
 import { CompassLogo } from "@/components/ui/compass-logo";
@@ -163,47 +162,25 @@ function SidebarFooterSection({
 
   return (
     <AnimatedSidebarFooter className="gap-2.5 border-t border-border/30 p-3">
-      {/* Landing page action for non-student roles */}
-      {role !== "student" && (
+      {/* Landing page link for non-student roles. Hidden while Auto-Portal Redirect is on (the
+          default): the landing page would send them straight back, and Settings is where to change it. */}
+      {role !== "student" && !autoRedirect && (
         <TooltipProvider>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
-              {autoRedirect ? (
-                <div className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-xs text-muted-foreground/60 bg-muted/20 cursor-help group-data-[state=collapsed]/sidebar:justify-center">
-                  <DoorClosedLocked className="size-4.5 shrink-0 text-muted-foreground/60" />
-                  <span className="truncate group-data-[state=collapsed]/sidebar:hidden font-medium">
-                    Landing Locked
-                  </span>
-                </div>
-              ) : (
-                <Link
-                  href="/"
-                  className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors group-data-[state=collapsed]/sidebar:justify-center"
-                >
-                  <PlaneLanding className="size-4.5 shrink-0" />
-                  <span className="truncate group-data-[state=collapsed]/sidebar:hidden">
-                    Landing Page
-                  </span>
-                </Link>
-              )}
-            </TooltipTrigger>
-            {autoRedirect && (
-              <TooltipContent
-                side="right"
-                className="max-w-[220px] text-xs font-medium p-3 bg-background border-border/50 text-foreground"
+              <Link
+                href="/"
+                className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors group-data-[state=collapsed]/sidebar:justify-center"
               >
-                The landing page is disabled while{" "}
-                <span className="text-primary italic font-semibold">
-                  &ldquo;Auto-Portal Redirect&rdquo;
-                </span>{" "}
-                is ON. Disable it in settings to visit the Landing page.
-              </TooltipContent>
-            )}
-            {!autoRedirect && (
-              <TooltipContent side="right" className="text-xs font-medium">
-                Visit Landing Page
-              </TooltipContent>
-            )}
+                <PlaneLanding className="size-4.5 shrink-0" />
+                <span className="truncate group-data-[state=collapsed]/sidebar:hidden">
+                  Landing Page
+                </span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="text-xs font-medium">
+              Visit Landing Page
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       )}

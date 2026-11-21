@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-interface SectionTab {
+export interface SectionTab {
   href: string;
   label: string;
 }
@@ -59,34 +59,48 @@ export function sectionForPath(path: string): TeacherSection | null {
  *
  * `sample` drives the landing-page preview: no routing, and only the tabs it has pages for.
  */
-export function SectionTabs(props: Parameters<typeof SectionTabsInner>[0]) {
-  // useSearchParams needs a Suspense boundary so the layouts using this can still prerender.
-  return (
-    <Suspense fallback={null}>
-      <SectionTabsInner {...props} />
-    </Suspense>
-  );
-}
-
-function SectionTabsInner({
+export function SectionTabs({
   section,
   sample,
 }: {
   section: TeacherSection;
-  sample?: {
-    activeHref: string;
-    onSelect: (href: string) => void;
-    availableHrefs: readonly string[];
-  };
+  sample?: RouteTabsSample;
+}) {
+  return <RouteTabs label={TEACHER_SECTIONS[section].label} tabs={TEACHER_SECTIONS[section].tabs} sample={sample} />;
+}
+
+interface RouteTabsSample {
+  activeHref: string;
+  onSelect: (href: string) => void;
+  availableHrefs: readonly string[];
+}
+
+/** The tab bar itself, for any group of routes (teacher sections, the student Study page). */
+export function RouteTabs(props: Parameters<typeof RouteTabsInner>[0]) {
+  // useSearchParams needs a Suspense boundary so the layouts using this can still prerender.
+  return (
+    <Suspense fallback={null}>
+      <RouteTabsInner {...props} />
+    </Suspense>
+  );
+}
+
+function RouteTabsInner({
+  label,
+  tabs: allTabs,
+  sample,
+}: {
+  label: string;
+  tabs: readonly SectionTab[];
+  sample?: RouteTabsSample;
 }) {
   const routePathname = usePathname();
   const searchParams = useSearchParams();
   const pathname = sample ? sample.activeHref : routePathname;
   const currentTab = sample ? null : (searchParams?.get("tab") ?? null);
-  const { label } = TEACHER_SECTIONS[section];
-  const tabs: SectionTab[] = sample
-    ? TEACHER_SECTIONS[section].tabs.filter((tab) => sample.availableHrefs.includes(tab.href))
-    : TEACHER_SECTIONS[section].tabs;
+  const tabs: readonly SectionTab[] = sample
+    ? allTabs.filter((tab) => sample.availableHrefs.includes(tab.href))
+    : allTabs;
 
   if (tabs.length < 2 || !tabs.some((tab) => splitHref(tab.href).path === pathname)) return null;
   const isActive = (href: string) => {

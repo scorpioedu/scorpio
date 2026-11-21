@@ -27,6 +27,7 @@ const accents = {
 } satisfies Record<ThemeColor, string>;
 
 const fonts = {
+  figtree: "Figtree (default)",
   "ibm-plex-sans": "IBM Plex Sans",
   atkinson: "Atkinson Hyperlegible",
   inter: "Inter",

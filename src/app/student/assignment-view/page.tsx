@@ -741,7 +741,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       if (!response.ok) throw new Error((await response.json()).error || "Submission failed");
 
       setSubmitted(true);
-      router.push("/student/submissions");
+      router.push("/student/grades");
     } catch (error) {
       console.error("Error submitting:", error);
       setSubmitError(error instanceof Error ? error.message : String(error));

@@ -23,6 +23,8 @@ interface TeacherDashboardContentProps {
   pending: DashboardPanel;
   assignments: DashboardPanel;
   classes: DashboardPanel;
+  /** Shown under My classes, at the bottom of the right column (the teacher's network card). */
+  aside?: ReactNode;
 }
 
 function DashboardPanel({
@@ -56,6 +58,7 @@ export function TeacherDashboardContent({
   pending,
   assignments,
   classes,
+  aside,
 }: TeacherDashboardContentProps) {
   return (
     <>
@@ -88,11 +91,14 @@ export function TeacherDashboardContent({
             message={dataReady ? "No assignments yet." : "Loading assignments…"}
           />
         </div>
-        <DashboardPanel
-          {...classes}
-          title="My classes"
-          message={dataReady ? "Create a class to get a code to share with students." : "Loading classes…"}
-        />
+        <div className="grid min-w-0 gap-5">
+          <DashboardPanel
+            {...classes}
+            title="My classes"
+            message={dataReady ? "Create a class to get a code to share with students." : "Loading classes…"}
+          />
+          {aside}
+        </div>
       </div>
     </>
   );
