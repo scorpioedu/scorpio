@@ -55,7 +55,10 @@ function loadVerifier() {
  *   const evaluateSpec = () => require("../src/lib/content/spec.ts").evaluateSpec;
  * Until then worked examples are checked for shape only (see `checkWorkedExample`).
  */
-const evaluateSpec = () => undefined;
+const evaluateSpec = () => {
+  if (!process.env.JEST_WORKER_ID) registerTypeScript();
+  return require("../src/lib/content/spec.ts").evaluateSpec;
+};
 
 /** Every guide file on disk, as { curriculumId, unit, file }, in course then unit order. */
 function guideFilesOnDisk(dir = GUIDES) {

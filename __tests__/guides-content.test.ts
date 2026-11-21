@@ -23,6 +23,7 @@ import {
 import { apUnit } from "../src/data/ap";
 import { getCurriculum } from "../src/data/curricula";
 import { referenceEvaluator } from "../tests/helpers/guide-fixture";
+import { evaluateSpec } from "../src/lib/content/spec";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const tool = require("../tools/verify-guides.cjs");
@@ -45,6 +46,7 @@ describe("committed guides", () => {
   test.each(onDisk.map((f) => [`${f.curriculumId} unit ${f.unit}`, f] as const))(
     "%s: every worked-example answer is what its spec computes",
     (_name, entry) => {
+      expect(tool.verifyFile(entry, { evaluate: evaluateSpec }).errors).toEqual([]);
       expect(tool.verifyFile(entry, { evaluate: referenceEvaluator }).errors).toEqual([]);
     },
   );
