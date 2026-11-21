@@ -3,6 +3,12 @@ import type { AssignmentQuestion } from "../types";
 import { AiOutputError } from "./errors";
 import { ClientError } from "../client-error";
 import { splitIntoQuestions, validateAndNormalizeQuestions } from "./utils";
+import {
+  checkAnswers,
+  dropNearDuplicates,
+  type CheckedQuestion,
+  type TokenUsage,
+} from "./answer-check";
 
 // Helper: Parse a single batch of questions using Gemini
 async function parseSingleBatch(batchText: string, startNumber: number, model: GeminiModel): Promise<{ questions: unknown[], usage: { inputTokens: number, outputTokens: number } }> {
@@ -70,21 +76,40 @@ JSON array:`;
  */
 export { parseQuestionsManually } from "../assignment-parser";
 
-export async function generateAssignmentQuestions(
-  topic: string, 
-  count: number, 
-  difficulty: string, 
-  questionType: string = "mixed",
-  learningObjectives?: string
-): Promise<{ questions: AssignmentQuestion[], usage?: { inputTokens: number, outputTokens: number } }> {
-  try {
-    const prompt = `You are an expert curriculum designer.
+/** Most questions asked of the model in one call, so the reply stays inside the output-token cap. */
+export const GENERATION_BATCH_SIZE = 10;
+
+export interface GenerationResult {
+  questions: CheckedQuestion[];
+  usage?: TokenUsage;
+  /** Model calls made: generation and answer checks. */
+  calls?: number;
+  /** Set when fewer questions were made than asked for; says how many. */
+  message?: string;
+}
+
+function generationPrompt(
+  topic: string,
+  count: number,
+  difficulty: string,
+  questionType: string,
+  learningObjectives: string | undefined,
+  earlier: string[],
+): string {
+  return `You are an expert curriculum designer.
     Generate ${count} professional and academic questions about "${topic}" at a ${difficulty} level.
 
     ${learningObjectives ? `CONTEXT/LEARNING OBJECTIVES:\n"${learningObjectives}"\n` : ""}
 
     Question type: ${questionType} (if mixed, generate a variety).
-
+${
+  earlier.length
+    ? `
+    ALREADY WRITTEN (write different questions; do not repeat or reword any of these):
+${earlier.map((stem) => `    - ${stem.replace(/\s+/g, " ").slice(0, 200)}`).join("\n")}
+`
+    : ""
+}
     INSTRUCTIONS:
     1. Core Principles: Focus on fundamental concepts and accurate representation.
     2. LaTeX Support: ALWAYS use LaTeX for math/physics formulas (e.g., $E=mc^2$).
@@ -105,7 +130,12 @@ export async function generateAssignmentQuestions(
       ]
     }
     `;
-    
+}
+
+/** One model call: up to GENERATION_BATCH_SIZE questions, parsed and normalised. */
+async function generateBatch(
+  prompt: string,
+): Promise<{ questions: AssignmentQuestion[]; usage: TokenUsage }> {
     // Explicitly set generation configuration for JSON response
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -201,6 +231,68 @@ export async function generateAssignmentQuestions(
         inputTokens: response.usageMetadata?.promptTokenCount || 0,
         outputTokens: response.usageMetadata?.candidatesTokenCount || 0
       }
+    };
+}
+
+/**
+ * Generates `count` questions in batches of at most GENERATION_BATCH_SIZE per model call. Later
+ * batches are told the earlier stems; near-duplicates are dropped and the list is cut to `count`.
+ * When a batch comes back short there is one extra top-up call; if the list is still short (or a
+ * later batch fails) the questions made so far are returned with a `message` saying how many.
+ * Each batch's answers are then checked by one more call that never sees them (answer-check.ts),
+ * run while the next batch generates. A failed check leaves its questions "unchecked".
+ */
+export async function generateAssignmentQuestions(
+  topic: string, 
+  count: number, 
+  difficulty: string, 
+  questionType: string = "mixed",
+  learningObjectives?: string
+): Promise<GenerationResult> {
+  try {
+    const wanted = Math.max(1, Math.floor(Number(count)) || 1);
+    const maxCalls = Math.ceil(wanted / GENERATION_BATCH_SIZE) + 1;
+    const usage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
+    const kept: AssignmentQuestion[] = [];
+    const checks: ReturnType<typeof checkAnswers>[] = [];
+    let calls = 0;
+
+    for (let call = 0; call < maxCalls && kept.length < wanted; call++) {
+      const size = Math.min(GENERATION_BATCH_SIZE, wanted - kept.length);
+      let batch: Awaited<ReturnType<typeof generateBatch>>;
+      try {
+        calls++;
+        batch = await generateBatch(
+          generationPrompt(topic, size, difficulty, questionType, learningObjectives, kept.map((q) => q.text)),
+        );
+      } catch (error) {
+        // The first batch failing is the request failing; a later one keeps what was made.
+        if (!kept.length) throw error;
+        console.error("A later generation batch failed:", error instanceof Error ? error.message : error);
+        break;
+      }
+      usage.inputTokens += batch.usage.inputTokens;
+      usage.outputTokens += batch.usage.outputTokens;
+      const fresh = dropNearDuplicates(batch.questions, kept).slice(0, size);
+      if (!fresh.length) break;
+      kept.push(...fresh);
+      checks.push(checkAnswers(fresh, model));
+    }
+
+    const questions: CheckedQuestion[] = [];
+    for (const checked of await Promise.all(checks)) {
+      questions.push(...checked.questions);
+      usage.inputTokens += checked.usage.inputTokens;
+      usage.outputTokens += checked.usage.outputTokens;
+      if (checked.called) calls++;
+    }
+    return {
+      questions,
+      usage,
+      calls,
+      ...(questions.length < wanted
+        ? { message: `Made ${questions.length} of the ${wanted} questions you asked for.` }
+        : {}),
     };
   } catch (error) {
     console.error("Error generating questions:", error);

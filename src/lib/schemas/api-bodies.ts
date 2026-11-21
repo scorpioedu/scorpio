@@ -343,11 +343,13 @@ const chatHistory = z
   )
   .max(200);
 
-// POST /api/ai/generate (teacher/create sends numbers for count; the others are free text)
+// POST /api/ai/generate (teacher/create sends numbers for count; the others are free text).
+// AI_GENERATE_MAX is also the editor field's maximum.
+export const AI_GENERATE_MAX = 20;
 export const aiGenerateBody = z.object({
   topic: z.string().min(1).max(2000),
   userId: z.string().min(1).max(256),
-  count: z.number().int().min(1).max(50).default(3),
+  count: z.number().int().min(1).max(AI_GENERATE_MAX).default(3),
   difficulty: z.string().max(64).default("Medium"),
   questionType: z.string().max(64).optional(),
   context: z.string().max(20000).nullish(),
