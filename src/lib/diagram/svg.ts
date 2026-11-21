@@ -128,6 +128,14 @@ export function unsupportedLabelMarkup(src: string): string[] {
   ];
 }
 
+/**
+ * E_th -> E_{th}. The newer kinds (bars, circuit, field) take one-word labels, where a model
+ * writes a whole-word subscript without braces; plot, fbd and scene keep the stricter F_{net}.
+ */
+export function braceSubscripts(s: string): string {
+  return s.replace(/_([A-Za-z0-9]{2,})(?![A-Za-z0-9{}])/g, "_{$1}");
+}
+
 /** Label markup: F_N, F_{net}, v^2, \theta, \Delta x. Returns tspans. */
 export function label(s: string): string {
   s = normalizeLabel(s);

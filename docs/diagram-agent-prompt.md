@@ -21,8 +21,42 @@ Continue building Scorpio's diagram system: a small text language that Raise (th
 - `src/components/diagram.tsx`: draws a `dg` source, or "Diagram not available". `src/components/markdown-renderer.tsx` routes fenced `dg` blocks to it, so every markdown surface draws diagrams.
 - `src/lib/ai/tutor-prompts.ts`: Raise's two prompts as pure functions (`buildExplainPrompt`, `buildSolvePrompt`) with a `diagrams` switch. `src/lib/ai/tutor.ts` turns it on only when env `RAISE_DIAGRAMS=on` (off by default) and always cleans replies with `auditDiagramBlocks`.
 - `src/app/student/tutor/page.tsx`: the typing effect shows a diagram only once its block is complete.
+- `__tests__/diagram-bars.test.ts`, `diagram-motion.test.ts`, `diagram-circuit.test.ts`, `diagram-circuit-solve.test.ts`, `diagram-field.test.ts`, `diagram-prompt.test.ts`: the newer kinds (see the section below).
 - `__tests__/diagram.test.ts`: 26 tests (rendering, error reporting, no code evaluation in `fn`, markup injection, the block checker, the typing helper, the prompt).
 - Verified in a browser: a v-t graph, a free-body diagram, a scene and a broken block render correctly in light and dark themes; ordinary code blocks are unchanged.
+
+## Kinds added for AP Physics 2 and C: E&M (Nov 2026): `bars`, `motion`, `circuit`, `field`
+
+Four more kinds sit beside `plot`, `fbd` and `scene`. They follow one rule: **the author states the physics and the renderer computes the picture.** Nobody places a field line, a dot or a wire by hand, so a model cannot draw them wrong. None of this has been tried against a live model yet; the reference text in `prompt.ts` is a first draft to measure.
+
+| Kind | File | What the author writes | What is computed |
+| --- | --- | --- | --- |
+| `bars` | `bars.ts` | `initial`, `work` / `impulse`, `final` lines of label–value pairs | bar heights; whether initial + transfers = final |
+| `motion` | `motion.ts` | `obj "car" x0= v0= a= n=`, then `seg a= n=` | dot positions, velocity and acceleration arrow lengths, the second row after a turnaround |
+| `circuit` | `circuit.ts`, `circuit-solve.ts` | each element and the two nodes it joins | series / parallel structure, the rectangular layout, junction dots, alt text |
+| `field` | `field.ts` | charges, plates, uniform fields, end-on wires, test charges | field lines, equipotentials, forces |
+
+Syntax is in the header comment of each file and, compactly, in `prompt.ts`.
+
+**bars.** `bars energy` or `bars momentum` declares the chart as conserving, and then initial + work/impulse must equal final or a `physics` warning is raised (so a live tutor drops it). A plain `bars` chart is not checked, and neither is a chart with a `?` (unknown) bar. Heights are relative units; `unit=J` or `axis` adds a numbered axis. Negative kinetic or spring energy is also a `physics` warning.
+
+**motion.** One `dt` on the first line for every object, so two tracks can be compared. `v`, `a`, `num`, `axis`, `vertical` are flags on the first line. Velocity arrows share one scale (as long as fits before the next dot); there is one acceleration arrow per segment.
+
+**circuit.** Elements are `battery resistor capacitor inductor bulb switch ammeter voltmeter wire`, each followed by its two nodes, an optional value (`12V`, `4.7kΩ`, `10uF`; `ohm` and a space before the unit are accepted) and an optional label. A battery's first node is its + terminal. `series a d ...` and `parallel b c ...` write several elements on one line. `i=I_1` draws a current arrow from the first node to the second (`ir=` reversed); `r=0.5Ω` gives a battery internal resistance; `ground d`; `node b "B"`.
+
+- Layout: the first battery goes on the left with + at the top; everything else is reduced to series and parallel groups (`spTree`) and drawn as rungs between a top and a bottom rail, with the outermost rung bent round the corners. A circuit that does not reduce (a bridge) is an error that asks for `at a 0,1 b 1,2 ...`, which places every node on a grid and draws each element straight between its nodes.
+- `physics` warnings: a battery on no closed loop with no open switch to explain it; a loose end (drawn as a visible break); a battery shorted by bare wire or a closed switch; an ammeter across a component; a voltmeter in series; a current arrow against the current when there is one battery and no capacitor or inductor (the direction is then fixed whatever the values).
+- **Solver** (`circuit-solve.ts`): `parseCircuit(src)` then `solveCircuit(circuit, { at, ground, switches })` returns node potentials, each element's current (signed a → b, plus `from`/`to`), voltage and power, the single source's current and the equivalent resistance outside it, and for a single-C or single-L circuit the Thevenin resistance and time constant. `at: "t0"` treats capacitors as wires and inductors as open; the default steady state is the reverse. Ideal meters; `switches: "closed"` overrides the drawn states. Shorted sources and undetermined current splits come back as `errors`. `__tests__/diagram-circuit-solve.test.ts` holds the hand-worked circuits it is checked against. It is not yet called by the content pipeline.
+
+**field.** Point charges use the 3-D Coulomb field; lines are followed with 4th-order Runge–Kutta steps. Every charge gets exactly `round(lines × |q| / |q|min)` lines (12 per charge by default for one or two charges up to a 2:1 ratio, otherwise 8): the largest charge starts with an even ring, lines that reach another charge take one of its places, and anything a charge is still owed is traced from it through its widest gaps. A flat picture of a 3-D field cannot be evenly spaced at both ends, so the spacing round a large charge next to a much smaller one is slightly uneven. Plates are uniformly charged strips (closed-form 2-D field), so the edge fringing is computed; their equipotentials are drawn only inside the gap. Equipotentials and the field lines of wires are marching-squares contours at equal steps (of V, and of the vector potential), so their spacing shows field strength. `test x,y + v=right` draws the computed electric and magnetic forces; a force along the line of sight is drawn as a dot or cross. Step sizes, limits and the simplification tolerance are documented at the top of `field.ts`.
+
+- Errors rather than false pictures: a test charge with no field, on top of a source, or at rest in a purely magnetic field; plates mixed with point charges; an E field into the page. A Gaussian surface through a charge is a `physics` warning.
+
+**Reference text.** `prompt.ts` now builds the reference per kind. `diagramReference(course)` returns only the kinds a course uses (mechanics: plot, fbd, scene, bars, motion; AP Physics 2 and C: E&M: plot, fbd, scene, circuit, field); `DIAGRAM_REFERENCE` is still every kind. The problem generator asks for its course's kinds. The tutor and the Try AI page have no course at the call site and still send the full reference, which is now about 3,700 characters instead of 1,700: measure the cost before switching `RAISE_DIAGRAMS` on more widely, or pass a course through.
+
+**Not done.** `src/lib/content/problem-diagram.ts` reads "what a student can see" from quoted labels and fbd labels only. A circuit's values (`4Ω`), a bar chart's heights and a motion map's numbers are visible too, so its answer-leak and invented-number checks do not yet cover the new kinds. The generator's instruction on when to add a diagram does not mention circuits or fields either.
+
+**Gallery.** `node tools/diagram-gallery.cjs` renders about 45 curated sources (every case above, plus two of each older kind) into `diagram-gallery.html` in the repo root, each on a light and a dark panel with its source, alt text, warnings, render time and size. The file is ignored by git. Review it by eye after any renderer change.
 
 ## What a real model did (Gemini 3.8 Flash, the production model, 17 Nov 2026)
 

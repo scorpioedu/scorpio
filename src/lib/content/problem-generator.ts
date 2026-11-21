@@ -4,7 +4,7 @@
 
 import { DEFAULT_AP_COURSE, apCourseName, apTopic, apUnit, type ApCourseId } from "@/data/ap";
 import { misconceptionsForUnit } from "../../../functions/src/misconceptions";
-import { DIAGRAM_REFERENCE } from "../diagram/prompt";
+import { DIAGRAM_REFERENCE, diagramReference } from "../diagram/prompt";
 import { attachDiagram, type DiagramOutcome } from "./problem-diagram";
 import {
   answerAgrees,
@@ -62,7 +62,7 @@ Rules:
 - "diagram": add ONE diagram in the diagram language below whenever the problem involves any of: a graph described in words (position, velocity, acceleration or force against time or position); an incline, ramp, curved track or loop; a pulley or a string over something; a spring; a pendulum; a lever, beam, door, wrench or hinge; a force at an angle; two objects that touch or collide. Leave it out only when there is no geometry to show (for example a formula with numbers, or an orbit described only by numbers). The text must still state every value, so the problem works without the picture. The diagram shows only what the text states: never the answer, never a step the student must do (no free-body diagram when the question is about the forces), and no numbers the text does not give. Write only the diagram source, without a fence.
 
 DIAGRAM LANGUAGE:
-${DIAGRAM_REFERENCE}
+${diagramReference(course)}
 
 Return ONLY JSON: {"problems": [{"text": string, "type": "numeric" | "multiple-choice", "options"?: string[], "correctAnswer": string, "solution": string, "distractors": [{"answer": string, "misconception": string}], "difficulty": "easy" | "medium" | "hard", "diagram"?: string}]}`;
 }
