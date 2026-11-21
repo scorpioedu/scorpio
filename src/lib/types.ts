@@ -13,16 +13,16 @@ export interface UserProfile {
   displayName: string;
   role: UserRole;
   photoURL?: string;
-  
+
   // Multi-tenancy & Network
   organizationId?: string; // Root organization/department ID
-  
+
   // Primary Relationships
   teacherId?: string; // For students: direct link to primary teacher
   courseId?: string; // For students: direct link to primary class/course
   schoolId?: string; // For students: linked school
   classIds: string[]; // List of /classes/{id} the user belongs to
-  
+
   // Preferences
   preferences?: UserPreferences;
 
@@ -32,6 +32,8 @@ export interface UserProfile {
   // Metadata
   createdAt: Timestamp | Date;
   lastLoginAt: Timestamp | Date;
+  /** When this teacher dismissed the pilot welcome popup (server-written). */
+  pilotWelcomedAt?: Timestamp | Date;
 }
 
 export interface Organization {
@@ -43,7 +45,7 @@ export interface Organization {
   subscriptionStatus: "active" | "past_due" | "canceled" | "none";
   planId: "free" | "standard_monthly" | "standard_yearly" | "pro_monthly" | "pro_yearly" | string;
   createdAt: Timestamp | Date;
-  
+
   // AI Budgeting & Usage
   aiBudgetLimit: number; // Monthly budget in cents or "token units" (e.g. 500 = $5.00)
   aiUsageCurrent: number; // Current month's usage in same units
@@ -55,6 +57,21 @@ export interface Organization {
   notebookLimit?: number; // Total network usage limit for interactions
   aiTutorLimitPerStudent?: number; // Max AI tutor messages per student per month
   baseMonthlyFee: number; // Flat fee for storage/base features
+  /** Set when a Scorpio admin made this network a pilot. Kept after the pilot ends or converts to paid. */
+  pilot?: OrganizationPilot;
+  lastAiUsageAt?: Timestamp | Date;
+}
+
+export type PilotStatus = "active" | "ended" | "converted";
+
+export interface OrganizationPilot {
+  cohort: string;
+  status: PilotStatus;
+  startedAt: string; // ISO
+  endsAt?: string | null; // ISO; AI is refused after this
+  budgetCents: number; // what was granted at start (top-ups raise aiBudgetLimit)
+  note?: string | null;
+  source?: "admin" | "invite";
 }
 
 /**

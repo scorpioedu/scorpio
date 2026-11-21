@@ -11,6 +11,7 @@ beforeAll(async () => {
    'users/ta':{role:'teacher',organizationId:'a'}, 'users/tb':{role:'teacher',organizationId:'b'},
    'users/sa':{role:'student',teacherId:'ta',courseId:'ca',organizationId:'a'},'users/sb':{role:'student',teacherId:'tb',courseId:'cb',organizationId:'b'},
    'organizations/a':{ownerId:'ta',planId:'free'}, 'organizations/b':{ownerId:'tb'},
+   'users/tp':{role:'teacher',organizationId:'p'}, 'organizations/p':{ownerId:'tp',planId:'pilot',aiBudgetLimit:1000,pilot:{status:'active'}},
    'courses/ca':{teacherId:'ta',organizationId:'a'},'courses/cb':{teacherId:'tb',organizationId:'b'},
    'assignments/aa':{teacherId:'ta',courseId:'ca',organizationId:'a',visibility:'private',answerKeySeparated:true,questions:[]},
    'assignments/legacy':{teacherId:'ta',courseId:'ca',organizationId:'a',visibility:'private',questions:[{correctAnswer:'secret'}]},
@@ -54,6 +55,12 @@ test('student cannot take ownership of another notebook or tutor session',async(
 test('owner can change display settings but cannot forge subscription or usage',async()=>{
  await assertSucceeds(updateDoc(doc(db('ta'),'organizations/a'),{name:'Physics'}));
  await assertFails(updateDoc(doc(db('ta'),'organizations/a'),{planId:'paid',aiUsageCurrent:0}));
+});
+
+test('pilot owner can lower but not raise the AI budget, and cannot edit the pilot record',async()=>{
+ await assertSucceeds(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:500}));
+ await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:5000}));
+ await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{pilot:{status:'active',endsAt:null}}));
 });
 
 test('student assignment queries remain valid with sanitized marker',async()=>{

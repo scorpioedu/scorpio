@@ -560,6 +560,8 @@ export default function NetworkPage() {
   }
 
   const isFreePlan = organization?.planId === "free";
+  // Pilot budgets are granted by a Scorpio admin; owners can't raise them (firestore.rules).
+  const isPilot = organization?.planId === "pilot";
   const isOwner = user?.uid === organization?.ownerId;
   const inviteEmailBody = `Join ${organization?.name || "our Network"} on Scorpio to share teaching resources.\n\n${inviteUrl}`;
   const inviteEmailDraft = `mailto:?subject=Invitation%20to%20join%20Scorpio&body=${encodeURIComponent(inviteEmailBody)}`;
@@ -634,7 +636,7 @@ export default function NetworkPage() {
                         : "bg-emerald-600 text-white",
                     )}
                   >
-                    {isFreePlan ? "Free Plan" : "Department License"}
+                    {isFreePlan ? "Free Plan" : isPilot ? "Founding Pilot" : "Department License"}
                   </Badge>
                 )}
               </div>
@@ -1071,14 +1073,19 @@ export default function NetworkPage() {
                             variant="outline"
                             className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]"
                           >
-                            {organization.planId === "free" ? "Free Tier" : "Pro Active"}
+                            {organization.planId === "free"
+                              ? "Free Tier"
+                              : organization.planId === "pilot"
+                                ? "Pilot"
+                                : "Pro Active"}
                           </Badge>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          Managed through Polar metered billing. Department spend is tracked
-                          centrally.
+                          {isPilot
+                            ? "Your network is in the Scorpio pilot: the full Department License at no cost."
+                            : "Managed through Polar metered billing. Department spend is tracked centrally."}
                         </p>
                         <Button
                           asChild
@@ -1086,7 +1093,7 @@ export default function NetworkPage() {
                           className="w-full text-xs h-9 font-semibold cursor-pointer"
                         >
                           <Link href="/teacher/network/billing">
-                            Manage Subscription & Invoices
+                            {isPilot ? "Pilot details" : "Manage Subscription & Invoices"}
                           </Link>
                         </Button>
                       </CardContent>
@@ -1137,7 +1144,7 @@ export default function NetworkPage() {
                     variant="outline"
                     className="text-[10px] font-mono border-border bg-background"
                   >
-                    Resets Every 30 Days
+                    {isPilot ? "Budget covers the whole pilot" : "Resets Every 30 Days"}
                   </Badge>
                   <Button
                     variant="outline"
@@ -1180,7 +1187,7 @@ export default function NetworkPage() {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-bold flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
                         <HandCoins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                        Monthly AI Spending Cap
+                        {isPilot ? "Pilot AI Budget" : "Monthly AI Spending Cap"}
                       </CardTitle>
                       <Badge
                         variant="outline"
@@ -1190,8 +1197,9 @@ export default function NetworkPage() {
                       </Badge>
                     </div>
                     <CardDescription className="text-xs">
-                      All AI features pause automatically when this exact dollar threshold is
-                      reached. No surprise invoices.
+                      {isPilot
+                        ? "Your pilot budget covers the whole pilot and is set by the Scorpio team."
+                        : "All AI features pause automatically when this exact dollar threshold is reached. No surprise invoices."}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1199,7 +1207,7 @@ export default function NetworkPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-3 bg-background/80 border rounded-xl shadow-xs">
                         <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block mb-1">
-                          Spent This Month
+                          {isPilot ? "Spent So Far" : "Spent This Month"}
                         </span>
                         <span className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
                           ${spentDollars.toFixed(2)}
@@ -1237,7 +1245,12 @@ export default function NetworkPage() {
                       </div>
                     </div>
 
-                    {isOwner && (
+                    {isPilot && (
+                      <p className="pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30 text-xs text-muted-foreground">
+                        Running low? Email the Scorpio team and we&apos;ll top up your pilot budget.
+                      </p>
+                    )}
+                    {isOwner && !isPilot && (
                       <div className="space-y-3 pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30">
                         <div className="space-y-1.5">
                           <Label

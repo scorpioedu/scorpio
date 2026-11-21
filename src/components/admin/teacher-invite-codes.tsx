@@ -37,6 +37,7 @@ interface InviteCode {
   expiresAt: string | null;
   usedAt: string | null;
   usedByEmail: string | null;
+  isPilot?: boolean;
 }
 
 export function TeacherInviteCodes() {
@@ -45,6 +46,7 @@ export function TeacherInviteCodes() {
   const [generating, setGenerating] = useState(false);
   const [revoking, setRevoking] = useState<string | null>(null);
   const [label, setLabel] = useState("");
+  const [pilot, setPilot] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -85,12 +87,13 @@ export function TeacherInviteCodes() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ action: "generate", label: label.trim() || null }),
+        body: JSON.stringify({ action: "generate", label: label.trim() || null, pilot }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to generate code");
       setLastGenerated(data.code);
       setLabel("");
+      setPilot(false);
       setDialogOpen(false);
       await fetchCodes();
     } catch (e: unknown) {
@@ -194,6 +197,21 @@ export function TeacherInviteCodes() {
                       onKeyDown={(e) => e.key === "Enter" && !generating && handleGenerate()}
                     />
                   </div>
+                  <label className="flex items-start gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5"
+                      checked={pilot}
+                      onChange={(e) => setPilot(e.target.checked)}
+                    />
+                    <span>
+                      Pilot code
+                      <span className="block text-xs text-muted-foreground">
+                        The teacher&apos;s new network starts as a pilot with a $10 AI budget.
+                        Manage it under Pilots.
+                      </span>
+                    </span>
+                  </label>
                   {error && <p className="text-sm text-destructive">{error}</p>}
                   <div className="flex justify-end gap-2">
                     <Button
@@ -310,6 +328,14 @@ export function TeacherInviteCodes() {
                       <TableCell className="text-sm text-muted-foreground">
                         {c.label ?? (
                           <span className="italic text-muted-foreground/50">No label</span>
+                        )}
+                        {c.isPilot && (
+                          <Badge
+                            variant="outline"
+                            className="ml-2 border-violet-400/40 text-[10px] text-violet-600"
+                          >
+                            Pilot
+                          </Badge>
                         )}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">

@@ -83,7 +83,7 @@ function RequestRow({
 }: {
   r: AccessRequest;
   busy: boolean;
-  onApprove: () => void;
+  onApprove: (pilot: boolean) => void;
   onReject: () => void;
 }) {
   const [open, setOpen] = useState(r.status === "pending");
@@ -172,13 +172,16 @@ function RequestRow({
 
           {r.status === "pending" && (
             <div className="flex flex-wrap items-center gap-2">
-              <Button size="sm" onClick={onApprove} disabled={busy}>
+              <Button size="sm" onClick={() => onApprove(false)} disabled={busy}>
                 {busy ? (
                   <RefreshCw className="size-3.5 animate-spin" />
                 ) : (
                   <Check className="size-3.5" />
                 )}
                 Approve and create code
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => onApprove(true)} disabled={busy}>
+                Approve as pilot
               </Button>
               {confirmReject ? (
                 <>
@@ -250,11 +253,13 @@ export function AccessRequests() {
     void fetchRequests();
   }, [fetchRequests]);
 
-  const act = async (r: AccessRequest, action: "approve" | "reject") => {
+  const act = async (r: AccessRequest, action: "approve" | "reject", pilot = false) => {
     setProcessing(r.id);
     setError(null);
     try {
-      const data = await call({ action, id: r.id });
+      const data = await call(
+        action === "approve" && pilot ? { action, id: r.id, pilot: true } : { action, id: r.id },
+      );
       if (action === "approve") {
         // Keep the approved row on screen so the code can be copied or emailed right away.
         setRequests((prev) =>
@@ -269,7 +274,9 @@ export function AccessRequests() {
               : p,
           ),
         );
-        toast.success(`Approved ${r.name}. Code ${data.code} is ready to send.`);
+        toast.success(
+          `Approved ${r.name}${pilot ? " as a pilot" : ""}. Code ${data.code} is ready to send.`,
+        );
       } else {
         setRequests((prev) =>
           prev.map((p) =>
@@ -385,9 +392,9 @@ export function AccessRequests() {
                 key={r.id}
                 r={r}
                 busy={processing === r.id}
-                onApprove={() => {
+                onApprove={(pilot) => {
                   setTouched((s) => new Set(s).add(r.id));
-                  void act(r, "approve");
+                  void act(r, "approve", pilot);
                 }}
                 onReject={() => {
                   setTouched((s) => new Set(s).add(r.id));

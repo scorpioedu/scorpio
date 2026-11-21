@@ -12,6 +12,8 @@ import {
   Menu,
   MessageSquare,
   ShieldCheck,
+  Sparkles,
+  Users,
 } from "lucide-react";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { logout } from "@/lib/firebase";
@@ -24,6 +26,8 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 
 const NAV = [
   { title: "Overview", href: "/admin", icon: LayoutDashboard },
+  { title: "Teachers", href: "/admin/teachers", icon: Users },
+  { title: "Pilots", href: "/admin/pilots", icon: Sparkles },
   { title: "Access requests", href: "/admin/access", icon: Inbox },
   { title: "Tickets", href: "/admin/feedback", icon: MessageSquare },
   { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },

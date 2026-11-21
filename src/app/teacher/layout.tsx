@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { PageTransition } from "@/components/page-transition";
 import { DepartmentBanner } from "@/components/department-banner";
+import { PilotWelcome } from "@/components/pilot-welcome";
 import { SelectedClassProvider } from "@/contexts/selected-class-context";
 import { usePathname } from "next/navigation";
 
@@ -31,7 +32,10 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
         <SpaceBackground />
         <div className="flex h-dvh flex-col md:flex-row">
           {!onboarding && !fullScreen && (
-            <TeacherSidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
+            <TeacherSidebar
+              isCollapsed={isCollapsed}
+              onToggle={() => setIsCollapsed(!isCollapsed)}
+            />
           )}
           {fullScreen ? (
             // The template's fade-in wrapper must fill the height too.
@@ -49,6 +53,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
             </main>
           )}
           {!onboarding && !fullScreen && <NavigationChatbot userRole="teacher" />}
+          {!onboarding && <PilotWelcome />}
         </div>
       </SelectedClassProvider>
     </ProtectedRoute>

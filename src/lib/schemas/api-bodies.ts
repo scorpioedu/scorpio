@@ -147,7 +147,7 @@ export const requestAccessSubmitBody = z.object({
   role: z.string().max(500),
   message: z.string().max(10000).nullish(),
 });
-export const requestAccessReviewBody = z.object({ id: docId });
+export const requestAccessReviewBody = z.object({ id: docId, pilot: z.boolean().optional() });
 
 // ─── POST /api/grade ───────────────────────────────────────────────────────
 export const gradeBody = z.object({ submissionId: docId });
@@ -409,6 +409,8 @@ export const teacherCodeBody = z.object({
   code: z.string().max(256).nullish(),
   label: z.string().max(500).nullish(),
   organizationId: z.string().max(256).nullish(),
+  /** generate: the redeeming teacher's new network starts as a pilot. */
+  pilot: z.boolean().optional(),
 });
 
 // ─── POST /api/admin/firestore ─────────────────────────────────────────────
@@ -471,3 +473,43 @@ export const contentPublishBody = z
         : b.draftIds !== undefined && b.title !== undefined,
     { message: "Send either draftIds and title, or curriculumId and setKey" },
   );
+
+// ─── POST /api/admin/pilots ────────────────────────────────────────────────
+const isoDate = z
+  .string()
+  .max(40)
+  .refine((v) => Number.isFinite(Date.parse(v)), "must be a date");
+/** Whole cents; the server also enforces PILOT_PLAN_BUDGET_CAP_CENTS on the resulting limit. */
+const pilotCents = z.number().int().min(0).max(10_000);
+const cohort = z
+  .string()
+  .trim()
+  .min(1)
+  .max(40)
+  .regex(/^[a-z0-9-]+$/, "lowercase letters, digits and dashes");
+const note = z.string().trim().max(500);
+
+export const adminPilotBody = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("start"),
+    organizationId: docId,
+    budgetCents: pilotCents.optional(),
+    endsAt: isoDate.nullable().optional(),
+    cohort: cohort.optional(),
+    note: note.optional(),
+  }),
+  z.object({ action: z.literal("extend"), organizationId: docId, endsAt: isoDate.nullable() }),
+  z.object({ action: z.literal("topup"), organizationId: docId, addCents: pilotCents.min(1) }),
+  z.object({ action: z.literal("end"), organizationId: docId }),
+  z.object({ action: z.literal("reset_usage"), organizationId: docId }),
+  z.object({
+    action: z.literal("invite"),
+    email: z.string().trim().toLowerCase().email().max(254),
+    name: z.string().trim().max(120).optional(),
+    budgetCents: pilotCents.optional(),
+    endsAt: isoDate.nullable().optional(),
+    cohort: cohort.optional(),
+    expiresDays: z.number().int().min(1).max(365).optional(),
+  }),
+]);
+export type AdminPilotBody = z.infer<typeof adminPilotBody>;

@@ -130,9 +130,39 @@ export function InviteCelebration({ kind, code }: { kind: Kind; code: string }) 
   const copy = COPY[kind];
 
   return (
+    <CelebrationDialog
+      open={open}
+      onOpenChange={setOpen}
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      body={copy.body}
+      action="Get started"
+    />
+  );
+}
+
+/** The confetti + logo dialog shared by invite links and the pilot welcome. */
+export function CelebrationDialog({
+  open,
+  onOpenChange,
+  eyebrow,
+  title,
+  body,
+  action,
+  children,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  eyebrow: string;
+  title: string;
+  body: React.ReactNode;
+  action: string;
+  children?: React.ReactNode;
+}) {
+  return (
     <>
       {open && <Confetti />}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent showCloseButton={false} className="sm:max-w-md overflow-hidden p-0 gap-0">
           <div className="h-1 w-full bg-primary" />
           <div className="px-8 pt-10 pb-8 text-center">
@@ -145,16 +175,17 @@ export function InviteCelebration({ kind, code }: { kind: Kind; code: string }) 
               <Logo size={30} className="text-primary" />
             </motion.div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-              {copy.eyebrow}
+              {eyebrow}
             </p>
             <DialogTitle className="mt-3 text-2xl font-semibold tracking-tight">
-              {copy.title}
+              {title}
             </DialogTitle>
             <DialogDescription className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              {copy.body}
+              {body}
             </DialogDescription>
-            <Button className="mt-8 w-full cursor-pointer" onClick={() => setOpen(false)}>
-              Get started
+            {children}
+            <Button className="mt-8 w-full cursor-pointer" onClick={() => onOpenChange(false)}>
+              {action}
             </Button>
           </div>
         </DialogContent>
