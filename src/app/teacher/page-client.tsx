@@ -419,20 +419,6 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         </Button>
       </TeacherPageHeader>
 
-      {networkName && (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 py-3">
-          <div className="min-w-0">
-            <p className="break-words text-sm font-medium">{networkName}</p>
-            <p className="text-sm text-muted-foreground">
-              Share teaching resources and collaborate with colleagues.
-            </p>
-          </div>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/teacher/network">View Network</Link>
-          </Button>
-        </div>
-      )}
-
       {setupError || networkError ? (
         <Card className="shadow-none">
           <CardHeader>
@@ -501,6 +487,21 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
 
       <TeacherDashboardContent
         stats={stats}
+        aside={
+          networkName ? (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 py-3">
+              <div className="min-w-0">
+                <p className="break-words text-sm font-medium">{networkName}</p>
+                <p className="text-sm text-muted-foreground">
+                  Share teaching resources and collaborate with colleagues.
+                </p>
+              </div>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/teacher/network">View Network</Link>
+              </Button>
+            </div>
+          ) : undefined
+        }
         dataReady={dataReady}
         pending={{
           action: (
