@@ -3,7 +3,7 @@
 import * as React from "react";
 
 export type FontOption =
-  "inter" | "ibm-plex-sans" | "verdana" | "roboto-mono" | "pt-serif" | "atkinson";
+  "figtree" | "inter" | "ibm-plex-sans" | "verdana" | "roboto-mono" | "pt-serif" | "atkinson";
 
 const themeColors = ["default", "blue", "emerald", "monochrome", "custom"] as const;
 const themeClasses = themeColors.map((color) => `theme-${color}`);
@@ -22,7 +22,7 @@ interface AppearanceContextType {
 const AppearanceContext = React.createContext<AppearanceContextType | undefined>(undefined);
 
 export function AppearanceProvider({ children }: { children: React.ReactNode }) {
-  const [font, setFontState] = React.useState<FontOption>("ibm-plex-sans");
+  const [font, setFontState] = React.useState<FontOption>("figtree");
   const [themeColor, setThemeColorState] = React.useState<ThemeColor>("default");
   const [customColor, setCustomColorState] = React.useState<string>("#3b82f6");
 
@@ -30,7 +30,7 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     const storedFont = localStorage.getItem("app-font") as FontOption;
     if (
       storedFont &&
-      ["inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"].includes(
+      ["figtree", "inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"].includes(
         storedFont,
       )
     ) {
@@ -81,6 +81,7 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
 
     // Manage Font Classes
     const fontClasses = [
+      "font-figtree",
       "font-inter",
       "font-ibm-plex-sans",
       "font-verdana",

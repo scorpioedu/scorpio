@@ -1,23 +1,25 @@
 import type { Metadata, Viewport } from "next";
 import {
   Atkinson_Hyperlegible,
+  Figtree,
   IBM_Plex_Mono,
   IBM_Plex_Sans,
   Inter,
   Lora,
-  Plus_Jakarta_Sans,
   PT_Serif,
   Roboto_Mono,
 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
+// Default font for the whole app (the font-figtree class and font-sans); other fonts are opt-in in Settings.
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
   style: ["normal", "italic"],
   display: "swap",
-  preload: false,
+  preload: true,
+  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
 });
 
 const lora = Lora({
@@ -58,7 +60,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  preload: true, // default body font (font-ibm-plex-sans class)
+  preload: false, // opt-in in Settings
 });
 
 const ptSerif = PT_Serif({
@@ -163,7 +165,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${lora.variable} ${ibmPlexMono.variable}`}
+      className={`${figtree.variable} ${lora.variable} ${ibmPlexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -172,9 +174,9 @@ export default function RootLayout({
             __html: `
               (() => {
                 try {
-                  const migrationKey = "app-font-migrated-ibm-plex-sans";
-                  const defaultFont = "ibm-plex-sans";
-                  const fonts = ["inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"];
+                  const migrationKey = "app-font-migrated-figtree";
+                  const defaultFont = "figtree";
+                  const fonts = ["figtree", "inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"];
                   let font = localStorage.getItem("app-font");
 
                   if (localStorage.getItem(migrationKey) !== "true") {
