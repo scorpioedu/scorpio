@@ -347,7 +347,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
       >
         <RundownDialog
           userRole="teacher"
-          triggerLabel="Teacher Guide"
+          triggerLabel="Guide"
           title="Teacher guide"
           steps={[
             {
@@ -497,7 +497,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                 </p>
               </div>
               <Button asChild variant="outline" size="sm">
-                <Link href="/teacher/network">View Network</Link>
+                <Link href="/teacher/network">Open Department</Link>
               </Button>
             </div>
           ) : undefined

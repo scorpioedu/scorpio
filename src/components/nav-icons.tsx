@@ -16,7 +16,7 @@ function RaiseIcon({ className }: { className?: string }) {
 
 /**
  * One icon per page, used wherever the page is named: the teacher and student sidebars, the
- * Teacher guide and Student Tutorial, and the help chat's quick links. Assignments (a list to do)
+ * Guide on each Home page, and the help chat's quick links. Assignments (a list to do)
  * and Grading/Grades (the same clipboard, checked) are meant to read as a pair.
  */
 export const NAV_ICONS = {

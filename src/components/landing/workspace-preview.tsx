@@ -378,7 +378,7 @@ export function WorkspacePreview() {
                     <RundownDialog
                       userRole="teacher"
                       title="Teacher Portal Guide"
-                      triggerLabel="Teacher Guide"
+                      triggerLabel="Guide"
                       steps={[
                         {
                           title: "1. Class Architecture & Enrollment",

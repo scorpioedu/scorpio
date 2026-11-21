@@ -376,7 +376,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
       >
         <RundownDialog
           userRole="student"
-          triggerLabel="Student Tutorial"
+          triggerLabel="Guide"
           title="How Scorpio is laid out"
           steps={[
             {

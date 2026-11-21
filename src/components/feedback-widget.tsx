@@ -29,8 +29,10 @@ const CHOICES: Array<{ kind: FeedbackKind; label: string }> = [
 ];
 
 /**
- * Small "Feedback" button on every signed-in page. Reports go to /api/support/report (support_tickets),
- * which is read at /admin/feedback. Sits just above the Support chat button, bottom right.
+ * Small "Feedback" button on admin pages. Teacher and student pages send feedback from the help
+ * chat's "Feedback & support" tab instead (same endpoint), so this chip stays off them and no
+ * longer sits on top of their content. Reports go to /api/support/report (support_tickets),
+ * which is read at /admin/feedback. Bottom right.
  */
 export function FeedbackWidget() {
   const pathname = usePathname();
@@ -46,7 +48,7 @@ export function FeedbackWidget() {
   const [error, setError] = useState<string | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
 
-  if (!user || !area) return null;
+  if (!user || area !== "admin") return null;
 
   function reset() {
     setText("");
@@ -102,7 +104,7 @@ export function FeedbackWidget() {
         <button
           type="button"
           className={cn(
-            "fixed bottom-[76px] right-4 z-30 sm:bottom-[88px] sm:right-6",
+            "fixed bottom-6 right-4 z-30 sm:right-6",
             "flex h-8 items-center gap-1.5 rounded-full border bg-background/90 px-3 text-xs font-medium text-muted-foreground shadow-md backdrop-blur",
             "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           )}

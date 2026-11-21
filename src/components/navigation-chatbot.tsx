@@ -77,7 +77,7 @@ const studentSuggested = [
 
 const teacherSuggested = [
   "How do I create an assignment?",
-  "What are Waypoints?",
+  "What is the Library?",
   "How does AI grading work?",
   "How do I manage my AI budget?",
 ];
@@ -422,7 +422,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-border/70 bg-muted/30 shrink-0">
-              {/* Tab Switcher: Nav Help first, Support / Ticket after Nav Help */}
+              {/* Tab Switcher: Nav Help first, then Feedback & support */}
               <div className="flex items-center gap-1 bg-muted p-1 rounded-full">
                 <button
                   type="button"
@@ -448,7 +448,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                   )}
                 >
                   <LifeBuoy className="h-3.5 w-3.5" />
-                  <span>Support / Ticket</span>
+                  <span>Feedback &amp; support</span>
                 </button>
               </div>
 
