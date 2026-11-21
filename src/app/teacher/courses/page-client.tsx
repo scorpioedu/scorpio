@@ -21,6 +21,7 @@ import {
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import {
   CURRICULA,
+  curriculumNamedIn,
   curriculumUnits,
   getCurriculum,
   hasContent,
@@ -164,13 +165,8 @@ export default function CoursesClient() {
   const elsewhereCourses = [
     ...new Set(elsewhere.map((a) => getCurriculum(a.curriculumId)?.name ?? "another course")),
   ];
-  // A class called "AP Physics 2 - Period 3" is most likely taking AP Physics 2 (longest name wins,
-  // so "AP Physics C: Mechanics" is not mistaken for a shorter one).
-  const suggested = needsCourse
-    ? [...CURRICULA]
-        .sort((a, b) => b.name.length - a.name.length)
-        .find((c) => selected.name.toLowerCase().includes(c.name.toLowerCase()))?.id
-    : undefined;
+  // A class called "AP Physics 2 - Period 3" is most likely taking AP Physics 2.
+  const suggested = needsCourse ? curriculumNamedIn(selected.name)?.id : undefined;
   const plan = useMemo(
     () => (follows ? normalisePlan(curriculum.id, selected?.curriculumPlan) : null),
     [follows, curriculum.id, selected?.curriculumPlan],

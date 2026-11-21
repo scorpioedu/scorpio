@@ -1,7 +1,8 @@
 // One hand-drawn icon per course, so a teacher can tell at a glance which course a class is on.
 // Each picture is something from that course: a projectile for AP Physics 1 (algebra-based
-// mechanics), an atom for AP Physics 2 (electricity through modern physics), and an integral sign
-// beside a moving ball for AP Physics C: Mechanics (the same mechanics, with calculus).
+// mechanics), an atom for AP Physics 2 (electricity through modern physics), an integral sign
+// beside a moving ball for AP Physics C: Mechanics (the same mechanics, with calculus), and the same
+// integral sign beside a lightning bolt for AP Physics C: Electricity and Magnetism.
 // Drawn like the app's other icons: 24 × 24, 2px round strokes in the current text colour.
 import type { ReactNode } from "react";
 import { Route } from "lucide-react";
@@ -33,6 +34,13 @@ const DRAWINGS: Record<string, ReactNode> = {
       <circle cx="14.5" cy="15.5" r="1.75" fill="currentColor" stroke="none" />
       <path d="M16 14l4.5-4.5" />
       <path d="M17 9.5h3.5V13" />
+    </>
+  ),
+  // The same integral sign, and a lightning bolt.
+  "ap-physics-c-em": (
+    <>
+      <path d="M11.5 4.6C9.4 3.6 8 4.7 7.8 7l-.9 10c-.2 2.3-1.6 3.4-3.7 2.4" />
+      <path d="M17.6 6.2 13.4 13h3.4l-1.4 5.8 5.4-7.8h-3.6z" fill="currentColor" strokeWidth="1" />
     </>
   ),
 };
@@ -88,6 +96,12 @@ const LOOKS: Record<string, CourseLook> = {
     level: "Calculus-based",
     covers: "Mechanics with derivatives and integrals throughout.",
     tint: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  },
+  "ap-physics-c-em": {
+    level: "Calculus-based",
+    covers:
+      "Electric fields, potential, capacitors, circuits, magnetic fields and induction, with calculus throughout.",
+    tint: "bg-violet-500/15 text-violet-700 dark:text-violet-300",
   },
 };
 
