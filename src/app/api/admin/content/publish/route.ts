@@ -32,10 +32,19 @@ const PHYSICS_2_TOPIC: Record<number, string> = {
   14: "waves",
   15: "modern",
 };
+const PHYSICS_C_EM_TOPIC: Record<number, string> = {
+  8: "em",
+  9: "em",
+  10: "em",
+  11: "em",
+  12: "em",
+  13: "em",
+};
 const LEGACY_TOPIC: Record<ApCourseId, Record<number, string>> = {
   "physics-1": MECHANICS_TOPIC,
   "physics-2": PHYSICS_2_TOPIC,
   "physics-c-mech": MECHANICS_TOPIC,
+  "physics-c-em": PHYSICS_C_EM_TOPIC,
 };
 
 /**

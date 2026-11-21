@@ -1,0 +1,200 @@
+{
+  "id": "ap-physics-c-em",
+  "apCourse": "physics-c-em",
+  "name": "AP Physics C: Electricity and Magnetism",
+  "description": "Scorpio's outline of the six AP Physics C: Electricity and Magnetism units (8 to 13), with calculus throughout. The sets are planned: their problems are not written yet.",
+  "sets": [
+    {
+      "key": "8A",
+      "unit": 8,
+      "title": "Charge and Coulomb's law",
+      "description": "Charging objects, conservation of charge and vector sums of forces between point charges.",
+      "topics": ["8.1", "8.2"],
+      "draftIds": []
+    },
+    {
+      "key": "8B",
+      "unit": 8,
+      "title": "Electric fields of point charges",
+      "description": "Field vectors, field lines and superposition for arrangements of point charges.",
+      "topics": ["8.3"],
+      "draftIds": []
+    },
+    {
+      "key": "8C",
+      "unit": 8,
+      "title": "Fields of continuous charge",
+      "description": "Setting up and evaluating the integral for the field of a line, ring or arc of charge.",
+      "topics": ["8.4"],
+      "draftIds": []
+    },
+    {
+      "key": "8D",
+      "unit": 8,
+      "title": "Flux and Gauss's law",
+      "description": "Electric flux through a surface, and Gauss's law for symmetric charge distributions.",
+      "topics": ["8.5", "8.6"],
+      "draftIds": []
+    },
+    {
+      "key": "9A",
+      "unit": 9,
+      "title": "Electric potential energy",
+      "description": "Energy of systems of point charges and the work to assemble or rearrange them.",
+      "topics": ["9.1"],
+      "draftIds": []
+    },
+    {
+      "key": "9B",
+      "unit": 9,
+      "title": "Potential of charges and distributions",
+      "description": "Potential of point charges by superposition and of continuous charge by integration.",
+      "topics": ["9.2"],
+      "draftIds": []
+    },
+    {
+      "key": "9C",
+      "unit": 9,
+      "title": "Potential and field",
+      "description": "Equipotentials, the field as the negative slope of potential, and potential difference as an integral of the field.",
+      "topics": ["9.2"],
+      "draftIds": []
+    },
+    {
+      "key": "9D",
+      "unit": 9,
+      "title": "Conservation of electric energy",
+      "description": "Speeds and energies of charges that move through a potential difference.",
+      "topics": ["9.3"],
+      "draftIds": []
+    },
+    {
+      "key": "10A",
+      "unit": 10,
+      "title": "Conductors in equilibrium",
+      "description": "Field, charge and potential in and on a conductor, and shielding.",
+      "topics": ["10.1"],
+      "draftIds": []
+    },
+    {
+      "key": "10B",
+      "unit": 10,
+      "title": "Sharing charge between conductors",
+      "description": "How charge redistributes when conductors touch, are connected or are grounded.",
+      "topics": ["10.2"],
+      "draftIds": []
+    },
+    {
+      "key": "10C",
+      "unit": 10,
+      "title": "Capacitors",
+      "description": "Capacitance from geometry, the field between the plates and stored energy.",
+      "topics": ["10.3"],
+      "draftIds": []
+    },
+    {
+      "key": "10D",
+      "unit": 10,
+      "title": "Dielectrics",
+      "description": "What changes when an insulator fills a capacitor, with the battery connected or removed.",
+      "topics": ["10.4"],
+      "draftIds": []
+    },
+    {
+      "key": "11A",
+      "unit": 11,
+      "title": "Current and simple circuits",
+      "description": "Current as a rate of charge flow, current density and drift speed, and reading circuit diagrams.",
+      "topics": ["11.1", "11.2"],
+      "draftIds": []
+    },
+    {
+      "key": "11B",
+      "unit": 11,
+      "title": "Resistance, Ohm's law and power",
+      "description": "Resistivity, ohmic and non-ohmic elements, and the rate of energy transfer in a circuit.",
+      "topics": ["11.3", "11.4"],
+      "draftIds": []
+    },
+    {
+      "key": "11C",
+      "unit": 11,
+      "title": "Compound circuits and Kirchhoff's rules",
+      "description": "Equivalent resistance, internal resistance, and loop and junction rules for multi-branch circuits.",
+      "topics": ["11.5", "11.6", "11.7"],
+      "draftIds": []
+    },
+    {
+      "key": "11D",
+      "unit": 11,
+      "title": "RC circuits",
+      "description": "Equivalent capacitance, and exponential charging and discharging with a time constant.",
+      "topics": ["11.8"],
+      "draftIds": []
+    },
+    {
+      "key": "12A",
+      "unit": 12,
+      "title": "Magnetic fields",
+      "description": "Properties of magnetic fields, dipoles and magnetic materials.",
+      "topics": ["12.1"],
+      "draftIds": []
+    },
+    {
+      "key": "12B",
+      "unit": 12,
+      "title": "Forces on moving charges",
+      "description": "The cross-product magnetic force, circular paths and the Hall effect.",
+      "topics": ["12.2"],
+      "draftIds": []
+    },
+    {
+      "key": "12C",
+      "unit": 12,
+      "title": "Wires and the Biot-Savart law",
+      "description": "Fields of wires and loops by integrating current elements, and forces on and between wires.",
+      "topics": ["12.3"],
+      "draftIds": []
+    },
+    {
+      "key": "12D",
+      "unit": 12,
+      "title": "Ampère's law",
+      "description": "Enclosed current and the field of long wires, thick conductors and solenoids.",
+      "topics": ["12.4"],
+      "draftIds": []
+    },
+    {
+      "key": "13A",
+      "unit": 13,
+      "title": "Magnetic flux and Faraday's law",
+      "description": "Flux through a loop, and the emf induced when that flux changes.",
+      "topics": ["13.1", "13.2"],
+      "draftIds": []
+    },
+    {
+      "key": "13B",
+      "unit": 13,
+      "title": "Induced currents and forces",
+      "description": "Lenz's law, moving rods and loops, and the magnetic force on an induced current.",
+      "topics": ["13.3"],
+      "draftIds": []
+    },
+    {
+      "key": "13C",
+      "unit": 13,
+      "title": "Inductance and LR circuits",
+      "description": "Self-induced emf, energy stored in an inductor, and current that grows or decays exponentially.",
+      "topics": ["13.4", "13.5"],
+      "draftIds": []
+    },
+    {
+      "key": "13D",
+      "unit": 13,
+      "title": "LC circuits",
+      "description": "Oscillating charge and current, and energy passing between capacitor and inductor.",
+      "topics": ["13.6"],
+      "draftIds": []
+    }
+  ]
+}

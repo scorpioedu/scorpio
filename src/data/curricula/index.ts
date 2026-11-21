@@ -3,6 +3,7 @@
 import apPhysics1 from "./ap-physics-1.json";
 import apPhysics2 from "./ap-physics-2.json";
 import apPhysicsCMech from "./ap-physics-c-mech.json";
+import apPhysicsCEm from "./ap-physics-c-em.json";
 import { apUnits, apUnit, apTopic, isApCourseId, type ApCourseId, type ApUnit } from "../ap";
 
 export interface CurriculumSet {
@@ -33,6 +34,7 @@ export const CURRICULA: readonly Curriculum[] = [
   apPhysics1 as Curriculum,
   apPhysics2 as Curriculum,
   apPhysicsCMech as Curriculum,
+  apPhysicsCEm as Curriculum,
 ];
 
 /** True when at least one set has problems written. A course with none is a plan only. */
@@ -42,6 +44,19 @@ export function hasContent(c: Curriculum): boolean {
 
 export function getCurriculum(id: unknown): Curriculum | undefined {
   return typeof id === "string" ? CURRICULA.find((c) => c.id === id) : undefined;
+}
+
+/**
+ * The course a class's name points to: "AP Physics 2 - Period 3" is most likely taking AP Physics 2.
+ * The longest name wins, so a class named after one AP Physics C course is never matched to a
+ * shorter name, and the two C courses ("AP Physics C: Mechanics", "AP Physics C: Electricity and
+ * Magnetism") are only matched by their whole names.
+ */
+export function curriculumNamedIn(className: string): Curriculum | undefined {
+  const name = className.toLowerCase();
+  return [...CURRICULA]
+    .sort((a, b) => b.name.length - a.name.length)
+    .find((c) => name.includes(c.name.toLowerCase()));
 }
 
 export interface CurriculumUnit {

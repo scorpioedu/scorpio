@@ -3,6 +3,7 @@
 import physics1 from "./physics1.json";
 import physics2 from "./physics2.json";
 import physicsCMech from "./physicsc-mech.json";
+import physicsCEm from "./physicsc-em.json";
 
 export {
   MISCONCEPTION_TAGS,
@@ -48,6 +49,7 @@ export const AP_COURSES = {
   "physics-1": AP_PHYSICS_1,
   "physics-2": physics2 as ApCourseData,
   "physics-c-mech": physicsCMech as ApCourseData,
+  "physics-c-em": physicsCEm as ApCourseData,
 } as const;
 export type ApCourseId = keyof typeof AP_COURSES;
 export const AP_COURSE_IDS = Object.keys(AP_COURSES) as ApCourseId[];

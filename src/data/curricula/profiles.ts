@@ -5,6 +5,7 @@
 import apPhysics1 from "./profiles/ap-physics-1.json";
 import apPhysics2 from "./profiles/ap-physics-2.json";
 import apPhysicsCMech from "./profiles/ap-physics-c-mech.json";
+import apPhysicsCEm from "./profiles/ap-physics-c-em.json";
 
 export interface SetProfile {
   problems: number;
@@ -23,6 +24,8 @@ const PROFILES: Record<string, CurriculumProfile> = {
   "ap-physics-1": apPhysics1 as CurriculumProfile,
   "ap-physics-2": apPhysics2 as CurriculumProfile,
   "ap-physics-c-mech": apPhysicsCMech as CurriculumProfile,
+  // Empty while the course is only planned: a set has a profile once its problems are written.
+  "ap-physics-c-em": apPhysicsCEm as CurriculumProfile,
 };
 
 export function curriculumProfile(curriculumId: string): CurriculumProfile {

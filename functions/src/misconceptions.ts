@@ -14,9 +14,12 @@
 // magnetism, optics, waves, modern physics) follow the same research tradition, in our own words.
 // AP Physics C: Mechanics covers the ground of Physics 1 units 1-7 under the same unit numbers, so
 // it reuses the mechanics tags and adds a few that only show up with calculus.
+// AP Physics C: Electricity and Magnetism (units 8-13) covers the ground of Physics 2 units 10-12
+// under its own unit numbers, so it reuses those electricity and magnetism tags (`SHARED_UNITS`
+// says which unit maps to which) and adds the ones that only show up with calculus.
 
 /** The AP courses Scorpio knows; src/data/ap has their units and topics (a test keeps them in step). */
-export const AP_COURSE_KEYS = ["physics-1", "physics-2", "physics-c-mech"] as const;
+export const AP_COURSE_KEYS = ["physics-1", "physics-2", "physics-c-mech", "physics-c-em"] as const;
 export type ApCourseKey = (typeof AP_COURSE_KEYS)[number];
 export const DEFAULT_AP_COURSE_KEY: ApCourseKey = "physics-1";
 /** First and last unit number of each course. */
@@ -24,6 +27,7 @@ export const AP_COURSE_UNIT_RANGE: Record<ApCourseKey, readonly [number, number]
   "physics-1": [1, 8],
   "physics-2": [9, 15],
   "physics-c-mech": [1, 7],
+  "physics-c-em": [8, 13],
 };
 
 export function isApCourseKey(value: unknown): value is ApCourseKey {
@@ -146,7 +150,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Says the two forces in a Newton's third law pair have different sizes (truck vs car, person vs wall).",
     category: "conceptual",
     units: [2, 4],
-    courseUnits: { "physics-2": [10, 12] },
+    courseUnits: { "physics-2": [10, 12], "physics-c-em": [8, 12] },
   },
   {
     id: "third-law-pair-same-object",
@@ -235,7 +239,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Lets total energy change in a system with no external work or dissipation, or forgets thermal energy when friction acts.",
     category: "conceptual",
     units: [3, 6],
-    courseUnits: { "physics-2": [9, 10, 11] },
+    courseUnits: { "physics-2": [9, 10, 11], "physics-c-em": [9, 10, 11, 13] },
   },
   {
     id: "potential-energy-reference",
@@ -387,7 +391,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Differentiates where an integral is needed or the reverse, for example taking the slope of a force-position graph for work or the area under a position-time graph for velocity.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-c-mech": [1, 3, 4, 5] },
+    courseUnits: { "physics-c-mech": [1, 3, 4, 5], "physics-c-em": [9, 11, 13] },
   },
   {
     id: "rolling-ignores-rotation",
@@ -506,7 +510,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Treats electric force or field as falling off as 1/r, or potential and potential energy as 1/r², for example halving the force when the distance doubles.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [8, 9] },
   },
   {
     id: "charging-moves-positive-charge",
@@ -515,7 +519,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Explains charging by protons moving between solids, or says rubbing or induction creates new charge instead of moving electrons and conserving the total.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [8, 10] },
   },
   {
     id: "neutral-means-no-charge",
@@ -523,7 +527,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
     description: "Misses polarization: a charged object attracts a neutral conductor or insulator.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [8] },
   },
   {
     id: "field-force-confusion",
@@ -532,7 +536,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Thinks the field at a point depends on the test charge placed there, or that a larger charge in the same field feels the same force.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [8] },
   },
   {
     id: "field-direction-ignores-sign",
@@ -541,7 +545,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Sends a negative charge along the field (electrons drifting from high to low potential in a wire), or points the field toward positive charges.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10, 11, 12] },
+    courseUnits: { "physics-2": [10, 11, 12], "physics-c-em": [8, 9, 11, 12] },
   },
   {
     id: "field-potential-zero-together",
@@ -550,7 +554,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Assumes E = 0 implies V = 0 or the reverse (for example midway between equal or opposite charges), instead of the field being how potential changes with position.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [9] },
   },
   {
     id: "potential-energy-potential-confusion",
@@ -559,7 +563,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Uses V where U = qV is needed, or ignores the sign of the charge when deciding whether potential energy rises or falls.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [9] },
   },
   {
     id: "vector-scalar-superposition",
@@ -568,7 +572,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Adds field magnitudes without directions, or cancels potentials from like charges as if they pointed opposite ways.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10, 12] },
+    courseUnits: { "physics-2": [10, 12], "physics-c-em": [8, 9, 12] },
   },
   {
     id: "conductor-interior-field",
@@ -577,7 +581,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Puts excess charge throughout the volume, or a non-zero field inside, instead of charge on the surface and the whole conductor at one potential.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10] },
+    courseUnits: { "physics-2": [10], "physics-c-em": [10] },
   },
   {
     id: "capacitor-wrong-quantity-fixed",
@@ -586,7 +590,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Keeps charge constant while the battery stays connected, or voltage constant after it is disconnected, when plates move or a dielectric goes in.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10, 11] },
+    courseUnits: { "physics-2": [10, 11], "physics-c-em": [10, 11] },
   },
   {
     id: "capacitance-depends-on-charge",
@@ -595,7 +599,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Reads C = Q/V as saying more charge means more capacitance, rather than capacitance being set by geometry and the material between the plates.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [10, 11] },
+    courseUnits: { "physics-2": [10, 11], "physics-c-em": [10, 11] },
   },
   // --- AP Physics 2, Unit 11: electric circuits --------------------------------------------------
   {
@@ -704,7 +708,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Says a north pole attracts negative charges, that a charge at rest feels a magnetic force, or that a pole can be isolated by cutting a magnet.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [12] },
   },
   {
     id: "magnetic-force-along-field",
@@ -713,7 +717,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Misses that the force on a moving charge or a current is perpendicular to both the field and the motion, and zero for motion along the field.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [12, 13] },
   },
   {
     id: "magnetic-force-does-work",
@@ -722,7 +726,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Expects the magnetic force to change a particle's speed or kinetic energy rather than only its direction.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [12] },
   },
   {
     id: "wire-field-not-circular",
@@ -731,7 +735,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Draws the field pointing along the wire or straight toward or away from it, or says parallel currents repel by analogy with like charges.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [12] },
   },
   {
     id: "induction-needs-change",
@@ -740,7 +744,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Expects a current whenever a field passes through a loop (a strong steady field, a magnet at rest) instead of only when the flux changes.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [13] },
   },
   {
     id: "lenz-opposes-field",
@@ -749,7 +753,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Applies Lenz's law to the field itself rather than to the change in flux, so a decreasing flux gets the wrong current direction.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [13] },
   },
   {
     id: "flux-ignores-orientation",
@@ -758,7 +762,7 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
       "Uses B alone for flux, or keeps the flux unchanged when the loop tilts or its area changes.",
     category: "conceptual",
     units: [],
-    courseUnits: { "physics-2": [12] },
+    courseUnits: { "physics-2": [12], "physics-c-em": [13] },
   },
   // --- AP Physics 2, Unit 13: geometric optics ---------------------------------------------------
   {
@@ -997,6 +1001,115 @@ export const MISCONCEPTION_TAGS: readonly MisconceptionTag[] = [
     units: [],
     courseUnits: { "physics-2": [15] },
   },
+  // --- AP Physics C: Electricity and Magnetism only (calculus-based) ------------------------------
+  {
+    id: "gauss-law-without-symmetry",
+    label: "Uses Gauss's law where there is no symmetry to use",
+    description:
+      "Pulls E out of the flux integral for a surface where the field is not constant in size or not perpendicular to it (a finite rod, a cube around a point charge), or picks a Gaussian surface that does not match the charge's symmetry.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [8] },
+  },
+  {
+    id: "flux-field-confusion",
+    label: "Confuses the flux through a surface with the field on it",
+    description:
+      "Concludes that the field is zero on a closed surface because the net flux is zero, or that charges outside the surface add to its net flux; the net flux counts only enclosed charge, while the field comes from every charge.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [8] },
+  },
+  {
+    id: "enclosed-charge-or-current-wrong",
+    label: "Uses the total charge or current instead of what is enclosed",
+    description:
+      "Puts the whole charge of a sphere or cylinder into Gauss's law for a point inside it, or the whole current of a thick wire into Ampère's law for a path inside it, instead of the part the surface or path encloses.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [8, 12] },
+  },
+  {
+    id: "distribution-as-point-charge",
+    label: "Treats spread-out charge as a point charge",
+    description:
+      "Replaces a rod, ring or arc of charge with a point charge at its centre, or adds the sizes of the field contributions without taking components, instead of integrating over the distribution.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [8, 9] },
+  },
+  {
+    id: "potential-gradient-sign",
+    label: "Gets the sign or direction wrong between field and potential",
+    description:
+      "Drops the minus sign in E = −dV/dr or ΔV = −∫E·dr, so the field points toward higher potential or the potential rises along the field.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [9] },
+  },
+  {
+    id: "dielectric-misapplied",
+    label: "Applies a dielectric the wrong way",
+    description:
+      "Divides the capacitance by the dielectric constant instead of multiplying, or expects the dielectric to strengthen the field between isolated plates when it weakens it.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [10] },
+  },
+  {
+    id: "time-constant-misread",
+    label: "Misreads the time constant of an RC or LR circuit",
+    description:
+      "Uses RC for an inductor circuit or inverts L/R, expects more resistance to slow an LR circuit the way it slows an RC circuit (it shortens L/R), or leaves out part of the resistance or capacitance that sets the time constant.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [11, 13] },
+  },
+  {
+    id: "ampere-law-without-symmetry",
+    label: "Uses Ampère's law where there is no symmetry to use",
+    description:
+      "Pulls B out of the path integral for a short wire segment or a single loop, where the field is not constant along any simple path and the Biot-Savart law is needed.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [12] },
+  },
+  {
+    id: "emf-from-flux-not-rate",
+    label: "Ties the induced emf to the flux instead of its rate of change",
+    description:
+      "Expects the largest emf when the flux is largest, or uses Φ/t for a flux that does not change steadily, instead of the derivative dΦ/dt at that instant (zero where the flux peaks).",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [13] },
+  },
+  {
+    id: "inductor-opposes-current",
+    label: "Thinks an inductor opposes current rather than a change in current",
+    description:
+      "Gives an inductor a potential difference for a steady current, or gets the sign of ε = −L dI/dt wrong, so the inductor helps a current grow or fights one that is already steady.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [13] },
+  },
+  {
+    id: "inductor-limits-swapped",
+    label: "Gets the inductor's limiting behaviour backwards",
+    description:
+      "Treats an inductor as a plain wire at the instant a switch closes, or as a break in the circuit after a long time, or lets its current jump when a switch opens.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [13] },
+  },
+  {
+    id: "lc-charge-current-in-phase",
+    label: "Thinks charge and current peak together in an LC circuit",
+    description:
+      "Puts the largest current at the moment the capacitor is fully charged, when the current is zero there and largest as the capacitor passes through zero charge; or lets the oscillation's energy drain away with no resistance.",
+    category: "conceptual",
+    units: [],
+    courseUnits: { "physics-c-em": [13] },
+  },
   // --- Procedural slips (set by the deterministic numeric checker) ------------------------------
   {
     id: "sign-error",
@@ -1066,6 +1179,33 @@ export function misconceptionTag(id: string): MisconceptionTag | undefined {
   return BY_ID.get(id);
 }
 
+/** The units a tag lists for a course itself: `units` for AP Physics 1, `courseUnits` otherwise. */
+function ownUnits(tag: MisconceptionTag, course: ApCourseKey): number[] {
+  return (course === DEFAULT_AP_COURSE_KEY ? tag.units : tag.courseUnits?.[course]) ?? [];
+}
+
+/**
+ * Courses that cover the ground of another course: a tag with no units of its own in the course
+ * takes the other course's, renumbered. A unit that is not listed does not carry over. A tag's own
+ * `courseUnits` entry always wins, which is how a tag is narrowed to the units it really fits.
+ */
+const SHARED_UNITS: Partial<
+  Record<ApCourseKey, { from: ApCourseKey; units: Readonly<Record<number, readonly number[]>> }>
+> = {
+  // C: Mechanics units 1-7 match AP Physics 1 units 1-7 (unit 8, fluids, is not in the course).
+  "physics-c-mech": {
+    from: "physics-1",
+    units: { 1: [1], 2: [2], 3: [3], 4: [4], 5: [5], 6: [6], 7: [7] },
+  },
+  // C: E&M splits Physics 2's unit 10 (charge, field, potential, capacitors) over its units 8-10
+  // and unit 12 (magnetism, induction) over 12-13; the circuits unit is 11 in both. Thermodynamics
+  // (9), optics, waves and modern physics (13-15) do not carry over.
+  "physics-c-em": {
+    from: "physics-2",
+    units: { 10: [8, 9, 10], 11: [11], 12: [12, 13] },
+  },
+};
+
 /**
  * The units of one course where a tag usually shows up. `[]` means any unit (procedural slips and
  * "other"); `null` means the tag does not belong to that course at all.
@@ -1075,14 +1215,13 @@ export function misconceptionUnits(
   course: ApCourseKey = DEFAULT_AP_COURSE_KEY,
 ): number[] | null {
   if (!tag.units.length && !tag.courseUnits) return [];
-  const own = course === DEFAULT_AP_COURSE_KEY ? tag.units : tag.courseUnits?.[course];
-  if (own?.length) return own;
-  // C: Mechanics units 1-7 match AP Physics 1 units 1-7 (unit 8, fluids, is not in the course).
-  if (course === "physics-c-mech") {
-    const shared = tag.units.filter((u) => isUnitOfCourse(u, course));
-    if (shared.length) return shared;
-  }
-  return null;
+  const own = ownUnits(tag, course);
+  if (own.length) return own;
+  // No units of its own in this course: the tag may come with the ground another course covers.
+  const shared = SHARED_UNITS[course];
+  if (!shared) return null;
+  const mapped = new Set(ownUnits(tag, shared.from).flatMap((u) => shared.units[u] ?? []));
+  return mapped.size ? [...mapped].sort((a, b) => a - b) : null;
 }
 
 /** Every tag a course uses, including the any-unit ones. */

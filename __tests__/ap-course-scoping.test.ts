@@ -56,6 +56,9 @@ const { parseArgs } = require("../tools/content-drafts.cjs");
 jest.mock("../src/lib/ai/config", () => ({ model: { generateContent: jest.fn() } }));
 
 const tag = (id: string) => misconceptionTag(id)!;
+// How many tags AP Physics 2 and C: Mechanics had before C: E&M was added (any-unit ones included).
+const P2_TAGS = 78;
+const MECH_TAGS = 45;
 
 describe("misconception tags per AP course", () => {
   test("the functions bundle and the web app agree on the courses and their unit numbers", () => {
@@ -69,6 +72,15 @@ describe("misconception tags per AP course", () => {
     expect(isUnitOfCourse(8, "physics-c-mech")).toBe(false);
     expect(isUnitOfCourse(9, "physics-2")).toBe(true);
     expect(isUnitOfCourse("9", "physics-2")).toBe(false);
+    expect(AP_COURSE_UNIT_RANGE["physics-c-em"]).toEqual([8, 13]);
+    expect([7, 8, 13, 14].map((u) => isUnitOfCourse(u, "physics-c-em"))).toEqual([
+      false,
+      true,
+      true,
+      false,
+    ]);
+    expect(apCourseKey("physics-c-em")).toBe("physics-c-em");
+    expect(nonDefaultApCourse("physics-c-em")).toBe("physics-c-em");
     expect(apCourseKey(undefined)).toBe("physics-1");
     expect(apCourseKey("physics-9")).toBe("physics-1");
     expect(apCourseKey("physics-2")).toBe("physics-2");
@@ -144,6 +156,133 @@ describe("misconception tags per AP course", () => {
     expect(misconceptionUnits(tag("heat-temperature-confusion"), "physics-c-mech")).toBeNull();
     for (const course of AP_COURSE_IDS)
       expect(misconceptionUnits(tag("sign-error"), course)).toEqual([]);
+  });
+
+  test("C: E&M reuses AP Physics 2's electricity and magnetism tags under its own unit numbers", () => {
+    const em = "physics-c-em";
+    // The circuits unit is 11 in both courses; the other shared tags are renumbered.
+    expect(misconceptionUnits(tag("current-used-up"), em)).toEqual([11]);
+    expect(misconceptionUnits(tag("rc-linear-change"), em)).toEqual([11]);
+    expect(misconceptionUnits(tag("power-energy-confusion"), em)).toEqual([11]);
+    expect(misconceptionUnits(tag("field-force-confusion"), em)).toEqual([8]);
+    expect(misconceptionUnits(tag("field-potential-zero-together"), em)).toEqual([9]);
+    expect(misconceptionUnits(tag("conductor-interior-field"), em)).toEqual([10]);
+    expect(misconceptionUnits(tag("capacitance-depends-on-charge"), em)).toEqual([10, 11]);
+    expect(misconceptionUnits(tag("magnetic-force-does-work"), em)).toEqual([12]);
+    expect(misconceptionUnits(tag("lenz-opposes-field"), em)).toEqual([13]);
+    expect(misconceptionUnits(tag("lenz-opposes-field"), "physics-2")).toEqual([12]);
+    expect(misconceptionUnits(tag("third-law-unequal-forces"), em)).toEqual([8, 12]);
+    expect(misconceptionUnits(tag("third-law-unequal-forces"))).toEqual([2, 4]);
+    expect(misconceptionUnits(tag("derivative-integral-confusion"), em)).toEqual([9, 11, 13]);
+    expect(misconceptionUnits(tag("derivative-integral-confusion"), "physics-c-mech")).toEqual([
+      1, 3, 4, 5,
+    ]);
+    // Every AP Physics 2 tag of units 10-12 is offered in C: E&M; none of the other units' is.
+    for (const t of MISCONCEPTION_TAGS) {
+      const p2 = t.courseUnits?.["physics-2"];
+      if (!p2) continue;
+      const shared = p2.some((u) => u >= 10 && u <= 12);
+      expect([t.id, misconceptionUnits(t, em) !== null]).toEqual([t.id, shared]);
+    }
+    for (const id of [
+      "heat-temperature-confusion", // Physics 2 unit 9
+      "celsius-as-absolute", // 9 and 15
+      "optics-sign-convention", // 13
+      "frequency-changes-in-medium", // 13 and 14
+      "half-life-linear", // 15
+      "graph-as-picture", // Physics 1 units 1 and 7; Physics 2 unit 14
+      "force-implies-motion", // mechanics only
+      "buoyancy-depends-on-object-weight", // Physics 1 unit 8
+      "constant-acceleration-assumed", // C: Mechanics only
+    ])
+      expect([id, misconceptionUnits(tag(id), em)]).toEqual([id, null]);
+    for (const course of AP_COURSE_IDS)
+      expect(misconceptionUnits(tag("unit-wrong"), course)).toEqual([]);
+  });
+
+  test("C: E&M's own calculus tags belong to no other course, and every one is complete", () => {
+    const own = MISCONCEPTION_TAGS.filter(
+      (t) => Object.keys(t.courseUnits ?? {}).join() === "physics-c-em" && !t.units.length,
+    );
+    expect(own.map((t) => t.id)).toEqual([
+      "gauss-law-without-symmetry",
+      "flux-field-confusion",
+      "enclosed-charge-or-current-wrong",
+      "distribution-as-point-charge",
+      "potential-gradient-sign",
+      "dielectric-misapplied",
+      "time-constant-misread",
+      "ampere-law-without-symmetry",
+      "emf-from-flux-not-rate",
+      "inductor-opposes-current",
+      "inductor-limits-swapped",
+      "lc-charge-current-in-phase",
+    ]);
+    for (const t of own) {
+      expect([t.id, !!t.label.trim(), t.description.length > 40, t.category]).toEqual([
+        t.id,
+        true,
+        true,
+        "conceptual",
+      ]);
+      for (const course of ["physics-1", "physics-2", "physics-c-mech"] as const) {
+        expect([t.id, course, misconceptionUnits(t, course)]).toEqual([t.id, course, null]);
+        expect(misconceptionPromptList(course)).not.toContain(`- ${t.id}:`);
+      }
+    }
+    expect(misconceptionUnits(tag("enclosed-charge-or-current-wrong"), "physics-c-em")).toEqual([
+      8, 12,
+    ]);
+    expect(misconceptionUnits(tag("time-constant-misread"), "physics-c-em")).toEqual([11, 13]);
+  });
+
+  test("unit numbers shared with other courses do not leak tags: 8 (Physics 1), 9-13 (Physics 2)", () => {
+    const ids = (unit: number, course?: ApCourseId) =>
+      misconceptionsForUnit(unit, course).map((t) => t.id);
+    // Unit 8: fluids in AP Physics 1, charge and Gauss's law in C: E&M.
+    expect(ids(8)).toContain("buoyancy-depends-on-object-weight");
+    expect(ids(8)).not.toContain("gauss-law-without-symmetry");
+    expect(ids(8)).not.toContain("field-force-confusion");
+    expect(ids(8, "physics-c-em")).toEqual(
+      expect.arrayContaining(["gauss-law-without-symmetry", "field-force-confusion", "sign-error"]),
+    );
+    expect(ids(8, "physics-c-em")).not.toContain("buoyancy-depends-on-object-weight");
+    // Unit 9: thermodynamics in AP Physics 2, potential in C: E&M.
+    expect(ids(9, "physics-2")).toContain("heat-temperature-confusion");
+    expect(ids(9, "physics-2")).not.toContain("potential-gradient-sign");
+    expect(ids(9, "physics-2")).not.toContain("field-potential-zero-together");
+    expect(ids(9, "physics-c-em")).toContain("potential-gradient-sign");
+    expect(ids(9, "physics-c-em")).not.toContain("heat-temperature-confusion");
+    expect(ids(9, "physics-c-em")).not.toContain("thermal-work-sign");
+    // Unit 10: Physics 2 keeps its whole electrostatics unit; C: E&M has conductors and capacitors.
+    expect(ids(10, "physics-2")).toContain("field-force-confusion");
+    expect(ids(10, "physics-2")).not.toContain("dielectric-misapplied");
+    expect(ids(10, "physics-c-em")).toContain("dielectric-misapplied");
+    expect(ids(10, "physics-c-em")).not.toContain("field-force-confusion");
+    // Unit 12: induction is in Physics 2's unit 12 but in C: E&M's unit 13.
+    expect(ids(12, "physics-2")).toContain("induction-needs-change");
+    expect(ids(12, "physics-c-em")).not.toContain("induction-needs-change");
+    expect(ids(12, "physics-c-em")).toContain("ampere-law-without-symmetry");
+    expect(ids(12, "physics-2")).not.toContain("ampere-law-without-symmetry");
+    // Unit 13: geometric optics in AP Physics 2, induction in C: E&M.
+    expect(ids(13, "physics-2")).toContain("optics-sign-convention");
+    expect(ids(13, "physics-2")).not.toContain("lenz-opposes-field");
+    expect(ids(13, "physics-2")).not.toContain("inductor-opposes-current");
+    expect(ids(13, "physics-c-em")).toEqual(
+      expect.arrayContaining(["lenz-opposes-field", "inductor-opposes-current"]),
+    );
+    expect(ids(13, "physics-c-em")).not.toContain("optics-sign-convention");
+    // Adding the course changed no other course's list.
+    expect(misconceptionsForCourse("physics-2")).toHaveLength(P2_TAGS);
+    expect(misconceptionsForCourse("physics-c-mech")).toHaveLength(MECH_TAGS);
+    // The grader and the generator are offered C: E&M's tags only.
+    const grader = graderSystemInstruction("physics-c-em");
+    expect(grader).toContain("- gauss-law-without-symmetry:");
+    expect(grader).toContain("- current-used-up:");
+    expect(grader).not.toContain("- heat-temperature-confusion:");
+    expect(grader).not.toContain("- force-implies-motion:");
+    expect(graderSystemInstruction("physics-2")).not.toContain("- gauss-law-without-symmetry:");
+    expect(GRADER_SYSTEM_INSTRUCTION).not.toContain("gauss-law-without-symmetry");
   });
 
   test("the AI grader is offered the tags of the assignment's course; Physics 1 is unchanged", () => {
@@ -279,6 +418,35 @@ describe("insights: units are labelled and filtered by course", () => {
     expect(parseCourseScopedId("bogus:9")).toEqual({ course: "physics-1", id: "bogus:9" });
   });
 
+  test("unit 11 of AP Physics 2 and of C: E&M stay apart, each named for its course", () => {
+    const circuits = [
+      ev({ apCourse: "physics-2", apUnit: 11, apTopic: "11.8", tag: "rc-linear-change" }),
+      ev({
+        studentId: "st2",
+        submissionId: "s2",
+        assignmentId: "a2",
+        apCourse: "physics-c-em",
+        apUnit: 11,
+        apTopic: "11.8",
+        tag: "rc-linear-change",
+      }),
+    ];
+    const report = buildInsightsReport(circuits);
+    expect(report.byUnit.map((g) => [g.id, g.label, g.studentCount])).toEqual([
+      ["physics-2:11", "AP Physics 2 · Unit 11: Electric circuits", 1],
+      [
+        "physics-c-em:11",
+        "AP Physics C: Electricity and Magnetism · Unit 11: Electric circuits",
+        1,
+      ],
+    ]);
+    expect(courseScopedId("physics-c-em", "11.8")).toBe("physics-c-em:11.8");
+    expect(parseCourseScopedId("physics-c-em:11")).toEqual({ course: "physics-c-em", id: "11" });
+    expect(filterEvents(circuits, { apUnit: 11, apCourse: "physics-c-em" })).toHaveLength(1);
+    expect(filterEvents(circuits, { apUnit: 11, apCourse: "physics-2" })).toHaveLength(1);
+    expect(filterEvents(circuits, { apUnit: 11 })).toHaveLength(0);
+  });
+
   test("unit 2 of AP Physics 1 and of C: Mechanics stay apart, each named for its course", () => {
     const report = buildInsightsReport(mixed);
     expect(report.byUnit.map((g) => [g.id, g.label, g.studentCount])).toEqual([
@@ -367,7 +535,26 @@ describe("content generator per course", () => {
     expect(buildGeneratorPrompt("4.2", 3)).toContain("Write 3 AP Physics 1 problems:");
   });
 
-  test("each course is named, and only C: Mechanics uses calculus", () => {
+  test("each course is named, and only the two AP Physics C courses use calculus", () => {
+    const em = generatorSystemInstruction("physics-c-em");
+    expect(em).toContain("You write AP Physics C: Electricity and Magnetism homework problems");
+    expect(em).toContain("calculus-based");
+    expect(em).not.toContain("no calculus");
+    expect(em).toContain("Never use LaTeX");
+    expect(em).toContain('Return ONLY JSON: {"problems"');
+    expect(solverSystemInstruction("physics-c-em")).toContain(
+      "AP Physics C: Electricity and Magnetism problem",
+    );
+    const gauss = buildGeneratorPrompt("8.6", 1, undefined, "physics-c-em");
+    expect(gauss).toContain("Write 1 AP Physics C: Electricity and Magnetism problem:");
+    expect(gauss).toContain("Topic 8.6: Gauss's law");
+    expect(gauss).toContain("gauss-law-without-symmetry");
+    expect(gauss).not.toContain("buoyancy-depends-on-object-weight"); // Physics 1's unit 8
+    // 9.4 is an AP Physics 2 topic only; 8.6 is not an AP Physics 1 topic.
+    expect(() => buildGeneratorPrompt("9.4", 1, undefined, "physics-c-em")).toThrow(
+      /Unknown AP topic/,
+    );
+    expect(() => buildGeneratorPrompt("8.6", 1)).toThrow(/Unknown AP topic/);
     const p2 = generatorSystemInstruction("physics-2");
     expect(p2).toContain("You write AP Physics 2 homework problems");
     expect(p2).toContain("no calculus");
@@ -532,7 +719,12 @@ describe("request schemas and pickers", () => {
     expect(ok({ apCourse: "physics-2", apUnit: 8 })).toBe(false);
     expect(ok({ apCourse: "physics-c-mech", apUnit: 7 })).toBe(true);
     expect(ok({ apCourse: "physics-c-mech", apUnit: 8 })).toBe(false);
+    expect(ok({ apCourse: "physics-c-em", apUnit: 8 })).toBe(true);
+    expect(ok({ apCourse: "physics-c-em", apUnit: 13 })).toBe(true);
     expect(ok({ apCourse: "physics-c-em", apUnit: 1 })).toBe(false);
+    expect(ok({ apCourse: "physics-c-em", apUnit: 7 })).toBe(false);
+    expect(ok({ apCourse: "physics-c-em", apUnit: 14 })).toBe(false);
+    expect(ok({ apCourse: "physics-c-e-and-m", apUnit: 8 })).toBe(false);
   });
 
   test("picker values: AP Physics 1 keeps the bare unit number", () => {
@@ -544,6 +736,18 @@ describe("request schemas and pickers", () => {
     expect(parseApUnitKey("physics-c-mech:8")).toBeNull();
     expect(parseApUnitKey("all")).toBeNull();
     expect(parseApUnitKey("physics-9:1")).toBeNull();
+    // Units 9-13 exist in both AP Physics 2 and C: E&M; the key says which.
+    expect(apUnitKey("physics-c-em", 9)).toBe("physics-c-em:9");
+    expect(apUnitKey("physics-c-em", 9)).not.toBe(apUnitKey("physics-2", 9));
+    expect(parseApUnitKey("physics-c-em:9")).toEqual({ course: "physics-c-em", unit: 9 });
+    expect(parseApUnitKey("physics-2:9")).toEqual({ course: "physics-2", unit: 9 });
+    expect(parseApUnitKey("8")).toEqual({ course: "physics-1", unit: 8 });
+    expect(parseApUnitKey("physics-c-em:8")).toEqual({ course: "physics-c-em", unit: 8 });
+    expect(parseApUnitKey("physics-c-em:14")).toBeNull();
+    expect(parseApUnitKey("physics-c-em:1")).toBeNull();
+    expect(
+      new Set(AP_COURSE_IDS.flatMap((c) => apUnits(c).map((u) => apUnitKey(c, u.unit)))).size,
+    ).toBe(AP_COURSE_IDS.reduce((n, c) => n + apUnits(c).length, 0));
     expect(apCourseOf(undefined)).toBe("physics-1");
     expect(apCourseOf("physics-2")).toBe("physics-2");
   });
