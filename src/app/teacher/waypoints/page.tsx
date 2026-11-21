@@ -1,40 +1,33 @@
 "use client";
-import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
-import { useCallback, useEffect, useState } from "react";
+// The Library: ready-made sets to start an assignment from. Scorpio's own sets are shown the way
+// the Course page shows them (a course, then its units in teaching order, then each unit's sets),
+// so a teacher finds "Unit 4, momentum" where they expect it. Department sets have no course
+// roadmap and are listed by title. Opening a set previews its problems; "Use this set" copies it
+// (the server copies the answer key too) and opens the copy in the editor.
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ChevronRight, Lock, Search, Users } from "lucide-react";
 import { db } from "@/lib/firebase";
+import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
+import { useDepartmentPlan } from "@/hooks/use-department-plan";
+import { isWaypointLocked } from "@/lib/plan-limits";
+import { apCourseOf, apUnit, isApCourseId, type ApCourseId } from "@/data/ap";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+  CURRICULA,
+  compareSetKeys,
+  curriculumSet,
+  getCurriculum,
+  type CurriculumSet,
+} from "@/data/curricula";
+import { setProfile } from "@/data/curricula/profiles";
+import { WorkspaceHeader } from "@/components/ui/workspace";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Search,
-  Copy,
-  Globe,
-  Users,
-  Lock,
-  Loader2,
-  Sparkles,
-  Waypoints,
-  Filter,
-  ArrowUpRight,
-  Clock,
-  Star,
-  MapPinned,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -42,558 +35,459 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { motion, AnimatePresence } from "framer-motion";
-import { useDepartmentPlan } from "@/hooks/use-department-plan";
-import { apCourseName, apCourseOf, apUnitLabel, parseApUnitKey } from "@/data/ap";
-import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
+import { CourseIcon } from "@/components/teacher/course-icon";
 import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
-import { isWaypointLocked as isWaypointLockedByPlan } from "@/lib/plan-limits";
+import { TopicChips, UnitTile } from "@/app/teacher/courses/unit-look";
+import { SetPreviewDialog, type PreviewTarget } from "@/app/teacher/courses/set-preview-dialog";
+import { cn } from "@/lib/utils";
 
-interface WaypointQuestion {
-  id?: string;
-  type?: string;
-  text?: string;
-  options?: string[];
-  correctAnswer?: string;
-  answer?: string;
-  expectedAnswer?: string;
-  points?: number;
-  [key: string]: unknown;
-}
+type Source = "global" | "network";
 
-interface Waypoint {
+interface LibrarySet {
   id: string;
   title: string;
   description: string;
-  teacherId: string;
   teacherName?: string;
   organizationId?: string;
-  visibility: "private" | "network" | "global";
-  questions: WaypointQuestion[];
-  createdAt: Date;
-  topic?: string;
-  forkCount?: number;
-  apCourse?: string | null;
-  apUnit?: number | null;
-  apTopics?: string[];
+  questionCount: number;
+  forkCount: number;
+  apCourse: ApCourseId | null;
+  apUnit: number | null;
+  apTopics: string[];
+  curriculumId: string | null;
+  setKey: string | null;
 }
 
-export default function WaypointsPage() {
+/** One row's worth of a set: the course set it is (when it is one) and the words to show. */
+interface Row {
+  item: LibrarySet;
+  set: CurriculumSet | null;
+  title: string;
+}
+
+interface UnitGroup {
+  key: string;
+  curriculumId: string | null;
+  unit: number | null;
+  heading: string;
+  rows: Row[];
+}
+
+const OTHER = "other";
+const COURSE_STORAGE_KEY = "library-course";
+
+function toLibrarySet(id: string, d: Record<string, unknown>): LibrarySet {
+  const course = typeof d.apCourse === "string" && isApCourseId(d.apCourse) ? d.apCourse : null;
+  return {
+    id,
+    title: typeof d.title === "string" ? d.title : "Untitled set",
+    description: typeof d.description === "string" ? d.description : "",
+    teacherName: typeof d.teacherName === "string" ? d.teacherName : undefined,
+    organizationId: typeof d.organizationId === "string" ? d.organizationId : undefined,
+    questionCount: Array.isArray(d.questions) ? d.questions.length : 0,
+    forkCount: typeof d.forkCount === "number" ? d.forkCount : 0,
+    apCourse: course,
+    apUnit: typeof d.apUnit === "number" ? d.apUnit : null,
+    apTopics: Array.isArray(d.apTopics) ? d.apTopics.filter((t) => typeof t === "string") : [],
+    curriculumId:
+      typeof d.curriculumId === "string" && getCurriculum(d.curriculumId) ? d.curriculumId : null,
+    setKey: typeof d.curriculumSetKey === "string" ? d.curriculumSetKey : null,
+  };
+}
+
+function toRow(item: LibrarySet): Row {
+  const set =
+    item.curriculumId && item.setKey ? (curriculumSet(item.curriculumId, item.setKey) ?? null) : null;
+  return { item, set, title: set?.title ?? item.title };
+}
+
+/** Sets of one course in teaching order, one group per unit; or every other set, by title. */
+function groupRows(rows: Row[], curriculumId: string): UnitGroup[] {
+  if (curriculumId === OTHER) {
+    const sorted = [...rows].sort((a, b) => a.title.localeCompare(b.title));
+    return sorted.length
+      ? [{ key: OTHER, curriculumId: null, unit: null, heading: "", rows: sorted }]
+      : [];
+  }
+  const course = getCurriculum(curriculumId);
+  const byUnit = new Map<number, Row[]>();
+  for (const row of rows) {
+    const unit = row.set?.unit ?? row.item.apUnit ?? 0;
+    byUnit.set(unit, [...(byUnit.get(unit) ?? []), row]);
+  }
+  return [...byUnit.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([unit, unitRows]) => ({
+      key: `${curriculumId}-${unit}`,
+      curriculumId,
+      unit,
+      heading: apUnit(unit, course?.apCourse)?.title ?? `Unit ${unit}`,
+      rows: unitRows.sort((a, b) =>
+        a.set && b.set ? compareSetKeys(a.set, b.set) : a.title.localeCompare(b.title),
+      ),
+    }));
+}
+
+function courseOfRow(row: Row): string {
+  return row.item.curriculumId && row.set ? row.item.curriculumId : OTHER;
+}
+
+export default function LibraryPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const router = useRouter();
-  const { isDepartmentPlan, isFreePlan, hasNoOrg } = useDepartmentPlan();
+  const { isFreePlan, hasNoOrg } = useDepartmentPlan();
 
-  const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("global");
-  const [topicFilter, setTopicFilter] = useState("all");
-  // Filtered in the browser: no composite index needed next to the visibility/topic queries.
-  const [apUnitFilter, setApUnitFilter] = useState("all");
+  const [source, setSource] = useState<Source>("global");
+  const [items, setItems] = useState<LibrarySet[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [course, setCourse] = useState<string>(CURRICULA[0].id);
+  const [search, setSearch] = useState("");
+  const [preview, setPreview] = useState<Row | null>(null);
+  const [copying, setCopying] = useState<string | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
-  // Upgrade modal state
-  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState<"network-share">("network-share");
-
-  // The compiler cannot keep this callback's memoization (it reads profile?.organizationId).
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
-  const fetchWaypoints = useCallback(async () => {
-    if (!user || authLoading) return;
-    setLoading(true);
-    try {
-      let q;
-      if (activeTab === "global") {
-        if (topicFilter !== "all") {
-          q = query(
-            collection(db, "assignments"),
-            where("visibility", "==", "global"),
-            where("topic", "==", topicFilter),
-          );
-        } else {
-          q = query(collection(db, "assignments"), where("visibility", "==", "global"));
-        }
-      } else if (activeTab === "network") {
-        const orgId = profile?.organizationId;
-        if (!orgId) {
-          setWaypoints([]);
-          setLoading(false);
-          return;
-        }
-
-        if (topicFilter !== "all") {
-          q = query(
-            collection(db, "assignments"),
-            where("visibility", "==", "network"),
-            where("organizationId", "==", orgId),
-            where("topic", "==", topicFilter),
-          );
-        } else {
-          q = query(
-            collection(db, "assignments"),
-            where("visibility", "==", "network"),
-            where("organizationId", "==", orgId),
-          );
-        }
-      } else {
-        q = query(collection(db, "assignments"), where("teacherId", "==", user?.uid));
-      }
-
-      const snap = await getDocs(q);
-      const docs = snap.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-        createdAt: d.data().createdAt?.toDate() || new Date(),
-        forkCount: d.data().forkCount || 0,
-      })) as Waypoint[];
-
-      setWaypoints(docs);
-    } catch (e: unknown) {
-      console.error("Waypoints fetch error:", e);
-      const errMsg = e instanceof Error ? e.message : "";
-      if (errMsg.includes("index")) {
-        toast.error("Database still indexing. This may take 2-3 minutes.");
-      } else {
-        toast.error("Failed to load waypoints.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [user, authLoading, activeTab, profile?.organizationId, topicFilter]);
+  const locked = isWaypointLocked(isFreePlan, source);
+  const orgId = profile?.organizationId;
 
   useEffect(() => {
-    if (user && !authLoading) {
-      // Loads the library for the chosen tab and topic once the account is known.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchWaypoints();
-    }
-  }, [user, authLoading, fetchWaypoints]);
+    try {
+      const saved = localStorage.getItem(COURSE_STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
+      if (saved && (saved === OTHER || getCurriculum(saved))) setCourse(saved);
+    } catch {}
+  }, []);
 
-  const waypointsLocked = isWaypointLockedByPlan(isFreePlan, activeTab);
+  const chooseCourse = (next: string) => {
+    setCourse(next);
+    try {
+      localStorage.setItem(COURSE_STORAGE_KEY, next);
+    } catch {}
+  };
 
-  const handleFork = async (waypoint: Waypoint) => {
-    if (waypointsLocked) {
-      setUpgradeFeature("network-share");
-      setIsUpgradeOpen(true);
+  const load = useCallback(async () => {
+    if (!user || authLoading) return;
+    setItems(null);
+    setFailed(false);
+    if (source === "network" && (!orgId || isFreePlan)) {
+      setItems([]);
       return;
     }
+    try {
+      const q =
+        source === "global"
+          ? query(collection(db, "assignments"), where("visibility", "==", "global"))
+          : query(
+              collection(db, "assignments"),
+              where("visibility", "==", "network"),
+              where("organizationId", "==", orgId),
+            );
+      const snap = await getDocs(q);
+      setItems(snap.docs.map((d) => toLibrarySet(d.id, d.data())));
+    } catch (e) {
+      console.error("Library fetch error:", e);
+      setFailed(true);
+    }
+  }, [user, authLoading, source, orgId, isFreePlan]);
 
-    // The server copies the answer key into a private assignment the teacher owns (it never comes back
-    // in this response), then the editor loads that copy.
+  useEffect(() => {
+    // Loads the chosen source once the account is known.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
+
+  const rows = useMemo(() => (items ?? []).map(toRow), [items]);
+
+  // The courses that have sets here, in the order Course lists them, then "Other sets".
+  const courses = useMemo(() => {
+    const present = new Set(rows.map(courseOfRow));
+    const list: { id: string; name: string; count: number }[] = CURRICULA.filter((c) =>
+      present.has(c.id),
+    ).map((c) => ({
+      id: c.id,
+      name: c.name,
+      count: rows.filter((r) => courseOfRow(r) === c.id).length,
+    }));
+    if (present.has(OTHER))
+      list.push({
+        id: OTHER,
+        name: source === "network" ? "Shared in your department" : "Other sets",
+        count: rows.filter((r) => courseOfRow(r) === OTHER).length,
+      });
+    return list;
+  }, [rows, source]);
+
+  // The chosen course if it has sets here, else the first one that does.
+  const activeCourse = courses.some((c) => c.id === course) ? course : (courses[0]?.id ?? course);
+
+  const needle = search.trim().toLowerCase();
+  const matches = (row: Row) =>
+    !needle ||
+    [row.title, row.item.title, row.item.description, row.set?.key ?? "", ...row.item.apTopics]
+      .join(" ")
+      .toLowerCase()
+      .includes(needle);
+
+  // A search looks through every course; otherwise the chosen course is shown.
+  const groups: UnitGroup[] = needle
+    ? courses.flatMap((c) =>
+        groupRows(
+          rows.filter((r) => courseOfRow(r) === c.id && matches(r)),
+          c.id,
+        ).map((g) => ({
+          ...g,
+          heading: c.id === OTHER ? c.name : g.heading ? `${c.name} · ${g.heading}` : c.name,
+        })),
+      )
+    : groupRows(
+        rows.filter((r) => courseOfRow(r) === activeCourse),
+        activeCourse,
+      );
+  const shown = groups.reduce((n, g) => n + g.rows.length, 0);
+
+  const copySet = async (row: Row) => {
+    if (locked) {
+      setUpgradeOpen(true);
+      return;
+    }
+    setCopying(row.item.id);
     try {
       const res = await authenticatedFetch("/api/assignments/clone", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // Keep the waypoint's own title: students see it, and "(Copy)" means nothing to them.
-        body: JSON.stringify({ sourceId: waypoint.id, title: waypoint.title }),
+        // Keep the set's own title: students see it, and "(Copy)" means nothing to them.
+        body: JSON.stringify({ sourceId: row.item.id, title: row.item.title }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 403 && data.code === "plan_upgrade_required") {
-        setUpgradeFeature("network-share");
-        setIsUpgradeOpen(true);
+        setUpgradeOpen(true);
         return;
       }
       if (!res.ok || typeof data.id !== "string") {
-        toast.error(data.error || "Could not add this waypoint. Please try again.");
+        toast.error(data.error || "Could not copy this set. Please try again.");
         return;
       }
-      setWaypoints((prev) =>
-        prev.map((w) => (w.id === waypoint.id ? { ...w, forkCount: (w.forkCount || 0) + 1 } : w)),
-      );
       router.push(`/teacher/create?fork=true&copy=${encodeURIComponent(data.id)}`);
     } catch {
-      toast.error("Could not add this waypoint. Please try again.");
+      toast.error("Could not copy this set. Please try again.");
+    } finally {
+      setCopying(null);
     }
   };
 
-  const filteredWaypoints = waypoints.filter((a) => {
-    const matchesSearch =
-      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (a.description || "").toLowerCase().includes(searchQuery.toLowerCase());
-
-    if (activeTab === "network" && !a.organizationId) return false;
-    // A unit filter names a course too: Unit 2 of AP Physics 1 is not Unit 2 of C: Mechanics.
-    const wanted = apUnitFilter === "all" ? null : parseApUnitKey(apUnitFilter);
-    if (wanted && (a.apUnit !== wanted.unit || apCourseOf(a.apCourse) !== wanted.course))
-      return false;
-
-    return matchesSearch;
-  });
+  const previewTarget: PreviewTarget | null = preview
+    ? {
+        curriculumId: preview.set ? (preview.item.curriculumId ?? "") : "",
+        set: preview.set ?? {
+          key: "",
+          unit: preview.item.apUnit ?? 0,
+          title: preview.item.title,
+          description: preview.item.description,
+          topics: preview.item.apTopics,
+          draftIds: [],
+        },
+        publishedId: preview.item.id,
+        assignmentId: null,
+      }
+    : null;
 
   return (
     <div className="space-y-6">
-      {/* Free Plan Waypoints Limit Banner */}
-      {isFreePlan && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent border border-purple-500/20 text-sm">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 shrink-0">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <div>
-              <span className="font-semibold text-foreground">Free Plan:</span>
-              <span className="text-muted-foreground ml-1.5">
-                Every global waypoint, auto-grading and the misconception report are free. A
-                Department License adds department waypoints, sharing across your school and higher
-                AI limits.
-              </span>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 text-white shrink-0 font-bold"
-            asChild
-          >
-            <Link href={hasNoOrg ? "/teacher/network" : "/teacher/network/billing"}>
-              View Department Plan
-            </Link>
-          </Button>
-        </div>
-      )}
+      <WorkspaceHeader
+        title="Library"
+        description="Ready-made problem sets. Open one to see its problems, then copy it into the editor to change and assign it."
+      />
 
-      {/* Dynamic Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-5 md:p-6 shadow-sm">
-        <div className="absolute top-0 right-0 -mt-16 -mr-16 h-48 w-48 rounded-full bg-primary/10 blur-[60px]" />
-        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 h-32 w-32 rounded-full bg-gray-500/5 blur-[40px]" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary border border-primary/20 dark:border-primary/30 uppercase tracking-widest"
-            >
-              <Sparkles className="h-3 w-3" />
-              Waypoints
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-3xl font-semibold tracking-tight text-foreground"
-            >
-              Library
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-muted-foreground text-sm leading-relaxed"
-            >
-              Find a shared assignment and use it with your class.
-            </motion.p>
-
-            {isDepartmentPlan ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 text-[11px] font-semibold text-purple-600 dark:text-purple-400 bg-purple-500/10 px-2.5 py-0.5 rounded-md border border-purple-500/20"
-              >
-                <div className="h-1.5 w-1.5 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
-                Department License Active
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20"
-              >
-                <div className="h-1.5 w-1.5 rounded-full bg-amber-600 dark:bg-amber-500" />
-                Free Plan (All Global Waypoints)
-              </motion.div>
-            )}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="hidden lg:block"
-          >
-            <div className="h-24 w-24 rounded-full border-2 border-dashed border-border flex items-center justify-center relative bg-background/50 backdrop-blur-sm">
-              <Waypoints className="h-10 w-10 text-muted-foreground" />
-              <div className="absolute inset-0 border-t-2 border-primary/40 rounded-full animate-spin [animation-duration:10s]" />
-              <div className="absolute inset-4 border-b-2 border-primary/20 rounded-full animate-spin [animation-duration:15s]" />
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Control Bar */}
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-3">
-        <div className="relative w-full lg:min-w-48 lg:flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            aria-label="Search templates"
-            placeholder="Search templates…"
-            className="pl-11 h-12 bg-background dark:bg-background border-border"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-          <TabsList className="h-auto w-full">
-            <TabsTrigger value="global" className="min-h-9 gap-2 px-3">
-              <Globe className="h-4 w-4" />
-              Global
+      <div className="flex flex-wrap items-center gap-2">
+        <Tabs value={source} onValueChange={(v) => setSource(v as Source)}>
+          <TabsList>
+            <TabsTrigger value="global" className="px-3">
+              Scorpio sets
             </TabsTrigger>
-            <TabsTrigger value="network" className="min-h-9 gap-2 px-3">
-              <Users className="h-4 w-4" />
-              Department
-              {isFreePlan && <Lock className="h-3 w-3 text-purple-500 ml-1" />}
+            <TabsTrigger value="network" className="gap-1.5 px-3">
+              Your department
+              {isFreePlan && <Lock aria-label="Department License" className="size-3" />}
             </TabsTrigger>
           </TabsList>
         </Tabs>
 
-        <Select value={apUnitFilter} onValueChange={setApUnitFilter}>
-          <SelectTrigger
-            aria-label="AP unit"
-            className="cursor-pointer w-full sm:w-56 data-[size=default]:h-12 bg-background dark:bg-background border-border"
-          >
-            <div className="flex min-w-0 items-center gap-2">
-              <Filter className="h-4 w-4 shrink-0" />
-              <SelectValue placeholder="All AP units" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">
-              All AP units
-            </SelectItem>
-            <ApUnitSelectItems itemClassName="cursor-pointer" />
-          </SelectContent>
-        </Select>
-
-        <Select value={topicFilter} onValueChange={setTopicFilter}>
-          <SelectTrigger
-            aria-label="Topic"
-            className="cursor-pointer w-full sm:w-44 data-[size=default]:h-12 bg-background dark:bg-background border-border"
-          >
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              <SelectValue placeholder="All Topics" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">
-              All Topics
-            </SelectItem>
-            <SelectItem value="kinematics" className="cursor-pointer">
-              Kinematics
-            </SelectItem>
-            <SelectItem value="dynamics" className="cursor-pointer">
-              Dynamics
-            </SelectItem>
-            <SelectItem value="rotation" className="cursor-pointer">
-              Rotational Physics
-            </SelectItem>
-            <SelectItem value="thermodynamics" className="cursor-pointer">
-              Thermodynamics
-            </SelectItem>
-            <SelectItem value="em" className="cursor-pointer">
-              Electromagnetism
-            </SelectItem>
-            <SelectItem value="waves" className="cursor-pointer">
-              Waves & Optics
-            </SelectItem>
-            <SelectItem value="modern" className="cursor-pointer">
-              Modern Physics
-            </SelectItem>
-            <SelectItem value="fluids" className="cursor-pointer">
-              Fluid Mechanics
-            </SelectItem>
-            <SelectItem value="oscillations" className="cursor-pointer">
-              Oscillations
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="min-h-[400px]">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
-            <div className="relative">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
-              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-            </div>
-            <p className="text-muted-foreground font-medium animate-pulse">Loading templates…</p>
-          </div>
-        ) : activeTab === "network" && isFreePlan ? (
-          /* Locked Department Network Tab for Free Plan */
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-purple-500/30 rounded-3xl bg-purple-500/5 max-w-xl mx-auto space-y-4"
-          >
-            <div className="bg-purple-500/15 w-16 h-16 rounded-2xl flex items-center justify-center text-purple-600 dark:text-purple-400">
-              <Users className="h-8 w-8" />
-            </div>
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold border border-purple-500/20">
-                <Lock className="h-3 w-3" />
-                Department Feature
-              </div>
-              <h3 className="text-xl font-bold text-foreground">Department Template Sharing</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-                Collaborate with physics teachers across your school to share assignments,
-                curriculum templates, and standardized rubrics.
-              </p>
-            </div>
-            <Button
-              onClick={() => {
-                setUpgradeFeature("network-share");
-                setIsUpgradeOpen(true);
-              }}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold gap-2 cursor-pointer mt-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              {hasNoOrg ? "Join Department Network" : "Upgrade to Department License"}
-            </Button>
-          </motion.div>
-        ) : filteredWaypoints.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-32 text-center border-2 border-dashed border-border rounded-3xl bg-muted/30"
-          >
-            <div className="bg-muted w-20 h-20 rounded-full flex items-center justify-center mb-6 border border-border">
-              <MapPinned className="h-10 w-10 text-muted-foreground" />
-            </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">No templates found</h3>
-            <p className="text-muted-foreground max-w-sm px-4">
-              {activeTab === "network" && !profile?.organizationId
-                ? "Switch to the Global tab or join a department network to see shared waypoints."
-                : apUnitFilter !== "all"
-                  ? "No templates are tagged with this AP unit yet. Try another unit or All AP units."
-                  : "Try another search or topic."}
-            </p>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredWaypoints.map((waypoint, idx) => {
-                const locked = waypointsLocked;
-                return (
-                  <motion.div
-                    key={waypoint.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  >
-                    <Card
-                      className={`group relative h-full flex flex-col overflow-hidden bg-card border transition-all duration-300 shadow-sm hover:shadow-md ${
-                        locked
-                          ? "border-purple-500/30 dark:border-purple-500/20"
-                          : "border-border hover:border-primary/40"
-                      }`}
-                    >
-                      <div
-                        className={`absolute top-0 right-0 h-24 w-24 rounded-bl-full blur-2xl transition-colors ${
-                          locked ? "bg-purple-500/10" : "bg-primary/5 group-hover:bg-primary/10"
-                        }`}
-                      />
-
-                      <CardHeader className="pb-4 relative z-10">
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="secondary" className="text-muted-foreground">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {waypoint.questions?.length || 0} Components
-                            </Badge>
-                            {typeof waypoint.apUnit === "number" && (
-                              <Badge variant="outline" className="text-[10px]">
-                                {apCourseOf(waypoint.apCourse) === "physics-1"
-                                  ? "AP 1"
-                                  : apCourseName(apCourseOf(waypoint.apCourse))}{" "}
-                                · {apUnitLabel(waypoint.apUnit, apCourseOf(waypoint.apCourse))}
-                              </Badge>
-                            )}
-                            {waypoint.topic && (
-                              <Badge className="bg-primary/10 text-primary border-primary/20 capitalize font-mono text-[10px]">
-                                {waypoint.topic}
-                              </Badge>
-                            )}
-                            {locked && (
-                              <Badge className="bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30 text-[10px] font-bold uppercase tracking-wider">
-                                <Lock className="h-2.5 w-2.5 mr-1" />
-                                Department
-                              </Badge>
-                            )}
-                          </div>
-                          {waypoint.visibility === "global" ? (
-                            <div
-                              title="Publicly Available"
-                              className="p-1.5 bg-blue-500/10 rounded-lg shrink-0"
-                            >
-                              <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            </div>
-                          ) : (
-                            <div
-                              title="Department Shared"
-                              className="p-1.5 bg-orange-500/10 rounded-lg shrink-0"
-                            >
-                              <Users className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                            </div>
-                          )}
-                        </div>
-                        <CardTitle className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                          {waypoint.title}
-                        </CardTitle>
-                        <CardDescription className="text-muted-foreground line-clamp-3 min-h-[4.5rem] mt-2 leading-relaxed">
-                          {waypoint.description || "No description provided."}
-                        </CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="pt-0 flex-grow relative z-10">
-                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted px-3 py-2 rounded-xl">
-                          <span className="flex items-center gap-2">
-                            <Star className="h-3 w-3 text-primary" />
-                            {waypoint.forkCount || 0} Active Fork
-                            {(waypoint.forkCount || 0) !== 1 ? "s" : ""}
-                          </span>
-                          <span>v1</span>
-                        </div>
-                      </CardContent>
-
-                      <CardFooter className="pt-2 pb-6 px-6 relative z-10 mt-auto">
-                        {locked ? (
-                          <Button
-                            onClick={() => {
-                              setUpgradeFeature("network-share");
-                              setIsUpgradeOpen(true);
-                            }}
-                            className="w-full h-11 font-bold bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
-                          >
-                            <Lock className="h-4 w-4 mr-1.5" />
-                            Unlock with Department
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => handleFork(waypoint)}
-                            className="w-full h-11 font-bold active:scale-[0.98] cursor-pointer"
-                          >
-                            <Copy className="h-4 w-4 mr-1.5" />
-                            Acquire Template
-                            <ArrowUpRight className="h-4 w-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all ml-1" />
-                          </Button>
-                        )}
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </div>
+        {courses.length > 1 && !needle && (
+          <Select value={activeCourse} onValueChange={chooseCourse}>
+            <SelectTrigger aria-label="Course" className="w-full sm:w-64">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {courses.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  <span className="flex items-center gap-2">
+                    {c.id === OTHER ? (
+                      <Users aria-hidden className="size-4 shrink-0" />
+                    ) : (
+                      <CourseIcon curriculumId={c.id} />
+                    )}
+                    {c.name}
+                    <span className="text-muted-foreground">· {c.count}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
+
+        <div className="relative w-full sm:ml-auto sm:w-72">
+          <Search
+            aria-hidden
+            className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            type="search"
+            aria-label="Search all sets"
+            placeholder="Search all sets"
+            className="pl-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
+
+      {locked ? (
+        <div className="mx-auto max-w-lg space-y-3 rounded-2xl border border-dashed border-border p-8 text-center">
+          <Users aria-hidden className="mx-auto size-8 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Share sets with your department</h2>
+          <p className="text-sm text-muted-foreground">
+            With a Department License, teachers in your school can share the sets they write and
+            use each other&apos;s. Every Scorpio set stays free.
+          </p>
+          <Button onClick={() => setUpgradeOpen(true)}>
+            {hasNoOrg ? "Set up a department" : "See the Department License"}
+          </Button>
+        </div>
+      ) : failed ? (
+        <div className="space-y-3 rounded-2xl border border-border p-6">
+          <p role="alert" className="text-sm">
+            Couldn&apos;t load the Library.
+          </p>
+          <Button variant="outline" size="sm" onClick={load}>
+            Try again
+          </Button>
+        </div>
+      ) : items === null ? (
+        <p role="status" className="py-10 text-sm text-muted-foreground">
+          Loading sets…
+        </p>
+      ) : shown === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          {needle
+            ? `No sets match “${search.trim()}”.`
+            : source === "network"
+              ? "No one in your department has shared a set yet. To share one of yours, set its Sharing to School network in All assignments."
+              : "No sets here yet."}
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {needle && (
+            <p role="status" className="text-sm text-muted-foreground">
+              {shown} {shown === 1 ? "set matches" : "sets match"} “{search.trim()}”
+            </p>
+          )}
+          {groups.map((group) => (
+            <section key={group.key} aria-labelledby={`lib-${group.key}`} className="space-y-3">
+              {group.heading && (
+                <div className="flex items-center gap-3">
+                  {group.curriculumId && group.unit ? (
+                    <UnitTile
+                      curriculumId={group.curriculumId}
+                      unit={group.unit}
+                      className="size-9 rounded-xl text-base"
+                    />
+                  ) : null}
+                  <div className="min-w-0">
+                    <h2 id={`lib-${group.key}`} className="break-words font-semibold">
+                      {group.unit && !needle ? `Unit ${group.unit} · ${group.heading}` : group.heading}
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      {group.rows.length} {group.rows.length === 1 ? "set" : "sets"}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                {group.rows.map((row) => (
+                  <SetRow
+                    key={row.item.id}
+                    row={row}
+                    onOpen={() => setPreview(row)}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+
+      <SetPreviewDialog
+        target={previewTarget}
+        onClose={() => setPreview(null)}
+        onAssign={preview ? () => copySet(preview) : undefined}
+        assignLabel="Use this set"
+        keyNote="Answers show in the editor after you use this set."
+        assignBusy={copying !== null}
+      />
 
       <DepartmentUpgradeDialog
-        open={isUpgradeOpen}
-        onOpenChange={setIsUpgradeOpen}
-        feature={upgradeFeature}
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        feature="network-share"
         hasNoOrg={hasNoOrg}
       />
     </div>
+  );
+}
+
+function SetRow({ row, onOpen }: { row: Row; onOpen: () => void }) {
+  const { item, set } = row;
+  const profile = set && item.curriculumId ? setProfile(item.curriculumId, set.key) : undefined;
+  const problems = profile?.problems ?? item.questionCount;
+  const course = apCourseOf(item.apCourse);
+  const facts = [
+    `${problems} ${problems === 1 ? "problem" : "problems"}`,
+    profile ? `about ${profile.minutes} min` : null,
+    item.forkCount > 0 ? `used ${item.forkCount} ${item.forkCount === 1 ? "time" : "times"}` : null,
+    !set && item.teacherName ? `by ${item.teacherName}` : null,
+  ].filter(Boolean);
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onOpen}
+        className={cn(
+          "group flex w-full items-start gap-4 px-4 py-3.5 text-left transition-colors hover:bg-muted/40",
+          "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
+        )}
+      >
+        {set && (
+          <span className="mt-0.5 w-9 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
+            {set.key}
+          </span>
+        )}
+        <span className="min-w-0 flex-1 space-y-1">
+          <span className="block break-words font-medium group-hover:text-primary">
+            {row.title}
+          </span>
+          {item.description && (
+            <span className="block break-words text-sm text-muted-foreground">
+              {item.description}
+            </span>
+          )}
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-0.5 text-xs text-muted-foreground">
+            {item.apTopics.length > 0 && <TopicChips topics={item.apTopics} course={course} />}
+            <span>{facts.join(" · ")}</span>
+          </span>
+        </span>
+        <span className="mt-0.5 hidden shrink-0 items-center gap-1 text-sm text-muted-foreground group-hover:text-foreground sm:flex">
+          Preview <ChevronRight aria-hidden className="size-4" />
+        </span>
+      </button>
+    </li>
   );
 }
