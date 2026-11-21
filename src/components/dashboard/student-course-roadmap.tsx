@@ -3,7 +3,8 @@
 // The student's path through the course their class follows: units in the class's order, how many
 // sets they have handed in, and what to do next.
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, BookOpen, Check } from "lucide-react";
+import { hasUnitGuide, studentGuideHref } from "@/lib/guides";
 import type { StudentRoadmap, StudentUnit } from "@/lib/student-roadmap";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,23 @@ export function StudentCourseRoadmap({ roadmap }: { roadmap: StudentRoadmap }) {
               className={`space-y-2 px-5 py-3.5 ${u.state === "not-assigned" ? "opacity-60" : ""}`}
             >
               <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-                <p className="min-w-0 break-words text-sm font-medium">{u.label}</p>
+                <p className="min-w-0 break-words text-sm font-medium">
+                  {hasUnitGuide(roadmap.curriculumId, u.unit) ? (
+                    <Link
+                      href={studentGuideHref(roadmap.curriculumId, u.unit)}
+                      title="Read the unit guide"
+                      className="inline-flex items-baseline gap-1.5 underline-offset-2 hover:underline"
+                    >
+                      {u.label}
+                      <BookOpen
+                        className="size-3.5 shrink-0 self-center text-muted-foreground"
+                        aria-hidden
+                      />
+                    </Link>
+                  ) : (
+                    u.label
+                  )}
+                </p>
                 <p className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
                   {u.state === "done" && <Check className="size-3.5 text-green-600" aria-hidden />}
                   {STATE_TEXT[u.state]}
