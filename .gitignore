@@ -89,3 +89,6 @@ firestore-debug.log
 
 # Outreach contact data (personal data, never commit)
 /outreach/
+
+# Visual review page written by tools/diagram-gallery.cjs
+/diagram-gallery.html
