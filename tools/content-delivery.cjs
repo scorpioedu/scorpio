@@ -41,10 +41,45 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
-function writeJson(file, data) {
+const plainJson = (data) => JSON.stringify(data, null, 2) + "\n";
+
+/**
+ * Writes a JSON file back the way tools/verify-content.cjs does: a file that was formatted with
+ * Prettier (src/data/curricula/<id>.json, short arrays on one line) is formatted with it again, so
+ * a delivery only changes the lines it means to. A new or plain two-space file stays plain. `raw`
+ * is the file's text before the change (undefined for a new file); an unchanged file is not written.
+ */
+function writeJson(file, data, raw) {
+  const text = plainJson(data);
+  const wasPlain = raw === undefined || raw === plainJson(JSON.parse(raw));
+  if (wasPlain && text === raw) return;
+  if (!wasPlain && JSON.stringify(JSON.parse(raw)) === JSON.stringify(data)) return;
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n");
+  fs.writeFileSync(file, text);
+  if (wasPlain) return;
+  try {
+    const prettier = require.resolve("prettier/bin/prettier.cjs");
+    require("node:child_process").execFileSync(
+      process.execPath,
+      // content/ is git-ignored, and Prettier skips ignored files unless told otherwise
+      [
+        prettier,
+        "--ignore-path",
+        require("node:os").devNull,
+        "--log-level",
+        "silent",
+        "--write",
+        file,
+      ],
+      { stdio: "ignore" },
+    );
+  } catch {
+    // Plain JSON is still correct; only the layout differs.
+  }
 }
+
+/** The text of a file, or undefined when there is none. */
+const rawText = (file) => (fs.existsSync(file) ? fs.readFileSync(file, "utf8") : undefined);
 
 /** The content files of a course, read from src/data/curricula/content-files.ts without compiling it. */
 function contentFiles(curriculumId) {
@@ -70,17 +105,18 @@ function applyDelivery(delivery, options = {}) {
   if (!curriculumId || !fs.existsSync(curriculumFile))
     throw new Error(`Unknown curriculumId "${curriculumId}"`);
   if (!Number.isInteger(unit)) throw new Error("delivery.unit must be a whole number");
-  const curriculum = readJson(curriculumFile);
+  const curriculumRaw = rawText(curriculumFile);
+  const curriculum = JSON.parse(curriculumRaw);
   const sets = curriculum.sets.filter((s) => s.unit === unit);
   if (!sets.length) throw new Error(`${curriculumId} has no sets in unit ${unit}`);
 
   const files = options.content
     ? [path.resolve(root, options.content)]
     : contentFiles(curriculumId).map((f) => path.resolve(root, path.relative(ROOT, f)));
-  const loaded = files.map((file) => ({
-    file,
-    data: fs.existsSync(file) ? readJson(file) : { exportedAt: now, count: 0, drafts: [] },
-  }));
+  const loaded = files.map((file) => {
+    const raw = rawText(file);
+    return { file, raw, data: raw ? JSON.parse(raw) : { exportedAt: now, count: 0, drafts: [] } };
+  });
   if (!loaded.length) throw new Error(`No content file for ${curriculumId}; pass --content`);
   const unitIds = new Set(sets.flatMap((s) => s.draftIds));
   // The file that already holds this unit's problems, else the first (or the one named).
@@ -181,9 +217,9 @@ function applyDelivery(delivery, options = {}) {
 
   for (const l of loaded) {
     if ("count" in l.data) l.data.count = l.data.drafts.length;
-    writeJson(l.file, l.data);
+    writeJson(l.file, l.data, l.raw);
   }
-  writeJson(curriculumFile, curriculum);
+  writeJson(curriculumFile, curriculum, curriculumRaw);
   return {
     file: path.relative(root, target.file),
     specs,
@@ -195,6 +231,10 @@ function applyDelivery(delivery, options = {}) {
 function main(argv, out = console) {
   const [command, ...rest] = argv;
   if (command === "ids") {
+    if (rest[0] !== undefined && !/^\d+$/.test(rest[0])) {
+      out.error(`ids needs a whole number of ids to print (1 to 200), not "${rest[0]}": ids 20`);
+      return 1;
+    }
     const n = Math.max(1, Math.min(200, Number(rest[0]) || 1));
     for (let i = 0; i < n; i++) out.log(newId());
     return 0;
