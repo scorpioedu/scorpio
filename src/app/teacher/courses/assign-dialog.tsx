@@ -1,11 +1,13 @@
 "use client";
 
-// "Assign unit": shows exactly which sets will be copied into the class and when each is due,
-// before anything is created.
+// "Assign": shows exactly which sets will be copied into the class, when each is due, and every
+// problem with its answer, before anything is created. The teacher can leave problems out, take
+// others from the set, or open the copy in the editor first (it stays hidden from students).
 import { useMemo, useState } from "react";
 import {
   cappedSets,
   planAssignments,
+  restoresArchived,
   sizeChoice,
   type AssignableSet,
   type PlannedAssignment,
@@ -34,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { SpacingSelect } from "@/components/teacher/spacing-select";
 import { shortDate } from "./use-course-data";
+import { AssignProblems } from "./assign-problems";
 
 export { SpacingSelect };
 
@@ -97,6 +100,7 @@ export function AssignDialog({
   onStart,
   onSpacing,
   onConfirm,
+  onEditFirst,
   onClose,
 }: {
   unitLabel: string;
@@ -112,31 +116,48 @@ export function AssignDialog({
   onStart: (v: string) => void;
   onSpacing: (v: string) => void;
   onConfirm: (plan: PlannedAssignment[]) => void;
+  /**
+   * "Edit problems first" for a single set: make the class's copy hidden from students and open it
+   * in the editor, where it is assigned when the teacher is ready.
+   */
+  onEditFirst?: (plan: PlannedAssignment[]) => void;
   onClose: () => void;
 }) {
   const [none] = useState(() => new Set<string>());
   const choice = sizeChoice(sets, problemsPerSet);
-  const [count, setCount] = useState(choice.initial);
+  const [count, setCountState] = useState(choice.initial);
+  /** Problems the teacher chose by hand, by set key (positions in the set). */
+  const [picks, setPicks] = useState<Record<string, number[]>>({});
+  // Another size is another pick: a hand-made choice does not carry over.
+  const setCount = (n: number) => {
+    setCountState(n);
+    setPicks({});
+  };
   const startDate = parseDateInput(start);
   const plan = useMemo(
     () =>
       (startDate ? planAssignments(sets, none, startDate, Number(spacing), isSchoolDay) : []).map(
         // Without the control nothing is chosen, and the copy gets the usual five.
-        (p): PlannedAssignment => (choice.offered ? { ...p, count } : p),
+        (p): PlannedAssignment => ({
+          ...p,
+          ...(choice.offered ? { count } : {}),
+          ...(picks[p.key] ? { pick: picks[p.key] } : {}),
+        }),
       ),
     // startDate is derived from `start`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sets, none, start, spacing, isSchoolDay, choice.offered, count],
+    [sets, none, start, spacing, isSchoolDay, choice.offered, count, picks],
   );
 
   return (
     <Dialog open onOpenChange={(open) => !open && !busy && onClose()}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="break-words">Assign {unitLabel}</DialogTitle>
           <DialogDescription>
-            {sets.length} set{sets.length === 1 ? "" : "s"} will be assigned to {className}. Due
-            dates skip weekends and the class&apos;s days off.
+            {sets.length} set{sets.length === 1 ? "" : "s"} will be assigned to {className}. Nothing
+            reaches students until you press Assign. Due dates skip weekends and the class&apos;s
+            days off.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -166,14 +187,34 @@ export function AssignDialog({
         {startDate ? (
           <ul className="divide-y divide-border rounded-xl border border-border text-sm">
             {plan.map((p) => (
-              <li
-                key={p.key}
-                className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5"
-              >
-                <span className="min-w-0 break-words">
-                  {p.title.split(" · ").slice(1).join(" · ") || p.title}
-                </span>
-                <span className="shrink-0 text-muted-foreground">Due {shortDate(p.due)}</span>
+              <li key={p.key} className="space-y-1 px-4 py-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="min-w-0 break-words">
+                    {p.title.split(" · ").slice(1).join(" · ") || p.title}
+                  </span>
+                  <span className="shrink-0 text-muted-foreground">Due {shortDate(p.due)}</span>
+                </div>
+                {p.archivedCount !== undefined &&
+                  restoresArchived(p, { questionCount: p.archivedCount }) && (
+                    <p className="text-xs text-muted-foreground">
+                      Brings back the copy this class had before, with its own problems and the work
+                      students handed in. Tick or untick a problem below to start a new copy
+                      instead.
+                    </p>
+                  )}
+                <AssignProblems
+                  set={p}
+                  count={choice.offered ? count : undefined}
+                  pick={picks[p.key]}
+                  onPick={(next) =>
+                    setPicks((current) => {
+                      const { [p.key]: _gone, ...rest } = current;
+                      return next ? { ...rest, [p.key]: next } : rest;
+                    })
+                  }
+                  defaultOpen={sets.length === 1}
+                  disabled={busy}
+                />
               </li>
             ))}
           </ul>
@@ -186,6 +227,16 @@ export function AssignDialog({
           <Button variant="outline" onClick={onClose} disabled={busy}>
             Cancel
           </Button>
+          {onEditFirst && plan.length === 1 && (
+            <Button
+              variant="outline"
+              onClick={() => onEditFirst(plan)}
+              disabled={busy}
+              title="Opens this set in the editor. Students do not see it until you assign it there."
+            >
+              Edit problems first
+            </Button>
+          )}
           <Button onClick={() => onConfirm(plan)} disabled={busy || plan.length === 0}>
             {busy ? "Assigning…" : `Assign ${plan.length} set${plan.length === 1 ? "" : "s"}`}
           </Button>

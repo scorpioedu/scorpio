@@ -8,8 +8,10 @@ import {
   normalisePlan,
   parsePlan,
   planStartingAt,
+  livePlan,
   toggleSkipped,
   unitOrder,
+  withSkipped,
 } from "../src/lib/curriculum-plan";
 import { deriveRoadmap, nextUnit } from "../src/lib/curriculum-roadmap";
 import { paceCourse, respaceDueDates, shiftDueDates } from "../src/lib/course-pacing";
@@ -60,6 +62,36 @@ describe("plan order", () => {
     plan = toggleSkipped(plan, "2A");
     expect(plan.skipped).toEqual(["2A", "5C"]);
     expect(toggleSkipped(plan, "2A").skipped).toEqual(["5C"]);
+  });
+
+  test("withSkipped skips once; livePlan drops skips of sets the class has assigned", () => {
+    const plan = { order: all, skipped: ["2A", "5C"] };
+    expect(withSkipped(plan, "3B").skipped).toEqual(["2A", "3B", "5C"]);
+    expect(withSkipped(plan, "2A")).toBe(plan);
+    expect(livePlan(plan, new Set(["2A", "4A"])).skipped).toEqual(["5C"]);
+    expect(livePlan(plan, new Set(["4A"]))).toBe(plan);
+  });
+
+  test("an assigned set is never shown as skipped, and an archived copy reports its size", () => {
+    const published = ["2A", "2B"].map((k) => ({
+      id: `p${k}`,
+      curriculumSetKey: k,
+      questionCount: 10,
+    }));
+    const roadmap = deriveRoadmap(
+      ID,
+      published,
+      [
+        { id: "a", curriculumId: ID, curriculumSetKey: "2A" },
+        { id: "b", curriculumId: ID, curriculumSetKey: "2B", archived: true, questionCount: 8 },
+      ],
+      { order: all, skipped: ["2A", "2B"] },
+    );
+    const sets = roadmap.find((u) => u.unit === 2)!.sets;
+    const of = (k: string) => sets.find((s) => s.set.key === k)!;
+    expect([of("2A").assigned, of("2A").skipped]).toEqual([true, false]);
+    expect([of("2B").assigned, of("2B").skipped]).toEqual([false, true]);
+    expect([of("2B").archivedId, of("2B").archivedCount]).toEqual(["b", 8]);
   });
 
   test("the route's strict check refuses broken plans", () => {

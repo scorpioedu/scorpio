@@ -270,7 +270,7 @@ function SetRow({
                       </DropdownMenuItem>
                       {actions.onToggleSkip && (
                         <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
-                          <EyeOff /> {s.skipped ? "Stop skipping" : "Skip in this class's plan"}
+                          <EyeOff /> Skip and unassign
                         </DropdownMenuItem>
                       )}
                     </>

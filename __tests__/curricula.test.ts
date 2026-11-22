@@ -223,6 +223,8 @@ describe("how many problems a set's copy gets", () => {
     expect(restoresArchived(item(8), {})).toBe(false);
     // The choice is capped at the set's own pool before comparing.
     expect(restoresArchived(item(8, 5), { questionCount: 5 })).toBe(true);
+    // Problems chosen by hand always make a new copy: the archived one may hold others.
+    expect(restoresArchived({ ...item(8), pick: [0, 1, 2] }, { questionCount: 3 })).toBe(false);
   });
 
   test("the clone request carries the count only when one was chosen", async () => {
@@ -236,6 +238,15 @@ describe("how many problems a set's copy gets", () => {
     await cloneSetToClass(fetcher, "c1", { ...set("4A", 10), due, count: 8 });
     expect("count" in bodies[0]).toBe(false);
     expect(bodies[1]).toMatchObject({ sourceId: "w4A", courseId: "c1", count: 8 });
+    // The teacher's own choice of problems, and a copy kept hidden to edit first.
+    await cloneSetToClass(
+      fetcher,
+      "c1",
+      { ...set("4A", 10), due, count: 8, pick: [0, 2, 7] },
+      true,
+    );
+    expect(bodies[2]).toMatchObject({ count: 8, pick: [0, 2, 7], hidden: true });
+    expect("pick" in bodies[1] || "hidden" in bodies[1]).toBe(false);
   });
 });
 

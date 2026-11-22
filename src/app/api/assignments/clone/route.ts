@@ -47,14 +47,16 @@ const COPIED_FIELDS = [
 const SOLUTIONS = "assignment_solutions";
 
 /**
- * POST /api/assignments/clone { sourceId, courseId?, title?, dueDate?, count? } -> { id }
+ * POST /api/assignments/clone { sourceId, courseId?, title?, dueDate?, count?, pick?, hidden? } -> { id }
  * Copies an assignment the caller can read (own, global, or shared with their network) into a new
  * private assignment they own. The answer key is copied server-side (assignment_keys/{sourceId} ->
  * assignment_keys/{newId}) and is never returned. Free plans may copy their own assignments and every
  * global waypoint; department (network) waypoints need a Department License (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
  *
  * A published course set (global, with a curriculumSetKey) is a pool: the copy gets its first `count`
- * problems, or the first 5 when no count is sent, and never more than the pool holds. Every other
+ * problems, or the first 5 when no count is sent, and never more than the pool holds; `pick` names
+ * the exact problems instead (positions in the pool, in the copy's order). `hidden` creates the copy
+ * archived, so students do not see it until the teacher assigns it. Every other
  * source is copied whole and `count` is ignored. The key, the distractors and the worked solutions
  * (assignment_solutions/{sourceId} -> assignment_solutions/{newId}) are copied for the copied
  * questions only.
@@ -63,7 +65,7 @@ export const POST = withAuthorizedRequest(
   async (req, { caller, profile, requestId }) => {
     const parsed = await parseJsonBody(req, cloneAssignmentBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const { sourceId, courseId, title, dueDate, count } = parsed.data;
+    const { sourceId, courseId, title, dueDate, count, pick, hidden } = parsed.data;
 
     const sourceRef = adminDb.collection("assignments").doc(sourceId);
     const source = (await sourceRef.get()).data();
@@ -94,9 +96,12 @@ export const POST = withAuthorizedRequest(
       const merged = mergeAnswerKey(source, key);
       rubric = typeof merged.rubric === "string" ? merged.rubric : "";
       // New question ids; each answer moves with its question, so the copy's key matches its questions.
-      const wanted = isCourseSet
-        ? pickSetProblems(merged.questions, count ?? DEFAULT_SET_SIZE)
-        : merged.questions;
+      let wanted = merged.questions;
+      if (isCourseSet && pick) {
+        if (new Set(pick).size !== pick.length || pick.some((i) => i >= merged.questions.length))
+          return NextResponse.json({ error: "Unknown problem in this set" }, { status: 400 });
+        wanted = pick.map((i) => merged.questions[i]);
+      } else if (isCourseSet) wanted = pickSetProblems(merged.questions, count ?? DEFAULT_SET_SIZE);
       const stored = (await adminDb.collection(SOLUTIONS).doc(sourceId).get()).data()?.solutions;
       const sourceSolutions: Record<string, unknown> =
         stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
@@ -171,6 +176,7 @@ export const POST = withAuthorizedRequest(
       forkCount: 0,
       dueDate: dueDate ? new Date(dueDate) : null,
       createdAt: new Date(),
+      ...(hidden ? { archivedAt: new Date() } : {}),
     });
     batch.set(adminDb.collection("assignment_keys").doc(ref.id), {
       answers: split.answers,

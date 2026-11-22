@@ -125,6 +125,17 @@ export const cloneAssignmentBody = z.object({
    * Omitted: the default 5. Ignored for any other source, which is copied whole.
    */
   count: z.number().int().min(3).max(100).optional(),
+  /**
+   * The exact problems of a published course set to copy, as positions in the set (0 is its first
+   * problem), in the order the copy should have them. The teacher chose them in the assign dialog.
+   * Wins over `count`; ignored for any other source.
+   */
+  pick: z.array(z.number().int().min(0).max(199)).min(1).max(100).optional(),
+  /**
+   * Create the copy archived: the class has it but students do not see it until the teacher assigns
+   * it ("Edit problems first" in the assign dialog).
+   */
+  hidden: z.boolean().optional(),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────
@@ -231,6 +242,12 @@ export const coursePlanBody = z.object({
     .nullable()
     .optional(),
   daysOff: z.array(z.unknown()).max(200).nullable().optional(),
+  /**
+   * With a plan: also take the skipped sets away from the class, by archiving the class's copies of
+   * them (hidden from students, work kept). Sent when a teacher skips a set; not when a class starts
+   * a course part-way through, where sets it already did stay.
+   */
+  unassignSkipped: z.boolean().optional(),
 });
 
 // ─── POST /api/courses/{id}/due-dates ──────────────────────────────────────

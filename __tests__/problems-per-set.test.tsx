@@ -52,6 +52,9 @@ jest.mock("../src/app/teacher/courses/use-course-data", () => ({
   shortDate: (d: Date) => d.toDateString(),
 }));
 
+// The dialog's problem list loads a set's problems through the browser's Firebase client.
+jest.mock("../src/lib/set-pool", () => ({ loadSetPool: async () => [] }));
+
 import { PATCH } from "../src/app/api/courses/[id]/assignment-defaults/route";
 import { ProblemsPerSetField } from "../src/app/teacher/courses/assign-dialog";
 import { sizeChoice, type AssignableSet } from "../src/lib/assign-sets";

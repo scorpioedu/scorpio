@@ -11,6 +11,7 @@ const DELETE = { __delete: true };
 jest.mock("../src/lib/firebase-admin", () => {
   const snap = (path: string, id: string) => ({
     id,
+    ref: { path, id },
     exists: mockDocs.has(path),
     data: () => mockDocs.get(path),
   });
@@ -105,6 +106,61 @@ describe("PATCH /api/courses/{id}/plan", () => {
     expect(mockWrites).toEqual([
       { op: "update", path: "courses/c1", data: { curriculumPlan: { order, skipped: ["2C"] } } },
     ]);
+  });
+
+  test("unassignSkipped archives the class's own copies of the skipped sets in the same write", async () => {
+    mockDocs.set("assignments/keep", {
+      teacherId: "t1",
+      courseId: "c1",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "2B",
+    });
+    mockDocs.set("assignments/take", {
+      teacherId: "t1",
+      courseId: "c1",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "2C",
+    });
+    mockDocs.set("assignments/legacy", { teacherId: "t1", courseId: "c1", curriculumSetKey: "2C" });
+    mockDocs.set("assignments/gone", {
+      teacherId: "t1",
+      courseId: "c1",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "2C",
+      archivedAt: new Date(),
+    });
+    mockDocs.set("assignments/other-course", {
+      teacherId: "t1",
+      courseId: "c1",
+      curriculumId: "ap-physics-2",
+      curriculumSetKey: "2C",
+    });
+    mockDocs.set("assignments/other-class", {
+      teacherId: "t1",
+      courseId: "plain",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "2C",
+    });
+    mockDocs.set("assignments/own-work", { teacherId: "t1", courseId: "c1" });
+    const res = await patch("c1", { plan: { order: all, skipped: ["2C"] }, unassignSkipped: true });
+    expect(res.status).toBe(200);
+    expect((await res.json()).archived).toEqual(["take", "legacy"]);
+    expect(mockWrites.map((w) => `${w.op} ${w.path}`)).toEqual([
+      "batch.update courses/c1",
+      "batch.update assignments/take",
+      "batch.update assignments/legacy",
+    ]);
+    expect(mockWrites[1].data!.archivedAt).toBeInstanceOf(Date);
+
+    // Without the flag (a class starting a course part-way through) no assignment is touched.
+    mockWrites.length = 0;
+    const plain = await patch("c1", { plan: { order: all, skipped: ["2C"] } });
+    expect((await plain.json()).archived).toBeUndefined();
+    expect(mockWrites.map((w) => w.path)).toEqual(["courses/c1"]);
+
+    // Nothing skipped: nothing archived, and the answer says so.
+    const none = await patch("c1", { plan: { order: all, skipped: [] }, unassignSkipped: true });
+    expect((await none.json()).archived).toEqual([]);
   });
 
   test("the course as written, or null, removes the stored plan", async () => {

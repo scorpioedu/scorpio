@@ -12,6 +12,8 @@ export interface AssignableSet {
   title: string;
   /** How many problems the published set holds; absent reads as the default size. */
   poolSize?: number;
+  /** The class has an archived copy of this set with this many problems (assigning can restore it). */
+  archivedCount?: number;
 }
 
 export interface PlannedAssignment extends AssignableSet {
@@ -21,6 +23,11 @@ export interface PlannedAssignment extends AssignableSet {
    * choice was offered: the server then gives the default.
    */
   count?: number;
+  /**
+   * The exact problems the teacher chose in the assign dialog, as positions in the set (in order).
+   * Absent: the set's usual pick for `count`.
+   */
+  pick?: number[];
 }
 
 /**
@@ -91,6 +98,8 @@ export function restoresArchived(
   archived: { questionCount?: number } | undefined,
 ): boolean {
   if (!archived) return false;
+  // Problems chosen by hand are a new copy: the archived one may hold others.
+  if (item.pick) return false;
   return item.count === undefined || archived.questionCount === sizeFor(item, item.count);
 }
 
@@ -101,6 +110,8 @@ export async function cloneSetToClass(
   fetcher: Fetcher,
   courseId: string,
   item: PlannedAssignment,
+  /** Create the copy hidden from students (archived) until the teacher assigns it. */
+  hidden = false,
 ): Promise<string> {
   const res = await fetcher("/api/assignments/clone", {
     method: "POST",
@@ -112,6 +123,8 @@ export async function cloneSetToClass(
       title: item.title,
       dueDate: item.due.toISOString(),
       ...(item.count !== undefined ? { count: item.count } : {}),
+      ...(item.pick ? { pick: item.pick } : {}),
+      ...(hidden ? { hidden: true } : {}),
     }),
   });
   const body = await res.json().catch(() => ({}));

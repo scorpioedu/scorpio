@@ -5,7 +5,7 @@
 // the Schedule tab moves many dates at once and holds the class's days off.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   ArrowRight,
@@ -29,7 +29,12 @@ import {
 } from "@/data/curricula";
 import { defaultFirstDue, parseDateInput } from "@/lib/first-run";
 import { deriveRoadmap, nextUnit, type RoadmapUnit } from "@/lib/curriculum-roadmap";
-import { normalisePlan, planStartingAt, type CurriculumPlan } from "@/lib/curriculum-plan";
+import {
+  livePlan,
+  normalisePlan,
+  planStartingAt,
+  type CurriculumPlan,
+} from "@/lib/curriculum-plan";
 import { boardColumns, boardStats, plannedDates } from "@/lib/course-board";
 import { paceCourse } from "@/lib/course-pacing";
 import { classCalendar, schoolDays } from "@/lib/school-calendar";
@@ -71,6 +76,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AssignDialog } from "./assign-dialog";
+import { assignmentHref } from "@/lib/assignment-actions";
 import { parseProblemsPerSet } from "@/lib/assignment-defaults";
 import { CourseStats } from "./course-stats";
 import { UnitFilter } from "./unit-filter";
@@ -97,6 +103,7 @@ function setParam(name: string, value: string | null) {
 export default function CoursesClient() {
   const isAdmin = useAdminAccess() === "admin";
   const params = useSearchParams();
+  const router = useRouter();
   // A class has one course (or none), so the page shows the chosen class's course. Only a teacher
   // with no class yet browses courses freely (?course=).
   const [browse, setBrowse] = useState<Curriculum>(
@@ -168,9 +175,25 @@ export default function CoursesClient() {
   ];
   // A class called "AP Physics 2 - Period 3" is most likely taking AP Physics 2.
   const suggested = needsCourse ? curriculumNamedIn(selected.name)?.id : undefined;
+  // A set the class has assigned is not skipped, whatever an older stored plan says.
   const plan = useMemo(
-    () => (follows ? normalisePlan(curriculum.id, selected?.curriculumPlan) : null),
-    [follows, curriculum.id, selected?.curriculumPlan],
+    () =>
+      follows
+        ? livePlan(
+            normalisePlan(curriculum.id, selected?.curriculumPlan),
+            new Set(
+              classAssignments
+                .filter(
+                  (a) =>
+                    !a.archived &&
+                    typeof a.curriculumSetKey === "string" &&
+                    (a.curriculumId === undefined || a.curriculumId === curriculum.id),
+                )
+                .map((a) => a.curriculumSetKey as string),
+            ),
+          )
+        : null,
+    [follows, curriculum.id, selected?.curriculumPlan, classAssignments],
   );
   const calendar = useMemo(() => classCalendar(selected?.daysOff), [selected?.daysOff]);
   const isSchoolDay = useMemo(() => schoolDays(calendar), [calendar]);
@@ -769,10 +792,15 @@ export default function CoursesClient() {
           onStart={setStartInput}
           onSpacing={setSpacing}
           onConfirm={(planned) => assign(assigning, planned)}
+          onEditFirst={async (planned) => {
+            const id = await actions.editFirst(planned);
+            if (id) router.push(`${assignmentHref(id, "problems")}&review=1`);
+          }}
           onClose={() => setAssigning(null)}
         />
       )}
       <SetPreviewDialog
+        canShowKey
         target={preview}
         onClose={() => setPreview(null)}
         onAssign={

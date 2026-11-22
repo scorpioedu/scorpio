@@ -56,6 +56,8 @@ export default function StudentAssignmentsPage() {
   // The class's own order of sets, when its teacher changed it.
   const [setOrder, setSetOrder] = useState<string[] | undefined>(undefined);
   const [apCourse, setApCourse] = useState<ApCourseId | undefined>(undefined);
+  /** The course the class follows now; sets from a course it followed before are not on its roadmap. */
+  const [classCurriculum, setClassCurriculum] = useState<string | undefined>(undefined);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("dueDateAsc");
 
@@ -87,6 +89,7 @@ export default function StudentAssignmentsPage() {
             const curriculumId = classDoc.data()?.curriculumId;
             setFollowsCourse(typeof curriculumId === "string");
             setApCourse(getCurriculum(curriculumId)?.apCourse);
+            setClassCurriculum(getCurriculum(curriculumId)?.id);
             setSetOrder(
               typeof curriculumId === "string" && classDoc.data()?.curriculumPlan
                 ? normalisePlan(curriculumId, classDoc.data()?.curriculumPlan).order
@@ -304,7 +307,7 @@ export default function StudentAssignmentsPage() {
     );
   };
 
-  const groups = followsCourse ? groupByUnit(filteredAssignments, setOrder, apCourse) : null;
+  const groups = followsCourse ? groupByUnit(filteredAssignments, setOrder, apCourse, classCurriculum) : null;
 
   return (
     <div className="space-y-6">

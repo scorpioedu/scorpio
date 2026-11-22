@@ -34,7 +34,11 @@ export default function StudentLayout({
             onToggle={() => setIsCollapsed(!isCollapsed)}
           />
         )}
-        <main className={`flex min-h-0 min-w-0 flex-1 flex-col ${isFullScreen ? "overflow-hidden" : "overflow-auto"}`}>
+        {/* `relative`: content that is positioned absolutely (the screen-reader copy KaTeX keeps of
+            every formula, sr-only labels) must scroll with this pane. Without it those pieces are laid
+            out against the page, which then grows as tall as the content and scrolls too: a second
+            scrollbar, and a page that can be scrolled past its end. */}
+        <main className={`relative flex min-h-0 min-w-0 flex-1 flex-col ${isFullScreen ? "overflow-hidden" : "overflow-auto"}`}>
           {isFullScreen ? (
             children
           ) : (

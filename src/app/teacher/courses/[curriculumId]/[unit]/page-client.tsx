@@ -354,7 +354,8 @@ export default function UnitGuideClient({
       </header>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as GuideTab)} className="gap-5">
-        <TabsList className="h-10 self-start">
+        {/* Three long labels are wider than a phone: the strip scrolls sideways, not the page. */}
+        <TabsList className="h-10 max-w-full justify-start self-start overflow-x-auto overflow-y-hidden [&>*]:flex-none">
           <TabsTrigger value="sets">Sets ({roadmapUnit.sets.length})</TabsTrigger>
           <TabsTrigger value="topics">What it covers ({topics.length})</TabsTrigger>
           <TabsTrigger value="wrong">
@@ -704,7 +705,7 @@ export default function UnitGuideClient({
         )}
       </nav>
 
-      <SetPreviewDialog target={preview} onClose={() => setPreview(null)} />
+      <SetPreviewDialog canShowKey target={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

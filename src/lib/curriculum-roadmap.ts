@@ -120,6 +120,8 @@ export interface RoadmapSet {
   copyTitle?: string | null;
   /** An archived copy of this set in the class: assigning restores it instead of copying again. */
   archivedId?: string | null;
+  /** Questions in that archived copy, when known. */
+  archivedCount?: number;
   /** Questions in the class's own copy, when assigned and known. */
   questionCount?: number | null;
 }
@@ -135,6 +137,7 @@ export interface RoadmapUnit {
 /**
  * The roadmap for one class. With a `plan` (the class's own order and skipped sets) units and sets
  * come in that order and skipped sets are not assignable; without one it is the course as written.
+ * A set the class has assigned is never shown as skipped.
  */
 export function deriveRoadmap(
   curriculumId: string,
@@ -173,7 +176,8 @@ export function deriveRoadmap(
           assigned: assignedByKey.has(set.key),
           assignmentId: assignedByKey.get(set.key)?.id ?? null,
           dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
-          skipped: skipped.includes(set.key),
+          // An assigned set is being done, so it is not skipped (see livePlan).
+          skipped: skipped.includes(set.key) && !assignedByKey.has(set.key),
           ...(assignedByKey.get(set.key)?.title
             ? { copyTitle: assignedByKey.get(set.key)!.title }
             : {}),
@@ -181,7 +185,12 @@ export function deriveRoadmap(
             ? { questionCount: assignedByKey.get(set.key)!.questionCount }
             : {}),
           ...(!assignedByKey.has(set.key) && archivedByKey.get(set.key)?.id
-            ? { archivedId: archivedByKey.get(set.key)!.id }
+            ? {
+                archivedId: archivedByKey.get(set.key)!.id,
+                ...(typeof archivedByKey.get(set.key)!.questionCount === "number"
+                  ? { archivedCount: archivedByKey.get(set.key)!.questionCount }
+                  : {}),
+              }
             : {}),
         }));
       const wanted = sets.filter((s) => s.published && !s.skipped);

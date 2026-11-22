@@ -125,6 +125,20 @@ export function toggleSkipped(plan: CurriculumPlan, key: string): CurriculumPlan
   return { order: plan.order, skipped: plan.order.filter((k) => skipped.includes(k)) };
 }
 
+/** Skip a set (no change when it is skipped already). */
+export function withSkipped(plan: CurriculumPlan, key: string): CurriculumPlan {
+  return plan.skipped.includes(key) ? plan : toggleSkipped(plan, key);
+}
+
+/**
+ * The plan as the class lives it: a set the class has assigned is not skipped, whatever the stored
+ * plan says (plans saved before skipping took a set away from the class could say both).
+ */
+export function livePlan(plan: CurriculumPlan, assignedKeys: ReadonlySet<string>): CurriculumPlan {
+  const skipped = plan.skipped.filter((k) => !assignedKeys.has(k));
+  return skipped.length === plan.skipped.length ? plan : { order: plan.order, skipped };
+}
+
 /** Put a whole unit at position `to` among the units (drag and drop). Out of range is clamped. */
 export function placeUnit(order: readonly string[], unit: number, to: number): string[] {
   const units = unitOrder(order);

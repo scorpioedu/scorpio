@@ -389,6 +389,36 @@ describe("POST /api/assignments/clone", () => {
       expect(Object.keys(solutions!.solutions)).toHaveLength(3);
     });
 
+    test("pick: exactly the chosen problems, in the order given, with their own answers", async () => {
+      seed(10);
+      const { copy, key, solutions } = await copyOf({ count: 5, pick: [0, 6, 3] });
+      expect(texts(copy)).toEqual(["Problem 1", "Problem 7", "Problem 4"]);
+      expect(copy.totalPoints).toBe(30);
+      expect(Object.values(key.answers).sort()).toEqual(["1 m", "4 m", "7 m"]);
+      expect(Object.values(solutions!.solutions).sort()).toEqual([
+        "Worked solution 1",
+        "Worked solution 4",
+        "Worked solution 7",
+      ]);
+    });
+
+    test("pick: a problem the set does not have, or the same one twice, is refused", async () => {
+      seed(10);
+      for (const pick of [[0, 10], [2, 2], []]) {
+        mockWrites.length = 0;
+        expect((await post({ sourceId: "set", pick })).status).toBe(400);
+        expect(mockWrites).toEqual([]);
+      }
+    });
+
+    test("hidden: the copy is created archived, so students do not see it until it is assigned", async () => {
+      seed(10);
+      const hidden = (await copyOf({ hidden: true })).copy as unknown as { archivedAt?: unknown };
+      expect(hidden.archivedAt).toBeInstanceOf(Date);
+      const shown = (await copyOf()).copy as unknown as { archivedAt?: unknown };
+      expect(shown.archivedAt).toBeUndefined();
+    });
+
     test("a count of 10: the whole pool", async () => {
       seed(10);
       const { copy, key } = await copyOf({ count: 10 });
