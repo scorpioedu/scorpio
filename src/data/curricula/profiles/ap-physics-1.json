@@ -199,8 +199,12 @@
     },
     "misconceptions": [
       {
+        "tag": "relative-velocity-confusion",
+        "problems": 3
+      },
+      {
         "tag": "distance-displacement-confusion",
-        "problems": 4
+        "problems": 2
       },
       {
         "tag": "projectile-components-coupled",
@@ -228,13 +232,13 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": []
+        "tags": ["distance-displacement-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["distance-displacement-confusion", "projectile-components-coupled"]
+        "tags": ["projectile-components-coupled", "relative-velocity-confusion"]
       },
       {
         "minutes": 3,
@@ -258,7 +262,7 @@
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": ["distance-displacement-confusion"]
+        "tags": ["relative-velocity-confusion"]
       },
       {
         "minutes": 1.5,
@@ -270,7 +274,7 @@
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": ["distance-displacement-confusion"]
+        "tags": ["relative-velocity-confusion"]
       }
     ]
   },
@@ -911,7 +915,19 @@
       },
       {
         "tag": "work-sign",
-        "problems": 3
+        "problems": 2
+      },
+      {
+        "tag": "conservative-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "potential-energy-of-one-object",
+        "problems": 1
       }
     ],
     "each": [
@@ -925,7 +941,7 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": ["potential-energy-reference", "work-sign"]
+        "tags": ["potential-energy-of-one-object", "potential-energy-reference", "work-sign"]
       },
       {
         "minutes": 3,
@@ -943,7 +959,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["energy-force-confusion"]
+        "tags": ["constant-acceleration-assumed", "energy-force-confusion"]
       },
       {
         "minutes": 2,
@@ -967,7 +983,7 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": ["potential-energy-reference", "work-sign"]
+        "tags": ["conservative-force-confusion", "potential-energy-reference"]
       },
       {
         "minutes": 4.5,
@@ -1001,6 +1017,10 @@
       {
         "tag": "potential-energy-reference",
         "problems": 2
+      },
+      {
+        "tag": "conservative-force-confusion",
+        "problems": 1
       },
       {
         "tag": "work-sign",
@@ -1054,7 +1074,7 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": ["energy-not-conserved"]
+        "tags": ["conservative-force-confusion", "energy-not-conserved"]
       },
       {
         "minutes": 3,
@@ -1460,6 +1480,10 @@
         "problems": 3
       },
       {
+        "tag": "elastic-inelastic-confusion",
+        "problems": 2
+      },
+      {
         "tag": "third-law-unequal-forces",
         "problems": 1
       }
@@ -1493,7 +1517,7 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": ["momentum-kinetic-energy-confusion"]
+        "tags": ["elastic-inelastic-confusion", "momentum-kinetic-energy-confusion"]
       },
       {
         "minutes": 2,
@@ -1517,7 +1541,7 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": ["momentum-kinetic-energy-confusion"]
+        "tags": ["elastic-inelastic-confusion", "momentum-kinetic-energy-confusion"]
       },
       {
         "minutes": 4.5,
@@ -1889,16 +1913,20 @@
     },
     "misconceptions": [
       {
-        "tag": "linear-angular-confusion",
-        "problems": 4
-      },
-      {
         "tag": "rotational-inertia-mass-only",
         "problems": 4
       },
       {
         "tag": "work-sign",
         "problems": 4
+      },
+      {
+        "tag": "linear-angular-confusion",
+        "problems": 3
+      },
+      {
+        "tag": "angle-not-in-radians",
+        "problems": 1
       },
       {
         "tag": "energy-not-conserved",
@@ -1928,7 +1956,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["linear-angular-confusion", "work-sign"]
+        "tags": ["angle-not-in-radians", "work-sign"]
       },
       {
         "minutes": 2,
@@ -2487,7 +2515,7 @@
         "problems": 8
       },
       {
-        "tag": "algebra-error",
+        "tag": "angle-not-in-radians",
         "problems": 1
       },
       {
@@ -2562,7 +2590,7 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": ["algebra-error"]
+        "tags": ["angle-not-in-radians"]
       }
     ]
   },
@@ -2771,7 +2799,11 @@
       },
       {
         "tag": "buoyancy-depends-on-object-weight",
-        "problems": 4
+        "problems": 3
+      },
+      {
+        "tag": "buoyancy-left-out",
+        "problems": 1
       }
     ],
     "each": [
@@ -2803,7 +2835,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["buoyancy-depends-on-object-weight"]
+        "tags": ["buoyancy-left-out"]
       },
       {
         "minutes": 2,

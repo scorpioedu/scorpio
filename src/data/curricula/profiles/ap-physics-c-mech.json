@@ -207,15 +207,19 @@
         "problems": 2
       },
       {
-        "tag": "distance-displacement-confusion",
-        "problems": 2
-      },
-      {
         "tag": "derivative-integral-confusion",
         "problems": 1
       },
       {
+        "tag": "distance-displacement-confusion",
+        "problems": 1
+      },
+      {
         "tag": "projectile-components-coupled",
+        "problems": 1
+      },
+      {
+        "tag": "relative-velocity-confusion",
         "problems": 1
       },
       {
@@ -258,7 +262,7 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": ["distance-displacement-confusion"]
+        "tags": ["relative-velocity-confusion"]
       },
       {
         "minutes": 4.5,
@@ -1217,15 +1221,15 @@
         "problems": 5
       },
       {
-        "tag": "impulse-force-confusion",
-        "problems": 2
-      },
-      {
         "tag": "momentum-kinetic-energy-confusion",
         "problems": 2
       },
       {
         "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "impulse-force-confusion",
         "problems": 1
       },
       {
@@ -1250,7 +1254,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["impulse-force-confusion"]
+        "tags": []
       },
       {
         "minutes": 3,
@@ -1779,12 +1783,16 @@
     },
     "misconceptions": [
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 5
-      },
-      {
         "tag": "equilibrium-forces-only",
         "problems": 4
+      },
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 3
+      },
+      {
+        "tag": "parallel-axis-misused",
+        "problems": 2
       }
     ],
     "each": [
@@ -1798,7 +1806,7 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": ["rotational-inertia-mass-only"]
+        "tags": ["parallel-axis-misused"]
       },
       {
         "minutes": 4.5,
@@ -1834,7 +1842,7 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": ["rotational-inertia-mass-only"]
+        "tags": ["parallel-axis-misused"]
       },
       {
         "minutes": 3,
@@ -1965,11 +1973,11 @@
         "problems": 1
       },
       {
-        "tag": "rolling-ignores-rotation",
+        "tag": "angle-not-in-radians",
         "problems": 1
       },
       {
-        "tag": "unit-conversion",
+        "tag": "rolling-ignores-rotation",
         "problems": 1
       },
       {
@@ -2012,7 +2020,7 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": ["unit-conversion"]
+        "tags": ["angle-not-in-radians"]
       },
       {
         "minutes": 4.5,
@@ -2636,10 +2644,6 @@
     },
     "misconceptions": [
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 3
-      },
-      {
         "tag": "shm-max-at-wrong-point",
         "problems": 3
       },
@@ -2652,7 +2656,15 @@
         "problems": 2
       },
       {
-        "tag": "unit-conversion",
+        "tag": "rotational-inertia-mass-only",
+        "problems": 2
+      },
+      {
+        "tag": "angle-not-in-radians",
+        "problems": 1
+      },
+      {
+        "tag": "parallel-axis-misused",
         "problems": 1
       }
     ],
@@ -2679,7 +2691,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["rotational-inertia-mass-only"]
+        "tags": ["parallel-axis-misused"]
       },
       {
         "minutes": 1.5,
@@ -2691,7 +2703,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["unit-conversion"]
+        "tags": ["angle-not-in-radians"]
       },
       {
         "minutes": 2,

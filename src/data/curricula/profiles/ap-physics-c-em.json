@@ -316,15 +316,19 @@
         "problems": 4
       },
       {
-        "tag": "gauss-law-without-symmetry",
-        "problems": 3
-      },
-      {
         "tag": "flux-field-confusion",
         "problems": 2
       },
       {
+        "tag": "gauss-law-without-symmetry",
+        "problems": 2
+      },
+      {
         "tag": "inverse-square-misapplied",
+        "problems": 1
+      },
+      {
+        "tag": "nonuniform-treated-as-uniform",
         "problems": 1
       },
       {
@@ -343,7 +347,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["gauss-law-without-symmetry"]
+        "tags": ["nonuniform-treated-as-uniform"]
       },
       {
         "minutes": 2,
@@ -894,7 +898,7 @@
         "problems": 1
       },
       {
-        "tag": "conductor-interior-field",
+        "tag": "charge-shared-equally",
         "problems": 1
       },
       {
@@ -931,7 +935,7 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": ["conductor-interior-field"]
+        "tags": ["charge-shared-equally"]
       },
       {
         "minutes": 2,
@@ -984,10 +988,14 @@
       },
       {
         "tag": "algebra-error",
-        "problems": 2
+        "problems": 1
       },
       {
         "tag": "capacitance-depends-on-charge",
+        "problems": 1
+      },
+      {
+        "tag": "capacitor-energy-qv",
         "problems": 1
       },
       {
@@ -1042,7 +1050,7 @@
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": ["algebra-error", "power-of-ten"]
+        "tags": ["capacitor-energy-qv", "power-of-ten"]
       },
       {
         "minutes": 3,
@@ -1787,15 +1795,15 @@
         "problems": 2
       },
       {
+        "tag": "angle-not-in-radians",
+        "problems": 1
+      },
+      {
         "tag": "magnetic-force-along-field",
         "problems": 1
       },
       {
         "tag": "third-law-unequal-forces",
-        "problems": 1
-      },
-      {
-        "tag": "unit-conversion",
         "problems": 1
       },
       {
@@ -1820,7 +1828,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["unit-conversion"]
+        "tags": ["angle-not-in-radians"]
       },
       {
         "minutes": 2,
@@ -1977,7 +1985,7 @@
         "problems": 4
       },
       {
-        "tag": "unit-conversion",
+        "tag": "angle-not-in-radians",
         "problems": 1
       }
     ],
@@ -2028,7 +2036,7 @@
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": ["emf-from-flux-not-rate", "unit-conversion"]
+        "tags": ["angle-not-in-radians", "emf-from-flux-not-rate"]
       },
       {
         "minutes": 2,
@@ -2058,12 +2066,16 @@
     },
     "misconceptions": [
       {
-        "tag": "unit-conversion",
-        "problems": 3
-      },
-      {
         "tag": "flux-ignores-orientation",
         "problems": 2
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 2
+      },
+      {
+        "tag": "angle-not-in-radians",
+        "problems": 1
       },
       {
         "tag": "emf-from-flux-not-rate",
@@ -2103,7 +2115,7 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": ["unit-conversion"]
+        "tags": ["angle-not-in-radians"]
       },
       {
         "minutes": 2,
@@ -2167,10 +2179,6 @@
         "problems": 5
       },
       {
-        "tag": "emf-from-flux-not-rate",
-        "problems": 2
-      },
-      {
         "tag": "inductor-limits-swapped",
         "problems": 2
       },
@@ -2180,6 +2188,14 @@
       },
       {
         "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "emf-from-flux-not-rate",
+        "problems": 1
+      },
+      {
+        "tag": "nonuniform-treated-as-uniform",
         "problems": 1
       },
       {
@@ -2232,7 +2248,7 @@
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": ["derivative-integral-confusion", "emf-from-flux-not-rate"]
+        "tags": ["derivative-integral-confusion", "nonuniform-treated-as-uniform"]
       },
       {
         "minutes": 2,
@@ -2276,7 +2292,7 @@
         "problems": 2
       },
       {
-        "tag": "unit-conversion",
+        "tag": "period-frequency-confusion",
         "problems": 1
       }
     ],
@@ -2285,7 +2301,7 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": ["unit-conversion"]
+        "tags": ["period-frequency-confusion"]
       },
       {
         "minutes": 2,

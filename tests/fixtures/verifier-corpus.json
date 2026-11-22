@@ -16,7 +16,7 @@
       "course": "ap-physics-c-mech",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
@@ -122,7 +122,7 @@
       "course": "ap-physics-1",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
@@ -210,12 +210,13 @@
       "course": "ap-physics-2",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
         "near-duplicate": "pass"
       },
       "original": {
@@ -320,7 +321,7 @@
       "course": "ap-physics-c-mech",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
@@ -492,7 +493,7 @@
       "course": "ap-physics-c-mech",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
