@@ -379,12 +379,12 @@ describe("POST /api/assignments/clone", () => {
       expect(all).not.toContain("Worked solution 6");
     });
 
-    test("a count of 3: the first 3, their points and only their topics", async () => {
+    test("a count of 3: three of the first five that cover both topics, in order", async () => {
       seed(10);
       const { copy, key, solutions } = await copyOf({ count: 3 });
-      expect(texts(copy)).toEqual(first(3));
+      expect(texts(copy)).toEqual(["Problem 1", "Problem 2", "Problem 4"]);
       expect(copy.totalPoints).toBe(30);
-      expect(copy.apTopics).toEqual(["4.1"]);
+      expect(copy.apTopics).toEqual(["4.1", "4.2"]);
       expect(Object.keys(key.answers)).toHaveLength(3);
       expect(Object.keys(solutions!.solutions)).toHaveLength(3);
     });

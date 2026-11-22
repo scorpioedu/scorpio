@@ -68,7 +68,7 @@ export function ProblemsPerSetField({
           {Array.from({ length: choice.max - choice.min + 1 }, (_, i) => choice.min + i).map(
             (n) => (
               <SelectItem key={n} value={String(n)}>
-                {n === DEFAULT_SET_SIZE ? `First ${n} (usual)` : `First ${n}`}
+                {n === DEFAULT_SET_SIZE ? `${n} problems (usual)` : `${n} problems`}
               </SelectItem>
             ),
           )}

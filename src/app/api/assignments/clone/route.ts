@@ -1,3 +1,4 @@
+import { pickSetProblems } from "@/lib/set-pick";
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { withAuthorizedRequest } from "@/lib/auth-verify";
@@ -94,7 +95,7 @@ export const POST = withAuthorizedRequest(
       rubric = typeof merged.rubric === "string" ? merged.rubric : "";
       // New question ids; each answer moves with its question, so the copy's key matches its questions.
       const wanted = isCourseSet
-        ? merged.questions.slice(0, count ?? DEFAULT_SET_SIZE)
+        ? pickSetProblems(merged.questions, count ?? DEFAULT_SET_SIZE)
         : merged.questions;
       const stored = (await adminDb.collection(SOLUTIONS).doc(sourceId).get()).data()?.solutions;
       const sourceSolutions: Record<string, unknown> =
