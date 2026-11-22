@@ -371,10 +371,12 @@
           "right": "They share one angular velocity, not one speed. Speed is proportional to distance from the axis, and a point on the axis itself does not move at all."
         },
         {
+          "tag": "velocity-acceleration-confusion",
           "wrong": "If a wheel turns at constant angular velocity, a point on its rim has no acceleration.",
           "right": "Its tangential acceleration is zero, since $\\alpha = 0$, but its direction of motion keeps changing, so it has a centripetal acceleration $v^2/r$ toward the axis."
         },
         {
+          "tag": "angle-not-in-radians",
           "wrong": "$s = r\\theta$ works with the angle in degrees.",
           "right": "It works only in radians, because a radian is defined as arc length divided by radius. A quarter turn is $\\pi/2\\ \\text{rad}$, not 90, in this formula."
         }
@@ -582,6 +584,7 @@
           "right": "That is true only for a force perpendicular to the line from the axis. Otherwise only the perpendicular part counts: $\\tau = rF\\sin\\theta$. A force aimed straight at or away from the axis gives no torque."
         },
         {
+          "tag": "torque-ignores-lever-arm",
           "wrong": "Torque is a kind of force, so torques and forces can be added together.",
           "right": "A torque is the turning effect of a force about an axis, measured in $\\text{N·m}$, not in newtons. Forces decide how an object's centre of mass accelerates; torques decide how its rotation changes."
         }
@@ -917,6 +920,7 @@
           "right": "It balances when the torques are equal, not the weights. A $400\\ \\text{N}$ child $1.5\\ \\text{m}$ from the pivot balances a $600\\ \\text{N}$ adult $1\\ \\text{m}$ from it."
         },
         {
+          "tag": "motion-requires-force",
           "wrong": "Zero net torque means the object is not rotating.",
           "right": "It means the angular velocity is not changing. The object may be at rest or turning at a steady rate, just as zero net force allows constant velocity."
         }
@@ -1121,6 +1125,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "pulley-tensions-equal",
           "wrong": "The tension is the same on both sides of any pulley.",
           "right": "That holds only for an ideal pulley with no rotational inertia. A pulley with mass needs a net torque to gain angular velocity, so the tensions on its two sides must differ: $(T_1 - T_2)R = I\\alpha$."
         },
@@ -1130,6 +1135,7 @@
           "right": "Angular acceleration depends on rotational inertia, not mass alone. Given the same torque, a hoop gains angular velocity half as fast as a solid disc of the same mass and radius."
         },
         {
+          "tag": "tension-equals-weight",
           "wrong": "The string pulls up on a falling block with a force equal to the block's weight.",
           "right": "Then the net force on the block would be zero and it would not accelerate. While the block speeds up downward, $T < mg$."
         }

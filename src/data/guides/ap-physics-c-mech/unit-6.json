@@ -361,6 +361,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "constant-acceleration-assumed",
           "wrong": "The work done by a torque is always the torque at the start multiplied by the angle turned.",
           "right": "That works only for a constant torque. When the torque changes with angle the work is $\\int\\tau\\,d\\theta$, the area under the torque–angle graph. In the wind-up example, $6.0\\ \\text{N·m}\\times 3.0\\ \\text{rad} = 18\\ \\text{J}$ is double the true $9.0\\ \\text{J}$."
         },
@@ -374,6 +375,7 @@
           "right": "$P = \\tau\\omega$, so at constant torque the power rises as the object speeds up. A motor limited to a fixed power must let its torque fall as $\\omega$ grows."
         },
         {
+          "tag": "energy-force-confusion",
           "wrong": "Torque and energy are both measured in N·m, so a torque of $5\\ \\text{N·m}$ is $5\\ \\text{J}$ of work.",
           "right": "A torque becomes work only when it turns something through an angle. A $5\\ \\text{N·m}$ torque that turns nothing does no work; through $2\\ \\text{rad}$ it does $10\\ \\text{J}$."
         }
@@ -598,10 +600,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "rotation-axis-ignored",
           "wrong": "An object moving in a straight line has no angular momentum; only things going round in circles do.",
           "right": "About any point off its line of motion it has $L = mvr_\\perp$, where $r_\\perp$ is the perpendicular distance from the point to the line. That is how a child running in a straight line can set a merry-go-round turning."
         },
         {
+          "tag": "rotation-axis-ignored",
           "wrong": "Angular momentum is a single number that belongs to an object, like its mass.",
           "right": "It depends on the reference point. The puck in the worked example has $0.72\\ \\text{kg·m}^2\\text{/s}$ about the origin and zero about any point on its own path. Torque and angular momentum must be taken about the same point."
         },
@@ -831,6 +835,7 @@
           "right": "$K = L^2/2I$, so with $L$ fixed and $I$ smaller her kinetic energy goes up. Her muscles do the work, pulling her arms inward."
         },
         {
+          "tag": "system-boundary",
           "wrong": "Momentum is conserved in every collision, so when clay hits a pivoted rod and sticks, use $mv = (m + M)v_f$.",
           "right": "The pivot exerts an external force during the impact, so linear momentum changes. That force has no torque about the pivot, so use angular momentum about the pivot."
         }
@@ -1337,6 +1342,7 @@
           "right": "Only gravity acts, and the forces are not balanced. The net force toward the planet is exactly what bends the path into an orbit: $GMm/r^2 = mv^2/r$."
         },
         {
+          "tag": "orbit-speed-confusion",
           "wrong": "A satellite in a higher circular orbit has more energy, so it must be moving faster.",
           "right": "It has more total energy but less kinetic energy: $v = \\sqrt{GM/r}$ falls as $r$ grows. The energy added, and the kinetic energy given up as well, have become potential energy."
         },

@@ -196,6 +196,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "net-force-vector-addition",
           "wrong": "A $3\\ \\text{m}$ displacement followed by a $4\\ \\text{m}$ displacement always makes a $7\\ \\text{m}$ displacement.",
           "right": "Only when the two point the same way. In general the result can be anything from $1\\ \\text{m}$ (opposite directions) to $7\\ \\text{m}$, and it is $5\\ \\text{m}$ when they are perpendicular. Add components, not magnitudes."
         },
@@ -431,6 +432,7 @@
           "right": "It gives the displacement. If the object reverses, the backward part counts as negative and cancels some of the forward part. For distance, split the integral where $v = 0$ and add the sizes of the pieces."
         },
         {
+          "tag": "initial-conditions-ignored",
           "wrong": "The integral of the acceleration is the velocity.",
           "right": "It is the change in velocity. Add the velocity the object already had: $v = v_0 + \\int a\\,dt$. Leaving out $v_0$, or $x_0$ when integrating velocity, is one of the most common slips in these problems."
         }
@@ -861,14 +863,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "Every object has one true velocity; observers in other frames just measure it incorrectly.",
           "right": "Velocity is always relative to a frame, and no frame is special. A passenger asleep in a train seat has zero velocity relative to the train and perhaps $30\\ \\text{m/s}$ relative to the track. Both are correct."
         },
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "To find how fast two objects approach each other, add their speeds.",
           "right": "Subtract the velocity vectors. Adding speeds is right only for objects heading straight toward each other: two cars travelling the same way at $30\\ \\text{m/s}$ and $25\\ \\text{m/s}$ close at only $5\\ \\text{m/s}$."
         },
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "A current makes a boat that is aimed straight across take longer to cross the river.",
           "right": "Crossing time is the river's width divided by the boat's velocity component across it. A current along the river adds nothing to that component; the boat simply lands farther downstream."
         }

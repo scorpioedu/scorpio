@@ -394,6 +394,7 @@
           "right": "A neutral object has equal amounts of both kinds of charge. A nearby rod shifts them apart, and the nearer, unlike charge is attracted more strongly than the farther, like charge is repelled."
         },
         {
+          "tag": "induction-grounding-misread",
           "wrong": "In charging by induction, the sphere ends up with the same sign of charge as the rod.",
           "right": "The rod drives charge of its own sign away to ground, so the sphere is left with the opposite sign. Same-sign charging needs contact."
         }
@@ -630,6 +631,7 @@
           "right": "Fields are vectors. Only if the two fields point the same way do the magnitudes add. In the worked example they are at an angle, and the sum is $216\\ \\text{N/C}$."
         },
         {
+          "tag": "field-line-as-trajectory",
           "wrong": "A field line shows the path a charge released on it will follow.",
           "right": "A field line shows the direction of the force, and so of the acceleration, at each point. The velocity need not be along the force, so on a curved line the charge drifts off it."
         }
@@ -868,6 +870,7 @@
           "right": "That adds magnitudes of vectors pointing in different directions. Resolve $dE$ first and integrate the component symmetry leaves, such as $dE\\cos\\theta$."
         },
         {
+          "tag": "nonuniform-treated-as-uniform",
           "wrong": "The distance $r$ is a constant, so $1/r^2$ can come outside the integral.",
           "right": "Only when every piece is the same distance from P, as at the centre of an arc or on the axis of a ring. Along a straight rod $r$ changes and must be written in terms of the integration variable."
         }
@@ -1047,6 +1050,7 @@
           "right": "Field is a vector at a point, in $\\text{N/C}$. Flux is a scalar that belongs to a whole surface, in $\\text{N·m}^2/\\text{C}$. The same field gives different fluxes through surfaces of different area or tilt."
         },
         {
+          "tag": "flux-ignores-orientation",
           "wrong": "In $EA\\cos\\theta$, $\\theta$ is the angle between the field and the surface.",
           "right": "$\\theta$ is measured from the perpendicular to the surface. A field lying in the surface has $\\theta = 90°$ and gives zero flux, not the maximum."
         }

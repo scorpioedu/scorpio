@@ -132,6 +132,7 @@
           "right": "At equilibrium the displacement is zero, so the force and the acceleration are zero. The block is fast there because the force has been speeding it up all the way in. The force is largest at the turning points."
         },
         {
+          "tag": "spring-force-misread",
           "wrong": "The minus sign in $F_s = -kx$ means the spring force is always negative, so it always points left.",
           "right": "The sign means opposite to the displacement. Left of equilibrium, $x$ is negative and the force is positive, to the right."
         },
@@ -750,6 +751,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Halfway between equilibrium and the turning point, the energy is half kinetic and half potential.",
           "right": "Potential energy depends on $x^2$. At $x = A/2$ it is one quarter of the total and the kinetic energy is three quarters. The two are equal farther out, at $x = A/\\sqrt{2}$, about $0.71A$."
         },

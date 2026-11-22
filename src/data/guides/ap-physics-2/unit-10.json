@@ -159,6 +159,7 @@
           "right": "The sign of the product only says attract (negative) or repel (positive). Which way that is along the axis depends on where the charges sit. Work out the size with absolute values and the direction from a sketch."
         },
         {
+          "tag": "charging-moves-positive-charge",
           "wrong": "A positively charged object has gained protons.",
           "right": "Protons are bound in the nuclei of atoms and stay put in a solid. An object becomes positive by losing electrons and negative by gaining them."
         }
@@ -292,6 +293,7 @@
           "right": "A neutral object holds equal amounts of positive and negative charge. A nearby rod shifts them apart, and the nearer, opposite charge is attracted more strongly than the farther charge is repelled."
         },
         {
+          "tag": "induction-grounding-misread",
           "wrong": "An object charged by induction gets the same sign of charge as the rod.",
           "right": "That is charging by contact. In induction the rod drives its own sign of charge away to ground, so the object is left with the opposite sign."
         }
@@ -682,6 +684,7 @@
           "right": "Energy is a scalar. Work out one signed number for each pair and add the numbers. Directions never enter."
         },
         {
+          "tag": "potential-energy-potential-confusion",
           "wrong": "Bringing any two charges closer together always increases the potential energy.",
           "right": "Only for like charges. Opposite charges attract, so moving them closer lowers the potential energy, just as lowering a ball toward the Earth does."
         }
@@ -1140,10 +1143,12 @@
           "right": "Only if a battery is still connected to hold the voltage fixed. If the capacitor has been disconnected, the charge is what stays the same and the voltage rises as the capacitance falls."
         },
         {
+          "tag": "capacitor-net-charge",
           "wrong": "A charged capacitor holds a net charge Q.",
           "right": "It holds $+Q$ on one plate and $-Q$ on the other, a net charge of zero. Charging a capacitor moves charge from one plate to the other; it does not add any."
         },
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Charging a capacitor to twice the voltage stores twice the energy.",
           "right": "Twice the voltage also means twice the charge, so the energy, $\\tfrac{1}{2}C(\\Delta V)^2$, is four times larger."
         }

@@ -351,6 +351,7 @@
           "right": "That is true of a pendulum, not of a spring. The spring's force does not grow with the block's mass, so a heavier block accelerates less and takes longer: $T = 2\\pi\\sqrt{m/k}$."
         },
         {
+          "tag": "period-frequency-confusion",
           "wrong": "The angular frequency $\\omega$ is the number of oscillations per second.",
           "right": "That is the frequency $f$. The angular frequency is $2\\pi$ times larger, $\\omega = 2\\pi f$, and is measured in radians per second. An oscillator with $\\omega = 10\\ \\text{rad/s}$ completes only about $1.6$ cycles each second."
         }
@@ -619,6 +620,7 @@
           "right": "Zero velocity does not mean zero acceleration. At a turning point the velocity is changing sign, and the acceleration has its greatest magnitude, $A\\omega^2$."
         },
         {
+          "tag": "initial-conditions-ignored",
           "wrong": "Every SHM problem starts from $x = A\\cos(\\omega t)$.",
           "right": "That form assumes the object is at $x = +A$ and at rest when $t = 0$. Any other start needs a phase constant; an object passing through equilibrium at $t = 0$, for example, is described by a sine."
         },
@@ -833,10 +835,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Halfway between equilibrium and the turning point, the energy is half kinetic and half potential.",
           "right": "Potential energy goes as $x^2$, so at $x = A/2$ it is only a quarter of the total and the other three quarters is kinetic. The even split happens further out, at $x = A/\\sqrt{2} \\approx 0.71A$."
         },
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Doubling the amplitude doubles the oscillator's energy.",
           "right": "$E = \\tfrac{1}{2}kA^2$, so doubling the amplitude gives four times the energy. It is the maximum speed, $A\\omega$, that doubles."
         },

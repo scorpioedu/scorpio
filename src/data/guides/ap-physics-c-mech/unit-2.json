@@ -165,10 +165,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "centre-of-mass-at-midpoint",
           "wrong": "The centre of mass is the geometric middle of an object.",
           "right": "Only for a uniform object, or one with matching symmetry. A hammer balances close to its head, not halfway along the handle, because that is where most of its mass is."
         },
         {
+          "tag": "centre-of-mass-at-midpoint",
           "wrong": "For a rod of varying density, the centre of mass is $\\frac{1}{L}\\int x\\,dx$, the average of the positions.",
           "right": "That average ignores where the mass is and always gives $L/2$. Each position must be weighted by the mass there: $\\frac{1}{M}\\int x\\,\\lambda(x)\\,dx$, with $M = \\int \\lambda(x)\\,dx$."
         },
@@ -730,10 +732,12 @@
           "right": "Constant velocity means zero net force. The pull is needed only to cancel friction; without friction the crate would keep moving with no pull at all."
         },
         {
+          "tag": "motion-requires-force",
           "wrong": "Equilibrium means the object is at rest.",
           "right": "Equilibrium means zero net force, so zero acceleration. A lift rising at steady speed is in equilibrium just as much as a book on a shelf."
         },
         {
+          "tag": "impetus-force",
           "wrong": "When a bus brakes, a force throws the passengers forward.",
           "right": "No forward force acts on them. They carry on at the velocity they had while the bus slows down, until a seat or handrail pushes them backward."
         }
@@ -954,6 +958,7 @@
           "right": "Net force sets the acceleration, the rate at which velocity changes. When it reaches zero the object keeps whatever velocity it has."
         },
         {
+          "tag": "tension-equals-weight",
           "wrong": "The tension in the string equals the weight of the hanging block, $mg$.",
           "right": "Only if the block is not accelerating. While it accelerates downward, $mg - T = ma$, so the tension is less than $mg$: here $3.9\\ \\text{N}$, not $4.9\\ \\text{N}$."
         }
@@ -1571,6 +1576,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "spring-force-misread",
           "wrong": "A spring's force depends on its length, so a longer spring always pulls harder than a shorter one.",
           "right": "The force depends on how far the spring is from its own relaxed length. A $50\\ \\text{cm}$ spring sitting at its relaxed length exerts no force at all."
         },
@@ -1580,6 +1586,7 @@
           "right": "$kx_0/m$ is the acceleration only at the instant of release. As the block moves, the stretch and the force change; the motion obeys $m\\,d^2x/dt^2 = -kx$."
         },
         {
+          "tag": "series-parallel-confusion",
           "wrong": "Two springs joined end to end are stiffer than one, because there is more spring.",
           "right": "End to end, both springs stretch under the same force, so the total stretch is larger and the combination is softer. Springs side by side are stiffer."
         }
