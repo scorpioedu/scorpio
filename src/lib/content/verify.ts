@@ -266,7 +266,7 @@ export function textNumbers(
 }
 
 /** Is the text number this quantity? Either the same number as written, or the same amount in another unit. */
-function sameQuantity(n: TextNumber, value: number, unit: Unit | undefined): boolean {
+export function sameQuantity(n: TextNumber, value: number, unit: Unit | undefined): boolean {
   if (near(Math.abs(n.value), Math.abs(value))) return true;
   if (!n.unit || !unit || !sameDims(n.unit.dims, unit.dims)) return false;
   return near(Math.abs(toSI(n.value, n.unit)), Math.abs(toSI(value, unit)));

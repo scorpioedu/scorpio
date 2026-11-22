@@ -17,6 +17,8 @@ import {
 import { requiresDerivation } from "../src/lib/guides";
 import { apUnit } from "../src/data/ap";
 import { referenceEvaluator, topicFixture, unitFixture } from "../tests/helpers/guide-fixture";
+import { expressionNames } from "../src/lib/guides/try-it";
+import { evaluateSpec } from "../src/lib/content/spec";
 
 const errorsOf = (change: Parameters<typeof unitFixture>[0]) =>
   verifyUnitGuide(unitFixture(change)).errors;
@@ -140,8 +142,8 @@ describe("checkWorkedExample", () => {
     expect(checkWorkedExample(conceptual)).toEqual([]);
     // A wrong number passes when nothing can recompute it.
     expect(checkWorkedExample({ ...numeric, answer: "$p = 7.0\\ \\text{kg·m/s}$" })).toEqual([]);
-    expect(checkWorkedExample({ ...numeric, spec: { ...numeric.spec!, expr: "m*v*g" } })).toEqual([
-      expect.stringContaining('"g"'),
+    expect(checkWorkedExample({ ...numeric, spec: { ...numeric.spec!, expr: "m*v*q" } })).toEqual([
+      expect.stringContaining('"q"'),
     ]);
     expect(checkWorkedExample({ ...numeric, answer: "$p = 6.0\\ \\text{N}$" })).toEqual([
       expect.stringContaining("unit"),
@@ -149,6 +151,32 @@ describe("checkWorkedExample", () => {
     expect(checkWorkedExample({ ...numeric, answer: "About six $\\text{kg·m/s}$" })).toEqual([
       expect.stringContaining("states no number"),
     ]);
+  });
+
+  test("the spec evaluator's own functions and constants are not givens", () => {
+    for (const expr of [
+      "m*v*ln(2)/ln(2)",
+      "m*v*exp(0)",
+      "m*v*cos(asin(0))*cos(acos(1))*cos(atan(0))",
+      "m*v*g/g",
+      "m*v + 0*k*eps0*mu0*e*G*c*h*R*kB*NA*sigma*me*mp*atm*deg*pi",
+    ])
+      expect(checkWorkedExample({ ...numeric, spec: { ...numeric.spec!, expr } })).toEqual([]);
+    // the real evaluator agrees: these compute the same answer
+    expect(
+      checkWorkedExample(
+        { ...numeric, spec: { ...numeric.spec!, expr: "m*v*exp(ln(2)-ln(2))*g/g" } },
+        evaluateSpec,
+      ),
+    ).toEqual([]);
+    // a name that is neither a given nor built in is still an error
+    expect(checkWorkedExample({ ...numeric, spec: { ...numeric.spec!, expr: "m*v*foo" } })).toEqual(
+      [expect.stringContaining('"foo"')],
+    );
+  });
+
+  test("try-it placeholders keep their own, smaller language", () => {
+    expect(expressionNames("sqrt(m)*g + ln(x) + pi")).toEqual(["m", "g", "ln", "x"]);
   });
 
   test("with an evaluator, the answer must state what the spec computes", () => {
@@ -321,6 +349,35 @@ describe("verifyUnitGuide", () => {
     );
     expect(report.errors).toEqual([]);
     expect(report.warnings).toEqual([expect.stringContaining("does not state v = 4 m/s")]);
+  });
+
+  test("a given is matched in the prompt as the problem verifier reads numbers", () => {
+    const withMass = (prompt: string, value: number, unit = "kg") =>
+      verifyUnitGuide(
+        unitFixture((g) => {
+          g.workedExamples[0].prompt = prompt;
+          g.workedExamples[0].spec = {
+            givens: { M: { value, unit } },
+            expr: "M*0+6",
+            unit: g.workedExamples[0].spec!.unit,
+          };
+        }),
+      ).warnings.filter((w) => w.includes("does not state"));
+    // large and small magnitudes in scientific notation: no absolute-tolerance false alarms
+    expect(withMass("The Moon's mass is $7.35 \\times 10^{22}\\ \\text{kg}$.", 7.35e22)).toEqual(
+      [],
+    );
+    expect(withMass("Earth: $M = 5.97 × 10^24$ kg.", 5.97e24)).toEqual([]);
+    expect(withMass("An electron, $9.11 \\times 10^{-31}\\ \\text{kg}$.", 9.11e-31)).toEqual([]);
+    // the same amount in another unit counts, as in the problem verifier
+    expect(withMass("A $15\\ \\text{cm}$ rod.", 0.15, "m")).toEqual([]);
+    // a tiny value no longer matches some other small number
+    expect(withMass("A mass of $5.31 \\times 10^{-26}\\ \\text{kg}$.", 1.38e-23)).toEqual([
+      expect.stringContaining("does not state M = 1.38e-23 kg"),
+    ]);
+    expect(
+      withMass("The Moon's mass is $7.36 \\times 10^{22}\\ \\text{kg}$.", 7.35e22),
+    ).toHaveLength(1);
   });
 
   test("the calculus-based courses must have derivations; the others need not", () => {

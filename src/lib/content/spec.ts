@@ -137,7 +137,8 @@ export const SPEC_CONSTANTS: Record<string, { value: number; unit: string; dims:
   deg: { value: Math.PI / 180, unit: "", dims: NONE },
 };
 
-const FUNCTIONS = new Set([
+/** The functions an expression may call. Exported so the guide checks read the same list. */
+export const SPEC_FUNCTIONS: ReadonlySet<string> = new Set([
   "sqrt",
   "abs",
   "exp",
@@ -154,6 +155,7 @@ const FUNCTIONS = new Set([
   "max",
   "round",
 ]);
+const FUNCTIONS = SPEC_FUNCTIONS;
 
 const NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 /** Own keys only: "constructor" is not a step of every spec. */
