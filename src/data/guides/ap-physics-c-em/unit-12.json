@@ -1,0 +1,1058 @@
+{
+  "curriculumId": "ap-physics-c-em",
+  "unit": 12,
+  "guides": [
+    {
+      "topic": "12.1",
+      "bigIdea": "A magnetic field is a vector field produced by magnetic dipoles and moving charge, and because no isolated magnetic pole exists, its field lines always close on themselves.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\nwire -1.2,0 out \"I out\"\nwire 1.2,0 in \"I in\"\ngauss circle 0,1.6 0.8 \"S\"",
+        "caption": "A current loop cut through its middle: the current comes out of the page on the left and goes back in on the right. This is the simplest magnetic dipole. Every field line is a closed curve, so each line that enters the closed surface S also leaves it, and the net magnetic flux through S is zero."
+      },
+      "explanation": "A magnetic field $\\vec{B}$ is a vector at every point in space, measured in tesla ($\\text{T}$). A compass maps it: the needle's north end turns to point along the field. Field lines follow those directions and crowd together where the field is stronger. Fields from several sources add as vectors.\n\nEvery magnet is a dipole, with a north and a south pole. Cut one in half and you get two smaller dipoles, never a lone pole. So magnetic field lines have no beginning or end: outside a bar magnet they run from north to south, and inside it they continue from south back to north. Any closed surface therefore has as much field going in as coming out, and the net magnetic flux through it is zero, $\\oint \\vec{B}\\cdot d\\vec{A} = 0$. Flux is measured in webers: $1\\ \\text{Wb} = 1\\ \\text{T·m}^2$.\n\nA dipole is described by its magnetic moment $\\vec{\\mu}$. For a flat coil of $N$ turns and area $A$ carrying current $I$, $\\mu = NIA$, along your right thumb when your fingers curl with the current. A uniform field exerts no net force on a dipole but does exert a torque, $\\vec{\\tau} = \\vec{\\mu}\\times\\vec{B}$, that turns $\\vec{\\mu}$ toward $\\vec{B}$, and the dipole has potential energy $U = -\\vec{\\mu}\\cdot\\vec{B}$, lowest when the two are aligned. A compass needle is a dipole doing this in Earth's field.\n\nMaterials respond because their atoms are tiny dipoles. In ferromagnetic materials (iron, nickel) neighbouring atoms line up in regions called domains; a field aligns the domains, so the material greatly strengthens the field and can stay magnetised. Paramagnetic materials (aluminium) align weakly and are weakly attracted; diamagnetic ones (copper, water) gain a weak opposing moment and are weakly repelled. A material's magnetic permeability measures this response; for empty space it is $\\mu_0 = 4\\pi\\times10^{-7}\\ \\text{T·m/A}$.",
+      "equations": [
+        {
+          "latex": "\\oint \\vec{B}\\cdot d\\vec{A} = 0",
+          "meaning": "The net magnetic flux through any closed surface is zero: field lines that enter also leave (Gauss's law for magnetism).",
+          "variables": [
+            {
+              "symbol": "\\vec{B}",
+              "name": "magnetic field on the surface",
+              "unit": "T"
+            },
+            {
+              "symbol": "d\\vec{A}",
+              "name": "small patch of the closed surface, pointing outward",
+              "unit": "m^2"
+            }
+          ],
+          "useWhen": "You know the flux through part of a closed surface and want the rest, or you are asked whether a field pattern is possible.",
+          "notWhen": "It does not say the field is zero on the surface, and it does not apply to an open surface such as one face or a loop's area."
+        },
+        {
+          "latex": "\\mu = NIA",
+          "meaning": "The magnetic moment of a flat coil is its number of turns times its current times its area.",
+          "variables": [
+            {
+              "symbol": "\\mu",
+              "name": "magnetic dipole moment",
+              "unit": "A·m^2"
+            },
+            {
+              "symbol": "N",
+              "name": "number of turns",
+              "unit": ""
+            },
+            {
+              "symbol": "I",
+              "name": "current in the coil",
+              "unit": "A"
+            },
+            {
+              "symbol": "A",
+              "name": "area enclosed by one turn",
+              "unit": "m^2"
+            }
+          ],
+          "useWhen": "A coil or loop is treated as a dipole: finding its torque or energy in a field.",
+          "notWhen": "Do not use the length of wire for the area, and do not confuse this $\\mu$ with the permeability $\\mu_0$."
+        },
+        {
+          "latex": "\\tau = \\mu B\\sin\\theta",
+          "meaning": "A uniform field twists a dipole toward alignment; this is the magnitude of the torque from the cross product of the moment and the field.",
+          "variables": [
+            {
+              "symbol": "\\tau",
+              "name": "torque on the dipole",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "\\mu",
+              "name": "magnetic dipole moment",
+              "unit": "A·m^2"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the moment and the field",
+              "unit": "rad or °"
+            }
+          ],
+          "useWhen": "A coil, compass needle or small magnet sits in a uniform field at a known angle.",
+          "notWhen": "The angle is between the moment (the coil's axis) and the field, not between the coil's plane and the field."
+        },
+        {
+          "latex": "U = -\\mu B\\cos\\theta",
+          "meaning": "A dipole's potential energy in a field: lowest when aligned with the field, highest when opposite to it.",
+          "variables": [
+            {
+              "symbol": "U",
+              "name": "potential energy of the dipole in the field",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\mu",
+              "name": "magnetic dipole moment",
+              "unit": "A·m^2"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the moment and the field",
+              "unit": "rad or °"
+            }
+          ],
+          "useWhen": "Finding the work needed to turn a dipole, or the speed it gains when released.",
+          "notWhen": "The zero of energy is at $90^\\circ$, not at alignment, so use differences of $U$."
+        }
+      ],
+      "derivation": "**From torque to potential energy.** The torque on a dipole has size $\\tau = \\mu B\\sin\\theta$ and always acts to make $\\theta$ smaller. To turn the dipole slowly from $\\theta_1$ to $\\theta_2$, an outside agent must apply an equal torque the other way, and so does work\n\n$$\nW_{\\text{ext}} = \\int_{\\theta_1}^{\\theta_2} \\mu B\\sin\\theta\\,d\\theta = -\\mu B\\cos\\theta_2 + \\mu B\\cos\\theta_1 .\n$$\n\nThe work depends only on the two angles, so it is stored as potential energy: $W_{\\text{ext}} = U(\\theta_2) - U(\\theta_1)$. Matching the two sides gives\n\n$$\nU(\\theta) = -\\mu B\\cos\\theta = -\\vec{\\mu}\\cdot\\vec{B},\n$$\n\nwith the zero of energy chosen at $\\theta = 90^\\circ$. Check: $-dU/d\\theta = -\\mu B\\sin\\theta$ is the torque, directed toward smaller $\\theta$. $U$ has its minimum at $\\theta = 0$ (stable equilibrium) and its maximum at $180^\\circ$ (unstable).",
+      "workedExamples": [
+        {
+          "title": "Flux through a dome",
+          "prompt": "A closed surface is made of a flat disc of radius $6.0\\ \\text{cm}$ capped by a hemispherical dome. It sits in a uniform magnetic field of $0.25\\ \\text{T}$ that enters through the disc, making an angle of $30^\\circ$ with the disc's axis. What is the magnetic flux through the dome?",
+          "steps": [
+            "The net magnetic flux through any closed surface is zero, so $\\Phi_{\\text{dome}} + \\Phi_{\\text{disc}} = 0$. The disc is flat, so its flux is easy to find, and no integral over the dome is needed.",
+            "Outward flux counts as positive. The field goes in through the disc at $30^\\circ$ to its axis, so $\\Phi_{\\text{disc}} = -B(\\pi r^2)\\cos 30^\\circ$.",
+            "$\\Phi_{\\text{disc}} = -(0.25\\ \\text{T})\\,\\pi(0.060\\ \\text{m})^2(0.866) = -2.4\\times10^{-3}\\ \\text{Wb}$.",
+            "So $\\Phi_{\\text{dome}} = +2.4\\times10^{-3}\\ \\text{Wb}$: every field line that came in through the disc leaves through the dome."
+          ],
+          "answer": "$\\Phi_{\\text{dome}} = +2.4 \\times 10^{-3}\\ \\text{Wb}$ (outward)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "B": {
+                "value": 0.25,
+                "unit": "T"
+              },
+              "r": {
+                "value": 6,
+                "unit": "cm"
+              },
+              "theta": {
+                "value": 30,
+                "unit": "deg"
+              }
+            },
+            "expr": "B*pi*r^2*cos(theta)",
+            "unit": "Wb"
+          }
+        },
+        {
+          "title": "Turning a coil against the field",
+          "prompt": "A flat circular coil of $20$ turns and radius $1.5\\ \\text{cm}$ carries a current of $0.80\\ \\text{A}$ in a uniform magnetic field of $0.30\\ \\text{T}$. Calculate the coil's magnetic moment, and determine the work an external agent must do to turn the coil slowly from $\\theta = 30^\\circ$ to $\\theta = 120^\\circ$, where $\\theta$ is the angle between the moment and the field.",
+          "steps": [
+            "Magnetic moment: $\\mu = NIA = (20)(0.80\\ \\text{A})\\,\\pi(0.015\\ \\text{m})^2 = 1.13\\times10^{-2}\\ \\text{A·m}^2$.",
+            "The coil's energy in the field is $U = -\\mu B\\cos\\theta$. Turned slowly, it gains no kinetic energy, so the agent's work equals the change in $U$: $W_{\\text{ext}} = U_f - U_i = \\mu B(\\cos\\theta_i - \\cos\\theta_f)$.",
+            "$\\mu B = (1.13\\times10^{-2}\\ \\text{A·m}^2)(0.30\\ \\text{T}) = 3.39\\times10^{-3}\\ \\text{J}$, and $\\cos 30^\\circ - \\cos 120^\\circ = 0.866 - (-0.500) = 1.366$.",
+            "$W_{\\text{ext}} = (3.39\\times10^{-3}\\ \\text{J})(1.366) = 4.6\\times10^{-3}\\ \\text{J}$. It is positive: the agent turns the moment away from the field, against the torque."
+          ],
+          "answer": "$\\mu = 1.1 \\times 10^{-2}\\ \\text{A·m}^2$ and $W_{\\text{ext}} = 4.6 \\times 10^{-3}\\ \\text{J}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "N": {
+                "value": 20,
+                "unit": ""
+              },
+              "I": {
+                "value": 0.8,
+                "unit": "A"
+              },
+              "r": {
+                "value": 1.5,
+                "unit": "cm"
+              },
+              "B": {
+                "value": 0.3,
+                "unit": "T"
+              },
+              "theta_i": {
+                "value": 30,
+                "unit": "deg"
+              },
+              "theta_f": {
+                "value": 120,
+                "unit": "deg"
+              }
+            },
+            "expr": "N*I*pi*r^2*B*(cos(theta_i) - cos(theta_f))",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "magnetic-poles-as-charges",
+          "wrong": "Cut a bar magnet in half and you have a separate north pole and a separate south pole.",
+          "right": "Each half is a complete magnet with both poles. A magnet is a dipole all the way down to its atoms, and no isolated pole has ever been found."
+        },
+        {
+          "tag": "magnetic-poles-as-charges",
+          "wrong": "A north pole acts like a positive charge, so it repels a proton sitting at rest near it.",
+          "right": "Poles are not charges. A magnetic field exerts no force on a charge at rest; only moving charges and other dipoles feel it."
+        },
+        {
+          "wrong": "Magnetic field lines start on the north pole and stop on the south pole.",
+          "right": "They continue through the magnet from south back to north and close on themselves. That is the content of $\\oint \\vec{B}\\cdot d\\vec{A} = 0$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A closed box is drawn around only the north end of a bar magnet. Is the net magnetic flux through the box positive, negative or zero?",
+          "a": "Zero. The lines that leave through the box's walls come back in through the magnet itself, where the field runs from south to north."
+        },
+        {
+          "q": "A coil with magnetic moment $\\vec{\\mu}$ sits in a uniform field. At what angle between $\\vec{\\mu}$ and $\\vec{B}$ is the torque largest, and at what angle is the energy lowest?",
+          "a": "The torque $\\mu B\\sin\\theta$ is largest at $90^\\circ$. The energy $-\\mu B\\cos\\theta$ is lowest at $0^\\circ$, where the torque is zero."
+        },
+        {
+          "q": "Why does an unmagnetised iron nail stick to either pole of a magnet?",
+          "a": "Iron is ferromagnetic: the magnet's field aligns its domains, making the nail a dipole whose nearer end is the opposite pole to the one it faces. Either pole therefore attracts it."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=\\theta[°] y=U[mJ] xr=-25,180 yr=-4.5,4.5\nfn -{{10*B}}*cos(a*pi/180) 0..180\nvl {{th}}\nxt 0 45 90 135 180\nyt -4 -2 0 2 4\nnote 125,-2.6 \"U = {{round(-100*B*cos(th*pi/180))/10}} mJ\"\nnote 125,-3.6 \"τ = {{round(100*B*sin(th*pi/180))/10}} mN·m\"",
+        "caption": "A coil with magnetic moment $0.010\\ \\text{A·m}^2$ in a uniform field. Slide the angle: the energy is lowest at $0^\\circ$, while the torque is largest at $90^\\circ$, where the energy curve is steepest. A stronger field stretches the whole curve.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Angle between moment and field",
+            "min": 0,
+            "max": 180,
+            "step": 15,
+            "default": 60,
+            "unit": "°"
+          },
+          {
+            "name": "B",
+            "label": "Magnetic field",
+            "min": 0.1,
+            "max": 0.4,
+            "step": 0.05,
+            "default": 0.2,
+            "unit": "T"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "8.5",
+        "8.6"
+      ],
+      "teacherNotes": "Students carry the electric picture over wholesale: poles as charges, lines that start and stop. Ask them to sketch the field lines *inside* a bar magnet and to state the net flux through a box around one pole; both expose the idea quickly. For dipoles, insist that $\\theta$ is measured from the moment (the coil's axis), since most torque errors come from using the angle to the coil's plane. Set 12A practises flux through closed surfaces, dipole torque and energy, and the three kinds of magnetic material."
+    },
+    {
+      "topic": "12.2",
+      "bigIdea": "A magnetic field pushes on a charge only when the charge moves across the field, and the force is perpendicular to both the velocity and the field, so it steers the charge without changing its speed.",
+      "picture": {
+        "diagram": "field xr=-3..3 yr=-2..2\nuniform B in \"B\"\ntest 0,0 + \"+q\" v=right",
+        "caption": "A positive charge moves to the right through a field that points into the page (the crosses). Point the fingers of your right hand along $\\vec{v}$ and curl them toward $\\vec{B}$: your thumb, and the force, point up the page. A negative charge moving the same way would be pushed down."
+      },
+      "explanation": "The magnetic force on a charge $q$ moving with velocity $\\vec{v}$ is $\\vec{F}_B = q\\vec{v}\\times\\vec{B}$. Its size is $|q|vB\\sin\\theta$, where $\\theta$ is the angle between the velocity and the field: zero for a charge at rest or moving along the field, largest for motion straight across it. Its direction comes from the right-hand rule for the cross product, reversed for a negative charge.\n\nBecause the force is always perpendicular to the velocity, it does no work: it turns a particle without changing its speed. A particle moving perpendicular to a uniform field is turned at a steady rate and follows a circle of radius $r = mv/(|q|B)$. The time for one lap, $T = 2\\pi m/(|q|B)$, does not depend on the speed. If the velocity also has a part along the field, that part is unaffected and the path is a helix.\n\nElectric and magnetic forces can be set against each other. In crossed fields a charge passes undeflected only if $qE = qvB$, that is, at the one speed $v = E/B$ (a velocity selector). The same balance appears in a current-carrying strip in a magnetic field: the moving carriers are pushed to one edge until the charge piled up there makes an electric field that stops the sideways drift. The resulting Hall voltage across the strip, $V_H = v_d B w$, gives the carriers' drift speed, and its sign gives the sign of their charge.\n\nA moving charge is also a source of magnetic field, which circles its line of motion: magnetic forces act between moving charges.",
+      "equations": [
+        {
+          "latex": "\\vec{F}_B = q\\,\\vec{v}\\times\\vec{B}",
+          "meaning": "The magnetic force on a moving charge is perpendicular to both its velocity and the field; its size is |q|vB sin θ.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_B",
+              "name": "magnetic force on the charge",
+              "unit": "N"
+            },
+            {
+              "symbol": "q",
+              "name": "charge, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\vec{v}",
+              "name": "velocity of the charge",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{B}",
+              "name": "magnetic field at the charge",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "Finding the size or direction of the force on a charge moving through a known field.",
+          "notWhen": "Not for a charge at rest (the force is zero), and remember to reverse the right-hand-rule direction for a negative charge."
+        },
+        {
+          "latex": "r = \\frac{mv}{|q|B}",
+          "meaning": "A charge moving perpendicular to a uniform field travels in a circle of this radius.",
+          "variables": [
+            {
+              "symbol": "r",
+              "name": "radius of the circular path",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed (perpendicular to the field)",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "Uniform field, velocity perpendicular to it, no other force: mass spectrometers, cyclotrons, bending magnets.",
+          "notWhen": "If the velocity has a component along the field, use only the perpendicular component here; the path is then a helix."
+        },
+        {
+          "latex": "T = \\frac{2\\pi m}{|q|B}",
+          "meaning": "The time for one orbit depends on the particle and the field, not on how fast the particle moves.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period of the circular motion",
+              "unit": "s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "Timing an orbit or part of one (half a lap takes T/2).",
+          "notWhen": "Do not expect a faster particle to finish a lap sooner; it has a proportionally longer circle to cover."
+        },
+        {
+          "latex": "v = \\frac{E}{B}",
+          "meaning": "In perpendicular electric and magnetic fields, a charge with this speed feels zero net force and goes straight.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "speed that passes undeflected",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "E",
+              "name": "electric field",
+              "unit": "V/m"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "Crossed fields with the velocity perpendicular to both (a velocity selector).",
+          "notWhen": "Only when the electric and magnetic forces are opposite; check the directions first."
+        },
+        {
+          "latex": "V_H = v_d B w",
+          "meaning": "The Hall voltage across a current-carrying strip is the drift speed times the field times the strip's width.",
+          "variables": [
+            {
+              "symbol": "V_H",
+              "name": "Hall voltage between the strip's edges",
+              "unit": "V"
+            },
+            {
+              "symbol": "v_d",
+              "name": "drift speed of the charge carriers",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field perpendicular to the strip",
+              "unit": "T"
+            },
+            {
+              "symbol": "w",
+              "name": "width of the strip (edge to edge)",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A conductor carries current across a magnetic field and the sideways voltage has reached a steady value.",
+          "notWhen": "It is not the voltage that drives the current along the strip; it is measured across it."
+        }
+      ],
+      "derivation": "**The magnetic force does no work.** The power delivered to the charge is\n\n$$\nP = \\vec{F}_B\\cdot\\vec{v} = q(\\vec{v}\\times\\vec{B})\\cdot\\vec{v} = 0,\n$$\n\nbecause a cross product is perpendicular to both of its factors. So $dK/dt = P = 0$: the kinetic energy, and with it the speed, never changes.\n\n**Circular motion.** Let $\\vec{v}$ be perpendicular to a uniform $\\vec{B}$. The force has constant size $|q|vB$ and stays perpendicular to the velocity, as uniform circular motion requires. Newton's second law toward the centre gives\n\n$$\n|q|vB = \\frac{mv^2}{r} \\quad\\Rightarrow\\quad r = \\frac{mv}{|q|B}.\n$$\n\nOne lap covers $2\\pi r$ at speed $v$, so\n\n$$\nT = \\frac{2\\pi r}{v} = \\frac{2\\pi m}{|q|B}.\n$$\n\nThe speed cancels: a faster particle follows a bigger circle in the same time.\n\n**Hall voltage.** Carriers drift at speed $v_d$ along a strip of width $w$. The magnetic force pushes them sideways until the piled-up charge creates a field $E_H$ with $qE_H = qv_dB$. That field is uniform across the strip, so\n\n$$\nV_H = \\int_0^w E_H\\,dy = v_d B w .\n$$",
+      "workedExamples": [
+        {
+          "title": "An electron's circle",
+          "prompt": "An electron (mass $9.11\\times10^{-31}\\ \\text{kg}$, charge of magnitude $1.60\\times10^{-19}\\ \\text{C}$) moves at $2.4\\times10^{6}\\ \\text{m/s}$ at right angles to a uniform magnetic field of $1.5\\ \\text{mT}$. What is the radius of its path?",
+          "steps": [
+            "The velocity is perpendicular to the field, so the force has its full size $|q|vB$ and the electron moves in a circle.",
+            "$F = (1.60\\times10^{-19}\\ \\text{C})(2.4\\times10^{6}\\ \\text{m/s})(1.5\\times10^{-3}\\ \\text{T}) = 5.8\\times10^{-16}\\ \\text{N}$.",
+            "This force is the centripetal force: $|q|vB = \\dfrac{mv^2}{r}$, so $r = \\dfrac{mv}{|q|B}$.",
+            "$r = \\dfrac{(9.11\\times10^{-31}\\ \\text{kg})(2.4\\times10^{6}\\ \\text{m/s})}{(1.60\\times10^{-19}\\ \\text{C})(1.5\\times10^{-3}\\ \\text{T})} = 9.1\\times10^{-3}\\ \\text{m}$.",
+            "Check: one lap takes $T = 2\\pi r/v = 2.4\\times10^{-8}\\ \\text{s}$, at unchanging speed."
+          ],
+          "answer": "$r = 9.1\\ \\text{mm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 9.11e-31,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 2400000,
+                "unit": "m/s"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "B": {
+                "value": 1.5,
+                "unit": "mT"
+              }
+            },
+            "expr": "m*v/(q*B)",
+            "unit": "mm"
+          }
+        },
+        {
+          "title": "A velocity selector, then a bend",
+          "prompt": "Sodium ions (charge $+1.60\\times10^{-19}\\ \\text{C}$, mass $3.82\\times10^{-26}\\ \\text{kg}$) travel to the right through a region where a uniform electric field of $4.0\\times10^{4}\\ \\text{V/m}$ points down the page and a uniform magnetic field of $0.20\\ \\text{T}$ points into the page, as shown. Ions of one speed pass straight through, into a second region with the same magnetic field and no electric field. Determine that speed and the radius of the ions' path in the second region.\n\n```dg\nfield xr=-3..3 yr=-2..2\nuniform E down \"E\"\nuniform B in \"B\"\ntest 0,0 + \"+q\" v=right\n```",
+          "steps": [
+            "In the first region the electric force $qE$ points down the page and, by the right-hand rule, the magnetic force $qvB$ points up. An ion goes straight only if they balance: $qE = qvB$.",
+            "$v = \\dfrac{E}{B} = \\dfrac{4.0\\times10^{4}\\ \\text{V/m}}{0.20\\ \\text{T}} = 2.0\\times10^{5}\\ \\text{m/s}$. The charge cancels, so the fields select a speed, whatever the ion.",
+            "In the second region only the magnetic force acts, so the ions move in a circle at constant speed, with $qvB = \\dfrac{mv^2}{r}$.",
+            "$r = \\dfrac{mv}{qB} = \\dfrac{(3.82\\times10^{-26}\\ \\text{kg})(2.0\\times10^{5}\\ \\text{m/s})}{(1.60\\times10^{-19}\\ \\text{C})(0.20\\ \\text{T})} = 0.24\\ \\text{m}$."
+          ],
+          "answer": "$v = 2.0 \\times 10^{5}\\ \\text{m/s}$ and $r = 0.24\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 3.82e-26,
+                "unit": "kg"
+              },
+              "E": {
+                "value": 40000,
+                "unit": "V/m"
+              },
+              "B": {
+                "value": 0.2,
+                "unit": "T"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              }
+            },
+            "expr": "m*(E/B)/(q*B)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "magnetic-force-along-field",
+          "wrong": "A magnetic field pushes a positive charge along the field, the way an electric field does.",
+          "right": "The magnetic force is perpendicular to the field and to the velocity. A charge moving along the field feels no force at all."
+        },
+        {
+          "tag": "magnetic-force-does-work",
+          "wrong": "A stronger magnetic field makes the particle go faster round its circle.",
+          "right": "The magnetic force does no work, so the speed stays the same. A stronger field gives a tighter circle and a shorter period, at the same speed."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "An electron and a proton moving the same way through the same field are deflected the same way.",
+          "right": "The force is $q\\vec{v}\\times\\vec{B}$, so reversing the sign of $q$ reverses the force. They curve in opposite senses."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A proton moves horizontally toward the north in a region where the magnetic field points vertically downward. Which way is the magnetic force on it?",
+          "a": "West. With fingers pointing north and curling downward, the right thumb points west, and the proton is positive."
+        },
+        {
+          "q": "Two protons circle in the same uniform field, one at twice the speed of the other. Compare their radii and their periods.",
+          "a": "The faster one has twice the radius, since $r = mv/(|q|B)$. The periods are equal, since $T = 2\\pi m/(|q|B)$ has no $v$ in it."
+        },
+        {
+          "q": "Current flows to the right along a metal strip in a field directed into the page, and the top edge of the strip becomes negative. What is the sign of the charge carriers?",
+          "a": "Negative. Electrons carrying a current to the right move left, and $q\\vec{v}\\times\\vec{B}$ pushes them up the page, onto the top edge. Positive carriers would also be pushed up, making the top positive."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-3..3 yr=-2..2\nuniform B in \"B\"\ntest 0,0 + \"+q\" v={{a}}",
+        "caption": "Turn the velocity of a positive charge in a field that points into the page. The force arrow turns with it, always a quarter turn ahead: perpendicular to the velocity whatever its direction.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Direction of the velocity",
+            "min": 0,
+            "max": 345,
+            "step": 15,
+            "default": 30,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "12.1"
+      ],
+      "teacherNotes": "Have every student commit to one right-hand rule and use it aloud, with the negative-charge reversal as a separate final step; mixing rules is the main source of direction errors. \"Does the magnetic force do work?\" is worth asking before any circular-motion problem, because students who say yes will try to change the speed. For the Hall effect, ask which edge charges up for positive and then for negative carriers with the same current: both drift to the same edge, which is why the sign of $V_H$ identifies the carrier. Set 12B covers cross-product forces, circular paths, the mass spectrometer and the Hall effect."
+    },
+    {
+      "topic": "12.3",
+      "bigIdea": "Every short piece of a current makes a magnetic field that circles it, and adding those pieces by integration gives the field of a whole wire, which in turn pushes on any other current placed in it.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\nwire 0,0 out \"I\"\npt 1.5,0 \"P\"\npt 3,0 \"Q\"",
+        "caption": "A long straight wire seen end-on, with its current coming out of the page. The field lines are circles round the wire, counterclockwise: point your right thumb along the current and your fingers curl with $\\vec{B}$. Q is twice as far from the wire as P, so the field at Q is half as strong."
+      },
+      "explanation": "The Biot–Savart law gives the field made by a short element $d\\vec{\\ell}$ of a wire carrying current $I$: $d\\vec{B} = \\dfrac{\\mu_0}{4\\pi}\\dfrac{I\\,d\\vec{\\ell}\\times\\hat{r}}{r^2}$, where $\\hat{r}$ points from the element to the place where you want the field and $r$ is the distance between them. The cross product makes $d\\vec{B}$ perpendicular both to the element and to the line joining it to the point, and zero for points straight ahead of or behind the element. The field of a whole wire is the vector sum, an integral, of these contributions.\n\nFor a long straight wire the integral gives $B = \\mu_0 I/(2\\pi r)$: circles round the wire, weakening as $1/r$ (not $1/r^2$, because the sum runs over a whole line of elements). At the centre of a circular arc of radius $R$ and angle $\\phi$, $B = \\mu_0 I\\phi/(4\\pi R)$, which is $\\mu_0 I/(2R)$ for a full loop.\n\nA wire in a magnetic field feels the total force on its moving charges: $d\\vec{F} = I\\,d\\vec{\\ell}\\times\\vec{B}$ on each element, and $\\vec{F} = I\\vec{L}\\times\\vec{B}$, of size $ILB\\sin\\theta$, on a straight length $L$ in a uniform field.\n\nNow take two long parallel wires a distance $d$ apart. Wire 1 makes a field $\\mu_0 I_1/(2\\pi d)$ at wire 2, perpendicular to it, so each length $L$ of wire 2 feels a force $\\mu_0 I_1 I_2 L/(2\\pi d)$. The directions work out so that currents in the same direction attract and opposite currents repel.",
+      "equations": [
+        {
+          "latex": "d\\vec{B} = \\frac{\\mu_0}{4\\pi}\\,\\frac{I\\,d\\vec{\\ell}\\times\\hat{r}}{r^2}",
+          "meaning": "The Biot–Savart law: the field made by one short element of a current.",
+          "variables": [
+            {
+              "symbol": "d\\vec{B}",
+              "name": "field contributed by the element",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space, 4π × 10⁻⁷",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "d\\vec{\\ell}",
+              "name": "short element of the wire, along the current",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\hat{r}",
+              "name": "unit vector from the element to the field point",
+              "unit": ""
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the element to the field point",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The current has no symmetry that Ampère's law can use: finite segments, arcs, the centre or axis of a loop.",
+          "notWhen": "It gives one element's contribution, not the wire's field. You must integrate, adding the contributions as vectors."
+        },
+        {
+          "latex": "B = \\frac{\\mu_0 I}{2\\pi r}",
+          "meaning": "The field a distance r from a long straight wire; it circles the wire.",
+          "variables": [
+            {
+              "symbol": "B",
+              "name": "magnetic field",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "r",
+              "name": "perpendicular distance from the wire",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The wire is long compared with the distance to the point, and the point is not near its ends.",
+          "notWhen": "Not for a short segment or a point beyond the end of a wire."
+        },
+        {
+          "latex": "B = \\frac{\\mu_0 I \\phi}{4\\pi R}",
+          "meaning": "The field at the centre of a circular arc; a full loop has φ = 2π and gives μ₀I/(2R).",
+          "variables": [
+            {
+              "symbol": "B",
+              "name": "magnetic field at the centre of the arc",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the arc",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "angle the arc subtends at its centre",
+              "unit": "rad"
+            },
+            {
+              "symbol": "R",
+              "name": "radius of the arc",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The field point is the centre of curvature of a circular loop or arc.",
+          "notWhen": "Not for points off the centre, and the angle must be in radians."
+        },
+        {
+          "latex": "\\vec{F} = I\\vec{L}\\times\\vec{B}",
+          "meaning": "The force on a straight wire in a uniform field; its size is ILB sin θ.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}",
+              "name": "magnetic force on the wire",
+              "unit": "N"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\vec{L}",
+              "name": "length of the wire, pointing along the current",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\vec{B}",
+              "name": "external magnetic field at the wire",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "A straight wire, or one straight side of a loop, sits in a field made by something else.",
+          "notWhen": "Do not include the wire's own field. For a curved wire or a non-uniform field, integrate the force on each element."
+        },
+        {
+          "latex": "\\frac{F}{L} = \\frac{\\mu_0 I_1 I_2}{2\\pi d}",
+          "meaning": "The force on each unit length of two long parallel wires: attractive for currents in the same direction.",
+          "variables": [
+            {
+              "symbol": "F",
+              "name": "force on a length L of either wire",
+              "unit": "N"
+            },
+            {
+              "symbol": "L",
+              "name": "length of wire considered",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I_1,\\ I_2",
+              "name": "currents in the two wires",
+              "unit": "A"
+            },
+            {
+              "symbol": "d",
+              "name": "distance between the wires",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two long, straight, parallel wires.",
+          "notWhen": "Not for wires that cross or are short compared with their separation."
+        }
+      ],
+      "derivation": "**A long straight wire.** Lay the wire along the $x$-axis with current $I$ in the $+x$ direction, and find the field at a point P a perpendicular distance $a$ from it. An element $dx$ at position $x$ is a distance $r = \\sqrt{x^2 + a^2}$ from P, and the angle $\\theta$ between the element and the line to P has $\\sin\\theta = a/r$. Every contribution at P points the same way, so the sizes add:\n\n$$\ndB = \\frac{\\mu_0 I}{4\\pi}\\,\\frac{dx\\,\\sin\\theta}{r^2} = \\frac{\\mu_0 I}{4\\pi}\\,\\frac{a\\,dx}{(x^2 + a^2)^{3/2}} .\n$$\n\nIntegrate over the whole wire, using $\\displaystyle\\int \\frac{dx}{(x^2+a^2)^{3/2}} = \\frac{x}{a^2\\sqrt{x^2+a^2}}$, which goes from $-1/a^2$ to $+1/a^2$:\n\n$$\nB = \\frac{\\mu_0 I a}{4\\pi}\\cdot\\frac{2}{a^2} = \\frac{\\mu_0 I}{2\\pi a} .\n$$\n\n**The centre of a loop.** Every element of a circular loop is perpendicular to $\\hat{r}$ and the same distance $R$ from the centre, and all the contributions point along the loop's axis. So\n\n$$\nB = \\frac{\\mu_0 I}{4\\pi R^2}\\oint d\\ell = \\frac{\\mu_0 I}{4\\pi R^2}(2\\pi R) = \\frac{\\mu_0 I}{2R} .\n$$\n\nAn arc of angle $\\phi$ has length $R\\phi$ instead of $2\\pi R$, which gives $B = \\mu_0 I\\phi/(4\\pi R)$.",
+      "workedExamples": [
+        {
+          "title": "A wire with a semicircular detour",
+          "prompt": "A long wire carrying $8.0\\ \\text{A}$ lies along a straight line, except that at its middle it detours round a semicircle of radius $5.0\\ \\text{cm}$ whose centre C is on that line. The current goes round the semicircle clockwise as seen on the page. Find the magnitude and direction of the magnetic field at C.",
+          "steps": [
+            "Add the fields at C of three pieces: two straight sections and the semicircle.",
+            "Every element of the straight sections points directly toward or away from C, so $d\\vec{\\ell}\\times\\hat{r} = 0$: they contribute nothing.",
+            "Every element of the semicircle is perpendicular to $\\hat{r}$ and a distance $R$ from C, so $B = \\dfrac{\\mu_0 I}{4\\pi R^2}\\displaystyle\\int d\\ell = \\dfrac{\\mu_0 I}{4\\pi R^2}(\\pi R) = \\dfrac{\\mu_0 I}{4R}$, half the field of a full loop.",
+            "$B = \\dfrac{(4\\pi\\times10^{-7}\\ \\text{T·m/A})(8.0\\ \\text{A})}{4(0.050\\ \\text{m})} = 5.0\\times10^{-5}\\ \\text{T}$.",
+            "Direction: curl your right fingers clockwise with the current; your thumb points into the page."
+          ],
+          "answer": "$B = 5.0 \\times 10^{-5}\\ \\text{T}$, into the page",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "mu0": {
+                "value": 0.0000012566,
+                "unit": "T·m/A"
+              },
+              "I": {
+                "value": 8,
+                "unit": "A"
+              },
+              "R": {
+                "value": 5,
+                "unit": "cm"
+              }
+            },
+            "expr": "mu0*I/(4*R)",
+            "unit": "T"
+          }
+        },
+        {
+          "title": "Floating one wire above another",
+          "prompt": "A long wire fixed to a bench carries $80\\ \\text{A}$ out of the page. A second long wire, with a mass of $5.0\\ \\text{g}$ per metre, is to float $1.0\\ \\text{cm}$ directly above the first and parallel to it, held up only by the magnetic force between them. Determine the direction and the size of the current the upper wire must carry.",
+          "steps": [
+            "The magnetic force on the upper wire must point up, away from the lower wire, to balance gravity. Opposite currents repel, so the upper current must be into the page. Check: the lower wire's field points left at the upper wire, and a current into the page in a field to the left is pushed up.\n\n```dg\nfield xr=-3..3 yr=-2..3\nwire 0,0 out \"80 A\"\nwire 0,1.5 in \"I_2\"\n```",
+            "Balance the forces on a length $L$ of the upper wire: $\\dfrac{\\mu_0 I_1 I_2}{2\\pi d}L = \\lambda L g$, where $\\lambda = 5.0\\times10^{-3}\\ \\text{kg/m}$ is its mass per metre.",
+            "$I_2 = \\dfrac{2\\pi d\\,\\lambda g}{\\mu_0 I_1} = \\dfrac{2\\pi(0.010\\ \\text{m})(5.0\\times10^{-3}\\ \\text{kg/m})(9.8\\ \\text{m/s}^2)}{(4\\pi\\times10^{-7}\\ \\text{T·m/A})(80\\ \\text{A})} = 31\\ \\text{A}$."
+          ],
+          "answer": "$I_2 = 31\\ \\text{A}$, into the page",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "mu0": {
+                "value": 0.0000012566,
+                "unit": "T·m/A"
+              },
+              "I1": {
+                "value": 80,
+                "unit": "A"
+              },
+              "d": {
+                "value": 1,
+                "unit": "cm"
+              },
+              "lam": {
+                "value": 5,
+                "unit": "g/m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "2*pi*d*lam*g/(mu0*I1)",
+            "unit": "A"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "wire-field-not-circular",
+          "wrong": "The magnetic field of a wire points straight out from the wire, like the electric field of a line of charge.",
+          "right": "It circles the wire. At every point the field is perpendicular both to the wire and to the line from the wire to that point."
+        },
+        {
+          "tag": "wire-field-not-circular",
+          "wrong": "Two parallel wires with currents in the same direction repel, just as like charges do.",
+          "right": "They attract. Each wire sits in the other's circling field, and the force on it points toward the other wire. Opposite currents repel."
+        },
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "The wire with the larger current pulls harder on the other wire.",
+          "right": "The forces are a third-law pair. Each has size $\\mu_0 I_1 I_2 L/(2\\pi d)$, which contains both currents."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A long wire in the plane of the page carries current toward the top of the page. Which way does its field point just to the right of the wire?",
+          "a": "Into the page. With the right thumb along the current, the fingers go into the page on the right of the wire."
+        },
+        {
+          "q": "The field $2.0\\ \\text{cm}$ from a long straight wire is $40\\ \\mu\\text{T}$. What is it $8.0\\ \\text{cm}$ from the wire?",
+          "a": "$10\\ \\mu\\text{T}$. The field of a long wire varies as $1/r$, so four times the distance gives a quarter of the field."
+        },
+        {
+          "q": "The currents in two long parallel wires are both doubled, and the wires are moved twice as far apart. What happens to the force between them?",
+          "a": "It doubles. The force per length is proportional to $I_1 I_2/d$, which changes by $(2)(2)/2 = 2$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4..4 yr=-3..3\nwire -1.5,0 out \"I_1\"\nwire 1.5,0 out {{k}} \"I_2\"\npt {{-1.5+3/(1+k)}},0 \"B = 0\"",
+        "caption": "Two parallel wires carry current out of the page. Between them their fields point opposite ways and cancel at one point. Change the ratio $I_2/I_1$: that point moves toward the wire with the smaller current, and far away the lines look like those of a single wire.",
+        "params": [
+          {
+            "name": "k",
+            "label": "Current ratio I₂/I₁",
+            "min": 0.5,
+            "max": 2,
+            "step": 0.25,
+            "default": 1,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.4",
+        "12.1",
+        "12.2"
+      ],
+      "teacherNotes": "Before integrating anything, ask students for the direction of $d\\vec{B}$ from one element and whether all the elements agree; when they do (straight wire, centre of a loop) the vector integral becomes an ordinary one, and when they do not, components are needed. Students often quote $\\mu_0 I/(2\\pi r)$ for any wire, so include at least one finite piece or arc. For parallel wires, have them find the direction from the field and the force rule, not from an analogy with charges, which gives the wrong answer. Set 12C practises Biot–Savart integrals, arcs and forces between wires."
+    },
+    {
+      "topic": "12.4",
+      "bigIdea": "Around any closed path, the magnetic field added up along the path equals $\\mu_0$ times the current passing through the path, which gives the field directly whenever the current is symmetric enough.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\nwire 0,0 out \"I\"\ngauss circle 0,0 2.3 \"Amperian loop\"",
+        "caption": "A long wire carries current out of the page. The dashed circle is an Amperian loop: an imaginary closed path chosen to follow a field line. The field is tangent to it and equally strong all the way round, so the integral of $\\vec{B}$ along it is just $B(2\\pi r)$."
+      },
+      "explanation": "Ampère's law says that for any closed path, $\\oint \\vec{B}\\cdot d\\vec{\\ell} = \\mu_0 I_{\\text{enc}}$. The left side walks once round the path, adding up the component of $\\vec{B}$ along each step. The right side counts the net current that pierces the surface spanned by the path: curl your right fingers the way you walk, and currents along your thumb count as positive. Currents outside the path still affect $\\vec{B}$ on it, but their contributions to the integral cancel.\n\nThe law holds for every steady current, but it yields $B$ only when symmetry lets you pick a path, an Amperian loop, on which $\\vec{B}$ is either tangent with constant size or contributes nothing. Then the integral becomes $B$ times a length. For a long straight wire the loop is a circle of radius $r$: $B(2\\pi r) = \\mu_0 I$, the Biot–Savart result in one line.\n\nOnly the enclosed current counts. Inside a thick wire of radius $R$ with uniformly spread current, a circle of radius $r < R$ encloses the fraction $r^2/R^2$ of the current, so the field rises in proportion to $r$, peaks at the surface, and falls as $1/r$ outside. If the current density $J$ varies with radius, integrate $J$ over the area inside the loop.\n\nA long solenoid, a tightly wound coil with $n$ turns per metre, has a nearly uniform field along its axis inside and almost none outside. A rectangular loop that straddles the windings gives $B = \\mu_0 n I$, the same at every point inside, whatever the solenoid's radius.",
+      "equations": [
+        {
+          "latex": "\\oint \\vec{B}\\cdot d\\vec{\\ell} = \\mu_0 I_{\\text{enc}}",
+          "meaning": "Ampère's law: the field summed along a closed path equals μ₀ times the net current through the path.",
+          "variables": [
+            {
+              "symbol": "\\vec{B}",
+              "name": "magnetic field on the path",
+              "unit": "T"
+            },
+            {
+              "symbol": "d\\vec{\\ell}",
+              "name": "short step along the closed path",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space, 4π × 10⁻⁷",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I_{\\text{enc}}",
+              "name": "net current through the surface the path bounds",
+              "unit": "A"
+            }
+          ],
+          "useWhen": "Steady currents with cylindrical or planar symmetry: long wires, thick wires, coaxial cables, solenoids.",
+          "notWhen": "It cannot be solved for B when there is no path on which B is constant: short segments, a single loop. Use Biot–Savart there."
+        },
+        {
+          "latex": "I_{\\text{enc}} = \\int_0^{r} J(r')\\,2\\pi r'\\,dr'",
+          "meaning": "The current inside a circle of radius r, found by adding thin rings of current.",
+          "variables": [
+            {
+              "symbol": "I_{\\text{enc}}",
+              "name": "current enclosed by the circular path",
+              "unit": "A"
+            },
+            {
+              "symbol": "J",
+              "name": "current density at radius r′",
+              "unit": "A/m^2"
+            },
+            {
+              "symbol": "r,\\ r'",
+              "name": "radius of the path; radius of a thin ring inside it",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The path lies inside a conductor, especially when the current density depends on radius.",
+          "notWhen": "Once the path is outside the conductor, stop the integral at the conductor's surface: the enclosed current is the whole current."
+        },
+        {
+          "latex": "B = \\frac{\\mu_0 I r}{2\\pi R^2}",
+          "meaning": "The field inside a long wire of radius R carrying uniformly distributed current I; outside, B = μ₀I/(2πr).",
+          "variables": [
+            {
+              "symbol": "B",
+              "name": "magnetic field at radius r",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I",
+              "name": "total current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the wire's axis (r ≤ R)",
+              "unit": "m"
+            },
+            {
+              "symbol": "R",
+              "name": "radius of the wire",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A point inside a solid wire whose current is spread evenly over its cross-section.",
+          "notWhen": "Not if the current density varies with radius, and not outside the wire."
+        },
+        {
+          "latex": "B = \\mu_0 n I",
+          "meaning": "The uniform field inside a long solenoid.",
+          "variables": [
+            {
+              "symbol": "B",
+              "name": "magnetic field inside the solenoid",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "n",
+              "name": "number of turns per unit length (N/L)",
+              "unit": "1/m"
+            },
+            {
+              "symbol": "I",
+              "name": "current in each turn",
+              "unit": "A"
+            }
+          ],
+          "useWhen": "Well inside a solenoid that is long compared with its diameter.",
+          "notWhen": "Near the ends the field is weaker (about half at the very end), and n is turns per metre, not the total number of turns."
+        }
+      ],
+      "derivation": "**Inside a thick wire.** A long straight wire of radius $R$ carries current $I$ spread uniformly, so its current density is $J = I/(\\pi R^2)$. By symmetry $\\vec{B}$ is tangent to circles centred on the axis and has the same size all round each one. For such a circle of radius $r < R$,\n\n$$\n\\oint \\vec{B}\\cdot d\\vec{\\ell} = B(2\\pi r), \\qquad I_{\\text{enc}} = \\int_0^{r} J\\,2\\pi r'\\,dr' = J\\pi r^2 = I\\,\\frac{r^2}{R^2} .\n$$\n\nAmpère's law then gives\n\n$$\nB(2\\pi r) = \\mu_0 I\\,\\frac{r^2}{R^2} \\quad\\Rightarrow\\quad B = \\frac{\\mu_0 I r}{2\\pi R^2} .\n$$\n\nFor $r > R$ the loop encloses all of the current and $B = \\mu_0 I/(2\\pi r)$. The two expressions agree at $r = R$.\n\n**A long solenoid.** Take a rectangular path of length $\\ell$ with one long side inside the solenoid, parallel to its axis, and the other outside. The inside edge contributes $B\\ell$. The outside edge contributes nothing, because the field there is negligible, and neither do the short edges, because inside the solenoid $\\vec{B}$ is perpendicular to them. The rectangle is pierced by $n\\ell$ turns, each carrying $I$:\n\n$$\nB\\ell = \\mu_0 (n\\ell) I \\quad\\Rightarrow\\quad B = \\mu_0 n I .\n$$",
+      "workedExamples": [
+        {
+          "title": "Inside and outside a coaxial cable",
+          "prompt": "A coaxial cable has a thin central wire carrying $6.0\\ \\text{A}$ out of the page and a thin cylindrical outer conductor of radius $3.0\\ \\text{mm}$ carrying $6.0\\ \\text{A}$ back into the page. Find the magnetic field at a point $2.0\\ \\text{mm}$ from the axis, between the conductors, and at a point $5.0\\ \\text{mm}$ from the axis, outside the cable.",
+          "steps": [
+            "By symmetry the field lines are circles round the axis, with $B$ the same size all round each one. Use a circle of radius $r$ as the Amperian loop: $\\oint \\vec{B}\\cdot d\\vec{\\ell} = B(2\\pi r)$.",
+            "A circle of radius $2.0\\ \\text{mm}$ is pierced only by the central wire, so $I_{\\text{enc}} = 6.0\\ \\text{A}$ and $B(2\\pi r) = \\mu_0 I_{\\text{enc}}$.",
+            "$B = \\dfrac{(4\\pi\\times10^{-7}\\ \\text{T·m/A})(6.0\\ \\text{A})}{2\\pi(2.0\\times10^{-3}\\ \\text{m})} = 6.0\\times10^{-4}\\ \\text{T}$, circling counterclockwise.",
+            "A circle of radius $5.0\\ \\text{mm}$ is pierced by both conductors, with opposite currents: $I_{\\text{enc}} = 6.0 - 6.0 = 0$. So $B(2\\pi r) = 0$ and, by the symmetry, $B = 0$ at every point outside the cable."
+          ],
+          "answer": "$B = 6.0 \\times 10^{-4}\\ \\text{T}$ between the conductors; zero outside the cable",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "mu0": {
+                "value": 0.0000012566,
+                "unit": "T·m/A"
+              },
+              "I": {
+                "value": 6,
+                "unit": "A"
+              },
+              "r": {
+                "value": 2,
+                "unit": "mm"
+              }
+            },
+            "expr": "mu0*I/(2*pi*r)",
+            "unit": "T"
+          }
+        },
+        {
+          "title": "A wire with non-uniform current density",
+          "prompt": "A long straight wire of radius $4.0\\ \\text{mm}$ carries a current whose density increases with distance $r$ from the axis as $J = \\alpha r$, where $\\alpha = 2.0\\times10^{6}\\ \\text{A/m}^3$. Derive an expression for the magnetic field inside the wire, and calculate the field $2.0\\ \\text{mm}$ from the axis.",
+          "steps": [
+            "The current is symmetric about the axis, so take a circle of radius $r$, inside the wire, as the Amperian loop: $\\oint \\vec{B}\\cdot d\\vec{\\ell} = B(2\\pi r)$.",
+            "$J$ changes with radius, so the enclosed current must be integrated. A thin ring of radius $r'$ and width $dr'$ has area $2\\pi r'\\,dr'$ and carries $dI = (\\alpha r')(2\\pi r'\\,dr')$. So $I_{\\text{enc}} = \\displaystyle\\int_0^{r} 2\\pi\\alpha r'^2\\,dr' = \\tfrac{2}{3}\\pi\\alpha r^3$.",
+            "Ampère's law: $B(2\\pi r) = \\mu_0\\,\\tfrac{2}{3}\\pi\\alpha r^3$, so $B = \\tfrac{1}{3}\\mu_0\\alpha r^2$.",
+            "At $r = 2.0\\ \\text{mm}$: $B = \\tfrac{1}{3}(4\\pi\\times10^{-7}\\ \\text{T·m/A})(2.0\\times10^{6}\\ \\text{A/m}^3)(2.0\\times10^{-3}\\ \\text{m})^2 = 3.4\\times10^{-6}\\ \\text{T}$."
+          ],
+          "answer": "$B = \\tfrac{1}{3}\\mu_0\\alpha r^2$, which is $3.4 \\times 10^{-6}\\ \\text{T}$ at $r = 2.0\\ \\text{mm}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "mu0": {
+                "value": 0.0000012566,
+                "unit": "T·m/A"
+              },
+              "alpha": {
+                "value": 2000000,
+                "unit": "A/m^3"
+              },
+              "r": {
+                "value": 2,
+                "unit": "mm"
+              }
+            },
+            "expr": "mu0*alpha*r^2/3",
+            "unit": "T"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "enclosed-charge-or-current-wrong",
+          "wrong": "For a point inside a thick wire, put the wire's whole current into Ampère's law.",
+          "right": "Only the current inside the Amperian loop counts. For a uniform wire that is $I r^2/R^2$."
+        },
+        {
+          "tag": "ampere-law-without-symmetry",
+          "wrong": "For a short straight piece of wire, Ampère's law gives $B(2\\pi r) = \\mu_0 I$ too.",
+          "right": "The law still holds, but $B$ comes out of the integral only when symmetry makes it constant along the path. For a short segment it is not, and the Biot–Savart law is needed."
+        },
+        {
+          "wrong": "If a path encloses no net current, the magnetic field is zero everywhere on it.",
+          "right": "Only the integral round the path is zero. A loop drawn beside a wire has field all along it; the parts where $\\vec{B}$ runs with the path cancel the parts where it runs against."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A solenoid $25\\ \\text{cm}$ long has $400$ turns and carries $3.0\\ \\text{A}$. What is the field inside it?",
+          "a": "$n = 400/(0.25\\ \\text{m}) = 1600\\ \\text{m}^{-1}$, so $B = \\mu_0 n I = (4\\pi\\times10^{-7})(1600)(3.0) = 6.0\\times10^{-3}\\ \\text{T}$."
+        },
+        {
+          "q": "A closed path surrounds two wires: one carries $5\\ \\text{A}$ out of the page, the other $3\\ \\text{A}$ into it. What is $\\oint \\vec{B}\\cdot d\\vec{\\ell}$ taken counterclockwise round the path?",
+          "a": "Counterclockwise makes out-of-the-page positive, so $I_{\\text{enc}} = 5 - 3 = 2\\ \\text{A}$ and the integral is $\\mu_0(2\\ \\text{A}) = 2.5\\times10^{-6}\\ \\text{T·m}$."
+        },
+        {
+          "q": "For a long solid wire with uniformly distributed current, where is the magnetic field strongest, and why?",
+          "a": "At the surface. Inside, the enclosed current grows as $r^2$ while the path length grows as $r$, so $B$ rises; outside, the enclosed current stops growing and $B$ falls as $1/r$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[mm] y=B[mT] xr=-1.5,12 yr=0,1.25\nseg 0,0 4,1\nfn 4/r 4..12\nvl 4 \"surface\"\nvl {{r}}\nxt 0 2 4 6 8 10 12\nyt 0 0.5 1\nnote 9,1.12 \"I_{enc} = {{round(200*min(r*r/16,1))/10}} A\"\nnote 9,0.95 \"B = {{round(100*min(r/4,4/r))/100}} mT\"",
+        "caption": "A wire of radius $4\\ \\text{mm}$ carries $20\\ \\text{A}$ spread uniformly. Slide the radius of the Amperian loop: inside the wire the enclosed current, and so the field, grows; once the loop is outside, the enclosed current stays at $20\\ \\text{A}$ and the field falls as $1/r$.",
+        "params": [
+          {
+            "name": "r",
+            "label": "Radius of the Amperian loop",
+            "min": 0.5,
+            "max": 11.5,
+            "step": 0.5,
+            "default": 2,
+            "unit": "mm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.6",
+        "12.3"
+      ],
+      "teacherNotes": "Run Ampère's law in parallel with Gauss's law: same three steps (argue the symmetry, choose the loop, find what is enclosed), and the same two errors (using it without symmetry, and using the total instead of the enclosed amount). Ask students to say in words why $B$ comes out of the integral before they write $B(2\\pi r)$. Problems with $J(r)$ are the usual free-response version; the ring element $2\\pi r'\\,dr'$ is where most slips happen. Set 12D covers thick wires, coaxial conductors and solenoids."
+    }
+  ]
+}
