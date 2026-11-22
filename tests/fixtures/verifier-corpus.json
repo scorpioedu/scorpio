@@ -577,7 +577,7 @@
       "course": "ap-physics-c-mech",
       "type": "numeric",
       "basis": "spec",
-      "questionChanged": false,
+      "questionChanged": true,
       "fixed": {
         "recompute": "pass",
         "spec-matches-text": "pass",
@@ -587,12 +587,12 @@
       },
       "original": {
         "recompute": "fail",
-        "spec-matches-text": "pass",
+        "spec-matches-text": "fail",
         "solution-consistent": "fail",
         "grader-round-trip": "pass",
         "near-duplicate": "pass"
       },
-      "caughtBy": ["recompute", "solution-consistent"]
+      "caughtBy": ["recompute", "spec-matches-text", "solution-consistent"]
     },
     {
       "id": "sOYiKKmOs7FGDpN3QIhR",
