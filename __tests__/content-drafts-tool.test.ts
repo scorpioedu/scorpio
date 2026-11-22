@@ -21,7 +21,7 @@ describeWithContent("content-drafts tool", () => {
 
   test("import writes approved, unpublished, unassigned drafts and keeps the AI-review mark", () => {
     const now = new Date("2026-12-01T00:00:00Z");
-    const doc = toImportDoc({ ...file.drafts[0], status: "published" }, now);
+    const doc = toImportDoc({ ...file.drafts[0], status: "published", reviewKind: "ai" }, now);
     expect(doc).toMatchObject({
       status: "approved",
       assignmentId: null,
