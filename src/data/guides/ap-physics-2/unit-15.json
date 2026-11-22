@@ -1,0 +1,1565 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 15,
+  "guides": [
+    {
+      "topic": "15.1",
+      "bigIdea": "Light and matter each show both wave and particle behaviour: light arrives in packets called photons whose energy is set by its frequency, and every moving particle has a wavelength set by its momentum.",
+      "picture": {
+        "diagram": "plot x=λ[nm] y=E[eV] xr=0,800 yr=0,7\nfn 1240/x 180..800\npt 400,3.1 \"violet\"\npt 700,1.77 \"red\"\nxt 200 400 700\nyt 1.77 3.1 6.2",
+        "caption": "The energy of one photon against its wavelength, $E = hc/\\lambda$. Halving the wavelength doubles the energy: a $700\\ \\text{nm}$ red photon carries about $1.8\\ \\text{eV}$, a $400\\ \\text{nm}$ violet photon $3.1\\ \\text{eV}$ and a $200\\ \\text{nm}$ ultraviolet photon $6.2\\ \\text{eV}$."
+      },
+      "explanation": "In Unit 14 light was a wave: it diffracts through slits and interferes with itself. Yet when light gives energy to matter, it does so in lumps. Each lump is a **photon**, and its energy depends only on the light's frequency: $E = hf$, where $h = 6.63 \\times 10^{-34}\\ \\text{J·s}$ is Planck's constant. Because $c = f\\lambda$ for any light wave, the same energy can be written $E = hc/\\lambda$. Photon energies are tiny, so they are usually quoted in electronvolts ($1\\ \\text{eV} = 1.60 \\times 10^{-19}\\ \\text{J}$), and the shortcut $hc = 1240\\ \\text{eV·nm}$ saves a lot of arithmetic: a $620\\ \\text{nm}$ photon carries $1240/620 = 2.0\\ \\text{eV}$.\n\nA brighter beam of the same colour does not have more energetic photons. It has more of them arriving each second. The colour (frequency) fixes the energy of each photon; the brightness (intensity) fixes how many there are. A photon has no mass and always travels at $c$, but it does carry momentum, $p = h/\\lambda$, which is why light can push on things.\n\nIn 1924 Louis de Broglie proposed the reverse: if waves can act like particles, particles should act like waves. A particle with momentum $p = mv$ has a wavelength $\\lambda = h/p$. For an electron this is about the spacing between atoms in a crystal, and electrons fired at a crystal really do form a diffraction pattern. For a baseball the wavelength is around $10^{-34}\\ \\text{m}$, far too small for any opening to reveal, which is why everyday objects never seem wavy.\n\nNeither model is the whole story. Use the wave model to predict where light or electrons go (through slits, around edges, into bright and dark fringes). Use the particle model when they exchange energy or momentum with matter, one photon or one electron at a time.",
+      "equations": [
+        {
+          "latex": "E = hf = \\frac{hc}{\\lambda}",
+          "meaning": "The energy of one photon is Planck's constant times the light's frequency, or hc divided by its wavelength.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "energy of one photon",
+              "unit": "J or eV"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "J·s (6.63 × 10⁻³⁴) or eV·s (4.14 × 10⁻¹⁵)"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency of the light",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the light",
+              "unit": "m or nm"
+            }
+          ],
+          "useWhen": "You know the frequency or wavelength of light and need the energy of each photon (or the reverse).",
+          "notWhen": "Do not use it for the total energy of a beam, which also depends on how many photons there are, or for a particle with mass."
+        },
+        {
+          "latex": "p = \\frac{h}{\\lambda}",
+          "meaning": "A photon's momentum is Planck's constant divided by its wavelength.",
+          "variables": [
+            {
+              "symbol": "p",
+              "name": "momentum of the photon",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "J·s"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the light",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A photon collides with or pushes on something and you need its momentum.",
+          "notWhen": "Do not write a photon's momentum as mv: a photon has no mass."
+        },
+        {
+          "latex": "\\lambda = \\frac{h}{p} = \\frac{h}{mv}",
+          "meaning": "A moving particle has a de Broglie wavelength equal to Planck's constant divided by its momentum.",
+          "variables": [
+            {
+              "symbol": "\\lambda",
+              "name": "de Broglie wavelength of the particle",
+              "unit": "m"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "J·s"
+            },
+            {
+              "symbol": "p",
+              "name": "momentum of the particle",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the particle",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You want to know whether a particle such as an electron will show diffraction or interference.",
+          "notWhen": "The form with mv needs a speed well below c. And the wavelength is not the shape of the particle's path."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Counting photons from a laser pointer",
+          "prompt": "A red laser pointer emits $5.0\\ \\text{mW}$ of light with wavelength $650\\ \\text{nm}$. How many photons does it emit each second? Use $h = 6.63 \\times 10^{-34}\\ \\text{J·s}$ and $c = 3.00 \\times 10^{8}\\ \\text{m/s}$.",
+          "steps": [
+            "Find the energy of one photon. The wavelength is $650\\ \\text{nm} = 6.50 \\times 10^{-7}\\ \\text{m}$, so $E = \\dfrac{hc}{\\lambda} = \\dfrac{(6.63 \\times 10^{-34})(3.00 \\times 10^{8})}{6.50 \\times 10^{-7}} = 3.06 \\times 10^{-19}\\ \\text{J}$.",
+            "Read the power as energy per second: $5.0\\ \\text{mW} = 5.0 \\times 10^{-3}\\ \\text{J}$ every second.",
+            "Divide the energy delivered each second by the energy of one photon: $\\dfrac{5.0 \\times 10^{-3}\\ \\text{J/s}}{3.06 \\times 10^{-19}\\ \\text{J}} = 1.6 \\times 10^{16}$ photons per second.",
+            "Check that it is sensible: a photon's energy is tiny, so even a weak beam is an enormous stream of photons. That is why light normally looks continuous."
+          ],
+          "answer": "About $1.6 \\times 10^{16}\\ \\text{s}^{-1}$ (photons each second)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "P": {
+                "value": 5,
+                "unit": "mW"
+              },
+              "lambda": {
+                "value": 650,
+                "unit": "nm"
+              },
+              "h": {
+                "value": 6.63e-34,
+                "unit": "J·s"
+              },
+              "c": {
+                "value": 300000000,
+                "unit": "m/s"
+              }
+            },
+            "expr": "P*lambda/(h*c)",
+            "unit": "s^-1"
+          }
+        },
+        {
+          "title": "Will an electron diffract?",
+          "prompt": "An electron (mass $9.11 \\times 10^{-31}\\ \\text{kg}$) moves at $2.0 \\times 10^{6}\\ \\text{m/s}$ toward a crystal whose atoms are about $0.3\\ \\text{nm}$ apart. Calculate the electron's de Broglie wavelength and explain whether the crystal will diffract it. Then explain why a $0.145\\ \\text{kg}$ baseball thrown at $40\\ \\text{m/s}$ shows no such effect. Use $h = 6.63 \\times 10^{-34}\\ \\text{J·s}$.",
+          "steps": [
+            "The electron's momentum is $p = mv = (9.11 \\times 10^{-31}\\ \\text{kg})(2.0 \\times 10^{6}\\ \\text{m/s}) = 1.82 \\times 10^{-24}\\ \\text{kg·m/s}$.",
+            "Its de Broglie wavelength is $\\lambda = \\dfrac{h}{p} = \\dfrac{6.63 \\times 10^{-34}}{1.82 \\times 10^{-24}} = 3.6 \\times 10^{-10}\\ \\text{m} = 0.36\\ \\text{nm}$.",
+            "Diffraction is strong when the wavelength is about the size of the gaps the wave meets. Here $0.36\\ \\text{nm}$ is close to the $0.3\\ \\text{nm}$ spacing, so the rows of atoms act like a diffraction grating and the electrons leave in a pattern of preferred directions.",
+            "For the baseball, $p = (0.145)(40) = 5.8\\ \\text{kg·m/s}$ and $\\lambda = \\dfrac{6.63 \\times 10^{-34}}{5.8} \\approx 10^{-34}\\ \\text{m}$. No opening is anywhere near that small, so the ball's wave behaviour can never be seen."
+          ],
+          "answer": "$\\lambda = 0.36\\ \\text{nm}$, comparable to the atomic spacing, so the electron diffracts; the baseball's wavelength (about $10^{-34}\\ \\text{m}$) is far too small to matter",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "h": {
+                "value": 6.63e-34,
+                "unit": "J·s"
+              },
+              "m": {
+                "value": 9.11e-31,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 2000000,
+                "unit": "m/s"
+              }
+            },
+            "expr": "h/(m*v)",
+            "unit": "nm"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "intensity-sets-photon-energy",
+          "wrong": "Turning up the brightness of a lamp gives each of its photons more energy.",
+          "right": "Each photon's energy is $hf$, fixed by the colour. A brighter beam of the same colour delivers more photons per second, each with exactly the same energy as before."
+        },
+        {
+          "tag": "matter-wave-misread",
+          "wrong": "A faster electron has a longer de Broglie wavelength, and the wave is the wiggly path the electron follows.",
+          "right": "$\\lambda = h/(mv)$: more momentum means a shorter wavelength. The wave does not trace the electron's path; it tells where the electron is likely to be detected, which is why a pattern builds up from many electrons."
+        },
+        {
+          "wrong": "A photon has momentum, so it must have mass.",
+          "right": "A photon has no mass. Its momentum comes from its wavelength, $p = h/\\lambda$, not from $mv$. It always moves at $c$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Use $hc = 1240\\ \\text{eV·nm}$ to find the energy of a photon of green light with wavelength $550\\ \\text{nm}$.",
+          "a": "$E = 1240/550 = 2.3\\ \\text{eV}$."
+        },
+        {
+          "q": "A proton and an electron move at the same speed. Which has the longer de Broglie wavelength?",
+          "a": "The electron. Both have $\\lambda = h/(mv)$ with the same $v$, and the electron's mass is about 1800 times smaller, so its wavelength is about 1800 times longer."
+        },
+        {
+          "q": "A blue lamp and a red lamp give out the same power. Which emits more photons each second?",
+          "a": "The red lamp. Red photons have a lower frequency and so less energy each, and it takes more of them to carry the same energy per second."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=λ[nm] y=E[eV] xr=0,800 yr=0,7\nfn 1240/x 180..800\npt {{L}},{{1240/L}}\nvl {{L}}\nhl {{1240/L}}\nxt 200 400 600 800\nyt 2 4 6\nnote 600,6.7 \"E = {{round(124000/L)/100}} eV\"",
+        "caption": "Slide the wavelength. The photon's energy climbs steeply toward the ultraviolet and falls toward the red.",
+        "params": [
+          {
+            "name": "L",
+            "label": "Wavelength",
+            "min": 200,
+            "max": 800,
+            "step": 10,
+            "default": 500,
+            "unit": "nm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.2",
+        "14.4",
+        "14.7"
+      ],
+      "teacherNotes": "Ask students what changes when a lamp is made brighter and what changes when its colour is changed; most will say \"energy\" for both, and separating energy per photon from photons per second is the idea the rest of the unit leans on. Introduce $hc = 1240\\ \\text{eV·nm}$ early and insist on wavelengths in nanometres with it. For de Broglie, have them compute one electron and one everyday object so the size of $h$ explains why matter waves went unnoticed."
+    },
+    {
+      "topic": "15.2",
+      "bigIdea": "In the Bohr model the electron in a hydrogen atom can have only certain energies, $E_n = -13.6\\ \\text{eV}/n^2$, and the atom emits or absorbs a photon only when the electron jumps between two of these levels.",
+      "picture": {
+        "diagram": "levels schematic\nlevel -13.6 \"n=1\"\nlevel -3.40 \"n=2\"\nlevel -1.51 \"n=3\"\nlevel -0.85 \"n=4\"\nlevel 0 \"n=∞\" dashed\ntrans 3 2 show=E,lambda\ntrans 2 1 show=E,lambda\ntrans 1 4 show=E",
+        "caption": "Energy levels of hydrogen (equally spaced here; the real levels crowd together toward $0\\ \\text{eV}$). Downward arrows are emissions: $n = 3 \\to 2$ gives a $1.89\\ \\text{eV}$ red photon and $n = 2 \\to 1$ a $10.2\\ \\text{eV}$ ultraviolet one. The upward arrow is an absorption: only a photon of about $12.8\\ \\text{eV}$ lifts the electron from $n = 1$ to $n = 4$."
+      },
+      "explanation": "By 1911 Rutherford had shown that an atom is a tiny positive nucleus with electrons around it. That raised a problem: an orbiting electron is accelerating, and classical physics says an accelerating charge radiates, so it should spiral into the nucleus in a flash while giving off a smear of every colour. Atoms are stable, and hot hydrogen glows in a few sharp colours only. Niels Bohr's answer was to propose that the electron is allowed only certain states, numbered $n = 1, 2, 3, \\dots$, each with a definite energy, and that it does not radiate while it stays in one.\n\nFor hydrogen the allowed energies are $E_n = -13.6\\ \\text{eV}/n^2$: $-13.6$, $-3.40$, $-1.51$, $-0.85\\ \\text{eV}$ and so on. The energies are negative because zero is defined as the electron free and at rest far from the nucleus; a bound electron has less energy than that. The lowest level, $n = 1$, is the **ground state**, and the $13.6\\ \\text{eV}$ needed to lift the electron from there to zero is the ionization energy.\n\nThe atom changes level by trading a photon whose energy equals the gap exactly: $E_{\\text{photon}} = E_{\\text{upper}} - E_{\\text{lower}}$. Dropping to a lower level emits that photon; rising to a higher level requires absorbing one. A photon with the wrong energy passes straight through, because the electron has nowhere to land. The one exception is a photon with enough energy to free the electron completely: any extra becomes the freed electron's kinetic energy.\n\nWhy only these states? De Broglie's matter waves (Topic 15.1) give a picture: the electron's wave must fit around its orbit a whole number of times, $2\\pi r = n\\lambda$, like a standing wave on a loop. Orbits where the wave does not close on itself cancel out. The Bohr model gives the right energies only for one-electron atoms, but the idea of discrete levels holds for every atom.",
+      "equations": [
+        {
+          "latex": "E_n = -\\frac{13.6\\ \\text{eV}}{n^2}",
+          "meaning": "The energy of a hydrogen atom whose electron is in level n.",
+          "variables": [
+            {
+              "symbol": "E_n",
+              "name": "energy of level n",
+              "unit": "eV"
+            },
+            {
+              "symbol": "n",
+              "name": "level number (1, 2, 3, ...)",
+              "unit": ""
+            }
+          ],
+          "useWhen": "You need the energy of a level of hydrogen.",
+          "notWhen": "It is for hydrogen only. For any other atom, read the level energies from the diagram you are given. And it is the energy of a level, not of a photon."
+        },
+        {
+          "latex": "E_{\\text{photon}} = E_{\\text{upper}} - E_{\\text{lower}} = hf = \\frac{hc}{\\lambda}",
+          "meaning": "The photon emitted or absorbed in a transition carries exactly the energy difference between the two levels.",
+          "variables": [
+            {
+              "symbol": "E_{\\text{photon}}",
+              "name": "energy of the photon",
+              "unit": "eV"
+            },
+            {
+              "symbol": "E_{\\text{upper}}",
+              "name": "energy of the higher level",
+              "unit": "eV"
+            },
+            {
+              "symbol": "E_{\\text{lower}}",
+              "name": "energy of the lower level",
+              "unit": "eV"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "eV·s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency of the photon",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the photon",
+              "unit": "nm"
+            }
+          ],
+          "useWhen": "An atom moves between two levels and you want the photon's energy, frequency or wavelength.",
+          "notWhen": "Do not use one level's energy on its own. Subtracting two negative energies needs care: the result must be positive."
+        },
+        {
+          "latex": "2\\pi r = n\\lambda",
+          "meaning": "In an allowed orbit a whole number of electron wavelengths fits around the circumference.",
+          "variables": [
+            {
+              "symbol": "r",
+              "name": "radius of the orbit",
+              "unit": "m"
+            },
+            {
+              "symbol": "n",
+              "name": "level number",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "de Broglie wavelength of the electron",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You are asked to explain why only certain orbits are allowed.",
+          "notWhen": "Here the wavelength belongs to the electron, not to an emitted photon."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Exciting hydrogen from the ground state",
+          "prompt": "A hydrogen atom in its ground state ($E_1 = -13.6\\ \\text{eV}$) absorbs a photon and ends up in the $n = 3$ level. What was the photon's wavelength? Use $hc = 1240\\ \\text{eV·nm}$.",
+          "steps": [
+            "Find the energy of the upper level: $E_3 = \\dfrac{-13.6\\ \\text{eV}}{3^2} = -1.51\\ \\text{eV}$.",
+            "The photon must supply the gap between the levels: $E_{\\text{photon}} = E_3 - E_1 = -1.51 - (-13.6) = 12.1\\ \\text{eV}$. Subtracting a negative adds, and the result is positive as a photon energy must be.",
+            "Convert the energy to a wavelength: $\\lambda = \\dfrac{hc}{E_{\\text{photon}}} = \\dfrac{1240\\ \\text{eV·nm}}{12.1\\ \\text{eV}} = 103\\ \\text{nm}$.",
+            "Check: $103\\ \\text{nm}$ is shorter than violet light ($400\\ \\text{nm}$), so this is ultraviolet. That fits: jumps out of hydrogen's deep ground state need a lot of energy."
+          ],
+          "answer": "$\\lambda = 103\\ \\text{nm}$ (ultraviolet)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "E1": {
+                "value": -13.6,
+                "unit": "eV"
+              },
+              "n": {
+                "value": 3,
+                "unit": ""
+              },
+              "hc": {
+                "value": 1240,
+                "unit": "eV·nm"
+              }
+            },
+            "expr": "hc/(E1/n^2 - E1)",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "A photon with energy to spare",
+          "prompt": "A hydrogen atom is in the $n = 2$ level when it absorbs a photon of energy $4.00\\ \\text{eV}$. The ground-state energy of hydrogen is $-13.6\\ \\text{eV}$. Show that the electron is freed from the atom, and determine its kinetic energy once it is far away.",
+          "steps": [
+            "The energy of the $n = 2$ level is $E_2 = \\dfrac{-13.6\\ \\text{eV}}{2^2} = -3.40\\ \\text{eV}$.",
+            "A free electron at rest has energy zero, so freeing the electron from $n = 2$ takes $0 - (-3.40) = 3.40\\ \\text{eV}$. The photon brings $4.00\\ \\text{eV}$, which is more than enough, so the atom is ionized.",
+            "Energy is conserved: the photon's energy goes into lifting the electron to zero, and whatever is left becomes kinetic energy. $K = 4.00\\ \\text{eV} - 3.40\\ \\text{eV} = 0.60\\ \\text{eV}$.",
+            "This absorption is allowed even though $4.00\\ \\text{eV}$ matches no gap between levels, because above zero the electron is free and can have any energy. A $2.20\\ \\text{eV}$ photon, by contrast, could neither ionize the atom nor match a jump from $n = 2$ (those need $1.89$, $2.55$, $2.86\\ \\text{eV}$, ...), so it would not be absorbed."
+          ],
+          "answer": "The atom is ionized; the electron leaves with $K = 0.60\\ \\text{eV}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "E_photon": {
+                "value": 4,
+                "unit": "eV"
+              },
+              "E1": {
+                "value": -13.6,
+                "unit": "eV"
+              },
+              "n": {
+                "value": 2,
+                "unit": ""
+              }
+            },
+            "expr": "E_photon + E1/n^2",
+            "unit": "eV"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "photon-energy-is-level-energy",
+          "wrong": "An electron falling to the $n = 2$ level, which has energy $-3.40\\ \\text{eV}$, emits a $3.40\\ \\text{eV}$ photon.",
+          "right": "The photon carries the difference between the two levels, so it depends on where the electron started. From $n = 3$ it is $-1.51 - (-3.40) = 1.89\\ \\text{eV}$; from $n = 4$ it is $2.55\\ \\text{eV}$."
+        },
+        {
+          "tag": "emission-absorption-confusion",
+          "wrong": "An atom gives off a photon when its electron jumps up to a higher level.",
+          "right": "Going up needs energy, so the atom must absorb a photon. A photon is emitted when the electron drops to a lower level and the atom has energy to give away."
+        },
+        {
+          "wrong": "A hydrogen atom can soak up part of a photon's energy, or any photon with at least enough energy for a jump.",
+          "right": "A photon is absorbed whole or not at all, and for a jump between levels its energy must match the gap exactly. Only ionization accepts extra, because a freed electron can carry any kinetic energy."
+        },
+        {
+          "wrong": "The $n = 1$ level has the most energy because $13.6$ is the biggest number.",
+          "right": "The energies are negative, so $-13.6\\ \\text{eV}$ is the lowest. Higher $n$ means energy closer to zero, which is higher."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "What is the energy of the $n = 5$ level of hydrogen?",
+          "a": "$E_5 = -13.6/25 = -0.54\\ \\text{eV}$."
+        },
+        {
+          "q": "Which emits the photon with the shorter wavelength: a jump from $n = 3$ to $n = 2$, or from $n = 2$ to $n = 1$?",
+          "a": "$n = 2 \\to 1$. Its gap is $10.2\\ \\text{eV}$ against $1.89\\ \\text{eV}$, and a larger photon energy means a shorter wavelength ($\\lambda = hc/E$)."
+        },
+        {
+          "q": "A hydrogen atom in the ground state is hit by a photon of energy $11.0\\ \\text{eV}$. What happens?",
+          "a": "Nothing: the photon is not absorbed. Reaching $n = 2$ takes $10.2\\ \\text{eV}$ and $n = 3$ takes $12.1\\ \\text{eV}$; $11.0\\ \\text{eV}$ matches no gap and is too little to ionize."
+        }
+      ],
+      "tryIt": {
+        "diagram": "levels schematic\nlevel -13.6 \"n=1\"\nlevel -3.40 \"n=2\"\nlevel -1.51 \"n=3\"\nlevel -0.85 \"n=4\"\nlevel -0.544 \"n=5\"\nlevel -0.378 \"n=6\"\ntrans {{n}} 2 show=E,lambda",
+        "caption": "Choose the level the electron starts on. Every drop to n = 2 gives a visible photon (the Balmer lines): the higher the start, the larger the gap and the shorter the wavelength.",
+        "params": [
+          {
+            "name": "n",
+            "label": "Starting level n",
+            "min": 3,
+            "max": 6,
+            "step": 1,
+            "default": 3,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.4",
+        "15.1"
+      ],
+      "teacherNotes": "Have students say out loud what each number on a level diagram is: a level's energy is something the atom has, a gap is something a photon carries. The most common error by far is reporting a level energy as the photon energy, closely followed by sign slips when subtracting negatives; ask for \"upper minus lower\" every time. A useful question: why can an $11\\ \\text{eV}$ photon pass through cold hydrogen while a $14\\ \\text{eV}$ photon cannot?"
+    },
+    {
+      "topic": "15.3",
+      "bigIdea": "Each element emits and absorbs light only at the wavelengths that match the gaps between its own energy levels, so its pattern of spectral lines identifies it like a fingerprint.",
+      "picture": {
+        "diagram": "levels\nlevel -8.0 \"level 1\"\nlevel -4.9 \"level 2\"\nlevel -2.5 \"level 3\"\ntrans 3 2 show=lambda\ntrans 2 1 show=lambda\ntrans 3 1 show=lambda",
+        "caption": "An atom with three levels (drawn to scale) can emit three spectral lines, one for each pair of levels. The smallest gap, $2.4\\ \\text{eV}$, gives the longest wavelength ($517\\ \\text{nm}$, green); the largest gap, $5.5\\ \\text{eV}$, gives the shortest ($225\\ \\text{nm}$, ultraviolet)."
+      },
+      "explanation": "Pass the light from a glowing solid, such as a lamp filament, through a diffraction grating (Topic 14.8) and it spreads into a continuous band of colour. Do the same with a thin, hot gas of one element and something different appears: a few sharp bright lines on a dark background. This is the element's **emission spectrum**. Collisions or an electric current knock the gas atoms into higher levels, and each atom then drops back down, emitting a photon whose energy is the gap it crossed. Because only certain gaps exist, only certain wavelengths appear: $\\lambda = hc/\\Delta E$.\n\nNow shine white light, which contains every wavelength, through a cool sample of the same gas. Most photons pass straight through. Those whose energy exactly matches an upward jump are absorbed, and the atoms soon re-emit that light in all directions, so little of it continues along the original beam. The spectrum that comes out is continuous with a few dark lines: an **absorption spectrum**.\n\nThe dark lines sit at exactly the wavelengths of bright emission lines, because the same gaps are involved. But a cool gas shows fewer of them: its atoms are nearly all in the ground state, so only jumps that start from the ground state can absorb. For the atom in the picture, a cool gas absorbs $400\\ \\text{nm}$ and $225\\ \\text{nm}$ but not $517\\ \\text{nm}$, since almost no atoms are waiting in level 2.\n\nEvery element has its own set of levels and therefore its own set of lines. Matching the lines in a spectrum against known patterns tells you which elements are present, whether the source is a flame in the lab or a star: the dark lines in sunlight reveal what the Sun's outer layers are made of. On a level diagram, remember that a bigger gap means a higher photon energy and so a *shorter* wavelength.",
+      "equations": [
+        {
+          "latex": "\\lambda = \\frac{hc}{\\Delta E}",
+          "meaning": "The wavelength of a spectral line is hc divided by the energy gap between the two levels involved.",
+          "variables": [
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the emitted or absorbed light",
+              "unit": "nm"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "eV·s"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "E",
+              "name": "energy; ΔE is the gap between the two levels, taken as positive",
+              "unit": "eV"
+            }
+          ],
+          "useWhen": "You have a level diagram and want the wavelength of a line, or a measured wavelength and want the gap that made it. With hc = 1240 eV·nm, energies in eV give wavelengths in nm.",
+          "notWhen": "Do not put a single level's energy in place of the gap."
+        },
+        {
+          "latex": "N_{\\text{lines}} = \\frac{N(N-1)}{2}",
+          "meaning": "The number of different emission lines possible among N levels: one for each pair of levels.",
+          "variables": [
+            {
+              "symbol": "N_{\\text{lines}}",
+              "name": "number of possible emission lines",
+              "unit": ""
+            },
+            {
+              "symbol": "N",
+              "name": "number of levels the atoms can occupy",
+              "unit": ""
+            }
+          ],
+          "useWhen": "Atoms are excited up to some level and you are asked how many different wavelengths can come out as they return to the ground state.",
+          "notWhen": "It over-counts for absorption by a cool gas, where only jumps from the ground state happen."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Emission lines from three levels",
+          "prompt": "The atoms of a gas have a ground state at $-8.0\\ \\text{eV}$ and excited levels at $-4.9\\ \\text{eV}$ and $-2.5\\ \\text{eV}$. An electric discharge excites the atoms to the top level. How many different emission lines can the gas produce, and what is the longest wavelength among them? Use $hc = 1240\\ \\text{eV·nm}$.",
+          "steps": [
+            "List every downward jump. From the top level the atom can drop to the middle level or straight to the ground state, and from the middle level it can drop to the ground state. That is three jumps, so three lines.",
+            "Find each gap. Top to middle: $-2.5 - (-4.9) = 2.4\\ \\text{eV}$. Middle to ground: $-4.9 - (-8.0) = 3.1\\ \\text{eV}$. Top to ground: $-2.5 - (-8.0) = 5.5\\ \\text{eV}$.",
+            "The longest wavelength belongs to the photon with the least energy, because $\\lambda = hc/\\Delta E$. That is the $2.4\\ \\text{eV}$ jump.",
+            "$\\lambda = \\dfrac{1240\\ \\text{eV·nm}}{2.4\\ \\text{eV}} = 517\\ \\text{nm}$, in the green. The other two lines are at $1240/3.1 = 400\\ \\text{nm}$ and $1240/5.5 = 225\\ \\text{nm}$."
+          ],
+          "answer": "Three lines; the longest wavelength is $517\\ \\text{nm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "E3": {
+                "value": -2.5,
+                "unit": "eV"
+              },
+              "E2": {
+                "value": -4.9,
+                "unit": "eV"
+              },
+              "hc": {
+                "value": 1240,
+                "unit": "eV·nm"
+              }
+            },
+            "expr": "hc/(E3 - E2)",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "Dark lines from a cool gas",
+          "prompt": "White light containing all wavelengths from $200\\ \\text{nm}$ to $700\\ \\text{nm}$ passes through a cool sample of a gas whose atoms have levels at $-8.0\\ \\text{eV}$ (ground state), $-4.9\\ \\text{eV}$ and $-2.5\\ \\text{eV}$. Determine the longest wavelength missing from the light that emerges, and explain why the gas's $517\\ \\text{nm}$ emission line does not appear as a dark line. Use $hc = 1240\\ \\text{eV·nm}$.",
+          "steps": [
+            "In a cool gas the atoms are in the ground state, so the only absorptions possible are upward jumps that start at $-8.0\\ \\text{eV}$: to $-4.9\\ \\text{eV}$ (a gap of $3.1\\ \\text{eV}$) and to $-2.5\\ \\text{eV}$ (a gap of $5.5\\ \\text{eV}$).",
+            "The longest absorbed wavelength comes from the smaller gap: $\\lambda = \\dfrac{1240\\ \\text{eV·nm}}{3.1\\ \\text{eV}} = 400\\ \\text{nm}$. The other dark line is at $1240/5.5 = 225\\ \\text{nm}$. Both lie inside the $200$ to $700\\ \\text{nm}$ range, so both are missing from the emerging light.",
+            "The $517\\ \\text{nm}$ line corresponds to the $2.4\\ \\text{eV}$ gap between the two excited levels. Absorbing it would need an atom already in the $-4.9\\ \\text{eV}$ level, and in a cool gas essentially none are, so that light passes through."
+          ],
+          "answer": "The longest missing wavelength is $400\\ \\text{nm}$ (the other dark line is at $225\\ \\text{nm}$); $517\\ \\text{nm}$ is not absorbed because no atoms start in the middle level",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "E1": {
+                "value": -8,
+                "unit": "eV"
+              },
+              "E2": {
+                "value": -4.9,
+                "unit": "eV"
+              },
+              "hc": {
+                "value": 1240,
+                "unit": "eV·nm"
+              }
+            },
+            "expr": "hc/(E2 - E1)",
+            "unit": "nm"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "emission-absorption-confusion",
+          "wrong": "The dark lines in an absorption spectrum are at wavelengths the gas has nothing to do with; they are different from its emission lines.",
+          "right": "Dark lines are at wavelengths the gas can also emit, because absorbing and emitting use the same gaps between levels. A cool gas simply shows only those lines that start from the ground state."
+        },
+        {
+          "tag": "photon-energy-is-level-energy",
+          "wrong": "A level at $-4.9\\ \\text{eV}$ produces a spectral line with $\\lambda = 1240/4.9 = 253\\ \\text{nm}$.",
+          "right": "A line comes from a jump between two levels, so the gap goes into $\\lambda = hc/\\Delta E$. From $-4.9\\ \\text{eV}$ down to $-8.0\\ \\text{eV}$ the gap is $3.1\\ \\text{eV}$ and the line is at $400\\ \\text{nm}$."
+        },
+        {
+          "wrong": "The biggest jump on the level diagram gives the longest wavelength.",
+          "right": "The biggest jump gives the most energetic photon, which has the highest frequency and the shortest wavelength. Long wavelengths come from small gaps."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Atoms are excited to the fourth level of an atom (the ground state counts as the first). How many different emission lines are possible?",
+          "a": "Six: one for each pair of levels, $4 \\times 3 / 2 = 6$."
+        },
+        {
+          "q": "A line in a spectrum has wavelength $620\\ \\text{nm}$. What energy gap produced it?",
+          "a": "$\\Delta E = hc/\\lambda = 1240/620 = 2.0\\ \\text{eV}$."
+        },
+        {
+          "q": "The spectrum of a distant star shows dark lines at exactly the wavelengths of sodium's bright lines measured in the lab. What does that tell you?",
+          "a": "There is sodium in the cooler outer layers of the star: its atoms absorb those wavelengths from the continuous light coming from below."
+        }
+      ],
+      "tryIt": {
+        "diagram": "levels\nlevel -8.0 \"level 1\"\nlevel {{E2}} \"level 2\"\nlevel -2.5 \"level 3\"\ntrans 3 2 show=lambda\ntrans 2 1 show=lambda\ntrans 3 1 show=lambda",
+        "caption": "Move the middle level. Two of the three lines shift (one gap grows as the other shrinks), while the line from level 3 straight to level 1 stays put.",
+        "params": [
+          {
+            "name": "E2",
+            "label": "Energy of level 2",
+            "min": -6.8,
+            "max": -3.6,
+            "step": 0.1,
+            "default": -4.9,
+            "unit": "eV"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.8",
+        "15.1",
+        "15.2"
+      ],
+      "teacherNotes": "If you have discharge tubes and gratings, let students see hydrogen, helium and neon before any theory; the \"fingerprint\" idea then needs no selling. Ask why a cool gas absorbs fewer lines than the hot gas emits: students who can explain that have connected the lines to where atoms start. Watch for the inverse relation being flipped (large gap, long wavelength) and for level energies used in place of gaps."
+    },
+    {
+      "topic": "15.4",
+      "bigIdea": "Every object radiates because of its temperature, and for an ideal radiator, called a blackbody, the temperature alone fixes both the wavelength where the emission peaks, $\\lambda_{\\max} = b/T$, and the power radiated, $P = \\sigma A T^4$.",
+      "picture": {
+        "diagram": "plot x=λ[μm] y=I xr=-0.15,3 yr=0,1.1\nfn 3.74/x^5/(exp(14388/(x*6000))-1) 0.1..3\nfn 3.74/x^5/(exp(14388/(x*5000))-1) 0.1..3\nfn 3.74/x^5/(exp(14388/(x*4000))-1) 0.1..3\nnote 0.95,1.0 \"6000 K\"\nnote 1.3,0.42 \"5000 K\"\nnote 1.9,0.2 \"4000 K\"\nxt 0.48 1 2 3\nyt none",
+        "caption": "Blackbody spectra at three temperatures: intensity $I$ against wavelength, all on the same scale. Raising the temperature moves the peak to a shorter wavelength (about $0.72$, $0.58$ and $0.48\\ \\mu\\text{m}$ here) and lifts the whole curve, so the total power, the area under the curve, grows very quickly."
+      },
+      "explanation": "Anything warmer than absolute zero gives off electromagnetic radiation, because its charged particles are jiggling. A **blackbody** is the ideal case: an object that absorbs all the light falling on it and whose glow therefore depends only on its temperature, not on what it is made of. Stars, lamp filaments, glowing coals and even your skin come close. Unlike a thin gas, which emits sharp lines, a blackbody emits a smooth, continuous spectrum with a single hump.\n\nThe hump moves with temperature. Wien's law says the wavelength of peak emission is inversely proportional to the kelvin temperature: $\\lambda_{\\max} = b/T$ with $b = 2.90 \\times 10^{-3}\\ \\text{m·K}$. Your skin, near $310\\ \\text{K}$, peaks at about $9\\ \\mu\\text{m}$ in the infrared, which is why you do not glow visibly. A stove element at $1000\\ \\text{K}$ still peaks in the infrared, but enough of its curve reaches the visible to look dull red. The Sun's surface, near $5800\\ \\text{K}$, peaks at $500\\ \\text{nm}$, in the middle of the visible range. Hotter means shorter wavelength: red-hot is cooler than white-hot, and the hottest stars look blue.\n\nThe total power climbs even faster. The Stefan-Boltzmann law gives $P = \\sigma A T^4$ for a blackbody of surface area $A$, with $\\sigma = 5.67 \\times 10^{-8}\\ \\text{W/(m}^2\\text{·K}^4)$. The fourth power is dramatic: doubling the kelvin temperature multiplies the power by $2^4 = 16$. Both laws need temperatures in kelvin.\n\nBlackbody radiation is where quantum physics began. Classical wave theory predicted that a hot object should radiate more and more at shorter and shorter wavelengths without limit, which is plainly false. In 1900 Max Planck matched the measured curve by assuming that matter can exchange light energy only in whole packets of size $hf$. At short wavelengths one packet costs more energy than thermal jiggling can usually supply, so the curve falls back toward zero.",
+      "equations": [
+        {
+          "latex": "\\lambda_{\\max} = \\frac{b}{T}",
+          "meaning": "Wien's law: the wavelength at which a blackbody emits most strongly is inversely proportional to its absolute temperature.",
+          "variables": [
+            {
+              "symbol": "\\lambda_{\\max}",
+              "name": "wavelength of peak emission",
+              "unit": "m"
+            },
+            {
+              "symbol": "b",
+              "name": "Wien's constant, 2.90 × 10⁻³",
+              "unit": "m·K"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature of the surface",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "You know a glowing object's temperature and want its peak wavelength or colour, or the reverse.",
+          "notWhen": "Not with Celsius temperatures, and not for a thin gas that emits spectral lines instead of a continuous spectrum."
+        },
+        {
+          "latex": "P = \\sigma A T^4",
+          "meaning": "Stefan-Boltzmann law: the power a blackbody radiates is proportional to its surface area and to the fourth power of its absolute temperature.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "power radiated",
+              "unit": "W"
+            },
+            {
+              "symbol": "\\sigma",
+              "name": "Stefan-Boltzmann constant, 5.67 × 10⁻⁸",
+              "unit": "W/(m²·K⁴)"
+            },
+            {
+              "symbol": "A",
+              "name": "surface area of the object",
+              "unit": "m²"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature of the surface",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "You want the power radiated by a hot object, or how that power changes when its temperature or size changes.",
+          "notWhen": "Not with Celsius temperatures. It gives the power emitted, not the net loss: the object also absorbs radiation from its surroundings."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "The colour of a cool star",
+          "prompt": "The red giant star Betelgeuse has a surface temperature of about $3500\\ \\text{K}$. Treating it as a blackbody, at what wavelength does it emit most strongly? Use Wien's constant $b = 2.90 \\times 10^{-3}\\ \\text{m·K}$.",
+          "steps": [
+            "Wien's law links peak wavelength and temperature: $\\lambda_{\\max} = \\dfrac{b}{T}$. The temperature is already in kelvin.",
+            "Substitute: $\\lambda_{\\max} = \\dfrac{2.90 \\times 10^{-3}\\ \\text{m·K}}{3500\\ \\text{K}} = 8.29 \\times 10^{-7}\\ \\text{m}$.",
+            "Convert to nanometres to compare with visible light: $8.29 \\times 10^{-7}\\ \\text{m} = 829\\ \\text{nm}$.",
+            "Interpret: visible light ends near $700\\ \\text{nm}$, so the peak is just into the infrared. The part of the curve that reaches the visible is strongest at the red end, which is why the star looks red."
+          ],
+          "answer": "$\\lambda_{\\max} = 829\\ \\text{nm}$, in the near infrared",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "b": {
+                "value": 0.0029,
+                "unit": "m·K"
+              },
+              "T": {
+                "value": 3500,
+                "unit": "K"
+              }
+            },
+            "expr": "b/T",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "Power from a heated sphere",
+          "prompt": "A solid metal sphere of radius $5.0\\ \\text{cm}$ is heated to $800\\ \\text{K}$ and radiates like a blackbody. Calculate the power it radiates. Then, without recalculating from scratch, determine what happens to the radiated power and to the peak wavelength if the sphere is heated to $1600\\ \\text{K}$. Use $\\sigma = 5.67 \\times 10^{-8}\\ \\text{W/(m}^2\\text{·K}^4)$.",
+          "steps": [
+            "The radiating surface is the sphere's surface: $A = 4\\pi r^2 = 4\\pi(0.050\\ \\text{m})^2 = 0.0314\\ \\text{m}^2$.",
+            "$P = \\sigma A T^4 = (5.67 \\times 10^{-8})(0.0314)(800)^4$. Since $800^4 = 4.10 \\times 10^{11}$, this gives $P = 7.3 \\times 10^{2}\\ \\text{W}$.",
+            "Going from $800\\ \\text{K}$ to $1600\\ \\text{K}$ doubles the absolute temperature. The area is unchanged and $P \\propto T^4$, so the power becomes $2^4 = 16$ times larger, about $1.2 \\times 10^{4}\\ \\text{W}$.",
+            "By Wien's law $\\lambda_{\\max} \\propto 1/T$, so doubling the temperature halves the peak wavelength, from $3.6\\ \\mu\\text{m}$ to $1.8\\ \\mu\\text{m}$. The peak is still in the infrared, but more of the curve now reaches the visible and the sphere glows brighter and less red."
+          ],
+          "answer": "$P = 7.3 \\times 10^{2}\\ \\text{W}$ at $800\\ \\text{K}$; at $1600\\ \\text{K}$ the power is 16 times larger and the peak wavelength is halved",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "sigma": {
+                "value": 5.67e-8,
+                "unit": "W/(m^2·K^4)"
+              },
+              "r": {
+                "value": 5,
+                "unit": "cm"
+              },
+              "T": {
+                "value": 800,
+                "unit": "K"
+              }
+            },
+            "expr": "sigma*4*pi*r^2*T^4",
+            "unit": "W"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "blackbody-peak-wrong-way",
+          "wrong": "Red-hot is the hottest something can glow; as an object gets hotter its light shifts toward the red, to longer wavelengths.",
+          "right": "Hotter objects peak at *shorter* wavelengths: $\\lambda_{\\max} = b/T$. A glowing object goes from dull red to orange to white as it heats, and the hottest stars are blue."
+        },
+        {
+          "tag": "blackbody-peak-wrong-way",
+          "wrong": "Doubling an object's temperature doubles the power it radiates.",
+          "right": "Power goes as $T^4$. Doubling the kelvin temperature multiplies the power by $2^4 = 16$."
+        },
+        {
+          "tag": "celsius-as-absolute",
+          "wrong": "Warming an object from $20\\ ^\\circ\\text{C}$ to $40\\ ^\\circ\\text{C}$ doubles its temperature, so it radiates 16 times as much power.",
+          "right": "The laws use kelvin. $20\\ ^\\circ\\text{C}$ is $293\\ \\text{K}$ and $40\\ ^\\circ\\text{C}$ is $313\\ \\text{K}$, a rise of about 7%, and the power goes up by $(313/293)^4 \\approx 1.3$ times."
+        },
+        {
+          "wrong": "A blackbody is black, and only very hot things radiate.",
+          "right": "The name describes absorbing all incoming light. A hot blackbody glows brightly (the Sun is nearly one), and everything above absolute zero radiates; at room temperature the glow is in the infrared, where eyes cannot see it."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Star X has a surface temperature of $3000\\ \\text{K}$ and star Y of $12\\,000\\ \\text{K}$. How do their peak wavelengths compare?",
+          "a": "Y is four times hotter, so its peak wavelength is one quarter of X's: about $242\\ \\text{nm}$ (ultraviolet) against $967\\ \\text{nm}$ (infrared)."
+        },
+        {
+          "q": "Two identical spheres are at 300 K and 600 K. What is the ratio of the powers they radiate?",
+          "a": "The hotter sphere radiates $(600/300)^4 = 16$ times as much."
+        },
+        {
+          "q": "Why does a person not glow in the dark, even though they radiate roughly as a blackbody?",
+          "a": "At about $310\\ \\text{K}$ the emission peaks near $9\\ \\mu\\text{m}$, deep in the infrared, and almost none of it falls in the visible range. An infrared camera sees the glow clearly."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=λ[μm] y=I xr=-0.15,3 yr=0,2.3\nfn 3.74/x^5/(exp(14388/(x*{{T}}))-1) 0.1..3\nvl {{2898/T}}\nnote 2.1,2.0 \"λ_{max} = {{round(2898000/T)}} nm\"\nxt 0.4 0.7 1 2 3\nyt none",
+        "caption": "Change the temperature. The peak slides toward shorter wavelengths as the object heats (visible light lies between 0.4 and 0.7 μm), and the curve grows much taller.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Temperature",
+            "min": 4000,
+            "max": 7000,
+            "step": 250,
+            "default": 5500,
+            "unit": "K"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.3",
+        "14.4",
+        "15.1"
+      ],
+      "teacherNotes": "Start from experience: what colour does a heating element or a nail in a flame turn first, and what next? Students usually get the order right from memory and can then be asked to square it with \"red means hot, blue means cold\". The two standing errors are Celsius temperatures in ratios and linear scaling of power; a ratio question with a doubling of kelvin temperature exposes both. Keep the history short: the point is that energy packets of size $hf$ were forced by data."
+    },
+    {
+      "topic": "15.5",
+      "bigIdea": "Light ejects electrons from a metal one photon at a time, so an electron comes out only if a single photon's energy $hf$ exceeds the metal's work function $\\phi$, and the most energetic electrons leave with $K_{\\max} = hf - \\phi$.",
+      "picture": {
+        "diagram": "plot x=f[10^{14}Hz] y=K[eV] xr=-2,12 yr=-3,3\nseg 5.5,0 12,2.68\nseg 0,-2.28 5.5,0 dash=1\npt 5.5,0\nxt 0 5.5:f_0 12\nyt -2.28:-φ 0 2.68",
+        "caption": "Maximum kinetic energy $K$ of the ejected electrons against the light's frequency, for sodium ($\\phi = 2.28\\ \\text{eV}$). Below the threshold $f_0 = 5.5 \\times 10^{14}\\ \\text{Hz}$ nothing is ejected. Above it the line rises with slope $h$; extended back (dashed) it meets the vertical axis at $-\\phi$."
+      },
+      "explanation": "Shine light on a clean metal plate in a vacuum tube and electrons can be knocked out of it: the **photoelectric effect**. A second plate collects them, giving a current, and making that collector negative enough turns back even the fastest electrons. The voltage that just stops the current, $V_{\\text{stop}}$, measures their maximum kinetic energy: $K_{\\max} = eV_{\\text{stop}}$, so a stopping voltage of $1.5\\ \\text{V}$ means $K_{\\max} = 1.5\\ \\text{eV}$.\n\nThe results cannot be explained by light as a wave. A wave delivers energy continuously, so any colour should eventually shake electrons loose if it is bright enough, dim light should need time to build up, and brighter light should give faster electrons. Instead: below a certain **threshold frequency** no electrons come out however bright the light; above it they appear instantly even in very dim light; their maximum kinetic energy depends on the frequency and not at all on the brightness; and brightness changes only how many come out each second.\n\nEinstein's explanation (1905) is that light arrives as photons and each electron is ejected by a single photon. Escaping the metal costs energy; the least it can cost is the **work function** $\\phi$, a property of the metal (a few eV). Energy conservation for the easiest electron to remove gives $K_{\\max} = hf - \\phi$. It is a maximum because electrons deeper in the metal lose extra energy on the way out. If $hf < \\phi$ no single photon can free an electron, and photons do not team up, so the threshold is $f_0 = \\phi/h$.\n\nBrightness is the number of photons per second. Above the threshold, more photons eject more electrons, a larger current, but each photon has the same energy as before, so $K_{\\max}$ is unchanged. On a graph of $K_{\\max}$ against $f$, every metal gives a straight line with the same slope, $h$; the metal only decides where the line starts.",
+      "equations": [
+        {
+          "latex": "K_{\\max} = hf - \\phi",
+          "meaning": "The most energetic ejected electrons have the photon's energy minus the work function.",
+          "variables": [
+            {
+              "symbol": "K_{\\max}",
+              "name": "maximum kinetic energy of the ejected electrons",
+              "unit": "eV or J"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "eV·s (4.14 × 10⁻¹⁵) or J·s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency of the light",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "work function of the metal",
+              "unit": "eV or J"
+            }
+          ],
+          "useWhen": "Light above the threshold frequency shines on a metal and you want the electrons' maximum kinetic energy, the work function or the frequency.",
+          "notWhen": "Below the threshold it would give a negative kinetic energy, which means no electrons are ejected. Keep hf and φ in the same unit."
+        },
+        {
+          "latex": "f_0 = \\frac{\\phi}{h} \\qquad \\lambda_0 = \\frac{hc}{\\phi}",
+          "meaning": "The threshold frequency is the frequency whose photons have exactly the work function's energy; the threshold wavelength is the longest wavelength that can eject electrons.",
+          "variables": [
+            {
+              "symbol": "f_0",
+              "name": "threshold frequency",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "\\lambda_0",
+              "name": "threshold wavelength",
+              "unit": "nm"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "work function of the metal",
+              "unit": "eV"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "eV·s"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You need to decide whether a given light can eject electrons from a given metal.",
+          "notWhen": "Remember the directions: frequency must be above the threshold, wavelength below it."
+        },
+        {
+          "latex": "K_{\\max} = eV_{\\text{stop}}",
+          "meaning": "The stopping voltage is the voltage that just turns back the fastest electrons, so it measures their kinetic energy.",
+          "variables": [
+            {
+              "symbol": "K_{\\max}",
+              "name": "maximum kinetic energy of the ejected electrons",
+              "unit": "J (or eV)"
+            },
+            {
+              "symbol": "e",
+              "name": "elementary charge, 1.60 × 10⁻¹⁹",
+              "unit": "C"
+            },
+            {
+              "symbol": "V_{\\text{stop}}",
+              "name": "stopping voltage",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "An experiment reports a stopping voltage. In eV the number is the same: 2.0 V stops electrons of up to 2.0 eV.",
+          "notWhen": "The stopping voltage says nothing about how many electrons are ejected; that is the current."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Ultraviolet light on zinc",
+          "prompt": "Ultraviolet light of frequency $1.20 \\times 10^{15}\\ \\text{Hz}$ shines on a zinc plate, whose work function is $4.31\\ \\text{eV}$. What is the maximum kinetic energy of the ejected electrons, and what stopping voltage would reduce the current to zero? Use $h = 4.14 \\times 10^{-15}\\ \\text{eV·s}$.",
+          "steps": [
+            "Find the energy of one photon: $hf = (4.14 \\times 10^{-15}\\ \\text{eV·s})(1.20 \\times 10^{15}\\ \\text{Hz}) = 4.97\\ \\text{eV}$.",
+            "Compare with the work function. $4.97\\ \\text{eV}$ is more than $4.31\\ \\text{eV}$, so each photon can free an electron and electrons are ejected.",
+            "What is left after the electron escapes is its kinetic energy: $K_{\\max} = hf - \\phi = 4.97 - 4.31 = 0.66\\ \\text{eV}$.",
+            "An electron with $0.66\\ \\text{eV}$ of kinetic energy is stopped by climbing a potential difference of $0.66\\ \\text{V}$, so $V_{\\text{stop}} = 0.66\\ \\text{V}$."
+          ],
+          "answer": "$K_{\\max} = 0.66\\ \\text{eV}$; the stopping voltage is $0.66\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "h": {
+                "value": 4.14e-15,
+                "unit": "eV·s"
+              },
+              "f": {
+                "value": 1200000000000000,
+                "unit": "Hz"
+              },
+              "phi": {
+                "value": 4.31,
+                "unit": "eV"
+              }
+            },
+            "expr": "h*f - phi",
+            "unit": "eV"
+          }
+        },
+        {
+          "title": "Bright red or dim blue?",
+          "prompt": "A cesium surface has a work function of $2.14\\ \\text{eV}$. A student shines a very bright red laser ($650\\ \\text{nm}$) on it, then a very dim blue lamp ($450\\ \\text{nm}$). Determine the threshold wavelength for cesium, and state what is observed in each case. Use $hc = 1240\\ \\text{eV·nm}$.",
+          "steps": [
+            "At the threshold a photon's energy just equals the work function: $\\dfrac{hc}{\\lambda_0} = \\phi$, so $\\lambda_0 = \\dfrac{hc}{\\phi} = \\dfrac{1240\\ \\text{eV·nm}}{2.14\\ \\text{eV}} = 579\\ \\text{nm}$. Light with a longer wavelength than this has photons with too little energy.",
+            "Red: $650\\ \\text{nm}$ is longer than $579\\ \\text{nm}$. Each photon has only $1240/650 = 1.91\\ \\text{eV}$, less than $\\phi$. No electrons are ejected, and making the laser brighter only sends more photons that are each too weak.",
+            "Blue: $450\\ \\text{nm}$ is shorter than $579\\ \\text{nm}$. Each photon has $1240/450 = 2.76\\ \\text{eV}$, so electrons are ejected at once with $K_{\\max} = 2.76 - 2.14 = 0.62\\ \\text{eV}$.",
+            "Because the blue lamp is dim, few photons arrive each second, so the current is small. Its size depends on the brightness; the electrons' maximum kinetic energy does not."
+          ],
+          "answer": "$\\lambda_0 = 579\\ \\text{nm}$. The bright red light ejects no electrons; the dim blue light ejects a few each second, with up to $0.62\\ \\text{eV}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "hc": {
+                "value": 1240,
+                "unit": "eV·nm"
+              },
+              "phi": {
+                "value": 2.14,
+                "unit": "eV"
+              }
+            },
+            "expr": "hc/phi",
+            "unit": "nm"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "intensity-sets-photon-energy",
+          "wrong": "Light below the threshold frequency will eject electrons if it is bright enough or shines for long enough.",
+          "right": "Each electron is freed by one photon, and photons do not pool their energy. Below the threshold every photon is too weak, however many arrive."
+        },
+        {
+          "tag": "intensity-sets-photon-energy",
+          "wrong": "Brighter light knocks the electrons out with more kinetic energy.",
+          "right": "Brighter light of the same colour ejects *more* electrons each second, not faster ones. $K_{\\max} = hf - \\phi$ changes only when the frequency or the metal changes."
+        },
+        {
+          "wrong": "Every ejected electron leaves with kinetic energy $hf - \\phi$.",
+          "right": "That is the maximum. Electrons that start deeper inside the metal lose more energy getting out, so the electrons come out with a range of energies from zero up to $hf - \\phi$."
+        },
+        {
+          "wrong": "A metal with a larger work function gives out more energetic electrons.",
+          "right": "The work function is a cost, not a supply. For the same light, a larger work function leaves less kinetic energy for the electron and raises the threshold frequency."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Photons of energy $3.0\\ \\text{eV}$ strike a metal with work function $2.2\\ \\text{eV}$. What is $K_{\\max}$, and what is the stopping voltage?",
+          "a": "$K_{\\max} = 3.0 - 2.2 = 0.8\\ \\text{eV}$, so the stopping voltage is $0.8\\ \\text{V}$."
+        },
+        {
+          "q": "Light above the threshold shines on a metal. Its intensity is doubled without changing its colour. What happens to the current and to the stopping voltage?",
+          "a": "The current doubles, because twice as many photons eject twice as many electrons each second. The stopping voltage stays the same, because each photon has the same energy."
+        },
+        {
+          "q": "Two metals are tested and $K_{\\max}$ is graphed against frequency for each. How do the two lines compare?",
+          "a": "They are parallel, both with slope $h$. The metal with the larger work function has its line shifted to the right: a higher threshold frequency and a lower intercept, $-\\phi$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=f[10^{14}Hz] y=K[eV] xr=-2,16 yr=-5.5,5.5\nseg {{phi/0.4136}},0 16,{{0.4136*16-phi}}\nseg 0,{{-phi}} {{phi/0.4136}},0 dash=1\npt {{phi/0.4136}},0\nxt 0 4 8 12 16\nyt -4 -2 0 2 4\nnote 11,-4.8 \"f_0 = {{round(phi/0.4136*10)/10}} ×10^{14} Hz\"",
+        "caption": "Change the metal's work function. The line keeps the same slope, h, and slides sideways: a larger work function means a higher threshold frequency and less kinetic energy at every frequency.",
+        "params": [
+          {
+            "name": "phi",
+            "label": "Work function",
+            "min": 1.5,
+            "max": 5,
+            "step": 0.1,
+            "default": 2.3,
+            "unit": "eV"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.5",
+        "15.1"
+      ],
+      "teacherNotes": "Before giving Einstein's equation, ask students to predict with the wave model what dim violet and bright red light should do, then show the data; the failed predictions are what make the photon idea stick. The persistent error is letting intensity change $K_{\\max}$, so ask \"what does one photon do?\" whenever brightness comes up. Have them read slope, x-intercept and y-intercept from the $K_{\\max}$ against $f$ graph, since the AP exam often asks for $h$ or $\\phi$ from such data."
+    },
+    {
+      "topic": "15.6",
+      "bigIdea": "When an X-ray photon bounces off a nearly free electron it behaves like a colliding particle: momentum and energy are conserved, the electron recoils, and the scattered photon leaves with a longer wavelength.",
+      "picture": {
+        "diagram": "scene\nball e 4,2 r=.15 \"e^-\"\nf 1.6,2 right 2 \"photon in, p\"\nf e.c+0,0.25 up 1 \"photon out, p/2\"\nf e.c+0.2,-0.1 -26.57 2.236 \"electron, 1.12p\"\nang e 0 90 \"θ\"",
+        "caption": "Momentum in a Compton collision, for a photon of wavelength $2.43\\ \\text{pm}$ scattered through $\\theta = 90^\\circ$. Its wavelength doubles, so its momentum $h/\\lambda$ halves. The electron's momentum makes up the difference as a vector: $p$ forward and $p/2$ downward, a total of $1.12p$ at $27^\\circ$ below the original direction."
+      },
+      "explanation": "In 1923 Arthur Compton fired X-rays of a single wavelength at a block of graphite and measured the X-rays that came off at different angles. The scattered X-rays had a slightly *longer* wavelength than the incoming ones, and the increase grew with the scattering angle. A wave model cannot explain this: electrons shaken by a wave re-radiate at the frequency that shakes them.\n\nTreat the X-ray as a stream of photons and the result is an ordinary collision problem. Each photon has energy $E = hc/\\lambda$ and momentum $p = h/\\lambda$. It hits an electron that is loosely bound and nearly at rest, and the two fly apart like billiard balls, conserving both energy and momentum. The electron recoils with some kinetic energy, so the photon must leave with less energy than it brought. A photon cannot slow down: it still travels at $c$. Less energy therefore means a lower frequency and a longer wavelength.\n\nWorking through the two conservation laws gives the size of the change: $\\Delta\\lambda = \\lambda' - \\lambda = \\dfrac{h}{m_e c}(1 - \\cos\\theta)$, where $\\theta$ is the angle between the photon's new and old directions. The constant $h/(m_e c) = 2.43 \\times 10^{-12}\\ \\text{m}$ ($2.43\\ \\text{pm}$) sets the scale. The shift is zero for a photon that carries straight on, $2.43\\ \\text{pm}$ at $90^\\circ$, and largest, $4.86\\ \\text{pm}$, for a photon that bounces straight back. It does not depend on the incoming wavelength at all.\n\nThat is why the effect shows up only for X-rays and gamma rays. A few picometres is a noticeable fraction of an X-ray's wavelength (tens of picometres) but a negligible one for visible light (hundreds of thousands of picometres). Compton's measurement mattered because it showed photons carry momentum as well as energy, and that both are conserved in a collision with a single electron.",
+      "equations": [
+        {
+          "latex": "\\Delta\\lambda = \\lambda' - \\lambda = \\frac{h}{m_e c}\\,(1 - \\cos\\theta)",
+          "meaning": "The increase in a photon's wavelength when it scatters from an electron depends only on the angle it is scattered through.",
+          "variables": [
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the photon before scattering",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\lambda'",
+              "name": "wavelength of the photon after scattering",
+              "unit": "m"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "J·s"
+            },
+            {
+              "symbol": "m_e",
+              "name": "mass of the electron",
+              "unit": "kg"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the photon's final and initial directions",
+              "unit": "degrees"
+            }
+          ],
+          "useWhen": "A photon scatters from a free or loosely bound electron and you want its new wavelength. The combination h/(mₑc) is 2.43 pm.",
+          "notWhen": "It gives the change, not the new wavelength: add it to the original. The angle is the photon's, not the electron's."
+        },
+        {
+          "latex": "p = \\frac{h}{\\lambda} = \\frac{E}{c}",
+          "meaning": "A photon's momentum is Planck's constant divided by its wavelength, or its energy divided by the speed of light.",
+          "variables": [
+            {
+              "symbol": "p",
+              "name": "momentum of the photon",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "h",
+              "name": "Planck's constant",
+              "unit": "J·s"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength of the photon",
+              "unit": "m"
+            },
+            {
+              "symbol": "E",
+              "name": "energy of the photon",
+              "unit": "J"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You are applying conservation of momentum to a collision that involves a photon.",
+          "notWhen": "Momentum is a vector: in a scattering problem, add the photon's and electron's momenta by components."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Wavelength after scattering",
+          "prompt": "X-rays of wavelength $0.0700\\ \\text{nm}$ scatter from electrons in a carbon target. What is the wavelength of the X-rays scattered through $60^\\circ$? Use $h/(m_e c) = 2.43\\ \\text{pm}$.",
+          "steps": [
+            "Find the angle factor: $1 - \\cos 60^\\circ = 1 - 0.500 = 0.500$.",
+            "Find the shift: $\\Delta\\lambda = (2.43\\ \\text{pm})(0.500) = 1.22\\ \\text{pm}$.",
+            "Put the shift in the same unit as the wavelength. One picometre is $0.001\\ \\text{nm}$, so $\\Delta\\lambda = 0.00122\\ \\text{nm}$.",
+            "The scattered photon has less energy, so its wavelength is longer: add the shift. $\\lambda' = 0.0700 + 0.00122 = 0.0712\\ \\text{nm}$."
+          ],
+          "answer": "$\\lambda' = 0.0712\\ \\text{nm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 0.07,
+                "unit": "nm"
+              },
+              "lambda_C": {
+                "value": 2.43,
+                "unit": "pm"
+              },
+              "theta": {
+                "value": 60,
+                "unit": "deg"
+              }
+            },
+            "expr": "lambda + lambda_C*(1 - cos(theta))",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "Energy given to the electron",
+          "prompt": "A photon of wavelength $0.0500\\ \\text{nm}$ scatters through $90^\\circ$ from an electron that is initially at rest. Determine the kinetic energy the electron gains, and explain why the scattered photon does not travel more slowly. Use $h/(m_e c) = 0.00243\\ \\text{nm}$ and $hc = 1240\\ \\text{eV·nm}$.",
+          "steps": [
+            "At $90^\\circ$, $1 - \\cos\\theta = 1$, so the wavelength increases by $0.00243\\ \\text{nm}$: $\\lambda' = 0.0500 + 0.00243 = 0.05243\\ \\text{nm}$.",
+            "Photon energy before: $E = \\dfrac{hc}{\\lambda} = \\dfrac{1240}{0.0500} = 24\\,800\\ \\text{eV}$. After: $E' = \\dfrac{1240}{0.05243} = 23\\,650\\ \\text{eV}$.",
+            "Energy is conserved in the collision and the electron started at rest, so the electron's kinetic energy is what the photon lost: $K = E - E' = 24\\,800 - 23\\,650 = 1.15 \\times 10^{3}\\ \\text{eV}$.",
+            "The photon lost energy but not speed. Every photon travels at $c$; its energy is $hf$, so losing energy lowers its frequency and, since $c = f\\lambda$, lengthens its wavelength."
+          ],
+          "answer": "The electron gains $K = 1.15 \\times 10^{3}\\ \\text{eV}$; the photon still moves at $c$, with a lower frequency and a longer wavelength",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 0.05,
+                "unit": "nm"
+              },
+              "lambda_C": {
+                "value": 0.00243,
+                "unit": "nm"
+              },
+              "theta": {
+                "value": 90,
+                "unit": "deg"
+              },
+              "hc": {
+                "value": 1240,
+                "unit": "eV·nm"
+              }
+            },
+            "expr": "hc/lambda - hc/(lambda + lambda_C*(1 - cos(theta)))",
+            "unit": "eV"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "photon-slows-when-losing-energy",
+          "wrong": "The scattered photon has less energy, so it moves more slowly than before.",
+          "right": "Photons always travel at $c$. A photon's energy is $hf$, so less energy means a lower frequency and a longer wavelength at the same speed."
+        },
+        {
+          "tag": "photon-slows-when-losing-energy",
+          "wrong": "The photon is squeezed in the collision, so its wavelength gets shorter.",
+          "right": "A shorter wavelength would mean *more* energy ($E = hc/\\lambda$). The photon gives energy to the electron, so its wavelength increases: $\\lambda' = \\lambda + \\Delta\\lambda$."
+        },
+        {
+          "wrong": "The wavelength shift is bigger for more energetic photons.",
+          "right": "The shift $\\dfrac{h}{m_e c}(1 - \\cos\\theta)$ depends only on the angle. It is the same few picometres for any photon; it is just easier to notice when the original wavelength is itself only tens of picometres."
+        },
+        {
+          "wrong": "Compton scattering is the photoelectric effect under another name: the photon is absorbed by the electron.",
+          "right": "In the photoelectric effect the photon disappears and all its energy goes to freeing an electron. In Compton scattering the photon survives, carrying away most of the energy in a new direction."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "At what scattering angle is the wavelength shift largest, and how big is it?",
+          "a": "At $180^\\circ$, straight back: $1 - \\cos 180^\\circ = 2$, so $\\Delta\\lambda = 2 \\times 2.43 = 4.86\\ \\text{pm}$."
+        },
+        {
+          "q": "A photon has wavelength $2.0 \\times 10^{-11}\\ \\text{m}$. What is its momentum?",
+          "a": "$p = h/\\lambda = (6.63 \\times 10^{-34})/(2.0 \\times 10^{-11}) = 3.3 \\times 10^{-23}\\ \\text{kg·m/s}$."
+        },
+        {
+          "q": "After a Compton collision, how do the scattered photon's speed, frequency and momentum compare with their values before?",
+          "a": "The speed is the same (c). The frequency is lower and the momentum is smaller, because the wavelength is longer."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=θ[deg] y=Δλ[pm] xr=-25,180 yr=0,5.5\nfn 2.43*(1-cos(x*pi/180)) 0..180\npt {{theta}},{{2.43*(1-cos(theta*pi/180))}}\nxt 0 45 90 135 180\nyt 0 2.43 4.86\nnote 45,4.9 \"Δλ = {{round(243*(1-cos(theta*pi/180)))/100}} pm\"",
+        "caption": "Change the angle the photon is scattered through. A photon that barely changes direction keeps its wavelength; one that bounces straight back gains the most, 4.86 pm.",
+        "params": [
+          {
+            "name": "theta",
+            "label": "Scattering angle",
+            "min": 0,
+            "max": 180,
+            "step": 5,
+            "default": 90,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "15.1",
+        "15.5"
+      ],
+      "teacherNotes": "Frame this as a collision from Physics 1 with one new ingredient, $p = h/\\lambda$. Ask which way the electron goes and what that costs the photon before showing any formula. The standard errors are slowing the photon down and subtracting the shift; asking \"does the photon gain or lose energy, and what does that do to $\\lambda$?\" settles the sign. Stress that $\\theta$ is the photon's angle and that the shift is independent of the incoming wavelength."
+    },
+    {
+      "topic": "15.7",
+      "bigIdea": "In every nuclear reaction the number of nucleons and the total charge stay the same, while the total mass drops slightly and the missing mass is released as energy, $E = \\Delta m\\,c^2$.",
+      "picture": {
+        "diagram": "plot x=A y=BE/A[MeV] xr=-50,270 yr=0,10\nseg 2,1.11 4,7.07 7,5.61 12,7.68 16,7.98 56,8.79 84,8.72 120,8.50 208,7.87 238,7.57\npt 4,7.07\nnote 34,6.2 \"He-4\"\npt 56,8.79 \"Fe-56\"\npt 238,7.57 \"U-238\"\nxt 4 56 120 238\nyt 2 4 6 8",
+        "caption": "Binding energy per nucleon against nucleon number $A$ for several nuclei. The curve rises steeply for light nuclei, peaks near iron-56 at about $8.8\\ \\text{MeV}$ and slopes gently down to $7.6\\ \\text{MeV}$ for uranium. Reactions that move nuclei toward the peak release energy: fusion from the left, fission from the right."
+      },
+      "explanation": "A nucleus is written $^{A}_{Z}\\text{X}$: $Z$ is the number of protons (the atomic number, which fixes the element), and $A$ is the number of **nucleons**, protons plus neutrons. In any nuclear reaction or decay, two counts are the same before and after: the total number of nucleons (the sum of the $A$ values) and the total charge (the sum of the $Z$ values). Those two rules are enough to find a missing product. A neutron is $^{1}_{0}\\text{n}$ and an electron counts as $A = 0$, $Z = -1$.\n\nMass is *not* one of the conserved counts. Einstein's $E = mc^2$ says mass is a form of energy, and nuclear reactions convert a measurable amount of it. A helium-4 nucleus has less mass than two protons and two neutrons weighed separately. The difference, the **mass defect** $\\Delta m$, corresponds to the **binding energy** $\\Delta m\\,c^2$: the energy released when the nucleus was assembled, and the energy you would have to supply to pull it apart. With masses in atomic mass units the conversion is quick: $1\\ \\text{u}$ of mass is $931.5\\ \\text{MeV}$ of energy.\n\nDividing a nucleus's binding energy by $A$ gives the binding energy per nucleon, a measure of how tightly it is held together. The curve in the picture peaks near iron. **Fusion** joins light nuclei into a heavier one, and **fission** splits a very heavy nucleus into two medium-sized ones; both move toward the peak. The products are more tightly bound, so they have less total mass than what you started with, and the difference is released.\n\nThat energy appears as kinetic energy of the products and as photons. A single fission releases about $200\\ \\text{MeV}$, tens of millions of times more than the few eV of a chemical reaction, yet the mass that disappears is only about a tenth of a percent of the total.",
+      "equations": [
+        {
+          "latex": "E = \\Delta m\\,c^2",
+          "meaning": "The energy released in a nuclear reaction equals the mass that disappears times the speed of light squared.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "energy released (or binding energy)",
+              "unit": "J or MeV"
+            },
+            {
+              "symbol": "m",
+              "name": "mass; Δm is the mass of what you start with minus the mass of what you end with",
+              "unit": "kg or u"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You know the masses before and after a nuclear reaction, or the mass of a nucleus and of its separate nucleons. With Δm in u, multiply by 931.5 MeV per u.",
+          "notWhen": "Do not round the masses first: the answer is a small difference between large numbers, so keep every decimal place given."
+        },
+        {
+          "latex": "\\sum A_{\\text{before}} = \\sum A_{\\text{after}} \\qquad \\sum Z_{\\text{before}} = \\sum Z_{\\text{after}}",
+          "meaning": "Nucleon number and charge are each conserved in every nuclear reaction and decay.",
+          "variables": [
+            {
+              "symbol": "A",
+              "name": "nucleon number (mass number) of each particle",
+              "unit": ""
+            },
+            {
+              "symbol": "Z",
+              "name": "charge number (atomic number) of each particle",
+              "unit": ""
+            }
+          ],
+          "useWhen": "You need to complete a nuclear equation or check that a proposed reaction is possible.",
+          "notWhen": "These count particles and charge, not mass: the masses on the two sides are not equal."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Binding energy of helium-4",
+          "prompt": "A helium-4 atom has mass $4.002602\\ \\text{u}$. A hydrogen-1 atom has mass $1.007825\\ \\text{u}$ and a neutron $1.008665\\ \\text{u}$. What is the binding energy of the helium-4 nucleus? Take $1\\ \\text{u}$ as equivalent to $931.5\\ \\text{MeV}$.",
+          "steps": [
+            "Helium-4 contains 2 protons and 2 neutrons. Using atomic masses, count 2 hydrogen atoms and 2 neutrons, so that the electrons balance on both sides.",
+            "Mass of the separate parts: $2(1.007825) + 2(1.008665) = 4.032980\\ \\text{u}$.",
+            "Mass defect: $\\Delta m = 4.032980 - 4.002602 = 0.030378\\ \\text{u}$. The assembled nucleus is lighter than its parts.",
+            "Convert to energy: $E = (0.030378\\ \\text{u})(931.5\\ \\text{MeV/u}) = 28.3\\ \\text{MeV}$. Per nucleon that is $28.3/4 = 7.07\\ \\text{MeV}$, the helium-4 point on the curve."
+          ],
+          "answer": "Binding energy $= 28.3\\ \\text{MeV}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m_He": {
+                "value": 4.002602,
+                "unit": ""
+              },
+              "m_H": {
+                "value": 1.007825,
+                "unit": ""
+              },
+              "m_n": {
+                "value": 1.008665,
+                "unit": ""
+              },
+              "per_u": {
+                "value": 931.5,
+                "unit": "MeV"
+              }
+            },
+            "expr": "(2*m_H + 2*m_n - m_He)*per_u",
+            "unit": "MeV"
+          }
+        },
+        {
+          "title": "Energy from one fission",
+          "prompt": "A uranium-235 nucleus absorbs a neutron and splits: $^{1}_{0}\\text{n} + \\,^{235}_{92}\\text{U} \\rightarrow \\,^{141}_{56}\\text{Ba} + \\,^{92}_{36}\\text{Kr} + x\\,^{1}_{0}\\text{n}$. Determine the number of neutrons $x$ and the energy released. Atomic masses: uranium-235, $235.043930\\ \\text{u}$; barium-141, $140.914411\\ \\text{u}$; krypton-92, $91.926156\\ \\text{u}$; neutron, $1.008665\\ \\text{u}$. Take $1\\ \\text{u}$ as equivalent to $931.5\\ \\text{MeV}$.",
+          "steps": [
+            "Conserve nucleon number: $1 + 235 = 141 + 92 + x$, so $x = 3$. Check charge: $0 + 92 = 56 + 36 + 0$, which balances.",
+            "Mass before: $235.043930 + 1.008665 = 236.052595\\ \\text{u}$. Mass after: $140.914411 + 91.926156 + 3(1.008665) = 235.866562\\ \\text{u}$.",
+            "Mass that disappears: $\\Delta m = 236.052595 - 235.866562 = 0.186033\\ \\text{u}$.",
+            "Energy released: $E = (0.186033\\ \\text{u})(931.5\\ \\text{MeV/u}) = 173\\ \\text{MeV}$. It appears mainly as kinetic energy of the two fragments and the neutrons. The products lie closer to the peak of the binding energy curve than uranium does, which is why mass is lost."
+          ],
+          "answer": "$x = 3$ neutrons; the energy released is $173\\ \\text{MeV}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m_U": {
+                "value": 235.04393,
+                "unit": ""
+              },
+              "m_Ba": {
+                "value": 140.914411,
+                "unit": ""
+              },
+              "m_Kr": {
+                "value": 91.926156,
+                "unit": ""
+              },
+              "m_n": {
+                "value": 1.008665,
+                "unit": ""
+              },
+              "per_u": {
+                "value": 931.5,
+                "unit": "MeV"
+              }
+            },
+            "expr": "(m_U + m_n - m_Ba - m_Kr - 3*m_n)*per_u",
+            "unit": "MeV"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "mass-conserved-in-nuclear-reactions",
+          "wrong": "The products of a nuclear reaction have the same total mass as the reactants, since no nucleons are lost.",
+          "right": "The number of nucleons is conserved, but the mass is not. When energy is released the products have *less* total mass, by $\\Delta m = E/c^2$."
+        },
+        {
+          "tag": "nucleon-charge-bookkeeping",
+          "wrong": "To balance a nuclear equation, make only the mass numbers add up.",
+          "right": "Both rows must balance: the $A$ values (nucleons) and the $Z$ values (charge). An electron contributes $Z = -1$ and a neutron contributes $A = 1$ with $Z = 0$."
+        },
+        {
+          "wrong": "A nucleus with a large binding energy per nucleon has a lot of energy stored and ready to release.",
+          "right": "Binding energy is energy already given up when the nucleus formed. The most tightly bound nuclei, near iron, are the most stable and have the least left to release."
+        },
+        {
+          "wrong": "Splitting any nucleus releases energy, and so does fusing any two nuclei.",
+          "right": "Only moves toward the peak of the curve release energy: fusing light nuclei or splitting very heavy ones. Splitting helium or fusing two uranium nuclei would take energy in."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Complete the fission reaction $^{1}_{0}\\text{n} + \\,^{235}_{92}\\text{U} \\rightarrow \\,^{140}_{54}\\text{Xe} + \\,^{94}_{38}\\text{Sr} + \\text{?}$",
+          "a": "Two neutrons. Nucleons: $236 = 140 + 94 + 2$. Charge: $92 = 54 + 38$, so the missing particles carry no charge."
+        },
+        {
+          "q": "A reaction's products have $0.0050\\ \\text{u}$ less mass than its reactants. How much energy is released?",
+          "a": "$0.0050 \\times 931.5 = 4.7\\ \\text{MeV}$."
+        },
+        {
+          "q": "Using the binding energy curve, explain why fusing two hydrogen-2 nuclei into helium-4 releases energy.",
+          "a": "Hydrogen-2 has about $1.1\\ \\text{MeV}$ of binding energy per nucleon and helium-4 about $7.1\\ \\text{MeV}$. The four nucleons end up much more tightly bound, so the helium nucleus has less mass than the two hydrogen nuclei, and the difference is released."
+        }
+      ],
+      "prerequisites": [
+        "10.1",
+        "10.2"
+      ],
+      "teacherNotes": "Give students a nuclear equation with one product missing and have them balance the top and bottom rows separately before any energy is mentioned; most can do the bookkeeping, and it frees attention for the harder idea. That idea is that binding energy is energy *lost*: ask whether the bound nucleus or the separate nucleons have more mass, and why. In calculations the usual failure is rounding the masses, which wipes out the difference being sought."
+    },
+    {
+      "topic": "15.8",
+      "bigIdea": "An unstable nucleus decays by emitting an alpha particle, a beta particle or a gamma photon, and although nobody can say when one particular nucleus will decay, half of any large sample decays in each half-life.",
+      "picture": {
+        "diagram": "plot x=t[days] y=N[%] xr=-3,40 yr=0,100\nfn 100*0.5^(t/8) 0..40\npt 8,50\npt 16,25\npt 24,12.5\nxt 0 8 16 24 32 40\nyt 12.5 25 50 100",
+        "caption": "The percentage of iodine-131 nuclei remaining in a sample (half-life $8$ days). Every $8$ days the amount halves: $100\\% \\to 50\\% \\to 25\\% \\to 12.5\\%$. The curve gets ever closer to zero but is not a straight line and does not reach zero after two half-lives."
+      },
+      "explanation": "There are three common kinds of radioactive decay, and each obeys the conservation rules of Topic 15.7. In **alpha decay** the nucleus throws out a helium-4 nucleus, $^{4}_{2}\\text{He}$, so its $A$ falls by 4 and its $Z$ by 2: uranium-238 becomes thorium-234. In **beta-minus decay** a neutron turns into a proton, emitting an electron and an antineutrino. $A$ is unchanged and $Z$ rises by 1: carbon-14 becomes nitrogen-14. In **beta-plus decay** a proton turns into a neutron, emitting a positron (a positive electron) and a neutrino, so $Z$ falls by 1. In **gamma decay** a nucleus left in an excited state drops to a lower one and emits a high-energy photon; neither $A$ nor $Z$ changes.\n\nNeutrinos have no charge and almost no mass, so they do not affect the bookkeeping, but they carry away some of the energy and momentum. In every decay the products have less total mass than the original nucleus, and the missing mass is the energy released.\n\nDecay is random. Each nucleus of a given kind has the same chance of decaying in the next second, whatever its age and whatever the temperature, pressure or chemical state of the sample. So the number that decay per second is proportional to the number still there, and that leads to a simple pattern: the time for half of the nuclei to decay, the **half-life** $t_{1/2}$, is always the same. After one half-life half remain, after two a quarter, after three an eighth.\n\nIn symbols, $N = N_0\\left(\\tfrac{1}{2}\\right)^{t/t_{1/2}}$. The same curve can be written $N = N_0 e^{-\\lambda t}$, where the decay constant $\\lambda = \\ln 2/t_{1/2}$ is the chance per second that a nucleus decays (here $\\lambda$ is not a wavelength). The activity, the number of decays per second, follows the same curve, because it is proportional to $N$.",
+      "equations": [
+        {
+          "latex": "N = N_0\\left(\\tfrac{1}{2}\\right)^{t/t_{1/2}}",
+          "meaning": "The number of undecayed nuclei halves in every half-life.",
+          "variables": [
+            {
+              "symbol": "N",
+              "name": "number of undecayed nuclei at time t (or mass, or activity)",
+              "unit": ""
+            },
+            {
+              "symbol": "N_0",
+              "name": "number at the start",
+              "unit": ""
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s (or any time unit)"
+            },
+            {
+              "symbol": "t_{1/2}",
+              "name": "half-life",
+              "unit": "same unit as t"
+            }
+          ],
+          "useWhen": "You know the half-life and want how much is left, or you know how much is left and want the time or the half-life. Easiest when the time is a whole number of half-lives.",
+          "notWhen": "It gives what remains, not what has decayed; subtract from the starting amount for that. It describes large samples, not a single nucleus."
+        },
+        {
+          "latex": "N = N_0 e^{-\\lambda t} \\qquad \\lambda = \\frac{\\ln 2}{t_{1/2}}",
+          "meaning": "The same decay written as an exponential, with the decay constant in place of the half-life.",
+          "variables": [
+            {
+              "symbol": "N",
+              "name": "number of undecayed nuclei at time t",
+              "unit": ""
+            },
+            {
+              "symbol": "N_0",
+              "name": "number at the start",
+              "unit": ""
+            },
+            {
+              "symbol": "e",
+              "name": "the base of natural logarithms, 2.718",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "decay constant: the probability per unit time that a nucleus decays",
+              "unit": "1/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s"
+            },
+            {
+              "symbol": "t_{1/2}",
+              "name": "half-life",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The time is not a whole number of half-lives, or the decay constant is what you are given.",
+          "notWhen": "Do not confuse this λ with wavelength, and keep t and the half-life in the same unit."
+        },
+        {
+          "latex": "^{A}_{Z}\\text{X} \\rightarrow \\,^{A-4}_{Z-2}\\text{Y} + \\,^{4}_{2}\\text{He} \\qquad ^{A}_{Z}\\text{X} \\rightarrow \\,^{\\ \\ A}_{Z+1}\\text{Y} + e^{-} + \\bar{\\nu}",
+          "meaning": "Alpha decay lowers the nucleon number by 4 and the atomic number by 2; beta-minus decay keeps the nucleon number and raises the atomic number by 1.",
+          "variables": [
+            {
+              "symbol": "A",
+              "name": "nucleon number of the original nucleus",
+              "unit": ""
+            },
+            {
+              "symbol": "Z",
+              "name": "atomic number of the original nucleus",
+              "unit": ""
+            },
+            {
+              "symbol": "e",
+              "name": "the emitted electron (beta particle)",
+              "unit": ""
+            },
+            {
+              "symbol": "\\nu",
+              "name": "neutrino; the bar marks an antineutrino",
+              "unit": ""
+            }
+          ],
+          "useWhen": "You need to identify the daughter nucleus of a decay, or the kind of decay from the parent and daughter.",
+          "notWhen": "Gamma decay changes neither number. Beta-plus decay lowers Z by 1 instead of raising it."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Finding a half-life from count rates",
+          "prompt": "A radiation detector beside a freshly made radioactive sample records $1200$ counts per minute. Exactly $15.0\\ \\text{h}$ later it records $150$ counts per minute from the same sample. What is the half-life of the isotope? Ignore background radiation.",
+          "steps": [
+            "The count rate is proportional to the number of undecayed nuclei, so it halves every half-life.",
+            "Find the fraction remaining: $\\dfrac{150}{1200} = \\dfrac{1}{8}$.",
+            "Count the halvings: $1200 \\to 600 \\to 300 \\to 150$. That is three halvings, since $\\tfrac{1}{8} = \\left(\\tfrac{1}{2}\\right)^3$, so $15.0\\ \\text{h}$ is three half-lives.",
+            "$t_{1/2} = \\dfrac{15.0\\ \\text{h}}{3} = 5.0\\ \\text{h}$."
+          ],
+          "answer": "The half-life is $5.0\\ \\text{h}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "t": {
+                "value": 15,
+                "unit": "h"
+              }
+            },
+            "expr": "t/3",
+            "unit": "h"
+          }
+        },
+        {
+          "title": "Radon in a sealed jar",
+          "prompt": "Radon-222 ($^{222}_{86}\\text{Rn}$) decays by alpha emission with a half-life of $3.8$ days. A sealed jar initially holds $6.0 \\times 10^{10}$ radon-222 nuclei. Write the equation for the decay, identifying the daughter nucleus by its nucleon number and atomic number, and determine how many radon-222 nuclei remain after $11.4$ days.",
+          "steps": [
+            "An alpha particle is $^{4}_{2}\\text{He}$. Conserving nucleon number, the daughter has $A = 222 - 4 = 218$; conserving charge, $Z = 86 - 2 = 84$, which is polonium. The decay is $^{222}_{86}\\text{Rn} \\rightarrow \\,^{218}_{84}\\text{Po} + \\,^{4}_{2}\\text{He}$.",
+            "Count the half-lives: $\\dfrac{11.4\\ \\text{days}}{3.8\\ \\text{days}} = 3$.",
+            "After three half-lives the fraction remaining is $\\left(\\tfrac{1}{2}\\right)^3 = \\tfrac{1}{8}$, so $N = \\dfrac{6.0 \\times 10^{10}}{8} = 7.5 \\times 10^{9}$ nuclei.",
+            "The other $5.25 \\times 10^{10}$ nuclei have each emitted one alpha particle and become polonium-218. The radon is not \"three-quarters gone after two half-lives and finished after a third\": each half-life removes half of whatever is left."
+          ],
+          "answer": "$^{222}_{86}\\text{Rn} \\rightarrow \\,^{218}_{84}\\text{Po} + \\,^{4}_{2}\\text{He}$; $7.5 \\times 10^{9}$ radon nuclei remain",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "N0": {
+                "value": 60000000000,
+                "unit": ""
+              },
+              "T": {
+                "value": 3.8,
+                "unit": "day"
+              },
+              "t": {
+                "value": 11.4,
+                "unit": "day"
+              }
+            },
+            "expr": "N0*0.5^(t/T)",
+            "unit": ""
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "half-life-linear",
+          "wrong": "After one half-life half the sample has decayed, so after two half-lives it is all gone.",
+          "right": "Each half-life removes half of what is left, not half of the original. After two half-lives a quarter remains; after three, an eighth."
+        },
+        {
+          "tag": "nucleon-charge-bookkeeping",
+          "wrong": "In beta decay the nucleus loses an electron, so its mass number goes down by one.",
+          "right": "An electron is not a nucleon. In beta-minus decay a neutron becomes a proton, so $A$ stays the same and $Z$ goes *up* by 1. Only alpha decay changes $A$."
+        },
+        {
+          "wrong": "A nucleus that has survived for many half-lives is overdue and more likely to decay soon.",
+          "right": "A nucleus has no memory. Its chance of decaying in the next second is the same however long it has existed, which is exactly why the half-life stays constant."
+        },
+        {
+          "wrong": "Heating a radioactive sample, or having less of it, changes its half-life.",
+          "right": "The half-life is a property of the kind of nucleus. Temperature, pressure, chemical bonding and the amount of material do not change it; a smaller sample just has fewer decays per second."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Thorium-234 ($^{234}_{90}\\text{Th}$) undergoes beta-minus decay. What are the nucleon number and atomic number of the daughter?",
+          "a": "$A = 234$ (unchanged) and $Z = 91$ (one more proton): protactinium-234."
+        },
+        {
+          "q": "What fraction of a radioactive sample remains after five half-lives?",
+          "a": "$\\left(\\tfrac{1}{2}\\right)^5 = \\tfrac{1}{32}$, about 3%."
+        },
+        {
+          "q": "A nucleus emits a gamma photon. How do its nucleon number and atomic number change?",
+          "a": "Neither changes. The nucleus only drops from an excited state to a lower-energy state; it is still the same isotope."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[days] y=N[%] xr=-3,42 yr=0,100\nfn 100*0.5^(t/{{T}}) 0..40\npt {{T}},50\npt {{2*T}},25\nvl {{T}}\nxt 0 10 20 30 40\nyt 25 50 100",
+        "caption": "Change the half-life. The dashed line marks one half-life, where 50% remains; a quarter remains after twice that time, whatever the half-life is.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Half-life",
+            "min": 2,
+            "max": 20,
+            "step": 1,
+            "default": 8,
+            "unit": "days"
+          }
+        ]
+      },
+      "prerequisites": [
+        "15.7"
+      ],
+      "teacherNotes": "A dice or coin simulation (remove every die that shows a six, count, repeat) makes the randomness and the constant half-life concrete in ten minutes. Ask what is left after two half-lives before teaching the formula: \"nothing\" is the answer to listen for. In decay equations, have students write the $A$ row and the $Z$ row as two separate sums; beta decay is where the bookkeeping slips, usually by changing $A$ or lowering $Z$."
+    }
+  ]
+}

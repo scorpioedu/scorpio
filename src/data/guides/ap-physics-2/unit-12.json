@@ -1,0 +1,846 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 12,
+  "guides": [
+    {
+      "topic": "12.1",
+      "bigIdea": "A magnetic field is a vector field around every magnet and every moving charge, and its lines always form closed loops because magnetic poles only come in north–south pairs.",
+      "picture": {
+        "diagram": "scene\nblock S 3.25,0 w=1.5 h=0.8 \"S\"\nblock N 4.75,0 w=1.5 h=0.8 \"N\"\nf 5.80,0.40 0 1.20 \"B\"\nf 5.59,1.33 76 0.89\nf 4.31,2.10 180 0.62\nf 2.19,2.19 -76 0.89\nf 1.00,0.40 0 1.20\nf 2.19,-1.39 76 0.89\nf 4.31,-1.30 180 0.62\nf 5.59,-0.53 -76 0.89",
+        "caption": "The field around a bar magnet. Each arrow shows the way the north end of a small compass would point there, and is longer where the field is stronger. Outside the magnet the field runs from the north pole round to the south pole."
+      },
+      "explanation": "A magnet turns a compass without touching it, so, as with electric charge, we say it fills the space around it with a field. The magnetic field $\\vec{B}$ at a point has a direction, the way the north end of a small compass placed there would point, and a strength measured in tesla ($\\text{T}$). Earth's field is about $5 \\times 10^{-5}\\ \\text{T}$. Fields from several sources add as vectors.\n\nOutside a magnet, field lines leave the north pole and enter the south pole, and they are closest together where the field is strongest. They do not stop at the poles: inside the magnet they continue from south back to north, so every line is a closed loop. Electric field lines start and end on charges, but no single magnetic pole has ever been found. Cut a magnet in two and each piece has both poles, because magnetism comes from moving charge inside atoms, and each atom acts as a tiny north–south pair, a magnetic dipole.\n\nMaterials respond to a field through those atomic dipoles. In ferromagnetic materials (iron, nickel, cobalt) neighbouring dipoles line up in regions called domains; an outside field aligns the domains, magnetising the material strongly, sometimes permanently. Paramagnetic materials such as aluminium are magnetised weakly along the field, only while it is there. Diamagnetic materials such as copper and water are magnetised very weakly against the field. A material's magnetic permeability measures this response; empty space has permeability $\\mu_0 = 4\\pi \\times 10^{-7}\\ \\text{T·m/A}$.\n\nEarth behaves like a huge bar magnet, with a magnetic south pole near geographic north. Away from the equator the field also tilts into or out of the ground, and only its horizontal part turns a compass.",
+      "equations": [
+        {
+          "latex": "B_{\\text{net}} = \\sqrt{B_x^2 + B_y^2}",
+          "meaning": "The size of the net field at a point where two fields act at right angles to each other.",
+          "variables": [
+            {
+              "symbol": "B_{\\text{net}}",
+              "name": "magnitude of the net magnetic field",
+              "unit": "T"
+            },
+            {
+              "symbol": "B_x,\\ B_y",
+              "name": "the two perpendicular fields (or the two components of one field)",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "Two sources give fields at right angles at the same point, or you know a field's two components.",
+          "notWhen": "Not when the fields lie along the same line: then add them with signs. Never add the sizes of fields that point in different directions."
+        },
+        {
+          "latex": "\\tan\\theta = \\frac{B_y}{B_x}",
+          "meaning": "The direction of the net field, as an angle measured from the x-direction. A compass needle settles along this direction.",
+          "variables": [
+            {
+              "symbol": "\\theta",
+              "name": "angle of the net field from the x-direction",
+              "unit": "°"
+            },
+            {
+              "symbol": "B_x,\\ B_y",
+              "name": "the two perpendicular fields",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "You want the direction a compass points, or you are splitting a field into components ($B_x = B\\cos\\theta$, $B_y = B\\sin\\theta$).",
+          "notWhen": "Check which direction the angle is measured from before using it; an angle from the vertical swaps sine and cosine."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Two magnets, one point",
+          "prompt": "Point P lies on the line between two bar magnets. Magnet A, to the left of P, has its north pole facing P and alone produces a field of $4.0 \\times 10^{-5}\\ \\text{T}$ at P. Magnet B, to the right, also has its north pole facing P and alone produces $2.5 \\times 10^{-5}\\ \\text{T}$ at P. What is the net magnetic field at P? What does it become if magnet B is turned end for end?",
+          "steps": [
+            "Outside a magnet the field points away from a north pole. So A's field at P points right, away from A, and B's points left, away from B.",
+            "Take right as positive and add with signs: $B_{\\text{net}} = (4.0 - 2.5) \\times 10^{-5}\\ \\text{T} = +1.5 \\times 10^{-5}\\ \\text{T}$, pointing right, toward magnet B.",
+            "Turned round, B presents its south pole, and field lines head into a south pole. B's field at P now points right too, so the fields reinforce: $B_{\\text{net}} = (4.0 + 2.5) \\times 10^{-5}\\ \\text{T} = 6.5 \\times 10^{-5}\\ \\text{T}$, to the right."
+          ],
+          "answer": "$1.5 \\times 10^{-5}\\ \\text{T}$ toward magnet B; with B reversed, $6.5 \\times 10^{-5}\\ \\text{T}$ the same way",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "B_A": {
+                "value": 0.00004,
+                "unit": "T"
+              },
+              "B_B": {
+                "value": 0.000025,
+                "unit": "T"
+              }
+            },
+            "expr": "B_A - B_B",
+            "unit": "T"
+          }
+        },
+        {
+          "title": "Labelling an unmarked magnet",
+          "prompt": "A student has a bar magnet with no pole labels and a compass whose needle has a red north end. Describe how to find which end of the magnet is its north pole, and justify the method. Then explain why the red end, far from any magnet, points toward the Arctic.",
+          "steps": [
+            "Hold the compass close to one end of the magnet, where the magnet's field is much stronger than Earth's. The needle lines up with that field, red end pointing the way the field points.",
+            "Outside a magnet the field points away from the north pole and toward the south pole. So if the red end points away from the end being tested, that end is north; if it points toward it, that end is south.",
+            "Far from the magnet the needle follows Earth's field. The red end points toward the Arctic, so Earth's field lines are heading there, and field lines head into a south pole. The magnetic pole in the Arctic is therefore a south pole, although it lies near geographic north."
+          ],
+          "answer": "The end that the compass's north end points away from is the magnet's north pole. The needle points to the Arctic because Earth's magnetic south pole is there.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "magnetic-poles-as-charges",
+          "wrong": "Cutting a bar magnet in half gives one piece that is a north pole and one that is a south pole.",
+          "right": "Each half is a complete magnet with both poles. Poles are the two ends of a dipole, not separate things like charges."
+        },
+        {
+          "tag": "magnetic-poles-as-charges",
+          "wrong": "A north pole is like a positive charge, so it pushes on a charged balloon held near it.",
+          "right": "Poles are not charges. A magnet exerts no magnetic force on a charge at rest."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "Fields of $2.0 \\times 10^{-5}\\ \\text{T}$ and $1.5 \\times 10^{-5}\\ \\text{T}$ at the same point always make $3.5 \\times 10^{-5}\\ \\text{T}$.",
+          "right": "Only when they point the same way. At right angles these two give $2.5 \\times 10^{-5}\\ \\text{T}$, and in opposite directions $0.5 \\times 10^{-5}\\ \\text{T}$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Which way does the magnetic field point inside a bar magnet?",
+          "a": "From the south pole to the north pole, completing the loops that run from north to south outside."
+        },
+        {
+          "q": "An unmagnetised steel paper clip is attracted to the north pole of a magnet, and just as well to the south pole. Why?",
+          "a": "Steel is ferromagnetic. The magnet's field lines up the clip's domains, so the clip becomes a magnet with the opposite pole nearest whichever pole you bring up."
+        },
+        {
+          "q": "On a field-line drawing the lines are closer together at X than at Y. What does that tell you, and can two lines cross?",
+          "a": "The field is stronger at X. Lines never cross: the field has one direction at each point, and a crossing would give it two."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..6 y=3.4\ntext 3,3.8 \"ground (north is to the right)\"\nf 1.5,2.7 -{{d}} 3 \"B = 50 μT\"\nf 1.5,2.7 right {{3*cos(d*pi/180)}} \"B_h = {{round(50*cos(d*pi/180))}} μT\"\nf 1.5,2.7 down {{3*sin(d*pi/180)}} \"B_v = {{round(50*sin(d*pi/180))}} μT\"",
+        "caption": "Earth's field ($50\\ \\mu\\text{T}$ here) dips below the horizontal by an angle that grows as you travel from the equator toward a magnetic pole. Change the dip angle and watch the horizontal part, the part a compass responds to, shrink.",
+        "params": [
+          {
+            "name": "d",
+            "label": "Dip angle below horizontal",
+            "min": 10,
+            "max": 80,
+            "step": 5,
+            "default": 60,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.3"
+      ],
+      "teacherNotes": "Students import the charge model wholesale: poles as \"magnetic charges\", lines that start and stop, magnets pulling on static charge. Ask early what you would get by cutting a magnet, and where a field line goes once it reaches the south pole. The naming of Earth's poles confuses nearly everyone; settle it with a compass and the rule that opposite poles attract. Set 12A practises adding fields as vectors and reading field-line pictures."
+    },
+    {
+      "topic": "12.2",
+      "bigIdea": "A magnetic field pushes on a charge only when the charge moves across the field, and the push is perpendicular to both the velocity and the field, so it turns the charge without changing its speed.",
+      "picture": {
+        "diagram": "field xr=-3..3 yr=-2..2\nuniform B in\ntest 0,0 + \"q\" v=right",
+        "caption": "A positive charge moves to the right through a uniform field that points into the page (the crosses). The magnetic force on it points up the page: at right angles to the velocity and at right angles to the field."
+      },
+      "explanation": "An electric field pushes on any charge. A magnetic field is fussier: it exerts a force only on a charge that is moving, and only if the motion cuts across the field. The size of the force is $F_B = |q|vB\\sin\\theta$, where $\\theta$ is the angle between the velocity and the field. It is largest when the charge moves at right angles to the field, and zero when the charge is at rest or moves along a field line.\n\nThe direction is the strange part. The force is perpendicular to both $\\vec{v}$ and $\\vec{B}$, and a right-hand rule picks which of the two perpendicular directions: point the fingers of your right hand along the velocity, curl them toward the field, and your thumb gives the force on a positive charge. For a negative charge, reverse it. Because three directions are involved, a field into the page is drawn as crosses and a field out of the page as dots, like the tail and tip of an arrow.\n\nA force that is always perpendicular to the velocity does no work, so it cannot change the charge's speed or kinetic energy; it only changes the direction of motion. That is the recipe for uniform circular motion. A charge moving at right angles to a uniform field travels in a circle, with the magnetic force as the centripetal force: $|q|vB = mv^2/r$, so $r = mv/(|q|B)$. Faster or heavier particles make bigger circles; a stronger field makes tighter ones.\n\nThe link runs both ways. A moving charge also produces a magnetic field of its own, circling its line of motion, which is why the currents of the next topic are magnets.",
+      "equations": [
+        {
+          "latex": "F_B = |q|\\,v\\,B\\sin\\theta",
+          "meaning": "The size of the magnetic force on a moving charge. Its direction is perpendicular to both the velocity and the field, by the right-hand rule.",
+          "variables": [
+            {
+              "symbol": "F_B",
+              "name": "magnetic force",
+              "unit": "N"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the charge",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the velocity and the field",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "A charge moves through a magnetic field. When it moves at right angles to the field, $\\sin\\theta = 1$ and $F_B = |q|vB$.",
+          "notWhen": "It gives no direction; use the right-hand rule, and reverse the result for a negative charge. It is zero for a charge at rest."
+        },
+        {
+          "latex": "r = \\frac{mv}{|q|B}",
+          "meaning": "The radius of the circle followed by a charge moving at right angles to a uniform magnetic field.",
+          "variables": [
+            {
+              "symbol": "r",
+              "name": "radius of the path",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the particle",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "The velocity is perpendicular to a uniform field and the magnetic force is the only force that matters.",
+          "notWhen": "Not when the field is not uniform or the velocity has a part along the field (the path is then a spiral)."
+        },
+        {
+          "latex": "T = \\frac{2\\pi m}{|q|B}",
+          "meaning": "The time for one full circle. It does not depend on the particle's speed: a faster particle has a longer circle to cover.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period of the circular motion",
+              "unit": "s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "You want the time for a lap, or part of one, in a uniform field. It comes from $T = 2\\pi r/v$.",
+          "notWhen": "Do not confuse this T with the tesla, the unit of B."
+        },
+        {
+          "latex": "v = \\frac{E}{B}",
+          "meaning": "The one speed at which a charge passes straight through crossed electric and magnetic fields, because the electric and magnetic forces cancel.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "speed that goes through undeflected",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "E",
+              "name": "electric field strength",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            }
+          ],
+          "useWhen": "The two fields are perpendicular to each other and to the velocity, arranged so the two forces are opposite ($|q|E = |q|vB$).",
+          "notWhen": "Not when the two forces point the same way; then they add and every charge is deflected."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A proton circling in a field",
+          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $1.60 \\times 10^{-19}\\ \\text{C}$) moves at $4.8 \\times 10^{5}\\ \\text{m/s}$ at right angles to a uniform magnetic field of $0.20\\ \\text{T}$. What is the radius of its circular path?",
+          "steps": [
+            "The velocity is perpendicular to the field, so the magnetic force has its full size, $F_B = qvB$, and always points at right angles to the motion. The proton moves in a circle.",
+            "The magnetic force is the centripetal force: $qvB = \\dfrac{mv^2}{r}$.",
+            "Cancel one factor of $v$ and solve for the radius: $r = \\dfrac{mv}{qB}$.",
+            "Substitute: $r = \\dfrac{(1.67 \\times 10^{-27}\\ \\text{kg})(4.8 \\times 10^{5}\\ \\text{m/s})}{(1.60 \\times 10^{-19}\\ \\text{C})(0.20\\ \\text{T})} = \\dfrac{8.0 \\times 10^{-22}}{3.2 \\times 10^{-20}}\\ \\text{m} = 0.025\\ \\text{m}$.",
+            "Check: doubling the field would halve the radius, as a stronger sideways force should."
+          ],
+          "answer": "$r = 0.025\\ \\text{m}$ (2.5 cm)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 1.67e-27,
+                "unit": "kg"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "v": {
+                "value": 480000,
+                "unit": "m/s"
+              },
+              "B": {
+                "value": 0.2,
+                "unit": "T"
+              }
+            },
+            "expr": "m*v/(q*B)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Picking out one speed",
+          "prompt": "Positive ions travel to the right into a region with two uniform fields: an electric field of $6.0 \\times 10^{4}\\ \\text{N/C}$ pointing down the page and a magnetic field of $0.15\\ \\text{T}$ pointing into the page. Determine the speed of the ions that pass straight through, and describe what happens to an ion moving faster than this.\n\n```dg\nfield xr=-3..3 yr=-2..2\nuniform E down n=4\nuniform B in\ntest 0,0 + \"ion\" v=right\n```",
+          "steps": [
+            "Electric force: the ions are positive, so the force $F_E = qE$ is along the field, down the page.",
+            "Magnetic force: with the velocity to the right and the field into the page, the right-hand rule gives a force up the page, of size $F_B = qvB$ because the velocity is perpendicular to the field.",
+            "An ion goes straight when the two forces cancel: $qE = qvB$. The charge cancels, leaving $v = \\dfrac{E}{B} = \\dfrac{6.0 \\times 10^{4}\\ \\text{N/C}}{0.15\\ \\text{T}} = 4.0 \\times 10^{5}\\ \\text{m/s}$.",
+            "A faster ion feels a larger magnetic force but the same electric force, so the net force on it is up the page and it curves upward. A slower ion curves downward. Only ions at $4.0 \\times 10^{5}\\ \\text{m/s}$ emerge undeflected, whatever their charge or mass."
+          ],
+          "answer": "$v = 4.0 \\times 10^{5}\\ \\text{m/s}$; faster ions are deflected up the page, slower ones down",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "E": {
+                "value": 60000,
+                "unit": "N/C"
+              },
+              "B": {
+                "value": 0.15,
+                "unit": "T"
+              }
+            },
+            "expr": "E/B",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "magnetic-force-along-field",
+          "wrong": "A magnetic field pushes a positive charge along the field lines, the way an electric field does.",
+          "right": "The magnetic force is perpendicular to the field and to the velocity. A charge moving along a field line feels no magnetic force at all."
+        },
+        {
+          "tag": "magnetic-force-does-work",
+          "wrong": "A stronger magnetic field makes the particle go round faster and faster.",
+          "right": "The force is always at right angles to the motion, so it does no work and the speed stays constant. A stronger field bends the path into a tighter circle; it does not add kinetic energy."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "An electron and a proton moving the same way through the same field are pushed the same way.",
+          "right": "The right-hand rule gives the force on a positive charge. The force on a negative charge is opposite, so the two particles curve in opposite senses."
+        },
+        {
+          "wrong": "A charge sitting at rest between the poles of a strong magnet feels a strong magnetic force.",
+          "right": "With $v = 0$ the force $|q|vB\\sin\\theta$ is zero, however strong the field. Magnetic forces act only on moving charge."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A proton moves north through a magnetic field that also points north. What magnetic force acts on it?",
+          "a": "None. The velocity is along the field, so $\\theta = 0$ and $\\sin\\theta = 0$."
+        },
+        {
+          "q": "An electron moves to the right across a field that points out of the page. Which way is the magnetic force on it?",
+          "a": "Up the page. For a positive charge the right-hand rule (fingers right, curling out of the page) gives a force down the page; the electron is negative, so reverse it."
+        },
+        {
+          "q": "Two protons circle in the same uniform field, one at twice the speed of the other. Compare their radii and the time each takes for one lap.",
+          "a": "The faster proton's radius is twice as large, since $r = mv/(|q|B)$. Their periods are equal: the faster one travels twice as far at twice the speed."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-3..3 yr=-2.4..2.4\nuniform B in\ntest 0,0 {{s}} v={{a}}",
+        "caption": "Turn the velocity and flip the sign of the charge. The force stays at right angles to the velocity, and reverses when the charge changes sign. The field points into the page throughout.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Direction of the velocity",
+            "min": 0,
+            "max": 345,
+            "step": 15,
+            "default": 0,
+            "unit": "°"
+          },
+          {
+            "name": "s",
+            "label": "Charge (−1 or +1)",
+            "min": -1,
+            "max": 1,
+            "step": 2,
+            "default": 1,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.1",
+        "10.3",
+        "12.1"
+      ],
+      "teacherNotes": "Two ideas carry this topic: the force is sideways, and so it does no work. Have every student hold up a right hand for each direction question, and ask for the positive-charge answer first, then the electron's. Students often answer \"along the field\" by habit from Unit 10. When they set $|q|vB = mv^2/r$, ask what would change the speed; the answer should be \"nothing here\". Set 12B covers magnitudes, directions and circular paths."
+    },
+    {
+      "topic": "12.3",
+      "bigIdea": "A current makes a magnetic field that circles the wire and weakens with distance, and a current sitting in another field feels a force, so two parallel wires push or pull on each other.",
+      "picture": {
+        "diagram": "field xr=-3..3 yr=-2.2..2.2\nwire 0,0 out \"I\"\npt 1.5,0 \"P\"",
+        "caption": "A long straight wire seen end-on, carrying current out of the page (the dot). Its field lines are circles round the wire, here counterclockwise, and they spread out with distance because the field gets weaker. At P the field points up the page."
+      },
+      "explanation": "A current is charge in motion, and moving charge makes a magnetic field. Round a long straight wire the field lines are circles centred on the wire, in planes perpendicular to it. A second right-hand rule gives their sense: point your right thumb along the current and your fingers curl the way the field goes. Seen end-on, a current coming out of the page (drawn as a dot) has a counterclockwise field, and a current going into the page (a cross) has a clockwise one.\n\nThe field's strength at a distance $r$ from the wire is $B = \\mu_0 I/(2\\pi r)$. Double the current and the field doubles; double the distance and it halves. Everyday currents make weak fields: $10\\ \\text{A}$ gives only $2 \\times 10^{-5}\\ \\text{T}$ at $10\\ \\text{cm}$. When several wires are present, find each wire's field at the point and add them as vectors.\n\nA wire also responds to a field made by something else. Each moving charge in it feels the force from Topic 12.2, and these add up to a force on the wire of size $F_B = I\\ell B\\sin\\theta$, where $\\ell$ is the length of wire in the field and $\\theta$ is the angle between the current and the field. The direction comes from the first right-hand rule with the current in place of the velocity.\n\nPut the two ideas together for a pair of parallel wires: each sits in the other's field. Working through the right-hand rules shows that currents in the same direction attract and currents in opposite directions repel. The two forces are a Newton's third-law pair, so they are equal in size even when the currents are not.",
+      "equations": [
+        {
+          "latex": "B = \\frac{\\mu_0 I}{2\\pi r}",
+          "meaning": "The strength of the magnetic field at a distance r from a long straight wire. The field circles the wire.",
+          "variables": [
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space, $4\\pi \\times 10^{-7}$",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "r",
+              "name": "perpendicular distance from the wire",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The wire is long and straight and the point is much nearer to it than to its ends. A handy form is $\\mu_0/2\\pi = 2 \\times 10^{-7}\\ \\text{T·m/A}$.",
+          "notWhen": "It is not an inverse-square law: do not square the distance. It gives the size only; the direction is tangent to the circle through the point."
+        },
+        {
+          "latex": "F_B = I\\ell B\\sin\\theta",
+          "meaning": "The size of the magnetic force on a straight length of current-carrying wire in a magnetic field.",
+          "variables": [
+            {
+              "symbol": "F_B",
+              "name": "magnetic force on the wire",
+              "unit": "N"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the wire",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length of wire in the field",
+              "unit": "m"
+            },
+            {
+              "symbol": "B",
+              "name": "strength of the field the wire sits in",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the current and the field",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "A wire carries current through a field made by something else. With the wire perpendicular to the field, $F_B = I\\ell B$.",
+          "notWhen": "B is the external field, not the wire's own field: a straight wire exerts no net force on itself. The force is zero when the current runs along the field."
+        },
+        {
+          "latex": "F = \\frac{\\mu_0 I_1 I_2\\,\\ell}{2\\pi d}",
+          "meaning": "The size of the force that each of two long parallel wires exerts on a length of the other.",
+          "variables": [
+            {
+              "symbol": "F",
+              "name": "force on a length of either wire",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\mu_0",
+              "name": "permeability of free space, $4\\pi \\times 10^{-7}$",
+              "unit": "T·m/A"
+            },
+            {
+              "symbol": "I_1,\\ I_2",
+              "name": "currents in the two wires",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length of wire considered",
+              "unit": "m"
+            },
+            {
+              "symbol": "d",
+              "name": "distance between the wires",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two long, straight, parallel wires. It is the first two equations combined: one wire's field at the other, then the force on that current.",
+          "notWhen": "It does not say attract or repel: same direction attracts, opposite directions repel."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Where a wire's field matches Earth's",
+          "prompt": "A long straight wire carries a current of $8.0\\ \\text{A}$. At what distance from the wire is the strength of its magnetic field equal to that of Earth's field, $5.0 \\times 10^{-5}\\ \\text{T}$? Use $\\mu_0/2\\pi = 2.0 \\times 10^{-7}\\ \\text{T·m/A}$.",
+          "steps": [
+            "The field of a long straight wire is $B = \\dfrac{\\mu_0 I}{2\\pi r}$. Here $B$ and $I$ are known and $r$ is wanted.",
+            "Rearrange for the distance: $r = \\dfrac{\\mu_0}{2\\pi}\\cdot\\dfrac{I}{B}$.",
+            "Substitute: $r = (2.0 \\times 10^{-7}\\ \\text{T·m/A})\\,\\dfrac{8.0\\ \\text{A}}{5.0 \\times 10^{-5}\\ \\text{T}} = 0.032\\ \\text{m}$.",
+            "Interpret: closer than $3.2\\ \\text{cm}$ the wire's field is the stronger one; further away Earth's is."
+          ],
+          "answer": "$r = 0.032\\ \\text{m}$ (3.2 cm)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k_m": {
+                "value": 2e-7,
+                "unit": "T m/A"
+              },
+              "I": {
+                "value": 8,
+                "unit": "A"
+              },
+              "B": {
+                "value": 0.00005,
+                "unit": "T"
+              }
+            },
+            "expr": "k_m*I/B",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "The force between two parallel wires",
+          "prompt": "Two long parallel wires are $0.020\\ \\text{m}$ apart. Wire 1 carries $40\\ \\text{A}$ and wire 2 carries $25\\ \\text{A}$, both out of the page in the end-on view below. Determine the magnitude and direction of the magnetic force on a $1.5\\ \\text{m}$ length of wire 2, and compare it with the force on the same length of wire 1. Use $\\mu_0/2\\pi = 2.0 \\times 10^{-7}\\ \\text{T·m/A}$.\n\n```dg\nfield xr=-3..3 yr=-2..2\nwire -1,0 out \"I_1\" 1.6\nwire 1,0 out \"I_2\"\n```",
+          "steps": [
+            "Wire 2 sits in the field made by wire 1. At wire 2 that field has size $B_1 = \\dfrac{\\mu_0 I_1}{2\\pi d} = (2.0 \\times 10^{-7}\\ \\text{T·m/A})\\,\\dfrac{40\\ \\text{A}}{0.020\\ \\text{m}} = 4.0 \\times 10^{-4}\\ \\text{T}$.",
+            "Its direction: wire 1's current is out of the page, so its field circles counterclockwise. Wire 2 is to the right of wire 1, where a counterclockwise field points up the page.",
+            "Wire 2's current (out of the page) is perpendicular to this field, so $F = I_2\\,\\ell\\,B_1 = (25\\ \\text{A})(1.5\\ \\text{m})(4.0 \\times 10^{-4}\\ \\text{T}) = 0.015\\ \\text{N}$.",
+            "Direction of the force: fingers out of the page along the current, curled toward the field (up the page); the thumb points left, toward wire 1. The wires attract, as parallel currents in the same direction always do.",
+            "The force on wire 1 is the third-law partner of this force: also $0.015\\ \\text{N}$, directed toward wire 2. Each force depends on the product $I_1 I_2$, so the larger current does not win."
+          ],
+          "answer": "$F = 0.015\\ \\text{N}$ on wire 2, toward wire 1 (attraction); the force on wire 1 is equal in size and opposite in direction",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k_m": {
+                "value": 2e-7,
+                "unit": "T m/A"
+              },
+              "I_1": {
+                "value": 40,
+                "unit": "A"
+              },
+              "I_2": {
+                "value": 25,
+                "unit": "A"
+              },
+              "L": {
+                "value": 1.5,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.02,
+                "unit": "m"
+              }
+            },
+            "expr": "k_m*I_1*I_2*L/d",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "wire-field-not-circular",
+          "wrong": "The magnetic field of a wire points along the wire, in the direction of the current, or straight out from it like the electric field of a charged rod.",
+          "right": "The field circles the wire. At every point it is tangent to a circle centred on the wire."
+        },
+        {
+          "tag": "wire-field-not-circular",
+          "wrong": "Twice as far from the wire, the field is a quarter as strong.",
+          "right": "For a long straight wire $B$ is proportional to $1/r$, not $1/r^2$: twice as far, half the field."
+        },
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "The wire with the larger current pulls harder on the other wire.",
+          "right": "The forces are a third-law pair and are equal in size. Each is proportional to $I_1 I_2$, the product of both currents."
+        },
+        {
+          "wrong": "Parallel currents in the same direction repel, just as like charges do.",
+          "right": "They attract; opposite currents repel. Currents are not charges, and the rule comes from the right-hand rules, not from like-repels-like."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A wire carries current into the page. Which way does its magnetic field point at a spot just to the right of the wire?",
+          "a": "Down the page. Thumb into the page, and the fingers curl clockwise; on the right-hand side of a clockwise circle the direction is downward."
+        },
+        {
+          "q": "A $0.50\\ \\text{m}$ length of wire carrying $3.0\\ \\text{A}$ lies at right angles to a uniform field of $0.20\\ \\text{T}$. What is the force on it? What if it is turned to lie along the field?",
+          "a": "$F = I\\ell B = (3.0\\ \\text{A})(0.50\\ \\text{m})(0.20\\ \\text{T}) = 0.30\\ \\text{N}$. Along the field, $\\sin\\theta = 0$ and the force is zero."
+        },
+        {
+          "q": "Two long parallel wires carry equal currents in opposite directions. Is the magnetic field midway between them zero?",
+          "a": "No. Between the wires the two fields point the same way (try the right-hand rule on each), so they add to twice the field of one wire. They would cancel there only if the currents were in the same direction."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[cm] y=B[μT] xr=-0.5,10.5 yr=0,220\nfn {{20*I}}/r 1..10\npt 2,{{10*I}}\nxt 0 2 4 6 8 10\nyt 0 50 100 150 200\nnote 6.5,190 \"at 2 cm: B = {{10*I}} μT\"\nnote 6.5,165 \"at 4 cm: B = {{5*I}} μT\"",
+        "caption": "The field of a long straight wire against distance from it. Change the current: the whole curve scales with it, and at any current the field at $4\\ \\text{cm}$ is half the field at $2\\ \\text{cm}$.",
+        "params": [
+          {
+            "name": "I",
+            "label": "Current",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 5,
+            "unit": "A"
+          }
+        ]
+      },
+      "prerequisites": [
+        "11.1",
+        "12.1",
+        "12.2"
+      ],
+      "teacherNotes": "There are two right-hand rules here and students blur them: the thumb-along-current rule gives the field a wire makes, the fingers-then-curl rule gives the force on a current. Ask \"made by, or acting on?\" before every direction question. For parallel wires, have students do it in two steps (field of wire 1 at wire 2, then force on wire 2) rather than memorising attract or repel. Set 12C includes superposing the fields of two wires, where the usual slip is adding magnitudes."
+    },
+    {
+      "topic": "12.4",
+      "bigIdea": "A changing magnetic flux through a loop induces an emf equal to the rate at which the flux changes, and the current it drives always flows the way that opposes the change.",
+      "picture": {
+        "diagram": "plot x=t[s] y=Φ[Wb] xr=-0.03,0.75 yr=0,0.075\nseg 0,0 0.1,0 0.2,0.06 0.5,0.06 0.6,0 0.7,0\nxt 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7\nyt 0 0.02 0.04 0.06\nnote 0.35,0.067 \"steady: ε = 0\"\nnote 0.4,0.032 \"rising: 0.6 V\"\nnote 0.4,0.012 \"falling: 0.6 V, reversed\"",
+        "caption": "The flux through a single loop as a magnet is pushed in, held still and pulled out. The induced emf is the slope of this graph: $0.06\\ \\text{Wb}$ in $0.1\\ \\text{s}$ gives $0.6\\ \\text{V}$ while the flux rises, nothing at all while the flux is large but steady, and $0.6\\ \\text{V}$ the other way round while it falls."
+      },
+      "explanation": "Magnetic flux measures how much field passes through a loop: $\\Phi_B = BA\\cos\\theta$, where $A$ is the loop's area and $\\theta$ is the angle between the field and the line perpendicular to the loop's face. Flux is largest when the field goes straight through the loop and zero when the loop is edge-on to the field. Its unit is the weber, $1\\ \\text{Wb} = 1\\ \\text{T·m}^2$.\n\nFaraday's law says that whenever the flux through a loop changes, an emf appears round the loop, of size $|\\varepsilon| = N\\,|\\Delta\\Phi_B/\\Delta t|$ for a coil of $N$ turns. What matters is the rate of change, not the flux itself: a strong magnet sitting still inside a coil induces nothing. The flux can change because the field changes, because the area inside the field changes, or because the loop turns. In a closed circuit the emf drives an induced current, $I = \\varepsilon/R$.\n\nLenz's law gives the direction, and it is the meaning of the minus sign in Faraday's law. The induced current makes a magnetic field of its own, and that field opposes the change in flux. If the flux is increasing, the induced field points against the original field; if it is decreasing, the induced field points with it, trying to keep it up. Then the right-hand rule for a current's field tells you which way round the current flows. A current that helped the change would grow without limit, creating energy from nothing.\n\nOne common case is a straight conductor of length $\\ell$ sliding at speed $v$ across a field. It sweeps out area at a rate $\\ell v$, so the emf is $\\varepsilon = B\\ell v$.",
+      "equations": [
+        {
+          "latex": "\\Phi_B = BA\\cos\\theta",
+          "meaning": "The magnetic flux through a flat loop in a uniform field.",
+          "variables": [
+            {
+              "symbol": "\\Phi_B",
+              "name": "magnetic flux",
+              "unit": "Wb"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            },
+            {
+              "symbol": "A",
+              "name": "area of the loop",
+              "unit": "m²"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the field and the perpendicular (normal) to the loop",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "The field is uniform over a flat loop. With the field straight through the loop, $\\theta = 0$ and $\\Phi_B = BA$.",
+          "notWhen": "The angle is not measured from the plane of the loop. If a problem gives the angle between the field and the loop's surface, use 90° minus it."
+        },
+        {
+          "latex": "\\varepsilon = -N\\frac{\\Delta\\Phi_B}{\\Delta t}",
+          "meaning": "Faraday's law: the induced emf is the rate of change of flux through each turn, multiplied by the number of turns. The minus sign stands for Lenz's law.",
+          "variables": [
+            {
+              "symbol": "\\varepsilon",
+              "name": "induced emf (average over the interval)",
+              "unit": "V"
+            },
+            {
+              "symbol": "N",
+              "name": "number of turns in the coil",
+              "unit": ""
+            },
+            {
+              "symbol": "\\Delta\\Phi_B",
+              "name": "change in flux through one turn",
+              "unit": "Wb"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time the change takes",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The flux through a loop or coil changes by a known amount in a known time, or you can read the slope of a flux–time graph.",
+          "notWhen": "Not when the flux is constant: no change, no emf. For the size, drop the sign and find the direction separately with Lenz's law."
+        },
+        {
+          "latex": "\\varepsilon = B\\ell v",
+          "meaning": "The emf across a straight conductor moving through a magnetic field (motional emf).",
+          "variables": [
+            {
+              "symbol": "\\varepsilon",
+              "name": "induced emf",
+              "unit": "V"
+            },
+            {
+              "symbol": "B",
+              "name": "magnetic field strength",
+              "unit": "T"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length of the conductor in the field",
+              "unit": "m"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the conductor",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "The conductor, its velocity and the field are all perpendicular to one another: a rod on rails, or the edge of a loop entering or leaving a field.",
+          "notWhen": "Not for a loop moving entirely inside a uniform field: the emfs in its opposite edges cancel, because the flux through it is not changing."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Pulling a loop closed",
+          "prompt": "A loop of flexible wire encloses an area of $0.030\\ \\text{m}^2$ and lies with its face perpendicular to a uniform magnetic field of $0.80\\ \\text{T}$. The ends of the wire are pulled so that the loop closes up completely in $0.15\\ \\text{s}$. What is the average emf induced in the loop while it closes?",
+          "steps": [
+            "Find the flux at the start. The field goes straight through the loop's face, so $\\theta = 0$ and $\\Phi_i = BA = (0.80\\ \\text{T})(0.030\\ \\text{m}^2) = 0.024\\ \\text{Wb}$.",
+            "Find the flux at the end. A loop that has closed up encloses no area, so $\\Phi_f = 0$.",
+            "The flux has changed by $0.024\\ \\text{Wb}$ in size. The field stayed the same; the area changed, and that is enough.",
+            "Apply Faraday's law with one turn: $|\\varepsilon| = \\dfrac{|\\Delta\\Phi_B|}{\\Delta t} = \\dfrac{0.024\\ \\text{Wb}}{0.15\\ \\text{s}} = 0.16\\ \\text{V}$."
+          ],
+          "answer": "Average emf $= 0.16\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "B": {
+                "value": 0.8,
+                "unit": "T"
+              },
+              "A": {
+                "value": 0.03,
+                "unit": "m^2"
+              },
+              "dt": {
+                "value": 0.15,
+                "unit": "s"
+              }
+            },
+            "expr": "B*A/dt",
+            "unit": "V"
+          }
+        },
+        {
+          "title": "A loop entering a field",
+          "prompt": "A rectangular wire loop of resistance $0.50\\ \\Omega$ is pushed at a constant $3.0\\ \\text{m/s}$ into a region of uniform magnetic field, $0.40\\ \\text{T}$ into the page. The loop's leading edge, the side perpendicular to its motion, is $0.20\\ \\text{m}$ long. Determine the size and direction of the current in the loop while it is entering the field, and state what the current is once the whole loop is inside.\n\n```dg\nscene\ndash 4,-0.4 4,2.9\ntext 5.6,3.1 \"B into page\"\ntext 2.4,3.1 \"no field\"\ntext 4.3,2.3 \"×\"\ntext 5.2,2.3 \"×\"\ntext 6.1,2.3 \"×\"\ntext 7,2.3 \"×\"\ntext 4.3,1.55 \"×\"\ntext 5.2,1.55 \"×\"\ntext 6.1,1.55 \"×\"\ntext 7,1.55 \"×\"\ntext 4.3,0.85 \"×\"\ntext 5.2,0.85 \"×\"\ntext 6.1,0.85 \"×\"\ntext 7,0.85 \"×\"\ntext 4.3,0.1 \"×\"\ntext 5.2,0.1 \"×\"\ntext 6.1,0.1 \"×\"\ntext 7,0.1 \"×\"\nrod 2.2,0.5 4.75,0.5\nrod 4.75,0.5 4.75,1.9\nrod 4.75,1.9 2.2,1.9\nrod 2.2,1.9 2.2,0.5\nf 4.75,1.2 right 0.9 \"v\"\ndim 1.9,0.5 1.9,1.9 \"0.20 m\"\ntext 3.1,1.2 \"loop\"\n```",
+          "steps": [
+            "While the loop is entering, the area of it inside the field grows, so the flux through it changes. Only the leading edge is moving through the field, and the emf is $\\varepsilon = B\\ell v = (0.40\\ \\text{T})(0.20\\ \\text{m})(3.0\\ \\text{m/s}) = 0.24\\ \\text{V}$.",
+            "The current follows from the loop's resistance: $I = \\dfrac{\\varepsilon}{R} = \\dfrac{0.24\\ \\text{V}}{0.50\\ \\Omega} = 0.48\\ \\text{A}$.",
+            "Direction, by Lenz's law: the flux into the page is increasing, so the induced current's own field must point out of the page inside the loop. Curling the right-hand fingers so that the thumb points out of the page shows that the current is counterclockwise.",
+            "Once the loop is completely inside, the flux through it is $BA$ and is no longer changing, so the emf and the current are zero."
+          ],
+          "answer": "$I = 0.48\\ \\text{A}$, counterclockwise, while the loop enters (emf $0.24\\ \\text{V}$); zero once it is entirely inside the field",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "B": {
+                "value": 0.4,
+                "unit": "T"
+              },
+              "L": {
+                "value": 0.2,
+                "unit": "m"
+              },
+              "v": {
+                "value": 3,
+                "unit": "m/s"
+              },
+              "R": {
+                "value": 0.5,
+                "unit": "Ω"
+              }
+            },
+            "expr": "B*L*v/R",
+            "unit": "A"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "induction-needs-change",
+          "wrong": "A strong magnet resting inside a coil keeps a current flowing in the coil.",
+          "right": "A steady flux induces nothing, however large it is. There is an emf only while the flux is changing: while the magnet is moving in or out."
+        },
+        {
+          "tag": "lenz-opposes-field",
+          "wrong": "The induced current's field always points opposite to the magnet's field.",
+          "right": "It opposes the change in flux, not the field. When the flux is increasing the induced field is opposite to the applied field; when the flux is decreasing the induced field is in the same direction."
+        },
+        {
+          "tag": "flux-ignores-orientation",
+          "wrong": "The flux through a loop is always $BA$.",
+          "right": "Only when the field goes straight through the loop's face. In general $\\Phi_B = BA\\cos\\theta$, and a loop edge-on to the field has no flux through it at all."
+        },
+        {
+          "wrong": "Moving a loop through a magnetic field always induces a current in it.",
+          "right": "Not if the flux through the loop stays the same. A loop sliding around entirely inside a uniform field has a constant flux and no induced current."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The flux through each turn of a 100-turn coil rises steadily from $0.020\\ \\text{Wb}$ to $0.050\\ \\text{Wb}$ in $0.50\\ \\text{s}$. What emf is induced?",
+          "a": "$|\\varepsilon| = N\\,\\Delta\\Phi_B/\\Delta t = 100 \\times (0.030\\ \\text{Wb})/(0.50\\ \\text{s}) = 6.0\\ \\text{V}$."
+        },
+        {
+          "q": "The north pole of a bar magnet is pushed toward a metal ring. Does the ring attract or repel the magnet while it approaches?",
+          "a": "It repels. The flux through the ring is increasing, so the induced current makes a field that opposes the increase: the face of the ring nearest the magnet acts as a north pole."
+        },
+        {
+          "q": "A magnet is pulled out of a coil once slowly and once quickly. Compare the induced emfs.",
+          "a": "The change in flux is the same both times, but the quick pull makes it in less time, so the rate of change, and with it the emf, is larger."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=ε[V] xr=-0.05,1.1 yr=0,0.7\nseg 0,0 0,{{0.03/t}} {{t}},{{0.03/t}} {{t}},0\nshade 0..{{t}}\nnote 0.6,0.62 \"ε = {{round(3/t)/100}} V\"\nnote 0.6,0.54 \"area = ΔΦ = 0.030 Wb\"",
+        "caption": "A magnet is pulled out of a loop, and the flux through the loop falls by $0.030\\ \\text{Wb}$ at a steady rate. Change how long the pull takes: a quicker pull gives a larger emf for a shorter time, and the area under the graph is always the change in flux.",
+        "params": [
+          {
+            "name": "t",
+            "label": "Time taken",
+            "min": 0.05,
+            "max": 1,
+            "step": 0.05,
+            "default": 0.2,
+            "unit": "s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "11.3",
+        "12.1",
+        "12.3"
+      ],
+      "teacherNotes": "Ask students to answer three questions in order for every Lenz's law problem: which way does the flux point, is it increasing or decreasing, and so which way must the induced field point? Most wrong directions come from skipping the middle question and opposing the field itself. Flux–time graphs are worth the time, because \"emf is the slope\" makes the difference between a large flux and a changing flux visible. Set 12D mixes changing field, changing area and motional emf."
+    }
+  ]
+}

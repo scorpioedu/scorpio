@@ -21,12 +21,17 @@ const LOADERS: Record<string, Record<number, () => Promise<{ default: unknown }>
   "ap-physics-2": {
     9: () => import("@/data/guides/ap-physics-2/unit-9.json"),
     10: () => import("@/data/guides/ap-physics-2/unit-10.json"),
+    11: () => import("@/data/guides/ap-physics-2/unit-11.json"),
+    12: () => import("@/data/guides/ap-physics-2/unit-12.json"),
     13: () => import("@/data/guides/ap-physics-2/unit-13.json"),
+    14: () => import("@/data/guides/ap-physics-2/unit-14.json"),
+    15: () => import("@/data/guides/ap-physics-2/unit-15.json"),
   },
   "ap-physics-c-em": {
     8: () => import("@/data/guides/ap-physics-c-em/unit-8.json"),
     9: () => import("@/data/guides/ap-physics-c-em/unit-9.json"),
     10: () => import("@/data/guides/ap-physics-c-em/unit-10.json"),
+    11: () => import("@/data/guides/ap-physics-c-em/unit-11.json"),
     12: () => import("@/data/guides/ap-physics-c-em/unit-12.json"),
     13: () => import("@/data/guides/ap-physics-c-em/unit-13.json"),
   },
