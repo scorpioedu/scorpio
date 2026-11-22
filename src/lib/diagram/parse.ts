@@ -36,6 +36,8 @@ export function parse(src: string): { doc?: Doc; errors: DgError[] } {
       const m = unwrap(m0);
       if (m[1] !== undefined) cmd.kv[m[1]] = m[3] ?? m[2];
       else if (m[4] !== undefined) cmd.text ??= m[4];
+      else if (/^[()[\]]+$/.test(m[5]))
+        continue; // the bracket left by (m2="glass")
       else if (!cmd.op) cmd.op = m[5];
       else cmd.args.push(m[5]);
     }

@@ -20,12 +20,22 @@ describe("diagram reference", () => {
 
   it("gives mechanics courses the mechanics kinds and E&M courses circuits and fields", () => {
     for (const course of ["physics-1", "physics-c-mech"]) {
-      expect(diagramKindsForCourse(course)).toEqual(["plot", "fbd", "scene", "bars", "motion"]);
+      expect(diagramKindsForCourse(course)).toEqual([
+        "plot",
+        "fbd",
+        "scene",
+        "bars",
+        "motion",
+        "rigid",
+      ]);
       const ref = diagramReference(course);
       expect(ref).toMatch(/^bars energy/m);
       expect(ref).toMatch(/^motion dt=1/m);
+      expect(ref).toMatch(/^rigid rod/m);
       expect(ref).not.toMatch(/^circuit\b/m);
       expect(ref).not.toMatch(/^field\b/m);
+      for (const kind of ["ray", "wave", "pv", "levels"])
+        expect(ref).not.toMatch(new RegExp(`^${kind}\\b`, "m"));
     }
     for (const course of ["physics-2", "physics-c-em"]) {
       const ref = diagramReference(course);
@@ -33,6 +43,12 @@ describe("diagram reference", () => {
       expect(ref).toMatch(/^field\b/m);
       expect(ref).not.toMatch(/^bars\b/m);
       expect(ref).not.toMatch(/^motion\b/m);
+      expect(ref).not.toMatch(/^rigid\b/m);
+    }
+    // optics, waves, thermodynamics and atomic levels are AP Physics 2 only
+    for (const kind of ["ray", "wave", "pv", "levels"]) {
+      expect(diagramReference("physics-2")).toMatch(new RegExp(`^${kind}\\b`, "m"));
+      expect(diagramReference("physics-c-em")).not.toMatch(new RegExp(`^${kind}\\b`, "m"));
     }
     // every course keeps the header, graphs, free-body diagrams and scenes
     for (const course of ["physics-1", "physics-2"])
@@ -43,8 +59,12 @@ describe("diagram reference", () => {
   it("is shorter for a course than in full", () => {
     expect(diagramReference("physics-1").length).toBeLessThan(DIAGRAM_REFERENCE.length - 1000);
     expect(diagramReference("physics-2").length).toBeLessThan(DIAGRAM_REFERENCE.length - 500);
-    // the whole reference is sent on every tutor call: keep it small
-    expect(DIAGRAM_REFERENCE.length).toBeLessThan(4000);
+    expect(diagramReference("physics-c-em").length).toBeLessThan(DIAGRAM_REFERENCE.length - 2500);
+    // sent on every call that knows its course: keep each one small
+    expect(diagramReference("physics-1").length).toBeLessThan(2900);
+    expect(diagramReference("physics-c-em").length).toBeLessThan(3100);
+    expect(diagramReference("physics-2").length).toBeLessThan(5300);
+    expect(DIAGRAM_REFERENCE.length).toBeLessThan(6500);
   });
 
   it("accepts a list of kinds", () => {
@@ -140,5 +160,80 @@ describe("the reference's own examples draw", () => {
       'test 1,1 + "q" (v=right)',
     ])
       expect(DIAGRAM_REFERENCE).toContain(part);
+  });
+
+  it("ray", () => {
+    for (const src of [
+      `ray lens f=10 (unit=cm)\nobj 30 h=4`,
+      `ray mirror f=10\nobj 30 h=4`,
+      `ray mirror plane\nobj 30 h=4`,
+      `ray refract n1=1 n2=1.5 in=40 (reflect up m1="air" m2="glass")`,
+    ]) {
+      const r = render(src);
+      expect(r.errors).toEqual([]);
+      expect(r.warnings).toEqual([]);
+    }
+    for (const part of ["ray lens f=10 (unit=cm)", "obj 30 h=4", "ray mirror plane"])
+      expect(DIAGRAM_REFERENCE).toContain(part);
+  });
+
+  it("wave", () => {
+    for (const src of [
+      `wave string n=3`,
+      `wave string free n=3`,
+      `wave pipe n=2`,
+      `wave pipe closed n=3`,
+      `wave travel lambda=2 A=0.5 unit=m (v=right num)`,
+      `wave pulses\npulse 3 h=1 w=2 (rect v=right)\npulse 4 h=1 w=2`,
+      `wave double (orders=2 da=4)`,
+      `wave single`,
+    ]) {
+      const r = render(src);
+      expect(r.errors).toEqual([]);
+      expect(r.warnings).toEqual([]);
+      expect(DIAGRAM_REFERENCE).toContain(src.split("\n")[0]);
+    }
+    expect(DIAGRAM_REFERENCE).toContain("pulse 3 h=1 w=2 (rect v=right)");
+  });
+
+  it("pv", () => {
+    const src = [
+      `pv (num P=kPa V=L)`,
+      `state A V=1 P=4`,
+      `state B V=4`,
+      `isothermal A B (shade)`,
+      `state C V=1`,
+      `isobaric B C`,
+      `isochoric C A`,
+      `shade cycle`,
+      `isotherms 3`,
+    ];
+    for (const l of [src[0], src[1], src[3], "state B V=4", "shade cycle  isotherms 3"])
+      expect(DIAGRAM_REFERENCE).toContain(l);
+    const r = render(src.join("\n"));
+    expect(r.errors).toEqual([]);
+    expect(r.warnings).toEqual([]);
+    expect(render(`pv\nstate A V=1 P=4\nstate B V=2\nadiabatic A B gamma=1.4\nline B A`).errors).toEqual([]);
+  });
+
+  it("levels", () => {
+    const src = `levels (unit=eV schematic)\nlevel -13.6 "n=1"\nlevel -3.4 "n=2"\nlevel -1.51 "n=3"\ntrans 3 2 (show=lambda)`;
+    for (const l of [`levels (unit=eV schematic)`, `level -13.6 "n=1"`, `trans 3 2 (show=lambda)`])
+      expect(DIAGRAM_REFERENCE).toContain(l);
+    const r = render(src);
+    expect(r.errors).toEqual([]);
+    expect(r.warnings).toEqual([]);
+  });
+
+  it("rigid", () => {
+    const src = `rigid rod L=4 (tilt=30 eq unit=m)\npivot 0\nsupport 1 3\nf 2 down F_g 2\ndim 0 2 "L/2"`;
+    for (const l of src.split("\n").filter((x) => !/^(pivot|support)/.test(x)))
+      expect(DIAGRAM_REFERENCE).toContain(l);
+    expect(DIAGRAM_REFERENCE).toContain("pivot 0  support 1 3");
+    const r = render(src);
+    expect(r.errors).toEqual([]);
+    // one force about a pivot cannot balance: the example's `eq` is caught, as it should be
+    expect(r.warnings.map((w) => w.kind)).toEqual(["physics"]);
+    expect(render(`rigid disc r=1\nf 90 ccw F 2\nf 0 down T`).errors).toEqual([]);
   });
 });

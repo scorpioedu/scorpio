@@ -333,6 +333,167 @@ uniform E right "E" x=0..3.5
 uniform B out "B" x=4.5..8
 gauss rect 1,1 2.5,3 "S"`,
   ],
+  // ---- second batch: ray, wave, pv, levels, rigid ----
+  ["ray", "Converging lens, object beyond 2F (real, inverted, reduced)", `ray lens f=10 unit=cm
+obj 30 h=4`],
+  ["ray", "Converging lens as a magnifier (virtual, upright, enlarged), all numbers", `ray lens f=10 unit=cm num=all
+obj 6 h=2`],
+  ["ray", "Diverging lens", `ray lens f=-10 unit=cm
+obj 15 h=4 "candle"`],
+  ["ray", "Concave mirror, given numbers shown", `ray mirror f=10 unit=cm num
+obj 25 h=4`],
+  ["ray", "Convex mirror", `ray mirror convex f=12 unit=cm
+obj 20 h=5`],
+  ["ray", "Plane mirror", `ray mirror plane
+obj 8 h=3`],
+  ["ray", "Object at the focal point: rays leave parallel", `ray lens f=10 unit=cm
+obj 10 h=3`],
+  ["ray", "Setup only, for a problem stem", `ray lens f=12 unit=cm num setup
+obj 18 h=3`],
+  ["ray", "Refraction, air to glass", `ray refract n1=1 n2=1.5 in=40 m1="air" m2="glass"`],
+  ["ray", "Refraction with the reflected ray, water to air, numbers", `ray refract n1=1.33 n2=1 in=30 up reflect num=all m1="water" m2="air"`],
+  ["ray", "Total internal reflection", `ray refract n1=1.5 n2=1 in=50 up m1="glass" m2="air"`],
+  ["wave", "String fixed at both ends, third harmonic", `wave string n=3`],
+  ["wave", "String fixed at one end and free at the other, n = 5, numbers", `wave string free n=5 L=1.2 unit=m num=all`],
+  ["wave", "Pipe open at both ends, second harmonic", `wave pipe n=2`],
+  ["wave", "Pipe closed at one end, third harmonic", `wave pipe closed n=3 L=0.6 unit=m num`],
+  ["wave", "Travelling wave with wavelength and amplitude", `wave travel lambda=2 A=0.5 unit=m num v=right`],
+  ["wave", "Two pulses overlapping: constructive", `wave pulses
+pulse 4 h=1 w=4 v=right
+pulse 5 h=1 w=2 v=left`],
+  ["wave", "A crest meeting a trough, numbered grid", `wave pulses num
+pulse 4 h=2 w=4 tri v=right
+pulse 5 h=-1 w=2 rect v=left`],
+  ["wave", "Double slit, ideal", `wave double orders=3`],
+  ["wave", "Double slit with the single-slit envelope and fringe positions", `wave double orders=4 da=4 lambda=600nm d=0.2mm L=1.5m num=all`],
+  ["wave", "Single slit", `wave single lambda=500nm a=0.05mm L=2m num`],
+  ["pv", "Isobaric expansion, work shaded", `pv
+state A V=1 P=3
+state B V=4 P=3
+isobaric A B shade`],
+  ["pv", "Isothermal expansion; the end pressure is computed", `pv num P=kPa V=L
+state A V=1 P=4
+state B V=4
+isothermal A B shade`],
+  ["pv", "Rectangular cycle, net work shaded", `pv num P=kPa V=L
+state A V=1 P=3
+state B V=3 P=3
+state C V=3 P=1
+state D V=1 P=1
+isobaric A B
+isochoric B C
+isobaric C D
+isochoric D A
+shade cycle`],
+  ["pv", "Carnot cycle: two isotherms and two adiabats, three states computed", `pv "Carnot cycle"
+state A V=1 P=8
+state B V=2
+state C V=4
+state D V=2
+isothermal A B "T_H"
+adiabatic B C
+isothermal C D "T_C"
+adiabatic D A
+shade cycle`],
+  ["pv", "Three-process cycle over a family of isotherms", `pv
+state A V=1 P=3
+state B V=3 P=3
+state C V=3 P=1
+isobaric A B
+isochoric B C
+isothermal C A
+isotherms 4`],
+  ["pv", "Isothermal against adiabatic from the same start", `pv
+state A V=1 P=4
+state B V=3
+state C V=3
+isothermal A B "isothermal"
+adiabatic A C gamma=1.4 "adiabatic"`],
+  ["pv", "Inconsistent end state: a physics warning", `pv
+state A V=1 P=4
+state B V=2 P=3
+isothermal A B`],
+  ["levels", "Hydrogen, to scale, with computed photon labels", `levels unit=eV "Hydrogen"
+level -13.6 "n=1"
+level -3.4 "n=2"
+level -1.51 "n=3"
+trans 3 2 show=E,lambda
+trans 2 1 show=lambda`],
+  ["levels", "Hydrogen Balmer lines, schematic spacing", `levels schematic
+level -13.6 "n=1"
+level -3.4 "n=2"
+level -1.51 "n=3"
+level -0.85 "n=4"
+level -0.54 "n=5"
+level 0 "n=∞" dashed
+trans 3 2 show=lambda
+trans 4 2 show=lambda
+trans 5 2 show=lambda`],
+  ["levels", "Absorption then two emissions", `levels
+level 0 "ground"
+level 2.1 "E_1"
+level 3.4 "E_2"
+trans ground E_2 show=E
+trans E_2 E_1
+trans E_1 ground show=lambda`],
+  ["levels", "Names only, custom labels", `levels noE schematic
+level 1 "A"
+level 2 "B"
+level 4 "C"
+trans C A "γ_1"
+trans C B "γ_2"
+trans B A "γ_3"`],
+  ["levels", "X-ray lines in keV", `levels unit=keV schematic "Copper"
+level -8.98 "K"
+level -0.93 "L"
+level -0.07 "M"
+trans L K show=E "K_α"
+trans M K show=E "K_β"`],
+  ["levels", "Frequency of an absorbed photon", `levels
+level -5 "1"
+level -2 "2"
+level -1 "3"
+trans 1 3 show=f`],
+  ["levels", "Crowded at true scale: a readability warning", `levels
+level -13.6 "n=1"
+level -3.4 "n=2"
+level -1.51 "n=3"
+level -0.85 "n=4"`],
+  ["rigid", "Balanced seesaw with distance marks", `rigid rod L=4 eq dims unit=m
+pivot 2
+f 0 down F_1 3
+f 3.5 down F_2 4`],
+  ["rigid", "Beam on two supports", `rigid beam L=6 eq unit=m
+support 0 6
+f 0 up N_1 2.5
+f 6 up N_2 3.5
+f 3 down F_g 4
+f 4.5 down F_L 2
+dim 0 3 "3 m"
+dim 3 4.5 "1.5 m"`],
+  ["rigid", "Hinged rod held by a cable", `rigid rod L=4 eq "boom"
+pivot 0
+f 2 down F_g 2
+f 4 150 T 2
+dim 0 2 "L/2"
+dim 0 4 "L"`],
+  ["rigid", "Leaning rod", `rigid rod L=4 tilt=60 eq
+pivot 0
+f 2 down F_g 2
+f 4 left F_N 0.577`],
+  ["rigid", "Pulley with unequal tensions", `rigid disc r=0.5 unit=m
+f 180 down T_1 3
+f 0 down T_2 2
+dim 0 "R"`],
+  ["rigid", "Wheel: a push on the rim and friction at the axle", `rigid disc r=1
+f 90 ccw F 2
+f 0.3,270 right f 1
+dim 0.3,270 "r"
+dim 30 "R"`],
+  ["rigid", "Declared in equilibrium but unbalanced: a physics warning", `rigid rod L=4 eq
+pivot 2
+f 0 down F_1 3
+f 4 down F_2 2`],
   // ---- older kinds, as a regression reference ----
   ["plot", "v-t graph", `plot x=t[s] y=v[m/s]\nseg 0,12 6,0 10,-8\nshade 0..6\npt 6,0 "A"`],
   ["plot", "Function", `plot x=t[s] y=x[m]\nfn 0.15*cos(8*t) 0..1.6`],
