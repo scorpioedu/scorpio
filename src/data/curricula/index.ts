@@ -17,9 +17,20 @@ export interface CurriculumSet {
   title: string;
   description: string;
   topics: string[];
-  /** Approved content drafts, in question order. Empty while the set is only planned. */
+  /**
+   * Approved content drafts, in question order: the set's pool. Empty while the set is only planned,
+   * otherwise 5 to 10. Order is the selection rule: an assignment of n problems is the first n, so
+   * the first five never change and later problems are only ever appended.
+   */
   draftIds: string[];
 }
+
+/** Problems a class gets from a set when the teacher does not choose a number. */
+export const DEFAULT_SET_SIZE = 5;
+/** The fewest problems a teacher can choose. */
+export const MIN_SET_SIZE = 3;
+/** A written set's pool holds DEFAULT_SET_SIZE to MAX_SET_POOL problems. */
+export const MAX_SET_POOL = 10;
 
 export interface Curriculum {
   id: string;
@@ -127,6 +138,11 @@ export function validateCurriculum(c: Curriculum): string[] {
       else if (topic.unit !== s.unit) errors.push(`${s.key}: topic ${t} is in unit ${topic.unit}`);
     }
     if (new Set(s.draftIds).size !== s.draftIds.length) errors.push(`${s.key}: repeated draftIds`);
+    const pool = s.draftIds.length;
+    if (pool !== 0 && (pool < DEFAULT_SET_SIZE || pool > MAX_SET_POOL))
+      errors.push(
+        `${s.key}: ${pool} problems; a set has none (planned) or ${DEFAULT_SET_SIZE} to ${MAX_SET_POOL}`,
+      );
     for (const id of s.draftIds) {
       const other = drafts.get(id);
       if (other && other !== s.key) errors.push(`${s.key}: draft ${id} is also in ${other}`);
