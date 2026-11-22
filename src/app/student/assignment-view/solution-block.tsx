@@ -27,12 +27,15 @@ export function SolutionBlock({
   score,
   points,
   solution,
+  pending,
 }: {
   /** The answer in the public question, on the older documents that have one. */
   correctAnswer?: string;
   score: number | undefined;
   points: number;
   solution?: QuestionSolution;
+  /** Shown in place of "No explanation provided." while a worked solution is on its way. */
+  pending?: string | null;
 }) {
   const worked = solution?.solution;
   // Without a worked solution this is the block as it was: shown for a missed question, or when
@@ -53,7 +56,9 @@ export function SolutionBlock({
             <LazyMarkdownRenderer>{worked}</LazyMarkdownRenderer>
           </>
         ) : (
-          <MarkdownRenderer>{correctAnswer || "No explanation provided."}</MarkdownRenderer>
+          <MarkdownRenderer>
+            {correctAnswer || pending || "No explanation provided."}
+          </MarkdownRenderer>
         )}
       </div>
     </div>

@@ -147,6 +147,12 @@ describe("SolutionBlock", () => {
     expect(html(<SolutionBlock score={undefined} points={10} />)).toBe("");
     // A missed question with no public answer.
     expect(html(<SolutionBlock score={4} points={10} />)).toContain("No explanation provided.");
+    // While a worked solution is on its way, the block says when it appears.
+    const waiting = html(
+      <SolutionBlock score={4} points={10} pending="Worked solutions appear after the due date." />,
+    );
+    expect(waiting).toContain("Worked solutions appear after the due date.");
+    expect(waiting).not.toContain("No explanation provided.");
     // An older document whose question carries its answer.
     const old = html(<SolutionBlock score={10} points={10} correctAnswer="42" />);
     expect(old).toContain("42");

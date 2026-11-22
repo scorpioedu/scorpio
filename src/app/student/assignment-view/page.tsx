@@ -1261,6 +1261,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                             score={gradedAnswer?.score}
                             points={question.points || 10}
                             solution={solutions?.solutions[question.id]}
+                            pending={solutionsNotice(solutions)}
                           />
                         </div>
                       )}
