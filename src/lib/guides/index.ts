@@ -9,7 +9,19 @@ export type { TopicGuide, UnitGuide, WorkedExample, GuideEquation } from "./sche
 
 const LOADERS: Record<string, Record<number, () => Promise<{ default: unknown }>>> = {
   "ap-physics-1": {
+    1: () => import("@/data/guides/ap-physics-1/unit-1.json"),
+    2: () => import("@/data/guides/ap-physics-1/unit-2.json"),
+    3: () => import("@/data/guides/ap-physics-1/unit-3.json"),
     4: () => import("@/data/guides/ap-physics-1/unit-4.json"),
+    5: () => import("@/data/guides/ap-physics-1/unit-5.json"),
+    6: () => import("@/data/guides/ap-physics-1/unit-6.json"),
+    7: () => import("@/data/guides/ap-physics-1/unit-7.json"),
+    8: () => import("@/data/guides/ap-physics-1/unit-8.json"),
+  },
+  "ap-physics-c-mech": {
+    1: () => import("@/data/guides/ap-physics-c-mech/unit-1.json"),
+    3: () => import("@/data/guides/ap-physics-c-mech/unit-3.json"),
+    4: () => import("@/data/guides/ap-physics-c-mech/unit-4.json"),
   },
 };
 

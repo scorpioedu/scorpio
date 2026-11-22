@@ -179,7 +179,8 @@ describe("course definitions", () => {
       expect(c.sets).toHaveLength(28);
       // A set is planned (no problems) or complete; only written sets have a profile.
       for (const s of c.sets) {
-        expect([s.key, [0, 5].includes(s.draftIds.length)]).toEqual([s.key, true]);
+        const n = s.draftIds.length;
+        expect([s.key, n === 0 || (n >= 5 && n <= 10)]).toEqual([s.key, true]);
         expect([s.key, !!setProfile(id, s.key)]).toEqual([s.key, s.draftIds.length > 0]);
       }
       // Every topic of the course is covered by some set.

@@ -1,0 +1,916 @@
+{
+  "curriculumId": "ap-physics-c-mech",
+  "unit": 4,
+  "guides": [
+    {
+      "topic": "4.1",
+      "bigIdea": "Momentum is the vector $\\vec{p} = m\\vec{v}$, a system's momentum is the vector sum of its parts' momenta, and the net force on an object is the rate at which its momentum changes.",
+      "picture": {
+        "diagram": "scene\nf 0,0 right 3 \"p_A = 6 kg·m/s\"\nf 3,0 up 4 \"p_B = 8 kg·m/s\"\nf 0,0 53.13 5 \"p_{sys} = 10 kg·m/s\"\nang 0,0 0 53.13 \"53°\"",
+        "caption": "Puck A carries $6\\ \\text{kg·m/s}$ in the $+x$ direction and puck B carries $8\\ \\text{kg·m/s}$ in the $+y$ direction. Placed tip to tail, the two momenta add to $10\\ \\text{kg·m/s}$ at $53°$ above the $x$-axis, not to 14."
+      },
+      "explanation": "Momentum measures how much motion an object carries: $\\vec{p} = m\\vec{v}$, in $\\text{kg·m/s}$. It is a vector that points along the velocity, so in two dimensions it has components, $p_x = mv_x$ and $p_y = mv_y$, and each is handled separately. When the motion is given as a position function, differentiate first: $\\vec{v} = d\\vec{r}/dt$, so $\\vec{p}(t) = m\\,d\\vec{r}/dt$. Momentum can therefore change from instant to instant, in size, in direction, or both.\n\nThe momentum of a system is the vector sum of the momenta of its parts. Add the $x$-components, add the $y$-components, and only then find a magnitude; adding magnitudes is right only when everything moves the same way. That sum has a compact meaning: it equals the total mass times the velocity of the centre of mass, $\\vec{p}_{\\text{sys}} = M\\vec{v}_{\\text{cm}}$. However complicated the motion inside a system, its total momentum is that of one particle of mass $M$ riding on the centre of mass.\n\nMomentum is also the quantity Newton's second law is really about. The net force on an object equals the rate of change of its momentum, $\\vec{F}_{\\text{net}} = d\\vec{p}/dt$. On a graph of momentum against time, the net force is the slope: a steep graph means a large force, a flat one means no net force, however large the momentum itself is. For an object of constant mass this is the familiar $\\vec{F}_{\\text{net}} = m\\vec{a}$, but the momentum form is the one that extends to systems and to forces that vary in time, which the rest of this unit relies on.",
+      "equations": [
+        {
+          "latex": "\\vec{p} = m\\vec{v} = m\\,\\frac{d\\vec{r}}{dt}",
+          "meaning": "An object's momentum is its mass times its velocity, which is the time derivative of its position.",
+          "variables": [
+            {
+              "symbol": "\\vec{p}",
+              "name": "momentum",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}",
+              "name": "velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{r}",
+              "name": "position",
+              "unit": "m"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know the velocity of one object at an instant, or its position as a function of time.",
+          "notWhen": "Do not use an average velocity for the momentum at an instant when the velocity is changing; differentiate and evaluate at that time."
+        },
+        {
+          "latex": "\\vec{p}_{\\text{sys}} = \\sum_i m_i\\vec{v}_i = M\\vec{v}_{\\text{cm}}",
+          "meaning": "A system's momentum is the vector sum of its objects' momenta, and equals the total mass times the velocity of the centre of mass.",
+          "variables": [
+            {
+              "symbol": "\\vec{p}_{\\text{sys}}",
+              "name": "total momentum of the system",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "m_i",
+              "name": "mass of object i",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}_i",
+              "name": "velocity of object i",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass of the system",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}_{\\text{cm}}",
+              "name": "velocity of the centre of mass",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You need the total momentum of several objects, or the velocity of their centre of mass.",
+          "notWhen": "Do not add magnitudes. Add components, with signs, and combine them only at the end."
+        },
+        {
+          "latex": "\\vec{F}_{\\text{net}} = \\frac{d\\vec{p}}{dt}",
+          "meaning": "The net force on an object is the rate at which its momentum changes: the slope of its momentum–time graph.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{\\text{net}}",
+              "name": "net force",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{p}",
+              "name": "momentum",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know the momentum as a function of time (or a momentum–time graph) and want the net force, or the reverse.",
+          "notWhen": "It gives the net force, not any single force. And the force is the slope of the momentum graph, not its height."
+        }
+      ],
+      "derivation": "**Why a system's momentum is $M\\vec{v}_{\\text{cm}}$.** The centre of mass of a set of particles is the mass-weighted average of their positions:\n\n$$\n\\vec{r}_{\\text{cm}} = \\frac{1}{M}\\sum_i m_i\\vec{r}_i, \\qquad M = \\sum_i m_i\n$$\n\nDifferentiate both sides with respect to time. The masses are constants, so the derivative acts only on the positions, and each $d\\vec{r}_i/dt$ is that particle's velocity:\n\n$$\n\\vec{v}_{\\text{cm}} = \\frac{d\\vec{r}_{\\text{cm}}}{dt} = \\frac{1}{M}\\sum_i m_i\\frac{d\\vec{r}_i}{dt} = \\frac{1}{M}\\sum_i m_i\\vec{v}_i\n$$\n\nMultiply by $M$: the right side is the sum of the particles' momenta, so $M\\vec{v}_{\\text{cm}} = \\sum_i \\vec{p}_i = \\vec{p}_{\\text{sys}}$.\n\n**Why $d\\vec{p}/dt$ is the net force.** For one object of constant mass, the product rule leaves a single term: $\\dfrac{d\\vec{p}}{dt} = \\dfrac{d(m\\vec{v})}{dt} = m\\dfrac{d\\vec{v}}{dt} = m\\vec{a}$, which Newton's second law says is $\\vec{F}_{\\text{net}}$.",
+      "workedExamples": [
+        {
+          "title": "Momentum from a position function",
+          "prompt": "A $0.50\\ \\text{kg}$ glider on a spring moves along an air track with position $x(t) = A\\cos(\\omega t)$, where $A = 0.15\\ \\text{m}$ and $\\omega = 4.0\\ \\text{rad/s}$. What is the glider's momentum at $t = 0.30\\ \\text{s}$?",
+          "steps": [
+            "Momentum needs the velocity at that instant, and the velocity is the derivative of position: $v(t) = \\dfrac{dx}{dt} = -A\\omega\\sin(\\omega t)$.",
+            "So the momentum as a function of time is $p(t) = mv(t) = -mA\\omega\\sin(\\omega t)$.",
+            "Evaluate the angle in radians: $\\omega t = (4.0\\ \\text{rad/s})(0.30\\ \\text{s}) = 1.2\\ \\text{rad}$, and $\\sin(1.2) = 0.932$.",
+            "$p = -(0.50\\ \\text{kg})(0.15\\ \\text{m})(4.0\\ \\text{rad/s})(0.932) = -0.28\\ \\text{kg·m/s}$. The negative sign says the glider is moving in the $-x$ direction, back toward the centre.",
+            "One more derivative gives the net force at that instant: $F = \\dfrac{dp}{dt} = -mA\\omega^2\\cos(\\omega t) = -(1.2\\ \\text{N})(0.362) = -0.43\\ \\text{N}$."
+          ],
+          "answer": "$p = -0.28\\ \\text{kg·m/s}$ (moving in the $-x$ direction)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "A": {
+                "value": 0.15,
+                "unit": "m"
+              },
+              "w": {
+                "value": 4,
+                "unit": "rad/s"
+              },
+              "t": {
+                "value": 0.3,
+                "unit": "s"
+              }
+            },
+            "expr": "-m*A*w*sin(w*t)",
+            "unit": "kg·m/s"
+          }
+        },
+        {
+          "title": "Momentum and centre-of-mass velocity of a system",
+          "prompt": "Two pucks slide on a frictionless table. Puck A has mass $0.30\\ \\text{kg}$ and velocity $(4.0\\,\\hat{i} + 2.0\\,\\hat{j})\\ \\text{m/s}$. Puck B has mass $0.50\\ \\text{kg}$ and velocity $(-1.2\\,\\hat{i} + 3.6\\,\\hat{j})\\ \\text{m/s}$. Determine the momentum of the two-puck system, its magnitude, and the velocity of the system's centre of mass.",
+          "steps": [
+            "Momentum is a vector, so add components. $x$: $p_x = (0.30)(4.0) + (0.50)(-1.2) = 1.2 - 0.60 = 0.60\\ \\text{kg·m/s}$.",
+            "$y$: $p_y = (0.30)(2.0) + (0.50)(3.6) = 0.60 + 1.8 = 2.4\\ \\text{kg·m/s}$. So $\\vec{p}_{\\text{sys}} = (0.60\\,\\hat{i} + 2.4\\,\\hat{j})\\ \\text{kg·m/s}$.",
+            "Magnitude: $p_{\\text{sys}} = \\sqrt{(0.60)^2 + (2.4)^2} = 2.5\\ \\text{kg·m/s}$. (Adding the two pucks' individual magnitudes, $1.3 + 1.9$, would overstate it.)",
+            "The centre of mass moves with $\\vec{v}_{\\text{cm}} = \\vec{p}_{\\text{sys}}/M$, where $M = 0.80\\ \\text{kg}$: $\\vec{v}_{\\text{cm}} = (0.75\\,\\hat{i} + 3.0\\,\\hat{j})\\ \\text{m/s}$."
+          ],
+          "answer": "$\\vec{p}_{\\text{sys}} = (0.60\\,\\hat{i} + 2.4\\,\\hat{j})\\ \\text{kg·m/s}$, of magnitude $2.5\\ \\text{kg·m/s}$; $\\vec{v}_{\\text{cm}} = (0.75\\,\\hat{i} + 3.0\\,\\hat{j})\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m_A": {
+                "value": 0.3,
+                "unit": "kg"
+              },
+              "v_Ax": {
+                "value": 4,
+                "unit": "m/s"
+              },
+              "v_Ay": {
+                "value": 2,
+                "unit": "m/s"
+              },
+              "m_B": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "v_Bx": {
+                "value": -1.2,
+                "unit": "m/s"
+              },
+              "v_By": {
+                "value": 3.6,
+                "unit": "m/s"
+              }
+            },
+            "expr": "sqrt((m_A*v_Ax + m_B*v_Bx)^2 + (m_A*v_Ay + m_B*v_By)^2)",
+            "unit": "kg·m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "momentum-not-vector",
+          "wrong": "A puck with $6\\ \\text{kg·m/s}$ along $x$ and a puck with $8\\ \\text{kg·m/s}$ along $y$ make a system with $14\\ \\text{kg·m/s}$.",
+          "right": "Momenta add as vectors. Perpendicular momenta of 6 and 8 combine to $\\sqrt{6^2 + 8^2} = 10\\ \\text{kg·m/s}$; head-on they would give only 2. The sizes add directly only when the objects move the same way."
+        },
+        {
+          "tag": "derivative-integral-confusion",
+          "wrong": "An object with a large momentum must have a large net force on it.",
+          "right": "Force is the rate of change of momentum, $d\\vec{p}/dt$, not the momentum itself. A freight train coasting at constant velocity has an enormous momentum and zero net force; on a momentum–time graph, read the force from the slope, not the height."
+        },
+        {
+          "tag": "momentum-kinetic-energy-confusion",
+          "wrong": "Two objects with the same momentum have the same kinetic energy.",
+          "right": "Kinetic energy can be written $K = p^2/2m$, so at equal momentum the lighter object has more kinetic energy. Momentum is a vector proportional to $v$; kinetic energy is a scalar proportional to $v^2$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A particle of mass $2\\ \\text{kg}$ has position $x(t) = 3t^2$ (metres, seconds). What are its momentum and the net force on it at $t = 2\\ \\text{s}$?",
+          "a": "$v = dx/dt = 6t$, so $p = mv = 12t = 24\\ \\text{kg·m/s}$ at $t = 2\\ \\text{s}$. The force is $dp/dt = 12\\ \\text{N}$, constant."
+        },
+        {
+          "q": "A firework shell at rest bursts into dozens of fragments flying in all directions. Immediately afterwards, what is the velocity of the fragments' centre of mass?",
+          "a": "Zero. The system's momentum was zero before the burst and the burst forces are internal, so $\\vec{p}_{\\text{sys}} = M\\vec{v}_{\\text{cm}}$ is still zero."
+        },
+        {
+          "q": "A cart's momentum–time graph is a straight line sloping downward that crosses zero. What can you say about the net force on the cart?",
+          "a": "It is constant and in the negative direction: the slope is the same negative value everywhere, including at the instant the momentum is zero."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nf 0,0 right 3 \"p_A = 6\"\nf 3,0 {{th}} 2 \"p_B = 4\"\ndash 0,0 {{3+2*cos(th*pi/180)}},{{2*sin(th*pi/180)}}\ndot {{3+2*cos(th*pi/180)}},{{2*sin(th*pi/180)}}\ntext 2.5,-0.9 \"p_{sys} = {{round(10*sqrt(52+48*cos(th*pi/180)))/10}} kg·m/s\"",
+        "caption": "Puck A has $6\\ \\text{kg·m/s}$ along $+x$ and puck B has $4\\ \\text{kg·m/s}$. Turn B's direction: the dashed line from start to finish is the system's momentum, anywhere from 10 (same way) down to 2 (opposite).",
+        "params": [
+          {
+            "name": "th",
+            "label": "Direction of puck B",
+            "min": 0,
+            "max": 180,
+            "step": 15,
+            "default": 90,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2",
+        "1.5",
+        "2.1"
+      ],
+      "teacherNotes": "Students from an algebra-based course know $p = mv$ but usually treat it as a positive number and as a formula separate from Newton's laws. Two habits to build here: components before magnitudes, and $F = dp/dt$ read as a slope. Ask for the force at an instant when the momentum is zero (the third check question) to separate those who read the slope from those who read the height. Set 4A practises momentum from position functions and system sums."
+    },
+    {
+      "topic": "4.2",
+      "bigIdea": "Impulse is the time integral of a force, the area under its force–time graph, and the impulse of the net force on an object equals the change in the object's momentum.",
+      "picture": {
+        "diagram": "plot x=t[ms] y=F[N] xr=0,24 yr=0,340\nfn 3*t*(20-t) 0..20\nshade 0..20\nhl 200 \"F_{avg}\"\nnote 10,90 \"area = 4.0 N·s\"\nxt 0 5 10 15 20\nyt 0 100 200 300",
+        "caption": "A racket's force on a ball, $F(t) = 3t(20 - t)$ with $t$ in milliseconds and $F$ in newtons. The impulse is the shaded area, $\\int_0^{20} F\\,dt = 4000\\ \\text{N·ms} = 4.0\\ \\text{N·s}$. The average force, $200\\ \\text{N}$, is the height of the rectangle with the same area and width."
+      },
+      "explanation": "Start from $\\vec{F}_{\\text{net}} = d\\vec{p}/dt$. In a tiny time $dt$ the momentum changes by $d\\vec{p} = \\vec{F}_{\\text{net}}\\,dt$. Add those small changes over an interval and you get the total change in momentum on one side and an integral on the other. That integral, $\\vec{J} = \\int \\vec{F}\\,dt$, is the impulse of the force, and the statement $\\vec{J}_{\\text{net}} = \\Delta\\vec{p}$ is the impulse–momentum theorem. Its unit, $\\text{N·s}$, is the same as $\\text{kg·m/s}$.\n\nIf the force is constant the integral is just $F\\,\\Delta t$. Real forces rarely are: a kick or a hit rises to a peak and dies away, and a thrust may be given as a function $F(t)$. Then the impulse is the area under the force–time graph, found by geometry for straight-line graphs and by integrating otherwise. The average force is defined as the constant force that would deliver the same impulse in the same time, $F_{\\text{avg}} = J/\\Delta t$. It is not the peak force, nor the force at any particular instant.\n\nTwo cautions. First, the theorem needs the impulse of the net force; in a hit lasting milliseconds, the weight's impulse is usually negligible beside the contact force's, but over seconds it is not. Second, impulse is a vector. A ball that rebounds has a larger change in momentum than one that stops, so it received the larger impulse. When a fixed change in momentum is spread over a longer time, as with an airbag, the impulse is unchanged and the average force is smaller.",
+      "equations": [
+        {
+          "latex": "\\vec{J} = \\int_{t_i}^{t_f} \\vec{F}(t)\\,dt",
+          "meaning": "The impulse of a force is its integral over time: the area under the force–time graph between the two instants.",
+          "variables": [
+            {
+              "symbol": "\\vec{J}",
+              "name": "impulse",
+              "unit": "N·s"
+            },
+            {
+              "symbol": "\\vec{F}",
+              "name": "the force, as a function of time",
+              "unit": "N"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "t_i,\\ t_f",
+              "name": "start and end of the interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The force varies with time and you are given its formula or its graph.",
+          "notWhen": "Do not replace it with $F\\,\\Delta t$ using the force at one instant; that only works for a constant force."
+        },
+        {
+          "latex": "\\vec{J}_{\\text{net}} = \\Delta\\vec{p} = m\\vec{v}_f - m\\vec{v}_i",
+          "meaning": "The impulse of the net force on an object equals the change in its momentum.",
+          "variables": [
+            {
+              "symbol": "\\vec{J}_{\\text{net}}",
+              "name": "impulse of the net force",
+              "unit": "N·s"
+            },
+            {
+              "symbol": "\\Delta\\vec{p}",
+              "name": "change in momentum",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}_f",
+              "name": "final velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_i",
+              "name": "initial velocity",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Linking a force over a time interval to velocities before and after.",
+          "notWhen": "Do not use one force's impulse when other forces deliver a comparable impulse in the same interval. Keep signs: in a rebound the two velocities have opposite signs."
+        },
+        {
+          "latex": "\\vec{F}_{\\text{avg}} = \\frac{1}{\\Delta t}\\int_{t_i}^{t_f} \\vec{F}(t)\\,dt = \\frac{\\Delta\\vec{p}}{\\Delta t}",
+          "meaning": "The average force is the impulse divided by the time it took: the constant force with the same area under the graph.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{\\text{avg}}",
+              "name": "average force over the interval",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{F}",
+              "name": "the force, as a function of time",
+              "unit": "N"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "t_i,\\ t_f",
+              "name": "start and end of the interval",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "length of the interval",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\Delta\\vec{p}",
+              "name": "change in momentum (when the force is the net force)",
+              "unit": "kg·m/s"
+            }
+          ],
+          "useWhen": "You want one representative force for a collision, or are comparing the same change in momentum over different times.",
+          "notWhen": "It is not the peak force, which is larger, and it is an average over time, not over distance."
+        }
+      ],
+      "derivation": "Newton's second law in momentum form is $\\vec{F}_{\\text{net}} = \\dfrac{d\\vec{p}}{dt}$. Multiply by $dt$: in an infinitesimal time, $d\\vec{p} = \\vec{F}_{\\text{net}}\\,dt$.\n\nIntegrate from $t_i$, when the momentum is $\\vec{p}_i$, to $t_f$, when it is $\\vec{p}_f$:\n\n$$\n\\int_{\\vec{p}_i}^{\\vec{p}_f} d\\vec{p} = \\int_{t_i}^{t_f} \\vec{F}_{\\text{net}}\\,dt\n$$\n\nThe left side is simply $\\vec{p}_f - \\vec{p}_i$. The right side is the definition of the net impulse, so\n\n$$\n\\Delta\\vec{p} = \\vec{J}_{\\text{net}}\n$$\n\nNothing was assumed about how the force varies, so the result holds for any force. A constant force comes out of the integral, giving $\\vec{J} = \\vec{F}\\,\\Delta t$. In general, dividing the integral by $\\Delta t$ gives the time-average of the force, so $\\vec{F}_{\\text{avg}}\\,\\Delta t = \\Delta\\vec{p}$ always.",
+      "workedExamples": [
+        {
+          "title": "A tennis serve",
+          "prompt": "A $0.058\\ \\text{kg}$ tennis ball is momentarily at rest at the top of the toss when the racket hits it. The racket's force on the ball is modelled as $F(t) = F_{\\max}\\sin(\\pi t/T)$ for $0 \\le t \\le T$, with $F_{\\max} = 950\\ \\text{N}$ and $T = 5.0\\ \\text{ms}$. How fast does the ball leave the racket?",
+          "steps": [
+            "The force changes throughout the hit, so the impulse is an integral: $J = \\displaystyle\\int_0^T F_{\\max}\\sin\\!\\left(\\frac{\\pi t}{T}\\right)dt$.",
+            "An antiderivative of $\\sin(\\pi t/T)$ is $-\\dfrac{T}{\\pi}\\cos(\\pi t/T)$. Between $0$ and $T$ the cosine goes from $1$ to $-1$, so $J = \\dfrac{F_{\\max}T}{\\pi}\\big[1 - (-1)\\big] = \\dfrac{2F_{\\max}T}{\\pi}$.",
+            "Put in numbers, with the time in seconds: $J = \\dfrac{2(950\\ \\text{N})(0.0050\\ \\text{s})}{\\pi} = 3.02\\ \\text{N·s}$.",
+            "The ball's weight, about $0.6\\ \\text{N}$, delivers a negligible impulse in $5\\ \\text{ms}$, so the racket's impulse is the net impulse: $J = mv_f - 0$.",
+            "$v_f = \\dfrac{J}{m} = \\dfrac{3.02\\ \\text{N·s}}{0.058\\ \\text{kg}} = 52\\ \\text{m/s}$. The average force was $J/T = 2F_{\\max}/\\pi \\approx 600\\ \\text{N}$, well below the $950\\ \\text{N}$ peak."
+          ],
+          "answer": "$v_f = 52\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.058,
+                "unit": "kg"
+              },
+              "F_max": {
+                "value": 950,
+                "unit": "N"
+              },
+              "T": {
+                "value": 5,
+                "unit": "ms"
+              }
+            },
+            "expr": "2*F_max*T/(pi*m)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "A growing force brings a block to rest",
+          "prompt": "A $2.0\\ \\text{kg}$ block slides in the $+x$ direction at $3.0\\ \\text{m/s}$ on a frictionless horizontal surface. Starting at $t = 0$, a horizontal force $F(t) = -bt$ acts on it, where $b = 4.0\\ \\text{N/s}$. Determine the time at which the block is momentarily at rest, and the average force on the block up to that time.",
+          "steps": [
+            "The surface is frictionless, so $F(t)$ is the net force. It is not constant, so the constant-acceleration equations do not apply; integrate.",
+            "Impulse from $0$ to $t$: $J(t) = \\displaystyle\\int_0^t (-bt')\\,dt' = -\\tfrac{1}{2}bt^2$.",
+            "At rest, the change in momentum is $\\Delta p = 0 - mv_0 = -(2.0\\ \\text{kg})(3.0\\ \\text{m/s}) = -6.0\\ \\text{kg·m/s}$. Setting $J = \\Delta p$: $-\\tfrac{1}{2}bt^2 = -mv_0$.",
+            "$t = \\sqrt{\\dfrac{2mv_0}{b}} = \\sqrt{\\dfrac{2(6.0\\ \\text{kg·m/s})}{4.0\\ \\text{N/s}}} = \\sqrt{3.0\\ \\text{s}^2} = 1.7\\ \\text{s}$.",
+            "Average force: $F_{\\text{avg}} = \\dfrac{\\Delta p}{\\Delta t} = \\dfrac{-6.0\\ \\text{kg·m/s}}{1.73\\ \\text{s}} = -3.5\\ \\text{N}$. That is half the force acting at that final instant, $-bt = -6.9\\ \\text{N}$, as expected for a force that grows linearly from zero."
+          ],
+          "answer": "The block is at rest at $t = 1.7\\ \\text{s}$; the average force is $-3.5\\ \\text{N}$ (in the $-x$ direction)",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "v_0": {
+                "value": 3,
+                "unit": "m/s"
+              },
+              "b": {
+                "value": 4,
+                "unit": "N/s"
+              }
+            },
+            "expr": "sqrt(2*m*v_0/b)",
+            "unit": "s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "For a force $F(t) = 6t$ acting from $0$ to $2\\ \\text{s}$, the impulse is the final force times the time: $(12\\ \\text{N})(2\\ \\text{s}) = 24\\ \\text{N·s}$.",
+          "right": "$F\\,\\Delta t$ works only for a constant force. Here $J = \\int_0^2 6t\\,dt = 12\\ \\text{N·s}$, the area of the triangle under the graph, half of what the final force would suggest."
+        },
+        {
+          "tag": "derivative-integral-confusion",
+          "wrong": "The steeper the force–time graph, the bigger the impulse.",
+          "right": "Impulse is the area under the force–time graph, not its slope. The slope says how quickly the force is changing. (On a momentum–time graph it is the other way round: the slope is the net force.)"
+        },
+        {
+          "tag": "impulse-force-confusion",
+          "wrong": "A padded landing mat reduces the impulse on a gymnast.",
+          "right": "The gymnast arrives with the same momentum and ends at rest either way, so the net impulse is the same. The mat lengthens the stop, so the average force is smaller."
+        },
+        {
+          "tag": "momentum-not-vector",
+          "wrong": "A ball that rebounds at the speed it arrived with had no change in momentum, so it received no impulse.",
+          "right": "The velocity reversed, so $\\Delta p = m(-v) - mv = -2mv$: twice the impulse needed just to stop the ball."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A net force $F(t) = 6t$ (newtons, seconds) acts on a $3\\ \\text{kg}$ cart that starts at rest. How fast is the cart moving at $t = 2\\ \\text{s}$?",
+          "a": "$J = \\int_0^2 6t\\,dt = 3t^2\\big|_0^2 = 12\\ \\text{N·s}$, so $v = J/m = 4\\ \\text{m/s}$."
+        },
+        {
+          "q": "A force rises steadily from zero to $80\\ \\text{N}$ in $0.10\\ \\text{s}$, then falls steadily back to zero in another $0.10\\ \\text{s}$. What are the impulse and the average force?",
+          "a": "The graph is a triangle: $J = \\tfrac{1}{2}(0.20\\ \\text{s})(80\\ \\text{N}) = 8.0\\ \\text{N·s}$. The average force is $J/\\Delta t = 40\\ \\text{N}$, half the peak."
+        },
+        {
+          "q": "When can you ignore gravity in an impulse calculation for a ball being hit, and when can you not?",
+          "a": "During a very short contact, the contact force is far larger than the weight, so the weight's impulse is negligible. Over a long interval (the whole flight, say) gravity's impulse must be included."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[ms] y=F[N] xr=0,42 yr=0,1300\nfn {{24000/T^3}}*t*({{T}}-t) 0..{{T}}\nshade 0..{{T}}\nhl {{4000/T}}\nnote 30,1200 \"area = 4.0 N·s\"\nnote 30,1080 \"peak = {{round(6000/T)}} N\"\nnote 30,960 \"average = {{round(4000/T)}} N\"",
+        "caption": "A ball always receives the same impulse, $4.0\\ \\text{N·s}$. Change how long the contact lasts: the area stays fixed, so a shorter hit must have a taller force curve. The dashed line is the average force.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Contact time",
+            "min": 5,
+            "max": 40,
+            "step": 5,
+            "default": 20,
+            "unit": "ms"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.3",
+        "2.5",
+        "4.1"
+      ],
+      "teacherNotes": "The calculus-specific error is $J = F\\,\\Delta t$ with a force that is not constant, usually with the final or peak value of $F$. Give a linear $F(t)$ first, so the integral can be checked against the triangle's area, before moving to forces that need an antiderivative. Ask for the area in words (\"newtons times seconds\") to keep it apart from the slope, and have students state why the force they integrate is the net force. Set 4B practises both graphs and functions."
+    },
+    {
+      "topic": "4.3",
+      "bigIdea": "Only external forces can change a system's total momentum, so when the net external force is zero the total momentum, and with it the velocity of the centre of mass, stays constant.",
+      "picture": {
+        "diagram": "bars momentum unit=kg·m/s \"A 3 kg object bursts into two pieces\"\ninitial p 6\nfinal p_A -2 p_B 8",
+        "caption": "A $3\\ \\text{kg}$ object moving at $+2\\ \\text{m/s}$ bursts into a $1\\ \\text{kg}$ piece thrown backward at $2\\ \\text{m/s}$ and a $2\\ \\text{kg}$ piece moving forward at $4\\ \\text{m/s}$. No external impulse acts, so the bars balance: $+6 = -2 + 8\\ \\text{kg·m/s}$. The centre of mass still moves at $+2\\ \\text{m/s}$."
+      },
+      "explanation": "Internal forces, exerted by one member of a system on another, come in equal and opposite third-law pairs. In any instant $dt$ the two forces of a pair deliver opposite impulses, so whatever momentum one object gains the other loses. Internal forces move momentum around but cannot change the total. Only external forces can: $d\\vec{p}_{\\text{sys}}/dt = \\vec{F}_{\\text{ext}}$.\n\nIf the net external force is zero, the derivative is zero and $\\vec{p}_{\\text{sys}}$ is constant. That is conservation of momentum, and using it is mostly a matter of choosing the system well: put all the colliding objects or fragments inside it, so that the large unknown forces are internal. The law is a vector statement, so it holds for each component on its own: a system can keep its horizontal momentum while a vertical external force changes its vertical momentum. And during a very brief collision or explosion, weight and friction deliver almost no impulse, so momentum is very nearly conserved across that instant.\n\nBecause $\\vec{p}_{\\text{sys}} = M\\vec{v}_{\\text{cm}}$, constant momentum means the centre of mass moves at constant velocity. If the system starts at rest, its centre of mass stays where it is: pieces pushed apart leave with equal and opposite momenta, and a person walking along a floating canoe moves the canoe the other way.",
+      "equations": [
+        {
+          "latex": "\\frac{d\\vec{p}_{\\text{sys}}}{dt} = \\vec{F}_{\\text{ext}} = M\\vec{a}_{\\text{cm}}",
+          "meaning": "The total momentum of a system changes at a rate equal to the net external force, which also sets the acceleration of the centre of mass.",
+          "variables": [
+            {
+              "symbol": "\\vec{p}_{\\text{sys}}",
+              "name": "total momentum of the system",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\vec{F}_{\\text{ext}}",
+              "name": "net external force on the system",
+              "unit": "N"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass of the system",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{a}_{\\text{cm}}",
+              "name": "acceleration of the centre of mass",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "Deciding whether momentum is conserved, or finding how the system's momentum changes when it is not.",
+          "notWhen": "Do not include forces between members of the system; they cancel in pairs."
+        },
+        {
+          "latex": "m_1\\vec{v}_{1i} + m_2\\vec{v}_{2i} = m_1\\vec{v}_{1f} + m_2\\vec{v}_{2f}",
+          "meaning": "With no net external force, the total momentum before an interaction equals the total after, component by component.",
+          "variables": [
+            {
+              "symbol": "m_1,\\ m_2",
+              "name": "masses of the objects",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}_{1i},\\ \\vec{v}_{2i}",
+              "name": "velocities before",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_{1f},\\ \\vec{v}_{2f}",
+              "name": "velocities after",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Collisions, explosions and pushes apart, in any direction along which no net external force acts.",
+          "notWhen": "Not for a single object taken alone, and not along a direction in which an external force delivers a significant impulse."
+        },
+        {
+          "latex": "\\vec{v}_{\\text{cm}} = \\frac{\\vec{p}_{\\text{sys}}}{M}",
+          "meaning": "The centre of mass moves at the system's total momentum divided by its total mass; it is constant for an isolated system.",
+          "variables": [
+            {
+              "symbol": "\\vec{v}_{\\text{cm}}",
+              "name": "velocity of the centre of mass",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{p}_{\\text{sys}}",
+              "name": "total momentum of the system",
+              "unit": "kg·m/s"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass of the system",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "You want the motion of the system as a whole, or a check on a collision answer.",
+          "notWhen": "It is not the velocity of any one object unless they all move together."
+        }
+      ],
+      "derivation": "Take two particles. Each feels an external force and the force from the other particle. Newton's second law for each, in momentum form:\n\n$$\n\\frac{d\\vec{p}_1}{dt} = \\vec{F}_{1,\\text{ext}} + \\vec{F}_{2\\,\\text{on}\\,1}, \\qquad \\frac{d\\vec{p}_2}{dt} = \\vec{F}_{2,\\text{ext}} + \\vec{F}_{1\\,\\text{on}\\,2}\n$$\n\nAdd the two equations. The left side becomes $d(\\vec{p}_1 + \\vec{p}_2)/dt = d\\vec{p}_{\\text{sys}}/dt$. On the right, Newton's third law gives $\\vec{F}_{2\\,\\text{on}\\,1} = -\\vec{F}_{1\\,\\text{on}\\,2}$ at every instant, so the internal forces cancel:\n\n$$\n\\frac{d\\vec{p}_{\\text{sys}}}{dt} = \\vec{F}_{1,\\text{ext}} + \\vec{F}_{2,\\text{ext}} = \\vec{F}_{\\text{ext}}\n$$\n\nWith more particles, every internal force still appears with its third-law partner and the pairs cancel. If $\\vec{F}_{\\text{ext}} = 0$, the derivative is zero and $\\vec{p}_{\\text{sys}}$ is constant. And since $\\vec{p}_{\\text{sys}} = M\\vec{v}_{\\text{cm}}$ with $M$ constant, $d\\vec{p}_{\\text{sys}}/dt = M\\vec{a}_{\\text{cm}}$: the centre of mass responds only to external forces.",
+      "workedExamples": [
+        {
+          "title": "Walking along a canoe",
+          "prompt": "A $60\\ \\text{kg}$ person stands at one end of a $120\\ \\text{kg}$ canoe at rest on still water. The person walks $3.0\\ \\text{m}$ along the canoe, measured relative to the canoe, and stops. How far does the canoe move relative to the water? Ignore the water's drag.",
+          "steps": [
+            "System: person and canoe. The forces between feet and canoe are internal, and with no drag no horizontal external force acts, so horizontal momentum is conserved. It starts at zero, so $v_{\\text{cm}} = 0$ throughout: the centre of mass does not move.",
+            "Let the canoe move a distance $d$ backward relative to the water. The person, $3.0\\ \\text{m}$ forward relative to the canoe, moves $(3.0\\ \\text{m} - d)$ forward relative to the water.",
+            "For the centre of mass to stay put, the mass-weighted displacements must cancel: $m(3.0\\ \\text{m} - d) - Md = 0$.",
+            "Solve: $d = \\dfrac{m}{m + M}(3.0\\ \\text{m}) = \\dfrac{60}{180}(3.0\\ \\text{m}) = 1.0\\ \\text{m}$.",
+            "Check: the person moves $2.0\\ \\text{m}$ one way and the canoe, with twice the mass, $1.0\\ \\text{m}$ the other: $(60)(2.0) = (120)(1.0)$."
+          ],
+          "answer": "The canoe moves $1.0\\ \\text{m}$, opposite to the person's walk",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 60,
+                "unit": "kg"
+              },
+              "M": {
+                "value": 120,
+                "unit": "kg"
+              },
+              "L": {
+                "value": 3,
+                "unit": "m"
+              }
+            },
+            "expr": "m*L/(m + M)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Sand dropped into a rolling cart",
+          "prompt": "A $4.0\\ \\text{kg}$ cart rolls along a level, frictionless track at $1.5\\ \\text{m/s}$. A $2.0\\ \\text{kg}$ load of sand, falling straight down, lands in the cart and stays there. Determine the cart's speed afterwards, and justify using conservation of momentum even though external forces act.",
+          "steps": [
+            "System: cart and sand. The external forces, gravity and the track's normal force, are both vertical, so the system's horizontal momentum is conserved. Its vertical momentum is not: the normal force grows during the landing and stops the sand's fall.",
+            "Before, the sand has no horizontal momentum: $p_x = (4.0\\ \\text{kg})(1.5\\ \\text{m/s}) = 6.0\\ \\text{kg·m/s}$.",
+            "After, cart and sand share one horizontal velocity: $(4.0\\ \\text{kg} + 2.0\\ \\text{kg})\\,v_f = 6.0\\ \\text{kg·m/s}$.",
+            "$v_f = \\dfrac{6.0\\ \\text{kg·m/s}}{6.0\\ \\text{kg}} = 1.0\\ \\text{m/s}$. The cart slows because friction between sand and cart, an internal force, speeds the sand up and takes the same momentum from the cart."
+          ],
+          "answer": "$v_f = 1.0\\ \\text{m/s}$, in the cart's original direction; only the horizontal component of momentum is conserved",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "M": {
+                "value": 4,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 1.5,
+                "unit": "m/s"
+              },
+              "m": {
+                "value": 2,
+                "unit": "kg"
+              }
+            },
+            "expr": "M*v/(M + m)",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "system-boundary",
+          "wrong": "The cart slowed down when the sand landed, so momentum was not conserved.",
+          "right": "The cart alone is not an isolated system: the sand pushes on it. For cart and sand together that push is internal, and the horizontal momentum is unchanged."
+        },
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "When a heavy person and a light person push apart on ice, the heavy one pushes harder, so the light one gets more momentum.",
+          "right": "The pushes are a third-law pair, equal in size at every instant. The impulses are equal and opposite, so the two leave with momenta of equal magnitude; the light person gets the larger speed."
+        },
+        {
+          "tag": "system-boundary",
+          "wrong": "If any external force acts on the system, conservation of momentum is useless.",
+          "right": "Conservation holds separately for each component: if the external forces are all vertical, the horizontal momentum is still conserved."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $5\\ \\text{kg}$ object at rest explodes into two pieces. A $2\\ \\text{kg}$ piece flies off at $9\\ \\text{m/s}$. What is the velocity of the other piece?",
+          "a": "The total stays zero, so the $3\\ \\text{kg}$ piece has $18\\ \\text{kg·m/s}$ the opposite way: $6\\ \\text{m/s}$, opposite to the first piece."
+        },
+        {
+          "q": "A shell explodes in mid-air. Ignoring air resistance, what path does the centre of mass of the fragments follow before any of them lands?",
+          "a": "The original parabola. The explosion forces are internal; the only external force is still gravity, so $M\\vec{a}_{\\text{cm}} = M\\vec{g}$ exactly as before."
+        },
+        {
+          "q": "A net external force $F_{\\text{ext}} = 6\\ \\text{N}$ acts for $2\\ \\text{s}$ on a system of two carts joined by a spring. By how much does the system's momentum change? Does the spring matter?",
+          "a": "By $\\int F_{\\text{ext}}\\,dt = 12\\ \\text{kg·m/s}$. The spring forces are internal: they change how the carts share the momentum, not the total."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nblock C {{5-m*s/(m+120)}},0 w=4 h=0.5 \"120 kg canoe\"\nball P {{3.5+s-m*s/(m+120)}},0.85 r=0.35 \"{{m}} kg\"\ndash {{5-1.5*m/(m+120)}},-0.7 {{5-1.5*m/(m+120)}},-0.1\ntext {{5-1.5*m/(m+120)}},-1 \"centre of mass\"\ndash 3,0.6 3,1.7\ntext 3,1.95 \"canoe started here\"\ntext 5,2.6 \"canoe has moved {{round(100*m*s/(m+120))/100}} m to the left\"",
+        "caption": "A person walks along a $120\\ \\text{kg}$ canoe that starts at rest. Slide the distance walked: the canoe moves the other way so that the centre of mass (marked below the canoe) never moves. A heavier person moves the canoe further.",
+        "params": [
+          {
+            "name": "s",
+            "label": "Distance walked along the canoe",
+            "min": 0,
+            "max": 3,
+            "step": 0.25,
+            "default": 1.5,
+            "unit": "m"
+          },
+          {
+            "name": "m",
+            "label": "Mass of the person",
+            "min": 30,
+            "max": 120,
+            "step": 10,
+            "default": 60,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.1",
+        "2.3",
+        "4.1",
+        "4.2"
+      ],
+      "teacherNotes": "Insist on a named system and a one-line reason it is isolated (or isolated in one direction) before any equation; that sentence is what free-response rubrics look for. The derivation is short enough to do live: write $dp/dt$ for each of two objects, add, and let students spot which terms cancel and why. Problems where only one component is conserved (the sand cart) and centre-of-mass problems with no velocities at all (the canoe) expose students who have memorised $m_1v_1 + m_2v_2$ without the condition. Set 4C includes explosions in two dimensions."
+    },
+    {
+      "topic": "4.4",
+      "bigIdea": "Momentum is conserved in every collision of an isolated system, component by component, while the total kinetic energy is conserved only if the collision is elastic.",
+      "picture": {
+        "diagram": "scene\nball A 0,0 r=0.3 \"A\"\nf 0.4,0 right 2 \"4.0 m/s\"\nball B 3.2,0 r=0.3 \"B\"\ndash 3.6,0 6.2,0\nf 3.5,0.3 30 1.73 \"A: 3.5 m/s\"\nf 3.5,-0.3 -60 1 \"B: 2.0 m/s\"\nang 3.5,0 0 30 \"30°\"\nang 3.5,0 -60 0 \"60°\"",
+        "caption": "An elastic glancing collision between equal masses. Puck A arrives at $4.0\\ \\text{m/s}$ and hits puck B at rest. Afterwards A moves at $3.5\\ \\text{m/s}$, $30°$ above its original line, and B at $2.0\\ \\text{m/s}$, $60°$ below it. The $x$-components of velocity still add to $4.0\\ \\text{m/s}$ and the $y$-components cancel, and because the collision is elastic the two paths are $90°$ apart."
+      },
+      "explanation": "Collision forces are huge and brief, so during a collision external forces deliver almost no impulse and the system's momentum is conserved, whatever the objects are made of. Collisions are sorted by what happens to the total kinetic energy. In an elastic collision it is unchanged. In an inelastic collision some becomes thermal energy, sound and deformation. If the objects stick together the collision is perfectly inelastic and loses the most kinetic energy that momentum conservation allows; not all of it, unless the total momentum is zero, because the combined object must still carry the system's momentum.\n\nA one-dimensional elastic collision gives two equations, momentum and kinetic energy, for two unknown final velocities. Solving the quadratic directly is tedious, and the derivation below replaces it with a linear statement: the relative velocity of the two objects reverses, $v_{1i} - v_{2i} = -(v_{1f} - v_{2f})$. They separate as fast as they approached. The results are worth knowing in their limits: equal masses exchange velocities, a light object bounces back from a heavy one at nearly its incoming speed, and a heavy object barely slows while a light target leaves at nearly twice the heavy object's speed.\n\nIn two dimensions, momentum conservation is two equations, one for each component, while kinetic energy, a scalar, still gives only one. Resolve every velocity into components, conserve $p_x$ and $p_y$ separately, and bring in kinetic energy only if the collision is stated to be elastic. To classify a collision, compute the total kinetic energy before and after and compare.",
+      "equations": [
+        {
+          "latex": "m_1\\vec{v}_{1i} + m_2\\vec{v}_{2i} = (m_1 + m_2)\\,\\vec{v}_f",
+          "meaning": "In a perfectly inelastic collision the objects leave together, so a single final velocity carries all the momentum.",
+          "variables": [
+            {
+              "symbol": "m_1,\\ m_2",
+              "name": "masses of the objects",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\vec{v}_{1i},\\ \\vec{v}_{2i}",
+              "name": "velocities before",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_f",
+              "name": "shared velocity after",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "The objects stick, couple or embed. In two dimensions, apply it to each component.",
+          "notWhen": "Not when the objects separate afterwards, and never together with conservation of kinetic energy."
+        },
+        {
+          "latex": "v_{1i} - v_{2i} = -\\,(v_{1f} - v_{2f})",
+          "meaning": "In a one-dimensional elastic collision the relative velocity reverses: the objects separate at the speed they approached.",
+          "variables": [
+            {
+              "symbol": "v_{1i},\\ v_{2i}",
+              "name": "velocities before, with signs",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{1f},\\ v_{2f}",
+              "name": "velocities after, with signs",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "A head-on collision stated to be elastic; pair it with conservation of momentum to get two linear equations.",
+          "notWhen": "Not for inelastic collisions, and not for speeds in a two-dimensional collision."
+        },
+        {
+          "latex": "v_{1f} = \\frac{m_1 - m_2}{m_1 + m_2}\\,v_{1i}, \\qquad v_{2f} = \\frac{2m_1}{m_1 + m_2}\\,v_{1i}",
+          "meaning": "The outcome of a one-dimensional elastic collision with a target that starts at rest.",
+          "variables": [
+            {
+              "symbol": "m_1",
+              "name": "mass of the moving object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "m_2",
+              "name": "mass of the target, initially at rest",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_{1i}",
+              "name": "velocity of object 1 before",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{1f},\\ v_{2f}",
+              "name": "velocities after",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Elastic, head-on, target at rest; also for checking the equal-mass, heavy-target and light-target limits.",
+          "notWhen": "Not if the target is moving (use the two equations they come from), and not for a glancing collision."
+        },
+        {
+          "latex": "\\Delta K = K_f - K_i",
+          "meaning": "The change in the system's total kinetic energy classifies the collision: zero if elastic, negative if inelastic.",
+          "variables": [
+            {
+              "symbol": "\\Delta K",
+              "name": "change in total kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "K_f",
+              "name": "total kinetic energy after",
+              "unit": "J"
+            },
+            {
+              "symbol": "K_i",
+              "name": "total kinetic energy before",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Deciding what kind of collision took place, or finding how much kinetic energy was transformed.",
+          "notWhen": "It says nothing about momentum, which is conserved either way. Each $K$ is a sum of $\\tfrac{1}{2}mv^2$ terms using speeds, not components."
+        }
+      ],
+      "derivation": "**Elastic collision in one dimension.** Write conservation of momentum and of kinetic energy, and collect object 1 on the left and object 2 on the right:\n\n$$\nm_1(v_{1i} - v_{1f}) = m_2(v_{2f} - v_{2i})\n$$\n\n$$\nm_1(v_{1i}^2 - v_{1f}^2) = m_2(v_{2f}^2 - v_{2i}^2)\n$$\n\n(The factors of $\\tfrac{1}{2}$ have been cancelled.) Each side of the second equation is a difference of squares: $m_1(v_{1i} - v_{1f})(v_{1i} + v_{1f}) = m_2(v_{2f} - v_{2i})(v_{2f} + v_{2i})$. Divide it by the first equation, which is allowed because in a real collision the velocities change and neither side is zero:\n\n$$\nv_{1i} + v_{1f} = v_{2f} + v_{2i} \\quad\\Longrightarrow\\quad v_{1i} - v_{2i} = -(v_{1f} - v_{2f})\n$$\n\n**Target at rest.** Set $v_{2i} = 0$, so $v_{2f} = v_{1i} + v_{1f}$. Substitute into the momentum equation: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{1i} + m_2 v_{1f}$, which gives\n\n$$\nv_{1f} = \\frac{m_1 - m_2}{m_1 + m_2}\\,v_{1i}, \\qquad v_{2f} = v_{1i} + v_{1f} = \\frac{2m_1}{m_1 + m_2}\\,v_{1i}\n$$\n\nLimits: $m_1 = m_2$ gives $v_{1f} = 0$ and $v_{2f} = v_{1i}$; $m_2 \\gg m_1$ gives $v_{1f} \\approx -v_{1i}$; $m_1 \\gg m_2$ gives $v_{2f} \\approx 2v_{1i}$.",
+      "workedExamples": [
+        {
+          "title": "A head-on elastic collision",
+          "prompt": "A $0.20\\ \\text{kg}$ glider moving at $3.0\\ \\text{m/s}$ on an air track collides elastically, by way of a spring bumper, with a $0.40\\ \\text{kg}$ glider at rest. Find the velocity of each glider after the collision.",
+          "steps": [
+            "Take the first glider's direction as positive. Momentum is conserved: $(0.20)(3.0) = (0.20)\\,v_{1f} + (0.40)\\,v_{2f}$, so $0.60 = 0.20\\,v_{1f} + 0.40\\,v_{2f}$ (in $\\text{kg·m/s}$).",
+            "The collision is elastic, so the relative velocity reverses: $v_{1i} - v_{2i} = -(v_{1f} - v_{2f})$, which gives $3.0 = v_{2f} - v_{1f}$, so $v_{2f} = 3.0 + v_{1f}$.",
+            "Substitute: $0.60 = 0.20\\,v_{1f} + 0.40(3.0 + v_{1f}) = 1.2 + 0.60\\,v_{1f}$, so $v_{1f} = -1.0\\ \\text{m/s}$. The lighter glider bounces back.",
+            "Then $v_{2f} = 3.0 + (-1.0) = +2.0\\ \\text{m/s}$.",
+            "Check the kinetic energy. Before: $\\tfrac{1}{2}(0.20)(3.0)^2 = 0.90\\ \\text{J}$. After: $\\tfrac{1}{2}(0.20)(1.0)^2 + \\tfrac{1}{2}(0.40)(2.0)^2 = 0.10 + 0.80 = 0.90\\ \\text{J}$. Unchanged, as required."
+          ],
+          "answer": "$v_{1f} = -1.0\\ \\text{m/s}$ (it rebounds) and $v_{2f} = +2.0\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m_1": {
+                "value": 0.2,
+                "unit": "kg"
+              },
+              "v_1i": {
+                "value": 3,
+                "unit": "m/s"
+              },
+              "m_2": {
+                "value": 0.4,
+                "unit": "kg"
+              }
+            },
+            "expr": "2*m_1*v_1i/(m_1 + m_2)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Two vehicles lock together at a junction",
+          "prompt": "A $1200\\ \\text{kg}$ car travelling east at $15\\ \\text{m/s}$ and a $2000\\ \\text{kg}$ van travelling north at $12\\ \\text{m/s}$ collide at a junction and lock together. Determine the speed and direction of the wreckage immediately after the collision, and the kinetic energy transformed into other forms.",
+          "steps": [
+            "System: car and van. During the brief collision, friction with the road delivers negligible impulse, so momentum is conserved in each direction. Take east as $+x$ and north as $+y$.",
+            "$x$: only the car has $x$-momentum. $p_x = (1200\\ \\text{kg})(15\\ \\text{m/s}) = 1.8 \\times 10^4\\ \\text{kg·m/s}$. $y$: only the van. $p_y = (2000\\ \\text{kg})(12\\ \\text{m/s}) = 2.4 \\times 10^4\\ \\text{kg·m/s}$.",
+            "The wreckage has mass $3200\\ \\text{kg}$ and carries both components: $v_x = \\dfrac{1.8 \\times 10^4}{3200} = 5.63\\ \\text{m/s}$ and $v_y = \\dfrac{2.4 \\times 10^4}{3200} = 7.50\\ \\text{m/s}$.",
+            "Speed: $v_f = \\sqrt{5.63^2 + 7.50^2} = 9.4\\ \\text{m/s}$. Direction: $\\theta = \\tan^{-1}(7.50/5.63) = 53°$ north of east.",
+            "Kinetic energy before: $\\tfrac{1}{2}(1200)(15)^2 + \\tfrac{1}{2}(2000)(12)^2 = 1.35 \\times 10^5 + 1.44 \\times 10^5 = 2.79 \\times 10^5\\ \\text{J}$. After: $\\tfrac{1}{2}(3200)(9.375)^2 = 1.41 \\times 10^5\\ \\text{J}$. About $1.4 \\times 10^5\\ \\text{J}$, half of the total, was transformed."
+          ],
+          "answer": "$v_f = 9.4\\ \\text{m/s}$ at $53°$ north of east; about $1.4 \\times 10^5\\ \\text{J}$ of kinetic energy is transformed",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m_1": {
+                "value": 1200,
+                "unit": "kg"
+              },
+              "v_1": {
+                "value": 15,
+                "unit": "m/s"
+              },
+              "m_2": {
+                "value": 2000,
+                "unit": "kg"
+              },
+              "v_2": {
+                "value": 12,
+                "unit": "m/s"
+              }
+            },
+            "expr": "sqrt((m_1*v_1)^2 + (m_2*v_2)^2)/(m_1 + m_2)",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "momentum-kinetic-energy-confusion",
+          "wrong": "Momentum is conserved in this collision, so kinetic energy is conserved too.",
+          "right": "Momentum is conserved in any collision of an isolated system; kinetic energy only in elastic ones. Unless the problem says elastic, compute the kinetic energy before and after to find out."
+        },
+        {
+          "tag": "momentum-kinetic-energy-confusion",
+          "wrong": "Kinetic energy is lost in an inelastic collision, so some momentum is lost as well.",
+          "right": "Kinetic energy can become thermal energy, but momentum has no other form to turn into. Internal forces, however dissipative, come in third-law pairs and cannot change the total momentum."
+        },
+        {
+          "tag": "momentum-not-vector",
+          "wrong": "A car with momentum $18\\,000\\ \\text{kg·m/s}$ east and a van with $24\\,000\\ \\text{kg·m/s}$ north make wreckage with $42\\,000\\ \\text{kg·m/s}$.",
+          "right": "Conserve each component separately. The wreckage has $18\\,000$ east and $24\\,000$ north, a magnitude of $30\\,000\\ \\text{kg·m/s}$."
+        },
+        {
+          "wrong": "If the objects bounce apart, the collision was elastic.",
+          "right": "Most collisions in which objects separate still lose kinetic energy. Elastic means the total kinetic energy is exactly unchanged, which in one dimension means they separate at the same relative speed they approached with."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A ball moving at $5\\ \\text{m/s}$ makes a head-on elastic collision with an identical ball at rest. What are the velocities afterwards?",
+          "a": "Equal masses exchange velocities: the first ball stops and the second leaves at $5\\ \\text{m/s}$. In the formulas, $m_1 - m_2 = 0$ and $2m_1/(m_1 + m_2) = 1$."
+        },
+        {
+          "q": "A tennis ball moving at $10\\ \\text{m/s}$ hits, elastically and head-on, a bowling ball rolling toward it at $2\\ \\text{m/s}$. Roughly how fast does the tennis ball rebound?",
+          "a": "About $14\\ \\text{m/s}$. The approach speed is $12\\ \\text{m/s}$, so they separate at $12\\ \\text{m/s}$; the bowling ball's velocity barely changes, so the tennis ball leaves at about $2 + 12 = 14\\ \\text{m/s}$."
+        },
+        {
+          "q": "Two lumps of clay collide and stick. Under what condition is all of the kinetic energy transformed?",
+          "a": "Only if the total momentum before was zero (equal and opposite momenta). Otherwise the combined lump must keep moving to carry the system's momentum, and that motion has kinetic energy."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=v[m/s] xr=0,2.5 yr=0,5.4\nseg 0,3 1,3 1.5,{{2-k}} 2.5,{{2-k}}\nseg 0,0 1,0 1.5,{{2+2*k}} 2.5,{{2+2*k}} dash=1\nnote 0.5,3.25 \"2 kg cart\"\nnote 0.5,0.25 \"1 kg cart\"\nnote 1.25,5.1 \"momentum: 6 kg·m/s\"\nnote 1.25,4.65 \"kinetic energy kept: {{round(100*(6+3*k^2)/9)}}%\"\nxt 0 0.5 1 1.5 2 2.5\nyt 0 1 2 3 4",
+        "caption": "A $2\\ \\text{kg}$ cart at $3\\ \\text{m/s}$ hits a $1\\ \\text{kg}$ cart at rest. Slide from 0 (they stick: perfectly inelastic) to 1 (they separate as fast as they approached: elastic). The momentum is $6\\ \\text{kg·m/s}$ at every setting; only the kinetic energy kept changes.",
+        "params": [
+          {
+            "name": "k",
+            "label": "Separation speed ÷ approach speed",
+            "min": 0,
+            "max": 1,
+            "step": 0.1,
+            "default": 1,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.5",
+        "3.1",
+        "3.4",
+        "4.3"
+      ],
+      "teacherNotes": "Students arrive holding one of two mirror-image errors: \"momentum is conserved, so energy is\" or \"energy is lost, so momentum is\". Asking for both totals, before and after, on every collision is the cure. In this course students are expected to solve one-dimensional elastic collisions; teach the relative-velocity equation as the route, and derive it once so it is not a magic formula. In two dimensions the routine is a table of $p_x$ and $p_y$, before and after. Set 4D mixes one- and two-dimensional collisions."
+    }
+  ]
+}

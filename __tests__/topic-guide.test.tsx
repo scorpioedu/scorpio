@@ -23,6 +23,7 @@ import { StudentCourseRoadmap } from "@/components/dashboard/student-course-road
 import { buildStudentRoadmap } from "@/lib/student-roadmap";
 import unit4 from "@/data/guides/ap-physics-1/unit-4.json";
 import type { UnitGuide } from "@/lib/guides/schema";
+import { hasUnitGuide } from "@/lib/guides";
 import { topicFixture } from "../tests/helpers/guide-fixture";
 
 const guide = topicFixture("4.2", {
@@ -299,8 +300,12 @@ describe("StudentCourseRoadmap", () => {
     const out = html(<StudentCourseRoadmap roadmap={roadmap} />);
     expect(out).toContain('<a href="/student/courses/ap-physics-1/4"');
     expect(out).toContain("Unit 4: Linear momentum");
-    expect(out).toContain("Unit 5:");
-    expect(out).not.toContain("/student/courses/ap-physics-1/5");
-    expect(out.match(/\/student\/courses\//g)).toHaveLength(1);
+    // One link per unit shown that has a guide, and none for a unit without one.
+    const shown = [...out.matchAll(/Unit (\d+):/g)].map((m) => Number(m[1]));
+    const withGuide = [...new Set(shown)].filter((u) => hasUnitGuide("ap-physics-1", u));
+    expect(out.match(/\/student\/courses\//g)).toHaveLength(withGuide.length);
+    expect(
+      html(<StudentCourseRoadmap roadmap={{ ...roadmap, curriculumId: "no-such-course" }} />),
+    ).not.toContain("/student/courses/");
   });
 });

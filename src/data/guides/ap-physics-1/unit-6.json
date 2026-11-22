@@ -1,0 +1,1321 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 6,
+  "guides": [
+    {
+      "topic": "6.1",
+      "bigIdea": "A rotating rigid object has kinetic energy because every piece of it is moving, and that energy, $\\tfrac{1}{2}I\\omega^2$, adds to any kinetic energy the object has from moving as a whole.",
+      "picture": {
+        "diagram": "bars energy unit=J \"block and pulley\"\ninitial U_g 5.88\nfinal K_{block} 3.92 K_{rot} 1.96",
+        "caption": "A $2\\ \\text{kg}$ block falls $0.30\\ \\text{m}$ while its string turns a pulley. The block–pulley–Earth system loses $5.88\\ \\text{J}$ of gravitational potential energy: $3.92\\ \\text{J}$ becomes kinetic energy of the block and $1.96\\ \\text{J}$ becomes rotational kinetic energy of the pulley. (The second worked example gets these numbers.)"
+      },
+      "explanation": "A wheel spinning on a fixed axle is not going anywhere, yet it clearly has energy: try stopping it with your hand. The energy is kinetic, because every piece of the wheel is moving in a circle. A piece of mass $m$ at distance $r$ from the axis has speed $v = r\\omega$, so its kinetic energy is $\\tfrac{1}{2}mv^2 = \\tfrac{1}{2}mr^2\\omega^2$. Every piece of a rigid object shares the same $\\omega$, so adding the pieces gives $K_{\\text{rot}} = \\tfrac{1}{2}\\left(\\sum mr^2\\right)\\omega^2 = \\tfrac{1}{2}I\\omega^2$, where $I$ is the rotational inertia about that axis.\n\nThe formula has the same shape as $\\tfrac{1}{2}mv^2$, with rotational inertia in the place of mass and angular speed in the place of speed. Doubling $\\omega$ quadruples the energy. And because $I$ depends on where the mass is, two objects of equal mass spinning at the same rate can store different amounts. A hoop, with all of its mass at the rim, has $I = MR^2$ and holds twice the energy of a solid disc of the same mass and radius, for which $I = \\tfrac{1}{2}MR^2$. Put $\\omega$ in $\\text{rad/s}$ and the answer comes out in joules.\n\nRotational kinetic energy is not a new kind of energy. It is a scalar, measured in joules, and it takes its place in conservation of energy beside every other form. An object that travels and spins at once, such as a rolling ball, has both kinds: $K = \\tfrac{1}{2}Mv_{\\text{cm}}^2 + \\tfrac{1}{2}I_{\\text{cm}}\\omega^2$. This is why a falling block that has to turn a pulley arrives more slowly than one in free fall: the potential energy it loses is shared between its own motion and the pulley's spin, as the bar chart shows.",
+      "equations": [
+        {
+          "latex": "K_{\\text{rot}} = \\tfrac{1}{2}I\\omega^2",
+          "meaning": "The kinetic energy of a rigid object turning about an axis is half its rotational inertia times the square of its angular speed.",
+          "variables": [
+            {
+              "symbol": "K_{\\text{rot}}",
+              "name": "rotational kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the axis of rotation",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "A rigid object turns about an axis and you know, or want, its rotational inertia and angular speed.",
+          "notWhen": "Do not use a rotation rate in revolutions per second or rpm without converting to $\\text{rad/s}$, and use the rotational inertia for the actual axis."
+        },
+        {
+          "latex": "K = \\tfrac{1}{2}Mv_{\\text{cm}}^2 + \\tfrac{1}{2}I_{\\text{cm}}\\omega^2",
+          "meaning": "An object that moves and spins has translational kinetic energy from the motion of its centre of mass plus rotational kinetic energy about its centre of mass.",
+          "variables": [
+            {
+              "symbol": "K",
+              "name": "total kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_{\\text{cm}}",
+              "name": "speed of the centre of mass",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "I_{\\text{cm}}",
+              "name": "rotational inertia about the centre of mass",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "The object's centre of mass is moving while the object also rotates: a rolling ball, a thrown hammer.",
+          "notWhen": "For an object turning about a fixed axle the first term is not needed; all of its kinetic energy is in the rotational formula with the rotational inertia about that axle."
+        },
+        {
+          "latex": "v = r\\omega",
+          "meaning": "A point on a rotating object moves at a speed equal to its distance from the axis times the angular speed.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "speed of the point",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "distance of the point from the axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "Linking the spin of a pulley or wheel to the speed of a string, belt or surface that does not slip on it.",
+          "notWhen": "It is the speed of one point, not of the whole object: points nearer the axis move more slowly."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Energy stored in a potter's wheel",
+          "prompt": "A potter's wheel is a solid disc of mass $12.0\\ \\text{kg}$ and radius $0.250\\ \\text{m}$. It spins about its centre at $2.00$ revolutions per second. How much rotational kinetic energy does it have? For a solid disc, $I = \\tfrac{1}{2}MR^2$.",
+          "steps": [
+            "Find the rotational inertia: $I = \\tfrac{1}{2}MR^2 = \\tfrac{1}{2}(12.0\\ \\text{kg})(0.250\\ \\text{m})^2 = 0.375\\ \\text{kg·m}^2$.",
+            "Convert the rotation rate to radians per second. One revolution is $2\\pi\\ \\text{rad}$, so $\\omega = (2.00)(2\\pi)\\ \\text{rad/s} = 12.57\\ \\text{rad/s}$.",
+            "Use the formula: $K_{\\text{rot}} = \\tfrac{1}{2}I\\omega^2 = \\tfrac{1}{2}(0.375\\ \\text{kg·m}^2)(12.57\\ \\text{rad/s})^2 = 29.6\\ \\text{J}$.",
+            "Check the size. The rim moves at $v = R\\omega = 3.14\\ \\text{m/s}$. If all $12\\ \\text{kg}$ moved that fast the energy would be $\\tfrac{1}{2}Mv^2 = 59\\ \\text{J}$. The disc has exactly half of that, because most of its mass is nearer the axis and moves more slowly."
+          ],
+          "answer": "$K_{\\text{rot}} = 29.6\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "M": {
+                "value": 12,
+                "unit": "kg"
+              },
+              "R": {
+                "value": 0.25,
+                "unit": "m"
+              },
+              "f": {
+                "value": 2,
+                "unit": "rev/s"
+              }
+            },
+            "expr": "0.5*(0.5*M*R^2)*f^2",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "A falling block that turns a pulley",
+          "prompt": "A $2.0\\ \\text{kg}$ block hangs from a light string wrapped around a pulley. The pulley is a solid disc of mass $2.0\\ \\text{kg}$ and radius $0.10\\ \\text{m}$ on a frictionless axle, and the string does not slip on it. The block is released from rest. Determine the block's speed after it has fallen $0.30\\ \\text{m}$. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "System: block, pulley and Earth. The axle is frictionless and the string only passes energy from the block to the pulley, so mechanical energy is conserved. The gravitational potential energy lost equals the kinetic energy gained by the block and by the pulley: $mgh = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}I\\omega^2$, with $I = \\tfrac{1}{2}MR^2$ for the disc.",
+            "The string does not slip, so the pulley's rim moves at the block's speed: $\\omega = v/R$. Then $\\tfrac{1}{2}I\\omega^2 = \\tfrac{1}{2}\\left(\\tfrac{1}{2}MR^2\\right)\\dfrac{v^2}{R^2} = \\tfrac{1}{4}Mv^2$. The radius cancels.",
+            "So $mgh = \\tfrac{1}{2}mv^2 + \\tfrac{1}{4}Mv^2$, and $v = \\sqrt{\\dfrac{mgh}{\\tfrac{1}{2}m + \\tfrac{1}{4}M}} = \\sqrt{\\dfrac{(2.0)(9.8)(0.30)}{1.0 + 0.50}}\\ \\text{m/s} = \\sqrt{3.92}\\ \\text{m/s} = 2.0\\ \\text{m/s}$.",
+            "Check with the energies: the system loses $mgh = 5.88\\ \\text{J}$; the block gains $\\tfrac{1}{2}mv^2 = 3.92\\ \\text{J}$ and the pulley gains $\\tfrac{1}{4}Mv^2 = 1.96\\ \\text{J}$. In free fall the block would have reached $\\sqrt{2gh} = 2.4\\ \\text{m/s}$."
+          ],
+          "answer": "$v = 2.0\\ \\text{m/s}$, slower than the $2.4\\ \\text{m/s}$ of free fall",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "M": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "h": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "sqrt(m*g*h/(0.5*m + 0.25*M))",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "rotational-inertia-mass-only",
+          "wrong": "Two wheels with the same mass, spinning at the same rate, have the same rotational kinetic energy.",
+          "right": "The energy depends on rotational inertia, and that depends on where the mass is. A hoop ($I = MR^2$) holds twice the energy of a solid disc ($I = \\tfrac{1}{2}MR^2$) of the same mass, radius and angular speed."
+        },
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "A spinning disc's kinetic energy is $\\tfrac{1}{2}Mv^2$, with $v$ the speed of its rim.",
+          "right": "Only the rim moves that fast. Points nearer the axis are slower, and the centre is not moving at all. Adding up every piece gives $\\tfrac{1}{2}I\\omega^2$, which for a solid disc is $\\tfrac{1}{4}Mv_{\\text{rim}}^2$, half of the wrong answer."
+        },
+        {
+          "wrong": "An object whose centre of mass is at rest has no kinetic energy.",
+          "right": "A fan or flywheel on a fixed axle has a stationary centre of mass and zero linear momentum, but its pieces are moving, so it has rotational kinetic energy."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "A block that turns a pulley as it falls reaches the same speed as a block in free fall, $\\sqrt{2gh}$, because it loses the same potential energy.",
+          "right": "It loses the same potential energy, but that energy is shared with the pulley. The pulley's rotational kinetic energy has to come from somewhere, so less is left for the block and it is slower."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A flywheel's angular speed is tripled. By what factor does its rotational kinetic energy change?",
+          "a": "It becomes nine times as large, because $K_{\\text{rot}}$ depends on $\\omega^2$."
+        },
+        {
+          "q": "A wheel with rotational inertia $3\\ \\text{kg·m}^2$ spins at $4\\ \\text{rad/s}$. What is its rotational kinetic energy?",
+          "a": "$K_{\\text{rot}} = \\tfrac{1}{2}(3\\ \\text{kg·m}^2)(4\\ \\text{rad/s})^2 = 24\\ \\text{J}$."
+        },
+        {
+          "q": "A hoop and a solid disc have the same mass and radius. Each is given the same amount of rotational kinetic energy. Which one spins faster?",
+          "a": "The disc. It has the smaller rotational inertia, so it needs a larger $\\omega$ to hold the same $\\tfrac{1}{2}I\\omega^2$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=\\omega[rad/s] y=K[J] xr=-1.5,10.5 yr=0,260\nfn 0.5*{{I}}*x^2 0..10\npt {{w}},{{0.5*I*w^2}}\nnote 4,240 \"K = {{0.5*I*w^2}} J\"\nnote 4,215 \"I = {{I}} kg·m^2\"\nxt 0 2 4 6 8 10\nyt 0 50 100 150 200 250",
+        "caption": "Change the rotational inertia and the angular speed. The energy is proportional to the rotational inertia but grows with the square of the angular speed, so the curve bends upward.",
+        "params": [
+          {
+            "name": "I",
+            "label": "Rotational inertia",
+            "min": 0.5,
+            "max": 5,
+            "step": 0.5,
+            "default": 2,
+            "unit": "kg·m²"
+          },
+          {
+            "name": "w",
+            "label": "Angular speed",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 6,
+            "unit": "rad/s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "3.1",
+        "3.4",
+        "5.2",
+        "5.4"
+      ],
+      "teacherNotes": "Students accept $\\tfrac{1}{2}I\\omega^2$ quickly as a formula but often do not see it as the same kinetic energy they already know. Deriving it from $\\tfrac{1}{2}mv^2$ for pieces at different radii is worth the five minutes. Ask where the energy \"went\" when a block on a string falls more slowly than free fall; students who answer \"friction\" have not yet put the pulley in the system. Watch for rpm or revolutions per second used directly as $\\omega$. Set 6A practises this topic with 6.2."
+    },
+    {
+      "topic": "6.2",
+      "bigIdea": "A torque does work when the object it acts on turns through an angle, and the net work done by torques equals the change in the object's rotational kinetic energy.",
+      "picture": {
+        "diagram": "plot x=\\theta[rad] y=\\tau[N·m] xr=-0.6,5 yr=0,4\nseg 0,3 4,3 4,0\nshade 0..4\nnote 2,1.5 \"area = work = 12 J\"\nxt 0 1 2 3 4 5\nyt 0 1 2 3 4",
+        "caption": "A steady torque of $3\\ \\text{N·m}$ acts while a wheel turns through $4\\ \\text{rad}$. The work done is the area under the torque–angle graph: $(3\\ \\text{N·m})(4\\ \\text{rad}) = 12\\ \\text{J}$."
+      },
+      "explanation": "In Unit 3 a force did work when the point it pushed on moved: $W = Fd$ for a force along the displacement. Now picture a force $F$ pushing along the rim of a wheel of radius $r$. As the wheel turns through an angle $\\Delta\\theta$, the point being pushed travels along an arc of length $s = r\\,\\Delta\\theta$, so the work done is $W = Fs = Fr\\,\\Delta\\theta$. But $Fr$ is the torque. So a torque does work $W = \\tau\\,\\Delta\\theta$ when the object turns through $\\Delta\\theta$. The angle must be in radians, because $s = r\\,\\Delta\\theta$ is true only in radians.\n\nThe sign follows the same rule as for forces. A torque in the direction the object is turning does positive work and adds energy; a torque against the rotation, like a brake's, does negative work and removes it. Adding the work of all the torques gives the rotational form of the work–energy theorem: the net work equals the change in rotational kinetic energy, $\\tau_{\\text{net}}\\,\\Delta\\theta = \\tfrac{1}{2}I\\omega_f^2 - \\tfrac{1}{2}I\\omega_i^2$. It is often the quickest route to a final angular speed, because it needs neither the angular acceleration nor the time.\n\nIf the torque changes as the object turns, the work is the area under the torque–angle graph, just as the work of a changing force is the area under a force–position graph. One caution about units: torque is measured in $\\text{N·m}$ and work in joules, and although a joule is a newton times a metre, torque is not energy. A torque becomes work only when it is multiplied by an angle turned through. Straining at a bolt that will not budge takes plenty of torque and does no work.",
+      "equations": [
+        {
+          "latex": "W = \\tau\\,\\Delta\\theta",
+          "meaning": "The work done by a constant torque is the torque times the angle the object turns through.",
+          "variables": [
+            {
+              "symbol": "W",
+              "name": "work done by the torque",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\tau",
+              "name": "torque",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "\\Delta\\theta",
+              "name": "angular displacement",
+              "unit": "rad"
+            }
+          ],
+          "useWhen": "A steady torque acts while an object turns through a known angle.",
+          "notWhen": "Do not use degrees or revolutions for the angle. If the torque varies, use the area under the torque–angle graph instead."
+        },
+        {
+          "latex": "\\tau_{\\text{net}}\\,\\Delta\\theta = \\tfrac{1}{2}I\\omega_f^2 - \\tfrac{1}{2}I\\omega_i^2",
+          "meaning": "The net work done by torques on a rigid object turning about a fixed axis equals the change in its rotational kinetic energy.",
+          "variables": [
+            {
+              "symbol": "\\tau_{\\text{net}}",
+              "name": "net torque",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "\\Delta\\theta",
+              "name": "angular displacement",
+              "unit": "rad"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega_f",
+              "name": "final angular speed",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\omega_i",
+              "name": "initial angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "You know the torque and the angle turned and want an angular speed, or the reverse, without needing the time.",
+          "notWhen": "Not with the work of one torque alone when others also act: friction at the axle counts too, as negative work."
+        },
+        {
+          "latex": "s = r\\,\\Delta\\theta",
+          "meaning": "A point at distance r from the axis travels an arc length equal to r times the angle turned.",
+          "variables": [
+            {
+              "symbol": "s",
+              "name": "arc length travelled by the point",
+              "unit": "m"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta\\theta",
+              "name": "angular displacement",
+              "unit": "rad"
+            }
+          ],
+          "useWhen": "Linking the length of string pulled off a spool, or the distance a rim point travels, to the angle turned.",
+          "notWhen": "Only with the angle in radians."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Spinning up a fan",
+          "prompt": "A motor exerts a constant net torque of $1.5\\ \\text{N·m}$ on a fan rotor that starts from rest. The rotor's rotational inertia is $0.12\\ \\text{kg·m}^2$. What is its angular speed after it has turned through $5.0$ revolutions?",
+          "steps": [
+            "Convert the angle to radians: $\\Delta\\theta = (5.0)(2\\pi\\ \\text{rad}) = 31.4\\ \\text{rad}$.",
+            "Find the work done by the torque: $W = \\tau\\,\\Delta\\theta = (1.5\\ \\text{N·m})(31.4\\ \\text{rad}) = 47.1\\ \\text{J}$.",
+            "This is the net work, so it equals the change in rotational kinetic energy. The rotor starts at rest: $47.1\\ \\text{J} = \\tfrac{1}{2}I\\omega_f^2 - 0$.",
+            "Solve: $\\omega_f = \\sqrt{\\dfrac{2W}{I}} = \\sqrt{\\dfrac{2(47.1\\ \\text{J})}{0.12\\ \\text{kg·m}^2}} = 28\\ \\text{rad/s}$.",
+            "Check: that is about $4.5$ revolutions per second, a sensible speed for a fan."
+          ],
+          "answer": "$\\omega_f = 28\\ \\text{rad/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "tau": {
+                "value": 1.5,
+                "unit": "N·m"
+              },
+              "N": {
+                "value": 5,
+                "unit": "rev"
+              },
+              "I": {
+                "value": 0.12,
+                "unit": "kg·m^2"
+              }
+            },
+            "expr": "sqrt(2*tau*N/I)",
+            "unit": "rad/s"
+          }
+        },
+        {
+          "title": "Work from a torque–angle graph",
+          "prompt": "A wheel with rotational inertia $0.50\\ \\text{kg·m}^2$ is at rest on a frictionless axle. A torque is then applied that depends on the angle the wheel has turned through, as shown: it is $4.0\\ \\text{N·m}$ for the first $4.0\\ \\text{rad}$, then falls steadily to zero at $6.0\\ \\text{rad}$. Determine the wheel's angular speed once it has turned through $6.0\\ \\text{rad}$.\n\n```dg\nplot x=\\theta[rad] y=\\tau[N·m] xr=-0.8,7 yr=0,5\nseg 0,4 4,4 6,0\nxt 0 2 4 6\nyt 0 2 4\n```",
+          "steps": [
+            "The torque is not constant, so the work is the area under the torque–angle graph: a rectangle and a triangle.",
+            "$W = (4.0\\ \\text{N·m})(4.0\\ \\text{rad}) + \\tfrac{1}{2}(4.0\\ \\text{N·m})(2.0\\ \\text{rad}) = 16 + 4.0 = 20\\ \\text{J}$.",
+            "The axle is frictionless, so this is the net work on the wheel, and it equals the change in rotational kinetic energy: $W = \\tfrac{1}{2}I\\omega_f^2 - \\tfrac{1}{2}I\\omega_i^2$, with $\\omega_i = 0$.",
+            "$\\omega_f = \\sqrt{\\dfrac{2W}{I}} = \\sqrt{\\dfrac{2(20\\ \\text{J})}{0.50\\ \\text{kg·m}^2}} = \\sqrt{80}\\ \\text{rad/s} = 8.9\\ \\text{rad/s}$, in the direction of the torque."
+          ],
+          "answer": "$\\omega_f = 8.9\\ \\text{rad/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "tau": {
+                "value": 4,
+                "unit": "N·m"
+              },
+              "th1": {
+                "value": 4,
+                "unit": "rad"
+              },
+              "th2": {
+                "value": 6,
+                "unit": "rad"
+              },
+              "I": {
+                "value": 0.5,
+                "unit": "kg·m^2"
+              }
+            },
+            "expr": "sqrt(2*(tau*th1 + 0.5*tau*(th2 - th1))/I)",
+            "unit": "rad/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "work-sign",
+          "wrong": "A brake does positive work on a wheel, because it exerts a large torque while the wheel turns through a large angle.",
+          "right": "The sign depends on direction, not size. The brake's torque opposes the rotation, so its work is negative: it takes rotational kinetic energy out of the wheel and turns it into thermal energy."
+        },
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "A torque of $3\\ \\text{N·m}$ acting through a quarter turn does $3 \\times 90 = 270\\ \\text{J}$ of work.",
+          "right": "The angle must be in radians. A quarter turn is $\\pi/2 = 1.57\\ \\text{rad}$, so the work is $(3\\ \\text{N·m})(1.57\\ \\text{rad}) = 4.7\\ \\text{J}$."
+        },
+        {
+          "wrong": "Torque is measured in $\\text{N·m}$, which is the same as a joule, so a torque of $10\\ \\text{N·m}$ means $10\\ \\text{J}$ of energy.",
+          "right": "Torque is a twist, not an amount of energy. It does work only when the object turns, and then the work is the torque multiplied by the angle in radians."
+        },
+        {
+          "wrong": "Every force acting on a rotating object does work on it.",
+          "right": "A force whose line of action passes through the axis, such as the axle's support force, exerts no torque and does no work as the object turns: the point it acts on does not move."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A torque of $5\\ \\text{N·m}$ turns a crank through two full revolutions. How much work does it do?",
+          "a": "Two revolutions is $4\\pi = 12.6\\ \\text{rad}$, so $W = (5\\ \\text{N·m})(12.6\\ \\text{rad}) = 63\\ \\text{J}$."
+        },
+        {
+          "q": "The same torque acts through the same angle on a hoop and on a solid disc of equal mass and radius, both starting from rest on frictionless axles. Which gains more kinetic energy? Which ends up spinning faster?",
+          "a": "They gain the same kinetic energy, because the work $\\tau\\,\\Delta\\theta$ is the same. The disc spins faster: its rotational inertia is smaller, so the same energy needs a larger $\\omega$."
+        },
+        {
+          "q": "A wheel is spinning clockwise. Friction at its axle exerts a counterclockwise torque. Is the work done by friction positive or negative, and what happens to the wheel's rotational kinetic energy?",
+          "a": "Negative, because the torque is opposite to the rotation. The rotational kinetic energy decreases and the wheel slows down."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=\\theta[rad] y=\\tau[N·m] xr=-0.8,6.5 yr=0,13\nseg 0,0 0,{{T}} {{th}},{{T}} {{th}},0\nshade 0..{{th}}\nnote 3.2,12.3 \"W = {{T*th}} J\"\nnote 3.2,11.2 \"\\omega_f = {{round(100*sqrt(T*th))/100}} rad/s\"\nxt 0 1 2 3 4 5 6\nyt 0 2 4 6 8 10",
+        "caption": "A steady torque turns a wheel with $I = 2\\ \\text{kg·m}^2$ from rest. The shaded area is the work done. Doubling the torque or the angle doubles the work, but the final angular speed goes up only by a factor of $\\sqrt{2}$.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Torque",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 4,
+            "unit": "N·m"
+          },
+          {
+            "name": "th",
+            "label": "Angle turned",
+            "min": 1,
+            "max": 6,
+            "step": 0.5,
+            "default": 3,
+            "unit": "rad"
+          }
+        ]
+      },
+      "prerequisites": [
+        "3.2",
+        "5.1",
+        "5.3",
+        "6.1"
+      ],
+      "teacherNotes": "Derive $W = \\tau\\,\\Delta\\theta$ from $W = Fs$ with a string pulled off a spool, so that students see it is the same work, not a second kind. The two reliable errors are degrees or revolutions used as the angle and a positive sign for a braking torque. When a problem gives a torque and an angle, ask \"would you rather find $\\alpha$ and use kinematics, or use energy?\" and let students see that the energy route is two lines. Set 6A practises this topic with 6.1."
+    },
+    {
+      "topic": "6.3",
+      "bigIdea": "Angular momentum measures how much rotational motion an object has about a chosen axis, and a net torque acting for a time, an angular impulse, changes it by exactly that amount.",
+      "picture": {
+        "diagram": "bars momentum unit=kg·m^2/s \"flywheel\"\ninitial L 2\nimpulse τΔt 6\nfinal L 8",
+        "caption": "A flywheel with angular momentum $2\\ \\text{kg·m}^2\\text{/s}$ is driven by a net torque of $3\\ \\text{N·m}$ for $2\\ \\text{s}$. The angular impulse, $6\\ \\text{N·m·s}$, is added to what it had, so it ends with $8\\ \\text{kg·m}^2\\text{/s}$."
+      },
+      "explanation": "Linear momentum, $mv$, measures how much motion an object has along a line. Angular momentum does the same job for rotation. For a rigid object turning about a fixed axis it is $L = I\\omega$: rotational inertia in the place of mass, angular velocity in the place of velocity. Its unit is $\\text{kg·m}^2\\text{/s}$. Like $\\omega$, it has a sense of rotation, so choose one sense as positive, usually counterclockwise, and give clockwise rotation a negative sign.\n\nAn object does not have to spin to have angular momentum. A ball flying past a door hinge has angular momentum about the hinge, which is why the door swings when the ball hits it. For a small object of mass $m$ and speed $v$, $L = rmv\\sin\\theta$, where $r$ is its distance from the axis and $\\theta$ is the angle between its velocity and the line from the axis to the object. The product $r\\sin\\theta$ is simply the perpendicular distance from the axis to the line the object is moving along. An object heading straight at the axis has none. The value depends on the axis you choose, so always say which axis you mean.\n\nAngular momentum changes only when a net torque acts. Start from $\\tau_{\\text{net}} = I\\alpha$, write $\\alpha = \\Delta\\omega/\\Delta t$ and rearrange: $\\tau_{\\text{net}}\\,\\Delta t = I\\,\\Delta\\omega = \\Delta L$. Torque multiplied by the time it acts is the angular impulse, and it equals the change in angular momentum, just as impulse equals the change in linear momentum. On a torque–time graph the angular impulse is the area under the graph. On a graph of angular momentum against time, the net torque is the slope.",
+      "equations": [
+        {
+          "latex": "L = I\\omega",
+          "meaning": "The angular momentum of a rigid object about its axis of rotation is its rotational inertia times its angular velocity.",
+          "variables": [
+            {
+              "symbol": "L",
+              "name": "angular momentum",
+              "unit": "kg·m²/s"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity, with a sign for its sense",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "A rigid object (wheel, disc, door, person on a turntable) turns about a fixed axis.",
+          "notWhen": "Do not drop the sign when things turn in opposite senses, and do not confuse it with rotational kinetic energy, which has a one half and a square."
+        },
+        {
+          "latex": "L = rmv\\sin\\theta",
+          "meaning": "A small moving object has angular momentum about an axis equal to its linear momentum times the perpendicular distance from the axis to its line of motion.",
+          "variables": [
+            {
+              "symbol": "L",
+              "name": "angular momentum about the chosen axis",
+              "unit": "kg·m²/s"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the axis to the object",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the object",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the velocity and the line from the axis to the object",
+              "unit": "degrees or rad"
+            }
+          ],
+          "useWhen": "An object small enough to treat as a point moves past, toward or around an axis: a ball about to hit a door, a child running toward a merry-go-round, a satellite.",
+          "notWhen": "Not for an extended spinning object. And it means nothing until the axis is stated."
+        },
+        {
+          "latex": "\\tau_{\\text{net}}\\,\\Delta t = \\Delta L = L_f - L_i",
+          "meaning": "The angular impulse of the net torque equals the change in angular momentum.",
+          "variables": [
+            {
+              "symbol": "\\tau_{\\text{net}}",
+              "name": "average net torque during the interval",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time the torque acts",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\Delta L",
+              "name": "change in angular momentum",
+              "unit": "kg·m²/s"
+            },
+            {
+              "symbol": "L_f,\\ L_i",
+              "name": "final and initial angular momentum",
+              "unit": "kg·m²/s"
+            }
+          ],
+          "useWhen": "A known torque acts for a known time, or you know the angular momentum before and after and want the torque or the time.",
+          "notWhen": "Use the net torque, not one torque among several. If the torque varies, use the area under the torque–time graph."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Pushing a display platform",
+          "prompt": "A circular display platform with rotational inertia $150\\ \\text{kg·m}^2$ is at rest on a vertical axle. A worker pushes on its rim, $1.5\\ \\text{m}$ from the axle, with a steady $80\\ \\text{N}$ force directed along the rim for $3.0\\ \\text{s}$. Ignoring friction at the axle, what is the platform's angular speed afterwards?\n\n```dg\nrigid disc r=1.5 unit=m\nf 0 ccw \"80 N\"\ndim 180 \"1.5 m\"\n```",
+          "steps": [
+            "Find the torque. The force is along the rim, so it is perpendicular to the radius and the whole $1.5\\ \\text{m}$ is the lever arm: $\\tau = rF = (1.5\\ \\text{m})(80\\ \\text{N}) = 120\\ \\text{N·m}$.",
+            "Find the angular impulse: $\\tau\\,\\Delta t = (120\\ \\text{N·m})(3.0\\ \\text{s}) = 360\\ \\text{N·m·s}$.",
+            "With no friction this is the net angular impulse, so it equals the change in angular momentum: $\\Delta L = 360\\ \\text{kg·m}^2\\text{/s}$. The units agree, because a newton is a $\\text{kg·m/s}^2$.",
+            "The platform starts at rest, so $L_f = I\\omega_f = 360\\ \\text{kg·m}^2\\text{/s}$, and $\\omega_f = \\dfrac{360\\ \\text{kg·m}^2\\text{/s}}{150\\ \\text{kg·m}^2} = 2.4\\ \\text{rad/s}$."
+          ],
+          "answer": "$\\omega_f = 2.4\\ \\text{rad/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "I": {
+                "value": 150,
+                "unit": "kg·m^2"
+              },
+              "r": {
+                "value": 1.5,
+                "unit": "m"
+              },
+              "F": {
+                "value": 80,
+                "unit": "N"
+              },
+              "t": {
+                "value": 3,
+                "unit": "s"
+              }
+            },
+            "expr": "r*F*t/I",
+            "unit": "rad/s"
+          }
+        },
+        {
+          "title": "A ball about to hit a door",
+          "prompt": "A $0.20\\ \\text{kg}$ ball travelling horizontally at $12\\ \\text{m/s}$ is about to strike a door at right angles to its surface, at a point $0.75\\ \\text{m}$ from the hinges. Determine the ball's angular momentum about the hinge line just before it hits, and explain how the answer would change if the ball struck only $0.25\\ \\text{m}$ from the hinges.",
+          "steps": [
+            "The ball is not spinning around the hinge, but it is a moving object whose path passes the hinge line at a distance, so it has angular momentum about that line: $L = rmv\\sin\\theta$.",
+            "The ball moves at right angles to the door, so at the moment of impact $\\theta = 90^\\circ$ and $\\sin\\theta = 1$. Put another way, the perpendicular distance from the hinge line to the ball's path is the full $0.75\\ \\text{m}$.",
+            "$L = (0.75\\ \\text{m})(0.20\\ \\text{kg})(12\\ \\text{m/s}) = 1.8\\ \\text{kg·m}^2\\text{/s}$.",
+            "Striking $0.25\\ \\text{m}$ from the hinges, the ball has the same linear momentum, $2.4\\ \\text{kg·m/s}$, but one third of the perpendicular distance, so one third of the angular momentum: $0.60\\ \\text{kg·m}^2\\text{/s}$. This is why a hit near the hinges swings a door so feebly."
+          ],
+          "answer": "$L = 1.8\\ \\text{kg·m}^2\\text{/s}$ about the hinge line; $0.60\\ \\text{kg·m}^2\\text{/s}$ if it strikes $0.25\\ \\text{m}$ from the hinges",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "r": {
+                "value": 0.75,
+                "unit": "m"
+              },
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 12,
+                "unit": "m/s"
+              }
+            },
+            "expr": "r*m*v",
+            "unit": "kg·m^2/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "Only spinning objects have angular momentum. A ball moving in a straight line has linear momentum and nothing else.",
+          "right": "About any axis that its path does not pass through, the ball has angular momentum $mv$ times the perpendicular distance to its path. That is what sets a door, or a merry-go-round, turning when the ball hits it."
+        },
+        {
+          "tag": "rotational-inertia-mass-only",
+          "wrong": "Two wheels of the same mass spinning at the same rate have the same angular momentum.",
+          "right": "$L = I\\omega$, and $I$ depends on how the mass is spread. A hoop has twice the angular momentum of a solid disc of the same mass, radius and angular velocity."
+        },
+        {
+          "wrong": "An object has one angular momentum, whatever axis you measure it about.",
+          "right": "Angular momentum is always about a particular axis. The same moving ball has a large angular momentum about a distant axis, a small one about a near axis, and none about an axis on its line of motion."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A disc with rotational inertia $0.5\\ \\text{kg·m}^2$ spins clockwise at $6\\ \\text{rad/s}$. Taking counterclockwise as positive, what is its angular momentum?",
+          "a": "$L = I\\omega = (0.5\\ \\text{kg·m}^2)(-6\\ \\text{rad/s}) = -3\\ \\text{kg·m}^2\\text{/s}$. The negative sign says clockwise."
+        },
+        {
+          "q": "A car drives along a straight road at constant velocity, passing a lamp post that stands beside the road. Does the car have angular momentum about the post? Does it change as the car drives past?",
+          "a": "Yes: its momentum times the perpendicular distance from the post to the road. That distance is the same wherever the car is on the road, so the angular momentum stays constant, as it should with no net torque acting."
+        },
+        {
+          "q": "A turntable's angular momentum falls steadily from $10\\ \\text{kg·m}^2\\text{/s}$ to $4\\ \\text{kg·m}^2\\text{/s}$ in $3\\ \\text{s}$. What net torque acts on it?",
+          "a": "$\\tau_{\\text{net}} = \\Delta L/\\Delta t = (4 - 10)/3 = -2\\ \\text{N·m}$: a torque of $2\\ \\text{N·m}$ opposing the rotation. It is the slope of the angular momentum–time graph."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndot 0,0 \"axis\"\ndash -1,{{d}} 6,{{d}}\nball B 3,{{d}} r=.25 \"2 kg\"\nf B.r right 1.5 \"v = 3 m/s\"\ndim 0,0 0,{{d}} \"{{d}} m\"\ntext 3,-0.8 \"L = {{6*d}} kg·m^2/s\"",
+        "caption": "A $2\\ \\text{kg}$ ball moves in a straight line at $3\\ \\text{m/s}$. Move its path closer to or farther from the axis: its linear momentum never changes, but its angular momentum about the axis is proportional to the perpendicular distance.",
+        "params": [
+          {
+            "name": "d",
+            "label": "Distance from the axis to the path",
+            "min": 0.5,
+            "max": 3,
+            "step": 0.5,
+            "default": 2,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "4.1",
+        "4.2",
+        "5.3",
+        "5.4",
+        "5.6"
+      ],
+      "teacherNotes": "Build the topic as a translation of Unit 4: write $p = mv$ and $F\\,\\Delta t = \\Delta p$ on one side of the board and have students propose the rotational versions. The idea that takes longest is angular momentum of an object moving in a straight line; the car and lamp post question is a good test, and students who say the angular momentum \"grows as the car gets farther away\" are using $r$ instead of the perpendicular distance. Insist on \"about which axis?\" every time. Set 6B practises this topic."
+    },
+    {
+      "topic": "6.4",
+      "bigIdea": "If no net external torque acts on a system, its total angular momentum stays constant, so when the system's rotational inertia changes its angular speed must change the opposite way.",
+      "picture": {
+        "diagram": "bars momentum unit=kg·m^2/s \"two discs\"\ninitial L_A 6 L_B 0\nfinal L_A 4 L_B 2",
+        "caption": "Disc A ($I = 2\\ \\text{kg·m}^2$) spins at $3\\ \\text{rad/s}$. Disc B ($I = 1\\ \\text{kg·m}^2$), not spinning, is dropped onto it and they end up turning together at $2\\ \\text{rad/s}$. A loses $2\\ \\text{kg·m}^2\\text{/s}$ of angular momentum and B gains it; the total is $6\\ \\text{kg·m}^2\\text{/s}$ before and after."
+      },
+      "explanation": "When two parts of a system twist on each other, the torques they exert are equal in size and opposite in sense, and they last the same time, so their angular impulses cancel. Whatever angular momentum one part gains, the other loses. Only a net torque from outside the system can change the total. If there is none, the system's total angular momentum stays constant: $L_i = L_f$.\n\nThis looks like conservation of linear momentum, but rotation adds something new. An object's mass is fixed; its rotational inertia is not. A spinning skater who pulls in her arms moves mass closer to the axis, so $I$ falls. The ice exerts almost no torque on her, so $L = I\\omega$ cannot change, and $\\omega$ has to rise: $I_i\\omega_i = I_f\\omega_f$. Halve the rotational inertia and the spin rate doubles.\n\nThe same law handles rotational collisions, such as a child jumping onto a merry-go-round or a ring dropped onto a spinning turntable. Treat everything involved as one system. Add up the angular momentum before, using $I\\omega$ for objects that spin and $rmv\\sin\\theta$ for objects moving along a line, and set it equal to the total after. Rotation in opposite senses subtracts.\n\nKinetic energy is a separate question. Because $K = \\tfrac{1}{2}I\\omega^2 = \\dfrac{L^2}{2I}$, a system that keeps its $L$ while its $I$ changes must change its kinetic energy. The skater's rises, paid for by the work her muscles do pulling her arms inward. When objects stick together it falls, as in an inelastic collision.",
+      "equations": [
+        {
+          "latex": "I_i\\omega_i = I_f\\omega_f",
+          "meaning": "With no net external torque, a system's rotational inertia times its angular velocity is the same before and after it changes shape.",
+          "variables": [
+            {
+              "symbol": "I_i,\\ I_f",
+              "name": "rotational inertia before and after",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega_i,\\ \\omega_f",
+              "name": "angular velocity before and after",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "One rotating system changes its rotational inertia: a skater pulling in her arms, a diver tucking, a person on a turntable moving weights in or out.",
+          "notWhen": "Not when an outside torque such as friction at the axle acts for a significant time, and not for one part of a system on its own."
+        },
+        {
+          "latex": "I_1\\omega_1 + I_2\\omega_2 = (I_1 + I_2)\\,\\omega_f",
+          "meaning": "When two objects turning about the same axis join and turn together, their combined angular momentum before equals their shared angular momentum after.",
+          "variables": [
+            {
+              "symbol": "I_1,\\ I_2",
+              "name": "rotational inertias of the two objects about the shared axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega_1,\\ \\omega_2",
+              "name": "their angular velocities before, with signs",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\omega_f",
+              "name": "shared angular velocity after",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "Rotational \"sticking\" collisions: a disc dropped on a turntable, a clutch engaging. For a small object that lands on a turntable, its term before is $rmv\\sin\\theta$ and its rotational inertia after is $mr^2$.",
+          "notWhen": "Not when the objects keep different angular velocities afterwards; then each needs its own final term."
+        },
+        {
+          "latex": "K = \\frac{L^2}{2I}",
+          "meaning": "Rotational kinetic energy written in terms of angular momentum: for a fixed angular momentum, a smaller rotational inertia means more kinetic energy.",
+          "variables": [
+            {
+              "symbol": "K",
+              "name": "rotational kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "L",
+              "name": "angular momentum",
+              "unit": "kg·m²/s"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia",
+              "unit": "kg·m²"
+            }
+          ],
+          "useWhen": "Deciding whether kinetic energy rises or falls when angular momentum is conserved and the rotational inertia changes.",
+          "notWhen": "It does not say kinetic energy is conserved. It usually is not."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A child jumps onto a merry-go-round",
+          "prompt": "A playground merry-go-round of rotational inertia $270\\ \\text{kg·m}^2$ and radius $1.5\\ \\text{m}$ is at rest on a frictionless axle. A $30\\ \\text{kg}$ child runs at $4.0\\ \\text{m/s}$ along a line tangent to the rim and jumps on at the edge. What is the angular speed of the merry-go-round with the child on board?",
+          "steps": [
+            "Choose the system: child plus merry-go-round. The axle is frictionless, so no external torque acts about it while the child lands, and the system's angular momentum about the axle is conserved.",
+            "Before: the merry-go-round is at rest. The child is a moving object whose path passes the axle at a perpendicular distance of $1.5\\ \\text{m}$, so $L_i = rmv = (1.5\\ \\text{m})(30\\ \\text{kg})(4.0\\ \\text{m/s}) = 180\\ \\text{kg·m}^2\\text{/s}$.",
+            "After: child and merry-go-round turn together. The child, at the rim, adds $mr^2 = (30\\ \\text{kg})(1.5\\ \\text{m})^2 = 67.5\\ \\text{kg·m}^2$, so $I_f = 270 + 67.5 = 337.5\\ \\text{kg·m}^2$.",
+            "Set $L_i = L_f$: $180\\ \\text{kg·m}^2\\text{/s} = (337.5\\ \\text{kg·m}^2)\\,\\omega_f$, so $\\omega_f = 0.53\\ \\text{rad/s}$."
+          ],
+          "answer": "$\\omega_f = 0.53\\ \\text{rad/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "I": {
+                "value": 270,
+                "unit": "kg·m^2"
+              },
+              "r": {
+                "value": 1.5,
+                "unit": "m"
+              },
+              "m": {
+                "value": 30,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 4,
+                "unit": "m/s"
+              }
+            },
+            "expr": "r*m*v/(I + m*r^2)",
+            "unit": "rad/s"
+          }
+        },
+        {
+          "title": "Two discs spinning in opposite senses",
+          "prompt": "Disc A, with rotational inertia $0.40\\ \\text{kg·m}^2$, spins counterclockwise at $15\\ \\text{rad/s}$ on a frictionless vertical axle. Disc B, with rotational inertia $0.20\\ \\text{kg·m}^2$, spins clockwise at $6.0\\ \\text{rad/s}$ on the same axle, just above A. Disc B is lowered onto A, and friction between them brings the two to a common angular velocity. Determine that angular velocity, and determine whether the system's kinetic energy is conserved.",
+          "steps": [
+            "System: both discs. The friction between them is internal and the axle is frictionless, so no external torque acts and angular momentum is conserved. Take counterclockwise as positive: $\\omega_A = +15\\ \\text{rad/s}$ and $\\omega_B = -6.0\\ \\text{rad/s}$.",
+            "Before: $L_i = I_A\\omega_A + I_B\\omega_B = (0.40)(+15) + (0.20)(-6.0) = 6.0 - 1.2 = +4.8\\ \\text{kg·m}^2\\text{/s}$.",
+            "After, the discs turn as one object: $L_f = (I_A + I_B)\\,\\omega_f = (0.60\\ \\text{kg·m}^2)\\,\\omega_f$. Setting $L_f = L_i$ gives $\\omega_f = +8.0\\ \\text{rad/s}$, counterclockwise.",
+            "Kinetic energy before: $\\tfrac{1}{2}(0.40)(15)^2 + \\tfrac{1}{2}(0.20)(6.0)^2 = 45 + 3.6 = 48.6\\ \\text{J}$. After: $\\tfrac{1}{2}(0.60)(8.0)^2 = 19.2\\ \\text{J}$. It is not conserved: about $29\\ \\text{J}$ becomes thermal energy as the discs rub."
+          ],
+          "answer": "$\\omega_f = +8.0\\ \\text{rad/s}$ (counterclockwise); kinetic energy is not conserved, falling from $48.6\\ \\text{J}$ to $19.2\\ \\text{J}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "I_A": {
+                "value": 0.4,
+                "unit": "kg·m^2"
+              },
+              "w_A": {
+                "value": 15,
+                "unit": "rad/s"
+              },
+              "I_B": {
+                "value": 0.2,
+                "unit": "kg·m^2"
+              },
+              "w_B": {
+                "value": -6,
+                "unit": "rad/s"
+              }
+            },
+            "expr": "(I_A*w_A + I_B*w_B)/(I_A + I_B)",
+            "unit": "rad/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "angular-momentum-not-conserved",
+          "wrong": "A skater spins faster when she pulls in her arms because pulling them in gives her more angular momentum.",
+          "right": "Nothing outside her exerts a torque, so her angular momentum cannot change. What changes is her rotational inertia, which falls. Since $L = I\\omega$ stays the same, $\\omega$ rises."
+        },
+        {
+          "tag": "angular-momentum-not-conserved",
+          "wrong": "A lump of clay dropped straight down onto a spinning turntable brings no angular momentum with it, so the turntable keeps spinning at the same rate.",
+          "right": "The clay brings no angular momentum, but it adds rotational inertia. The same angular momentum is now shared by a larger rotational inertia, so the angular speed drops."
+        },
+        {
+          "wrong": "Angular momentum is conserved when the skater pulls in her arms, so her rotational kinetic energy is conserved too.",
+          "right": "They are different quantities. With $L$ fixed, $K = L^2/(2I)$ rises as $I$ falls. The extra energy comes from the work she does pulling her arms inward."
+        },
+        {
+          "tag": "system-boundary",
+          "wrong": "When a child jumps onto a merry-go-round, the merry-go-round's angular momentum is conserved.",
+          "right": "For the merry-go-round alone, the child exerts an external torque, and its angular momentum changes. Only the total for child and merry-go-round together stays the same."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A student sits on a freely turning stool holding weights at arm's length and turns once per second. She pulls the weights in, which halves the system's rotational inertia. How fast does she turn now?",
+          "a": "Twice per second. With no external torque $I\\omega$ stays the same, so halving $I$ doubles $\\omega$."
+        },
+        {
+          "q": "A ring is dropped onto a spinning turntable, and friction between the two brings them to the same angular speed. Friction exerts a torque on each of them. Why is the system's angular momentum still conserved?",
+          "a": "The two friction torques are an internal pair: equal, opposite, and acting for the same time. What the turntable loses, the ring gains."
+        },
+        {
+          "q": "A diver leaves the board turning slowly, then tucks into a tight ball. What happens to the diver's angular momentum, angular speed and rotational kinetic energy?",
+          "a": "Angular momentum stays the same, because gravity exerts no torque about the centre of mass. Angular speed rises as the rotational inertia falls. Kinetic energy rises too; the diver's muscles do the work."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=\\omega[rad/s] xr=-0.6,4 yr=0,9\nseg 0,2 1,2 2,{{12/If}} 4,{{12/If}}\nnote 1,1.2 \"I = 6 kg·m^2\"\nnote 3.2,{{12/If+0.5}} \"I = {{If}} kg·m^2\"\nnote 2,8.5 \"L = 12 kg·m^2/s before and after\"\nnote 2,7.7 \"K: 12 J before, {{round(720/If)/10}} J after\"\nxt 0 1 2 3 4\nyt 0 2 4 6 8",
+        "caption": "A student on a freely turning stool starts with $I = 6\\ \\text{kg·m}^2$ at $2\\ \\text{rad/s}$, then pulls the weights in. Set the final rotational inertia: the smaller it is, the faster the spin and the more kinetic energy, while the angular momentum stays at $12\\ \\text{kg·m}^2\\text{/s}$.",
+        "params": [
+          {
+            "name": "If",
+            "label": "Final rotational inertia",
+            "min": 2,
+            "max": 6,
+            "step": 0.5,
+            "default": 3,
+            "unit": "kg·m²"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.3",
+        "4.3",
+        "4.4",
+        "6.1",
+        "6.3"
+      ],
+      "teacherNotes": "As in Unit 4, make students name the system and say why no external torque acts before they write an equation. The classic error is to explain the skater with \"she gains angular momentum\"; the next is to assume kinetic energy is conserved because angular momentum is. Asking for $L$ and $K$ before and after, every time, separates the two. For a small object landing on a turntable, check that students include both its angular momentum before ($rmv$, zero if it drops straight down) and its $mr^2$ after. Set 6C practises this topic."
+    },
+    {
+      "topic": "6.5",
+      "bigIdea": "An object that rolls without slipping moves forward and spins at linked rates, $v_{\\text{cm}} = r\\omega$, so its kinetic energy is shared between translation and rotation in a ratio set by its shape.",
+      "picture": {
+        "diagram": "scene\nground -1..7\nball W 3,1 r=1\ndot W.c\ndot W.b\nf W.c right 1.5 \"v_{cm}\"\nf W.t right 3 \"2v_{cm}\"\ntext 3,-0.45 \"contact point: at rest\"",
+        "caption": "A wheel rolling to the right without slipping. Its centre moves at $v_{\\text{cm}}$, the top of the rim at $2v_{\\text{cm}}$, and the point touching the ground is momentarily at rest."
+      },
+      "explanation": "A wheel that rolls without slipping does two things at once: its centre moves forward and it spins about its centre. The two motions are locked together. In one full turn the wheel lays one circumference of its rim along the ground, so the centre advances $2\\pi r$ while the wheel turns through $2\\pi\\ \\text{rad}$. In general $\\Delta x_{\\text{cm}} = r\\,\\Delta\\theta$, and so $v_{\\text{cm}} = r\\omega$ and $a_{\\text{cm}} = r\\alpha$. The point touching the ground is, for that instant, at rest, while the top of the wheel moves forward at $2v_{\\text{cm}}$.\n\nA rolling object therefore has two kinetic energies: $K = \\tfrac{1}{2}Mv_{\\text{cm}}^2 + \\tfrac{1}{2}I_{\\text{cm}}\\omega^2$. Because $\\omega = v_{\\text{cm}}/r$, the split between them depends only on shape. Write $I_{\\text{cm}} = cMr^2$, where $c$ is $1$ for a hoop, $\\tfrac{1}{2}$ for a solid disc or cylinder and $\\tfrac{2}{5}$ for a solid sphere. Then the rotational part is $c$ times the translational part. Released on a ramp, each object turns the same potential energy per kilogram into kinetic energy, but the more of it that must go into spin, the less is left for moving forward. A sphere beats a disc, a disc beats a hoop, and a block sliding without friction beats them all. Mass and radius cancel.\n\nFriction is what makes an object roll; without it the object would simply slide. Yet in rolling without slipping the friction is static, because the contact point is not sliding over the surface, and so it turns no mechanical energy into thermal energy. You may use conservation of mechanical energy for rolling without slipping. If the object skids, the friction is kinetic, $v_{\\text{cm}}$ no longer equals $r\\omega$, and mechanical energy is dissipated.",
+      "equations": [
+        {
+          "latex": "v_{\\text{cm}} = r\\omega",
+          "meaning": "For rolling without slipping, the speed of the centre of mass equals the radius times the angular speed.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{cm}}",
+              "name": "speed of the centre of mass",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the rolling object",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "A wheel, ball or cylinder rolls without slipping, on the level or on a ramp.",
+          "notWhen": "Not when the object skids or spins in place (a car on ice, a ball just after it is thrown onto a lane)."
+        },
+        {
+          "latex": "a_{\\text{cm}} = r\\alpha",
+          "meaning": "For rolling without slipping, the acceleration of the centre of mass equals the radius times the angular acceleration.",
+          "variables": [
+            {
+              "symbol": "a_{\\text{cm}}",
+              "name": "acceleration of the centre of mass",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the rolling object",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration",
+              "unit": "rad/s²"
+            }
+          ],
+          "useWhen": "A rolling object speeds up or slows down without slipping.",
+          "notWhen": "Not when the object slips."
+        },
+        {
+          "latex": "K = \\tfrac{1}{2}Mv_{\\text{cm}}^2 + \\tfrac{1}{2}I_{\\text{cm}}\\omega^2",
+          "meaning": "A rolling object's kinetic energy is the translational kinetic energy of its centre of mass plus the rotational kinetic energy about its centre of mass.",
+          "variables": [
+            {
+              "symbol": "K",
+              "name": "total kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "M",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_{\\text{cm}}",
+              "name": "speed of the centre of mass",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "I_{\\text{cm}}",
+              "name": "rotational inertia about the centre of mass",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular speed",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "Any energy calculation for a rolling object: speed at the bottom of a ramp, height reached, total kinetic energy.",
+          "notWhen": "Do not leave out the second term, and do not use $\\sqrt{2gh}$ for a rolling object."
+        }
+      ],
+      "derivation": "**Speed after rolling from rest down through a height $h$.** Take the object, the ramp and the Earth as the system. The object rolls without slipping, so mechanical energy is conserved:\n\n$$Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{2}I\\omega^2$$\n\nSubstitute $I = cMr^2$ and $\\omega = v/r$:\n\n$$Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{2}\\left(cMr^2\\right)\\frac{v^2}{r^2} = \\tfrac{1}{2}(1 + c)Mv^2$$\n\nThe mass and the radius cancel, leaving\n\n$$v = \\sqrt{\\frac{2gh}{1 + c}}$$\n\nWith $c = 0$ this is the sliding result, $\\sqrt{2gh}$. Any object that rolls has $c > 0$ and is slower.",
+      "workedExamples": [
+        {
+          "title": "Kinetic energy of a bowling ball",
+          "prompt": "A bowling ball, a solid sphere of mass $6.0\\ \\text{kg}$ and radius $0.11\\ \\text{m}$, rolls without slipping along a lane at $4.0\\ \\text{m/s}$. What is its total kinetic energy? For a solid sphere, $I = \\tfrac{2}{5}MR^2$.",
+          "steps": [
+            "Translational part: $K_{\\text{trans}} = \\tfrac{1}{2}Mv^2 = \\tfrac{1}{2}(6.0\\ \\text{kg})(4.0\\ \\text{m/s})^2 = 48\\ \\text{J}$.",
+            "Rolling without slipping links the spin to the speed: $\\omega = \\dfrac{v}{R} = \\dfrac{4.0\\ \\text{m/s}}{0.11\\ \\text{m}} = 36.4\\ \\text{rad/s}$.",
+            "Rotational inertia: $I = \\tfrac{2}{5}MR^2 = \\tfrac{2}{5}(6.0\\ \\text{kg})(0.11\\ \\text{m})^2 = 0.0290\\ \\text{kg·m}^2$.",
+            "Rotational part: $K_{\\text{rot}} = \\tfrac{1}{2}I\\omega^2 = \\tfrac{1}{2}(0.0290\\ \\text{kg·m}^2)(36.4\\ \\text{rad/s})^2 = 19.2\\ \\text{J}$.",
+            "Add: $K = 48 + 19.2 = 67\\ \\text{J}$. The rotational part is $\\tfrac{2}{5}$ of the translational part, as it is for a rolling solid sphere of any size."
+          ],
+          "answer": "$K = 67\\ \\text{J}$ ($48\\ \\text{J}$ translational and $19\\ \\text{J}$ rotational)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "M": {
+                "value": 6,
+                "unit": "kg"
+              },
+              "R": {
+                "value": 0.11,
+                "unit": "m"
+              },
+              "v": {
+                "value": 4,
+                "unit": "m/s"
+              }
+            },
+            "expr": "0.5*M*v^2 + 0.5*(0.4*M*R^2)*(v/R)^2",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "A cylinder rolling down a ramp",
+          "prompt": "A solid cylinder is released from rest at the top of a ramp and rolls without slipping to the bottom, which is $0.60\\ \\text{m}$ lower. Determine the speed of its centre at the bottom, and compare it with the speed of a block that slides down a frictionless ramp of the same height. For a solid cylinder, $I = \\tfrac{1}{2}MR^2$. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "System: cylinder, ramp and Earth. The cylinder rolls without slipping, so the friction is static and mechanical energy is conserved: $Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{2}I\\omega^2$.",
+            "Use $I = \\tfrac{1}{2}MR^2$ and $\\omega = v/R$. The rotational term is $\\tfrac{1}{2}\\left(\\tfrac{1}{2}MR^2\\right)\\dfrac{v^2}{R^2} = \\tfrac{1}{4}Mv^2$.",
+            "So $Mgh = \\tfrac{3}{4}Mv^2$, and $v = \\sqrt{\\tfrac{4}{3}gh} = \\sqrt{\\tfrac{4}{3}(9.8\\ \\text{m/s}^2)(0.60\\ \\text{m})} = \\sqrt{7.84}\\ \\text{m/s} = 2.8\\ \\text{m/s}$. Neither the mass nor the radius was needed.",
+            "The sliding block puts all of the energy into translation: $v = \\sqrt{2gh} = \\sqrt{11.76}\\ \\text{m/s} = 3.4\\ \\text{m/s}$. The cylinder is slower because one third of its kinetic energy is rotational."
+          ],
+          "answer": "$v = 2.8\\ \\text{m/s}$ for the cylinder, compared with $3.4\\ \\text{m/s}$ for the sliding block",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "h": {
+                "value": 0.6,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "sqrt(4*g*h/3)",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "wrong": "A ball that rolls down a ramp of height $h$ reaches the bottom at $\\sqrt{2gh}$, the same as a block sliding without friction.",
+          "right": "Some of the potential energy becomes rotational kinetic energy, so less is left for forward motion. The speed is $\\sqrt{2gh/(1 + c)}$, always below $\\sqrt{2gh}$."
+        },
+        {
+          "tag": "rotational-inertia-mass-only",
+          "wrong": "In a rolling race down a ramp, the heavier (or the bigger) object wins.",
+          "right": "Mass and radius cancel. Only the shape matters, through how far from the axis the mass sits: any solid sphere beats any solid cylinder, which beats any hoop."
+        },
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "Every point on a rolling wheel moves forward at the speed of the wheel.",
+          "right": "Only the centre does. The top of the rim moves at $2v_{\\text{cm}}$ and the point on the ground is momentarily at rest, which is why that point is not sliding."
+        },
+        {
+          "wrong": "Friction acts on a rolling ball, so mechanical energy must be lost.",
+          "right": "In rolling without slipping the friction is static: the contact point does not slide, so nothing is rubbed into thermal energy. Mechanical energy is lost only if the ball skids."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A wheel of radius $0.30\\ \\text{m}$ rolls without slipping at $6.0\\ \\text{m/s}$. What is its angular speed, and how fast is the top of the wheel moving relative to the ground?",
+          "a": "$\\omega = v_{\\text{cm}}/r = 20\\ \\text{rad/s}$. The top moves at $2v_{\\text{cm}} = 12\\ \\text{m/s}$."
+        },
+        {
+          "q": "A hoop and a solid sphere are released together from the top of a ramp and roll without slipping. Which reaches the bottom first, and why?",
+          "a": "The sphere. A smaller fraction of its kinetic energy has to be rotational (two sevenths, against one half for the hoop), so more of the same potential energy goes into forward motion."
+        },
+        {
+          "q": "A ball rolls without slipping up a rough ramp. An identical ball, moving at the same speed but not spinning, slides up a frictionless ramp. Which rises higher?",
+          "a": "The rolling ball. It starts with rotational as well as translational kinetic energy, and as it rolls to a stop all of it becomes potential energy. The sliding ball has only the translational part."
+        }
+      ],
+      "tryIt": {
+        "diagram": "bars energy unit=J \"rolling down a ramp from rest\"\ninitial U_g 10\nfinal K_{trans} {{10-round(1000*c/(1+c))/100}} K_{rot} {{round(1000*c/(1+c))/100}}",
+        "caption": "An object rolls down a ramp, turning $10\\ \\text{J}$ of potential energy into kinetic energy. Set its shape factor $c$ (from $I = cMr^2$): $0.4$ is a solid sphere, $0.5$ a solid disc, $1$ a hoop, and $0$ a block sliding without friction. The more that goes to rotation, the less is left for speed.",
+        "params": [
+          {
+            "name": "c",
+            "label": "Shape factor c",
+            "min": 0,
+            "max": 1,
+            "step": 0.1,
+            "default": 0.4,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "3.4",
+        "5.2",
+        "5.4",
+        "6.1"
+      ],
+      "teacherNotes": "Race a hoop, a disc and a ball down a ramp before any algebra and have students commit to a prediction; most pick the heaviest. Then ask what the result does not depend on. The persistent error is $v = \\sqrt{2gh}$ for a rolling object. The subtle one is friction: students either leave it out (\"no friction, so energy is conserved\") or include it as a loss. The statement to aim for is \"static friction acts, but does no dissipative work, because the contact point does not slide\". Set 6D practises this topic with 6.6."
+    },
+    {
+      "topic": "6.6",
+      "bigIdea": "A satellite coasting around a much more massive body keeps its total mechanical energy and its angular momentum, so in an elliptical orbit it speeds up as it falls closer and slows down as it climbs away.",
+      "picture": {
+        "diagram": "scene\nrope 2,0 1.97,0.37 1.9,0.73 1.77,1.08 1.6,1.41 1.38,1.72 1.12,2 0.83,2.24 0.5,2.45 0.15,2.61 -0.22,2.73 -0.61,2.8 -1,2.83 -1.39,2.8 -1.78,2.73 -2.15,2.61 -2.5,2.45 -2.83,2.24 -3.12,2 -3.38,1.72 -3.6,1.41 -3.77,1.08 -3.9,0.73 -3.97,0.37 -4,0 -3.97,-0.37 -3.9,-0.73 -3.77,-1.08 -3.6,-1.41 -3.38,-1.72 -3.12,-2 -2.83,-2.24 -2.5,-2.45 -2.15,-2.61 -1.78,-2.73 -1.39,-2.8 -1,-2.83 -0.61,-2.8 -0.22,-2.73 0.15,-2.61 0.5,-2.45 0.83,-2.24 1.12,-2 1.38,-1.72 1.6,-1.41 1.77,-1.08 1.9,-0.73 1.97,-0.37 2,0\nball P 0,0 r=.35\ntext 0,-0.7 \"planet\"\nball S 2,0 r=.12\nball T -4,0 r=.12\nf S.t up 2\nf T.b down 1\ntext 2.45,1.2 \"v\"\ntext -4.55,-0.7 \"v/2\"\ntext 1.15,0 \"closest\"\ntext -3.05,0 \"farthest\"\nalt \"An elliptical orbit with the planet at one focus. At the closest point the satellite's velocity arrow is twice as long as at the farthest point, which is twice as far from the planet.\"",
+        "caption": "An elliptical orbit whose farthest point is twice as far from the planet's centre as its closest point. Angular momentum is conserved, so the satellite moves half as fast there. It has a quarter of the kinetic energy, and the system's potential energy is higher by the same amount."
+      },
+      "explanation": "Take a satellite and the much more massive planet it orbits as one system. Once the engines are off, gravity is the only force between them and nothing outside does work, so the total mechanical energy $E = K + U_g$ stays constant. Far from a planet's surface $mgh$ no longer applies. The gravitational potential energy is $U_g = -\\dfrac{GMm}{r}$, with $r$ measured from the planet's centre: zero when the two are infinitely far apart, and more and more negative as they approach. Gravity also pulls straight toward the planet's centre, so it exerts no torque about that centre, and the satellite's angular momentum about the planet is constant too.\n\nIn a circular orbit $r$ never changes, so $U_g$ is constant, and therefore so are the kinetic energy and the speed. Gravity supplies the centripetal force, $\\dfrac{GMm}{r^2} = \\dfrac{mv^2}{r}$, which gives $v = \\sqrt{GM/r}$. The larger the orbit, the slower the satellite.\n\nIn an elliptical orbit $r$ changes, and energy moves back and forth between kinetic and potential. Falling toward the planet, $U_g$ drops and the satellite speeds up; climbing away, it slows. It is fastest at its closest point and slowest at its farthest. At those two points the velocity is perpendicular to the line to the planet, so conservation of angular momentum takes a simple form: $mv_1r_1 = mv_2r_2$.\n\nA satellite in orbit has negative total energy: it is bound to the planet. To escape, it needs just enough kinetic energy to bring the total up to zero, $\\tfrac{1}{2}mv^2 - \\dfrac{GMm}{r} = 0$, which gives the escape speed $v_{\\text{esc}} = \\sqrt{2GM/r}$. It does not depend on the satellite's mass.",
+      "equations": [
+        {
+          "latex": "U_g = -\\frac{GMm}{r}",
+          "meaning": "The gravitational potential energy of two objects, taken as zero when they are infinitely far apart, is negative and grows more negative as they get closer.",
+          "variables": [
+            {
+              "symbol": "U_g",
+              "name": "gravitational potential energy of the system",
+              "unit": "J"
+            },
+            {
+              "symbol": "G",
+              "name": "gravitational constant, $6.67 \\times 10^{-11}$",
+              "unit": "N·m²/kg²"
+            },
+            {
+              "symbol": "M",
+              "name": "mass of the planet or star",
+              "unit": "kg"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the satellite",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between their centres",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The distance from the planet changes by an amount that is not small compared with the planet's radius: orbits, launches, escape.",
+          "notWhen": "Near the surface, over heights small compared with the radius, $mgh$ is simpler and accurate. And measure $r$ from the centre, not from the surface."
+        },
+        {
+          "latex": "v = \\sqrt{\\frac{GM}{r}}",
+          "meaning": "The speed of a satellite in a circular orbit depends only on the mass of the central body and the radius of the orbit.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "orbital speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "G",
+              "name": "gravitational constant",
+              "unit": "N·m²/kg²"
+            },
+            {
+              "symbol": "M",
+              "name": "mass of the central body",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the orbit, from the centre of the central body",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The orbit is circular.",
+          "notWhen": "Not at a general point of an elliptical orbit, where the speed is not the circular speed for that distance."
+        },
+        {
+          "latex": "v_1r_1 = v_2r_2",
+          "meaning": "Conservation of angular momentum between the closest and farthest points of an orbit: the satellite's mass cancels, so speed times distance is the same at both.",
+          "variables": [
+            {
+              "symbol": "v_1,\\ v_2",
+              "name": "speeds at the closest and farthest points",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r_1,\\ r_2",
+              "name": "distances from the centre of the central body at those points",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Comparing the closest and farthest points of an elliptical orbit, where the velocity is perpendicular to the line to the planet.",
+          "notWhen": "Not at other points of the orbit, where only the component of velocity perpendicular to that line counts ($L = rmv\\sin\\theta$). Use energy there."
+        },
+        {
+          "latex": "v_{\\text{esc}} = \\sqrt{\\frac{2GM}{r}}",
+          "meaning": "The escape speed is the least speed at which an object at distance r from the centre of a body can coast away and never return.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{esc}}",
+              "name": "escape speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "G",
+              "name": "gravitational constant",
+              "unit": "N·m²/kg²"
+            },
+            {
+              "symbol": "M",
+              "name": "mass of the body being escaped from",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "starting distance from the body's centre",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Finding the launch speed needed to escape, ignoring air resistance and any further thrust.",
+          "notWhen": "It is not the speed needed to stay in orbit, which is smaller, and it is not needed by a rocket that keeps its engines firing."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Escape speed from the Moon",
+          "prompt": "What is the escape speed from the surface of the Moon? The Moon's mass is $7.35 \\times 10^{22}\\ \\text{kg}$ and its radius is $1.74 \\times 10^{6}\\ \\text{m}$. Use $G = 6.67 \\times 10^{-11}\\ \\text{N·m}^2\\text{/kg}^2$.",
+          "steps": [
+            "An object that only just escapes ends up very far away with no speed left, so its final kinetic energy and the final potential energy are both zero. The total mechanical energy of the object–Moon system is conserved, so it must be zero at launch as well.",
+            "At the surface, $r$ is the Moon's radius: $\\tfrac{1}{2}mv_{\\text{esc}}^2 - \\dfrac{GMm}{r} = 0$. The object's mass $m$ cancels.",
+            "Solve: $v_{\\text{esc}} = \\sqrt{\\dfrac{2GM}{r}} = \\sqrt{\\dfrac{2(6.67 \\times 10^{-11})(7.35 \\times 10^{22})}{1.74 \\times 10^{6}}}\\ \\text{m/s}$.",
+            "The fraction comes to $5.635 \\times 10^{6}\\ \\text{m}^2\\text{/s}^2$, and its square root is $2.37 \\times 10^{3}\\ \\text{m/s}$.",
+            "Check: about $2.4\\ \\text{km/s}$, roughly a fifth of the $11\\ \\text{km/s}$ needed to escape from the Earth."
+          ],
+          "answer": "$v_{\\text{esc}} = 2.37 \\times 10^{3}\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "G": {
+                "value": 6.67e-11,
+                "unit": "N·m^2/kg^2"
+              },
+              "M": {
+                "value": 7.35e+22,
+                "unit": "kg"
+              },
+              "r": {
+                "value": 1740000,
+                "unit": "m"
+              }
+            },
+            "expr": "sqrt(2*G*M/r)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Speed at another point of an elliptical orbit",
+          "prompt": "A probe is in an elliptical orbit around Mars, whose mass is $6.42 \\times 10^{23}\\ \\text{kg}$. At its closest point the probe is $4.0 \\times 10^{6}\\ \\text{m}$ from the centre of Mars and moving at $3.9 \\times 10^{3}\\ \\text{m/s}$. Determine the probe's speed when it is $8.0 \\times 10^{6}\\ \\text{m}$ from the centre of Mars, a point that is neither the closest nor the farthest point of its orbit. Use $G = 6.67 \\times 10^{-11}\\ \\text{N·m}^2\\text{/kg}^2$.",
+          "steps": [
+            "System: probe and Mars. Only gravity acts between them, so the total mechanical energy is the same at both points: $\\tfrac{1}{2}mv_1^2 - \\dfrac{GMm}{r_1} = \\tfrac{1}{2}mv_2^2 - \\dfrac{GMm}{r_2}$.",
+            "Angular momentum is conserved too, but $v_1r_1 = v_2r_2$ holds only where the velocity is perpendicular to the line to the planet, which is not true at the second point. Energy works anywhere.",
+            "The probe's mass cancels. Solve for $v_2$: $v_2^2 = v_1^2 - 2GM\\left(\\dfrac{1}{r_1} - \\dfrac{1}{r_2}\\right)$.",
+            "$GM = (6.67 \\times 10^{-11})(6.42 \\times 10^{23}) = 4.28 \\times 10^{13}\\ \\text{m}^3\\text{/s}^2$, and $\\dfrac{1}{r_1} - \\dfrac{1}{r_2} = 2.5 \\times 10^{-7} - 1.25 \\times 10^{-7} = 1.25 \\times 10^{-7}\\ \\text{m}^{-1}$.",
+            "$v_2^2 = (3.9 \\times 10^{3})^2 - 2(4.28 \\times 10^{13})(1.25 \\times 10^{-7}) = 1.52 \\times 10^{7} - 1.07 \\times 10^{7} = 4.5 \\times 10^{6}\\ \\text{m}^2\\text{/s}^2$, so $v_2 = 2.1 \\times 10^{3}\\ \\text{m/s}$. Farther from Mars, the probe is slower, as expected."
+          ],
+          "answer": "$v_2 = 2.1 \\times 10^{3}\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "G": {
+                "value": 6.67e-11,
+                "unit": "N·m^2/kg^2"
+              },
+              "M": {
+                "value": 6.42e+23,
+                "unit": "kg"
+              },
+              "r1": {
+                "value": 4000000,
+                "unit": "m"
+              },
+              "v1": {
+                "value": 3900,
+                "unit": "m/s"
+              },
+              "r2": {
+                "value": 8000000,
+                "unit": "m"
+              }
+            },
+            "expr": "sqrt(v1^2 - 2*G*M*(1/r1 - 1/r2))",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "no-gravity-in-orbit",
+          "wrong": "A satellite stays up because there is no gravity in orbit.",
+          "right": "Gravity is the only force on it, and for a low orbit it is nearly as strong as at the surface. The satellite is always falling; it moves sideways so fast that it keeps missing the planet."
+        },
+        {
+          "tag": "centrifugal-force",
+          "wrong": "In orbit an outward force balances gravity, which is why the satellite neither falls in nor flies off.",
+          "right": "No outward force acts. If the forces balanced, the satellite would move in a straight line. Gravity alone, unbalanced, is the centripetal force that keeps bending its path around the planet."
+        },
+        {
+          "wrong": "Energy is conserved in orbit, so a satellite in an elliptical orbit moves at the same speed all the way round.",
+          "right": "The total is conserved, not each part. As the distance changes, energy passes between potential and kinetic, so the satellite is fastest when closest and slowest when farthest. Only in a circular orbit is the speed constant."
+        },
+        {
+          "wrong": "A heavier spacecraft needs a higher escape speed.",
+          "right": "The spacecraft's mass cancels: $v_{\\text{esc}} = \\sqrt{2GM/r}$ contains only the planet's mass and the starting distance. A heavier craft needs more energy to reach that speed, but the speed is the same."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "At which point of an elliptical orbit does a satellite move fastest? Give a reason based on energy.",
+          "a": "At its closest point. There the system's potential energy is lowest (most negative), and since the total is constant the kinetic energy is greatest."
+        },
+        {
+          "q": "A comet's farthest point from the Sun is three times as far away as its closest point. How do its speeds at the two points compare?",
+          "a": "It moves one third as fast at the farthest point. At these two points $v_1r_1 = v_2r_2$, so tripling the distance cuts the speed to a third."
+        },
+        {
+          "q": "Does gravity do work on a satellite in a circular orbit? In an elliptical orbit?",
+          "a": "In a circular orbit, no: the force is always perpendicular to the velocity, so the speed never changes. In an elliptical orbit, yes: positive work as the satellite falls inward, negative as it climbs away. For the satellite–planet system this is the change in potential energy."
+        }
+      ],
+      "tryIt": {
+        "diagram": "bars energy axis \"satellite–planet system\"\ninitial K 8 U_g -12\nfinal K {{12/x-4}} U_g {{-12/x}}",
+        "caption": "The left bars show an orbit's energies at its closest point, in arbitrary units. The right bars show them when the satellite is x times as far from the planet's centre; this orbit's farthest point is at x = 2. Kinetic and potential energy both change, but they always add to −4 units.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Distance, in multiples of the closest distance",
+            "min": 1,
+            "max": 2,
+            "step": 0.1,
+            "default": 1.5,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.6",
+        "2.9",
+        "3.3",
+        "3.4",
+        "6.3",
+        "6.4"
+      ],
+      "teacherNotes": "Negative potential energy is the stumbling block: students read \"more negative\" as \"more energy\". A number line with zero at infinity, and the phrase \"you have to add energy to pull them apart\", helps. Have students say which conservation law they are using and why it applies (no external work; no torque about the planet's centre) before writing equations, and check that they use $v_1r_1 = v_2r_2$ only between the closest and farthest points. Deriving Kepler's laws is not expected in this course. Set 6D practises this topic with 6.5."
+    }
+  ]
+}

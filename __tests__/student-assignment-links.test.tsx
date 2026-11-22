@@ -56,8 +56,8 @@ describe("Study guide link", () => {
   test.each([
     ["the assignment follows no course", undefined, "4.2"],
     ["the question has no topic", COURSE, undefined],
-    ["the unit has no guide", COURSE, "1.1"],
-    ["the course has no guides", "ap-physics-2", "4.2"],
+    ["the unit has no guide", COURSE, "99.1"],
+    ["the course has no guides", "no-such-course", "4.2"],
     ["the topic is not a topic id", COURSE, "momentum"],
   ])("nothing when %s", (_name, curriculumId, apTopic) => {
     expect(topicGuideHref(curriculumId, apTopic)).toBeNull();

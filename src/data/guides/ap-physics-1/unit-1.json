@@ -1,0 +1,1060 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 1,
+  "guides": [
+    {
+      "topic": "1.1",
+      "bigIdea": "A scalar is fully described by a size, a vector needs a size and a direction, and along a straight line a plus or minus sign is all it takes to carry that direction.",
+      "picture": {
+        "diagram": "scene\nground 0..8\ndot 1,0 \"start\"\nf 1,1.7 right 5 \"+5 m\"\nf 6,1.1 left 3 \"-3 m\"\nf 1,0.5 right 2 \"\\Delta x = +2 m\"",
+        "caption": "Taking right as positive, a walk of $5\\ \\text{m}$ to the right followed by $3\\ \\text{m}$ to the left is a displacement of $+5 + (-3) = +2\\ \\text{m}$, although the distance walked is $8\\ \\text{m}$."
+      },
+      "explanation": "Some quantities are complete once you give a number and a unit: a mass of $2\\ \\text{kg}$, a time of $30\\ \\text{s}$, a distance of $400\\ \\text{m}$. These are scalars. Others are not complete until you also say which way: \"walk $400\\ \\text{m}$\" does not tell you where you end up, but \"walk $400\\ \\text{m}$ north\" does. Quantities with a size (called the magnitude) and a direction are vectors. Position, displacement, velocity and acceleration are vectors; distance, speed, time and mass are scalars.\n\nOn a straight line there are only two directions, so a sign can do the job of the direction. Choose one direction to call positive, say so, and keep that choice for the whole problem. A position of $x = -3\\ \\text{m}$ is then $3\\ \\text{m}$ from the origin on the negative side, and a velocity of $-4\\ \\text{m/s}$ is motion at $4\\ \\text{m/s}$ in the negative direction. The sign is a direction, not a size: an object with velocity $-4\\ \\text{m/s}$ is moving faster than one with $+2\\ \\text{m/s}$. The magnitude of a vector is its size without the sign, and it is never negative.\n\nDisplacement and distance show the difference most clearly. Displacement, $\\Delta x = x_f - x_i$, is the change in position: a vector that depends only on where the motion starts and where it ends. Distance is the length of the path actually travelled: a scalar that counts every metre, whichever way it was covered. Walk $5\\ \\text{m}$ to the right and then $3\\ \\text{m}$ to the left, and the distance is $8\\ \\text{m}$ while the displacement is only $+2\\ \\text{m}$.\n\nVectors along a line add with their signs, so opposite directions partly cancel, as the two walks do. Scalars such as distance simply pile up. That is why distance can never get smaller as you keep moving, while displacement can shrink, return to zero or become negative.",
+      "equations": [
+        {
+          "latex": "\\Delta x = x_f - x_i",
+          "meaning": "Displacement is the final position minus the initial position; its sign gives its direction.",
+          "variables": [
+            {
+              "symbol": "\\Delta x",
+              "name": "displacement",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_f",
+              "name": "final position",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_i",
+              "name": "initial position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know where an object starts and ends on a line and want its change in position, direction included.",
+          "notWhen": "It is not the distance travelled if the object turned around on the way. And do not swap the order: initial minus final flips the sign."
+        },
+        {
+          "latex": "\\Delta x_{\\text{total}} = \\Delta x_1 + \\Delta x_2 + \\dots",
+          "meaning": "Displacements one after another add as signed numbers to give the total displacement.",
+          "variables": [
+            {
+              "symbol": "\\Delta x_{\\text{total}}",
+              "name": "total displacement",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta x_1,\\ \\Delta x_2",
+              "name": "displacements of the separate legs, with signs",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A trip along a line is described leg by leg and you want the overall change in position.",
+          "notWhen": "Do not add the sizes of the legs; that gives the distance. Legs that are not along the same line need components (topic 1.5)."
+        },
+        {
+          "latex": "d = |\\Delta x_1| + |\\Delta x_2| + \\dots",
+          "meaning": "Distance is the sum of the sizes of the legs, with no signs.",
+          "variables": [
+            {
+              "symbol": "d",
+              "name": "distance travelled",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta x_1,\\ \\Delta x_2",
+              "name": "displacements of the separate legs",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You need how much ground was covered: for an average speed, say, or an odometer reading.",
+          "notWhen": "Do not use it for where the object ends up. Split the trip into legs wherever the direction reverses, or a leg's own back-and-forth is lost."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "An elevator's trip",
+          "prompt": "An elevator starts at the lobby. It rises $12.0\\ \\text{m}$, then descends $20.0\\ \\text{m}$ to the car park, then rises $4.5\\ \\text{m}$. What is its displacement from the lobby, and what distance has it travelled?",
+          "steps": [
+            "Choose a positive direction and say so. Take up as positive and call the vertical position $y$. The three displacements are then $+12.0\\ \\text{m}$, $-20.0\\ \\text{m}$ and $+4.5\\ \\text{m}$.",
+            "Displacement is a vector, so add with the signs: $\\Delta y = (+12.0) + (-20.0) + (+4.5) = -3.5\\ \\text{m}$.",
+            "Read the sign. Negative means below the starting point: the elevator ends $3.5\\ \\text{m}$ below the lobby.",
+            "Distance is a scalar, so add the sizes: $d = 12.0 + 20.0 + 4.5 = 36.5\\ \\text{m}$."
+          ],
+          "answer": "$\\Delta y = -3.5\\ \\text{m}$ ($3.5\\ \\text{m}$ below the lobby); distance $36.5\\ \\text{m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "d_1": {
+                "value": 12,
+                "unit": "m"
+              },
+              "d_2": {
+                "value": -20,
+                "unit": "m"
+              },
+              "d_3": {
+                "value": 4.5,
+                "unit": "m"
+              }
+            },
+            "expr": "d_1 + d_2 + d_3",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Out and back on a trail",
+          "prompt": "A straight trail runs north–south past a ranger station. A hiker starts $2.0\\ \\text{km}$ north of the station, walks to a lake $3.5\\ \\text{km}$ south of the station, and then walks back to a campsite $0.5\\ \\text{km}$ south of the station. Determine the hiker's displacement and the distance walked, and explain why a second hiker who goes straight from the same starting point to the campsite has the same displacement but not the same distance.",
+          "steps": [
+            "Put the origin at the station and take north as positive. The positions are $x_i = +2.0\\ \\text{km}$ at the start, $x = -3.5\\ \\text{km}$ at the lake and $x_f = -0.5\\ \\text{km}$ at the campsite.",
+            "Displacement depends only on the first and last positions: $\\Delta x = x_f - x_i = (-0.5\\ \\text{km}) - (+2.0\\ \\text{km}) = -2.5\\ \\text{km}$, that is $2.5\\ \\text{km}$ south.",
+            "Distance needs each leg. Start to lake: $|-3.5 - 2.0| = 5.5\\ \\text{km}$. Lake to campsite: $|-0.5 - (-3.5)| = 3.0\\ \\text{km}$. Total: $d = 5.5 + 3.0 = 8.5\\ \\text{km}$.",
+            "The second hiker has the same $x_i$ and $x_f$, and so the same displacement, $-2.5\\ \\text{km}$. But that hiker never covers the stretch down to the lake and back, so the path is only $2.5\\ \\text{km}$ long. Displacement ignores the route; distance is the route."
+          ],
+          "answer": "$\\Delta x = -2.5\\ \\text{km}$ ($2.5\\ \\text{km}$ south); distance $8.5\\ \\text{km}$; the direct hiker has the same displacement but walks only $2.5\\ \\text{km}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "x_i": {
+                "value": 2,
+                "unit": "km"
+              },
+              "x_f": {
+                "value": -0.5,
+                "unit": "km"
+              }
+            },
+            "expr": "x_f - x_i",
+            "unit": "km"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "distance-displacement-confusion",
+          "wrong": "I ran one full lap of a $400\\ \\text{m}$ track, so my displacement is $400\\ \\text{m}$.",
+          "right": "Your distance is $400\\ \\text{m}$. You finished where you started, so $x_f = x_i$ and your displacement is zero. Displacement compares the two ends of the motion and nothing in between."
+        },
+        {
+          "wrong": "A velocity of $-6\\ \\text{m/s}$ is less than a velocity of $+2\\ \\text{m/s}$, so that object is the slower one.",
+          "right": "The sign of a vector gives its direction, not its size. Compare magnitudes: $6\\ \\text{m/s}$ is faster than $2\\ \\text{m/s}$. The first object is simply moving in the negative direction."
+        },
+        {
+          "wrong": "Negative always means left, down or backward.",
+          "right": "Positive is whichever direction you choose, and the opposite direction is then negative. Either choice works as long as you state it and keep it. An answer put into words (\"$3.5\\ \\text{m}$ below the lobby\") comes out the same both ways."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Sort these into scalars and vectors: time, displacement, speed, velocity, mass, acceleration, distance.",
+          "a": "Scalars: time, speed, mass, distance. Vectors: displacement, velocity, acceleration."
+        },
+        {
+          "q": "With east as positive, a cart moves from $x = +4\\ \\text{m}$ to $x = -6\\ \\text{m}$. What is its displacement? What is the least distance it could have travelled?",
+          "a": "$\\Delta x = (-6) - (+4) = -10\\ \\text{m}$, that is $10\\ \\text{m}$ west. The least distance is $10\\ \\text{m}$, if it never turned around."
+        },
+        {
+          "q": "Can the size of your displacement ever be greater than the distance you travelled?",
+          "a": "No. The straight path between two points is the shortest one, so the distance is always at least the size of the displacement. They are equal only if you never change direction."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground -2..10\ndot 4,0\ntext 4,-0.6 \"start\"\nf 4,2.3 right {{a}} \"first leg: {{a}} m\"\nf {{4+a}},1.5 right {{b}} \"second leg: {{b}} m\"\nf 4,0.7 right {{a+b}} \"\\Delta x = {{a+b}} m\"\ntext 4,-1.4 \"distance = {{abs(a)+abs(b)}} m\"",
+        "caption": "Two legs of a walk along a line, with right as positive. The displacement is their signed sum; the distance adds their sizes. Make the legs point opposite ways and watch the two answers separate.",
+        "params": [
+          {
+            "name": "a",
+            "label": "First leg",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": 3,
+            "unit": "m"
+          },
+          {
+            "name": "b",
+            "label": "Second leg",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": -2,
+            "unit": "m"
+          }
+        ]
+      },
+      "teacherNotes": "Ask students to state their positive direction out loud before every calculation in this unit; the habit pays off again in forces and momentum. The usual slip is reporting distance when displacement is asked for (and the reverse), so pair the two in every early question. A quick check: \"you walk to the board and back to your seat; what are your distance and your displacement?\" Set 1A practises this topic together with 1.2."
+    },
+    {
+      "topic": "1.2",
+      "bigIdea": "Velocity is the rate at which position changes and acceleration is the rate at which velocity changes, so each has a direction and each needs a time interval to define it.",
+      "picture": {
+        "diagram": "motion dt=1 v a\nobj \"car\" v0=2 a=2 n=3\nseg a=-2 n=3",
+        "caption": "A car shown once every second, moving to the right throughout. While the dots spread apart it is speeding up, and the acceleration arrow points the same way as the velocity arrows. While they close up it is slowing down, and the acceleration points the opposite way."
+      },
+      "explanation": "To say how fast position changes, divide the displacement by the time it took. That is the average velocity, $v_{\\text{avg}} = \\Delta x/\\Delta t$, in metres per second. It is a vector, pointing the way the displacement does, and it depends only on the start and end of the interval. Average speed is different: it is the distance travelled divided by the time, a scalar. Drive $30\\ \\text{km}$ out and $30\\ \\text{km}$ back in one hour and your average speed is $60\\ \\text{km/h}$, but your average velocity is zero.\n\nAn average says nothing about what happened along the way. Shrink the time interval until it is too short for the motion to change noticeably, and the average velocity becomes the instantaneous velocity: what a speedometer shows, with a direction attached. Its magnitude is the instantaneous speed. Only when the velocity is constant do the average and the instantaneous values agree.\n\nAcceleration does for velocity what velocity does for position. The average acceleration is the change in velocity divided by the time, $a_{\\text{avg}} = \\Delta v/\\Delta t$. Its unit is metres per second, per second, written $\\text{m/s}^2$. An acceleration of $+2\\ \\text{m/s}^2$ means the velocity becomes $2\\ \\text{m/s}$ more positive every second.\n\nAcceleration is about how the velocity is changing, not how large it is. A jet cruising at a steady $250\\ \\text{m/s}$ has zero acceleration; a ball at the top of its flight has zero velocity for an instant and is still accelerating. Nor does the sign of the acceleration tell you by itself whether an object speeds up. Compare it with the velocity: if they point the same way the object speeds up, and if they point opposite ways it slows down.",
+      "equations": [
+        {
+          "latex": "v_{\\text{avg}} = \\frac{\\Delta x}{\\Delta t}",
+          "meaning": "Average velocity is displacement divided by the time taken, and it points the way the displacement does.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{avg}}",
+              "name": "average velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\Delta x",
+              "name": "displacement",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know the change in position over a time interval, or the slope between two points of a position–time graph.",
+          "notWhen": "It is not the velocity at any one instant unless the velocity is constant, and it is not the average speed if the object reversed."
+        },
+        {
+          "latex": "\\text{average speed} = \\frac{d}{\\Delta t}",
+          "meaning": "Average speed is the distance travelled divided by the time taken. It has no direction.",
+          "variables": [
+            {
+              "symbol": "d",
+              "name": "distance travelled",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You care how much ground was covered per unit time, whatever the direction.",
+          "notWhen": "Do not average the speeds of the separate legs unless each leg lasts the same time; always use total distance over total time."
+        },
+        {
+          "latex": "a_{\\text{avg}} = \\frac{\\Delta v}{\\Delta t} = \\frac{v_f - v_i}{\\Delta t}",
+          "meaning": "Average acceleration is the change in velocity divided by the time taken, and it points the way the velocity change does.",
+          "variables": [
+            {
+              "symbol": "a_{\\text{avg}}",
+              "name": "average acceleration",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "\\Delta v",
+              "name": "change in velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_f",
+              "name": "final velocity, with sign",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_i",
+              "name": "initial velocity, with sign",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "A velocity changes by a known amount in a known time, or you want the slope of a velocity–time graph.",
+          "notWhen": "Do not subtract speeds when the direction reverses; the two velocities then have opposite signs."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A shuttle that doubles back",
+          "prompt": "An airport shuttle drives $1800\\ \\text{m}$ east along a straight road in $150\\ \\text{s}$, waits at a stop for $60\\ \\text{s}$, and then drives $600\\ \\text{m}$ west in $90\\ \\text{s}$. What are its average velocity and its average speed for the whole trip?",
+          "steps": [
+            "Take east as positive. The two displacements are $+1800\\ \\text{m}$ and $-600\\ \\text{m}$, so the total displacement is $\\Delta x = +1200\\ \\text{m}$.",
+            "The time is the whole time, including the wait: $\\Delta t = 150 + 60 + 90 = 300\\ \\text{s}$.",
+            "$v_{\\text{avg}} = \\dfrac{\\Delta x}{\\Delta t} = \\dfrac{+1200\\ \\text{m}}{300\\ \\text{s}} = +4.0\\ \\text{m/s}$, that is $4.0\\ \\text{m/s}$ east.",
+            "Average speed uses the distance instead: $d = 1800 + 600 = 2400\\ \\text{m}$, so the average speed is $\\dfrac{2400\\ \\text{m}}{300\\ \\text{s}} = 8.0\\ \\text{m/s}$.",
+            "Notice that the shuttle never actually travelled at $4.0\\ \\text{m/s}$ or at $8.0\\ \\text{m/s}$. It drove east at $12\\ \\text{m/s}$, stood still, then drove west at about $6.7\\ \\text{m/s}$. Averages describe the whole interval, not any moment in it."
+          ],
+          "answer": "$v_{\\text{avg}} = +4.0\\ \\text{m/s}$ (east); average speed $8.0\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "d_1": {
+                "value": 1800,
+                "unit": "m"
+              },
+              "d_2": {
+                "value": -600,
+                "unit": "m"
+              },
+              "t_1": {
+                "value": 150,
+                "unit": "s"
+              },
+              "t_2": {
+                "value": 60,
+                "unit": "s"
+              },
+              "t_3": {
+                "value": 90,
+                "unit": "s"
+              }
+            },
+            "expr": "(d_1 + d_2)/(t_1 + t_2 + t_3)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "A ball rolled up a ramp",
+          "prompt": "A ball is rolled up a long, straight ramp. At $t = 0$ it is moving up the ramp at $6.0\\ \\text{m/s}$. At $t = 4.0\\ \\text{s}$ it is moving down the ramp at $2.0\\ \\text{m/s}$. Determine the ball's average acceleration, and describe what the ball's speed does during these four seconds, given that the acceleration is constant.",
+          "steps": [
+            "Take up the ramp as positive. Then $v_i = +6.0\\ \\text{m/s}$ and, because the ball is coming back down, $v_f = -2.0\\ \\text{m/s}$.",
+            "$a_{\\text{avg}} = \\dfrac{v_f - v_i}{\\Delta t} = \\dfrac{(-2.0\\ \\text{m/s}) - (+6.0\\ \\text{m/s})}{4.0\\ \\text{s}} = \\dfrac{-8.0\\ \\text{m/s}}{4.0\\ \\text{s}} = -2.0\\ \\text{m/s}^2$.",
+            "The negative sign means the acceleration points down the ramp. Each second the velocity becomes $2.0\\ \\text{m/s}$ more negative: $+6$, $+4$, $+2$, $0$, $-2\\ \\text{m/s}$.",
+            "For the first $3.0\\ \\text{s}$ the velocity is positive and the acceleration is negative, so the ball slows down. At $t = 3.0\\ \\text{s}$ it is momentarily at rest. After that both are negative, so the ball speeds up, down the ramp. The acceleration is $-2.0\\ \\text{m/s}^2$ the whole time, including the instant the ball is at rest."
+          ],
+          "answer": "$a_{\\text{avg}} = -2.0\\ \\text{m/s}^2$ (down the ramp); the ball slows for $3.0\\ \\text{s}$, is at rest for an instant, then speeds up back down the ramp",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v_i": {
+                "value": 6,
+                "unit": "m/s"
+              },
+              "v_f": {
+                "value": -2,
+                "unit": "m/s"
+              },
+              "dt": {
+                "value": 4,
+                "unit": "s"
+              }
+            },
+            "expr": "(v_f - v_i)/dt",
+            "unit": "m/s^2"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "At the top of its flight a ball thrown straight up has stopped, so its acceleration there is zero.",
+          "right": "Its velocity is zero for an instant, but its velocity is still changing: a moment earlier it pointed up, a moment later it points down. The acceleration is $9.8\\ \\text{m/s}^2$ downward the whole time. If it were zero at the top, the ball would stay there."
+        },
+        {
+          "tag": "acceleration-sign-means-slowing",
+          "wrong": "Negative acceleration means slowing down.",
+          "right": "It means the velocity is becoming more negative. An object already moving in the negative direction speeds up when its acceleration is negative. An object slows down only when its acceleration and its velocity point opposite ways."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "The faster of two cars has the larger acceleration.",
+          "right": "Acceleration measures how quickly velocity changes, not how big it is. A car holding a steady $30\\ \\text{m/s}$ has zero acceleration; a cyclist pulling away from a stop at $2\\ \\text{m/s}$ may have a large one."
+        },
+        {
+          "tag": "distance-displacement-confusion",
+          "wrong": "Average speed is just the size of the average velocity.",
+          "right": "Only if the object never turns around. Average speed uses distance; average velocity uses displacement. For a round trip the average velocity is zero however fast you went."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A runner completes one $400\\ \\text{m}$ lap of a track in $80\\ \\text{s}$, finishing where she started. What are her average speed and her average velocity?",
+          "a": "Average speed: $(400\\ \\text{m})/(80\\ \\text{s}) = 5.0\\ \\text{m/s}$. Average velocity: zero, because her displacement is zero."
+        },
+        {
+          "q": "A car's velocity changes from $-10\\ \\text{m/s}$ to $-25\\ \\text{m/s}$ in $5.0\\ \\text{s}$. What is its average acceleration, and is it speeding up or slowing down?",
+          "a": "$a_{\\text{avg}} = \\big((-25) - (-10)\\big)/5.0 = -3.0\\ \\text{m/s}^2$. Velocity and acceleration are both negative, so it is speeding up."
+        },
+        {
+          "q": "Can an object have a velocity that points east and an acceleration that points west? Give an example.",
+          "a": "Yes: anything moving east and slowing down, such as a car braking as it heads east."
+        }
+      ],
+      "tryIt": {
+        "diagram": "motion dt=1 v a\nobj \"cart\" v0={{v0}} a={{a}} n=4",
+        "caption": "The dots show a cart once every second. Change its starting velocity and its acceleration: the dots spread apart when the acceleration points the same way as the velocity and close up when it points the other way.",
+        "params": [
+          {
+            "name": "v0",
+            "label": "Starting velocity",
+            "min": 4,
+            "max": 8,
+            "step": 1,
+            "default": 4,
+            "unit": "m/s"
+          },
+          {
+            "name": "a",
+            "label": "Acceleration",
+            "min": -1,
+            "max": 2,
+            "step": 0.5,
+            "default": 1,
+            "unit": "m/s^2"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1"
+      ],
+      "teacherNotes": "Two ideas need repeated checking: that zero velocity does not mean zero acceleration, and that the sign of the acceleration is a direction, not \"speeding up\" or \"slowing down\". Ask students to predict the direction of the acceleration for four cases (moving in the positive or negative direction, speeding up or slowing down) before any calculation. For averages, insist on total displacement or total distance over total time; averaging the legs' speeds is the usual slip. Set 1A practises this topic."
+    },
+    {
+      "topic": "1.3",
+      "bigIdea": "The same motion can be told as a dot diagram, a position–time graph, a velocity–time graph or an equation, and slopes and areas are the rules for translating one into another.",
+      "picture": {
+        "diagram": "plot x=t[s] y=v[m/s] xr=0,5 yr=0,14\nseg 0,4 4,12\nshade 0..4\nnote 1.2,10.5 \"slope = 2 m/s^2\"\nnote 2.3,3 \"area = 32 m\"\nxt 0 1 2 3 4\nyt 0 4 8 12",
+        "caption": "A cart speeds up steadily from $4\\ \\text{m/s}$ to $12\\ \\text{m/s}$ in $4\\ \\text{s}$. The slope of its velocity–time graph is its acceleration, $2\\ \\text{m/s}^2$, and the shaded area under the graph is its displacement, $32\\ \\text{m}$."
+      },
+      "explanation": "A motion diagram shows where an object is at equal time intervals: evenly spaced dots mean constant velocity, dots spreading apart mean speeding up, and dots closing up mean slowing down. Graphs carry the same information with numbers attached, provided you read them as graphs and not as pictures of the path.\n\nOn a position–time graph the height tells you where the object is, and the slope is its velocity, because slope is rise over run: $\\Delta x/\\Delta t$. A straight line means constant velocity, a horizontal line means at rest, and a line sloping downward means motion in the negative direction. On a velocity–time graph the height is the velocity and the slope, $\\Delta v/\\Delta t$, is the acceleration. The area between the graph and the time axis is the displacement, because a strip of height $v$ and width $\\Delta t$ has area $v\\,\\Delta t$. Area below the axis counts as negative displacement.\n\nWhen the acceleration is constant, the velocity–time graph is a straight line and three equations follow from it. $v = v_0 + at$ is the line itself. $x = x_0 + v_0 t + \\tfrac{1}{2}at^2$ comes from the area under it. Eliminating $t$ between them gives $v^2 = v_0^2 + 2a(x - x_0)$, for when time is neither given nor wanted.\n\nThe most common constant acceleration is free fall. Near the Earth's surface an object moving under gravity alone accelerates downward at $g = 9.8\\ \\text{m/s}^2$, whatever its mass, and whether it is rising, falling or momentarily at rest at the top. With up as positive, $a = -9.8\\ \\text{m/s}^2$.",
+      "equations": [
+        {
+          "latex": "v = v_0 + at",
+          "meaning": "With constant acceleration, the velocity changes by the same amount every second.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at time t",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at t = 0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "acceleration (constant)",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The acceleration is constant and the problem involves velocities and time but not position.",
+          "notWhen": "Not across a moment when the acceleration changes (a car that speeds up and then brakes): treat each stretch separately."
+        },
+        {
+          "latex": "x = x_0 + v_0 t + \\tfrac{1}{2}at^2",
+          "meaning": "With constant acceleration, the position changes by what the starting velocity alone would give, plus an extra amount from the acceleration.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "position at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "position at t = 0",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at t = 0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "acceleration (constant)",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The acceleration is constant and you know, or want, a position at a certain time.",
+          "notWhen": "It gives position, not distance travelled; if the object turns around the two differ. Not when the acceleration changes."
+        },
+        {
+          "latex": "v^2 = v_0^2 + 2a(x - x_0)",
+          "meaning": "With constant acceleration, the change in the square of the velocity is set by the acceleration and the displacement.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at position x",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at position x_0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "acceleration (constant)",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "x,\\ x_0",
+              "name": "final and initial positions",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Time is neither given nor asked for: braking distances, the speed after falling a known height.",
+          "notWhen": "Taking the square root loses the sign of the velocity; decide the direction from the situation. Not when the acceleration changes."
+        }
+      ],
+      "derivation": "The displacement is the area under the velocity–time graph. For constant acceleration that area is a rectangle of height $v_0$ and width $t$, plus a triangle of base $t$ and height $at$, the velocity gained:\n\n$$\\Delta x = v_0 t + \\tfrac{1}{2}(t)(at) = v_0 t + \\tfrac{1}{2}at^2$$\n\nThe same area is the average of the first and last velocities multiplied by the time. Put $t = (v - v_0)/a$, from $v = v_0 + at$, into that:\n\n$$\\Delta x = \\frac{v_0 + v}{2}\\cdot\\frac{v - v_0}{a} = \\frac{v^2 - v_0^2}{2a}$$\n\nwhich rearranges to $v^2 = v_0^2 + 2a\\,\\Delta x$.",
+      "workedExamples": [
+        {
+          "title": "How much runway?",
+          "prompt": "A small aircraft starts from rest and accelerates along a runway at a constant $2.5\\ \\text{m/s}^2$. It lifts off when its speed reaches $70\\ \\text{m/s}$. What length of runway does it use?",
+          "steps": [
+            "List what is known, taking the direction of motion as positive: $v_0 = 0$, $v = 70\\ \\text{m/s}$, $a = +2.5\\ \\text{m/s}^2$. Wanted: the displacement $\\Delta x = x - x_0$. Time is neither given nor asked for.",
+            "Pick the equation without $t$: $v^2 = v_0^2 + 2a\\,\\Delta x$.",
+            "Rearrange before putting in numbers: $\\Delta x = \\dfrac{v^2 - v_0^2}{2a}$.",
+            "$\\Delta x = \\dfrac{(70\\ \\text{m/s})^2 - 0}{2(2.5\\ \\text{m/s}^2)} = \\dfrac{4900\\ \\text{m}^2/\\text{s}^2}{5.0\\ \\text{m/s}^2} = 980\\ \\text{m}$.",
+            "Check by another route: the run lasts $t = v/a = 28\\ \\text{s}$ at an average velocity of $35\\ \\text{m/s}$, and $(35\\ \\text{m/s})(28\\ \\text{s}) = 980\\ \\text{m}$."
+          ],
+          "answer": "$\\Delta x = 980\\ \\text{m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "v": {
+                "value": 70,
+                "unit": "m/s"
+              },
+              "a": {
+                "value": 2.5,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "v^2/(2*a)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Reading a drone's velocity–time graph",
+          "prompt": "A drone takes off straight up from the ground. Its vertical velocity is graphed below, with up as positive: it rises steadily from zero to $4.0\\ \\text{m/s}$ in the first $2.0\\ \\text{s}$, stays at $4.0\\ \\text{m/s}$ until $t = 5.0\\ \\text{s}$, then decreases steadily, passing through zero at $t = 7.0\\ \\text{s}$ and reaching $-2.0\\ \\text{m/s}$ at $t = 8.0\\ \\text{s}$. Determine the drone's height above the ground at $t = 8.0\\ \\text{s}$, and state when it is highest.\n\n```dg\nplot x=t[s] y=v[m/s] xr=0,8.5 yr=-3,5\nseg 0,0 2,4 5,4 7,0 8,-2\nxt 0 1 2 3 4 5 6 7 8\nyt -2 0 2 4\n```",
+          "steps": [
+            "Height is the displacement from the ground, and displacement is the area between a velocity–time graph and the time axis. Split the area where the graph changes: a triangle, a rectangle and a second triangle above the axis, and a small triangle below it.",
+            "Above the axis: $\\tfrac{1}{2}(2.0\\ \\text{s})(4.0\\ \\text{m/s}) + (3.0\\ \\text{s})(4.0\\ \\text{m/s}) + \\tfrac{1}{2}(2.0\\ \\text{s})(4.0\\ \\text{m/s}) = 4.0 + 12 + 4.0 = 20\\ \\text{m}$.",
+            "Below the axis, from $7.0\\ \\text{s}$ to $8.0\\ \\text{s}$: $\\tfrac{1}{2}(1.0\\ \\text{s})(-2.0\\ \\text{m/s}) = -1.0\\ \\text{m}$. The velocity is negative here, so the drone is coming down and this area counts as negative.",
+            "Height at $8.0\\ \\text{s}$: $20 + (-1.0) = 19\\ \\text{m}$.",
+            "The drone is highest at $t = 7.0\\ \\text{s}$, at $20\\ \\text{m}$. Until then its velocity is positive, so it is still climbing, even though it has been slowing since $5.0\\ \\text{s}$. The highest point is where the velocity graph crosses zero, not where the velocity graph itself is highest."
+          ],
+          "answer": "$19\\ \\text{m}$ above the ground at $t = 8.0\\ \\text{s}$; highest at $t = 7.0\\ \\text{s}$, at $20\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v_1": {
+                "value": 4,
+                "unit": "m/s"
+              },
+              "v_2": {
+                "value": -2,
+                "unit": "m/s"
+              },
+              "t_1": {
+                "value": 2,
+                "unit": "s"
+              },
+              "t_2": {
+                "value": 5,
+                "unit": "s"
+              },
+              "t_3": {
+                "value": 7,
+                "unit": "s"
+              },
+              "t_4": {
+                "value": 8,
+                "unit": "s"
+              }
+            },
+            "expr": "0.5*t_1*v_1 + (t_2 - t_1)*v_1 + 0.5*(t_3 - t_2)*v_1 + 0.5*(t_4 - t_3)*v_2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "graph-as-picture",
+          "wrong": "A position–time graph that rises and then falls shows an object going up a hill and down the other side.",
+          "right": "The graph is not a picture of the path. It says the position along a straight line increased and then decreased: the object moved forward, then came back. The ground may be perfectly flat."
+        },
+        {
+          "tag": "graph-as-picture",
+          "wrong": "Where two lines cross on a velocity–time graph, the two objects are side by side.",
+          "right": "Crossing lines on a velocity–time graph mean equal velocities at that moment. Where each object is depends on the area under its line so far, and those areas are usually different. Crossing does mean the same place on a position–time graph."
+        },
+        {
+          "tag": "heavier-falls-faster",
+          "wrong": "A heavy ball dropped beside a light one reaches the floor first.",
+          "right": "When air resistance is negligible, every object in free fall has the same acceleration, $9.8\\ \\text{m/s}^2$ downward, so the two land together."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "What does a horizontal line mean on a position–time graph? On a velocity–time graph?",
+          "a": "On a position–time graph: at rest (zero slope, so zero velocity). On a velocity–time graph: constant velocity (zero slope, so zero acceleration). The object is at rest only if that line lies on the time axis."
+        },
+        {
+          "q": "A stone is dropped from rest. How fast is it moving after $3.0\\ \\text{s}$, and how far has it fallen? Ignore air resistance.",
+          "a": "$v = gt = (9.8\\ \\text{m/s}^2)(3.0\\ \\text{s}) = 29\\ \\text{m/s}$, downward. It has fallen $\\tfrac{1}{2}gt^2 = \\tfrac{1}{2}(9.8)(3.0)^2 = 44\\ \\text{m}$."
+        },
+        {
+          "q": "A velocity–time graph is a straight line from $+6\\ \\text{m/s}$ at $t = 0$ to $-6\\ \\text{m/s}$ at $t = 4\\ \\text{s}$. What are the acceleration and the displacement over the $4\\ \\text{s}$?",
+          "a": "Acceleration: the slope, $(-6 - 6)/4 = -3\\ \\text{m/s}^2$. Displacement: zero. The triangle above the axis ($+6\\ \\text{m}$) and the one below it ($-6\\ \\text{m}$) cancel, so the object is back where it started."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=v[m/s] xr=0,9 yr=-6,20\nseg 0,4 8,{{4+8*a}}\nshade 0..8\nnote 3,18.6 \"slope: a = {{a}} m/s^2\"\nnote 3,16 \"area: \\Delta x = {{32+32*a}} m\"\nxt 0 2 4 6 8\nyt -4 0 4 8 12 16",
+        "caption": "A cart starts at $4\\ \\text{m/s}$. Change its acceleration: the line tilts, and the shaded area, which is the displacement in the first $8\\ \\text{s}$, changes with it. Area below the axis counts as negative.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Acceleration",
+            "min": -1,
+            "max": 1.5,
+            "step": 0.5,
+            "default": 1,
+            "unit": "m/s^2"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2"
+      ],
+      "teacherNotes": "Have students say what the height, the slope and the area mean, with units, each time a new graph appears; most graph errors are a slope read as a height or the graph read as a picture of the track. Translating one motion among all four representations (dots, position–time, velocity–time, equation) is worth more than many equation-only problems. With the equations, require a list of knowns with signs before any algebra. Set 1B practises graphs and the equations."
+    },
+    {
+      "topic": "1.4",
+      "bigIdea": "A velocity is always measured relative to some observer, and what observers in different reference frames measure is linked by adding the velocity of one frame relative to the other.",
+      "picture": {
+        "diagram": "scene\nground 0..9\nblock T 4,0 w=5 h=1 \"train\"\nblock P 4,1 w=0.5 h=0.8 \"P\"\nf 4,2.1 right 0.5 \"v_{PT} = 2 m/s\"\nf 6.7,0.5 right 2 \"v_{TG} = 8 m/s\"\nf 4,3 right 2.5 \"v_{PG} = 10 m/s\"",
+        "caption": "A passenger P walks forward at $2\\ \\text{m/s}$ relative to a train that is moving at $8\\ \\text{m/s}$ relative to the ground. Relative to the ground the passenger moves at $2 + 8 = 10\\ \\text{m/s}$."
+      },
+      "explanation": "Sit on a moving train and the seat in front of you is at rest. Stand on the platform and the same seat sweeps past at $8\\ \\text{m/s}$. Neither description is wrong. A position or a velocity only means something once you say what it is measured relative to, and that choice (an observer with a set of axes and a clock) is called a reference frame.\n\nSubscripts keep track of the frames. Write $v_{PT}$ for the velocity of the passenger relative to the train and $v_{TG}$ for the velocity of the train relative to the ground. The passenger's velocity relative to the ground is then their sum: $v_{PG} = v_{PT} + v_{TG}$. Notice the pattern: the inner subscripts match ($T$ and $T$) and the outer ones name the answer ($P$ and $G$). Along a line these are signed numbers, so a passenger walking toward the back of the train has a negative $v_{PT}$ and moves over the ground more slowly than the train does.\n\nSwapping the subscripts reverses the velocity: $v_{GT} = -v_{TG}$. If the train moves east at $8\\ \\text{m/s}$ relative to the ground, the ground moves west at $8\\ \\text{m/s}$ relative to the train. For two cars on a road, the velocity of car B as seen from car A is $v_{BA} = v_{BG} + v_{GA} = v_{BG} - v_{AG}$: subtract the observer's own velocity.\n\nObservers in frames that move at constant velocity relative to one another disagree about velocities, but only by a constant amount, and a constant amount cancels when you work out a change in velocity. They also agree on time intervals, so they measure the same acceleration for every object. That is why you can pour a drink on a smoothly moving train exactly as you would at home.",
+      "equations": [
+        {
+          "latex": "v_{AC} = v_{AB} + v_{BC}",
+          "meaning": "The velocity of A relative to C is the velocity of A relative to B plus the velocity of B relative to C.",
+          "variables": [
+            {
+              "symbol": "v_{AC}",
+              "name": "velocity of A relative to C",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{AB}",
+              "name": "velocity of A relative to B",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{BC}",
+              "name": "velocity of B relative to C",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Something moves relative to a carrier that is itself moving: a passenger on a train, a boat in a current, a plane in wind.",
+          "notWhen": "Do not add speeds without signs; opposite directions subtract. And check that the inner subscripts match before adding."
+        },
+        {
+          "latex": "v_{AB} = -v_{BA}",
+          "meaning": "Each of two objects sees the other moving with the same speed in the opposite direction.",
+          "variables": [
+            {
+              "symbol": "v_{AB}",
+              "name": "velocity of A relative to B",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{BA}",
+              "name": "velocity of B relative to A",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You know a velocity from one object's point of view and need it from the other's.",
+          "notWhen": "It reverses the direction only. The speed is the same from either side."
+        },
+        {
+          "latex": "v_{BA} = v_{BG} - v_{AG}",
+          "meaning": "To see B from A's frame, subtract A's velocity from B's, both measured relative to the ground.",
+          "variables": [
+            {
+              "symbol": "v_{BA}",
+              "name": "velocity of B relative to A",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{BG}",
+              "name": "velocity of B relative to the ground",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{AG}",
+              "name": "velocity of A relative to the ground",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Two objects are both described from the ground and you want how one moves as seen from the other: closing speeds, overtaking.",
+          "notWhen": "Both velocities must be measured in the same frame and carry their signs before you subtract."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Two cyclists closing on each other",
+          "prompt": "Two cyclists ride toward each other on a long, straight road. Cyclist A rides east at $9.0\\ \\text{m/s}$ and cyclist B rides west at $6.0\\ \\text{m/s}$, both measured relative to the ground. At one instant they are $450\\ \\text{m}$ apart. What is B's velocity relative to A, and how long is it until they pass each other?",
+          "steps": [
+            "Take east as positive and start in the ground frame: $v_{AG} = +9.0\\ \\text{m/s}$ and $v_{BG} = -6.0\\ \\text{m/s}$.",
+            "Step into A's frame by subtracting A's velocity: $v_{BA} = v_{BG} - v_{AG} = (-6.0) - (+9.0) = -15\\ \\text{m/s}$. To cyclist A, B approaches at $15\\ \\text{m/s}$.",
+            "In A's frame, A is at rest and B has to cover the $450\\ \\text{m}$ gap at $15\\ \\text{m/s}$: $t = \\dfrac{450\\ \\text{m}}{15\\ \\text{m/s}} = 30\\ \\text{s}$.",
+            "Check in the ground frame: in $30\\ \\text{s}$ A rides $270\\ \\text{m}$ and B rides $180\\ \\text{m}$, which together make up the $450\\ \\text{m}$ gap. Both frames agree on the time."
+          ],
+          "answer": "$v_{BA} = -15\\ \\text{m/s}$ (B approaches at $15\\ \\text{m/s}$); they pass after $30\\ \\text{s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "d": {
+                "value": 450,
+                "unit": "m"
+              },
+              "v_AG": {
+                "value": 9,
+                "unit": "m/s"
+              },
+              "v_BG": {
+                "value": -6,
+                "unit": "m/s"
+              }
+            },
+            "expr": "d/(v_AG - v_BG)",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "A motorboat on a river",
+          "prompt": "A river flows east at $1.2\\ \\text{m/s}$ relative to its banks. A motorboat heads upstream, and a person standing on the bank measures it moving west at $3.8\\ \\text{m/s}$. Determine the boat's velocity relative to the water. The boat then turns around and heads downstream with the same engine setting, so its speed relative to the water is unchanged. Determine its new velocity relative to the bank.",
+          "steps": [
+            "Take east as positive and name the frames: $B$ for the boat, $W$ for the water, $G$ for the bank (the ground). Given: $v_{WG} = +1.2\\ \\text{m/s}$ and, going upstream, $v_{BG} = -3.8\\ \\text{m/s}$.",
+            "The boat's velocity relative to the bank is its velocity relative to the water plus the water's velocity relative to the bank: $v_{BG} = v_{BW} + v_{WG}$.",
+            "Solve for the unknown: $v_{BW} = v_{BG} - v_{WG} = (-3.8) - (+1.2) = -5.0\\ \\text{m/s}$. Relative to the water the boat moves west at $5.0\\ \\text{m/s}$.",
+            "Heading downstream, the engine gives the same speed relative to the water, now toward the east: $v_{BW} = +5.0\\ \\text{m/s}$. Then $v_{BG} = (+5.0) + (+1.2) = +6.2\\ \\text{m/s}$."
+          ],
+          "answer": "Upstream, $v_{BW} = -5.0\\ \\text{m/s}$ ($5.0\\ \\text{m/s}$ west relative to the water); downstream, $v_{BG} = +6.2\\ \\text{m/s}$ (east relative to the bank)",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v_WG": {
+                "value": 1.2,
+                "unit": "m/s"
+              },
+              "v_BG": {
+                "value": -3.8,
+                "unit": "m/s"
+              }
+            },
+            "expr": "abs(v_BG - v_WG) + v_WG",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "wrong": "The velocity measured from the ground is the real one; velocities measured from a moving car or train are only apparent.",
+          "right": "Every velocity is relative to some frame, and the ground is just a convenient one. Measurements made in any frame are equally valid, as long as you say which frame they belong to."
+        },
+        {
+          "wrong": "Two cars driving toward each other at $20\\ \\text{m/s}$ and $30\\ \\text{m/s}$ close on each other at $10\\ \\text{m/s}$.",
+          "right": "Their velocities have opposite signs, so subtracting gives $v_{BA} = (-30) - (+20) = -50\\ \\text{m/s}$: they close at $50\\ \\text{m/s}$."
+        },
+        {
+          "wrong": "A passenger on a steadily moving train who drops a coin sees it land behind the point of release, because the train moves on while the coin falls.",
+          "right": "Before it is dropped the coin is moving forward with the train, and nothing takes that forward velocity away. In the train's frame it starts at rest and falls straight down to the passenger's feet."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A ship sails north at $8\\ \\text{m/s}$. A jogger on deck runs toward the back of the ship at $3\\ \\text{m/s}$ relative to the deck. What is the jogger's velocity relative to the water?",
+          "a": "Taking north as positive: $(-3) + (+8) = +5\\ \\text{m/s}$. The jogger still moves north, at $5\\ \\text{m/s}$."
+        },
+        {
+          "q": "Car A drives north at $25\\ \\text{m/s}$ and car B drives north in the next lane at $31\\ \\text{m/s}$. What is B's velocity relative to A? What is A's velocity relative to B?",
+          "a": "$v_{BA} = 31 - 25 = +6\\ \\text{m/s}$: from A, car B pulls ahead at $6\\ \\text{m/s}$. $v_{AB} = -6\\ \\text{m/s}$: from B, car A drops back at $6\\ \\text{m/s}$."
+        },
+        {
+          "q": "A bird flies at $12\\ \\text{m/s}$ relative to the air, straight into a $5\\ \\text{m/s}$ headwind. How fast does it move over the ground? What if the same wind were behind it?",
+          "a": "Into the wind: $12 - 5 = 7\\ \\text{m/s}$, in the direction it is flying. With the wind behind it: $12 + 5 = 17\\ \\text{m/s}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..10\nblock T 4,0 w=5 h=1 \"train\"\nblock P 4,1 w=0.5 h=0.8 \"P\"\nf 4,2.2 right {{0.3*vP}} \"v_{PT} = {{vP}} m/s\"\nf 6.7,0.5 right {{0.3*vT}} \"v_{TG} = {{vT}} m/s\"\nf 4,3.2 right {{0.3*(vP+vT)}} \"v_{PG} = {{vP+vT}} m/s\"",
+        "caption": "Set how fast the train moves over the ground and how fast passenger P walks along it (negative means toward the back). The top arrow, P's velocity relative to the ground, is always the sum of the other two.",
+        "params": [
+          {
+            "name": "vT",
+            "label": "Train relative to ground",
+            "min": 0,
+            "max": 8,
+            "step": 1,
+            "default": 6,
+            "unit": "m/s"
+          },
+          {
+            "name": "vP",
+            "label": "Passenger relative to train",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": 2,
+            "unit": "m/s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2"
+      ],
+      "teacherNotes": "Ask \"relative to what?\" every time a student states a velocity in this topic. The double-subscript notation does most of the work if students write it out fully; errors come from dropping it and adding or subtracting speeds by feel, especially for objects moving toward each other. The examples here stay on one line (upstream and downstream, not across the current); with components from topic 1.5 the same subscript rule applies to each component separately. Set 1C practises trains, walkways and currents."
+    },
+    {
+      "topic": "1.5",
+      "bigIdea": "A vector in two dimensions splits into perpendicular components that can be treated one at a time, which turns a projectile into steady horizontal motion and vertical free fall sharing a single clock.",
+      "picture": {
+        "diagram": "plot x=x[m] y=y[m] xr=0,35 yr=0,50\nfn 44.1-0.049*x^2 0..30\npt 0,44.1 \"0 s\"\npt 10,39.2 \"1 s\"\npt 20,24.5 \"2 s\"\npt 30,0 \"3 s\"\nvl 10\nvl 20\nxt 0 10 20 30\nyt 0 24.5 39.2 44.1",
+        "caption": "A ball leaves a $44.1\\ \\text{m}$ cliff horizontally at $10\\ \\text{m/s}$; the dots mark each second. Horizontally it covers $10\\ \\text{m}$ every second (the dashed lines are evenly spaced), while the drop in each second grows: $4.9\\ \\text{m}$, then $14.7\\ \\text{m}$, then $24.5\\ \\text{m}$."
+      },
+      "explanation": "On a line, a sign was enough to give a vector's direction. In a plane it is not, so a vector is described by two perpendicular components: how much of it lies along $x$ and how much along $y$. For a vector of magnitude $v$ at angle $\\theta$ above the $x$-axis, the components are the sides of a right triangle with the vector as its hypotenuse: $v_x = v\\cos\\theta$ and $v_y = v\\sin\\theta$. Going back, $v = \\sqrt{v_x^2 + v_y^2}$ and $\\tan\\theta = v_y/v_x$. Each component is a signed number, just like a vector in one dimension.\n\n```dg\nscene\nf 0,0 right 4 \"v_x = 4 m/s\"\nf 4,0 up 3 \"v_y = 3 m/s\"\nf 0,0 36.87 5 \"v = 5 m/s\"\nang 0,0 0 36.87 \"37°\"\n```\n\nComponents are worth the trouble because perpendicular directions do not affect each other. Motion along $x$ obeys the one-dimensional rules using only $x$ quantities, and likewise for $y$. The only thing the two share is the time.\n\nA projectile is an object moving under gravity alone. Gravity pulls straight down, so there is no horizontal acceleration: $a_x = 0$, and the horizontal velocity never changes. Vertically the object is in free fall: $a_y = -g$, with up as positive. A projectile is therefore two familiar motions happening at once, constant velocity sideways and constant acceleration vertically. To solve a problem, split the launch velocity into components, write the horizontal and vertical equations separately, and carry the time found from one into the other.\n\nTwo consequences surprise people. A ball thrown horizontally and a ball dropped from the same height at the same moment land together, because their vertical motions are identical. And at the top of its arc a projectile is not at rest: its vertical velocity is zero, but it still has all of its horizontal velocity, and its acceleration is still $9.8\\ \\text{m/s}^2$ downward.",
+      "equations": [
+        {
+          "latex": "v_x = v\\cos\\theta, \\qquad v_y = v\\sin\\theta",
+          "meaning": "A vector's components are the two sides of the right triangle that has the vector as its hypotenuse.",
+          "variables": [
+            {
+              "symbol": "v_x,\\ v_y",
+              "name": "horizontal and vertical components",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v",
+              "name": "magnitude of the vector",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle measured from the x-axis (the horizontal)",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "You know a vector's size and its angle from the horizontal and need its components, as at the launch of a projectile.",
+          "notWhen": "If the angle is given from the vertical, sine and cosine swap. Draw the triangle rather than trusting the pattern."
+        },
+        {
+          "latex": "v = \\sqrt{v_x^2 + v_y^2}, \\qquad \\tan\\theta = \\frac{v_y}{v_x}",
+          "meaning": "The size and direction of a vector, rebuilt from its components.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "magnitude of the vector",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_x,\\ v_y",
+              "name": "horizontal and vertical components",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle from the x-axis",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "You have worked out the two components separately and want the actual speed and direction, such as at landing.",
+          "notWhen": "Do not add the components as plain numbers: $3$ and $4$ make $5$, not $7$."
+        },
+        {
+          "latex": "x = x_0 + v_x t",
+          "meaning": "Horizontally, a projectile moves at constant velocity.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "horizontal position at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "horizontal position at launch",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_x",
+              "name": "horizontal velocity (constant)",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time since launch",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Finding how far a projectile travels horizontally, or the flight time from a known horizontal distance.",
+          "notWhen": "Not with the full launch speed unless the launch is horizontal, and never with $g$: there is no horizontal acceleration."
+        },
+        {
+          "latex": "y = y_0 + v_{0y}t - \\tfrac{1}{2}gt^2, \\qquad v_y = v_{0y} - gt",
+          "meaning": "Vertically, a projectile is in free fall (up taken as positive).",
+          "variables": [
+            {
+              "symbol": "y",
+              "name": "height at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "y_0",
+              "name": "height at launch",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_{0y}",
+              "name": "vertical component of the launch velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_y",
+              "name": "vertical velocity at time t",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "g",
+              "name": "magnitude of the free-fall acceleration, 9.8",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "t",
+              "name": "time since launch",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Finding the time in the air, the greatest height (where the vertical velocity is zero) or the vertical velocity at any moment.",
+          "notWhen": "The minus signs assume up is positive. Not when air resistance matters or anything other than gravity acts."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Dropping a supply package",
+          "prompt": "A rescue plane flies level at $50.0\\ \\text{m/s}$, $122.5\\ \\text{m}$ above flat ground, and releases a supply package. How far does the package travel horizontally before it lands? Ignore air resistance and use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "At release the package has the plane's velocity: $50.0\\ \\text{m/s}$ horizontally and nothing vertically. So $v_x = 50.0\\ \\text{m/s}$ and $v_{0y} = 0$. Take up as positive with the ground at $y = 0$, so $y_0 = 122.5\\ \\text{m}$.",
+            "The vertical motion decides how long the fall lasts. Set $y = 0$ in $y = y_0 + v_{0y}t - \\tfrac{1}{2}gt^2$: $0 = 122.5\\ \\text{m} - \\tfrac{1}{2}(9.8\\ \\text{m/s}^2)\\,t^2$.",
+            "Solve for the time: $t^2 = \\dfrac{2(122.5\\ \\text{m})}{9.8\\ \\text{m/s}^2} = 25.0\\ \\text{s}^2$, so $t = 5.00\\ \\text{s}$. The plane's speed did not come into it.",
+            "The horizontal motion is at constant velocity for that same time: $\\Delta x = v_x t = (50.0\\ \\text{m/s})(5.00\\ \\text{s}) = 250\\ \\text{m}$.",
+            "So the crew must release the package $250\\ \\text{m}$ before the target."
+          ],
+          "answer": "$\\Delta x = 250\\ \\text{m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "v_x": {
+                "value": 50,
+                "unit": "m/s"
+              },
+              "h": {
+                "value": 122.5,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "v_x*sqrt(2*h/g)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "A kick from level ground",
+          "prompt": "A soccer ball is kicked from level ground at $24\\ \\text{m/s}$, at $30^\\circ$ above the horizontal. Determine how long the ball is in the air and how far away it lands, and describe its velocity and acceleration at the highest point. Ignore air resistance and use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Find the components of the launch velocity: $v_x = (24\\ \\text{m/s})\\cos 30^\\circ = 20.8\\ \\text{m/s}$ and $v_{0y} = (24\\ \\text{m/s})\\sin 30^\\circ = 12\\ \\text{m/s}$.",
+            "The time in the air comes from the vertical motion. The ball lands when its height is back to zero: $0 = v_{0y}t - \\tfrac{1}{2}gt^2$. This is true at $t = 0$ (the kick) and at $t = \\dfrac{2v_{0y}}{g} = \\dfrac{2(12\\ \\text{m/s})}{9.8\\ \\text{m/s}^2} = 2.45\\ \\text{s}$ (keeping an extra figure for the next step).",
+            "The horizontal distance covered in that time, at constant $v_x$: $\\Delta x = v_x t = (20.8\\ \\text{m/s})(2.45\\ \\text{s}) = 51\\ \\text{m}$.",
+            "At the highest point the vertical velocity is zero, so the velocity is $20.8\\ \\text{m/s}$, horizontal: the ball is moving, not stopped. The acceleration there is what it is everywhere on the path: $9.8\\ \\text{m/s}^2$ downward."
+          ],
+          "answer": "In the air for about $2.4\\ \\text{s}$; lands $51\\ \\text{m}$ away; at the top the velocity is $21\\ \\text{m/s}$ horizontally and the acceleration is $9.8\\ \\text{m/s}^2$ downward",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v": {
+                "value": 24,
+                "unit": "m/s"
+              },
+              "theta": {
+                "value": 30,
+                "unit": "deg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "v*cos(theta)*(2*v*sin(theta)/g)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "projectile-components-coupled",
+          "wrong": "A bullet fired horizontally stays in the air longer than one dropped from the same height, because it is moving so fast.",
+          "right": "Horizontal speed has no effect on vertical motion. Both bullets start with zero vertical velocity and fall with the same acceleration, so over level ground, with air resistance ignored, they land at the same time. The fired one just lands much farther away."
+        },
+        {
+          "tag": "projectile-components-coupled",
+          "wrong": "A projectile's forward speed runs down as it flies, which is why it eventually comes down.",
+          "right": "Without air resistance nothing acts horizontally, so $v_x$ is the same from launch to landing. The projectile comes down because gravity changes $v_y$, and it would do so whatever the horizontal speed."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "At the top of its arc a projectile has zero velocity and zero acceleration.",
+          "right": "Only the vertical component of the velocity is zero there. The horizontal component is unchanged, and the acceleration is still $9.8\\ \\text{m/s}^2$ downward."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A velocity has components $v_x = 6\\ \\text{m/s}$ and $v_y = -8\\ \\text{m/s}$. What is the speed, and which way is the object heading?",
+          "a": "Speed: $\\sqrt{6^2 + (-8)^2} = 10\\ \\text{m/s}$. It is moving forward and downward, $53^\\circ$ below the horizontal (from $\\tan\\theta = 8/6$)."
+        },
+        {
+          "q": "Two marbles roll off the edge of the same table at the same instant, one at $1\\ \\text{m/s}$ and one at $3\\ \\text{m/s}$, both horizontally. Compare their times in the air and where they land.",
+          "a": "Same time: both fall the same height starting with zero vertical velocity. The faster marble lands three times as far from the table, because $\\Delta x = v_x t$ with the same $t$."
+        },
+        {
+          "q": "A ball is thrown at an angle and caught at the height it was thrown from. Ignoring air resistance, how does its speed when caught compare with its launch speed?",
+          "a": "They are equal. $v_x$ never changes, and $v_y$ comes back with the same size and the opposite sign, just as for a ball thrown straight up. Only the direction differs: the ball arrives heading downward at the launch angle."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=y[m] xr=0,46 yr=0,24\nfn {{tan(th*pi/180)}}*x-x^2/{{400*cos(th*pi/180)^2/4.9}} 0..{{400*sin(2*th*pi/180)/9.8}}\nnote 33,22.6 \"20 m/s at {{th}}°\"\nnote 33,20.4 \"range {{round(4000*sin(2*th*pi/180)/9.8)/10}} m\"\nnote 33,18.2 \"top {{round(10*(20*sin(th*pi/180))^2/19.6)/10}} m\"\nxt 0 10 20 30 40\nyt 0 5 10 15 20",
+        "caption": "Every launch is at $20\\ \\text{m/s}$ from level ground. Change the angle: $45^\\circ$ gives the greatest range, and two angles that add up to $90^\\circ$ (such as $30^\\circ$ and $60^\\circ$) land in the same place, the steeper one after a higher, longer flight.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Launch angle",
+            "min": 15,
+            "max": 75,
+            "step": 5,
+            "default": 30,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "teacherNotes": "Have students keep two columns, horizontal and vertical, with time written between them as the only shared quantity; nearly every projectile error is a quantity from one column used in the other. Ask what the velocity and the acceleration are at the top of the arc before doing any calculation: \"zero and zero\" is the answer to listen for. The dropped-and-fired demonstration (or a video of it) settles the independence of the two motions better than argument does. Set 1D practises horizontal and angled launches."
+    }
+  ]
+}

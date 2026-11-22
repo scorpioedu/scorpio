@@ -1422,28 +1422,32 @@
     ]
   },
   "4A": {
-    "problems": 5,
-    "minutes": 15,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 1,
-      "medium": 2,
-      "hard": 2
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-not-vector",
-        "problems": 3
-      },
-      {
-        "tag": "derivative-integral-confusion",
-        "problems": 1
+        "problems": 5
       },
       {
         "tag": "impulse-force-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
         "problems": 1
       },
       {
@@ -1492,36 +1496,80 @@
         "tags": [
           "momentum-not-vector"
         ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "impulse-force-confusion"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
       }
     ]
   },
   "4B": {
-    "problems": 5,
-    "minutes": 14,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 1,
-      "medium": 3,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 2
+        "problems": 4
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 4
       },
       {
         "tag": "derivative-integral-confusion",
         "problems": 1
       },
       {
-        "tag": "momentum-kinetic-energy-confusion",
+        "tag": "impulse-force-confusion",
         "problems": 1
       },
       {
-        "tag": "momentum-not-vector",
+        "tag": "momentum-kinetic-energy-confusion",
         "problems": 1
       },
       {
@@ -1569,29 +1617,74 @@
         "difficulty": "hard",
         "type": "numeric",
         "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "impulse-force-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed",
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
       }
     ]
   },
   "4C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 3
+      },
+      {
         "tag": "constant-acceleration-assumed",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "system-boundary",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "third-law-unequal-forces",
@@ -1633,36 +1726,76 @@
         "difficulty": "medium",
         "type": "multiple-choice",
         "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "system-boundary"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
       }
     ]
   },
   "4D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-kinetic-energy-confusion",
+        "problems": 4
+      },
+      {
+        "tag": "momentum-not-vector",
+        "problems": 3
+      },
+      {
+        "tag": "system-boundary",
         "problems": 2
       },
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 1
-      },
-      {
-        "tag": "momentum-not-vector",
-        "problems": 1
-      },
-      {
-        "tag": "system-boundary",
         "problems": 1
       },
       {
@@ -1709,6 +1842,46 @@
         "type": "numeric",
         "tags": [
           "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "system-boundary"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
         ]
       }
     ]

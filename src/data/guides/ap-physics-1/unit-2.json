@@ -1,0 +1,1501 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 2,
+  "guides": [
+    {
+      "topic": "2.1",
+      "bigIdea": "A system is the object or group of objects you choose to analyse, and only forces from outside it can change the motion of its center of mass, the mass-weighted average position of everything in it.",
+      "picture": {
+        "diagram": "scene\nground 0..6\nblock A 1,0 \"2 kg\"\nblock B 5,0 w=1.4 h=1 \"6 kg\"\ndot 4,-0.7 \"center of mass\"\ndim 1,-1.5 4,-1.5 \"3 m\"\ndim 4,-1.5 5,-1.5 \"1 m\"",
+        "caption": "Two blocks $4\\ \\text{m}$ apart. The $6\\ \\text{kg}$ block has three times the mass of the $2\\ \\text{kg}$ block, so the center of mass sits three times closer to it: $1\\ \\text{m}$ from the heavy block and $3\\ \\text{m}$ from the light one."
+      },
+      "explanation": "Before you can use Newton's laws you must decide what you are applying them to. That choice is the **system**: one object, or several treated together. Imagine a boundary drawn around it. Everything inside is the system; everything outside is the environment.\n\nEvery force is then one of two kinds. An **internal** force is exerted by one part of the system on another part, like the pull of a cable joining two carts when both carts are in the system. An **external** force is exerted on the system by something outside it. Internal forces come in equal and opposite pairs (topic 2.3), so for the system as a whole they add to zero. Only external forces can change how the system as a whole moves.\n\n\"As a whole\" has a precise meaning: the **center of mass**, the average position of the system's mass, with each object's position counted in proportion to its mass. For two objects it lies on the line between them, closer to the heavier one. For a uniform, symmetric object such as a ball it is at the geometric center. The center of mass moves as if all of the system's mass were concentrated there and every external force acted there.\n\nThat is why an extended object can so often be drawn as a single dot. When a question is about how the object moves as a whole, not how it spins or changes shape, model it as a point at its center of mass.",
+      "equations": [
+        {
+          "latex": "x_{\\text{cm}} = \\frac{m_1 x_1 + m_2 x_2 + \\dots}{m_1 + m_2 + \\dots}",
+          "meaning": "The center of mass is the average of the objects' positions, each weighted by its mass.",
+          "variables": [
+            {
+              "symbol": "x_{\\text{cm}}",
+              "name": "position of the center of mass",
+              "unit": "m"
+            },
+            {
+              "symbol": "m_1,\\ m_2",
+              "name": "masses of the objects",
+              "unit": "kg"
+            },
+            {
+              "symbol": "x_1,\\ x_2",
+              "name": "positions of the objects, measured from the same origin",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know where each object (or each object's own center) is along a line and want the center of mass of the set.",
+          "notWhen": "Do not mix positions measured from different origins, and do not simply average the positions unless the masses are equal."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Center of mass of two children on a bench",
+          "prompt": "Two children sit on a long, light bench. A $20\\ \\text{kg}$ child sits at $x = 0.50\\ \\text{m}$ and a $30\\ \\text{kg}$ child sits at $x = 3.0\\ \\text{m}$, both measured from the left end. Where is the center of mass of the two children?",
+          "steps": [
+            "The system is the two children; the bench is light, so ignore its mass. Both positions are measured from the left end, so use that as the origin.",
+            "Multiply each mass by its position: $(20\\ \\text{kg})(0.50\\ \\text{m}) = 10\\ \\text{kg·m}$ and $(30\\ \\text{kg})(3.0\\ \\text{m}) = 90\\ \\text{kg·m}$.",
+            "Add these and divide by the total mass: $x_{\\text{cm}} = \\dfrac{10 + 90}{20 + 30} = \\dfrac{100\\ \\text{kg·m}}{50\\ \\text{kg}} = 2.0\\ \\text{m}$.",
+            "Check: the point is between the children, $1.5\\ \\text{m}$ from the lighter child and $1.0\\ \\text{m}$ from the heavier one, so it is closer to the heavier child, as it should be."
+          ],
+          "answer": "$x_{\\text{cm}} = 2.0\\ \\text{m}$ from the left end, closer to the heavier child",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m_1": {
+                "value": 20,
+                "unit": "kg"
+              },
+              "x_1": {
+                "value": 0.5,
+                "unit": "m"
+              },
+              "m_2": {
+                "value": 30,
+                "unit": "kg"
+              },
+              "x_2": {
+                "value": 3,
+                "unit": "m"
+              }
+            },
+            "expr": "(m_1*x_1 + m_2*x_2)/(m_1 + m_2)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Internal or external? A tow truck and a car",
+          "prompt": "A tow truck pulls a car along a level road with a horizontal cable, and both are speeding up. Identify the external horizontal forces on (a) the car alone and (b) the system of truck, cable and car. (c) Explain why the cable's tension cannot be what speeds up the system in (b).",
+          "steps": [
+            "(a) Draw the boundary around the car. The cable, the road and the air touch it from outside, so the external horizontal forces are the cable's tension, forward, and resistive forces from the road and air, backward.",
+            "(b) Now the boundary encloses both vehicles and the cable. The cable's pulls on the car and on the truck are between parts of the system, so they are internal. The external horizontal forces are the road's forward push on the truck's driven tires and the resistive forces on both vehicles.",
+            "(c) Internal forces act in equal and opposite pairs and add to zero for the system. It speeds up because the road pushes the truck's tires forward harder than the resistive forces push back: a net external force."
+          ],
+          "answer": "Car alone: tension (forward) and resistive forces (backward). Whole system: the road's forward push on the truck's tires, and resistive forces. The tension is internal there, so it cannot change that system's motion.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "system-boundary",
+          "wrong": "A passenger in a stalled car can get it rolling by pushing hard on the dashboard.",
+          "right": "For the system of car plus passenger that push is internal: the dashboard pushes back on the passenger just as hard, and the two forces add to zero. Only an external force, such as someone pushing from outside, can start the system moving."
+        },
+        {
+          "wrong": "The center of mass of two objects is halfway between them.",
+          "right": "Only when the masses are equal. Otherwise each position is weighted by its mass, and the center of mass is closer to the heavier object."
+        },
+        {
+          "wrong": "The center of mass has to be a point inside the object's material.",
+          "right": "It is an average position and can lie in empty space. The center of mass of a ring is at its center, where there is no material at all."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $1\\ \\text{kg}$ ball is at $x = 0$ and a $3\\ \\text{kg}$ ball is at $x = 4\\ \\text{m}$. Where is their center of mass?",
+          "a": "At $x = 3\\ \\text{m}$: $\\dfrac{(1)(0) + (3)(4)}{1 + 3} = \\dfrac{12}{4}$. It is three times closer to the heavier ball."
+        },
+        {
+          "q": "Two skaters stand at rest on frictionless ice and push each other apart. What does the center of mass of the two-skater system do?",
+          "a": "It stays at rest. The pushes are internal and no net external force acts, so the center of mass cannot start moving, even though each skater does."
+        },
+        {
+          "q": "Two boxes joined by a rope are pulled across a floor. To find the tension in the rope between them, should the system be both boxes or just one?",
+          "a": "Just one box. With both boxes in the system the tension is internal and drops out; with one box it is an external force and appears in the equation."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..6\nblock A 1,0 \"2 kg\"\nblock B 5,0 w={{0.6+0.04*m}} h={{0.45+0.05*m}} \"{{m}} kg\"\ntext 1,-0.5 \"x = 1 m\"\ntext 5,-0.5 \"x = 5 m\"\ndot {{(2+5*m)/(2+m)}},1.7 \"x_{cm} = {{round(100*(2+5*m)/(2+m))/100}} m\"\ndash {{(2+5*m)/(2+m)}},0 {{(2+5*m)/(2+m)}},1.7",
+        "caption": "Change the mass of the right-hand block. The center of mass slides toward whichever block is heavier, and sits halfway only when both are $2\\ \\text{kg}$.",
+        "params": [
+          {
+            "name": "m",
+            "label": "Mass of the right-hand block",
+            "min": 0.5,
+            "max": 10,
+            "step": 0.5,
+            "default": 6,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1"
+      ],
+      "teacherNotes": "Ask students to state the system in a sentence before they draw anything, and to sort each force they name into internal or external for that system. The usual failure is treating a force between two parts of the system as something that can accelerate it. Analysing one situation with two different systems (as in the tow-truck example) is the quickest way to show why the choice matters. Set 2A practises both ideas."
+    },
+    {
+      "topic": "2.2",
+      "bigIdea": "A force is a push or pull that one object exerts on another, and a free-body diagram shows every force on a single object as an arrow so that the forces can be added as vectors.",
+      "picture": {
+        "diagram": "fbd box \"m\" tilt=30 eq\nf down F_g 2\nf 120 F_N 1.73\nf 30 f_s 1",
+        "caption": "A crate at rest on a $30^\\circ$ ramp. Exactly three forces act on it: gravity straight down, the normal force perpendicular to the ramp, and static friction up along the ramp. The arrow lengths are to scale, and together they add to zero."
+      },
+      "explanation": "A force is not something an object has. It is an interaction between two objects, so for every force you should be able to finish the sentence \"the force of ___ on ___\". If you cannot name the object doing the pushing, the force is not real. Most forces here are **contact** forces: the normal force (a surface pushing perpendicular to itself), friction (a surface pushing parallel to itself), tension (a rope pulling along its length) or a spring force. Gravity is the exception: Earth pulls without touching. Force is a vector, measured in newtons (N).\n\nA **free-body diagram** collects the forces on one object. Draw the object as a dot or a box, then one labelled arrow for each force acting *on that object*, starting on it, pointing the way the force acts, with a length that shows its relative size. To find them all, draw gravity first, then ask what touches the object. Each thing that touches it can exert a force; nothing else can.\n\nJust as important is what stays off: forces the object exerts on other things, velocity or acceleration arrows, a \"force of motion\" left over from an earlier push, and anything called $ma$, which is not a force but what the net force equals. On the AP exam, draw each force once; show components in a separate sketch.\n\nThe diagram exists so you can find the **net force**, the vector sum of the forces on the object. Along a line, give each force a sign and add. In two dimensions, split any tilted force into components along two perpendicular axes and add along each axis separately.",
+      "equations": [
+        {
+          "latex": "\\vec{F}_{\\text{net}} = \\vec{F}_1 + \\vec{F}_2 + \\dots",
+          "meaning": "The net force on an object is the vector sum of every force acting on it.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{\\text{net}}",
+              "name": "net force on the object",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{F}_1,\\ \\vec{F}_2",
+              "name": "the individual forces on that object",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Always, once the free-body diagram is drawn: add the forces with their directions, one axis at a time.",
+          "notWhen": "Do not add magnitudes unless the forces point the same way, and do not include forces that act on other objects."
+        },
+        {
+          "latex": "F_x = F\\cos\\theta,\\quad F_y = F\\sin\\theta",
+          "meaning": "A force at an angle is equivalent to two perpendicular components, one along each axis.",
+          "variables": [
+            {
+              "symbol": "F_x,\\ F_y",
+              "name": "components of the force along the x- and y-axes",
+              "unit": "N"
+            },
+            {
+              "symbol": "F",
+              "name": "magnitude of the force",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the force and the x-axis",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "A force is tilted relative to your axes, such as a rope pulling upward at an angle or gravity on a ramp.",
+          "notWhen": "If the angle is measured from the y-axis instead, sine and cosine swap. Check with a sketch rather than memorising which is which."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Net horizontal force on a sled",
+          "prompt": "A child pulls a sled across level snow with a rope angled $25^\\circ$ above the horizontal. The tension in the rope is $40\\ \\text{N}$, and the snow exerts a $15\\ \\text{N}$ friction force on the sled, directed backward. What is the net horizontal force on the sled?",
+          "steps": [
+            "List the forces. Gravity pulls down. Two things touch the sled: the snow (normal force up, friction backward) and the rope (tension, forward and upward).",
+            "Choose axes: $x$ forward, $y$ up. Only the tension is tilted, so split it into components.",
+            "$T_x = (40\\ \\text{N})\\cos 25^\\circ = 36.3\\ \\text{N}$, forward, and $T_y = (40\\ \\text{N})\\sin 25^\\circ = 16.9\\ \\text{N}$, upward. The upward part helps hold the sled up, so the normal force is less than the sled's weight.",
+            "Add the horizontal forces with signs: $F_{\\text{net},x} = 36.3\\ \\text{N} - 15\\ \\text{N} = 21.3\\ \\text{N}$, or $21\\ \\text{N}$ to two significant figures."
+          ],
+          "answer": "$F_{\\text{net},x} = 21\\ \\text{N}$, forward",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "T": {
+                "value": 40,
+                "unit": "N"
+              },
+              "theta": {
+                "value": 25,
+                "unit": "deg"
+              },
+              "f": {
+                "value": 15,
+                "unit": "N"
+              }
+            },
+            "expr": "T*cos(theta) - f",
+            "unit": "N"
+          }
+        },
+        {
+          "title": "Free-body diagram for a block sliding up a ramp",
+          "prompt": "A student gives a block a quick shove up a rough ramp and lets go. Draw the free-body diagram for the block while it is still sliding up the ramp, and state the direction of the net force on it.",
+          "steps": [
+            "Start with gravity: Earth pulls the block straight down, $F_g$.",
+            "The hand has let go, so only the ramp touches the block. It exerts a normal force, $F_N$, perpendicular to its surface, and kinetic friction, $f_k$, along its surface. The block slides up, so friction points down the ramp.",
+            "No arrow points up the ramp. Nothing pushes the block that way now; it moves up because it already has that velocity.\n\n```dg\nfbd box \"m\" tilt=30\nf down F_g 2\nf 120 F_N 1.73\nf 210 f_k 0.6\n```",
+            "Perpendicular to the ramp, the normal force balances the part of gravity pressing the block into the surface. Along the ramp, the rest of gravity and the friction both point down the slope. The net force points down the ramp, opposite to the velocity, so the block slows."
+          ],
+          "answer": "Gravity (down), the normal force (perpendicular to the ramp) and kinetic friction (down the ramp). The net force points down the ramp.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "impetus-force",
+          "wrong": "A ball thrown straight up still has the force of the throw acting on it while it rises.",
+          "right": "The hand's force ends when the ball leaves the hand. While it rises, only gravity (and a little air resistance) acts. It keeps moving up because it already has an upward velocity; forces change velocity, they are not needed to keep it."
+        },
+        {
+          "tag": "net-force-vector-addition",
+          "wrong": "A $30\\ \\text{N}$ force and a $40\\ \\text{N}$ force on the same object give a net force of $70\\ \\text{N}$.",
+          "right": "Only if they point the same way. In opposite directions the net force is $10\\ \\text{N}$; at right angles, $50\\ \\text{N}$. Forces add as vectors."
+        },
+        {
+          "tag": "normal-force-equals-weight",
+          "wrong": "The normal force points straight up and equals the object's weight.",
+          "right": "It is perpendicular to the surface and as large as it needs to be to stop the object sinking in. On a ramp it is tilted and smaller than the weight; if someone presses down on the object, it is larger."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A book rests on a level table. Which forces act on the book, and what exerts each one?",
+          "a": "Gravity, exerted by Earth, downward, and the normal force, exerted by the table, upward. The book is at rest, so they are equal in size."
+        },
+        {
+          "q": "A puck is pushed with $6\\ \\text{N}$ toward the east and $8\\ \\text{N}$ toward the north at the same time. What is the size of the net force?",
+          "a": "$10\\ \\text{N}$. The forces are perpendicular, so the net force is the hypotenuse: $\\sqrt{6^2 + 8^2} = 10$."
+        },
+        {
+          "q": "A hockey puck glides across smooth ice after being hit. A student draws a forward arrow labelled \"force of the hit\". What is wrong?",
+          "a": "The stick no longer touches the puck, so it exerts no force. Only gravity and the ice (normal force, slight friction) act."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..7\nblock A 1.5,0 w=1.4 h=1.4 \"sled\"\nf A.r {{theta}} 3 \"T = 40 N\"\nf A.r+0,-0.3 right {{3*cos(theta*pi/180)}} \"T_x = {{round(40*cos(theta*pi/180))}} N\"\nf A.r+{{3*cos(theta*pi/180)+0.1}},0 up {{3*sin(theta*pi/180)}} \"T_y = {{round(40*sin(theta*pi/180))}} N\"",
+        "caption": "A $40\\ \\text{N}$ pull on a sled. Tilt the rope: the more steeply it points upward, the less of the pull acts forward and the more acts upward.",
+        "params": [
+          {
+            "name": "theta",
+            "label": "Angle of the rope above horizontal",
+            "min": 15,
+            "max": 75,
+            "step": 5,
+            "default": 25,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.5",
+        "2.1"
+      ],
+      "teacherNotes": "For every arrow a student draws, ask \"what object exerts that force?\" This single question removes most phantom forces (the force of the throw, the force of motion, $ma$). The other common faults are a normal force drawn vertical on a ramp and components drawn as extra arrows, which costs the point on an AP free-response diagram. Set 2A asks for diagrams with and without friction."
+    },
+    {
+      "topic": "2.3",
+      "bigIdea": "Forces always come in pairs: whenever object A exerts a force on object B, object B exerts a force of the same kind and the same size on object A, in the opposite direction.",
+      "picture": {
+        "diagram": "scene\nground 0..7\nblock A 2.4,0 w=1.8 h=0.8 \"A\"\nblock B 3.7,0 w=0.8 h=0.8 \"B\"\nf 3.3,0.93 left 1.3 \"F_{B on A}\"\nf 3.3,0.93 right 1.3 \"F_{A on B}\"",
+        "caption": "Block A is being pushed to the right and presses against block B. Where they touch, A pushes B to the right and B pushes A to the left. The two arrows are the same length: the forces are equal in size even though A has more mass."
+      },
+      "explanation": "A force is an interaction between two objects, and an interaction has two ends. Press your palm against a wall and you can feel the wall pressing back. Newton's third law says this is always so: if object A exerts a force on object B, then B exerts a force on A that is equal in size and opposite in direction. The two forces are a **third-law pair**.\n\nThe forces of a pair are always the same size, whatever the masses and whether or not anything is accelerating. They are the same kind of force (both gravitational, or both normal forces). They exist at the same time: neither comes first. And they act on *different* objects. To name a force's partner, write the force as \"the force of A on B\" and swap the two names.\n\nBecause the two forces act on different objects, they never appear on the same free-body diagram and never cancel each other. An object's motion is decided only by the forces *on it*. So a horse can move a cart even though the cart pulls back on the horse just as hard: that backward pull acts on the horse, not on the cart. The cart speeds up whenever the horse's pull on it exceeds the friction on it.\n\nEqual forces do not mean equal effects. When a bug hits a windshield the two forces are the same size, but the bug's tiny mass gives it an enormous acceleration and the car's large mass almost none.",
+      "equations": [
+        {
+          "latex": "\\vec{F}_{A\\text{ on }B} = -\\vec{F}_{B\\text{ on }A}",
+          "meaning": "The force A exerts on B is equal in size and opposite in direction to the force B exerts on A.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{A\\text{ on }B}",
+              "name": "force that object A exerts on object B",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{F}_{B\\text{ on }A}",
+              "name": "force that object B exerts on object A",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Two objects interact and you know, or want, the force on one of them from the other.",
+          "notWhen": "Not for two forces on the same object. Balanced forces on one object are equal because its acceleration is zero, not because of the third law."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A skater pushes a sled",
+          "prompt": "On frictionless ice, a $60\\ \\text{kg}$ skater pushes a $15\\ \\text{kg}$ sled away with a horizontal force of $45\\ \\text{N}$. While the push lasts, what is the skater's acceleration?",
+          "steps": [
+            "Name the interaction: the skater exerts a $45\\ \\text{N}$ force on the sled, forward.",
+            "Swap the names. By the third law the sled exerts a $45\\ \\text{N}$ force on the skater, backward.",
+            "On frictionless ice that is the only horizontal force on the skater. Acceleration is net force divided by mass (Newton's second law, topic 2.5): $a = \\dfrac{45\\ \\text{N}}{60\\ \\text{kg}} = 0.75\\ \\text{m/s}^2$, backward.",
+            "Compare the sled, which feels the same size of force: $a = \\dfrac{45\\ \\text{N}}{15\\ \\text{kg}} = 3.0\\ \\text{m/s}^2$, forward. Equal forces, unequal accelerations, because the skater has four times the mass."
+          ],
+          "answer": "$0.75\\ \\text{m/s}^2$, directed away from the sled (the sled accelerates at $3.0\\ \\text{m/s}^2$ the other way)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "F": {
+                "value": 45,
+                "unit": "N"
+              },
+              "m": {
+                "value": 60,
+                "unit": "kg"
+              }
+            },
+            "expr": "F/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "Third-law pairs for a book on a table",
+          "prompt": "A book rests on a level table. (a) Identify the forces on the book and the third-law partner of each. (b) A classmate claims the book's weight and the normal force on it are a third-law pair, because they are equal and opposite. Explain why this is incorrect.",
+          "steps": [
+            "(a) Two forces act on the book: the gravitational force of Earth on the book, downward, and the normal force of the table on the book, upward.",
+            "Swap the names. \"Earth pulls the book down\" pairs with \"the book pulls Earth up\", a gravitational force on Earth. \"The table pushes the book up\" pairs with \"the book pushes the table down\", a normal force on the table.",
+            "(b) The weight and the normal force both act on the book, and one is gravitational while the other is a contact force. A third-law pair acts on two different objects and is one kind of force.",
+            "They are equal here only because the book is not accelerating. Press down on the book and the normal force grows while the weight does not; each still equals its own partner exactly."
+          ],
+          "answer": "The partners are the book's gravitational pull on Earth and the book's push on the table. Weight and normal force both act on the book, so they are not a pair; they balance only because the book is not accelerating.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "When a truck collides with a small car, the truck exerts the bigger force.",
+          "right": "The two forces are a third-law pair, so they are exactly the same size at every instant. The car comes off worse because the same force on a smaller mass produces a larger acceleration."
+        },
+        {
+          "tag": "third-law-pair-same-object",
+          "wrong": "The two forces in a third-law pair cancel, so nothing should ever be able to accelerate.",
+          "right": "Forces can cancel only when they act on the same object. A third-law pair acts on two different objects, so each force goes on a different free-body diagram."
+        },
+        {
+          "wrong": "The reaction force happens a moment after the action force, as a response to it.",
+          "right": "The two forces are two sides of one interaction. They begin, change and end together, and either one can be called the action."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Earth pulls on an apple with a gravitational force of $1\\ \\text{N}$. What force does the apple exert on Earth?",
+          "a": "$1\\ \\text{N}$, upward, acting on Earth. Earth's mass is so large that its acceleration is far too small to notice."
+        },
+        {
+          "q": "A rocket fires its engine in empty space, where there is nothing to push against. What pushes the rocket forward?",
+          "a": "The exhaust gas. The rocket pushes the gas backward, and the gas pushes the rocket forward with an equal force. No outside surface is needed."
+        },
+        {
+          "q": "You lean on a wall and it does not move. Does the wall exert a force on you?",
+          "a": "Yes, equal in size to your push and opposite in direction. The wall is compressed very slightly, like an extremely stiff spring. Without that force you would fall through it."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nblock A 3,0 w=1 h=1 \"60 kg\"\nblock B {{3.5+(0.9+mB/150)/2}},0 w={{0.9+mB/150}} h={{0.6+mB/200}} \"{{mB}} kg\"\nf A.l left 1.2 \"F_{B on A} = 60 N\"\nf B.r right 1.2 \"F_{A on B} = 60 N\"\ntext 1.6,-0.7 \"a_A = 1 m/s^2\"\ntext 5.6,-0.7 \"a_B = {{round(600/mB)/10}} m/s^2\"",
+        "caption": "Skater A ($60\\ \\text{kg}$) pushes skater B with $60\\ \\text{N}$ on frictionless ice. Change B's mass: the two force arrows never change, but B's acceleration does.",
+        "params": [
+          {
+            "name": "mB",
+            "label": "Mass of skater B",
+            "min": 20,
+            "max": 120,
+            "step": 10,
+            "default": 30,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.1",
+        "2.2"
+      ],
+      "teacherNotes": "Insist on the full name of every force (\"the normal force of the table on the book\"); students who write forces this way find third-law partners by swapping the two nouns and rarely pair the weight with the normal force. Ask which is larger in a collision between unequal objects before teaching the law, and return to the same question afterwards. Set 2B includes pair identification and unequal-mass interactions."
+    },
+    {
+      "topic": "2.4",
+      "bigIdea": "An object keeps the velocity it has, whether it is at rest or moving in a straight line at constant speed, unless a net external force acts on it.",
+      "picture": {
+        "diagram": "motion dt=1 v\nobj \"zero net force\" x0=0 v0=3 n=5\nobj \"net force backward\" x0=0 v0=3 a=-0.5 n=5",
+        "caption": "Two pucks start with the same velocity; a dot marks each puck's position every second. With zero net force the dots stay evenly spaced: constant velocity. With a net force directed backward the spacing shrinks: the velocity is changing."
+      },
+      "explanation": "Everyday experience suggests that moving things stop unless something keeps pushing them. They stop because of friction, which is a force. Take friction away, as on an air-hockey table or in deep space, and a moving object simply keeps going. Newton's first law states the rule: when the net force on an object is zero, its velocity does not change. If it is at rest it stays at rest, and if it is moving it keeps the same speed in the same straight line. As far as forces are concerned, rest and constant velocity are the same condition.\n\nThis tendency to keep the current velocity is called **inertia**. Inertia is not a force; it is a property of matter, and mass measures it. When a bus brakes and you lurch forward, nothing pushed you forward. Your body kept its velocity while the bus slowed down around you.\n\nZero net force does not mean no forces. A book on a table has two forces on it that balance. An object whose forces balance is in **equilibrium**, and the forces must add to zero along every axis. The law works in both directions. If you are told an object moves at constant velocity, you know the net force is zero and can solve for an unknown force. If you know the forces balance, you know the velocity is constant.\n\nThe first law holds for observers who are not themselves accelerating (an inertial reference frame). Seen from inside a braking bus, a ball on the floor speeds up with no force on it. For this course the ground counts as an inertial frame.",
+      "equations": [
+        {
+          "latex": "\\vec{F}_{\\text{net}} = 0 \\iff \\vec{v} = \\text{constant}",
+          "meaning": "The net force on an object is zero exactly when its velocity is constant, in size and direction. Rest is the case of constant zero velocity.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{\\text{net}}",
+              "name": "net force on the object",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{v}",
+              "name": "velocity of the object",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "An object is at rest or moves in a straight line at steady speed, or you know that the forces on it balance.",
+          "notWhen": "Not when the speed or the direction is changing, including steady-speed motion around a curve."
+        },
+        {
+          "latex": "\\Sigma F_x = 0,\\quad \\Sigma F_y = 0",
+          "meaning": "In equilibrium the force components add to zero along each axis separately.",
+          "variables": [
+            {
+              "symbol": "F_x",
+              "name": "x-components of the forces on the object, with signs",
+              "unit": "N"
+            },
+            {
+              "symbol": "F_y",
+              "name": "y-components of the forces on the object, with signs",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Solving for an unknown force on an object in equilibrium when the forces do not all lie along one line.",
+          "notWhen": "If the object accelerates along an axis, the sum along that axis is $ma$, not zero (topic 2.5)."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Tension in the wires holding a sign",
+          "prompt": "A shop sign of weight $120\\ \\text{N}$ hangs at rest from two wires. Each wire makes an angle of $40^\\circ$ above the horizontal. What is the tension in each wire?",
+          "steps": [
+            "The sign is at rest, so it is in equilibrium: the forces on it add to zero along each axis. Three forces act: its weight, down, and one tension along each wire.\n\n```dg\nfbd dot eq\nf down F_g 2\nf 40 T 1.56\nf 140 T 1.56\n```",
+            "Horizontally, the wires pull equally in opposite directions ($T\\cos 40^\\circ$ each), so those components cancel whatever $T$ is.",
+            "Vertically, each wire pulls up with $T\\sin 40^\\circ$, and together they must balance the weight: $2T\\sin 40^\\circ - 120\\ \\text{N} = 0$.",
+            "Solve: $T = \\dfrac{120\\ \\text{N}}{2\\sin 40^\\circ} = \\dfrac{120\\ \\text{N}}{1.286} = 93\\ \\text{N}$.",
+            "Check: each wire carries more than half the weight ($60\\ \\text{N}$), because only the vertical part of each tension holds the sign up."
+          ],
+          "answer": "$T = 93\\ \\text{N}$ in each wire",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "W": {
+                "value": 120,
+                "unit": "N"
+              },
+              "theta": {
+                "value": 40,
+                "unit": "deg"
+              }
+            },
+            "expr": "W/(2*sin(theta))",
+            "unit": "N"
+          }
+        },
+        {
+          "title": "A skydiver at constant speed",
+          "prompt": "A skydiver and open parachute have a combined mass of $80\\ \\text{kg}$ and descend at a constant $6.0\\ \\text{m/s}$. Determine the magnitude of the drag force the air exerts on them, and justify your answer. (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "The velocity is constant in size and direction, so the acceleration is zero and, by Newton's first law, the net force on the skydiver and parachute is zero.",
+            "Two forces act: the gravitational force, downward, and the drag force of the air, upward. For the net force to be zero they must be equal in size.",
+            "$F_{\\text{drag}} = mg = (80\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 784\\ \\text{N}$, or $7.8 \\times 10^2\\ \\text{N}$ to two significant figures.",
+            "The speed of $6.0\\ \\text{m/s}$ was not needed. Moving downward does not mean gravity is winning: at any constant velocity the forces balance exactly."
+          ],
+          "answer": "$F_{\\text{drag}} = 7.8 \\times 10^2\\ \\text{N}$, upward, equal in size to the weight",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 80,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "motion-requires-force",
+          "wrong": "A puck sliding across the ice at steady speed must have a forward force keeping it going.",
+          "right": "No force is needed to keep an object moving, only to change its velocity. With friction negligible, the net force on the puck is zero and it keeps its velocity."
+        },
+        {
+          "tag": "force-implies-motion",
+          "wrong": "If the net force on an object is zero, the object must be at rest.",
+          "right": "Zero net force means the velocity is not changing. The object may be at rest, or moving in a straight line at constant speed, like a space probe coasting between planets."
+        },
+        {
+          "tag": "impetus-force",
+          "wrong": "When a car brakes, a force throws the passengers forward.",
+          "right": "Nothing pushes the passengers forward. They keep moving at the car's earlier velocity while the car slows. The seat belt then exerts a backward force that slows them too."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An elevator moves upward at a constant $2\\ \\text{m/s}$. How does the tension in its cable compare with its weight?",
+          "a": "They are equal. Constant velocity means zero net force, whichever way the elevator is moving."
+        },
+        {
+          "q": "A horizontal push of $5\\ \\text{N}$ keeps a box sliding across the floor at constant velocity. How large is the friction force, and what happens when the push stops?",
+          "a": "Friction is $5\\ \\text{N}$, backward, to balance the push. Once the push stops, friction is the net force, so the box slows down."
+        },
+        {
+          "q": "A quick pull can whip a tablecloth out from under the dishes. Why do the dishes stay put?",
+          "a": "The dishes have inertia. The cloth's friction acts on them for only a very short time, too little to change their velocity much, so they stay almost at rest."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndot 4,2\nf 4,2 down 2 \"F_g = 120 N\"\nf 4,2 {{theta}} {{1/sin(theta*pi/180)}} \"T\"\nf 4,2 {{180-theta}} {{1/sin(theta*pi/180)}} \"T\"\ntext 4,-0.7 \"T = {{round(60/sin(theta*pi/180))}} N in each wire\"",
+        "caption": "A $120\\ \\text{N}$ sign hangs from two wires. Change the angle the wires make with the horizontal: the flatter the wires, the larger the tension needed for the vertical parts to balance the weight.",
+        "params": [
+          {
+            "name": "theta",
+            "label": "Angle of each wire above horizontal",
+            "min": 20,
+            "max": 80,
+            "step": 5,
+            "default": 40,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "2.2"
+      ],
+      "teacherNotes": "Most students still believe, underneath, that motion needs a force. Ask for the net force on an object moving at constant velocity in several disguises (an elevator rising steadily, a skydiver at terminal speed, a car on cruise control) and require the reasoning \"constant velocity, so zero net force\" each time. Watch for \"inertia\" being used as the name of a force. Set 2B mixes equilibrium at rest with equilibrium in motion."
+    },
+    {
+      "topic": "2.5",
+      "bigIdea": "An object's acceleration points the same way as the net force on it, and is equal to that net force divided by the object's mass.",
+      "picture": {
+        "diagram": "plot x=F_{net}[N] y=a[m/s^2] xr=-2,10 yr=0,11\nseg 0,0 10,10 \"1 kg\"\nseg 0,0 10,5 \"2 kg\"\nseg 0,0 10,2.5 \"4 kg\"\nxt 0 5 10\nyt 0 2.5 5 10",
+        "caption": "Acceleration against net force for three carts. Each line is straight and passes through the origin, and its slope is $1/m$: a $10\\ \\text{N}$ net force gives the $1\\ \\text{kg}$ cart $10\\ \\text{m/s}^2$ but the $4\\ \\text{kg}$ cart only $2.5\\ \\text{m/s}^2$."
+      },
+      "explanation": "The first law says what happens when the net force is zero. The second law says what happens when it is not: the object accelerates, with $\\vec{a} = \\vec{F}_{\\text{net}}/m$. Double the net force and the acceleration doubles; double the mass and it halves. One newton is the net force that gives $1\\ \\text{kg}$ an acceleration of $1\\ \\text{m/s}^2$. The acceleration points the way the net force points, which need not be the way the object is moving: a ball thrown upward has a downward net force, and a downward acceleration, for its whole flight.\n\nNearly every problem follows the same steps. Choose the object. Draw its free-body diagram. Choose axes, with one axis along the acceleration. For each axis, add the force components with signs and set the sum equal to $ma$ along that axis; an axis with no acceleration gives a balance equation. Then solve. The force in the law is always the *net* force, never just the largest force or the one you happen to be given.\n\nObjects that are in contact, or tied together by a taut string, move together with the same size of acceleration. Treat them first as one system: the forces between them are internal and cancel, so the acceleration is the net external force divided by the total mass. To find an internal force such as a string's tension, then choose just one of the objects as the system. The tension is external to it and appears in its equation. A light string passing over a light, frictionless pulley has the same tension along its whole length.",
+      "equations": [
+        {
+          "latex": "\\vec{a} = \\frac{\\vec{F}_{\\text{net}}}{m}",
+          "meaning": "An object's acceleration is the net force on it divided by its mass, in the direction of the net force.",
+          "variables": [
+            {
+              "symbol": "\\vec{a}",
+              "name": "acceleration of the object",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "\\vec{F}_{\\text{net}}",
+              "name": "net force on the object",
+              "unit": "N"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "You know all the forces on one object and want its acceleration, or know the acceleration and want an unknown force.",
+          "notWhen": "Do not put a single force in place of the net force, and do not use the weight (in newtons) where the mass (in kilograms) belongs."
+        },
+        {
+          "latex": "\\Sigma F_x = m a_x,\\quad \\Sigma F_y = m a_y",
+          "meaning": "The second law holds along each axis separately.",
+          "variables": [
+            {
+              "symbol": "F_x,\\ F_y",
+              "name": "force components along each axis, with signs",
+              "unit": "N"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "a_x,\\ a_y",
+              "name": "acceleration components along each axis",
+              "unit": "m/s^2"
+            }
+          ],
+          "useWhen": "The forces do not all lie along one line, as on a ramp or with a rope pulling at an angle.",
+          "notWhen": "Choose the axes first and keep to them; a sign that changes meaning halfway through gives a wrong answer."
+        },
+        {
+          "latex": "a_{\\text{sys}} = \\frac{F_{\\text{ext}}}{m_{\\text{sys}}}",
+          "meaning": "Objects that move together accelerate at the net external force on the system divided by its total mass.",
+          "variables": [
+            {
+              "symbol": "a_{\\text{sys}}",
+              "name": "acceleration shared by the objects in the system",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "F_{\\text{ext}}",
+              "name": "net external force on the system, along the direction of motion",
+              "unit": "N"
+            },
+            {
+              "symbol": "m_{\\text{sys}}",
+              "name": "total mass of the system",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "Blocks pushed together, or objects joined by a taut string, that share one acceleration.",
+          "notWhen": "It cannot give a force between the objects. For that, apply the second law to one object alone."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Lifting a crate with a rope",
+          "prompt": "A $4.0\\ \\text{kg}$ crate is pulled straight up by a rope. The tension in the rope is $50\\ \\text{N}$. What is the crate's acceleration? (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "Two forces act on the crate: the tension, $50\\ \\text{N}$ upward, and gravity, $mg = (4.0\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 39.2\\ \\text{N}$ downward.",
+            "Take up as positive and add the forces with signs: $F_{\\text{net}} = 50\\ \\text{N} - 39.2\\ \\text{N} = +10.8\\ \\text{N}$.",
+            "Divide by the mass: $a = \\dfrac{10.8\\ \\text{N}}{4.0\\ \\text{kg}} = +2.7\\ \\text{m/s}^2$. The positive sign means upward.",
+            "Check: a tension of exactly $39.2\\ \\text{N}$ would give zero acceleration. The rope pulls harder than that, so the crate accelerates upward."
+          ],
+          "answer": "$a = 2.7\\ \\text{m/s}^2$, upward",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "T": {
+                "value": 50,
+                "unit": "N"
+              },
+              "m": {
+                "value": 4,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "(T - m*g)/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "A cart pulled by a falling block",
+          "prompt": "A $2.0\\ \\text{kg}$ cart on a level, frictionless table is tied to a light string that passes over a light, frictionless pulley to a hanging $0.50\\ \\text{kg}$ block. The system is released from rest. Determine the acceleration of the cart and the tension in the string. (Use $g = 9.8\\ \\text{m/s}^2$.)\n\n```dg\nscene\nground 0..4 y=2\nsurf 4,2 4,0.2\nblock A 2,2 \"2.0 kg\"\npulley P 4.35,2.15 r=0.2\nrope A.r P.t\nrope P.r 4.55,1.2\nblock B 4.55,0.6 w=0.9 h=0.6 \"0.50 kg\"\n```",
+          "steps": [
+            "Treat the cart and block as one system; the string makes them share one size of acceleration. The cart's weight is balanced by the table and the tension is internal, so the only external force along the direction of motion is the block's weight: $(0.50\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 4.9\\ \\text{N}$.",
+            "$a = \\dfrac{4.9\\ \\text{N}}{2.0\\ \\text{kg} + 0.50\\ \\text{kg}} = 1.96\\ \\text{m/s}^2$, which is $2.0\\ \\text{m/s}^2$ to two significant figures.",
+            "For the tension, take the cart alone. The tension is the only horizontal force on it: $T = (2.0\\ \\text{kg})(1.96\\ \\text{m/s}^2) = 3.9\\ \\text{N}$.",
+            "Check with the block alone: $4.9\\ \\text{N} - 3.9\\ \\text{N} = 1.0\\ \\text{N}$ downward, and $(0.50\\ \\text{kg})(1.96\\ \\text{m/s}^2) = 0.98\\ \\text{N}$. They agree to rounding. The tension is less than the block's weight, as it must be for the block to accelerate downward."
+          ],
+          "answer": "$a = 2.0\\ \\text{m/s}^2$ (the cart toward the pulley, the block downward); $T = 3.9\\ \\text{N}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m_1": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "m_2": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m_2*g/(m_1 + m_2)",
+            "unit": "m/s^2"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "force-implies-motion",
+          "wrong": "An object always moves in the direction of the net force on it.",
+          "right": "It accelerates in that direction. A car that is braking moves forward while the net force on it points backward; the force changes the velocity, it does not set it."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "At the top of its flight a ball thrown straight up is at rest, so the net force on it is zero.",
+          "right": "Its velocity is zero for an instant, but gravity still acts, so the net force is $mg$ downward and the acceleration is still $9.8\\ \\text{m/s}^2$ downward."
+        },
+        {
+          "wrong": "A string holding a hanging block always pulls with a force equal to the block's weight.",
+          "right": "Only if the block is not accelerating. If the block speeds up downward the tension is less than its weight, and if it speeds up upward the tension is more."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A net force of $12\\ \\text{N}$ acts on a $3\\ \\text{kg}$ cart. What is its acceleration? What if the same net force acts on a $6\\ \\text{kg}$ cart?",
+          "a": "$4\\ \\text{m/s}^2$, then $2\\ \\text{m/s}^2$. Doubling the mass halves the acceleration."
+        },
+        {
+          "q": "A car travelling east is slowing down. Which way does the net force on it point?",
+          "a": "West. Slowing down means the acceleration is opposite to the velocity, and the net force points the way the acceleration does."
+        },
+        {
+          "q": "A $1\\ \\text{kg}$ box and a $3\\ \\text{kg}$ box touch on a frictionless floor. A horizontal $8\\ \\text{N}$ push on the $1\\ \\text{kg}$ box moves both. Find their acceleration and the force between the boxes.",
+          "a": "As one system: $a = 8\\ \\text{N}/4\\ \\text{kg} = 2\\ \\text{m/s}^2$. The $3\\ \\text{kg}$ box alone is accelerated only by the contact force, so that force is $(3\\ \\text{kg})(2\\ \\text{m/s}^2) = 6\\ \\text{N}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..4 y=2\nsurf 4,2 4,0\nblock A 2,2 \"2 kg\"\npulley P 4.35,2.15 r=0.2\nrope A.r P.t\nrope P.r 4.55,1.2\nblock B 4.55,{{1.2-(0.5+0.1*m)}} w={{0.8+0.05*m}} h={{0.5+0.1*m}} \"{{m}} kg\"\nf A.t+0,0.3 right {{0.07*19.6*m/(2+m)}} \"T = {{round(196*m/(2+m))/10}} N\"\nf B.b down {{0.07*9.8*m}} \"weight = {{round(98*m)/10}} N\"\ntext 1.6,0.9 \"a = {{round(980*m/(2+m))/100}} m/s^2\"",
+        "caption": "A $2\\ \\text{kg}$ cart on a frictionless table is pulled by a hanging block. Make the block heavier: the acceleration rises toward $9.8\\ \\text{m/s}^2$ but never reaches it, and the tension is always less than the block's weight.",
+        "params": [
+          {
+            "name": "m",
+            "label": "Mass of the hanging block",
+            "min": 0.5,
+            "max": 4,
+            "step": 0.5,
+            "default": 1,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "2.2",
+        "2.4"
+      ],
+      "teacherNotes": "Have students write the sum of forces with signs before they write $ma$; substituting a single force for the net force is the most common error. In connected-object problems, the frequent mistake is setting the tension equal to the hanging weight. Asking \"if the tension equalled the weight, what would the block's acceleration be?\" usually resolves it. Set 2B has single objects and two-object systems."
+    },
+    {
+      "topic": "2.6",
+      "bigIdea": "Any two objects with mass attract each other with a gravitational force that grows with their masses and weakens with the square of the distance between their centers, and near a planet's surface this force on an object is its weight, $mg$.",
+      "picture": {
+        "diagram": "plot x=r[R_E] y=g[N/kg] xr=-0.8,4.2 yr=0,11\nfn 9.8/r^2 1..4\npt 1,9.8 \"surface\"\npt 2,2.45\npt 3,1.09\nxt 0 1 2 3 4\nyt 0 1.09 2.45 9.8",
+        "caption": "Earth's gravitational field strength against distance from Earth's center, measured in Earth radii. At twice the distance the field is a quarter as strong ($2.45\\ \\text{N/kg}$); at three times the distance it is a ninth ($1.09\\ \\text{N/kg}$)."
+      },
+      "explanation": "Newton's law of universal gravitation says that every pair of objects with mass attract each other, with a force $F_g = Gm_1m_2/r^2$ along the line joining them. Here $r$ is the distance between their *centers*, not between their surfaces. The constant $G$ is tiny, so the force is noticeable only when at least one object is as massive as a planet. Because of the $r^2$, doubling the distance cuts the force to a quarter. The two forces are a third-law pair: Earth pulls on you exactly as hard as you pull on Earth.\n\nIt is useful to describe what a planet does to the space around it. The **gravitational field**, $g = GM/r^2$, is the gravitational force per kilogram on any object placed at that point. Near Earth's surface $r$ is very nearly Earth's radius, so $g$ is nearly constant at $9.8\\ \\text{N/kg}$, and the force on an object is its **weight**, $F_g = mg$. Mass (in kilograms) is the same everywhere; weight (in newtons) depends on the local field.\n\nIf gravity is the only force on an object, its acceleration is $F_g/m = mg/m = g$. The mass cancels, so all objects in free fall at the same place share the same acceleration, and $1\\ \\text{N/kg}$ is the same as $1\\ \\text{m/s}^2$.\n\nWhat you feel as your weight, and what a scale reads, is not gravity itself but the normal force holding you up: your **apparent weight**. At rest it equals $mg$. In an elevator accelerating upward the floor must push harder, so you feel heavier; accelerating downward, lighter. In free fall the normal force is zero and you feel weightless, although gravity still acts.",
+      "equations": [
+        {
+          "latex": "F_g = G\\frac{m_1 m_2}{r^2}",
+          "meaning": "Two masses attract each other with a force proportional to both masses and inversely proportional to the square of the distance between their centers.",
+          "variables": [
+            {
+              "symbol": "F_g",
+              "name": "gravitational force on each object",
+              "unit": "N"
+            },
+            {
+              "symbol": "G",
+              "name": "universal gravitational constant, 6.67 × 10⁻¹¹",
+              "unit": "N·m^2/kg^2"
+            },
+            {
+              "symbol": "m_1,\\ m_2",
+              "name": "masses of the two objects",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the objects' centers",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The objects are far apart compared with their size, or are spheres: planets, moons, satellites.",
+          "notWhen": "Do not use the height above the surface for $r$; add the planet's radius."
+        },
+        {
+          "latex": "g = \\frac{GM}{r^2}",
+          "meaning": "The gravitational field of a planet, the force per kilogram it exerts, depends on the planet's mass and the distance from its center.",
+          "variables": [
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "N/kg"
+            },
+            {
+              "symbol": "G",
+              "name": "universal gravitational constant",
+              "unit": "N·m^2/kg^2"
+            },
+            {
+              "symbol": "M",
+              "name": "mass of the planet",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the planet's center",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Finding the field, or the free-fall acceleration, at a planet's surface or at some distance from it.",
+          "notWhen": "The mass of the object being pulled does not belong in this equation; the field is the same for every object at that point."
+        },
+        {
+          "latex": "F_g = mg",
+          "meaning": "An object's weight is its mass multiplied by the local gravitational field strength.",
+          "variables": [
+            {
+              "symbol": "F_g",
+              "name": "weight: the gravitational force on the object",
+              "unit": "N"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength, 9.8 near Earth's surface",
+              "unit": "N/kg"
+            }
+          ],
+          "useWhen": "The object is near a planet's surface, where the field is nearly constant.",
+          "notWhen": "It gives the gravitational force only. A scale reads the normal force, which differs from $mg$ when there is vertical acceleration."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Gravitational field at the surface of Mars",
+          "prompt": "Mars has a mass of $6.42 \\times 10^{23}\\ \\text{kg}$ and a radius of $3.39 \\times 10^{6}\\ \\text{m}$. What is the gravitational field strength at its surface? Use $G = 6.67 \\times 10^{-11}\\ \\text{N·m}^2/\\text{kg}^2$.",
+          "steps": [
+            "At the surface, the distance from the planet's center is its radius, so $g = \\dfrac{GM}{r^2}$ with $r = 3.39 \\times 10^{6}\\ \\text{m}$.",
+            "Numerator: $GM = (6.67 \\times 10^{-11})(6.42 \\times 10^{23}) = 4.28 \\times 10^{13}\\ \\text{N·m}^2/\\text{kg}$.",
+            "Denominator: $r^2 = (3.39 \\times 10^{6}\\ \\text{m})^2 = 1.15 \\times 10^{13}\\ \\text{m}^2$.",
+            "Divide: $g = \\dfrac{4.28 \\times 10^{13}}{1.15 \\times 10^{13}} = 3.7\\ \\text{N/kg}$.",
+            "This is a little over a third of Earth's value. An astronaut's mass is the same on Mars, but their weight there is only about $38\\%$ of their weight on Earth."
+          ],
+          "answer": "$g = 3.7\\ \\text{N/kg}$, the same as a free-fall acceleration of $3.7\\ \\text{m/s}^2$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "G": {
+                "value": 6.67e-11,
+                "unit": "N·m^2/kg^2"
+              },
+              "M": {
+                "value": 6.419999999999999e+23,
+                "unit": "kg"
+              },
+              "r": {
+                "value": 3390000,
+                "unit": "m"
+              }
+            },
+            "expr": "G*M/r^2",
+            "unit": "N/kg"
+          }
+        },
+        {
+          "title": "Scale reading in an elevator",
+          "prompt": "A $50\\ \\text{kg}$ student stands on a bathroom scale in an elevator. As the elevator starts to descend, it accelerates downward at $2.0\\ \\text{m/s}^2$. Determine the scale reading, in newtons, during this time and compare it with the student's weight. (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "The scale reads the normal force it exerts on the student, $F_N$. Two forces act on the student: gravity, $mg = (50\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 490\\ \\text{N}$ downward, and $F_N$ upward.",
+            "Take up as positive. The acceleration is downward, so $a = -2.0\\ \\text{m/s}^2$. Newton's second law gives $F_N - mg = ma$.",
+            "$F_N = m(g + a) = (50\\ \\text{kg})(9.8 - 2.0)\\ \\text{m/s}^2 = 390\\ \\text{N}$.",
+            "The student's weight is still $490\\ \\text{N}$: Earth pulls just as hard as before. The scale reads less because the net force must point downward, so the floor pushes up with less than the weight."
+          ],
+          "answer": "$F_N = 3.9 \\times 10^2\\ \\text{N}$, less than the student's weight of $4.9 \\times 10^2\\ \\text{N}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 50,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              },
+              "a": {
+                "value": 2,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*(g - a)",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "mass-weight-confusion",
+          "wrong": "An astronaut has less mass on the Moon than on Earth.",
+          "right": "Mass is the amount of matter and is the same everywhere. Weight, the gravitational force, is smaller on the Moon because the Moon's field is weaker."
+        },
+        {
+          "tag": "no-gravity-in-orbit",
+          "wrong": "Astronauts float in the space station because there is no gravity up there.",
+          "right": "At the station's height the field is still close to $90\\%$ of its surface value. The astronauts and the station are in free fall together, so nothing presses on them: their apparent weight is zero, not their weight."
+        },
+        {
+          "tag": "heavier-falls-faster",
+          "wrong": "Gravity pulls harder on a heavy object, so it falls faster than a light one.",
+          "right": "The force is larger, but so is the mass that has to be accelerated, by the same factor. With air resistance negligible, $a = mg/m = g$ for both."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The distance between the centers of two asteroids is tripled. What happens to the gravitational force between them?",
+          "a": "It falls to one ninth. The force is proportional to $1/r^2$, and $3^2 = 9$."
+        },
+        {
+          "q": "A planet has the same mass as Earth but twice its radius. What is the field strength at its surface?",
+          "a": "About $2.5\\ \\text{N/kg}$, a quarter of Earth's: $g = GM/r^2$, and doubling $r$ divides $g$ by four."
+        },
+        {
+          "q": "You stand on a scale in an elevator that is moving upward at constant speed. How does the reading compare with your weight?",
+          "a": "It equals your weight. The acceleration is zero, so the normal force balances gravity. Only acceleration changes the reading, not the direction of travel."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nblock A 3,3 w=1.2 h=0.9 \"60 kg\"\nf A.b down 1.5 \"F_g = 588 N\"\nf A.t up {{1.5*(9.8+a)/9.8}} \"F_N = {{round(60*(9.8+a))}} N\"\ntext 3,0.7 \"scale reads {{round(60*(9.8+a))}} N\"",
+        "caption": "A $60\\ \\text{kg}$ person stands on a scale in an elevator. Positive values are upward acceleration, negative are downward. The gravity arrow never changes; the normal force, which is what the scale reads, does.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Elevator's acceleration (up is positive)",
+            "min": -9,
+            "max": 5,
+            "step": 0.5,
+            "default": 0,
+            "unit": "m/s²"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.3",
+        "2.5"
+      ],
+      "teacherNotes": "Keep the words apart: mass in kilograms, weight in newtons, and apparent weight for the scale reading. Proportional-reasoning questions (what happens to the force if the distance triples?) are asked more often than full calculations, so practise them without a calculator. For elevators, have students predict heavier, lighter or the same from the direction of the acceleration before computing. Set 2C covers gravitation and apparent weight."
+    },
+    {
+      "topic": "2.7",
+      "bigIdea": "Friction acts along the surface where two objects touch and opposes their sliding: static friction adjusts, up to a maximum, to prevent slipping, and kinetic friction has a nearly constant size once sliding has begun.",
+      "picture": {
+        "diagram": "plot x=F_{pull}[N] y=f[N] xr=0,20 yr=0,12\nseg 0,0 10,10 10,6 20,6\nvl 10\nnote 5,11.3 \"at rest\"\nnote 15,11.3 \"sliding\"\nxt 0 5 10 15 20\nyt 0 6 10",
+        "caption": "A block that presses on a table with a normal force of $20\\ \\text{N}$ ($\\mu_s = 0.50$, $\\mu_k = 0.30$) is pulled horizontally with a slowly increasing force. While the block is at rest, static friction matches the pull, up to $10\\ \\text{N}$. Then the block breaks free and kinetic friction stays at $6\\ \\text{N}$."
+      },
+      "explanation": "When two surfaces touch, the force between them has two parts: the normal force, perpendicular to the surface, and friction, parallel to it. Friction comes in two kinds, and they follow different rules.\n\n**Static friction** acts when the surfaces are not sliding over each other. It does not have one fixed value. It is whatever size is needed to prevent slipping: push on a heavy crate with $10\\ \\text{N}$ and it stays put, so friction is $10\\ \\text{N}$; push with $50\\ \\text{N}$ and it still stays put, so friction is $50\\ \\text{N}$. This cannot go on for ever. Static friction has a maximum, $\\mu_s F_N$, and a push larger than that starts the crate sliding.\n\n**Kinetic friction** acts once the surfaces are sliding. In the model used in this course its size is $f_k = \\mu_k F_N$, whatever the speed and whatever the area of contact, and it points opposite to the sliding. The coefficients $\\mu_s$ and $\\mu_k$ are numbers with no unit that depend on the two materials. Usually $\\mu_k$ is smaller than $\\mu_s$, which is why a crate is harder to start moving than to keep moving.\n\nTwo cautions. First, $F_N$ is not automatically $mg$: on a ramp it is $mg\\cos\\theta$, and a rope pulling partly upward reduces it. Second, friction opposes sliding *between the surfaces*, which is not always opposite to an object's motion. When you walk, your foot pushes backward on the ground and static friction pushes you forward. A box on the bed of an accelerating truck is carried forward by static friction.",
+      "equations": [
+        {
+          "latex": "f_s \\le \\mu_s F_N",
+          "meaning": "Static friction is as large as it needs to be to prevent slipping, up to a maximum of the coefficient of static friction times the normal force.",
+          "variables": [
+            {
+              "symbol": "f_s",
+              "name": "static friction force",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\mu_s",
+              "name": "coefficient of static friction",
+              "unit": ""
+            },
+            {
+              "symbol": "F_N",
+              "name": "normal force between the surfaces",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "The surfaces are not sliding. Use the equals sign only when the object is on the point of slipping, or to test whether it will slip.",
+          "notWhen": "Do not set static friction equal to its maximum when the object is simply at rest; find it from the other forces instead."
+        },
+        {
+          "latex": "f_k = \\mu_k F_N",
+          "meaning": "Kinetic friction equals the coefficient of kinetic friction times the normal force.",
+          "variables": [
+            {
+              "symbol": "f_k",
+              "name": "kinetic friction force",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\mu_k",
+              "name": "coefficient of kinetic friction",
+              "unit": ""
+            },
+            {
+              "symbol": "F_N",
+              "name": "normal force between the surfaces",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "The surfaces are sliding over each other.",
+          "notWhen": "Do not replace the normal force with the weight unless the surface is level and no other force has a vertical part."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A car skidding to a stop",
+          "prompt": "A driver locks the brakes and a $1500\\ \\text{kg}$ car skids along a level road. The coefficient of kinetic friction between the tires and the road is $0.70$. What is the magnitude of the car's acceleration while it skids? (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "Three forces act on the car: gravity down, the normal force up, and kinetic friction pointing backward, opposite to the sliding.",
+            "The car does not accelerate vertically, so the normal force balances the weight: $F_N = mg = (1500\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 14\\,700\\ \\text{N}$.",
+            "Kinetic friction: $f_k = \\mu_k F_N = (0.70)(14\\,700\\ \\text{N}) = 10\\,290\\ \\text{N}$.",
+            "Friction is the net force, so $a = \\dfrac{f_k}{m} = \\dfrac{10\\,290\\ \\text{N}}{1500\\ \\text{kg}} = 6.9\\ \\text{m/s}^2$, directed backward.",
+            "Notice that the mass cancels: $a = \\mu_k g$. A heavier car skidding on the same road slows at the same rate."
+          ],
+          "answer": "$a = 6.9\\ \\text{m/s}^2$, directed opposite to the car's velocity",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 1500,
+                "unit": "kg"
+              },
+              "mu": {
+                "value": 0.7,
+                "unit": ""
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "mu*m*g/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "A block at rest on a ramp",
+          "prompt": "A $2.0\\ \\text{kg}$ block is placed on a ramp inclined at $25^\\circ$ to the horizontal and stays at rest. The coefficient of static friction between the block and the ramp is $0.60$. Determine the friction force on the block, and show that the block does not slide. (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "Three forces act: gravity down, the normal force perpendicular to the ramp, and static friction up the ramp, preventing the block sliding down.\n\n```dg\nfbd box \"m\" tilt=25 eq\nf down F_g 2\nf 115 F_N 1.81\nf 25 f_s 0.85\n```",
+            "Use axes along and perpendicular to the ramp. The weight is $mg = 19.6\\ \\text{N}$. Its part along the ramp is $mg\\sin 25^\\circ = 8.3\\ \\text{N}$, down the slope, and its part perpendicular to the ramp is $mg\\cos 25^\\circ = 17.8\\ \\text{N}$.",
+            "The block is at rest, so the forces balance along each axis: $F_N = 17.8\\ \\text{N}$ and $f_s = 8.3\\ \\text{N}$, up the ramp.",
+            "The largest static friction available is $\\mu_s F_N = (0.60)(17.8\\ \\text{N}) = 10.7\\ \\text{N}$. The block needs only $8.3\\ \\text{N}$, so it stays put. The friction force is $8.3\\ \\text{N}$, not $10.7\\ \\text{N}$: static friction supplies only what is needed."
+          ],
+          "answer": "$f_s = 8.3\\ \\text{N}$, up the ramp; this is below the maximum of $10.7\\ \\text{N}$, so the block does not slide",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              },
+              "theta": {
+                "value": 25,
+                "unit": "deg"
+              }
+            },
+            "expr": "m*g*sin(theta)",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "friction-always-opposes-motion",
+          "wrong": "The static friction force on an object at rest is always $\\mu_s F_N$.",
+          "right": "That is only its maximum. Static friction is whatever is needed to prevent slipping, anywhere from zero up to $\\mu_s F_N$. Find it from the other forces."
+        },
+        {
+          "tag": "friction-always-opposes-motion",
+          "wrong": "Friction always points opposite to the way an object is moving.",
+          "right": "Friction opposes sliding between the two surfaces. Static friction on a walker's foot, or on a box riding on an accelerating truck, points forward, in the direction of motion."
+        },
+        {
+          "tag": "normal-force-equals-weight",
+          "wrong": "The normal force in the friction equations is always $mg$.",
+          "right": "It is the actual force pressing the surfaces together. On a ramp it is $mg\\cos\\theta$, and an applied force with a vertical part raises or lowers it."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A crate's maximum static friction is $25\\ \\text{N}$. You push it horizontally with $10\\ \\text{N}$ and it does not move. How large is the friction force?",
+          "a": "$10\\ \\text{N}$. The crate is at rest, so friction exactly balances the push. It would reach $25\\ \\text{N}$ only if you pushed that hard."
+        },
+        {
+          "q": "A sled weighing $300\\ \\text{N}$ is pulled across level snow by a horizontal rope. The coefficient of kinetic friction is $0.20$. What pull keeps it moving at constant velocity?",
+          "a": "$60\\ \\text{N}$. The normal force equals the weight, so $f_k = (0.20)(300\\ \\text{N}) = 60\\ \\text{N}$, and at constant velocity the pull balances it."
+        },
+        {
+          "q": "A box rests on the flat bed of a truck that is speeding up, and it does not slip. Which force accelerates the box, and in which direction does it act?",
+          "a": "Static friction from the truck bed, pointing forward. Without it the box would stay behind as the truck moved out from under it."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=F_{pull}[N] y=f[N] xr=0,25 yr=0,24\nseg 0,0 {{0.5*N}},{{0.5*N}} {{0.5*N}},{{0.3*N}} 25,{{0.3*N}}\nnote 9,22.5 \"maximum f_s = {{0.5*N}} N\"\nnote 9,20 \"f_k = {{0.3*N}} N\"\nxt 0 5 10 15 20 25\nyt 0 5 10 15 20",
+        "caption": "The same surfaces ($\\mu_s = 0.50$, $\\mu_k = 0.30$) with a different normal force. Pressing the surfaces together harder raises both the maximum static friction and the kinetic friction in proportion.",
+        "params": [
+          {
+            "name": "N",
+            "label": "Normal force",
+            "min": 10,
+            "max": 40,
+            "step": 5,
+            "default": 20,
+            "unit": "N"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.4",
+        "2.5"
+      ],
+      "teacherNotes": "The most persistent error is writing $f_s = \\mu_s F_N$ for any object at rest. Give a case where the applied force is well below the maximum and ask for the friction force before introducing the inequality. The second is taking $F_N = mg$ on a ramp or under an angled pull; require a free-body diagram and a perpendicular-axis equation every time. Set 2C includes both static and kinetic cases."
+    },
+    {
+      "topic": "2.8",
+      "bigIdea": "An ideal spring pushes or pulls back toward its relaxed length with a force proportional to how far it has been stretched or compressed.",
+      "picture": {
+        "diagram": "scene\ntext 0.8,3.5 \"Relaxed\"\nwall 0 2..3.2\nground 0..7 y=2\nspring 0,2.35 3,2.35\nblock A 3.5,2 \"m\"\ntext 0.8,1.5 \"Stretched\"\nwall 0 0..1.2\nground 0..7\nspring 0,0.35 4.5,0.35\nblock B 5,0 \"m\"\nf B.t+0,0.25 left 1.5 \"F_s\"\ndash 3.5,-0.2 3.5,-1\ndash 5,-0.2 5,-1\ndim 3.5,-0.9 5,-0.9 \"\\Delta x\"",
+        "caption": "Top: the spring at its relaxed length exerts no force on the block. Bottom: the block has been pulled a distance $\\Delta x$ to the right, and the spring pulls it back to the left with a force of size $k\\,\\Delta x$."
+      },
+      "explanation": "Stretch a spring and it pulls back. Compress it and it pushes back. Either way the force on whatever is attached to its end points toward the position where the spring has its natural, relaxed length. A force that always points back toward such an equilibrium position is called a **restoring force**.\n\nFor an ideal spring (one with negligible mass that has not been stretched far enough to deform it permanently) the size of the force is proportional to the displacement from the relaxed position. This is Hooke's law, $\\vec{F}_s = -k\\,\\Delta\\vec{x}$. Here $\\Delta x$ is the *change* in the spring's length, not the length itself. The **spring constant** $k$, in newtons per metre, measures stiffness: the force needed for each metre of stretch. The minus sign carries the direction: the force is opposite to the displacement.\n\nUnlike weight, a spring force is not constant. It grows as the spring is stretched further and falls to zero at the relaxed length. So an object on a spring does not have a constant acceleration, and the constant-acceleration equations of Unit 1 do not apply to it. A graph of the force against the stretch is a straight line through the origin whose slope is $k$.\n\nHang an object from a spring and it stretches until the upward spring force balances the weight, $k\\,\\Delta x = mg$. Measuring that stretch for known weights is the standard way to find a spring constant, and it is how a spring scale works.",
+      "equations": [
+        {
+          "latex": "\\vec{F}_s = -k\\,\\Delta\\vec{x}",
+          "meaning": "The force an ideal spring exerts is proportional to its stretch or compression and points opposite to that displacement.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_s",
+              "name": "force exerted by the spring on the object attached to it",
+              "unit": "N"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "\\Delta\\vec{x}",
+              "name": "displacement of the spring's end from its relaxed position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "An ideal spring is stretched or compressed by a known amount, or you know the force and want the stretch.",
+          "notWhen": "Do not use the spring's total length for the displacement, and convert centimetres to metres when the spring constant is in N/m."
+        },
+        {
+          "latex": "k\\,\\Delta x = mg",
+          "meaning": "An object hanging at rest from a vertical spring stretches it until the spring force balances the object's weight.",
+          "variables": [
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "\\Delta x",
+              "name": "stretch of the spring from its relaxed length",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the hanging object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "N/kg"
+            }
+          ],
+          "useWhen": "The object hangs at rest (or moves at constant velocity) with only the spring and gravity acting.",
+          "notWhen": "Not while the object is bouncing: away from the equilibrium position the two forces do not balance."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A cart released on a stretched spring",
+          "prompt": "A $0.50\\ \\text{kg}$ cart on a level, low-friction track is attached to a horizontal spring with spring constant $80\\ \\text{N/m}$. The cart is pulled $0.15\\ \\text{m}$ from the spring's relaxed position and released. What is the magnitude of the cart's acceleration at the instant it is released?",
+          "steps": [
+            "Find the spring force from Hooke's law: $F_s = k\\,\\Delta x = (80\\ \\text{N/m})(0.15\\ \\text{m}) = 12\\ \\text{N}$, directed back toward the relaxed position.",
+            "Gravity and the normal force balance, and friction is negligible, so the spring force is the net force on the cart.",
+            "Apply Newton's second law: $a = \\dfrac{F_s}{m} = \\dfrac{12\\ \\text{N}}{0.50\\ \\text{kg}} = 24\\ \\text{m/s}^2$.",
+            "This holds only at the instant of release. When the cart is $0.05\\ \\text{m}$ from the relaxed position the force is $4.0\\ \\text{N}$ and the acceleration is $8.0\\ \\text{m/s}^2$; at the relaxed position both are zero."
+          ],
+          "answer": "$a = 24\\ \\text{m/s}^2$, toward the relaxed position",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 80,
+                "unit": "N/m"
+              },
+              "x": {
+                "value": 0.15,
+                "unit": "m"
+              },
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              }
+            },
+            "expr": "k*x/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "Spring constant from a graph",
+          "prompt": "A student hangs different weights from a spring and measures how far it stretches. The graph of force against stretch is a straight line through the origin that passes through the point ($0.080\\ \\text{m}$, $6.0\\ \\text{N}$). (a) Determine the spring constant. (b) Determine how far the spring stretches when a $0.50\\ \\text{kg}$ mass hangs from it at rest. (Use $g = 9.8\\ \\text{m/s}^2$.)\n\n```dg\nplot x=stretch[m] y=F[N] xr=0,0.12 yr=0,10\nseg 0,0 0.12,9\npt 0.08,6\nxt 0 0.04 0.08 0.12\nyt 0 3 6 9\n```",
+          "steps": [
+            "(a) For an ideal spring $F = k\\,\\Delta x$, so the slope of the force–stretch graph is the spring constant. The line passes through the origin and the given point.",
+            "$k = \\dfrac{6.0\\ \\text{N} - 0}{0.080\\ \\text{m} - 0} = 75\\ \\text{N/m}$.",
+            "(b) The mass hangs at rest, so the spring force balances its weight: $k\\,\\Delta x = mg$. The weight is $(0.50\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 4.9\\ \\text{N}$.",
+            "$\\Delta x = \\dfrac{4.9\\ \\text{N}}{75\\ \\text{N/m}} = 0.065\\ \\text{m}$. On the graph, a force of $4.9\\ \\text{N}$ does sit a little past $0.06\\ \\text{m}$, so the answer is consistent."
+          ],
+          "answer": "$k = 75\\ \\text{N/m}$; the hanging mass stretches the spring by $0.065\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "F": {
+                "value": 6,
+                "unit": "N"
+              },
+              "x": {
+                "value": 0.08,
+                "unit": "m"
+              }
+            },
+            "expr": "F/x",
+            "unit": "N/m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "wrong": "In Hooke's law, $\\Delta x$ is the length of the spring.",
+          "right": "It is the change in length from the relaxed length. A spring $20\\ \\text{cm}$ long when relaxed and stretched to $25\\ \\text{cm}$ has $\\Delta x = 5\\ \\text{cm}$."
+        },
+        {
+          "tag": "sign-error",
+          "wrong": "The minus sign in Hooke's law means the spring force is always negative.",
+          "right": "It means the force is opposite to the displacement. Stretch the spring in the positive direction and the force is negative; compress it in the negative direction and the force is positive."
+        },
+        {
+          "wrong": "A spring pushes with the same force throughout, so an object launched by a spring has constant acceleration.",
+          "right": "The force shrinks as the spring returns to its relaxed length, so the acceleration shrinks too. It is greatest at the start and zero at the relaxed position."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A force of $3.0\\ \\text{N}$ stretches a spring by $2.0\\ \\text{cm}$. How far does a force of $9.0\\ \\text{N}$ stretch it?",
+          "a": "$6.0\\ \\text{cm}$. Three times the force gives three times the stretch. (The spring constant is $150\\ \\text{N/m}$.)"
+        },
+        {
+          "q": "Spring A needs $10\\ \\text{N}$ to stretch $5\\ \\text{cm}$. Spring B needs $10\\ \\text{N}$ to stretch $2\\ \\text{cm}$. Which is stiffer?",
+          "a": "Spring B. It stretches less for the same force, so its spring constant is larger: $500\\ \\text{N/m}$ against $200\\ \\text{N/m}$."
+        },
+        {
+          "q": "A block on the end of a horizontal spring is pushed so that the spring is compressed, then held still. Which way does the spring push on the block?",
+          "a": "Away from the compressed spring, back toward the block's position when the spring was relaxed. A spring force always points toward the relaxed position."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nwall 0 0..1.4\nground 0..8\nspring 0,0.35 {{3.5+x/10}},0.35\nblock A {{4+x/10}},0 \"m\"\ndash 4,-0.05 4,-0.45\ntext 4,-0.7 \"relaxed position\"\nf A.t+0,0.25 right {{-x/10}} \"F_s = {{2*abs(x)}} N\"\ntext 4,-1.2 \"displacement = {{x}} cm\"",
+        "caption": "A block on a spring with $k = 200\\ \\text{N/m}$. Move the block either side of the relaxed position: the spring force always points back toward it and grows in proportion to the displacement.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Displacement from the relaxed position",
+            "min": -15,
+            "max": 15,
+            "step": 1,
+            "default": 10,
+            "unit": "cm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.5"
+      ],
+      "teacherNotes": "Have students measure or state the relaxed length first, so that $\\Delta x$ is clearly a change in length. Ask what the acceleration of a spring-launched cart is at several positions; students who answer with one number are treating the force as constant. For graphs, ask for the slope with its unit (N/m), and watch for centimetres left unconverted. Set 2D includes horizontal and hanging springs."
+    },
+    {
+      "topic": "2.9",
+      "bigIdea": "An object moving in a circle is always accelerating toward the center of the circle, so the real forces on it must add up to a net force toward the center of size $mv^2/r$.",
+      "picture": {
+        "diagram": "scene\ndash 4.5,2 4.487,2.196 4.449,2.388 4.386,2.574 4.299,2.75 4.19,2.913 4.061,3.061 3.913,3.19 3.75,3.299 3.574,3.386 3.388,3.449 3.196,3.487 3,3.5 2.804,3.487 2.612,3.449 2.426,3.386 2.25,3.299 2.087,3.19 1.939,3.061 1.81,2.913 1.701,2.75 1.614,2.574 1.551,2.388 1.513,2.196 1.5,2 1.513,1.804 1.551,1.612 1.614,1.426 1.701,1.25 1.81,1.087 1.939,0.939 2.087,0.81 2.25,0.701 2.426,0.614 2.612,0.551 2.804,0.513 3,0.5 3.196,0.513 3.388,0.551 3.574,0.614 3.75,0.701 3.913,0.81 4.061,0.939 4.19,1.087 4.299,1.25 4.386,1.426 4.449,1.612 4.487,1.804 4.5,2\ndot 3,2 \"center\"\nball B 4.5,2 r=0.18\nrope 3,2 B.l\nf B.t up 1.2 \"v\"\nf B.l+0,-0.3 left 0.9 \"a_c\"",
+        "caption": "A ball on a string circles at constant speed on a smooth table, seen from above. Its velocity is along the tangent to the circle. Its acceleration, and so the net force on it (here the string's tension), points toward the center."
+      },
+      "explanation": "Velocity is a vector, so it changes whenever its direction changes, even if the speed stays the same. An object moving around a circle is therefore always accelerating. For steady speed the acceleration points toward the center of the circle (it is called **centripetal**, \"center-seeking\") and has size $a_c = v^2/r$: larger for a higher speed or a tighter circle.\n\nBy Newton's second law, an acceleration toward the center needs a net force toward the center, of size $mv^2/r$. This \"centripetal force\" is not a new kind of force and never appears on a free-body diagram. It is the job done by real forces: tension for a ball on a string, static friction for a car on a flat curve, gravity for a satellite, the normal force for a car in a loop. Draw the real forces, take the direction toward the center as positive, and set the sum of the forces along that line equal to $mv^2/r$.\n\nIf the inward force disappears, the object does not fly outward. It carries on in a straight line along the tangent, as the first law says. No outward force acts on the object; the outward \"push\" you feel in a turning car is your body trying to go straight while the door pushes you inward.\n\nIn a vertical circle the forces change from point to point. At the bottom, the tension or normal force points toward the center and gravity away from it, so the supporting force exceeds the weight. At the top both point toward the center. For a satellite in a circular orbit gravity alone is the centripetal force, $GMm/r^2 = mv^2/r$, which gives $v = \\sqrt{GM/r}$ whatever the satellite's mass.",
+      "equations": [
+        {
+          "latex": "a_c = \\frac{v^2}{r}",
+          "meaning": "An object moving in a circle accelerates toward the center at its speed squared divided by the radius.",
+          "variables": [
+            {
+              "symbol": "a_c",
+              "name": "centripetal acceleration, directed toward the center",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the object",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the circle",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "An object follows a circle, or an arc of one, and you know its speed at that point.",
+          "notWhen": "It gives only the part of the acceleration toward the center. If the speed is also changing there is a part along the tangent as well."
+        },
+        {
+          "latex": "F_{\\text{net}} = \\frac{mv^2}{r}",
+          "meaning": "The net force toward the center on an object in circular motion equals its mass times its centripetal acceleration.",
+          "variables": [
+            {
+              "symbol": "F_{\\text{net}}",
+              "name": "net force along the line toward the center",
+              "unit": "N"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the object",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the circle",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "After drawing the real forces: add those toward the center, subtract those away from it, and set the result equal to this.",
+          "notWhen": "Do not add it to the free-body diagram as an extra force. It is the sum of the forces already there."
+        },
+        {
+          "latex": "v = \\frac{2\\pi r}{T}",
+          "meaning": "At constant speed, the speed is the circumference of the circle divided by the time for one lap.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "speed of the object",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "radius of the circle",
+              "unit": "m"
+            },
+            {
+              "symbol": "T",
+              "name": "period: the time for one complete circle",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You are given the time for one revolution, or the number of revolutions in a given time, instead of the speed.",
+          "notWhen": "Only for constant speed. Here $T$ is a time, not a tension."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Fastest speed around a flat curve",
+          "prompt": "A car rounds a flat, level curve of radius $50\\ \\text{m}$. The coefficient of static friction between the tires and the road is $0.80$. What is the greatest speed at which the car can take the curve without sliding? (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "Three forces act on the car: gravity down, the normal force up, and static friction, which is horizontal and points toward the center of the curve. (It is static because the tires are not sliding sideways.)",
+            "Vertically there is no acceleration, so $F_N = mg$.",
+            "Toward the center, friction is the only force, so it must supply the centripetal force: $f_s = \\dfrac{mv^2}{r}$. The fastest safe speed is the one that needs the maximum static friction, $\\mu_s F_N = \\mu_s mg$.",
+            "Set them equal: $\\mu_s mg = \\dfrac{mv^2}{r}$. The mass cancels, leaving $v = \\sqrt{\\mu_s g r}$.",
+            "$v = \\sqrt{(0.80)(9.8\\ \\text{m/s}^2)(50\\ \\text{m})} = \\sqrt{392\\ \\text{m}^2/\\text{s}^2} = 20\\ \\text{m/s}$ to two significant figures."
+          ],
+          "answer": "$v = 20\\ \\text{m/s}$, the same for a car of any mass",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "mu": {
+                "value": 0.8,
+                "unit": ""
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              },
+              "r": {
+                "value": 50,
+                "unit": "m"
+              }
+            },
+            "expr": "sqrt(mu*g*r)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Tension at the bottom of a vertical circle",
+          "prompt": "A $0.20\\ \\text{kg}$ ball on a string is swung in a vertical circle of radius $0.80\\ \\text{m}$. At the lowest point of the circle the ball's speed is $4.0\\ \\text{m/s}$. Determine the tension in the string at that point. (Use $g = 9.8\\ \\text{m/s}^2$.)",
+          "steps": [
+            "At the lowest point two forces act on the ball: the tension, straight up toward the center of the circle, and gravity, straight down, away from the center.\n\n```dg\nfbd dot\nf up T 3\nf down F_g 1\n```",
+            "Take the direction toward the center (up) as positive. The net force toward the center must equal $mv^2/r$: $T - mg = \\dfrac{mv^2}{r}$.",
+            "The centripetal acceleration is $\\dfrac{v^2}{r} = \\dfrac{(4.0\\ \\text{m/s})^2}{0.80\\ \\text{m}} = 20\\ \\text{m/s}^2$.",
+            "$T = m\\left(g + \\dfrac{v^2}{r}\\right) = (0.20\\ \\text{kg})(9.8 + 20)\\ \\text{m/s}^2 = 6.0\\ \\text{N}$.",
+            "The ball's weight is only about $2\\ \\text{N}$. The string must both support the ball and pull it out of a straight line, so the tension is about three times the weight."
+          ],
+          "answer": "$T = 6.0\\ \\text{N}$, about three times the ball's weight",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              },
+              "v": {
+                "value": 4,
+                "unit": "m/s"
+              },
+              "r": {
+                "value": 0.8,
+                "unit": "m"
+              }
+            },
+            "expr": "m*(g + v^2/r)",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "centrifugal-force",
+          "wrong": "A ball whirled on a string is pulled outward by a centrifugal force that balances the tension.",
+          "right": "If the forces balanced, the ball would move in a straight line. No outward force acts on it. The tension is unbalanced, and that is exactly what bends the path into a circle."
+        },
+        {
+          "tag": "centrifugal-force",
+          "wrong": "The free-body diagram needs a centripetal force as well as the tension, gravity and so on.",
+          "right": "Centripetal force is not an extra force. It is the name for the net inward force that the real forces already provide."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "An object moving in a circle at constant speed has zero acceleration.",
+          "right": "Its speed is constant but its velocity keeps changing direction, so it accelerates toward the center at $v^2/r$ and needs a net force."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A car takes the same curve at twice the speed. By what factor does the centripetal force it needs change?",
+          "a": "It becomes four times as large, because the force is proportional to $v^2$."
+        },
+        {
+          "q": "Which real force provides the centripetal force on (a) the Moon orbiting Earth, and (b) wet clothes in a spinning washing-machine drum?",
+          "a": "(a) Earth's gravitational pull on the Moon. (b) The normal force from the wall of the drum, pushing the clothes toward the center."
+        },
+        {
+          "q": "A ball is whirled in a horizontal circle on a string and the string snaps. Describe the ball's path, seen from above, just afterwards.",
+          "a": "A straight line along the tangent to the circle at the point where the string broke. With no inward force, the ball keeps the velocity it had at that instant."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndash 4.5,2 4.487,2.196 4.449,2.388 4.386,2.574 4.299,2.75 4.19,2.913 4.061,3.061 3.913,3.19 3.75,3.299 3.574,3.386 3.388,3.449 3.196,3.487 3,3.5 2.804,3.487 2.612,3.449 2.426,3.386 2.25,3.299 2.087,3.19 1.939,3.061 1.81,2.913 1.701,2.75 1.614,2.574 1.551,2.388 1.513,2.196 1.5,2 1.513,1.804 1.551,1.612 1.614,1.426 1.701,1.25 1.81,1.087 1.939,0.939 2.087,0.81 2.25,0.701 2.426,0.614 2.612,0.551 2.804,0.513 3,0.5 3.196,0.513 3.388,0.551 3.574,0.614 3.75,0.701 3.913,0.81 4.061,0.939 4.19,1.087 4.299,1.25 4.386,1.426 4.449,1.612 4.487,1.804 4.5,2\ndot 3,2 \"center\"\nball B 4.5,2 r=0.18\nrope 3,2 B.l\nf B.t up {{0.3*v}} \"v = {{v}} m/s\"\nf B.l+0,-0.3 left {{v*v/32}} \"T\"\ntext 3,0.2 \"tension T = {{round(10*v*v/3)/10}} N\"",
+        "caption": "A $0.5\\ \\text{kg}$ ball circles on a string of length $1.5\\ \\text{m}$ on a smooth table. Raise its speed: the tension needed grows with the square of the speed, so doubling the speed needs four times the tension.",
+        "params": [
+          {
+            "name": "v",
+            "label": "Speed",
+            "min": 2,
+            "max": 6,
+            "step": 0.5,
+            "default": 3,
+            "unit": "m/s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.5",
+        "2.2",
+        "2.5",
+        "2.6",
+        "2.7"
+      ],
+      "teacherNotes": "Ban the label \"centripetal force\" from free-body diagrams and ask instead \"which force, exerted by what, points toward the center?\" For vertical circles, have students draw the diagram at the top and at the bottom and write the inward-positive equation for each before using numbers; most errors are sign errors on the weight. Expect an outward force to reappear whenever a turning car is discussed. Set 2D covers horizontal and vertical circles and orbits."
+    }
+  ]
+}
