@@ -193,7 +193,7 @@ describe("generator", () => {
     await expect(generateProblems({ apTopic: "1.1", count: 50 }, call)).rejects.toThrow(
       /problems list/,
     );
-    expect(asked).toContain("Write 5 AP Physics 1 problems");
+    expect(asked).toContain("Write 10 AP Physics 1 problems");
   });
 
   test("multiple-choice answers given as a letter, a lettered option or the text all resolve", async () => {

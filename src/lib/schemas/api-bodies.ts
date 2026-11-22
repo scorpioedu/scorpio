@@ -120,6 +120,11 @@ export const cloneAssignmentBody = z.object({
       (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
       "must be a valid date",
     ),
+  /**
+   * How many problems of a published course set to copy (its first `count`; never more than it has).
+   * Omitted: the default 5. Ignored for any other source, which is copied whole.
+   */
+  count: z.number().int().min(3).max(100).optional(),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────
@@ -196,9 +201,12 @@ export const courseBody = z.object({
   /** Optional: settings every assignment in the class starts with (see src/lib/assignment-defaults.ts). */
   assignmentDefaults: assignmentDefaultsSchema.optional(),
 });
-export const courseAssignmentDefaultsBody = z.object({
-  assignmentDefaults: assignmentDefaultsSchema.nullable(),
-});
+// Either the class's settings (replaced whole, or cleared with null), or only the number of problems
+// the teacher last chose in the assign dialog (remembered beside the settings, which it leaves alone).
+export const courseAssignmentDefaultsBody = z.union([
+  z.strictObject({ assignmentDefaults: assignmentDefaultsSchema.nullable() }),
+  z.strictObject({ problemsPerSet: z.number().int().min(3).max(10) }),
+]);
 // PATCH /api/courses/{id}: the owner edits a class. Only what is sent changes.
 export const updateCourseBody = z
   .object({
@@ -441,7 +449,7 @@ export const contentGenerateBody = z.object({
   /** Which AP course the topic is in; topic ids repeat between courses. Default AP Physics 1. */
   apCourse: apCourseId.optional(),
   apTopic: apTopicId,
-  count: z.number().int().min(1).max(5),
+  count: z.number().int().min(1).max(10),
   difficulty: z.enum(["easy", "medium", "hard"]).optional(),
 });
 export const contentReviewBody = z.object({

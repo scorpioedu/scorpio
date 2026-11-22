@@ -31,6 +31,7 @@ import { setProfile } from "../src/data/curricula/profiles";
 import { CONTENT_FILES } from "../src/data/curricula/content-files";
 import { describeWithContent } from "../tests/helpers/course-content";
 import { validateDraftProblem } from "../src/lib/content/problem-format";
+import { verificationIsCurrent, type VerifiableDraft } from "../src/lib/content/verify";
 import { misconceptionTag, misconceptionUnits } from "../functions/src/misconceptions";
 import fs from "fs";
 import path from "path";
@@ -359,16 +360,23 @@ describeWithContent("reviewed content of every course", () => {
     expect(fs.existsSync(path.join(__dirname, "..", "content", "ap-physics-c-em"))).toBe(false);
   });
 
-  test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5, 140 problems each", () => {
+  test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5 to 10 problems each", () => {
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
       expect(hasContent(c)).toBe(true);
-      expect(c.sets.map((s) => s.draftIds.length)).toEqual(Array(28).fill(5));
+      expect(c.sets).toHaveLength(28);
+      for (const s of c.sets) {
+        expect([id, s.key, s.draftIds.length >= 5 && s.draftIds.length <= 10]).toEqual([
+          id,
+          s.key,
+          true,
+        ]);
+      }
       expect(c.description).not.toMatch(/planned|not written/i);
     }
   });
 
-  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed", () => {
+  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed or verified", () => {
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
       const drafts = load(id);
@@ -379,7 +387,14 @@ describeWithContent("reviewed content of every course", () => {
           expect([where, d.course]).toEqual([where, c.apCourse]);
           expect([where, d.apUnit]).toEqual([where, set.unit]);
           expect([where, set.topics.includes(d.apTopic)]).toEqual([where, true]);
-          expect([where, d.reviewKind]).toEqual([where, "ai"]);
+          // Nothing here was checked by a person: a draft is AI-reviewed, or carries the verifier's
+          // mark, which only counts while it is for the problem as it is now.
+          expect([where, ["ai", "verified"].includes(d.reviewKind ?? "")]).toEqual([where, true]);
+          if (d.reviewKind === "verified")
+            expect([where, verificationIsCurrent(d as unknown as VerifiableDraft)]).toEqual([
+              where,
+              true,
+            ]);
           expect([where, /a person still needs to check/.test(d.reviewNote ?? "")]).toEqual([
             where,
             true,

@@ -205,7 +205,7 @@ export async function generateProblems(
   input: { apTopic: string; count: number; difficulty?: Difficulty; apCourse?: ApCourseId },
   call: ModelCall,
 ): Promise<GeneratedDraft[]> {
-  const count = Math.max(1, Math.min(5, Math.floor(input.count)));
+  const count = Math.max(1, Math.min(10, Math.floor(input.count)));
   const course = input.apCourse ?? DEFAULT_AP_COURSE;
   const reply = await call({
     systemInstruction: generatorSystemInstruction(course),

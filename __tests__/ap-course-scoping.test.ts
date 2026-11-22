@@ -691,6 +691,10 @@ describe("content generator per course", () => {
 describe("request schemas and pickers", () => {
   test("generate: the course is optional and topics may have two-digit units", () => {
     expect(contentGenerateBody.safeParse({ apTopic: "4.2", count: 3 }).success).toBe(true);
+    // Up to 10 at a time: a set's pool holds 5 to 10 problems.
+    expect(contentGenerateBody.safeParse({ apTopic: "4.2", count: 10 }).success).toBe(true);
+    expect(contentGenerateBody.safeParse({ apTopic: "4.2", count: 11 }).success).toBe(false);
+    expect(contentGenerateBody.safeParse({ apTopic: "4.2", count: 0 }).success).toBe(false);
     expect(
       contentGenerateBody.safeParse({ apCourse: "physics-2", apTopic: "14.8", count: 5 }).success,
     ).toBe(true);
