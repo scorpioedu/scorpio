@@ -25,6 +25,25 @@ describe("misconception tag list", () => {
     }
   });
 
+  test("every tag id is unique kebab-case, with a non-empty label and description of its own", () => {
+    const ids = MISCONCEPTION_TAGS.map((t) => t.id);
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+    const labels = MISCONCEPTION_TAGS.map((t) => t.label.trim().toLowerCase());
+    expect(labels.filter((l, i) => labels.indexOf(l) !== i)).toEqual([]);
+    for (const t of MISCONCEPTION_TAGS) {
+      expect([t.id, /^[a-z0-9]+(-[a-z0-9]+)*$/.test(t.id)]).toEqual([t.id, true]);
+      expect([t.id, t.label.trim().length > 0, t.label === t.label.trim()]).toEqual([
+        t.id,
+        true,
+        true,
+      ]);
+      expect([t.id, t.description.trim().length > 0, t.description === t.description.trim()]).toEqual(
+        [t.id, true, true],
+      );
+      expect([t.id, ["conceptual", "procedural"].includes(t.category)]).toEqual([t.id, true]);
+    }
+  });
+
   test("every AP Physics 1 unit has at least two conceptual tags", () => {
     for (let unit = 1; unit <= 8; unit++) {
       const n = MISCONCEPTION_TAGS.filter(
