@@ -762,14 +762,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "The velocity measured from the ground is the real one; velocities measured from a moving car or train are only apparent.",
           "right": "Every velocity is relative to some frame, and the ground is just a convenient one. Measurements made in any frame are equally valid, as long as you say which frame they belong to."
         },
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "Two cars driving toward each other at $20\\ \\text{m/s}$ and $30\\ \\text{m/s}$ close on each other at $10\\ \\text{m/s}$.",
           "right": "Their velocities have opposite signs, so subtracting gives $v_{BA} = (-30) - (+20) = -50\\ \\text{m/s}$: they close at $50\\ \\text{m/s}$."
         },
         {
+          "tag": "relative-velocity-confusion",
           "wrong": "A passenger on a steadily moving train who drops a coin sees it land behind the point of release, because the train moves on while the coin falls.",
           "right": "Before it is dropped the coin is moving forward with the train, and nothing takes that forward velocity away. In the train's frame it starts at rest and falls straight down to the passenger's feet."
         }

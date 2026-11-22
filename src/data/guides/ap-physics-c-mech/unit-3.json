@@ -164,6 +164,7 @@
           "right": "Kinetic energy goes as the square of the speed, so twice the speed means four times the kinetic energy. It is momentum, $mv$, that doubles."
         },
         {
+          "tag": "energy-given-direction",
           "wrong": "An object moving in the negative direction has negative kinetic energy.",
           "right": "Kinetic energy is a scalar built from $v^2$, so it has no direction and is never negative. Only a change in kinetic energy can be negative, when the object slows down."
         },
@@ -651,6 +652,7 @@
           "right": "The force is the negative slope of $U(x)$, not its height. It is zero where the curve is flat, at minima and maxima, and strongest where the curve is steepest."
         },
         {
+          "tag": "conservative-force-confusion",
           "wrong": "Every force has a potential energy, so friction has one too.",
           "right": "Only conservative forces do. The work done by kinetic friction depends on the path and does not come back when the object returns, so no function of position can keep track of it."
         }
@@ -862,6 +864,7 @@
           "right": "That counts gravity twice. With Earth in the system, gravity appears as potential energy and does no external work. With the ball alone as the system, gravity does work and there is no potential energy. Choose one."
         },
         {
+          "tag": "conservative-force-confusion",
           "wrong": "On frictionless slides of the same height, the steeper one gives the greater speed at the bottom.",
           "right": "The speed at the bottom depends only on the height dropped, $v = \\sqrt{2gh}$. The steeper slide gets you there sooner, not faster."
         }

@@ -156,6 +156,7 @@
           "right": "The energy is proportional to the kelvin temperature, which goes from $293\\ \\text{K}$ to $313\\ \\text{K}$: an increase of about 7%, not 100%."
         },
         {
+          "tag": "pressure-force-confusion",
           "wrong": "Gas pressure is caused by the weight of the gas pressing down, so a gas pushes only on the bottom of its container.",
           "right": "Pressure comes from particles hitting the walls, and they move in every direction, so a gas pushes outward on every wall, the lid included."
         }
@@ -936,6 +937,7 @@
           "right": "The rate of conduction is inversely proportional to thickness. Doubling the thickness of a wall halves the rate at which it conducts energy; it is a larger area, not a greater thickness, that raises the rate."
         },
         {
+          "tag": "conduction-rate-factors",
           "wrong": "Specific heat and thermal conductivity both measure how easily a material heats up, so a material with a large value of one has a large value of the other.",
           "right": "Specific heat is about how much energy a temperature change takes; conductivity is about how fast energy travels through. Water has a very large specific heat and is a poor conductor."
         }

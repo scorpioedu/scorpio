@@ -164,6 +164,7 @@
           "right": "Momentum is $mv$: double the speed and it doubles. Kinetic energy is $\\tfrac{1}{2}mv^2$: double the speed and it quadruples. Momentum also has a direction; kinetic energy does not."
         },
         {
+          "tag": "momentum-mass-or-velocity-alone",
           "wrong": "The heavier object always has more momentum.",
           "right": "Momentum depends on mass and velocity together. A parked truck has zero momentum; a thrown baseball has more. Compare the products $mv$, not the masses."
         }
@@ -793,6 +794,7 @@
           "right": "Energy is conserved. The missing kinetic energy went into warming and deforming the objects and into sound."
         },
         {
+          "tag": "elastic-inelastic-confusion",
           "wrong": "Perfectly inelastic means the objects stop dead.",
           "right": "It means they stick together and share one velocity. They stop only if the total momentum was zero."
         }

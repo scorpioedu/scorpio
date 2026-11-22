@@ -871,6 +871,7 @@
           "right": "Conserve each component separately. The wreckage has $18\\,000$ east and $24\\,000$ north, a magnitude of $30\\,000\\ \\text{kg·m/s}$."
         },
         {
+          "tag": "elastic-inelastic-confusion",
           "wrong": "If the objects bounce apart, the collision was elastic.",
           "right": "Most collisions in which objects separate still lose kinetic energy. Elastic means the total kinetic energy is exactly unchanged, which in one dimension means they separate at the same relative speed they approached with."
         }

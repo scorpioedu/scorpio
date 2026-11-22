@@ -89,10 +89,12 @@
           "right": "For the system of car plus passenger that push is internal: the dashboard pushes back on the passenger just as hard, and the two forces add to zero. Only an external force, such as someone pushing from outside, can start the system moving."
         },
         {
+          "tag": "centre-of-mass-at-midpoint",
           "wrong": "The center of mass of two objects is halfway between them.",
           "right": "Only when the masses are equal. Otherwise each position is weighted by its mass, and the center of mass is closer to the heavier object."
         },
         {
+          "tag": "centre-of-mass-at-midpoint",
           "wrong": "The center of mass has to be a point inside the object's material.",
           "right": "It is an average position and can lie in empty space. The center of mass of a ring is at its center, where there is no material at all."
         }
@@ -704,6 +706,7 @@
           "right": "Its velocity is zero for an instant, but gravity still acts, so the net force is $mg$ downward and the acceleration is still $9.8\\ \\text{m/s}^2$ downward."
         },
         {
+          "tag": "tension-equals-weight",
           "wrong": "A string holding a hanging block always pulls with a force equal to the block's weight.",
           "right": "Only if the block is not accelerating. If the block speeds up downward the tension is less than its weight, and if it speeds up upward the tension is more."
         }
@@ -1242,6 +1245,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "spring-force-misread",
           "wrong": "In Hooke's law, $\\Delta x$ is the length of the spring.",
           "right": "It is the change in length from the relaxed length. A spring $20\\ \\text{cm}$ long when relaxed and stretched to $25\\ \\text{cm}$ has $\\Delta x = 5\\ \\text{cm}$."
         },
@@ -1251,6 +1255,7 @@
           "right": "It means the force is opposite to the displacement. Stretch the spring in the positive direction and the force is negative; compress it in the negative direction and the force is positive."
         },
         {
+          "tag": "constant-acceleration-assumed",
           "wrong": "A spring pushes with the same force throughout, so an object launched by a spring has constant acceleration.",
           "right": "The force shrinks as the spring returns to its relaxed length, so the acceleration shrinks too. It is greatest at the start and zero at the relaxed position."
         }

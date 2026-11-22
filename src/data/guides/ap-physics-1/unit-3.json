@@ -123,10 +123,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Twice the speed means twice the kinetic energy.",
           "right": "Kinetic energy depends on $v^2$, not on $v$. Twice the speed is four times the energy; three times the speed is nine times. Only doubling the mass doubles it."
         },
         {
+          "tag": "energy-given-direction",
           "wrong": "A cart moving in the negative direction has negative kinetic energy, so two carts heading toward each other can have zero kinetic energy between them.",
           "right": "Kinetic energy has no direction and is never negative: the speed is squared. Two $1\\ \\text{kg}$ carts each moving at $2\\ \\text{m/s}$ have $2\\ \\text{J}$ each and $4\\ \\text{J}$ together, whichever way they move."
         },
@@ -348,6 +350,7 @@
           "right": "The bag does not move, so no work is done on it. You tire because your muscles use up chemical energy inside your body, not because energy is transferred to the bag."
         },
         {
+          "tag": "constant-acceleration-assumed",
           "wrong": "For a force that changes, the work is the final (or the largest) force times the distance.",
           "right": "The work is the area under the force–position graph. A force that rises steadily from $0$ to $6\\ \\text{N}$ over $2\\ \\text{m}$ does $\\tfrac{1}{2}(2)(6) = 6\\ \\text{J}$ of work, not $12\\ \\text{J}$."
         }
@@ -547,10 +550,12 @@
           "right": "The zero level is a free choice, and anything below it has negative $U_g$. Only changes in $U_g$ have physical meaning, and they come out the same for every choice, as long as one zero is kept throughout a problem."
         },
         {
+          "tag": "potential-energy-of-one-object",
           "wrong": "The ball has potential energy, in the same way that it has mass.",
           "right": "Potential energy is stored in an interaction, so it belongs to a system: the ball and the Earth together. A single object on its own, with nothing to interact with, has no potential energy."
         },
         {
+          "tag": "energy-given-direction",
           "wrong": "A compressed spring has negative potential energy, because its change in length is negative.",
           "right": "$\\Delta x$ is squared, so $U_s$ is positive whether the spring is stretched or compressed. Either way, energy had to be put in to deform it, and it can be given back."
         },

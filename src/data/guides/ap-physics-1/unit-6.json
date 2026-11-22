@@ -169,6 +169,7 @@
           "right": "Only the rim moves that fast. Points nearer the axis are slower, and the centre is not moving at all. Adding up every piece gives $\\tfrac{1}{2}I\\omega^2$, which for a solid disc is $\\tfrac{1}{4}Mv_{\\text{rim}}^2$, half of the wrong answer."
         },
         {
+          "tag": "rolling-ignores-rotation",
           "wrong": "An object whose centre of mass is at rest has no kinetic energy.",
           "right": "A fan or flywheel on a fixed axle has a stationary centre of mass and zero linear momentum, but its pieces are moving, so it has rotational kinetic energy."
         },
@@ -392,10 +393,12 @@
           "right": "The angle must be in radians. A quarter turn is $\\pi/2 = 1.57\\ \\text{rad}$, so the work is $(3\\ \\text{N·m})(1.57\\ \\text{rad}) = 4.7\\ \\text{J}$."
         },
         {
+          "tag": "energy-force-confusion",
           "wrong": "Torque is measured in $\\text{N·m}$, which is the same as a joule, so a torque of $10\\ \\text{N·m}$ means $10\\ \\text{J}$ of energy.",
           "right": "Torque is a twist, not an amount of energy. It does work only when the object turns, and then the work is the torque multiplied by the angle in radians."
         },
         {
+          "tag": "work-sign",
           "wrong": "Every force acting on a rotating object does work on it.",
           "right": "A force whose line of action passes through the axis, such as the axle's support force, exerts no torque and does no work as the object turns: the point it acts on does not move."
         }
@@ -618,6 +621,7 @@
           "right": "$L = I\\omega$, and $I$ depends on how the mass is spread. A hoop has twice the angular momentum of a solid disc of the same mass, radius and angular velocity."
         },
         {
+          "tag": "rotation-axis-ignored",
           "wrong": "An object has one angular momentum, whatever axis you measure it about.",
           "right": "Angular momentum is always about a particular axis. The same moving ball has a large angular momentum about a distant axis, a small one about a near axis, and none about an axis on its line of motion."
         }
@@ -816,6 +820,7 @@
           "right": "The clay brings no angular momentum, but it adds rotational inertia. The same angular momentum is now shared by a larger rotational inertia, so the angular speed drops."
         },
         {
+          "tag": "momentum-kinetic-energy-confusion",
           "wrong": "Angular momentum is conserved when the skater pulls in her arms, so her rotational kinetic energy is conserved too.",
           "right": "They are different quantities. With $L$ fixed, $K = L^2/(2I)$ rises as $I$ falls. The extra energy comes from the work she does pulling her arms inward."
         },
@@ -1014,6 +1019,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "rolling-ignores-rotation",
           "wrong": "A ball that rolls down a ramp of height $h$ reaches the bottom at $\\sqrt{2gh}$, the same as a block sliding without friction.",
           "right": "Some of the potential energy becomes rotational kinetic energy, so less is left for forward motion. The speed is $\\sqrt{2gh/(1 + c)}$, always below $\\sqrt{2gh}$."
         },
@@ -1270,10 +1276,12 @@
           "right": "No outward force acts. If the forces balanced, the satellite would move in a straight line. Gravity alone, unbalanced, is the centripetal force that keeps bending its path around the planet."
         },
         {
+          "tag": "orbit-speed-confusion",
           "wrong": "Energy is conserved in orbit, so a satellite in an elliptical orbit moves at the same speed all the way round.",
           "right": "The total is conserved, not each part. As the distance changes, energy passes between potential and kinetic, so the satellite is fastest when closest and slowest when farthest. Only in a circular orbit is the speed constant."
         },
         {
+          "tag": "orbit-speed-confusion",
           "wrong": "A heavier spacecraft needs a higher escape speed.",
           "right": "The spacecraft's mass cancels: $v_{\\text{esc}} = \\sqrt{2GM/r}$ contains only the planet's mass and the starting distance. A heavier craft needs more energy to reach that speed, but the speed is the same."
         }

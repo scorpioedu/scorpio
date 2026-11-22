@@ -125,14 +125,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "density-mass-confusion",
           "wrong": "A big block of a material is denser than a small piece of it, because it has more mass.",
           "right": "The big block has more mass and, in the same proportion, more volume. Density is the ratio, so every piece of a uniform material has the same density, whatever its size or shape."
         },
         {
+          "tag": "density-mass-confusion",
           "wrong": "The denser of two objects is always the heavier one.",
           "right": "Density compares masses for equal volumes. A steel bolt is far denser than a foam mattress, yet the mattress has more mass because it is so much bigger. To compare masses you need $\\rho V$, not $\\rho$ alone."
         },
         {
+          "tag": "unit-conversion",
           "wrong": "There are 100 centimetres in a metre, so $1\\ \\text{g/cm}^3$ is $100\\ \\text{kg/m}^3$.",
           "right": "Volume is length cubed, so a cubic metre holds $100^3 = 10^6$ cubic centimetres. That gives $10^6\\ \\text{g} = 1000\\ \\text{kg}$ in each cubic metre: $1\\ \\text{g/cm}^3 = 1000\\ \\text{kg/m}^3$."
         }
@@ -357,10 +360,12 @@
           "right": "Pressure at the bottom depends on the depth, not on how much water there is. The wide tank's water does push on its bottom with a larger force, but over a larger area, and force divided by area comes out the same."
         },
         {
+          "tag": "pressure-force-confusion",
           "wrong": "The pressure in a liquid pushes downward only, because it comes from weight.",
           "right": "The weight of the fluid above is the cause, but at any point the fluid pushes equally in all directions, always perpendicular to whatever surface it touches: sideways on a dam, upward on the hull of a boat."
         },
         {
+          "tag": "gauge-absolute-pressure-confusion",
           "wrong": "Ten metres down in a lake the pressure on a diver is $\\rho g h = 98\\ \\text{kPa}$.",
           "right": "That is the gauge pressure, the part caused by the water. The atmosphere presses on the lake's surface too, so the absolute pressure is $101 + 98 = 199\\ \\text{kPa}$, about twice atmospheric."
         }
@@ -593,6 +598,7 @@
           "right": "The pressure is greater, but on the top and the bottom of the object alike. The buoyant force is the difference between those pushes, which is the same at any depth once the object is fully under."
         },
         {
+          "tag": "density-mass-confusion",
           "wrong": "Heavy objects sink and light objects float.",
           "right": "What matters is density compared with the fluid's, not weight. A pebble sinks and a cargo ship floats, because the ship's hull encloses so much air that its average density is below that of water. A sinking object still feels a buoyant force, just one smaller than its weight."
         }
@@ -805,6 +811,7 @@
           "right": "The water is incompressible, so it is not squeezed; it speeds up instead, and the volume passing each second stays the same. Speeding up needs a net forward force, so the pressure behind, in the wide section, must be the higher one."
         },
         {
+          "tag": "flow-rate-speed-confusion",
           "wrong": "Water leaves a bigger hole faster, and leaves faster from a tank that holds more water.",
           "right": "The exit speed is $\\sqrt{2g\\,\\Delta y}$: it depends only on how far the hole is below the surface. A bigger hole lets out more water each second, at the same speed."
         },

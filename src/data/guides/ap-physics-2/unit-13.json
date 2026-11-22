@@ -323,6 +323,7 @@
      "right": "You see a virtual image every time you look in a bathroom mirror. Light actually passes through a real image, so a screen can catch it; light only appears to come from a virtual one."
     },
     {
+     "tag": "focal-length-equals-radius",
      "wrong": "The focal point is at the centre of the sphere the mirror is cut from, so $f = R$.",
      "right": "A ray through the centre $C$ hits the mirror head-on and returns the way it came. Parallel rays cross halfway out, at $f = R/2$."
     }

@@ -151,6 +151,7 @@
           "right": "Zero field means the potential does not change from place to place, not that it is zero. The inside of a charged sphere is at the surface value, $kQ/R$."
         },
         {
+          "tag": "conductor-interior-field",
           "wrong": "A metal shell shields both ways, so a charge hidden in its cavity makes no field outside.",
           "right": "An isolated shell keeps outside fields out of its cavity, but not the reverse: $+q$ in the cavity leaves $+q$ on the outer surface, which makes a field outside. Only a grounded shell hides the charge."
         }
@@ -312,6 +313,7 @@
       ],
       "misconceptions": [
         {
+          "tag": "charge-shared-equally",
           "wrong": "When two conductors are connected, charge flows until each has the same amount.",
           "right": "Charge flows until the potentials are equal. For distant spheres that puts the charge in proportion to the radii; only identical conductors split it evenly."
         },
@@ -321,6 +323,7 @@
           "right": "In a metal only electrons are free to move. Electrons flow from the neutral sphere to the positive one, which leaves the neutral sphere positive."
         },
         {
+          "tag": "induction-grounding-misread",
           "wrong": "Grounding a conductor always leaves it with no charge.",
           "right": "Grounding fixes its potential at zero. Alone, that means no net charge. Near a charged rod, a grounded conductor holds a net charge opposite in sign to the rod's."
         }
@@ -553,6 +556,7 @@
           "right": "With no battery, it is the charge that cannot change. The capacitance falls, so $\\Delta V = Q/C$ rises. The potential difference stays fixed only while a battery is connected."
         },
         {
+          "tag": "capacitor-net-charge",
           "wrong": "A capacitor charged to $Q$ has a net charge of $Q$.",
           "right": "One plate has $+Q$ and the other $-Q$, so the net charge is zero. Charging a capacitor moves charge from one plate to the other; it does not add any."
         },

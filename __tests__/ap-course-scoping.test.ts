@@ -57,8 +57,8 @@ jest.mock("../src/lib/ai/config", () => ({ model: { generateContent: jest.fn() }
 
 const tag = (id: string) => misconceptionTag(id)!;
 // How many tags AP Physics 2 and C: Mechanics had before C: E&M was added (any-unit ones included).
-const P2_TAGS = 78;
-const MECH_TAGS = 45;
+const P2_TAGS = 98;
+const MECH_TAGS = 64;
 
 describe("misconception tags per AP course", () => {
   test("the functions bundle and the web app agree on the courses and their unit numbers", () => {
@@ -107,14 +107,14 @@ describe("misconception tags per AP course", () => {
       }
   });
 
-  test("AP Physics 1 keeps exactly the tags it had: the ones with Physics 1 units, plus the any-unit ones", () => {
+  test("AP Physics 1 has exactly the tags with Physics 1 units, plus the any-unit ones", () => {
     const before = MISCONCEPTION_TAGS.filter((t) => t.units.length || !t.courseUnits).map(
       (t) => t.id,
     );
     expect(misconceptionsForCourse("physics-1").map((t) => t.id)).toEqual(before);
     expect(misconceptionsForCourse().map((t) => t.id)).toEqual(before);
-    // 37 mechanics tags + 7 procedural slips + "other", as before the other courses.
-    expect(before).toHaveLength(45);
+    // 61 tags with Physics 1 units (mechanics and fluids) + 7 procedural slips + "other".
+    expect(before).toHaveLength(69);
     expect(misconceptionsForUnit(4).map((t) => t.id)).toEqual(
       MISCONCEPTION_TAGS.filter(
         (t) => t.units.includes(4) || (!t.units.length && !t.courseUnits),
@@ -123,8 +123,9 @@ describe("misconception tags per AP course", () => {
     const list = misconceptionPromptList();
     expect(list).toContain("- force-implies-motion:");
     expect(list).not.toContain("current-used-up");
-    expect(list).not.toContain("constant-acceleration-assumed");
-    expect(list.split("\n")).toHaveLength(38);
+    expect(list).not.toContain("initial-conditions-ignored");
+    expect(list).toContain("- constant-acceleration-assumed:");
+    expect(list.split("\n")).toHaveLength(62);
   });
 
   test("AP Physics 2 has its own tags and borrows the few mechanics ideas that carry over", () => {
@@ -146,13 +147,19 @@ describe("misconception tags per AP course", () => {
 
   test("C: Mechanics reuses the mechanics tags under the same unit numbers, without fluids", () => {
     expect(misconceptionUnits(tag("force-implies-motion"), "physics-c-mech")).toEqual([2]);
-    expect(misconceptionUnits(tag("graph-as-picture"), "physics-c-mech")).toEqual([1, 7]);
+    expect(misconceptionUnits(tag("graph-as-picture"), "physics-c-mech")).toEqual([1, 3, 4, 7]);
     expect(
       misconceptionUnits(tag("buoyancy-depends-on-object-weight"), "physics-c-mech"),
     ).toBeNull();
     expect(misconceptionUnits(tag("constant-acceleration-assumed"), "physics-c-mech")).toContain(1);
     expect(misconceptionUnits(tag("rolling-ignores-rotation"), "physics-c-mech")).toEqual([6]);
-    expect(misconceptionUnits(tag("rolling-ignores-rotation"))).toBeNull();
+    expect(misconceptionUnits(tag("rolling-ignores-rotation"))).toEqual([6]);
+    expect(misconceptionUnits(tag("initial-conditions-ignored"), "physics-c-mech")).toEqual([1, 2, 7]);
+    expect(misconceptionUnits(tag("initial-conditions-ignored"))).toBeNull();
+    expect(misconceptionUnits(tag("tension-equals-weight"), "physics-c-mech")).toEqual([2, 5]);
+    expect(misconceptionUnits(tag("parallel-axis-misused"), "physics-c-mech")).toEqual([5, 6, 7]);
+    expect(misconceptionUnits(tag("parallel-axis-misused"))).toEqual([5, 6]);
+    expect(misconceptionUnits(tag("density-mass-confusion"), "physics-c-mech")).toBeNull();
     expect(misconceptionUnits(tag("heat-temperature-confusion"), "physics-c-mech")).toBeNull();
     for (const course of AP_COURSE_IDS)
       expect(misconceptionUnits(tag("sign-error"), course)).toEqual([]);
@@ -167,7 +174,11 @@ describe("misconception tags per AP course", () => {
     expect(misconceptionUnits(tag("field-force-confusion"), em)).toEqual([8]);
     expect(misconceptionUnits(tag("field-potential-zero-together"), em)).toEqual([9]);
     expect(misconceptionUnits(tag("conductor-interior-field"), em)).toEqual([10]);
-    expect(misconceptionUnits(tag("capacitance-depends-on-charge"), em)).toEqual([10, 11]);
+    expect(misconceptionUnits(tag("capacitance-depends-on-charge"), em)).toEqual([10, 11, 13]);
+    expect(misconceptionUnits(tag("capacitor-net-charge"), em)).toEqual([10, 11]);
+    expect(misconceptionUnits(tag("current-split-wrong"), em)).toEqual([11]);
+    expect(misconceptionUnits(tag("energy-scaled-linearly"), em)).toEqual([9, 10, 13]);
+    expect(misconceptionUnits(tag("energy-scaled-linearly"), "physics-2")).toEqual([10]);
     expect(misconceptionUnits(tag("magnetic-force-does-work"), em)).toEqual([12]);
     expect(misconceptionUnits(tag("lenz-opposes-field"), em)).toEqual([13]);
     expect(misconceptionUnits(tag("lenz-opposes-field"), "physics-2")).toEqual([12]);
@@ -175,12 +186,13 @@ describe("misconception tags per AP course", () => {
     expect(misconceptionUnits(tag("third-law-unequal-forces"))).toEqual([2, 4]);
     expect(misconceptionUnits(tag("derivative-integral-confusion"), em)).toEqual([9, 11, 13]);
     expect(misconceptionUnits(tag("derivative-integral-confusion"), "physics-c-mech")).toEqual([
-      1, 3, 4, 5,
+      1, 3, 4, 5, 6,
     ]);
-    // Every AP Physics 2 tag of units 10-12 is offered in C: E&M; none of the other units' is.
+    // Every AP Physics 2 tag of units 10-12 is offered in C: E&M; none of the other units' is,
+    // unless the tag names C: E&M units of its own.
     for (const t of MISCONCEPTION_TAGS) {
       const p2 = t.courseUnits?.["physics-2"];
-      if (!p2) continue;
+      if (!p2 || t.courseUnits?.["physics-c-em"]) continue;
       const shared = p2.some((u) => u >= 10 && u <= 12);
       expect([t.id, misconceptionUnits(t, em) !== null]).toEqual([t.id, shared]);
     }
@@ -211,6 +223,8 @@ describe("misconception tags per AP course", () => {
       "distribution-as-point-charge",
       "potential-gradient-sign",
       "dielectric-misapplied",
+      "plate-field-misused",
+      "nonuniform-treated-as-uniform",
       "time-constant-misread",
       "ampere-law-without-symmetry",
       "emf-from-flux-not-rate",
@@ -664,7 +678,7 @@ describe("content generator per course", () => {
     const mech = validateDraftProblem(
       {
         ...base,
-        distractors: [{ answer: "48 A", misconception: "constant-acceleration-assumed" }],
+        distractors: [{ answer: "48 A", misconception: "initial-conditions-ignored" }],
       },
       "2.5",
       "physics-c-mech",
@@ -673,7 +687,7 @@ describe("content generator per course", () => {
     const p1 = validateDraftProblem(
       {
         ...base,
-        distractors: [{ answer: "48 A", misconception: "constant-acceleration-assumed" }],
+        distractors: [{ answer: "48 A", misconception: "initial-conditions-ignored" }],
       },
       "2.5",
     );

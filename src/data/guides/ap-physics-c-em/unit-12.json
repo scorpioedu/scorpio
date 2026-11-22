@@ -201,6 +201,7 @@
           "right": "Poles are not charges. A magnetic field exerts no force on a charge at rest; only moving charges and other dipoles feel it."
         },
         {
+          "tag": "magnetic-poles-as-charges",
           "wrong": "Magnetic field lines start on the north pole and stop on the south pole.",
           "right": "They continue through the magnet from south back to north and close on themselves. That is the content of $\\oint \\vec{B}\\cdot d\\vec{A} = 0$."
         }
@@ -1015,6 +1016,7 @@
           "right": "The law still holds, but $B$ comes out of the integral only when symmetry makes it constant along the path. For a short segment it is not, and the Biot–Savart law is needed."
         },
         {
+          "tag": "flux-field-confusion",
           "wrong": "If a path encloses no net current, the magnetic field is zero everywhere on it.",
           "right": "Only the integral round the path is zero. A loop drawn beside a wire has field all along it; the parts where $\\vec{B}$ runs with the path cancel the parts where it runs against."
         }

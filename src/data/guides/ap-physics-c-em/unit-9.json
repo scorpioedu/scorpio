@@ -718,6 +718,7 @@
           "right": "$U = qV$ and the electron's charge is negative, so its energy there is $-100\\ \\text{eV}$: lower, not higher. High potential is low potential energy for a negative charge."
         },
         {
+          "tag": "energy-scaled-linearly",
           "wrong": "Doubling the accelerating potential difference doubles the particle's final speed.",
           "right": "It doubles the kinetic energy. Since $K = \\tfrac{1}{2}mv^2$, the speed rises by a factor of $\\sqrt{2} \\approx 1.4$."
         }

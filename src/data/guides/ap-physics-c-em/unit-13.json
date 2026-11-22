@@ -129,10 +129,12 @@
      "right": "Only the field component perpendicular to the loop passes through it: $\\Phi_B = BA\\cos\\theta$. Turn the loop edge-on and the flux is zero even though $B$ and $A$ have not changed."
     },
     {
+     "tag": "flux-ignores-orientation",
      "wrong": "The $\\theta$ in $BA\\cos\\theta$ is the angle between the field and the loop.",
      "right": "It is the angle between the field and the area vector, which is perpendicular to the loop. A loop whose plane is at $30°$ to the field has $\\theta = 60°$."
     },
     {
+     "tag": "nonuniform-treated-as-uniform",
      "wrong": "When the field varies over the loop, use the field at the centre times the area.",
      "right": "That works only if the field varies linearly. In general, integrate $B\\,dA$ over strips on which the field is constant."
     }
@@ -837,6 +839,7 @@
      "right": "It pushes against the change. When the current is falling, the emf acts in the same direction as the current and tries to keep it flowing."
     },
     {
+     "tag": "capacitance-depends-on-charge",
      "wrong": "Since $L = N\\Phi_B/I$, doubling the current halves the inductance.",
      "right": "Doubling the current doubles the flux, so the ratio is unchanged. Inductance depends only on the coil's geometry (and any core), just as $C = Q/V$ does not depend on the charge."
     }
@@ -1283,6 +1286,7 @@
      "right": "At that instant the current is at its maximum, and the inductor keeps it flowing, recharging the capacitor with the opposite polarity."
     },
     {
+     "tag": "period-depends-on-amplitude",
      "wrong": "Starting with more charge on the capacitor makes the circuit oscillate faster.",
      "right": "The frequency is $1/\\sqrt{LC}$ and does not depend on the amplitude. More charge gives a larger maximum current, in proportion, but the same period."
     }
