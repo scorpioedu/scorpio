@@ -71,6 +71,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AssignDialog } from "./assign-dialog";
+import { parseProblemsPerSet } from "@/lib/assignment-defaults";
 import { CourseStats } from "./course-stats";
 import { UnitFilter } from "./unit-filter";
 import { CourseCalendar } from "./calendar/course-calendar";
@@ -760,6 +761,7 @@ export default function CoursesClient() {
           unitLabel={assigning.label}
           className={selected.name}
           sets={assigning.sets}
+          problemsPerSet={parseProblemsPerSet(selected.assignmentDefaults)}
           start={start}
           spacing={spacing}
           isSchoolDay={isSchoolDay}

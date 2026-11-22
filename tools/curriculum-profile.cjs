@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
  * Builds the per-set profile the course unit pages show: problem count, estimated minutes, difficulty
- * mix, question types and the misconceptions the wrong answers target. Reads only repo files
+ * mix, question types and the misconceptions the wrong answers target, for the whole set and (`each`)
+ * problem by problem in question order, so the pages can describe an assignment of the first n
+ * problems (src/data/curricula/profiles.ts, `prefixProfile`). Reads only repo files
  * (the course definition and the exported drafts in content/<curriculumId>/), never Firestore.
  *
  *   node tools/curriculum-profile.cjs                 # check: exits 1 if the committed file is stale
@@ -39,32 +41,51 @@ function buildProfile(curriculum, drafts) {
   for (const set of curriculum.sets) {
     // A planned set (no problems written yet) has no profile.
     if (!set.draftIds.length) continue;
-    const difficulty = { easy: 0, medium: 0, hard: 0 };
-    const types = {};
-    const tags = new Map();
-    let minutes = 0;
-    for (const id of set.draftIds) {
+    const each = set.draftIds.map((id) => {
       const problem = drafts.get(id)?.problem;
       if (!problem) throw new Error(`Set ${set.key}: draft ${id} is not in the content files`);
-      const level = problem.difficulty in difficulty ? problem.difficulty : "medium";
-      difficulty[level] += 1;
-      types[problem.type] = (types[problem.type] ?? 0) + 1;
-      minutes += problemMinutes(problem);
-      // One problem counts once per tag, however many of its wrong answers carry it.
-      const seen = new Set((problem.distractors ?? []).map((d) => d.misconception).filter(Boolean));
-      for (const tag of seen) tags.set(tag, (tags.get(tag) ?? 0) + 1);
-    }
-    out[set.key] = {
-      problems: set.draftIds.length,
-      minutes: Math.ceil(minutes),
-      difficulty,
-      types: Object.fromEntries(Object.entries(types).sort(([a], [b]) => a.localeCompare(b))),
-      misconceptions: [...tags.entries()]
-        .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
-        .map(([tag, problems]) => ({ tag, problems })),
-    };
+      return {
+        minutes: problemMinutes(problem),
+        difficulty: LEVELS.includes(problem.difficulty) ? problem.difficulty : "medium",
+        type: problem.type,
+        // One problem counts once per tag, however many of its wrong answers carry it.
+        tags: [
+          ...new Set((problem.distractors ?? []).map((d) => d.misconception).filter(Boolean)),
+        ].sort(),
+      };
+    });
+    out[set.key] = { ...summarise(each), each };
   }
   return out;
+}
+
+const LEVELS = ["easy", "medium", "hard"];
+
+/**
+ * The summary of a run of problems. src/data/curricula/profiles.ts (`prefixProfile`) does the same
+ * sums for the first n problems; a test keeps the two in step.
+ * @param {{ minutes: number, difficulty: string, type: string, tags: string[] }[]} each
+ */
+function summarise(each) {
+  const difficulty = { easy: 0, medium: 0, hard: 0 };
+  const types = {};
+  const tags = new Map();
+  let minutes = 0;
+  for (const problem of each) {
+    difficulty[problem.difficulty] += 1;
+    types[problem.type] = (types[problem.type] ?? 0) + 1;
+    minutes += problem.minutes;
+    for (const tag of problem.tags) tags.set(tag, (tags.get(tag) ?? 0) + 1);
+  }
+  return {
+    problems: each.length,
+    minutes: Math.ceil(minutes),
+    difficulty,
+    types: Object.fromEntries(Object.entries(types).sort(([a], [b]) => a.localeCompare(b))),
+    misconceptions: [...tags.entries()]
+      .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
+      .map(([tag, problems]) => ({ tag, problems })),
+  };
 }
 
 function loadDrafts(curriculumId) {
@@ -109,5 +130,5 @@ function main(argv) {
   return 1;
 }
 
-module.exports = { buildProfile, loadDrafts, problemMinutes };
+module.exports = { buildProfile, loadDrafts, problemMinutes, summarise };
 if (require.main === module) process.exit(main(process.argv.slice(2)));

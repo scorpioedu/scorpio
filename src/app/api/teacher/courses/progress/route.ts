@@ -68,6 +68,7 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
         curriculumId: d.data().curriculumId,
         curriculumSetKey: d.data().curriculumSetKey,
         dueDate: toDate(d.data().dueDate),
+        questionCount: Array.isArray(d.data().questions) ? d.data().questions.length : 0,
       }))
       .filter((a) => typeof a.curriculumSetKey === "string");
     const asked = req.nextUrl.searchParams.get("curriculumId");
@@ -114,6 +115,11 @@ async function handleGet(req: NextRequest, { caller, requestId }: AuthorizedCont
           ? buildUnitInsights(curriculumId, events, {
               studentsByUnit: studentsByUnit(courseSets, submissions),
               assignedKeys: courseSets.map((a) => a.curriculumSetKey as string),
+              assignedCounts: Object.fromEntries(
+                courseSets
+                  .filter((a) => a.questionCount > 0)
+                  .map((a) => [a.curriculumSetKey as string, a.questionCount]),
+              ),
               skippedKeys:
                 course.curriculumId === curriculumId
                   ? normalisePlan(curriculumId, course.curriculumPlan).skipped

@@ -23,7 +23,7 @@ import {
   getCurriculum,
   type CurriculumSet,
 } from "@/data/curricula";
-import { setProfile } from "@/data/curricula/profiles";
+import { shownProfile } from "@/data/curricula/profiles";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -445,11 +445,12 @@ export default function LibraryPage() {
 
 function SetRow({ row, onOpen }: { row: Row; onOpen: () => void }) {
   const { item, set } = row;
-  const profile = set && item.curriculumId ? setProfile(item.curriculumId, set.key) : undefined;
-  const problems = profile?.problems ?? item.questionCount;
+  // A course set is copied with its first five problems, so that is what the row describes.
+  const profile = set && item.curriculumId ? shownProfile(item.curriculumId, set.key) : undefined;
+  const problems = item.questionCount;
   const course = apCourseOf(item.apCourse);
   const facts = [
-    `${problems} ${problems === 1 ? "problem" : "problems"}`,
+    profile?.count ?? `${problems} ${problems === 1 ? "problem" : "problems"}`,
     profile ? `about ${profile.minutes} min` : null,
     item.forkCount > 0 ? `used ${item.forkCount} ${item.forkCount === 1 ? "time" : "times"}` : null,
     !set && item.teacherName ? `by ${item.teacherName}` : null,

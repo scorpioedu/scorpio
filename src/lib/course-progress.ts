@@ -121,7 +121,7 @@ export type ReteachAction = "whole-class" | "small-group" | "individual";
 export interface ReteachPractice {
   key: string;
   title: string;
-  /** Problems in the set whose wrong answers target the misconception. */
+  /** Problems the class has (or would get by default) whose wrong answers target the misconception. */
   problems: number;
   assigned: boolean;
 }
@@ -200,6 +200,11 @@ export function buildUnitInsights(
     assignedKeys: readonly string[];
     /** Set keys the class skips; never suggested. */
     skippedKeys?: readonly string[];
+    /**
+     * Questions in the class's copy of a set, by set key. A set is counted by the problems the class
+     * has (or, not assigned yet, would get by default), not by everything the set holds.
+     */
+    assignedCounts?: Readonly<Record<string, number>>;
   },
 ): UnitInsight[] {
   const course = getCurriculum(curriculumId)?.apCourse;
@@ -221,7 +226,7 @@ export function buildUnitInsights(
       },
     );
     const top = report.top.slice(0, TOP_PER_UNIT).map((row) => {
-      const practice = setsTargeting(curriculumId, row.tag)
+      const practice = setsTargeting(curriculumId, row.tag, context.assignedCounts)
         // New practice comes only from this unit: a set from a unit the class has not reached
         // would need material it has not been taught. Sets already assigned can be gone over.
         .filter((s) => assigned.has(s.key) || (keyUnit(s.key) === unit && !skipped.has(s.key)))

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { apTopic, misconceptionTag } from "@/data/ap";
 import { getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
-import { setProfile, typeSummary } from "@/data/curricula/profiles";
+import { shownProfile, typeSummary } from "@/data/curricula/profiles";
 import { assignmentHref } from "@/lib/assignment-actions";
 import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course-board";
 import type { ReteachAction, UnitInsight } from "@/lib/course-progress";
@@ -68,6 +68,11 @@ const RETEACH: Record<ReteachAction, { label: string; Icon: typeof Users; tone: 
 };
 
 /** The chosen class is on another course (or none): say so instead of showing this unit. */
+
+/** A set as the class has it (its copy's own size) or, not assigned yet, as it is assigned by default. */
+const shown = (curriculumId: string, s: RoadmapSet) =>
+  shownProfile(curriculumId, s.set.key, s.assigned ? s.questionCount : null);
+
 function OtherCourse({
   curriculum,
   selected,
@@ -223,7 +228,7 @@ export default function UnitGuideClient({
   const targeted = useMemo(() => {
     const byTag = new Map<string, string[]>();
     for (const s of roadmapUnit?.sets ?? [])
-      for (const m of setProfile(curriculumId, s.set.key)?.misconceptions ?? [])
+      for (const m of shown(curriculumId, s)?.misconceptions ?? [])
         byTag.set(m.tag, [...(byTag.get(m.tag) ?? []), s.set.key]);
     return [...byTag.entries()].sort((a, b) => b[1].length - a[1].length);
   }, [curriculumId, roadmapUnit]);
@@ -250,7 +255,7 @@ export default function UnitGuideClient({
   const hasClass = written && !!selected;
   // Nothing about the class is said until its assignments have loaded (no "0 of 4" flash).
   const classReady = hasClass && classLoaded && published !== null;
-  const profiles = roadmapUnit.sets.map((s) => setProfile(curriculumId, s.set.key));
+  const profiles = roadmapUnit.sets.map((s) => shown(curriculumId, s));
   const problems = profiles.reduce((n, p) => n + (p?.problems ?? 0), 0);
   const minutes = profiles.reduce((n, p) => n + (p?.minutes ?? 0), 0);
   const topics = [...new Set(roadmapUnit.sets.flatMap((s) => s.set.topics))];
@@ -360,7 +365,7 @@ export default function UnitGuideClient({
         <TabsContent value="sets">
           <ol className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
             {roadmapUnit.sets.map((s) => {
-              const p = setProfile(curriculumId, s.set.key);
+              const p = shown(curriculumId, s);
               const st: SetStatus = status.get(s.set.key) ?? "upNext";
               const result = s.assigned ? progress?.sets[s.set.key] : undefined;
               const outOf = result ? Math.max(students, result.submitted) : 0;
@@ -403,7 +408,7 @@ export default function UnitGuideClient({
                     </p>
                     {p && (
                       <p className="text-xs text-muted-foreground">
-                        {plural(p.problems, "problem")} ({typeSummary(p)}) ·{" "}
+                        {p.count} ({typeSummary(p)}) ·{" "}
                         {(["easy", "medium", "hard"] as const)
                           .filter((d) => p.difficulty[d] > 0)
                           .map((d) => `${p.difficulty[d]} ${d}`)

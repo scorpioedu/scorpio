@@ -20,6 +20,44 @@
         "tag": "gas-variable-in-isolation",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "celsius-as-absolute"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "celsius-as-absolute"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "gas-variable-in-isolation"
+        ]
+      }
     ]
   },
   "9B": {
@@ -51,6 +89,49 @@
         "tag": "heat-temperature-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "conduction-rate-factors"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "specific-heat-ignored"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "celsius-as-absolute"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "heat-temperature-confusion",
+          "specific-heat-ignored"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "conduction-rate-factors"
+        ]
+      }
     ]
   },
   "9C": {
@@ -77,6 +158,51 @@
       {
         "tag": "energy-not-conserved",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "energy-not-conserved",
+          "thermal-work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "thermal-work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "thermal-work-sign"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "isothermal-adiabatic-confusion",
+          "thermal-work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "isothermal-adiabatic-confusion",
+          "thermal-work-sign"
+        ]
       }
     ]
   },
@@ -109,6 +235,49 @@
         "tag": "thermal-work-sign",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "thermal-work-sign"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "entropy-never-decreases-locally"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "celsius-as-absolute",
+          "engine-converts-all-heat"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "engine-converts-all-heat"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "celsius-as-absolute"
+        ]
+      }
     ]
   },
   "10A": {
@@ -139,6 +308,46 @@
       {
         "tag": "third-law-unequal-forces",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "inverse-square-misapplied"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "field-direction-ignores-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "third-law-unequal-forces"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "charging-moves-positive-charge"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
       }
     ]
   },
@@ -171,6 +380,47 @@
         "tag": "inverse-square-misapplied",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "field-direction-ignores-sign",
+          "inverse-square-misapplied"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "conductor-interior-field"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "field-force-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "field-direction-ignores-sign"
+        ]
+      }
     ]
   },
   "10C": {
@@ -202,6 +452,50 @@
         "tag": "vector-scalar-superposition",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "inverse-square-misapplied",
+          "potential-energy-potential-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "inverse-square-misapplied"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "field-potential-zero-together"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "field-potential-zero-together",
+          "vector-scalar-superposition"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "potential-energy-potential-confusion"
+        ]
+      }
     ]
   },
   "10D": {
@@ -228,6 +522,45 @@
       {
         "tag": "potential-energy-potential-confusion",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "capacitor-wrong-quantity-fixed"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "capacitor-wrong-quantity-fixed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-not-conserved",
+          "potential-energy-potential-confusion"
+        ]
       }
     ]
   },
@@ -260,6 +593,48 @@
         "tag": "series-parallel-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "current-used-up"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "field-direction-ignores-sign"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "sequential-circuit-reasoning",
+          "series-parallel-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "current-used-up",
+          "sequential-circuit-reasoning"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      }
     ]
   },
   "11B": {
@@ -290,6 +665,47 @@
       {
         "tag": "voltage-current-confusion",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "power-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "terminal-voltage-equals-emf"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "series-parallel-confusion",
+          "terminal-voltage-equals-emf"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "voltage-current-confusion"
+        ]
       }
     ]
   },
@@ -326,6 +742,47 @@
         "tag": "series-parallel-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "series-parallel-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "sequential-circuit-reasoning"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "junction-rule-ignored"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "battery-constant-current",
+          "current-used-up"
+        ]
+      }
     ]
   },
   "11D": {
@@ -357,6 +814,46 @@
         "tag": "series-parallel-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "capacitor-steady-current"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "battery-constant-current",
+          "rc-linear-change"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "capacitor-steady-current",
+          "series-parallel-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      }
     ]
   },
   "12A": {
@@ -383,6 +880,46 @@
       {
         "tag": "magnetic-poles-as-charges",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "magnetic-poles-as-charges"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "vector-scalar-superposition"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "vector-scalar-superposition"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
       }
     ]
   },
@@ -411,6 +948,43 @@
         "tag": "magnetic-force-does-work",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "field-direction-ignores-sign",
+          "magnetic-force-along-field"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "magnetic-force-does-work"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      }
     ]
   },
   "12C": {
@@ -433,6 +1007,43 @@
       {
         "tag": "third-law-unequal-forces",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "third-law-unequal-forces",
+          "wire-field-not-circular"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "wire-field-not-circular"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
       }
     ]
   },
@@ -461,6 +1072,44 @@
         "tag": "lenz-opposes-field",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "induction-needs-change"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "lenz-opposes-field"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      }
     ]
   },
   "13A": {
@@ -484,6 +1133,46 @@
         "tag": "real-virtual-image-confusion",
         "problems": 2
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "plane-mirror-image-location"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "real-virtual-image-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "real-virtual-image-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "plane-mirror-image-location"
+        ]
+      }
     ]
   },
   "13B": {
@@ -506,6 +1195,49 @@
       {
         "tag": "real-virtual-image-confusion",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "optics-sign-convention"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "optics-sign-convention"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "optics-sign-convention"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "real-virtual-image-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "optics-sign-convention",
+          "real-virtual-image-confusion"
+        ]
       }
     ]
   },
@@ -534,6 +1266,51 @@
         "tag": "total-internal-reflection-direction",
         "problems": 2
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "refraction-wrong-way"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "frequency-changes-in-medium",
+          "total-internal-reflection-direction"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "refraction-wrong-way"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "frequency-changes-in-medium",
+          "refraction-wrong-way",
+          "total-internal-reflection-direction"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "refraction-wrong-way"
+        ]
+      }
     ]
   },
   "13D": {
@@ -560,6 +1337,47 @@
       {
         "tag": "real-virtual-image-confusion",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "optics-sign-convention"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "partial-lens-partial-image"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "optics-sign-convention"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "optics-sign-convention",
+          "real-virtual-image-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
       }
     ]
   },
@@ -588,6 +1406,46 @@
         "tag": "wave-carries-matter",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "wave-speed-depends-on-source"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "wave-carries-matter"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "frequency-changes-in-medium"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "wave-speed-depends-on-source"
+        ]
+      }
     ]
   },
   "14B": {
@@ -610,6 +1468,42 @@
       {
         "tag": "light-speed-varies-in-vacuum",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "boundary-phase-change"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "light-speed-varies-in-vacuum"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
       }
     ]
   },
@@ -638,6 +1532,49 @@
         "tag": "wave-speed-depends-on-source",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "standing-wave-harmonics"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "superposition-not-temporary"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "standing-wave-harmonics"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "standing-wave-harmonics",
+          "wave-speed-depends-on-source"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "standing-wave-harmonics"
+        ]
+      }
     ]
   },
   "14D": {
@@ -665,6 +1602,46 @@
         "tag": "interference-condition-swapped",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "slit-width-pattern-width"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "interference-condition-swapped"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "slit-width-pattern-width"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "boundary-phase-change"
+        ]
+      }
     ]
   },
   "15A": {
@@ -683,6 +1660,42 @@
       {
         "tag": "intensity-sets-photon-energy",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "intensity-sets-photon-energy"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "intensity-sets-photon-energy"
+        ]
       }
     ]
   },
@@ -706,6 +1719,47 @@
       {
         "tag": "emission-absorption-confusion",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "photon-energy-is-level-energy"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "emission-absorption-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "photon-energy-is-level-energy"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "emission-absorption-confusion",
+          "photon-energy-is-level-energy"
+        ]
       }
     ]
   },
@@ -734,6 +1788,48 @@
         "tag": "photon-slows-when-losing-energy",
         "problems": 2
       }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "blackbody-peak-wrong-way",
+          "celsius-as-absolute"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "blackbody-peak-wrong-way",
+          "celsius-as-absolute"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "photon-slows-when-losing-energy"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "photon-slows-when-losing-energy"
+        ]
+      }
     ]
   },
   "15D": {
@@ -760,6 +1856,48 @@
       {
         "tag": "half-life-linear",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "mass-conserved-in-nuclear-reactions"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "nucleon-charge-bookkeeping"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "mass-conserved-in-nuclear-reactions"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "half-life-linear"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "nucleon-charge-bookkeeping"
+        ]
       }
     ]
   }
