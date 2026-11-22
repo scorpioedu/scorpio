@@ -9,10 +9,7 @@
       "unit": 1,
       "title": "Vectors and the calculus of motion",
       "description": "Vector components, and velocity and acceleration as derivatives and integrals.",
-      "topics": [
-        "1.1",
-        "1.2"
-      ],
+      "topics": ["1.1", "1.2"],
       "draftIds": [
         "fp7B18Qozu9XWDmm4dfe",
         "ViR1hlZa64KzjVZ4uII4",
@@ -31,9 +28,7 @@
       "unit": 1,
       "title": "Representing motion",
       "description": "Motion graphs and equations for constant and changing acceleration.",
-      "topics": [
-        "1.3"
-      ],
+      "topics": ["1.3"],
       "draftIds": [
         "9DppJUuhYHAJrkzkkQsn",
         "LItq6qNpphvoF3Y8mKN9",
@@ -52,9 +47,7 @@
       "unit": 1,
       "title": "Reference frames and relative motion",
       "description": "Velocities measured from frames that move relative to each other.",
-      "topics": [
-        "1.4"
-      ],
+      "topics": ["1.4"],
       "draftIds": [
         "L2cgbMXZC6yUBWLIQYWy",
         "mzmjhOAuD7mF9ddbDxUS",
@@ -73,9 +66,7 @@
       "unit": 1,
       "title": "Motion in two and three dimensions",
       "description": "Projectiles and vector kinematics with independent components.",
-      "topics": [
-        "1.5"
-      ],
+      "topics": ["1.5"],
       "draftIds": [
         "lLOJN28JoYjBPWwV7Y2K",
         "7YZmydObvXNoQF7Gakef",
@@ -94,10 +85,7 @@
       "unit": 2,
       "title": "Systems, center of mass and free-body diagrams",
       "description": "Choosing a system, locating its center of mass and drawing its forces.",
-      "topics": [
-        "2.1",
-        "2.2"
-      ],
+      "topics": ["2.1", "2.2"],
       "draftIds": [
         "7W6qGSrEpPDe5lg8ht4m",
         "uDzAJDSvAbzCrl6JoX9I",
@@ -116,11 +104,7 @@
       "unit": 2,
       "title": "Newton's laws",
       "description": "Third-law pairs, equilibrium and net force with acceleration.",
-      "topics": [
-        "2.3",
-        "2.4",
-        "2.5"
-      ],
+      "topics": ["2.3", "2.4", "2.5"],
       "draftIds": [
         "O8BVtLfJe9hqCmFdt04z",
         "qJRdXQMzyx3QG13x8aAE",
@@ -139,11 +123,7 @@
       "unit": 2,
       "title": "Gravity, friction and springs",
       "description": "Universal gravitation, friction models and Hooke's law.",
-      "topics": [
-        "2.6",
-        "2.7",
-        "2.8"
-      ],
+      "topics": ["2.6", "2.7", "2.8"],
       "draftIds": [
         "m5GyN2O9B4C7SB91pxzM",
         "HAsk2TQ2yPdiUc9xcxUg",
@@ -162,10 +142,7 @@
       "unit": 2,
       "title": "Drag and circular motion",
       "description": "Velocity-dependent resistive forces, terminal velocity and centripetal acceleration.",
-      "topics": [
-        "2.9",
-        "2.10"
-      ],
+      "topics": ["2.9", "2.10"],
       "draftIds": [
         "BsqOX7a9Ha0i9S9Jzj6A",
         "28cBXOg9UE3sMUvADm0Q",
@@ -184,10 +161,7 @@
       "unit": 3,
       "title": "Kinetic energy and work",
       "description": "Work as an integral of force and the work-energy theorem.",
-      "topics": [
-        "3.1",
-        "3.2"
-      ],
+      "topics": ["3.1", "3.2"],
       "draftIds": [
         "uvUylPp2F0nfbdcWXZ76",
         "dZYtrgsbpk5JFfmZBoNN",
@@ -206,9 +180,7 @@
       "unit": 3,
       "title": "Potential energy",
       "description": "Conservative forces and potential energy functions U(x).",
-      "topics": [
-        "3.3"
-      ],
+      "topics": ["3.3"],
       "draftIds": [
         "RVvwkUcSANsHwdSzOzdr",
         "ZWD7bi9tydrAhP0n1XEz",
@@ -227,9 +199,7 @@
       "unit": 3,
       "title": "Conservation of energy",
       "description": "Energy accounting with and without nonconservative forces.",
-      "topics": [
-        "3.4"
-      ],
+      "topics": ["3.4"],
       "draftIds": [
         "pd6h0Vp1s8YE0DRCw9s2",
         "c2H4GDZfLwC7FTWhYwtd",
@@ -248,9 +218,7 @@
       "unit": 3,
       "title": "Power",
       "description": "Rate of energy transfer, including P = F dot v.",
-      "topics": [
-        "3.5"
-      ],
+      "topics": ["3.5"],
       "draftIds": [
         "veeVDTzq0Qb7Hu2twHE9",
         "kyhyb3Prs3MA989ZTR7K",
@@ -269,9 +237,7 @@
       "unit": 4,
       "title": "Momentum of objects and systems",
       "description": "Momentum as a vector for single objects and systems.",
-      "topics": [
-        "4.1"
-      ],
+      "topics": ["4.1"],
       "draftIds": [
         "E76rwvEKZMpM0kBLzDVm",
         "1WQaNkxYNfzRZnOXHuPp",
@@ -290,9 +256,7 @@
       "unit": 4,
       "title": "Impulse",
       "description": "Impulse as the integral of force over time and force-time graphs.",
-      "topics": [
-        "4.2"
-      ],
+      "topics": ["4.2"],
       "draftIds": [
         "ZeaImChSXPlyR1PKF8m5",
         "xyTqo2OGxg6W1XSmrF7g",
@@ -311,9 +275,7 @@
       "unit": 4,
       "title": "Conservation of momentum",
       "description": "Isolated systems, center-of-mass velocity and explosions.",
-      "topics": [
-        "4.3"
-      ],
+      "topics": ["4.3"],
       "draftIds": [
         "f2iSIzhIw2ESPGS2fMhc",
         "u4lfXdax9TZGag21QIsj",
@@ -332,9 +294,7 @@
       "unit": 4,
       "title": "Collisions",
       "description": "Elastic and inelastic collisions in one and two dimensions.",
-      "topics": [
-        "4.4"
-      ],
+      "topics": ["4.4"],
       "draftIds": [
         "0E35wT5KFiKAPqVFwRo9",
         "9xv9VsU14sf2b51SQC4A",
@@ -353,16 +313,18 @@
       "unit": 5,
       "title": "Rotational kinematics",
       "description": "Angular quantities with calculus, and their link to linear motion.",
-      "topics": [
-        "5.1",
-        "5.2"
-      ],
+      "topics": ["5.1", "5.2"],
       "draftIds": [
         "pkCkWmbnW6mMlRhnifmB",
         "7FnaxU0u5iEqJAds399Z",
         "J9AfaRCNjteJIJeGstAR",
         "mWXTMkZ0EEUVlXtleHzi",
-        "X0vrGEe5dBOBWLKMdivK"
+        "X0vrGEe5dBOBWLKMdivK",
+        "uS7VHaDAZyIO7rICsRJ8",
+        "ss1bgNryX534wcbuHkfy",
+        "DHE3GlHq63MumF4HYtJz",
+        "y9dRgRCLnqh9AO9pM18G",
+        "1h5VIqIuhmwHKYiw42Tm"
       ]
     },
     {
@@ -370,15 +332,18 @@
       "unit": 5,
       "title": "Torque",
       "description": "Torque as a cross product: lever arms and direction.",
-      "topics": [
-        "5.3"
-      ],
+      "topics": ["5.3"],
       "draftIds": [
         "7ML8li60pccHuq58MgyC",
         "eGtPtdzILv24BdE31T3b",
         "NvqSzbkUipSpBUqCWvQM",
         "pxEIAquVZmCc4lgNVSlu",
-        "7PghA9tY5kGMnP16DwGq"
+        "7PghA9tY5kGMnP16DwGq",
+        "SaTOxViPwwwGiBLueXPY",
+        "aZl7m2UtItH4YVFIDYci",
+        "FzeK7NCLVSbg54xIsWjL",
+        "H31Vq6b7WkP7dCQ34JYS",
+        "5Bb0nlsvJ4Vc6kMOYKCu"
       ]
     },
     {
@@ -386,16 +351,18 @@
       "unit": 5,
       "title": "Rotational inertia and equilibrium",
       "description": "Moments of inertia by integration, the parallel-axis theorem and balanced torques.",
-      "topics": [
-        "5.4",
-        "5.5"
-      ],
+      "topics": ["5.4", "5.5"],
       "draftIds": [
         "8vlNxiOdLP7JG89O2lm0",
         "kZM00LUZBRUTiycS0aNb",
         "EMW2Li2hqVxfTqQJgQjy",
         "Y8DS8FnXiKiD7N2xIEy3",
-        "ucGFjVviT9bhNp5epkEq"
+        "ucGFjVviT9bhNp5epkEq",
+        "PcHpJAzQqHNBja6eYAuE",
+        "InDftPAwiZNgh5T3AaXJ",
+        "BE3a9OIpVhmH5d4RN05U",
+        "VYQdvyTI0KZaXbaMJE0g",
+        "nFW13vt66Q2jzgXCSfl9"
       ]
     },
     {
@@ -403,15 +370,18 @@
       "unit": 5,
       "title": "Newton's second law for rotation",
       "description": "Net torque and angular acceleration, with translation.",
-      "topics": [
-        "5.6"
-      ],
+      "topics": ["5.6"],
       "draftIds": [
         "vQ7isKq8j65Ujnq6mQfZ",
         "9dOUmgSUy6gWQoa7JMl5",
         "NEVYrkgWPxMyDSnQOyFp",
         "XUO2rDsVFvu2sewbZWt0",
-        "ZkmMbjma6zStpZ9DGEMe"
+        "ZkmMbjma6zStpZ9DGEMe",
+        "gS6SiNQ3yweqw8hB2Qpy",
+        "VpEi4jUe3ccI1UfIoMGt",
+        "owlOq8OSiCHSxi66ujDY",
+        "pNRAv8GdnknBHaoDHxAq",
+        "yRBnpJx62WCmO1lqKGFg"
       ]
     },
     {
@@ -419,16 +389,18 @@
       "unit": 6,
       "title": "Rotational kinetic energy and work",
       "description": "Energy of rotation and work done by torques.",
-      "topics": [
-        "6.1",
-        "6.2"
-      ],
+      "topics": ["6.1", "6.2"],
       "draftIds": [
         "S9oIw2DOkSDvUVkEB9Xo",
         "7afAbp9cohA3SulOi5ZZ",
         "JGNCVWdBKFZExbW4qiWC",
         "caowwvwkDvDVGgX3pE7W",
-        "rlnXhIlvRdCor9wX5MZW"
+        "rlnXhIlvRdCor9wX5MZW",
+        "BBqafgSIGSZv8MHZfqvJ",
+        "5l4ZaZtruXTLxCa8or1H",
+        "gfEIbnSjwZ4m7jsGXEE2",
+        "n2hdQBJI1iK9BoRx54eu",
+        "aMht8DkMs4MRNf6tCU9d"
       ]
     },
     {
@@ -436,15 +408,18 @@
       "unit": 6,
       "title": "Angular momentum and angular impulse",
       "description": "Angular momentum of particles and rigid bodies and how torque changes it.",
-      "topics": [
-        "6.3"
-      ],
+      "topics": ["6.3"],
       "draftIds": [
         "4Fyg8VAyt93gEaSc0oWG",
         "2DI7tqCfq0QmkRaaltpD",
         "semPnrKk889RGXoO9kI7",
         "IlPinPSlGM9IOVUODDFR",
-        "R6AMWtYusvhab5rPWzo6"
+        "R6AMWtYusvhab5rPWzo6",
+        "QGJQqjTKywnmggAssYIt",
+        "oXH5hgf5PXMDAxD3UlhQ",
+        "TzECJa1iybLPVRqLCCuM",
+        "XfMC7XPjzCNFChpZdMqR",
+        "0z9yqsNZPqc9JmsBw5ZK"
       ]
     },
     {
@@ -452,15 +427,18 @@
       "unit": 6,
       "title": "Conservation of angular momentum",
       "description": "Systems with no net external torque.",
-      "topics": [
-        "6.4"
-      ],
+      "topics": ["6.4"],
       "draftIds": [
         "r5q8jivDYIZLOQ0HY6PJ",
         "Z0YZsIlmJew6y0HDG1UG",
         "w8cgl8vrR4O7Fy6wV36w",
         "mJrYodgwrktKctBfpkeF",
-        "Dqbqv2UpjyK007fNRIoh"
+        "Dqbqv2UpjyK007fNRIoh",
+        "yv3dMOTGzxMq4RF71mMI",
+        "6ZfxDSD5UJu1SUjAm5Tx",
+        "RESPmSNVSlQ39g9mO1qx",
+        "mbMj2F0HvnKdhq0tix2V",
+        "vowehVZLGqyksS10m5ny"
       ]
     },
     {
@@ -468,16 +446,18 @@
       "unit": 6,
       "title": "Rolling and orbits",
       "description": "Rolling with and without slipping, satellite energy and escape speed.",
-      "topics": [
-        "6.5",
-        "6.6"
-      ],
+      "topics": ["6.5", "6.6"],
       "draftIds": [
         "jH1KCb380miK1gsFfGFC",
         "7tMPgywwAR9cXROUKWya",
         "nFbmwjkCRmCUoclNzPfy",
         "1vLWh0lDFrlm4v9arfds",
-        "xfzO6pOzvvVRoXU5V5lG"
+        "xfzO6pOzvvVRoXU5V5lG",
+        "cC7jlsLmvzBQWTX31ijb",
+        "pg6fPQCiG0W3HPOPhkkh",
+        "Y1S5ElGn892PIGscAG1s",
+        "m0VWFCiAChNvsztUsrzf",
+        "QKaoGXm6MeeJVqF1rnPt"
       ]
     },
     {
@@ -485,15 +465,18 @@
       "unit": 7,
       "title": "Restoring forces and the SHM equation",
       "description": "Forces proportional to displacement and the differential equation they give.",
-      "topics": [
-        "7.1"
-      ],
+      "topics": ["7.1"],
       "draftIds": [
         "ZTMi9RPpujBol4n6DU8g",
         "JeX0y08EJImPdAujsALg",
         "hLC3fl2OUlXoo7o2YGRk",
         "YRTBEPemNtjUT1d6pQbh",
-        "O6dTnmN645qJCnWa1rBo"
+        "O6dTnmN645qJCnWa1rBo",
+        "VE7QKvbcNXeeYcLeiiI1",
+        "4Iuj1Ruszl3ewdUak084",
+        "cK6TV4XXXCvxqzRQdFK0",
+        "E3eT2oMBM7ITu1WWE8Ow",
+        "2OdH4QovUr8YoFaLDXmf"
       ]
     },
     {
@@ -501,15 +484,18 @@
       "unit": 7,
       "title": "Period and frequency",
       "description": "What sets the period of springs and other oscillators.",
-      "topics": [
-        "7.2"
-      ],
+      "topics": ["7.2"],
       "draftIds": [
         "3NxVOl1ncf9YG7xfRZnW",
         "eRPR98sEJE96LDmQkEI7",
         "qxqVgySNt46rihqUDwNG",
         "j0trjyuhsCMc0hkdwdc3",
-        "p9tulv6j6DcK8NMh91EU"
+        "p9tulv6j6DcK8NMh91EU",
+        "70wQFolSzR6wcz9MyLFa",
+        "hMPoG5U0c5y8pssRULX1",
+        "niEgCPqiMVk0qJ9cnlgt",
+        "myN7IRQg27OkwNy2h1mi",
+        "sWKveIzdYKEdoOXQqChP"
       ]
     },
     {
@@ -517,15 +503,18 @@
       "unit": 7,
       "title": "Analysing SHM",
       "description": "Sinusoidal position, velocity and acceleration, amplitude and phase.",
-      "topics": [
-        "7.3"
-      ],
+      "topics": ["7.3"],
       "draftIds": [
         "45Pmxhbsqn9R1uKc5f74",
         "u5kmRhLpLUHDAXEk01oG",
         "1qfT1I0iCYJOjUQEJe5v",
         "r48Uz7xvbBsjEfMOYGbL",
-        "Ag1NRLu7UfMzVr7R0v51"
+        "Ag1NRLu7UfMzVr7R0v51",
+        "BNLuEEtDuUT5JX38HG2E",
+        "QGwFBlmUcNeUbFI4ACK1",
+        "dzrb9isjlIDysrAtXAzh",
+        "co57MEZbfGhBvNwAZEaQ",
+        "NfotgzNz0cEhhcKGuATe"
       ]
     },
     {
@@ -533,16 +522,18 @@
       "unit": 7,
       "title": "Energy and pendulums",
       "description": "Energy over a cycle, and simple and physical pendulums.",
-      "topics": [
-        "7.4",
-        "7.5"
-      ],
+      "topics": ["7.4", "7.5"],
       "draftIds": [
         "R8TFwdLlntfIbvmjR8TV",
         "0QoxFplGjQhlUX2jtr5I",
         "0T3FEr9EB1MlyE9VDkDP",
         "Cvbv2AjYzKyUyDgQw7ON",
-        "jSftCo154OA6JhLoMRDT"
+        "jSftCo154OA6JhLoMRDT",
+        "riWkGwBAIQnk3elRbS9v",
+        "uG7C0ENjekolh2aihuAa",
+        "HVfDA9F3lCcKoEtQpOrq",
+        "duzjxUEb9XQyisnILixr",
+        "nxFMaHA5iBZ17WPCj4rX"
       ]
     }
   ]

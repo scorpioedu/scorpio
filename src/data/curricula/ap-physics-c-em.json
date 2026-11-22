@@ -10,7 +10,18 @@
       "title": "Charge and Coulomb's law",
       "description": "Charging objects, conservation of charge and vector sums of forces between point charges.",
       "topics": ["8.1", "8.2"],
-      "draftIds": []
+      "draftIds": [
+        "OBwNgOhRqsleSZ1SHygi",
+        "o4J5ZoFG3l4KciUKhqk4",
+        "Fn7h79mUoKtsTqT5lj7O",
+        "KlJMy2VsfnB0zlApts4z",
+        "cM03XELyNHPPhoQvuEyi",
+        "1tIsGfix4oGWC0C4P00K",
+        "4Yutfi73RkNXGD6v991A",
+        "jmzT9DrtybDp9YDDZlYC",
+        "Cb8vYWSwQJChkRICSW42",
+        "1Fkin9sSZ1h2ftefSBm7"
+      ]
     },
     {
       "key": "8B",
@@ -18,7 +29,18 @@
       "title": "Electric fields of point charges",
       "description": "Field vectors, field lines and superposition for arrangements of point charges.",
       "topics": ["8.3"],
-      "draftIds": []
+      "draftIds": [
+        "nrqR0Vmu4zTho7MkOnoh",
+        "NeMyBTf2rB5mlQo5bBHV",
+        "7kFxynpv0r6DUJCPxwrv",
+        "jEbFbcc9XvC3QC4POrVZ",
+        "OSH6DwvcMCBut1EingrJ",
+        "wXsdFJN6RURuumsDZdDd",
+        "Wgw7AXqeuaV5ghJjP5nN",
+        "oUAvP5SAFrAzq63DkPnx",
+        "QY02UG1wIuXNWu5l5ApE",
+        "YUmBiuCp1fpvmzmTwhqQ"
+      ]
     },
     {
       "key": "8C",
@@ -26,7 +48,18 @@
       "title": "Fields of continuous charge",
       "description": "Setting up and evaluating the integral for the field of a line, ring or arc of charge.",
       "topics": ["8.4"],
-      "draftIds": []
+      "draftIds": [
+        "CAVzwaMkOhSVw7PfgpaI",
+        "PFG6cJH86uILDSgHQ2hW",
+        "KiLo8DHsNOB0AJUgjyOR",
+        "9HQjFPUgnxhG5mExt8IG",
+        "UC7tsr5eXs6rCDDjz0Cu",
+        "9Rfncthm0La5TmP5miXT",
+        "erTwgN1TnpSgWOeoIVoN",
+        "LBzAIAq8ipv6dDyTc12Y",
+        "iEX9XtTJDIMEqkFlTgcV",
+        "F30C9WuQ8auVQtKDT9VY"
+      ]
     },
     {
       "key": "8D",
@@ -34,7 +67,18 @@
       "title": "Flux and Gauss's law",
       "description": "Electric flux through a surface, and Gauss's law for symmetric charge distributions.",
       "topics": ["8.5", "8.6"],
-      "draftIds": []
+      "draftIds": [
+        "2oluzsrrQcYZ02CtL9er",
+        "UOHIUaLy1sBDvm49zD58",
+        "IYnJLlP8QbPnfkMPflYD",
+        "54wX2G3X5zruA53zfcxw",
+        "CnXshzptTBYkUarK9L2q",
+        "YMwZQkDP9amO0MmLs0Rv",
+        "ZXK3L98yhOcokB8OQ7ce",
+        "fxfC0UwTRHMuT8NMSXA6",
+        "pfrbRvoSBMcLUQKhb6yg",
+        "le5Idc9KcxYJVCr80WbO"
+      ]
     },
     {
       "key": "9A",
@@ -42,7 +86,18 @@
       "title": "Electric potential energy",
       "description": "Energy of systems of point charges and the work to assemble or rearrange them.",
       "topics": ["9.1"],
-      "draftIds": []
+      "draftIds": [
+        "lRHiWR9RwdsmIlv9xPzk",
+        "4sdfca4931HwehJLZMeD",
+        "lO8FsY6qV8KfqUilNgK7",
+        "i1l8fJPNf2XCuBijWXDS",
+        "iwOcDkgDq2yLKvbUnsKB",
+        "c8s7BhW3XvJLwxsGFsQS",
+        "fDKtyl6xNLtRigewjxCX",
+        "CFMlSv6WXLqK0KsNMmX2",
+        "R35TXAOofNPwSwc55H76",
+        "Bx5lgtN4GgI8WUHnjM6X"
+      ]
     },
     {
       "key": "9B",
@@ -50,7 +105,18 @@
       "title": "Potential of charges and distributions",
       "description": "Potential of point charges by superposition and of continuous charge by integration.",
       "topics": ["9.2"],
-      "draftIds": []
+      "draftIds": [
+        "bu6S8fJZpZNWEUMPEqvW",
+        "N54EZRf6hBhnp7IbGU7l",
+        "KQjtRD7uB5773oqIDrNp",
+        "ycudlgqxLUsiO43YcH6Y",
+        "6o6gcHSfysTVyrfDCjQq",
+        "SbfNVfl8ivbCYwcSnuP6",
+        "fSwOPHXZM2XMkhZ0pRQ4",
+        "2WtItdDx9ZrjqiXxxzfz",
+        "2HGHLO62oZvKmKzXT7Uy",
+        "zfz3LB5PtF7HQNipIcXx"
+      ]
     },
     {
       "key": "9C",
@@ -58,7 +124,18 @@
       "title": "Potential and field",
       "description": "Equipotentials, the field as the negative slope of potential, and potential difference as an integral of the field.",
       "topics": ["9.2"],
-      "draftIds": []
+      "draftIds": [
+        "pkAGpS5uKwy9aKGVDd3c",
+        "wWtW1WbLIo54Ngkg4AOO",
+        "Zsf1OvXlaJDBF7sQku2W",
+        "e2AJq6oRB3SLrQ2IzbjV",
+        "pdLe968BAsCCpqcD1zzr",
+        "T3n67WjDjvFOWsSHK96H",
+        "bPUHNcWe6RfJa8xSNEzf",
+        "G3GGKLWzRJu79aOHQfDu",
+        "nJQBeGobjI9Y4FN0D4Fo",
+        "itz48mWOIDThfvOLPOec"
+      ]
     },
     {
       "key": "9D",
@@ -66,7 +143,18 @@
       "title": "Conservation of electric energy",
       "description": "Speeds and energies of charges that move through a potential difference.",
       "topics": ["9.3"],
-      "draftIds": []
+      "draftIds": [
+        "UOYjC7ixfQNdDYJetzMj",
+        "3bK8QwMnjNKLo0lnvC4x",
+        "HzgcdzZUiKZ17a4D78fW",
+        "7i1Fgw2QwX1WONfzjcmi",
+        "siugjist4hdbt73trpEC",
+        "iHpOwomRYW3ABbaEbEgE",
+        "CX5ZcE2trvr1cyorakoq",
+        "O6zuoQuyDXEvfE5NO1eu",
+        "rjFp3G0bB421biLr7juw",
+        "yAnk7jzqEByHHHjYkLn2"
+      ]
     },
     {
       "key": "10A",
@@ -74,7 +162,18 @@
       "title": "Conductors in equilibrium",
       "description": "Field, charge and potential in and on a conductor, and shielding.",
       "topics": ["10.1"],
-      "draftIds": []
+      "draftIds": [
+        "joXogrz2YUYuUiYfDlZj",
+        "2sB6dEKGKkH2hxg0q3Ga",
+        "wzFSlIeRDwMEDs7d8Aga",
+        "AsdISAUqiQk963pZMgem",
+        "OJeYJVhaSlTfqrheOpdD",
+        "SZIo0FS9NB2D1PJWRHly",
+        "DmQPl7rz5rPl27l3kHG7",
+        "0cU4Ywu1qn1sikcUCjFi",
+        "UpDywde87E29a2qyiZQI",
+        "yWNHq8THXHnSsW7cQRNb"
+      ]
     },
     {
       "key": "10B",
@@ -82,7 +181,18 @@
       "title": "Sharing charge between conductors",
       "description": "How charge redistributes when conductors touch, are connected or are grounded.",
       "topics": ["10.2"],
-      "draftIds": []
+      "draftIds": [
+        "g5lMn5QC4PoNKpMYJgeS",
+        "ZPXaTUaYZ1VDTlJQdyCB",
+        "4wEo67jOqVh5fKbK666w",
+        "AQ6FUEHxQWFS4q1DSWub",
+        "4foDoCczzxhYoiZgAjXT",
+        "EEhWYW2dewSBHbQel3P1",
+        "GWAViwbnzL4zHyx8OWpE",
+        "iTLh1G5EMejYs0X02scc",
+        "8lhZADVcEk24H7mHQ1mt",
+        "QnUskAbbXv5VfjCeHD7H"
+      ]
     },
     {
       "key": "10C",
@@ -90,7 +200,18 @@
       "title": "Capacitors",
       "description": "Capacitance from geometry, the field between the plates and stored energy.",
       "topics": ["10.3"],
-      "draftIds": []
+      "draftIds": [
+        "lY41ASWGNwDnbXYwlIOJ",
+        "HKQ2uAl8NL3Y43JIJWJq",
+        "heRbC4lGjalDB9iFKiEh",
+        "awQBgEH26JenozOBZnoz",
+        "qSzrjVOdbGGWKtem15Tn",
+        "xn56e0gEA5PVnDnqmVlZ",
+        "Qhsa4EkGHfmpjcOK0M5d",
+        "C1C75I5SCKtC4DsPoRZC",
+        "liWrVbLKBD5DP8ksMWaB",
+        "iWcOWeH0H9uP8rGOQy6S"
+      ]
     },
     {
       "key": "10D",
@@ -98,7 +219,18 @@
       "title": "Dielectrics",
       "description": "What changes when an insulator fills a capacitor, with the battery connected or removed.",
       "topics": ["10.4"],
-      "draftIds": []
+      "draftIds": [
+        "X9EFKQWR0KfroODhkukh",
+        "upDhbNENtNtfY9mlo6Tt",
+        "pxIlWD29s5d4wEyS3zm8",
+        "V2rPiBwADpqWN5Jyaph5",
+        "dpZLGMmXYky18A1Eqgbz",
+        "Q2DWGalaEJe4B10P1FaY",
+        "AFGUmqyxASjjokC49qTc",
+        "TJOSldKiZ2id4AJLRisu",
+        "J9k8QjSB6KDcAMEYHVL4",
+        "H7Rm6nJYhQUOoSi69jzO"
+      ]
     },
     {
       "key": "11A",
@@ -106,7 +238,18 @@
       "title": "Current and simple circuits",
       "description": "Current as a rate of charge flow, current density and drift speed, and reading circuit diagrams.",
       "topics": ["11.1", "11.2"],
-      "draftIds": []
+      "draftIds": [
+        "4bSrhwa3aPQC6HWPBE22",
+        "RYyDLZwBGNOTP0rHo9rx",
+        "Ecrd9Nthwk1DdAnRkb9V",
+        "KkGSkRQX21qKq1pIfd9S",
+        "AlZRHrRPQZ5DcM5XSodS",
+        "9De3hLbTnd54kW2BSoyj",
+        "ZOuFTt8FDYbwJa6zKWaR",
+        "WRx372q8GONAjewPF0g2",
+        "ETUcxmrY8QiY0XLT6Uv1",
+        "sCXrwK7yc2FKXz0Rk7FA"
+      ]
     },
     {
       "key": "11B",
@@ -114,7 +257,18 @@
       "title": "Resistance, Ohm's law and power",
       "description": "Resistivity, ohmic and non-ohmic elements, and the rate of energy transfer in a circuit.",
       "topics": ["11.3", "11.4"],
-      "draftIds": []
+      "draftIds": [
+        "s0ZySKUlBLPPoJCAEsLQ",
+        "V7AiirYPmGpGJLnQbwg2",
+        "TauxUBD9gy8YJBtLonmO",
+        "iDZNe62B0Dk6F47VO8U8",
+        "K9zULWmyCCjGbIQqtHPc",
+        "NErvXGM47GklssGlQnWh",
+        "aWc9zo51hIFCSiLduklk",
+        "mdL9WsFIZ0G3OrPQud3n",
+        "7rCQ5mNTwAzpztF4x51P",
+        "c2u4m87IP1DV5jy44efR"
+      ]
     },
     {
       "key": "11C",
@@ -122,7 +276,18 @@
       "title": "Compound circuits and Kirchhoff's rules",
       "description": "Equivalent resistance, internal resistance, and loop and junction rules for multi-branch circuits.",
       "topics": ["11.5", "11.6", "11.7"],
-      "draftIds": []
+      "draftIds": [
+        "AplFWGJ0lvqxe5GgraZP",
+        "7skzTBGBNAztAJtu2LTR",
+        "4Gy3y1GEgGdXfpj3kEmN",
+        "lHi1s5fBhHBz4fmxbEHj",
+        "MiPnyNDYkSW99tS4uFAV",
+        "VFR2QmngTDSkzmDI6ZUW",
+        "ckLL6J0dOJcqNzAj1OvF",
+        "3Fv8oenwHfLzCxFFh1rL",
+        "eJi9pXUihJCyWKASJ1UG",
+        "IbLd21EqExgCaI8MVYic"
+      ]
     },
     {
       "key": "11D",
@@ -130,7 +295,18 @@
       "title": "RC circuits",
       "description": "Equivalent capacitance, and exponential charging and discharging with a time constant.",
       "topics": ["11.8"],
-      "draftIds": []
+      "draftIds": [
+        "JpQOL3QAzHkgNOQmRuxk",
+        "zI5yFVJnIEXAOxgrgXZi",
+        "NoCyp8sXhSs23aIdM36E",
+        "WzeyRlWpOcOWQfDOaW4q",
+        "BjHBBj8zKJ4QU167UG0U",
+        "eBdCqhXUSEisMAV8CGov",
+        "EVzQdBHrOx8uJgLr83Qg",
+        "JUyBjDk5hvsfyG5Zfkdf",
+        "xQciPNWp2JnFktQDdFZO",
+        "MH9C9g5Gw8RSsCllqsSc"
+      ]
     },
     {
       "key": "12A",
@@ -138,7 +314,18 @@
       "title": "Magnetic fields",
       "description": "Properties of magnetic fields, dipoles and magnetic materials.",
       "topics": ["12.1"],
-      "draftIds": []
+      "draftIds": [
+        "GLcTf4l0CMFvFgtF60yk",
+        "ECHtzSswbbEYXWzZfnQH",
+        "qeYkc2jiuBK88d1xXrfl",
+        "ikNIp6xI5yTRVzPlEwlA",
+        "lSYOSd4ZoSqhrhLdr0di",
+        "dU4XxFp39kWlBommqRCp",
+        "9jDkMa2KqW3hBIoev7J1",
+        "SaX2qc3OEa4IP04ez0uo",
+        "bHfQRgnFuLXQrG4XXSxP",
+        "vSGIZdtYN1DiMGcgI33F"
+      ]
     },
     {
       "key": "12B",
@@ -146,7 +333,18 @@
       "title": "Forces on moving charges",
       "description": "The cross-product magnetic force, circular paths and the Hall effect.",
       "topics": ["12.2"],
-      "draftIds": []
+      "draftIds": [
+        "uNKqvYSL3NkuwZJmH0Ie",
+        "9gmJ3GZgxHk35NRR1cHy",
+        "uIGtv2tHFjLEz7TAzpVx",
+        "6UQyi7wZTfj7JpApr9cj",
+        "Ye3I94pl5Jioq4CJSelM",
+        "izvTNjqAqqOdSKS4rkfg",
+        "M2W7suG63K5EuprKRxYB",
+        "NWOeeae628vcYanvg6Yq",
+        "xdIMkHDt85jNSilJTgAe",
+        "RqQ7L8oJL5Tt4kNJhtqz"
+      ]
     },
     {
       "key": "12C",

@@ -22,6 +22,7 @@ const LOADERS: Record<string, Record<number, () => Promise<{ default: unknown }>
     1: () => import("@/data/guides/ap-physics-c-mech/unit-1.json"),
     3: () => import("@/data/guides/ap-physics-c-mech/unit-3.json"),
     4: () => import("@/data/guides/ap-physics-c-mech/unit-4.json"),
+    7: () => import("@/data/guides/ap-physics-c-mech/unit-7.json"),
   },
 };
 
