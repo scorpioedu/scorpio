@@ -1,31 +1,31 @@
 {
   "1A": {
-    "problems": 5,
-    "minutes": 12,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
+        "problems": 4
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 4
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 2
       },
       {
         "tag": "acceleration-sign-means-slowing",
-        "problems": 1
-      },
-      {
-        "tag": "distance-displacement-confusion",
-        "problems": 1
-      },
-      {
-        "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
     ],
@@ -69,32 +69,77 @@
         "tags": [
           "acceleration-sign-means-slowing"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "constant-acceleration-assumed",
+          "velocity-acceleration-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "distance-displacement-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "distance-displacement-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "distance-displacement-confusion"
+        ]
       }
     ]
   },
   "1B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
+        "problems": 5
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "graph-as-picture",
         "problems": 2
       },
       {
         "tag": "acceleration-sign-means-slowing",
-        "problems": 1
-      },
-      {
-        "tag": "distance-displacement-confusion",
         "problems": 1
       },
       {
@@ -142,28 +187,81 @@
         "tags": [
           "constant-acceleration-assumed"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "graph-as-picture"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "distance-displacement-confusion",
+          "graph-as-picture"
+        ]
       }
     ]
   },
   "1C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 1
+        "problems": 2
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 2
       },
       {
         "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "projectile-components-coupled",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
     ],
@@ -201,29 +299,73 @@
         "difficulty": "easy",
         "type": "multiple-choice",
         "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "distance-displacement-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "velocity-acceleration-confusion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "projectile-components-coupled"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "distance-displacement-confusion"
+        ]
       }
     ]
   },
   "1D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "projectile-components-coupled",
+        "problems": 4
+      },
+      {
         "tag": "velocity-acceleration-confusion",
-        "problems": 2
+        "problems": 3
       },
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "graph-as-picture",
@@ -231,10 +373,6 @@
       },
       {
         "tag": "heavier-falls-faster",
-        "problems": 1
-      },
-      {
-        "tag": "projectile-components-coupled",
         "problems": 1
       }
     ],
@@ -279,24 +417,72 @@
         "tags": [
           "graph-as-picture"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "projectile-components-coupled"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "projectile-components-coupled"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "projectile-components-coupled"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "velocity-acceleration-confusion"
+        ]
       }
     ]
   },
   "2A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "system-boundary",
+        "problems": 3
+      },
+      {
         "tag": "force-implies-motion",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
         "problems": 1
       },
       {
@@ -304,11 +490,23 @@
         "problems": 1
       },
       {
-        "tag": "system-boundary",
+        "tag": "motion-requires-force",
+        "problems": 1
+      },
+      {
+        "tag": "net-force-vector-addition",
+        "problems": 1
+      },
+      {
+        "tag": "normal-force-equals-weight",
         "problems": 1
       },
       {
         "tag": "third-law-unequal-forces",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
     ],
@@ -349,24 +547,95 @@
           "force-implies-motion",
           "impetus-force"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "normal-force-equals-weight"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed",
+          "system-boundary"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "force-implies-motion",
+          "motion-requires-force"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "net-force-vector-addition",
+          "velocity-acceleration-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "system-boundary"
+        ]
       }
     ]
   },
   "2B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "impetus-force",
+        "problems": 1
+      },
+      {
+        "tag": "motion-requires-force",
+        "problems": 1
+      },
+      {
+        "tag": "net-force-vector-addition",
+        "problems": 1
+      },
+      {
+        "tag": "normal-force-equals-weight",
+        "problems": 1
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
+      },
+      {
         "tag": "third-law-pair-same-object",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
     ],
@@ -402,28 +671,82 @@
         "difficulty": "medium",
         "type": "numeric",
         "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "net-force-vector-addition"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "normal-force-equals-weight",
+          "system-boundary"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "impetus-force",
+          "motion-requires-force"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "velocity-acceleration-confusion"
+        ]
       }
     ]
   },
   "2C": {
-    "problems": 5,
-    "minutes": 12,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 3,
-      "hard": 0
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "friction-always-opposes-motion",
-        "problems": 2
+        "problems": 4
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
       },
       {
         "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
+        "tag": "mass-weight-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "net-force-vector-addition",
         "problems": 1
       },
       {
@@ -469,32 +792,79 @@
         "difficulty": "medium",
         "type": "numeric",
         "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "net-force-vector-addition"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed",
+          "friction-always-opposes-motion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "mass-weight-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "friction-always-opposes-motion"
+        ]
       }
     ]
   },
   "2D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 2
+        "problems": 3
       },
       {
         "tag": "centrifugal-force",
-        "problems": 1
+        "problems": 2
+      },
+      {
+        "tag": "normal-force-equals-weight",
+        "problems": 2
       },
       {
         "tag": "force-implies-motion",
+        "problems": 1
+      },
+      {
+        "tag": "impetus-force",
         "problems": 1
       },
       {
@@ -502,7 +872,11 @@
         "problems": 1
       },
       {
-        "tag": "normal-force-equals-weight",
+        "tag": "net-force-vector-addition",
+        "problems": 1
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
     ],
@@ -547,32 +921,81 @@
           "centrifugal-force",
           "force-implies-motion"
         ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "normal-force-equals-weight"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "centrifugal-force",
+          "impetus-force"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "net-force-vector-addition"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "velocity-acceleration-confusion"
+        ]
       }
     ]
   },
   "3A": {
-    "problems": 5,
-    "minutes": 15,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 1,
-      "medium": 2,
-      "hard": 2
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "constant-acceleration-assumed",
-        "problems": 2
-      },
-      {
-        "tag": "derivative-integral-confusion",
-        "problems": 1
+        "problems": 3
       },
       {
         "tag": "work-sign",
+        "problems": 3
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 2
+      },
+      {
+        "tag": "energy-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "energy-not-conserved",
         "problems": 1
       }
     ],
@@ -613,28 +1036,81 @@
           "derivative-integral-confusion",
           "work-sign"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "work-sign"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-force-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "energy-not-conserved"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "constant-acceleration-assumed",
+          "derivative-integral-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "work-sign"
+        ]
       }
     ]
   },
   "3B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "energy-force-confusion",
-        "problems": 2
+        "problems": 4
       },
       {
         "tag": "potential-energy-reference",
+        "problems": 2
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "sign-error",
+        "problems": 1
+      },
+      {
+        "tag": "work-sign",
         "problems": 1
       }
     ],
@@ -673,29 +1149,78 @@
         "difficulty": "hard",
         "type": "numeric",
         "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "energy-force-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-force-confusion",
+          "sign-error"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "potential-energy-reference"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
       }
     ]
   },
   "3C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 2,
-      "hard": 1
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "work-sign",
-        "problems": 3
+        "problems": 5
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 2
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 2
       },
       {
         "tag": "potential-energy-reference",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "power-energy-confusion",
@@ -741,32 +1266,78 @@
           "power-energy-confusion",
           "work-sign"
         ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-not-conserved",
+          "work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-not-conserved",
+          "work-sign"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "potential-energy-reference"
+        ]
       }
     ]
   },
   "3D": {
-    "problems": 5,
-    "minutes": 15,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 1,
-      "medium": 2,
-      "hard": 2
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 3
+      },
+      {
+        "tag": "power-energy-confusion",
+        "problems": 3
+      },
       {
         "tag": "energy-force-confusion",
         "problems": 2
       },
       {
-        "tag": "constant-acceleration-assumed",
-        "problems": 1
-      },
-      {
-        "tag": "power-energy-confusion",
+        "tag": "work-sign",
         "problems": 1
       }
     ],
@@ -807,6 +1378,46 @@
         "difficulty": "hard",
         "type": "multiple-choice",
         "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "work-sign"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "power-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "constant-acceleration-assumed"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "power-energy-confusion"
+        ]
       }
     ]
   },

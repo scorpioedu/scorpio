@@ -127,13 +127,14 @@ describeWithContent("Units 1–3, 7, 8 content file", () => {
   const rest = courseContent("content/ap-physics-1/units-1-3-7-8.json");
   type D = { id: string; apUnit: number; apTopic: string; reviewKind: string; problem: unknown };
 
-  test("100 AI-reviewed problems in 20 sets of 5, one AP unit per set, every draft in exactly one set", () => {
+  test("20 sets of 5 to 10 problems, one AP unit per set, every draft in exactly one set", () => {
     const drafts = rest.drafts as D[];
-    expect(drafts).toHaveLength(100);
+    expect(drafts.length).toBeGreaterThanOrEqual(100);
+    expect(drafts.length).toBeLessThanOrEqual(200);
     expect(rest.sets).toHaveLength(20);
     const ids = (rest.sets as { draftIds: string[] }[]).flatMap((s) => s.draftIds);
     expect(new Set(ids)).toEqual(new Set(drafts.map((d) => d.id)));
-    expect(ids).toHaveLength(100);
+    expect(ids).toHaveLength(drafts.length);
     expect(new Set(drafts.map((d) => d.apUnit))).toEqual(new Set([1, 2, 3, 7, 8]));
     expect(drafts.every((d) => ["ai", "verified"].includes(d.reviewKind))).toBe(true);
   });

@@ -8,6 +8,5 @@ export const CONTENT_FILES: Record<string, string[]> = {
   ],
   "ap-physics-2": ["content/ap-physics-2/units-9-15.json"],
   "ap-physics-c-mech": ["content/ap-physics-c-mech/units-1-7.json"],
-  // Planned: no problems are written yet, so there is nothing to import.
-  "ap-physics-c-em": [],
+  "ap-physics-c-em": ["content/ap-physics-c-em/units-8-13.json"],
 };
