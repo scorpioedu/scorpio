@@ -36,6 +36,7 @@ const HMIN = 84; // a horizontal element's share of a rail
 const GAPX = 22;
 const MINCOL = 72;
 const LINE_H = 15;
+const SCALE = 1.3;
 
 /** Half-length along the wire, half-width on the label side, half-width on the other side. */
 const SIZE: Record<El["type"], [number, number, number]> = {
@@ -138,6 +139,8 @@ export function renderCircuit(
     box([left - 2, p[1] - 8, left + w + 2, p[1] + 8]);
     body += text(p, s, anchor, ` stroke="none"${extra}`);
   };
+  type Spot = { p: P; s: string; anchor: "start" | "middle" | "end" };
+  const labelJobs: Spot[][][] = []; // per element: candidate placements, each a list of lines
   const seeNode = (n: string, p: P) => {
     if (!nodePts.has(n)) nodePts.set(n, []);
     nodePts.get(n)!.push(p);
@@ -233,24 +236,30 @@ export function renderCircuit(
           body += `<circle cx="${f1(t[0])}" cy="${f1(t[1])}" r="2.5" fill="var(--dg-bg,#fff)"/>`;
         break;
     }
-    // labels: beside a vertical element, above or below a horizontal one
+    // labels: beside a vertical element, above or below a horizontal one. They are placed once
+    // everything is drawn, on the other side if the first choice would sit on something.
     if (lines.length) {
-      if (Math.abs(n[0]) > 0.5) {
-        const x = M[0] + Math.sign(n[0]) * (hw * Math.abs(n[0]) + half * Math.abs(u[0]) + 7);
-        lines.forEach((s, i) =>
-          put([x, M[1] + (i - (lines.length - 1) / 2) * LINE_H], s, n[0] > 0 ? "start" : "end"),
-        );
-      } else {
-        const up = n[1] < 0;
+      const beside = (sign: number): Spot[] => {
+        const x = M[0] + sign * (hw * Math.abs(n[0]) + half * Math.abs(u[0]) + 7);
+        return lines.map((s, i) => ({
+          p: [x, M[1] + (i - (lines.length - 1) / 2) * LINE_H],
+          s,
+          anchor: sign > 0 ? "start" : "end",
+        }));
+      };
+      const over = (up: boolean): Spot[] => {
         const off = hw * Math.abs(n[1]) + half * Math.abs(u[1]) + 11;
-        lines.forEach((s, i) =>
-          put(
-            [M[0], up ? M[1] - off - (lines.length - 1 - i) * LINE_H : M[1] + off + i * LINE_H],
-            s,
-            "middle",
-          ),
-        );
-      }
+        return lines.map((s, i) => ({
+          p: [M[0], up ? M[1] - off - (lines.length - 1 - i) * LINE_H : M[1] + off + i * LINE_H],
+          s,
+          anchor: "middle",
+        }));
+      };
+      labelJobs.push(
+        Math.abs(n[0]) > 0.5
+          ? [beside(Math.sign(n[0])), beside(-Math.sign(n[0]))]
+          : [over(n[1] < 0), over(n[1] >= 0)],
+      );
     }
     if (el.type !== "gap" && el.arrow) {
       const rev = el.arrow.reverse ? -1 : 1;
@@ -280,6 +289,19 @@ export function renderCircuit(
     arrowCheck(c, warns);
   }
   if (errs.length) return { svg: "", alt: "" };
+
+  // ---- element labels: the first candidate side that is clear of symbols, wires and labels ----
+  const spotRect = (t: Spot): Rect => {
+    const w = textWidth(t.s);
+    const left = t.anchor === "start" ? t.p[0] : t.anchor === "end" ? t.p[0] - w : t.p[0] - w / 2;
+    return [left - 1, t.p[1] - 7, left + w + 1, t.p[1] + 7];
+  };
+  const clear = (r: Rect) =>
+    !rects.some((q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1]);
+  for (const cands of labelJobs) {
+    const pick = cands.find((c) => c.every((t) => clear(spotRect(t)))) ?? cands[0];
+    for (const t of pick) put(t.p, t.s, t.anchor);
+  }
 
   // ---- junction dots, node labels, ground ----
   for (const { p, n } of arms.values())
@@ -335,7 +357,13 @@ export function renderCircuit(
     x1 = Math.max(...rects.map((r) => r[2])) + PAD;
   const y0 = Math.min(...rects.map((r) => r[1])) - PAD,
     y1 = Math.max(...rects.map((r) => r[3])) + PAD;
-  return { svg: wrap(x1 - x0, y1 - y0, body, alt, x0, y0), alt };
+  // Drawn larger than it is laid out, with the labels kept at the usual text size: symbols a
+  // comfortable size, and more air round every label.
+  const scaled = `<g transform="scale(${SCALE})" font-size="${f1(13 / SCALE)}">${body}</g>`;
+  return {
+    svg: wrap((x1 - x0) * SCALE, (y1 - y0) * SCALE, scaled, alt, x0 * SCALE, y0 * SCALE),
+    alt,
+  };
 }
 
 // ---------------------------------------------------------------------------------------------

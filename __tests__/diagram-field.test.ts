@@ -225,7 +225,8 @@ describe("field: equipotentials", () => {
     const rings = dashed(svg).filter(
       (l) => Math.hypot(l[0][0] - l[l.length - 1][0], l[0][1] - l[l.length - 1][1]) < 2,
     );
-    expect(rings.length).toBeGreaterThanOrEqual(5);
+    // seven equal steps are asked for; the ones that would crowd round the charge are left out
+    expect(rings.length).toBeGreaterThanOrEqual(4);
     const radii = rings.map((ring) => {
       const rs = ring.map((p) => Math.hypot(p[0] - c[0], p[1] - c[1]));
       expect(Math.max(...rs) - Math.min(...rs)).toBeLessThan(1.5); // round to within the sampling grid
@@ -238,6 +239,55 @@ describe("field: equipotentials", () => {
     for (const s of steps) expect(s / steps[0]).toBeCloseTo(1, 0);
     for (let i = 2; i < radii.length; i++)
       expect(radii[i] - radii[i - 1]).toBeGreaterThan(radii[i - 1] - radii[i - 2]);
+  });
+
+  it("never crowd closer than a readable gap near a point charge", () => {
+    for (const src of [`${SINGLE}\nequi`, `${SINGLE}\nequi n=14`, `${DIPOLE}\nequi n=12`]) {
+      const r = render(src);
+      const lines = dashed(r.svg);
+      expect(lines.length).toBeGreaterThanOrEqual(3);
+      // the least distance between any two different equipotentials
+      let least = Infinity;
+      for (let i = 0; i < lines.length; i++)
+        for (let j = i + 1; j < lines.length; j++)
+          for (const p of lines[i])
+            for (const q of lines[j]) least = Math.min(least, Math.hypot(p[0] - q[0], p[1] - q[1]));
+      expect(least).toBeGreaterThanOrEqual(10.5);
+    }
+    // the picture says that the range was capped
+    expect(render(`${SINGLE}\nequi n=14`).alt).toContain(
+      "those closest to the charges, where they would crowd together, are left out",
+    );
+    // between plates nothing crowds, so nothing is left out
+    expect(render(`field\nplates 0,1 0,-1 w=4\nequi`).alt).not.toContain("left out");
+  });
+
+  it("draws arrowheads large enough to read", () => {
+    // each head is a filled triangle 10 px long (it was 7)
+    const heads = [
+      ...render(DIPOLE).svg.matchAll(
+        /<polygon points="([-\d.]+),([-\d.]+) ([-\d.]+),([-\d.]+) ([-\d.]+),([-\d.]+)" fill="var\(--dg-accent/g,
+      ),
+    ];
+    expect(heads.length).toBeGreaterThan(10);
+    for (const m of heads) {
+      const [tx, ty, ax, ay, bx, by] = m.slice(1).map(Number);
+      expect(Math.hypot(tx - (ax + bx) / 2, ty - (ay + by) / 2)).toBeCloseTo(10, 0);
+    }
+  });
+
+  it("names a regional uniform field at the top of its region", () => {
+    const svg = render(
+      `field xr=0..8 yr=0..4\nuniform E right "E" x=0..3.5\nuniform B out "B" x=4.5..8`,
+    ).svg;
+    const label = svg.match(/<text x="([-\d.]+)" y="([-\d.]+)"[^>]*>E<\/text>/)!;
+    const lineYs = [...svg.matchAll(/<polyline points="[-\d.]+,([-\d.]+) [-\d.]+,\1"\/>/g)].map(
+      (m) => +m[1],
+    );
+    expect(lineYs.length).toBe(6);
+    // above every field line, and inside the frame
+    expect(+label[2]).toBeLessThan(Math.min(...lineYs));
+    expect(+label[2]).toBeGreaterThanOrEqual(9);
   });
 
   it("include the straight zero line between a + and a − of equal size", () => {

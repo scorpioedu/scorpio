@@ -291,3 +291,58 @@ describe("circuit: physics warnings", () => {
     expect(r.warnings.some((w) => w.kind === "readability" && /too close/.test(w.msg))).toBe(true);
   });
 });
+
+describe("circuit: reading size and label placement", () => {
+  const width = (svg: string) => Number(svg.match(/ width="([\d.]+)"/)![1]);
+  /** [left, top, right, bottom] of each label, estimated at 7 px a character as the layout does. */
+  const boxes = (svg: string) =>
+    [
+      ...svg.matchAll(
+        /<text x="(-?[\d.]+)" y="(-?[\d.]+)" text-anchor="(\w+)"[^>]*>(.*?)<\/text>/g,
+      ),
+    ].map((m) => {
+      const s = m[4].replace(/<[^>]+>/g, "");
+      const w = s.length * 7;
+      const left = m[3] === "start" ? +m[1] : m[3] === "end" ? +m[1] - w : +m[1] - w / 2;
+      return { s, r: [left, +m[2] - 7, left + w, +m[2] + 7] };
+    });
+
+  it("draws a simple loop at a comfortable width, with labels at the usual text size", () => {
+    const svg = render(
+      `circuit\nbattery a d 12V\nresistor a b 4Ω R_1\nresistor b c 6Ω R_2\nresistor c d 2Ω R_3`,
+    ).svg;
+    expect(width(svg)).toBeGreaterThan(380); // it was about 300
+    expect(width(svg)).toBeLessThan(520);
+    // the drawing is scaled 1.3×; labels are set at 13/1.3 so they still render at 13 px
+    expect(svg).toContain('<g transform="scale(1.3)" font-size="10">');
+  });
+
+  it("moves a label to the other side of its element rather than onto a neighbour", () => {
+    // hand-placed: R_1 stands at x = 1 with R_2 only half a unit to its right. R_1's labels would
+    // go on the right (away from the middle of the drawing) and land on R_2, so they go left.
+    const src = (x2: number) =>
+      `circuit\nbattery a d 12V\nresistor b e 4.7kΩ R_1\nresistor c f 2Ω R_2\nwire a b\nwire b c\nwire d e\nwire e f\nat a -2,1 b 1,1 c ${x2},1 d -2,0 e 1,0 f ${x2},0`;
+    const anchorOf = (svg: string, label: string) =>
+      svg.match(
+        new RegExp(`<text x="(-?[\\d.]+)" y="-?[\\d.]+" text-anchor="(\\w+)"[^>]*>${label}</text>`),
+      )!;
+    const near = render(src(1.5));
+    expect(near.errors).toEqual([]);
+    const moved = anchorOf(near.svg, "4.7 kΩ");
+    expect(moved[2]).toBe("end");
+    expect(+moved[1]).toBeLessThan(104); // left of R_1, which is at x = 1 unit = 104
+    // with room on the right the labels stay on the usual side
+    const far = anchorOf(render(src(2.5)).svg, "4.7 kΩ");
+    expect(far[2]).toBe("start");
+    // and no two labels overlap either way
+    for (const svg of [near.svg, render(src(2.5)).svg]) {
+      const bs = boxes(svg);
+      for (let i = 0; i < bs.length; i++)
+        for (let j = i + 1; j < bs.length; j++) {
+          const [p, q] = [bs[i].r, bs[j].r];
+          const hit = p[0] < q[2] && p[2] > q[0] && p[1] < q[3] && p[3] > q[1];
+          expect(hit ? `${bs[i].s} overlaps ${bs[j].s}` : "").toBe("");
+        }
+    }
+  });
+});

@@ -520,7 +520,7 @@ export function renderField(
   const pathLen = (w: P[]) => w.slice(1).reduce((s, p, i) => s + len(sub(p, w[i])), 0);
   const polyD = (w: P[]) => w.map((p) => `${f1(p[0])},${f1(p[1])}`).join(" ");
   /** An arrowhead part-way along a screen path, pointing the way the path runs. */
-  const head = (w: P[], at = 0.5, size = 7): string => {
+  const head = (w: P[], at = 0.5, size = 10): string => {
     const total = pathLen(w);
     let run = 0;
     for (let i = 1; i < w.length; i++) {
@@ -851,12 +851,19 @@ export function renderField(
       if (t1 - t0 < 1e-9) continue;
       const w = [scr(add(mid, mul(d, t0))), scr(add(mid, mul(d, t1)))];
       under += `<polyline points="${polyD(w)}"/>` + head(w, 0.55);
-      if (!labelAt.has(u)) {
-        // name the field at an arrowhead, just off the line
-        const at = add(w[0], mul(sub(w[1], w[0]), 0.55));
-        const off = Math.abs(d[1]) > 0.7 ? [9 + textWidth(u.label) / 2, 0] : [14, -10];
-        labelAt.set(u, add(at, off as P));
-      }
+      // name the field at an arrowhead, just off the line: the first line drawn, or for a field
+      // that fills only a region, the line nearest the top (then the left) of the region
+      const at = add(w[0], mul(sub(w[1], w[0]), 0.55));
+      const off = Math.abs(d[1]) > 0.7 ? [11 + textWidth(u.label) / 2, 0] : [16, -11];
+      const spot = add(at, off as P);
+      if (u.region) spot[1] = Math.max(spot[1], scr([rx0, ry1])[1] + 9); // clear of the region's edge
+      const had = labelAt.get(u);
+      if (
+        !had ||
+        (u.region &&
+          (spot[1] < had[1] - 0.5 || (Math.abs(spot[1] - had[1]) <= 0.5 && spot[0] < had[0])))
+      )
+        labelAt.set(u, spot);
       nLines++;
     }
     under += `</g>`;
@@ -981,15 +988,64 @@ export function renderField(
     under += `<g fill="none" stroke-width="1" stroke-dasharray="4 3" stroke-opacity=".7">`;
     // A level that falls exactly on a row of samples (V = 0 on a line of symmetry) would be decided
     // by rounding noise; nudge every level off the samples by a part in a billion of the range.
-    for (const level of levels)
+    const drawLevel = (level: number): P[][] => {
+      const out: P[][] = [];
       for (const g of contours(v, nx, ny, level + 1e-9 * (hi - lo)))
         for (const piece of betweenPlates(g.map(toWorld))) {
           const w = simplify(piece.map(scr), 0.3);
-          if (pathLen(w) > 20) under += `<polyline points="${polyD(w)}"/>`;
+          if (pathLen(w) > 20) out.push(w);
         }
+      return out;
+    };
+    // Equal steps of potential crowd together close to a point charge. Working inwards from
+    // V = 0, stop at the first level that would come within MIN_GAP px of the one before it:
+    // the levels drawn are still equally spaced in potential, the range is just capped.
+    const MIN_GAP = 11;
+    const segDist = (p: P, a: P, b: P) => {
+      const ab = sub(b, a);
+      const t = Math.max(
+        0,
+        Math.min(
+          1,
+          ((p[0] - a[0]) * ab[0] + (p[1] - a[1]) * ab[1]) / (ab[0] * ab[0] + ab[1] * ab[1] || 1),
+        ),
+      );
+      return len(sub(p, add(a, mul(ab, t))));
+    };
+    const apart = (a: P[][], b: P[][]) => {
+      let best = Infinity;
+      for (const [x, y] of [
+        [a, b],
+        [b, a],
+      ])
+        for (const w of x)
+          for (const p of w)
+            for (const q of y)
+              for (let i = 1; i < q.length; i++) best = Math.min(best, segDist(p, q[i - 1], q[i]));
+      return best;
+    };
+    let capped = false;
+    const sides = charges.length
+      ? [
+          levels.filter((l) => l >= 0).sort((a, b) => a - b),
+          levels.filter((l) => l < 0).sort((a, b) => b - a),
+        ]
+      : [levels];
+    for (const side of sides) {
+      let prev: P[][] | undefined;
+      for (const level of side) {
+        const paths = drawLevel(level);
+        if (charges.length && prev?.length && paths.length && apart(paths, prev) < MIN_GAP) {
+          capped = true;
+          break;
+        }
+        for (const w of paths) under += `<polyline points="${polyD(w)}"/>`;
+        if (paths.length) prev = paths;
+      }
+    }
     under += `</g>`;
     said.push(
-      "dashed equipotential lines at equal steps of potential, crossing the field lines at right angles",
+      `dashed equipotential lines at equal steps of potential, crossing the field lines at right angles${capped ? " (those closest to the charges, where they would crowd together, are left out)" : ""}`,
     );
   }
 

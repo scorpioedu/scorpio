@@ -244,10 +244,18 @@ export function renderMotion(
       }
       if (showV) {
         const len = Math.abs(d.v) * c * k;
-        if (len >= 3) {
-          const sgn = Math.sign(d.v);
+        // Where dots crowd (the last steps before a stop) the arrow stops short of the next dot
+        // rather than running into it; with no room at all it is left out.
+        const next = o.dots[i + 1];
+        const sgn = Math.sign(d.v);
+        const room =
+          next && next.pass === d.pass && Math.sign(next.x - d.x) === sgn
+            ? Math.abs(next.x - d.x) * k - 13
+            : Infinity;
+        const drawn = Math.min(Math.max(len, 9), room);
+        if (len >= 3 && drawn >= 6) {
           const s0 = T(along(d.x) + sgn * 6.5, y + d.pass * 13),
-            s1 = T(along(d.x) + sgn * (6.5 + Math.max(len, 9)), y + d.pass * 13);
+            s1 = T(along(d.x) + sgn * (6.5 + drawn), y + d.pass * 13);
           body += arrow(s0, s1, ACCENT, 1.75, 7);
           mark(s1, 4, 4);
           if (!labelledV && len > 14) {
