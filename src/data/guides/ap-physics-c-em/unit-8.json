@@ -1073,7 +1073,7 @@
       "prerequisites": [
         "8.3"
       ],
-      "teacherNotes": "Two things go wrong: the angle (students use the angle to the surface) and the sign convention for closed surfaces. Have students draw the area vector on every flux sketch, and for a closed box label each face's flux as in, out or zero before adding. Ask \"can the flux be zero where the field is not?\" early; the confusion between flux and field is the main obstacle to Gauss's law. Set 8D opens with flux questions of this kind."
+      "teacherNotes": "Two things go wrong: the angle (students use the angle to the surface) and the sign convention for closed surfaces. Have students draw the area vector on every flux sketch, and for a closed box label each face's flux as in, out or zero before adding. Ask \"can the flux be zero where the field is not?\" early; the confusion between flux and field is the main obstacle to Gauss's law. Set 8D includes flux questions of this kind."
     },
     {
       "topic": "8.6",

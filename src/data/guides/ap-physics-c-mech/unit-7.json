@@ -384,7 +384,7 @@
         "2.8",
         "7.1"
       ],
-      "teacherNotes": "Before showing the formula, ask the class to predict what doubling the amplitude does to the period and then time ten cycles both ways; the result surprises most students and makes the cancellation in the derivation worth following. The usual errors are putting $f$ where $\\omega$ belongs and scaling linearly instead of with the square root (four times the mass, four times the period). Plotting $T^2$ against $m$ to get a straight line of slope $4\\pi^2/k$ is a standard experimental-design question; set 7B includes that kind of reasoning."
+      "teacherNotes": "Before showing the formula, ask the class to predict what doubling the amplitude does to the period and then time ten cycles both ways; the result surprises most students and makes the cancellation in the derivation worth following. The usual errors are putting $f$ where $\\omega$ belongs and scaling linearly instead of with the square root (four times the mass, four times the period). Plotting $T^2$ against $m$ to get a straight line of slope $4\\pi^2/k$ is a standard experimental-design question; set 7B practises the scaling behind it, asking how the period changes when the mass, spring constant or amplitude changes."
     },
     {
       "topic": "7.3",

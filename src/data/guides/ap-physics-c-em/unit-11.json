@@ -1367,7 +1367,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "Insist on one labelled arrow per branch before any equation is written; students who label a current for each resistor end up with more unknowns than equations. Ask how many junction equations are independent, and have them verify with a loop that was not used, as in the second example. A negative current should be read out as a direction, not corrected. Set 11C has multi-loop circuits that need both rules."
+      "teacherNotes": "Insist on one labelled arrow per branch before any equation is written; students who label a current for each resistor end up with more unknowns than equations. Ask how many junction equations are independent, and have them verify with a loop that was not used, as in the second example. A negative current should be read out as a direction, not corrected. Set 11C has a two-battery, three-branch circuit that needs both rules, alongside junction-rule questions."
     },
     {
       "topic": "11.8",
@@ -1631,7 +1631,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since free-response questions ask for exactly that. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises all of these."
+      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since free-response questions ask for exactly that. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises the two limits, the time constant and combining capacitors."
     }
   ]
 }

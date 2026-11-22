@@ -394,7 +394,7 @@
         "2.5",
         "3.1"
       ],
-      "teacherNotes": "Everyday \"work\" (effort, tiredness) is the main obstacle, so start with cases of zero work: carrying a bag at constant height, pushing on a wall, the normal force. Ask for the sign of the work done by each force on a free-body diagram before any numbers. On graphs, students often read off a height instead of an area, or use the area under a force–time graph. Set 3A mixes constant forces, angled forces and force–position graphs."
+      "teacherNotes": "Everyday \"work\" (effort, tiredness) is the main obstacle, so start with cases of zero work: carrying a bag at constant height, pushing on a wall, the normal force. Ask for the sign of the work done by each force on a free-body diagram before any numbers. On graphs, students often read off a height instead of an area, or use the area under a force–time graph. Set 3A mixes constant forces, angled forces and a force that changes with position."
     },
     {
       "topic": "3.3",
@@ -801,7 +801,7 @@
         "3.2",
         "3.3"
       ],
-      "teacherNotes": "Make \"what is the system?\" the first line of every solution, then a bar chart, then the equation; students who skip the first two are the ones who double-count gravity or lose the thermal bar. A good discussion task is to analyse one sliding-block problem twice, with the Earth and the surface inside the system and then outside it, and check that the final speed agrees. Sets 3C and 3D build from single transfers to multi-step problems with friction and springs."
+      "teacherNotes": "Make \"what is the system?\" the first line of every solution, then a bar chart, then the equation; students who skip the first two are the ones who double-count gravity or lose the thermal bar. A good discussion task is to analyse one sliding-block problem twice, with the Earth and the surface inside the system and then outside it, and check that the final speed agrees. Sets 3C and 3D include multi-step problems with friction and springs alongside single energy transfers."
     },
     {
       "topic": "3.5",

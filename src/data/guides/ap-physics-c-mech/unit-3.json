@@ -1142,7 +1142,7 @@
         "3.2",
         "3.4"
       ],
-      "teacherNotes": "Students say \"power\" when they mean energy and the reverse; ask for the unit every time, and ask \"how much?\" against \"how fast?\". The form $P = Fv$ is the one that drives the calculus questions in this course: constant power gives a falling force, and top speed is where $P/v$ equals the drag. Have students explain in words why a constant force from rest gives a power that rises with time (the picture above) before they meet the constant-power case. Set 3D covers both."
+      "teacherNotes": "Students say \"power\" when they mean energy and the reverse; ask for the unit every time, and ask \"how much?\" against \"how fast?\". The form $P = Fv$ is the one that drives the calculus questions in this course: constant power gives a falling force, and top speed is where $P/v$ equals the drag. Have students explain in words why a constant force from rest gives a power that rises with time (the picture above) before they meet the constant-power case. Set 3D includes constant-power problems alongside power from $\\vec{F}\\cdot\\vec{v}$ when the force changes with time."
     }
   ]
 }
