@@ -139,7 +139,9 @@ describe("POST /api/assignments/clone", () => {
   test("sets the optional due date on the copy, and defaults to none", async () => {
     mockDocs.set("courses/c1", { teacherId: "teacher1" });
     await post({ sourceId: "src1", courseId: "c1", dueDate: "2027-01-12T20:00:00.000Z" });
-    expect((newAssignment()?.data as { dueDate: Date }).dueDate).toEqual(new Date("2027-01-12T20:00:00.000Z"));
+    expect((newAssignment()?.data as { dueDate: Date }).dueDate).toEqual(
+      new Date("2027-01-12T20:00:00.000Z"),
+    );
     mockWrites.length = 0;
     await post({ sourceId: "src1" });
     expect((newAssignment()?.data as { dueDate: unknown }).dueDate).toBeNull();
@@ -281,6 +283,204 @@ describe("POST /api/assignments/clone", () => {
     expect((await post({ sourceId: "a/b" })).status).toBe(400);
   });
 
+  describe("a published course set is a pool: the copy gets its first n problems", () => {
+    const pool = (n: number) => ({
+      teacherId: "admin",
+      visibility: "global",
+      title: "AP Physics 1 · Unit 4A · Momentum",
+      answerKeySeparated: true,
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "4A",
+      curriculumSequence: 12,
+      apCourse: "physics-1",
+      apUnit: 4,
+      apTopics: ["4.1", "4.2"],
+      totalPoints: n * 10,
+      questions: Array.from({ length: n }, (_, i) => ({
+        id: `q${i + 1}`,
+        text: `Problem ${i + 1}`,
+        type: "numeric",
+        points: 10,
+        // The second topic first appears in problem 4.
+        apTopic: i < 3 ? "4.1" : "4.2",
+      })),
+    });
+    function seed(n: number) {
+      mockDocs.set("assignments/set", pool(n));
+      mockDocs.set("assignment_keys/set", {
+        answers: Object.fromEntries(
+          Array.from({ length: n }, (_, i) => [`q${i + 1}`, `${i + 1} m`]),
+        ),
+        distractors: Object.fromEntries(
+          Array.from({ length: n }, (_, i) => [
+            `q${i + 1}`,
+            [{ answer: `${i + 100} m`, misconception: "momentum-not-vector" }],
+          ]),
+        ),
+        rubric: "",
+      });
+      mockDocs.set("assignment_solutions/set", {
+        solutions: Object.fromEntries(
+          Array.from({ length: n }, (_, i) => [`q${i + 1}`, `Worked solution ${i + 1}`]),
+        ),
+        teacherId: "admin",
+      });
+    }
+    type Copy = {
+      questions: { id: string; text: string }[];
+      totalPoints: number;
+      apTopics: string[];
+    };
+    async function copyOf(body: Record<string, unknown> = {}) {
+      mockWrites.length = 0;
+      const res = await post({ sourceId: "set", ...body });
+      expect(res.status).toBe(200);
+      const { id } = await res.json();
+      return {
+        copy: write(`assignments/${id}`)!.data as Copy,
+        key: write(`assignment_keys/${id}`)!.data as {
+          answers: Record<string, string>;
+          distractors: Record<string, unknown[]>;
+        },
+        solutions: write(`assignment_solutions/${id}`)?.data as
+          { solutions: Record<string, string>; teacherId: string } | undefined,
+      };
+    }
+    const texts = (c: Copy) => c.questions.map((q) => q.text);
+    const first = (n: number) => Array.from({ length: n }, (_, i) => `Problem ${i + 1}`);
+
+    test("no count on a set of 5: all five, as before", async () => {
+      seed(5);
+      const { copy, key } = await copyOf();
+      expect(texts(copy)).toEqual(first(5));
+      expect(copy.totalPoints).toBe(50);
+      expect(copy.apTopics).toEqual(["4.1", "4.2"]);
+      expect(copy).toMatchObject({ curriculumSetKey: "4A", curriculumSequence: 12 });
+      expect(Object.keys(key.answers)).toHaveLength(5);
+    });
+
+    test("no count on a pool of 10: the first 5", async () => {
+      seed(10);
+      const { copy, key, solutions } = await copyOf();
+      expect(texts(copy)).toEqual(first(5));
+      expect(copy.totalPoints).toBe(50);
+      // Only the copied questions have an answer, distractors and a solution, under their new ids.
+      const ids = copy.questions.map((q) => q.id);
+      expect(ids.some((id) => /^q\d+$/.test(id))).toBe(false);
+      expect(Object.keys(key.answers).sort()).toEqual([...ids].sort());
+      expect(Object.keys(key.distractors).sort()).toEqual([...ids].sort());
+      expect(ids.map((id) => key.answers[id])).toEqual(["1 m", "2 m", "3 m", "4 m", "5 m"]);
+      expect(solutions).toEqual({
+        solutions: Object.fromEntries(ids.map((id, i) => [id, `Worked solution ${i + 1}`])),
+        teacherId: "teacher1",
+      });
+      const all = JSON.stringify([key, solutions]);
+      expect(all).not.toContain("6 m");
+      expect(all).not.toContain("Worked solution 6");
+    });
+
+    test("a count of 3: three of the first five that cover both topics, in order", async () => {
+      seed(10);
+      const { copy, key, solutions } = await copyOf({ count: 3 });
+      expect(texts(copy)).toEqual(["Problem 1", "Problem 2", "Problem 4"]);
+      expect(copy.totalPoints).toBe(30);
+      expect(copy.apTopics).toEqual(["4.1", "4.2"]);
+      expect(Object.keys(key.answers)).toHaveLength(3);
+      expect(Object.keys(solutions!.solutions)).toHaveLength(3);
+    });
+
+    test("pick: exactly the chosen problems, in the order given, with their own answers", async () => {
+      seed(10);
+      const { copy, key, solutions } = await copyOf({ count: 5, pick: [0, 6, 3] });
+      expect(texts(copy)).toEqual(["Problem 1", "Problem 7", "Problem 4"]);
+      expect(copy.totalPoints).toBe(30);
+      expect(Object.values(key.answers).sort()).toEqual(["1 m", "4 m", "7 m"]);
+      expect(Object.values(solutions!.solutions).sort()).toEqual([
+        "Worked solution 1",
+        "Worked solution 4",
+        "Worked solution 7",
+      ]);
+    });
+
+    test("pick: a problem the set does not have, or the same one twice, is refused", async () => {
+      seed(10);
+      for (const pick of [[0, 10], [2, 2], []]) {
+        mockWrites.length = 0;
+        expect((await post({ sourceId: "set", pick })).status).toBe(400);
+        expect(mockWrites).toEqual([]);
+      }
+    });
+
+    test("hidden: the copy is created archived, so students do not see it until it is assigned", async () => {
+      seed(10);
+      const hidden = (await copyOf({ hidden: true })).copy as unknown as { archivedAt?: unknown };
+      expect(hidden.archivedAt).toBeInstanceOf(Date);
+      const shown = (await copyOf()).copy as unknown as { archivedAt?: unknown };
+      expect(shown.archivedAt).toBeUndefined();
+    });
+
+    test("a count of 10: the whole pool", async () => {
+      seed(10);
+      const { copy, key } = await copyOf({ count: 10 });
+      expect(texts(copy)).toEqual(first(10));
+      expect(copy.totalPoints).toBe(100);
+      expect(Object.keys(key.answers)).toHaveLength(10);
+    });
+
+    test("a count larger than the pool: everything the set has", async () => {
+      seed(7);
+      const { copy } = await copyOf({ count: 10 });
+      expect(texts(copy)).toEqual(first(7));
+      expect(copy.totalPoints).toBe(70);
+    });
+
+    test("a set with no stored solutions is copied without any", async () => {
+      seed(5);
+      mockDocs.delete("assignment_solutions/set");
+      const { solutions } = await copyOf();
+      expect(solutions).toBeUndefined();
+    });
+
+    test("the source is never changed apart from its fork count", async () => {
+      seed(10);
+      await copyOf({ count: 3 });
+      expect(mockWrites.filter((w) => w.path.endsWith("/set"))).toEqual([
+        { op: "update", path: "assignments/set", data: { forkCount: { __increment: 1 } } },
+      ]);
+    });
+
+    test("anything that is not a published course set is copied whole, with or without a count", async () => {
+      // A class's own copy of a set (Duplicate): private, though it carries the set key.
+      seed(10);
+      mockDocs.set("assignments/set", {
+        ...pool(10),
+        teacherId: "teacher1",
+        visibility: "private",
+        totalPoints: 100,
+      });
+      expect(texts((await copyOf()).copy)).toEqual(first(10));
+      const duplicate = await copyOf({ count: 3 });
+      expect(texts(duplicate.copy)).toEqual(first(10));
+      expect(Object.keys(duplicate.solutions!.solutions)).toHaveLength(10);
+      // A global waypoint that is not a course set (no set key): the source's own total is kept.
+      mockWrites.length = 0;
+      expect((await post({ sourceId: "src1", count: 3 })).status).toBe(200);
+      expect((newAssignment()!.data as Copy).questions).toHaveLength(3);
+      mockDocs.set("assignments/src1", { ...source, totalPoints: 99 });
+      mockWrites.length = 0;
+      await post({ sourceId: "src1" });
+      expect((newAssignment()!.data as Copy).totalPoints).toBe(99);
+    });
+
+    test("count must be a whole number from 3 to 100", async () => {
+      seed(10);
+      for (const count of [2, 0, -1, 101, 4.5, "5", null])
+        expect([count, (await post({ sourceId: "set", count })).status]).toEqual([count, 400]);
+      for (const count of [3, 100])
+        expect([count, (await post({ sourceId: "set", count })).status]).toEqual([count, 200]);
+    });
+  });
+
   describe("free plan", () => {
     beforeEach(() => {
       mockDocs.set("organizations/orgB", { planId: "free", subscriptionStatus: "active" });
@@ -332,7 +532,12 @@ describe("POST /api/assignments/clone", () => {
         planId: "department-monthly",
         subscriptionStatus: "canceled",
       });
-      mockDocs.set("assignments/net", { ...source, visibility: "network", organizationId: "orgB", teacherId: "colleague" });
+      mockDocs.set("assignments/net", {
+        ...source,
+        visibility: "network",
+        organizationId: "orgB",
+        teacherId: "colleague",
+      });
       expect((await post({ sourceId: "net" })).status).toBe(403);
     });
   });

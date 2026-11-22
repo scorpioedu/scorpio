@@ -1,0 +1,1152 @@
+{
+  "curriculumId": "ap-physics-c-mech",
+  "unit": 1,
+  "guides": [
+    {
+      "topic": "1.1",
+      "bigIdea": "A vector carries a size and a direction, and breaking it into components along the unit vectors $\\hat{i}$, $\\hat{j}$ and $\\hat{k}$ turns vector addition into ordinary addition, one axis at a time.",
+      "picture": {
+        "diagram": "scene\nf 0,0 36.87 5 \"A = 5 m\"\nf 0,0 right 4 \"A_x = 4 m\"\nf 4,0 up 3 \"A_y = 3 m\"\nang 0,0 0 36.87 \"θ = 37°\"",
+        "caption": "A $5\\ \\text{m}$ displacement at $37^\\circ$ above the $+x$ axis is the same as going $4\\ \\text{m}$ along $x$ and then $3\\ \\text{m}$ along $y$: $\\vec{A} = (4\\hat{i} + 3\\hat{j})\\ \\text{m}$."
+      },
+      "explanation": "Some quantities are complete once you give a number and a unit: a mass of $2\\ \\text{kg}$, a time of $5\\ \\text{s}$, a speed of $12\\ \\text{m/s}$. These are scalars. Others also need a direction: a displacement of $5\\ \\text{m}$ north is not the same as $5\\ \\text{m}$ east. These are vectors, and position, displacement, velocity and acceleration are all vectors. A vector's magnitude (its size) is never negative.\n\nArrows are good for thinking; components are better for calculating. Pick perpendicular axes and ask how far the vector reaches along each. A vector of magnitude $A$ at angle $\\theta$, measured counterclockwise from the $+x$ axis, has $A_x = A\\cos\\theta$ and $A_y = A\\sin\\theta$. A component is a signed number: negative means the vector points toward the negative end of that axis. The unit vectors $\\hat{i}$, $\\hat{j}$ and $\\hat{k}$ have magnitude 1, no unit, and point along $+x$, $+y$ and $+z$, so the whole vector is written $\\vec{A} = A_x\\hat{i} + A_y\\hat{j} + A_z\\hat{k}$.\n\nTo add vectors, add matching components: the $x$-component of $\\vec{A} + \\vec{B}$ is $A_x + B_x$, and likewise for $y$ and $z$. Subtracting means adding the opposite vector, and multiplying by a scalar multiplies every component. Magnitudes do not add unless the vectors point the same way. To go back from components to size and direction, use the Pythagorean theorem and an inverse tangent, then check the quadrant by looking at the signs of the components.\n\nThis matters more in a calculus-based course, because the unit vectors are constant. Differentiating or integrating a vector is done one component at a time, which is how every two- and three-dimensional problem in this unit is handled.",
+      "equations": [
+        {
+          "latex": "\\vec{A} = A_x\\hat{i} + A_y\\hat{j} + A_z\\hat{k}",
+          "meaning": "A vector is the sum of its components, each multiplied by the unit vector along its axis.",
+          "variables": [
+            {
+              "symbol": "\\vec{A}",
+              "name": "the vector",
+              "unit": "same as its components"
+            },
+            {
+              "symbol": "A_x,\\ A_y,\\ A_z",
+              "name": "components along x, y and z (signed)",
+              "unit": "e.g. m, m/s"
+            },
+            {
+              "symbol": "\\hat{i},\\ \\hat{j},\\ \\hat{k}",
+              "name": "unit vectors along +x, +y and +z",
+              "unit": "none"
+            }
+          ],
+          "useWhen": "Always, before adding, subtracting, differentiating or integrating vectors.",
+          "notWhen": "Do not mix axes: an $\\hat{i}$ term never combines with a $\\hat{j}$ term."
+        },
+        {
+          "latex": "A_x = A\\cos\\theta, \\qquad A_y = A\\sin\\theta",
+          "meaning": "The components of a vector in a plane, from its magnitude and its angle from the +x axis.",
+          "variables": [
+            {
+              "symbol": "A",
+              "name": "magnitude of the vector",
+              "unit": "e.g. m, m/s"
+            },
+            {
+              "symbol": "A_x,\\ A_y",
+              "name": "components along x and y",
+              "unit": "same as A"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle measured counterclockwise from the +x axis",
+              "unit": "° or rad"
+            }
+          ],
+          "useWhen": "You know a vector's size and direction and need its components.",
+          "notWhen": "If the angle is measured from the $y$ axis or from the $-x$ axis, sine and cosine swap or a sign changes. Sketch the triangle rather than trusting the formula."
+        },
+        {
+          "latex": "A = \\sqrt{A_x^2 + A_y^2 + A_z^2}, \\qquad \\tan\\theta = \\frac{A_y}{A_x}",
+          "meaning": "The magnitude of a vector from its components, and its direction in the xy-plane.",
+          "variables": [
+            {
+              "symbol": "A",
+              "name": "magnitude of the vector",
+              "unit": "e.g. m, m/s"
+            },
+            {
+              "symbol": "A_x,\\ A_y,\\ A_z",
+              "name": "components",
+              "unit": "same as A"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle from the +x axis, for a vector in the xy-plane",
+              "unit": "° or rad"
+            }
+          ],
+          "useWhen": "You have components and want the size or direction.",
+          "notWhen": "The inverse tangent alone cannot tell opposite quadrants apart; when $A_x$ is negative, add $180^\\circ$."
+        },
+        {
+          "latex": "\\vec{R} = \\vec{A} + \\vec{B} = (A_x + B_x)\\hat{i} + (A_y + B_y)\\hat{j}",
+          "meaning": "Vectors add component by component.",
+          "variables": [
+            {
+              "symbol": "\\vec{R}",
+              "name": "resultant (sum) vector",
+              "unit": "same as A and B"
+            },
+            {
+              "symbol": "\\vec{A},\\ \\vec{B}",
+              "name": "the vectors being added",
+              "unit": "e.g. m"
+            },
+            {
+              "symbol": "A_x,\\ A_y",
+              "name": "components of the first vector",
+              "unit": "e.g. m"
+            },
+            {
+              "symbol": "B_x,\\ B_y",
+              "name": "components of the second vector",
+              "unit": "e.g. m"
+            },
+            {
+              "symbol": "\\hat{i},\\ \\hat{j}",
+              "name": "unit vectors along +x and +y",
+              "unit": "none"
+            }
+          ],
+          "useWhen": "Combining displacements, velocities or any vectors of the same kind.",
+          "notWhen": "Do not add magnitudes unless the vectors are parallel, and do not add vectors of different kinds (a velocity to a displacement)."
+        }
+      ],
+      "derivation": "**Magnitude in three dimensions.** Let $\\vec{A} = A_x\\hat{i} + A_y\\hat{j} + A_z\\hat{k}$. Its shadow on the $xy$-plane has perpendicular legs $A_x$ and $A_y$, so by the Pythagorean theorem the shadow's length $s$ satisfies $s^2 = A_x^2 + A_y^2$. The shadow and the vertical leg $A_z$ are also perpendicular, so applying the theorem a second time gives\n\n$$\nA^2 = s^2 + A_z^2 = A_x^2 + A_y^2 + A_z^2.\n$$\n\n**Why components differentiate separately.** Take a position vector whose components depend on time, $\\vec{r}(t) = x(t)\\hat{i} + y(t)\\hat{j}$. By the product rule,\n\n$$\n\\frac{d\\vec{r}}{dt} = \\frac{dx}{dt}\\hat{i} + x\\frac{d\\hat{i}}{dt} + \\frac{dy}{dt}\\hat{j} + y\\frac{d\\hat{j}}{dt}.\n$$\n\nThe Cartesian unit vectors never change in size or direction, so $d\\hat{i}/dt = d\\hat{j}/dt = 0$, leaving\n\n$$\n\\frac{d\\vec{r}}{dt} = \\frac{dx}{dt}\\hat{i} + \\frac{dy}{dt}\\hat{j}.\n$$\n\nThe derivative of a vector is the vector of the derivatives of its components. Run backwards, the same argument shows that a vector can be integrated one component at a time.",
+      "workedExamples": [
+        {
+          "title": "Adding two displacements by components",
+          "prompt": "A warehouse robot rolls $6.0\\ \\text{m}$ in a direction $30^\\circ$ counterclockwise from the $+x$ axis, then $4.0\\ \\text{m}$ in a direction $135^\\circ$ counterclockwise from the $+x$ axis. How far is it from where it started, and in what direction?",
+          "steps": [
+            "Resolve the first displacement: $A_x = (6.0\\ \\text{m})\\cos 30^\\circ = 5.20\\ \\text{m}$ and $A_y = (6.0\\ \\text{m})\\sin 30^\\circ = 3.00\\ \\text{m}$.",
+            "Resolve the second: $B_x = (4.0\\ \\text{m})\\cos 135^\\circ = -2.83\\ \\text{m}$ and $B_y = (4.0\\ \\text{m})\\sin 135^\\circ = +2.83\\ \\text{m}$. The negative sign says this leg carries the robot back toward $-x$.",
+            "Add matching components: $R_x = 5.20 - 2.83 = 2.37\\ \\text{m}$ and $R_y = 3.00 + 2.83 = 5.83\\ \\text{m}$.",
+            "Magnitude: $R = \\sqrt{(2.37\\ \\text{m})^2 + (5.83\\ \\text{m})^2} = 6.3\\ \\text{m}$. This is less than $6.0 + 4.0 = 10\\ \\text{m}$ because the two legs do not point the same way.",
+            "Direction: $\\theta = \\tan^{-1}(5.83/2.37) = 68^\\circ$. Both components are positive, so the resultant lies in the first quadrant and the calculator's angle stands."
+          ],
+          "answer": "$R = 6.3\\ \\text{m}$, at $68^\\circ$ counterclockwise from the $+x$ axis",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "A": {
+                "value": 6,
+                "unit": "m"
+              },
+              "thA": {
+                "value": 30,
+                "unit": "deg"
+              },
+              "B": {
+                "value": 4,
+                "unit": "m"
+              },
+              "thB": {
+                "value": 135,
+                "unit": "deg"
+              }
+            },
+            "expr": "sqrt((A*cos(thA) + B*cos(thB))^2 + (A*sin(thA) + B*sin(thB))^2)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Speed and climb angle of a three-dimensional velocity",
+          "prompt": "A light aircraft climbs with velocity $\\vec{v} = (60\\hat{i} + 80\\hat{j} + 15\\hat{k})\\ \\text{m/s}$, where $\\hat{i}$ points east, $\\hat{j}$ points north and $\\hat{k}$ points straight up. Determine the aircraft's speed, its speed over the ground, and the angle its path makes above the horizontal. Then explain why the speed is not $60 + 80 + 15 = 155\\ \\text{m/s}$.",
+          "steps": [
+            "Speed over the ground is the magnitude of the horizontal part of $\\vec{v}$, the shadow of the vector on the ground: $v_h = \\sqrt{v_x^2 + v_y^2} = \\sqrt{60^2 + 80^2}\\ \\text{m/s} = 100\\ \\text{m/s}$.",
+            "The speed is the magnitude of the whole vector: $|\\vec{v}| = \\sqrt{60^2 + 80^2 + 15^2}\\ \\text{m/s} = \\sqrt{10\\,225}\\ \\text{m/s} = 101\\ \\text{m/s}$. The small, perpendicular vertical component adds only $1\\ \\text{m/s}$.",
+            "The vertical component and the horizontal part form a right triangle, so the climb angle is $\\theta = \\tan^{-1}(v_z/v_h) = \\tan^{-1}(15/100) = 8.5^\\circ$.",
+            "Adding the components gives $155\\ \\text{m/s}$, which would be right only if all three pointed the same way. They are mutually perpendicular, so they combine by the Pythagorean theorem."
+          ],
+          "answer": "Speed $101\\ \\text{m/s}$, ground speed $100\\ \\text{m/s}$, climbing at 8.5° above the horizontal; the perpendicular components combine by Pythagoras, not by addition",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "vx": {
+                "value": 60,
+                "unit": "m/s"
+              },
+              "vy": {
+                "value": 80,
+                "unit": "m/s"
+              },
+              "vz": {
+                "value": 15,
+                "unit": "m/s"
+              }
+            },
+            "expr": "atan(vz / sqrt(vx^2 + vy^2))",
+            "unit": "°"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "net-force-vector-addition",
+          "wrong": "A $3\\ \\text{m}$ displacement followed by a $4\\ \\text{m}$ displacement always makes a $7\\ \\text{m}$ displacement.",
+          "right": "Only when the two point the same way. In general the result can be anything from $1\\ \\text{m}$ (opposite directions) to $7\\ \\text{m}$, and it is $5\\ \\text{m}$ when they are perpendicular. Add components, not magnitudes."
+        },
+        {
+          "tag": "distance-displacement-confusion",
+          "wrong": "The magnitude of the displacement is the distance travelled.",
+          "right": "Displacement depends only on the start and end points; distance is the length of the path between them. Run once round a $400\\ \\text{m}$ track and your distance is $400\\ \\text{m}$ but your displacement is zero."
+        },
+        {
+          "wrong": "$\\tan^{-1}(A_y/A_x)$ always gives the vector's direction.",
+          "right": "A calculator returns an angle between $-90^\\circ$ and $90^\\circ$, so it cannot tell opposite quadrants apart. For $\\vec{A} = (-3\\hat{i} + 4\\hat{j})\\ \\text{m}$ it gives $-53^\\circ$, but the vector points up and to the left, at $127^\\circ$. When $A_x$ is negative, add $180^\\circ$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Vector $\\vec{A}$ has magnitude $10\\ \\text{m}$ and points $37^\\circ$ above the $-x$ axis. What are its components?",
+          "a": "$A_x = -(10\\ \\text{m})\\cos 37^\\circ = -8.0\\ \\text{m}$ and $A_y = +(10\\ \\text{m})\\sin 37^\\circ = +6.0\\ \\text{m}$. It points left and up, so the $x$-component is negative."
+        },
+        {
+          "q": "Two displacements have magnitudes $5\\ \\text{m}$ and $12\\ \\text{m}$. What are the largest and smallest possible magnitudes of their sum, and what is it when they are perpendicular?",
+          "a": "$17\\ \\text{m}$ when they are parallel, $7\\ \\text{m}$ when they are opposite, and $\\sqrt{5^2 + 12^2} = 13\\ \\text{m}$ when they are perpendicular."
+        },
+        {
+          "q": "If $\\vec{A} = 2\\hat{i} - 3\\hat{j}$ and $\\vec{B} = -5\\hat{i} + \\hat{j}$, both in metres, what is $\\vec{A} - 2\\vec{B}$?",
+          "a": "$(2 + 10)\\hat{i} + (-3 - 2)\\hat{j} = 12\\hat{i} - 5\\hat{j}$, in metres. Its magnitude is $13\\ \\text{m}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndash -5,0 5,0\ndash 0,0 0,5\nf 0,0 {{th}} 5 \"A = 5 m\"\nf 0,0 right {{5*cos(th*pi/180)}} \"A_x = {{round(50*cos(th*pi/180))/10}} m\"\nf {{5*cos(th*pi/180)}},0 up {{5*sin(th*pi/180)}} \"A_y = {{round(50*sin(th*pi/180))/10}} m\"\nang 0,0 0 {{th}} \"θ\"",
+        "caption": "Swing a $5\\ \\text{m}$ vector round. Past $90^\\circ$ the $x$-component turns negative, while the magnitude never changes.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Angle from the +x axis",
+            "min": 15,
+            "max": 165,
+            "step": 10,
+            "default": 35,
+            "unit": "°"
+          }
+        ]
+      },
+      "teacherNotes": "Ask students to predict the sign of each component from a sketch before touching a calculator; the sketch catches most quadrant errors. The habit worth building now is writing every vector in $\\hat{i}$, $\\hat{j}$, $\\hat{k}$ form, because the calculus in topics 1.2 and 1.5 is done one component at a time. Students who add magnitudes here will add speeds in relative motion (1.4). Set 1A practises components alongside the calculus of motion."
+    },
+    {
+      "topic": "1.2",
+      "bigIdea": "Velocity is the rate of change of position and acceleration is the rate of change of velocity, so differentiating takes you from position to velocity to acceleration and integrating brings you back.",
+      "picture": {
+        "diagram": "plot x=t[s] y=x[m] xr=0,6 yr=0,12\nfn 6*t-t^2 0..6\nseg 0,1 2,9 dash=1\nseg 1,5 3,9 dash=1\npt 1,5\npt 3,9\nnote 1.3,10.6 \"tangent: 4 m/s\"\nnote 3.3,6.6 \"chord: 2 m/s\"\nxt 0 1 2 3 4 5 6\nyt 1 3 5 7 9 11",
+        "caption": "For $x(t) = 6t - t^2$, the dashed tangent at $t = 1\\ \\text{s}$ has slope $4\\ \\text{m/s}$, the instantaneous velocity there. The dashed chord from $1\\ \\text{s}$ to $3\\ \\text{s}$ has slope $2\\ \\text{m/s}$, the average velocity over that interval."
+      },
+      "explanation": "Position $x$ says where an object is on a chosen axis. Displacement is the change in position, $\\Delta x = x_f - x_i$, and it can be positive, negative or zero. Average velocity over an interval is displacement divided by time, $v_{\\text{avg}} = \\Delta x/\\Delta t$: on a position–time graph it is the slope of the straight chord joining two points.\n\nAverages hide what happens in between. Shrink the interval around one instant and the chord turns into the tangent; its slope is the instantaneous velocity, $v = dx/dt$. The same step applied to velocity gives acceleration, $a = dv/dt = d^2x/dt^2$. So if you are handed $x(t)$, one derivative gives $v(t)$ and a second gives $a(t)$. The sign of $v$ is the direction of motion; speed is its magnitude.\n\nGoing the other way needs integration. Acceleration tells you how velocity changes, so adding up $a\\,dt$ over an interval gives the change in velocity, and adding up $v\\,dt$ gives the displacement. An integral only ever gives a change, so you also need a starting value: the initial velocity $v_0$ or the initial position $x_0$. These are the constants of integration, and the problem must supply them.\n\nNothing here assumes the acceleration is constant; the familiar constant-acceleration equations are a special case (topic 1.3). In two or three dimensions the same derivatives and integrals apply to each component of $\\vec{r}$, $\\vec{v}$ and $\\vec{a}$ separately.",
+      "equations": [
+        {
+          "latex": "v_{\\text{avg}} = \\frac{\\Delta x}{\\Delta t}",
+          "meaning": "Average velocity is displacement divided by the time it took.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{avg}}",
+              "name": "average velocity over the interval",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\Delta x",
+              "name": "displacement (change in position)",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know positions at two times and want the overall rate, or the slope of a chord on a position–time graph.",
+          "notWhen": "It is not the velocity at any one instant, and it equals the mean of the initial and final velocities only when the acceleration is constant."
+        },
+        {
+          "latex": "v = \\frac{dx}{dt}, \\qquad a = \\frac{dv}{dt}",
+          "meaning": "Instantaneous velocity is the time derivative of position, and instantaneous acceleration is the time derivative of velocity.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "instantaneous velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "x",
+              "name": "position",
+              "unit": "m"
+            },
+            {
+              "symbol": "a",
+              "name": "instantaneous acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You have position or velocity as a function of time, or need the slope of a tangent on a graph.",
+          "notWhen": "Do not divide $x$ by $t$ or $v$ by $t$ instead of differentiating; that gives the right answer only for a straight-line graph through the origin."
+        },
+        {
+          "latex": "v(t) = v_0 + \\int_0^t a\\,dt'",
+          "meaning": "The velocity at time t is the initial velocity plus the area under the acceleration–time graph from 0 to t. The prime only marks the variable of integration, to keep it apart from the upper limit t.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at time t",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at t = 0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "acceleration, which may depend on time",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You are given the acceleration as a function of time, or an acceleration–time graph.",
+          "notWhen": "Do not leave out $v_0$: the integral is only the change in velocity."
+        },
+        {
+          "latex": "x(t) = x_0 + \\int_0^t v\\,dt'",
+          "meaning": "The position at time t is the initial position plus the area under the velocity–time graph from 0 to t.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "position at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "position at t = 0",
+              "unit": "m"
+            },
+            {
+              "symbol": "v",
+              "name": "velocity, which may depend on time",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You are given the velocity as a function of time, or a velocity–time graph.",
+          "notWhen": "The integral is displacement, not distance. If $v$ changes sign the pieces partly cancel; for distance, integrate the speed $|v|$."
+        }
+      ],
+      "derivation": "**The derivative as a limit.** Suppose $x(t) = ct^2$, where $c$ is a constant. The average velocity between $t$ and $t + \\Delta t$ is\n\n$$\nv_{\\text{avg}} = \\frac{c(t + \\Delta t)^2 - ct^2}{\\Delta t} = \\frac{2ct\\,\\Delta t + c(\\Delta t)^2}{\\Delta t} = 2ct + c\\,\\Delta t.\n$$\n\nAs $\\Delta t \\to 0$ the last term vanishes and the chord becomes the tangent, so $v = dx/dt = 2ct$. Differentiating again gives $a = dv/dt = 2c$.\n\n**The integral as a sum.** Cut the interval from $0$ to $t$ into many short slices of width $\\Delta t$. Within one slice the velocity barely changes, so the displacement in that slice is close to $v\\,\\Delta t$: a thin strip of area under the velocity–time graph. Add the strips and let $\\Delta t \\to 0$:\n\n$$\nx(t) - x_0 = \\lim_{\\Delta t \\to 0}\\sum v\\,\\Delta t = \\int_0^t v\\,dt'.\n$$\n\nThe same argument, with $a\\,\\Delta t$ as each small change in velocity, gives $v(t) - v_0 = \\int_0^t a\\,dt'$. Check with the example above: $a = 2c$ and $v_0 = 0$ give $v = 2ct$, and integrating that with $x_0 = 0$ returns $x = ct^2$.",
+      "workedExamples": [
+        {
+          "title": "The fastest moment of a shuttle",
+          "prompt": "A maglev shuttle leaves a station at $t = 0$. For the first $5\\ \\text{s}$ its position, in metres, is $x(t) = 3.0t^2 - 0.40t^3$, with $t$ in seconds. What is the shuttle's velocity at the instant its acceleration is zero?",
+          "steps": [
+            "Velocity is the derivative of position: $v(t) = dx/dt = 6.0t - 1.2t^2$, in $\\text{m/s}$.",
+            "Acceleration is the derivative of velocity: $a(t) = dv/dt = 6.0 - 2.4t$, in $\\text{m/s}^2$.",
+            "Set $a = 0$: $6.0 - 2.4t = 0$, so $t = 2.5\\ \\text{s}$.",
+            "Evaluate the velocity at that time: $v = 6.0(2.5) - 1.2(2.5)^2 = 15 - 7.5 = 7.5\\ \\text{m/s}$.",
+            "Interpret: before $2.5\\ \\text{s}$ the acceleration is positive and the shuttle speeds up; afterwards it is negative and the shuttle slows. So $7.5\\ \\text{m/s}$ is its greatest velocity. Zero acceleration marks the peak of the velocity–time graph, not a stop."
+          ],
+          "answer": "$v = 7.5\\ \\text{m/s}$, at $t = 2.5\\ \\text{s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "b": {
+                "value": 3,
+                "unit": "m/s^2"
+              },
+              "c": {
+                "value": 0.4,
+                "unit": "m/s^3"
+              }
+            },
+            "expr": "2*b*(b/(3*c)) - 3*c*(b/(3*c))^2",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Braking harder and harder",
+          "prompt": "A motorcyclist is riding at $18\\ \\text{m/s}$ when, at $t = 0$, she begins to squeeze the brakes steadily harder, so that her acceleration is $a(t) = -kt$ with $k = 1.0\\ \\text{m/s}^3$. Derive an expression for her velocity as a function of time, and determine how far she travels before stopping.",
+          "steps": [
+            "The acceleration is not constant, so integrate it: $v(t) = v_0 + \\int_0^t (-kt')\\,dt' = v_0 - \\tfrac{1}{2}kt^2$. With the numbers, $v = 18 - 0.50t^2$ in $\\text{m/s}$.",
+            "She stops when $v = 0$: $t_s = \\sqrt{2v_0/k} = \\sqrt{2(18\\ \\text{m/s})/(1.0\\ \\text{m/s}^3)} = 6.0\\ \\text{s}$.",
+            "Integrate the velocity for the displacement: $\\Delta x = \\int_0^{t_s}\\left(v_0 - \\tfrac{1}{2}kt^2\\right)dt = v_0 t_s - \\tfrac{1}{6}kt_s^3$.",
+            "$\\Delta x = (18)(6.0) - \\tfrac{1}{6}(1.0)(6.0)^3 = 108 - 36 = 72\\ \\text{m}$. Her velocity never changes sign, so this is also the distance.",
+            "Compare a tempting shortcut: treating her final acceleration, $-6.0\\ \\text{m/s}^2$, as constant gives $v_0^2/(2|a|) = 27\\ \\text{m}$. That is far too short, because for most of the stop the braking is much gentler."
+          ],
+          "answer": "$v(t) = v_0 - \\tfrac{1}{2}kt^2$; she stops after $6.0\\ \\text{s}$, having travelled $72\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v0": {
+                "value": 18,
+                "unit": "m/s"
+              },
+              "k": {
+                "value": 1,
+                "unit": "m/s^3"
+              }
+            },
+            "expr": "v0*sqrt(2*v0/k) - k*sqrt(2*v0/k)^3/6",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "If an object's velocity is zero at some instant, its acceleration is zero at that instant too.",
+          "right": "Acceleration is how fast the velocity is changing, not how large it is. A ball at the top of its flight has $v = 0$ but $a = -9.8\\ \\text{m/s}^2$; if both were zero it would hang there. On a graph, the value of $v(t)$ and its slope are separate things."
+        },
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "To get the velocity from a changing acceleration, multiply: $v = a(t)\\,t$.",
+          "right": "That works only when $a$ is constant and $v_0 = 0$. If $a(t) = 6t$, the velocity gained is $\\int_0^t 6t'\\,dt' = 3t^2$, half of the $6t^2$ that multiplying gives."
+        },
+        {
+          "tag": "distance-displacement-confusion",
+          "wrong": "Integrating the velocity always gives the distance travelled.",
+          "right": "It gives the displacement. If the object reverses, the backward part counts as negative and cancels some of the forward part. For distance, split the integral where $v = 0$ and add the sizes of the pieces."
+        },
+        {
+          "tag": "initial-conditions-ignored",
+          "wrong": "The integral of the acceleration is the velocity.",
+          "right": "It is the change in velocity. Add the velocity the object already had: $v = v_0 + \\int a\\,dt$. Leaving out $v_0$, or $x_0$ when integrating velocity, is one of the most common slips in these problems."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A particle's position is $x(t) = 4t - t^2$ (metres, seconds). When is it momentarily at rest, and what is its acceleration then?",
+          "a": "$v = dx/dt = 4 - 2t$, which is zero at $t = 2\\ \\text{s}$. The acceleration is $a = dv/dt = -2\\ \\text{m/s}^2$ at every instant, including that one."
+        },
+        {
+          "q": "An object starts from rest with $a(t) = 12t^2$ (in $\\text{m/s}^2$, with $t$ in seconds). What is its velocity at $t = 2\\ \\text{s}$?",
+          "a": "$v = \\int_0^2 12t^2\\,dt = 4(2)^3 = 32\\ \\text{m/s}$. Multiplying $a(2) = 48\\ \\text{m/s}^2$ by $2\\ \\text{s}$ would give $96\\ \\text{m/s}$, three times too large."
+        },
+        {
+          "q": "A runner goes $100\\ \\text{m}$ east in $20\\ \\text{s}$, then $40\\ \\text{m}$ west in $10\\ \\text{s}$. What are her average velocity and her average speed?",
+          "a": "Her displacement is $60\\ \\text{m}$ east in $30\\ \\text{s}$, so the average velocity is $2.0\\ \\text{m/s}$ east. Her distance is $140\\ \\text{m}$, so the average speed is $4.7\\ \\text{m/s}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=x[m] xr=0,6 yr=0,13\nfn 6*t-t^2 0..6\nseg {{t0-1}},{{6*t0-t0^2-(6-2*t0)}} {{t0+1}},{{6*t0-t0^2+(6-2*t0)}} dash=1\npt {{t0}},{{6*t0-t0^2}}\nnote 2.2,11.3 \"v = {{6-2*t0}} m/s\"\nxt 0 1 2 3 4 5 6\nyt 0 3 6 9 12",
+        "caption": "Slide the instant along the curve $x = 6t - t^2$. The slope of the dashed tangent is the velocity: positive while $x$ rises, zero at the peak, negative on the way back.",
+        "params": [
+          {
+            "name": "t0",
+            "label": "Time",
+            "min": 1,
+            "max": 5,
+            "step": 0.25,
+            "default": 1.5,
+            "unit": "s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1"
+      ],
+      "teacherNotes": "Ask for the units of every coefficient: a student who can say why the $1.2$ in $v = 6.0t - 1.2t^2$ is in $\\text{m/s}^3$ rarely differentiates when they should integrate. The usual slip is the initial condition, so have students write $v(0)$ and $x(0)$ down before they integrate. Set 1A works the chain in both directions."
+    },
+    {
+      "topic": "1.3",
+      "bigIdea": "Graphs and equations are two views of one motion: slopes lead from position to velocity to acceleration, areas lead back, and the constant-acceleration equations are what those integrals give when $a$ does not change.",
+      "picture": {
+        "diagram": "plot x=t[s] y=v[m/s] xr=-0.5,6.5 yr=-5,9\nseg 0,8 4,0 6,-4\nshade 0..4\nshade 4..6\nnote 0.9,2 \"+16 m\"\nnote 4.9,-3.4 \"-4 m\"\nnote 3.2,5.5 \"slope = -2 m/s^2\"\nxt 0 2 4 6\nyt -4 0 4 8",
+        "caption": "A cart's velocity falls steadily from $8\\ \\text{m/s}$, passes through zero at $4\\ \\text{s}$ and turns negative. The slope, $-2\\ \\text{m/s}^2$, is the acceleration throughout. The shaded areas give a displacement of $16 - 4 = 12\\ \\text{m}$ but a distance of $16 + 4 = 20\\ \\text{m}$."
+      },
+      "explanation": "Any motion along a line can be drawn as three graphs against time. The slope of the position graph is the velocity, and the slope of the velocity graph is the acceleration. In the other direction, the area between the velocity graph and the time axis is the displacement, and the area under the acceleration graph is the change in velocity. Area below the axis counts as negative.\n\nRead shapes as well as values. A curved position graph means the velocity is changing: concave up for positive acceleration, concave down for negative. An object speeds up when $v$ and $a$ have the same sign and slows down when they are opposite.\n\nWhen the acceleration is constant, the velocity graph is a straight line and the integrals can be done once and for all, giving the kinematic equations below. Free fall is the standard case: with air resistance ignored, every object near Earth's surface accelerates downward at $g = 9.8\\ \\text{m/s}^2$, whether it is rising, falling or momentarily at rest.\n\nWhen the acceleration changes, those equations fail: differentiate or integrate the function you are given, or find areas on the graph. If the acceleration depends on position or velocity rather than time, the chain-rule form $a = v\\,dv/dx$ lets you separate the variables and integrate.",
+      "equations": [
+        {
+          "latex": "v = v_0 + at",
+          "meaning": "With constant acceleration, velocity changes by the same amount every second.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at time t",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at t = 0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "constant acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The acceleration is constant and the problem involves time but not position.",
+          "notWhen": "Not when $a$ changes with time; then $v = v_0 + \\int a\\,dt$."
+        },
+        {
+          "latex": "x = x_0 + v_0 t + \\tfrac{1}{2}at^2",
+          "meaning": "With constant acceleration, position is a quadratic function of time.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "position at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "position at t = 0",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at t = 0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "constant acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time elapsed",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The acceleration is constant and you know, or want, the time. One equation covers a whole flight up and down, because the acceleration is the same throughout.",
+          "notWhen": "Not across a change in acceleration (a rocket whose engine cuts out, a car that starts braking): treat each stage separately."
+        },
+        {
+          "latex": "v^2 = v_0^2 + 2a(x - x_0)",
+          "meaning": "With constant acceleration, the change in the square of the velocity is set by the displacement.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at position x",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_0",
+              "name": "velocity at position x_0",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a",
+              "name": "constant acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "x,\\ x_0",
+              "name": "final and initial positions",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The acceleration is constant and time is neither given nor wanted.",
+          "notWhen": "It gives $v^2$, so it cannot tell you the sign of $v$; decide the direction from the situation."
+        },
+        {
+          "latex": "a = \\frac{dv}{dt} = v\\,\\frac{dv}{dx}",
+          "meaning": "By the chain rule, acceleration can be written as a derivative with respect to position instead of time.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "v",
+              "name": "velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "x",
+              "name": "position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The acceleration is given as a function of position or velocity, such as $a = -cx$ or $a = -kv$, and you need to integrate.",
+          "notWhen": "Not needed when the acceleration is given as a function of time; integrate with respect to time directly."
+        }
+      ],
+      "derivation": "Start from the definitions and take $a$ to be constant.\n\n**Velocity.** Since $dv/dt = a$, integrate from time $0$, when the velocity is $v_0$, to time $t$:\n\n$$\n\\int_{v_0}^{v} dv' = \\int_0^t a\\,dt' \\quad\\Rightarrow\\quad v - v_0 = at.\n$$\n\nThe constant $a$ came outside the integral. This is the only place the assumption is used, and it is why the result fails when $a$ varies.\n\n**Position.** Since $dx/dt = v = v_0 + at$,\n\n$$\nx - x_0 = \\int_0^t (v_0 + at')\\,dt' = v_0 t + \\tfrac{1}{2}at^2.\n$$\n\n**Without time.** By the chain rule, $a = \\dfrac{dv}{dt} = \\dfrac{dv}{dx}\\,\\dfrac{dx}{dt} = v\\,\\dfrac{dv}{dx}$. Separate the variables and integrate:\n\n$$\n\\int_{v_0}^{v} v'\\,dv' = \\int_{x_0}^{x} a\\,dx' \\quad\\Rightarrow\\quad \\tfrac{1}{2}\\left(v^2 - v_0^2\\right) = a(x - x_0),\n$$\n\nwhich rearranges to $v^2 = v_0^2 + 2a(x - x_0)$.",
+      "workedExamples": [
+        {
+          "title": "Up, over and down from a balcony",
+          "prompt": "A ball is thrown straight up at $14.7\\ \\text{m/s}$ from a balcony $19.6\\ \\text{m}$ above the ground, and it misses the balcony on the way down. Taking $g = 9.8\\ \\text{m/s}^2$ and ignoring air resistance, how long after the throw does it reach the ground?",
+          "steps": [
+            "Choose the axis: up is positive, with $y = 0$ at the ground. Then $y_0 = +19.6\\ \\text{m}$, $v_0 = +14.7\\ \\text{m/s}$ and $a = -9.8\\ \\text{m/s}^2$ for the whole flight.",
+            "The acceleration is constant, so $y = y_0 + v_0 t + \\tfrac{1}{2}at^2$. At the ground $y = 0$: $0 = 19.6 + 14.7t - 4.9t^2$.",
+            "Divide through by $4.9$: $t^2 - 3.0t - 4.0 = 0$, which factors as $(t - 4.0)(t + 1.0) = 0$.",
+            "The roots are $t = 4.0\\ \\text{s}$ and $t = -1.0\\ \\text{s}$. The negative root is a time before the throw; discard it.",
+            "Check: the ball rises for $v_0/g = 1.5\\ \\text{s}$ to $30.6\\ \\text{m}$, then falls from rest for $\\sqrt{2(30.6)/9.8} = 2.5\\ \\text{s}$. One equation handled the whole trip because the acceleration never changed."
+          ],
+          "answer": "$t = 4.0\\ \\text{s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "v0": {
+                "value": 14.7,
+                "unit": "m/s"
+              },
+              "h": {
+                "value": 19.6,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "(v0 + sqrt(v0^2 + 2*g*h))/g",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "Reading an acceleration–time graph",
+          "prompt": "An electric car starts from rest at $t = 0$. Its launch control raises the acceleration steadily from zero to $6.0\\ \\text{m/s}^2$ during the first $2.0\\ \\text{s}$, then holds it at $6.0\\ \\text{m/s}^2$ for the next $3.0\\ \\text{s}$, as shown. Determine the car's speed at $t = 5.0\\ \\text{s}$ and the distance it has covered by then.\n\n```dg\nplot x=t[s] y=a[m/s^2] xr=-0.6,5.5 yr=0,7\nseg 0,0 2,6 5,6\nxt 0 1 2 3 4 5\nyt 0 2 4 6\n```",
+          "steps": [
+            "The change in velocity is the area under the acceleration–time graph, a triangle plus a rectangle: $\\Delta v = \\tfrac{1}{2}(2.0\\ \\text{s})(6.0\\ \\text{m/s}^2) + (3.0\\ \\text{s})(6.0\\ \\text{m/s}^2) = 6.0 + 18 = 24\\ \\text{m/s}$. The car starts from rest, so this is its speed.",
+            "The first $2.0\\ \\text{s}$ needs integration, because there $a = (3.0\\ \\text{m/s}^3)\\,t$ is not constant: $v = \\int_0^t 3.0t'\\,dt' = 1.5t^2$ and $x = \\int_0^t 1.5t'^2\\,dt' = 0.50t^3$. At $t = 2.0\\ \\text{s}$ these give $v = 6.0\\ \\text{m/s}$ and $x = 4.0\\ \\text{m}$.",
+            "From $2.0\\ \\text{s}$ to $5.0\\ \\text{s}$ the acceleration is constant, so with $v_0 = 6.0\\ \\text{m/s}$ over $3.0\\ \\text{s}$: $\\Delta x = v_0 t + \\tfrac{1}{2}at^2 = (6.0)(3.0) + \\tfrac{1}{2}(6.0)(3.0)^2 = 18 + 27 = 45\\ \\text{m}$.",
+            "Total distance: $4.0 + 45 = 49\\ \\text{m}$. Using $x = \\tfrac{1}{2}at^2$ for the first stage would have given $12\\ \\text{m}$ there, three times too much."
+          ],
+          "answer": "$v = 24\\ \\text{m/s}$, and the car has covered $49\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "a_m": {
+                "value": 6,
+                "unit": "m/s^2"
+              },
+              "t1": {
+                "value": 2,
+                "unit": "s"
+              },
+              "t2": {
+                "value": 3,
+                "unit": "s"
+              }
+            },
+            "expr": "a_m*t1^2/6 + (a_m*t1/2)*t2 + a_m*t2^2/2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "graph-as-picture",
+          "wrong": "A position–time graph that rises and then falls shows an object going over a hill.",
+          "right": "The graph shows position against time, not a path through space. Rising then falling means the object moved forward, stopped for an instant and came back, perhaps on a perfectly flat track."
+        },
+        {
+          "tag": "acceleration-sign-means-slowing",
+          "wrong": "Negative acceleration means the object is slowing down.",
+          "right": "Slowing down means $v$ and $a$ have opposite signs. A falling ball, with up as positive, has $v < 0$ and $a < 0$ and is speeding up."
+        },
+        {
+          "tag": "derivative-integral-confusion",
+          "wrong": "The displacement is the slope of the velocity–time graph, and the acceleration is the area under it.",
+          "right": "Slope takes you down the chain, from $x$ to $v$ to $a$; area takes you back up. Check the units: a slope on a velocity–time graph is in $\\text{m/s}^2$, an area in $\\text{m}$."
+        },
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "$x = x_0 + v_0 t + \\tfrac{1}{2}at^2$ works for any motion if you use the acceleration at that instant.",
+          "right": "The equation comes from taking $a$ outside an integral, which is allowed only when $a$ is constant. Otherwise integrate $a(t)$ twice, or work in stages where it is constant."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A velocity–time graph is a straight line from $+6\\ \\text{m/s}$ at $t = 0$ to $-6\\ \\text{m/s}$ at $t = 4\\ \\text{s}$. What are the acceleration, the displacement and the distance travelled?",
+          "a": "The slope gives $a = -3\\ \\text{m/s}^2$. The areas are $+6\\ \\text{m}$ and $-6\\ \\text{m}$, so the displacement is zero and the distance is $12\\ \\text{m}$."
+        },
+        {
+          "q": "A car moving in the $-x$ direction has a positive acceleration. Is it speeding up or slowing down, and what does its position–time graph look like?",
+          "a": "Slowing down, because $v$ and $a$ have opposite signs. The graph slopes downward and is concave up, so it is flattening out."
+        },
+        {
+          "q": "A stone is dropped from rest. How far does it fall during the first second, and during the second second? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "a": "$\\tfrac{1}{2}gt^2$ gives $4.9\\ \\text{m}$ after $1\\ \\text{s}$ and $19.6\\ \\text{m}$ after $2\\ \\text{s}$, so it falls $4.9\\ \\text{m}$, then $14.7\\ \\text{m}$. Equal times do not give equal distances."
+        }
+      ],
+      "tryIt": {
+        "diagram": "motion dt=1 v a\nobj \"cart\" x0=0 v0={{v0}} a={{a}} n=5",
+        "caption": "A motion map shows the cart once every second for $5\\ \\text{s}$. Change the initial velocity and the acceleration: the dots spread out when $v$ and $a$ have the same sign, bunch up when they are opposite, and the cart turns round if its velocity passes through zero.",
+        "params": [
+          {
+            "name": "v0",
+            "label": "Initial velocity",
+            "min": 0,
+            "max": 8,
+            "step": 1,
+            "default": 6,
+            "unit": "m/s"
+          },
+          {
+            "name": "a",
+            "label": "Acceleration",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": -2,
+            "unit": "m/s²"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2"
+      ],
+      "teacherNotes": "Have students sketch all three graphs for one motion before writing any equation, and ask of every equation \"where did we assume $a$ is constant?\". The quickest diagnostic is a ball thrown upward with up as positive: anyone who says the acceleration changes sign at the top needs the velocity–acceleration distinction again. Set 1B practises motion with constant and with changing acceleration."
+    },
+    {
+      "topic": "1.4",
+      "bigIdea": "Observers who move relative to one another measure different velocities for the same object, related by adding the velocity of one frame relative to the other, yet they agree on its acceleration whenever that relative velocity is constant.",
+      "picture": {
+        "diagram": "scene\nground 0..6\nf 1.5,0 up 4\nf 1.5,4 right 3 \"v_{WG} = 3 m/s\"\nf 1.5,0 53.13 5\ntext 0.5,2 \"v_{BW} = 4 m/s\"\ntext 3.9,1.8 \"v_{BG} = 5 m/s\"",
+        "caption": "A boat aimed straight across a river moves at $4\\ \\text{m/s}$ relative to the water ($v_{BW}$) while the water flows at $3\\ \\text{m/s}$ relative to the ground ($v_{WG}$). Placed tip to tail, the two give the boat's velocity relative to the ground ($v_{BG}$): $5\\ \\text{m/s}$, angled downstream."
+      },
+      "explanation": "A reference frame is an observer with a set of axes and a clock. Velocity always means velocity relative to some frame. A passenger walking down the aisle of a moving train has one velocity relative to the train and another relative to the track; both are correct.\n\nThe bookkeeping uses two subscripts: $\\vec{v}_{PA}$ is the velocity of object $P$ as measured in frame $A$. If frame $B$ moves relative to frame $A$, then $\\vec{v}_{PA} = \\vec{v}_{PB} + \\vec{v}_{BA}$. The inner subscripts on the right match, and the outer ones give the left side. Swapping the subscripts reverses the vector, $\\vec{v}_{AB} = -\\vec{v}_{BA}$. These are vector equations: use signs in one dimension and components in two.\n\nPerpendicular components stay independent. A boat aimed straight across a river is carried downstream by the current, but the current has no component across the river, so the crossing time is unchanged. To land directly opposite, the boat must aim partly upstream, and its speed across the river is then smaller.\n\nDifferentiating the velocity relation shows that if $\\vec{v}_{BA}$ is constant, both frames measure the same acceleration. That is why a ball tossed inside a smoothly moving train behaves exactly as it does on the platform.",
+      "equations": [
+        {
+          "latex": "\\vec{v}_{PA} = \\vec{v}_{PB} + \\vec{v}_{BA}",
+          "meaning": "The velocity of P in frame A is its velocity in frame B plus the velocity of frame B as measured in frame A.",
+          "variables": [
+            {
+              "symbol": "\\vec{v}_{PA}",
+              "name": "velocity of object P measured in frame A",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_{PB}",
+              "name": "velocity of object P measured in frame B",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_{BA}",
+              "name": "velocity of frame B measured in frame A",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "The same motion is described from two frames: a boat in a current, a plane in wind, a passenger on a train.",
+          "notWhen": "Do not add speeds. In two dimensions these are vectors and need components; in one dimension they need signs."
+        },
+        {
+          "latex": "\\vec{v}_{AB} = -\\vec{v}_{BA}",
+          "meaning": "Each frame sees the other moving with the same speed in the opposite direction.",
+          "variables": [
+            {
+              "symbol": "\\vec{v}_{AB}",
+              "name": "velocity of A measured in frame B",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{v}_{BA}",
+              "name": "velocity of B measured in frame A",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You know a relative velocity one way round and the chain of subscripts needs it the other way.",
+          "notWhen": "It reverses the direction only; the speed is unchanged."
+        },
+        {
+          "latex": "\\vec{a}_{PA} = \\vec{a}_{PB} + \\vec{a}_{BA}",
+          "meaning": "Accelerations add in the same way, so two frames with a constant relative velocity measure the same acceleration.",
+          "variables": [
+            {
+              "symbol": "\\vec{a}_{PA}",
+              "name": "acceleration of P measured in frame A",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "\\vec{a}_{PB}",
+              "name": "acceleration of P measured in frame B",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "\\vec{a}_{BA}",
+              "name": "acceleration of frame B measured in frame A",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "Comparing accelerations between frames, or justifying that a result holds in any frame moving at constant velocity.",
+          "notWhen": "Do not assume the accelerations agree when a frame speeds up, slows down or turns; then $\\vec{a}_{BA}$ is not zero."
+        }
+      ],
+      "derivation": "Let $P$ be an object, and let $A$ and $B$ be the origins of two frames. To get from $A$ to $P$ you can go from $A$ to $B$ and then from $B$ to $P$, so at every instant the position vectors satisfy\n\n$$\n\\vec{r}_{PA} = \\vec{r}_{PB} + \\vec{r}_{BA}.\n$$\n\nBoth frames use the same clock, so differentiate each term with respect to time:\n\n$$\n\\frac{d\\vec{r}_{PA}}{dt} = \\frac{d\\vec{r}_{PB}}{dt} + \\frac{d\\vec{r}_{BA}}{dt} \\quad\\Rightarrow\\quad \\vec{v}_{PA} = \\vec{v}_{PB} + \\vec{v}_{BA}.\n$$\n\nDifferentiate once more:\n\n$$\n\\vec{a}_{PA} = \\vec{a}_{PB} + \\vec{a}_{BA}.\n$$\n\nIf frame $B$ moves at constant velocity relative to $A$, then $\\vec{a}_{BA} = d\\vec{v}_{BA}/dt = 0$ and $\\vec{a}_{PA} = \\vec{a}_{PB}$: the two velocities differ by a constant, and the derivative of a constant is zero.",
+      "workedExamples": [
+        {
+          "title": "Rain on a car window",
+          "prompt": "Rain falls straight down at $8.0\\ \\text{m/s}$ relative to the ground. A car drives along a level road at $15\\ \\text{m/s}$. How fast, and at what angle from the vertical, do the raindrops move as seen by a passenger in the car?",
+          "steps": [
+            "Name the frames: $R$ for rain, $C$ for car, $G$ for ground. We know $\\vec{v}_{RG}$ and $\\vec{v}_{CG}$ and want $\\vec{v}_{RC}$.",
+            "Write the chain so that the inner subscripts match: $\\vec{v}_{RG} = \\vec{v}_{RC} + \\vec{v}_{CG}$. Rearranged, $\\vec{v}_{RC} = \\vec{v}_{RG} - \\vec{v}_{CG}$.",
+            "Take $+x$ as the car's direction of travel and $+y$ as up. Then $\\vec{v}_{RG} = -8.0\\hat{j}\\ \\text{m/s}$ and $\\vec{v}_{CG} = 15\\hat{i}\\ \\text{m/s}$, so $\\vec{v}_{RC} = (-15\\hat{i} - 8.0\\hat{j})\\ \\text{m/s}$.",
+            "In the car's frame the rain moves backward at $15\\ \\text{m/s}$ while falling at $8.0\\ \\text{m/s}$. Its speed is $\\sqrt{15^2 + 8.0^2} = 17\\ \\text{m/s}$, and its angle from the vertical satisfies $\\tan\\theta = 15/8.0$, so $\\theta = 62^\\circ$."
+          ],
+          "answer": "$17\\ \\text{m/s}$, at $62^\\circ$ from the vertical, slanting toward the back of the car",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "v_r": {
+                "value": 8,
+                "unit": "m/s"
+              },
+              "v_c": {
+                "value": 15,
+                "unit": "m/s"
+              }
+            },
+            "expr": "sqrt(v_c^2 + v_r^2)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Closest approach of two drones",
+          "prompt": "Two delivery drones fly at the same height. At $t = 0$ drone B is $600\\ \\text{m}$ due east of drone A. Drone A flies north at $8.0\\ \\text{m/s}$ and drone B flies west at $6.0\\ \\text{m/s}$, both at constant velocity. Determine the time at which the drones are closest together and their separation at that time.",
+          "steps": [
+            "Work in drone A's frame, with A at rest at the origin, $+x$ east and $+y$ north. The velocity of B relative to A is $\\vec{v}_{BA} = \\vec{v}_{BG} - \\vec{v}_{AG} = (-6.0\\hat{i} - 8.0\\hat{j})\\ \\text{m/s}$, a speed of $10\\ \\text{m/s}$.",
+            "B starts at $600\\hat{i}\\ \\text{m}$ in this frame and its relative velocity is constant, so $\\vec{r}_{BA}(t) = (600 - 6.0t)\\hat{i} - 8.0t\\,\\hat{j}$, in metres.",
+            "The separation $s$ is the magnitude of this vector: $s^2 = (600 - 6.0t)^2 + (8.0t)^2$. It is smallest when its derivative is zero: $\\dfrac{d(s^2)}{dt} = -12(600 - 6.0t) + 128t = 0$.",
+            "Solve: $200t = 7200$, so $t = 36\\ \\text{s}$. The second derivative is positive, so this is a minimum.",
+            "At that time $\\vec{r}_{BA} = (384\\hat{i} - 288\\hat{j})\\ \\text{m}$, so $s = \\sqrt{384^2 + 288^2} = 480\\ \\text{m}$."
+          ],
+          "answer": "$t = 36\\ \\text{s}$, when the drones are $480\\ \\text{m}$ apart",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "d0": {
+                "value": 600,
+                "unit": "m"
+              },
+              "vA": {
+                "value": 8,
+                "unit": "m/s"
+              },
+              "vB": {
+                "value": 6,
+                "unit": "m/s"
+              }
+            },
+            "expr": "d0*vA/sqrt(vA^2 + vB^2)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "relative-velocity-confusion",
+          "wrong": "Every object has one true velocity; observers in other frames just measure it incorrectly.",
+          "right": "Velocity is always relative to a frame, and no frame is special. A passenger asleep in a train seat has zero velocity relative to the train and perhaps $30\\ \\text{m/s}$ relative to the track. Both are correct."
+        },
+        {
+          "tag": "relative-velocity-confusion",
+          "wrong": "To find how fast two objects approach each other, add their speeds.",
+          "right": "Subtract the velocity vectors. Adding speeds is right only for objects heading straight toward each other: two cars travelling the same way at $30\\ \\text{m/s}$ and $25\\ \\text{m/s}$ close at only $5\\ \\text{m/s}$."
+        },
+        {
+          "tag": "relative-velocity-confusion",
+          "wrong": "A current makes a boat that is aimed straight across take longer to cross the river.",
+          "right": "Crossing time is the river's width divided by the boat's velocity component across it. A current along the river adds nothing to that component; the boat simply lands farther downstream."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A moving walkway runs at $1.5\\ \\text{m/s}$. A traveller walks at $1.0\\ \\text{m/s}$ relative to the walkway. What is her velocity relative to the building if she walks with the walkway? Against it?",
+          "a": "With it: $1.0 + 1.5 = 2.5\\ \\text{m/s}$ forward. Against it: $-1.0 + 1.5 = +0.5\\ \\text{m/s}$, so she still drifts forward."
+        },
+        {
+          "q": "A boat that moves at $4\\ \\text{m/s}$ through the water is aimed straight across a $100\\ \\text{m}$ wide river whose current is $3\\ \\text{m/s}$. How long does it take to cross, and how far downstream does it land?",
+          "a": "$(100\\ \\text{m})/(4\\ \\text{m/s}) = 25\\ \\text{s}$; the current plays no part. In that time the boat drifts $(3\\ \\text{m/s})(25\\ \\text{s}) = 75\\ \\text{m}$ downstream."
+        },
+        {
+          "q": "A passenger on a train moving at constant velocity drops a coin. Describe its path as seen by the passenger and from the platform. Do they agree on its acceleration?",
+          "a": "The passenger sees it fall straight down. The person on the platform sees a parabola, because the coin keeps the train's horizontal velocity. Both measure the same acceleration, $9.8\\ \\text{m/s}^2$ downward."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nf 1,0 up 4\nf 1,4 right {{vw}} \"v_{WG} = {{vw}} m/s\"\ndash 1,0 {{1+vw}},4\ndot {{1+vw}},4\ntext 0,2 \"v_{BW} = 4 m/s\"\ntext {{2.1+0.45*vw}},1.6 \"v_{BG} = {{round(10*sqrt(16+vw^2))/10}} m/s\"",
+        "caption": "The boat always aims straight across at $4\\ \\text{m/s}$ relative to the water. Strengthen the current: the boat's velocity relative to the ground (dashed) grows and tilts downstream, but its component across the river stays at $4\\ \\text{m/s}$, so the crossing time does not change.",
+        "params": [
+          {
+            "name": "vw",
+            "label": "Speed of the current",
+            "min": 0.5,
+            "max": 6,
+            "step": 0.5,
+            "default": 3,
+            "unit": "m/s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2"
+      ],
+      "teacherNotes": "Insist on double subscripts and on writing the chain $\\vec{v}_{PA} = \\vec{v}_{PB} + \\vec{v}_{BA}$ before any numbers go in; most errors are a velocity added that should have been subtracted, and the subscript pattern catches them. Ask which quantities two observers agree on (time intervals, and accelerations when the relative velocity is constant) and which they do not (positions, velocities, the shape of a path). Set 1C includes frames whose velocity changes with time, where the relation has to be differentiated or integrated."
+    },
+    {
+      "topic": "1.5",
+      "bigIdea": "Motion in two or three dimensions is separate one-dimensional motion along each axis, linked only by the shared time, so a projectile moves at constant velocity horizontally while it is in free fall vertically.",
+      "picture": {
+        "diagram": "plot x=x[m] y=y[m] xr=0,42 yr=0,9\nfn 0.75*x-0.01914*x^2 0..39.18\npt 0,0\npt 8,4.775\npt 16,7.1\npt 24,6.975\npt 32,4.4\nnote 19.6,8.3 \"top: v_y = 0\"\nxt 0 8 16 24 32 40\nyt 0 2 4 6 8",
+        "caption": "The path of a ball launched with $v_{0x} = 16\\ \\text{m/s}$ and $v_{0y} = 12\\ \\text{m/s}$, marked every $0.5\\ \\text{s}$. The marks are evenly spaced horizontally, $8\\ \\text{m}$ apart, because $v_x$ never changes. Vertically they are not, because $v_y$ falls by $4.9\\ \\text{m/s}$ in each interval."
+      },
+      "explanation": "Describe the motion with a position vector, $\\vec{r}(t) = x(t)\\hat{i} + y(t)\\hat{j} + z(t)\\hat{k}$. Its derivative is the velocity vector, and the derivative of that is the acceleration vector, each taken one component at a time. The velocity vector is always tangent to the path, and the speed is its magnitude, $\\sqrt{v_x^2 + v_y^2 + v_z^2}$.\n\nBecause the unit vectors are fixed, each axis has its own kinematics: $a_x$ changes only $v_x$, and $v_x$ changes only $x$. The axes share one thing, the clock. So write separate equations for each component and use time to connect them. When the acceleration components depend on time, integrate each one with its own initial condition.\n\nA projectile is the simplest case. With air resistance ignored, the only acceleration is $g$ downward, so $a_x = 0$ and $a_y = -g$. Horizontally the object keeps its launch velocity $v_{0x} = v_0\\cos\\theta$; vertically it behaves exactly like a ball thrown straight up with $v_{0y} = v_0\\sin\\theta$. Together these trace a parabola. At the top $v_y = 0$, but the object is still moving at $v_{0x}$ and still accelerating at $g$.\n\nThe acceleration need not point along the motion. Its component along the velocity changes the speed; its perpendicular component changes the direction. At the top of a projectile's path the acceleration is entirely perpendicular to the velocity, so for an instant only the direction is changing.",
+      "equations": [
+        {
+          "latex": "\\vec{v} = \\frac{d\\vec{r}}{dt}, \\qquad \\vec{a} = \\frac{d\\vec{v}}{dt}",
+          "meaning": "Velocity and acceleration are the time derivatives of the position and velocity vectors, taken component by component.",
+          "variables": [
+            {
+              "symbol": "\\vec{r}",
+              "name": "position vector",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\vec{v}",
+              "name": "velocity vector",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\vec{a}",
+              "name": "acceleration vector",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Position or velocity is given as a vector function of time. Run it backwards, with integrals and initial conditions, when acceleration is given.",
+          "notWhen": "Do not differentiate the magnitude instead: $d|\\vec{v}|/dt$ is only the part of the acceleration that changes the speed."
+        },
+        {
+          "latex": "x = x_0 + v_{0x}t",
+          "meaning": "A projectile's horizontal motion is at constant velocity.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "horizontal position at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "horizontal position at launch",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_{0x}",
+              "name": "horizontal component of the launch velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time since launch",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Projectile motion with air resistance ignored.",
+          "notWhen": "Not if anything accelerates the object horizontally, such as wind or thrust; then the horizontal motion needs its own acceleration term."
+        },
+        {
+          "latex": "y = y_0 + v_{0y}t - \\tfrac{1}{2}gt^2",
+          "meaning": "A projectile's vertical motion is free fall, with up taken as positive.",
+          "variables": [
+            {
+              "symbol": "y",
+              "name": "height at time t",
+              "unit": "m"
+            },
+            {
+              "symbol": "y_0",
+              "name": "height at launch",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_{0y}",
+              "name": "vertical component of the launch velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "g",
+              "name": "magnitude of the free-fall acceleration, 9.8",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time since launch",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Finding the time of flight or the height; the vertical equation usually fixes the time.",
+          "notWhen": "Do not put the full launch speed $v_0$ here; only its vertical component belongs in the vertical equation."
+        },
+        {
+          "latex": "v_y = v_{0y} - gt",
+          "meaning": "The vertical velocity falls by 9.8 m/s every second, while the horizontal velocity stays the same.",
+          "variables": [
+            {
+              "symbol": "v_y",
+              "name": "vertical component of velocity at time t",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_{0y}",
+              "name": "vertical component of the launch velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "g",
+              "name": "magnitude of the free-fall acceleration, 9.8",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time since launch",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "Finding the time to the top (where $v_y = 0$) or the velocity at any instant; combine with $v_x$ for the speed and direction.",
+          "notWhen": "$v_y = 0$ at the top does not mean the projectile is at rest or that its acceleration is zero."
+        }
+      ],
+      "derivation": "Launch from the origin at speed $v_0$ and angle $\\theta$ above the horizontal, with $\\vec{a} = -g\\hat{j}$. Integrate each component of the acceleration once, using $\\vec{v}(0) = v_0\\cos\\theta\\,\\hat{i} + v_0\\sin\\theta\\,\\hat{j}$, and again, using $\\vec{r}(0) = 0$:\n\n$$\nx = (v_0\\cos\\theta)\\,t, \\qquad y = (v_0\\sin\\theta)\\,t - \\tfrac{1}{2}gt^2.\n$$\n\n**Shape of the path.** Solve the first equation for the time, $t = x/(v_0\\cos\\theta)$, and substitute into the second:\n\n$$\ny = x\\tan\\theta - \\frac{g}{2v_0^2\\cos^2\\theta}\\,x^2.\n$$\n\nThis is a parabola, because $y$ is a quadratic function of $x$.\n\n**Range on level ground.** Set $y = 0$. Besides $x = 0$, the launch point, the solution is\n\n$$\nR = \\frac{2v_0^2\\sin\\theta\\cos\\theta}{g} = \\frac{v_0^2\\sin 2\\theta}{g}.\n$$\n\n**Best angle.** Differentiate with respect to $\\theta$ and set the result to zero: $dR/d\\theta = (2v_0^2/g)\\cos 2\\theta = 0$, so $2\\theta = 90^\\circ$ and $\\theta = 45^\\circ$. Because $\\sin 2\\theta$ is the same for $\\theta$ and $90^\\circ - \\theta$, complementary angles give equal ranges. Both results assume the projectile lands at its launch height.",
+      "workedExamples": [
+        {
+          "title": "A kick from a flat roof",
+          "prompt": "A ball is kicked from the edge of a flat roof $14\\ \\text{m}$ above level ground. It leaves at $15\\ \\text{m/s}$, $40^\\circ$ above the horizontal. Taking $g = 9.8\\ \\text{m/s}^2$ and ignoring air resistance, how far from the base of the building does it land?",
+          "steps": [
+            "Split the launch velocity: $v_{0x} = (15\\ \\text{m/s})\\cos 40^\\circ = 11.5\\ \\text{m/s}$ and $v_{0y} = (15\\ \\text{m/s})\\sin 40^\\circ = 9.64\\ \\text{m/s}$.",
+            "Take the roof edge as the origin and up as positive, so the ground is at $y = -14\\ \\text{m}$. The vertical equation fixes the time: $-14 = 9.64t - 4.9t^2$, or $4.9t^2 - 9.64t - 14 = 0$.",
+            "The quadratic formula gives $t = \\dfrac{9.64 \\pm \\sqrt{9.64^2 + 4(4.9)(14)}}{2(4.9)} = \\dfrac{9.64 \\pm 19.2}{9.8}$. Keep the positive root: $t = 2.94\\ \\text{s}$.",
+            "The horizontal velocity never changes, so $x = v_{0x}t = (11.5\\ \\text{m/s})(2.94\\ \\text{s}) = 34\\ \\text{m}$.",
+            "The range formula $R = v_0^2\\sin 2\\theta/g$ would give $23\\ \\text{m}$; it does not apply, because the ball lands below its launch height."
+          ],
+          "answer": "About $34\\ \\text{m}$ from the base of the building",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "h": {
+                "value": 14,
+                "unit": "m"
+              },
+              "v0": {
+                "value": 15,
+                "unit": "m/s"
+              },
+              "theta": {
+                "value": 40,
+                "unit": "deg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "v0*cos(theta)*(v0*sin(theta) + sqrt((v0*sin(theta))^2 + 2*g*h))/g",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "A throw in a crosswind",
+          "prompt": "A ball is launched straight up at $14\\ \\text{m/s}$ from level ground. A steady crosswind gives it a constant horizontal acceleration of $2.0\\ \\text{m/s}^2$ throughout its flight. Taking $g = 9.8\\ \\text{m/s}^2$ and otherwise ignoring air resistance, determine how far from the launch point it lands, and justify whether the wind changes its time in the air.",
+          "steps": [
+            "Take $+y$ up and $+x$ downwind, with the origin at the launch point. Then $\\vec{a} = (2.0\\hat{i} - 9.8\\hat{j})\\ \\text{m/s}^2$, a constant, and $\\vec{v}_0 = 14\\hat{j}\\ \\text{m/s}$.",
+            "Vertical motion fixes the time: $y = v_{0y}t - \\tfrac{1}{2}gt^2 = 0$ gives $t = 2v_{0y}/g = 2(14)/9.8 = 2.86\\ \\text{s}$. The horizontal acceleration does not appear in this equation, so the wind does not change the time in the air.",
+            "Horizontally, $v_{0x} = 0$, so $x = \\tfrac{1}{2}a_x t^2 = \\tfrac{1}{2}(2.0)(2.86)^2 = 8.2\\ \\text{m}$.",
+            "It lands with $v_x = a_x t = 5.7\\ \\text{m/s}$ and $v_y = -14\\ \\text{m/s}$, a speed of $15\\ \\text{m/s}$. The path is a tilted parabola, because the constant acceleration is no longer vertical."
+          ],
+          "answer": "$8.2\\ \\text{m}$ downwind of the launch point; the time in the air, $2.9\\ \\text{s}$, is the same as with no wind",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v0": {
+                "value": 14,
+                "unit": "m/s"
+              },
+              "ax": {
+                "value": 2,
+                "unit": "m/s^2"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "0.5*ax*(2*v0/g)^2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "projectile-components-coupled",
+          "wrong": "A ball thrown horizontally from a table stays in the air longer than one dropped from the same height.",
+          "right": "Time in the air is set by the vertical motion alone, and both balls start with zero vertical velocity and the same acceleration. They land together; the thrown ball just lands farther away."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "At the top of its path a projectile has zero velocity and zero acceleration.",
+          "right": "Only $v_y$ is zero there. The projectile still moves horizontally at $v_{0x}$, and its acceleration is $9.8\\ \\text{m/s}^2$ downward throughout the flight."
+        },
+        {
+          "wrong": "Launching at $45^\\circ$ always gives the greatest range.",
+          "right": "Only when the projectile lands at its launch height, which is what $R = v_0^2\\sin 2\\theta/g$ assumes. Thrown from a cliff or a rooftop, a projectile goes farthest at an angle below $45^\\circ$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A marble rolls off a $1.25\\ \\text{m}$ high bench and lands $2.0\\ \\text{m}$ from the foot of the bench. How fast was it rolling as it left the edge? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "a": "The fall sets the time: $t = \\sqrt{2h/g} = \\sqrt{2(1.25)/9.8} = 0.505\\ \\text{s}$. The horizontal speed is constant, so $v_0 = x/t = (2.0\\ \\text{m})/(0.505\\ \\text{s}) = 4.0\\ \\text{m/s}$."
+        },
+        {
+          "q": "A particle has $\\vec{r}(t) = 3t\\,\\hat{i} + (4t - t^2)\\hat{j}$ (metres, seconds). Find its velocity and speed at $t = 2\\ \\text{s}$, and its acceleration.",
+          "a": "$\\vec{v} = 3\\hat{i} + (4 - 2t)\\hat{j}$, which is $3\\hat{i}\\ \\text{m/s}$ at $t = 2\\ \\text{s}$: a speed of $3\\ \\text{m/s}$, purely along $x$. The acceleration is $\\vec{a} = -2\\hat{j}\\ \\text{m/s}^2$ at all times."
+        },
+        {
+          "q": "Two identical launchers fire balls at the same speed over level ground, one at $25^\\circ$ and one at $65^\\circ$. Compare their ranges and their times in the air.",
+          "a": "The ranges are equal, because the angles are complementary and $\\sin 50^\\circ = \\sin 130^\\circ$. The $65^\\circ$ ball has the larger vertical velocity, so it climbs higher and stays in the air longer."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=y[m] xr=0,45 yr=0,22\nfn {{tan(th*pi/180)}}*x-{{12.25/cos(th*pi/180)^2}}*x^2/1000 0..{{400*sin(2*th*pi/180)/9.8}}\nnote 33,20.5 \"range = {{round(4000*sin(2*th*pi/180)/9.8)/10}} m\"\nnote 33,18.3 \"max height = {{round(4000*sin(th*pi/180)^2/19.6)/10}} m\"\nxt 0 10 20 30 40\nyt 0 5 10 15 20",
+        "caption": "A ball launched at $20\\ \\text{m/s}$ over level ground. Change the launch angle: the range peaks at $45^\\circ$, and angles the same amount above and below $45^\\circ$ land in the same place.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Launch angle",
+            "min": 15,
+            "max": 75,
+            "step": 5,
+            "default": 30,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "teacherNotes": "Have students write two columns, $x$ and $y$, with the knowns in each and time bridging them, before they touch an equation; it stops horizontal quantities leaking into vertical equations. Ask what the acceleration is at the top of the arc and which way it points on the way up: both questions expose students who think acceleration follows velocity. The range formula is a derived special case, and students should be able to start from the component equations. Set 1D adds vector functions of time that must be differentiated or integrated component by component."
+    }
+  ]
+}

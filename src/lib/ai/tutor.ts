@@ -93,6 +93,8 @@ export async function helpSolveProblem(
   constraintLevel: ConstraintLevel = "FULL",
   assignmentContext?: string,
   studentNames: string[] = [],
+  /** The assignment's AP course, when known: narrows the diagram reference to that course's kinds. */
+  course?: string,
 ): Promise<{ text: string; usage?: { inputTokens: number; outputTokens: number } }> {
   const constraints = CONSTRAINT_LEVELS[constraintLevel];
   const scrubbedMessage = scrubPII(problem, studentNames);
@@ -110,6 +112,7 @@ export async function helpSolveProblem(
     historyContext,
     message: scrubbedMessage,
     diagrams: diagramsOn(),
+    course,
   });
 
   const result = await model.generateContent({
@@ -140,10 +143,17 @@ export async function assistTeacher(
   const scrubbedMessage = scrubPII(message, studentNames);
   const historyContext =
     chatHistory.length > 0
-      ? `=== PREVIOUS CONVERSATION HISTORY ===\n${formatChatHistory(chatHistory.map((m) => ({ ...m, content: scrubPII(m.content, studentNames) })), "Teacher")}\n=====================================\n\n`
+      ? `=== PREVIOUS CONVERSATION HISTORY ===\n${formatChatHistory(
+          chatHistory.map((m) => ({ ...m, content: scrubPII(m.content, studentNames) })),
+          "Teacher",
+        )}\n=====================================\n\n`
       : "";
 
-  const prompt = buildTeacherPrompt({ historyContext, message: scrubbedMessage, diagrams: diagramsOn() });
+  const prompt = buildTeacherPrompt({
+    historyContext,
+    message: scrubbedMessage,
+    diagrams: diagramsOn(),
+  });
 
   const result = await model.generateContent({
     scrubLevel: "full",

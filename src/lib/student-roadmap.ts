@@ -37,6 +37,8 @@ export interface StudentUnit {
 }
 
 export interface StudentRoadmap {
+  /** The course the class follows (for links to its unit guides). */
+  curriculumId: string;
   courseName: string;
   units: StudentUnit[];
   done: number;
@@ -119,6 +121,7 @@ export function buildStudentRoadmap(
     });
   }
   return {
+    curriculumId: curriculum.id,
     courseName: curriculum.name,
     units,
     done: units.reduce((n, u) => n + u.done, 0),

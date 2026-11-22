@@ -7,26 +7,65 @@ import {
 } from "@/data/curricula";
 import { keyUnit, normalisePlan, type CurriculumPlan } from "@/lib/curriculum-plan";
 
-/** What an admin sees for one draft of a set. */
+/**
+ * What an admin sees for one draft of a set. An approved draft is named by who stands behind it:
+ * a person ("human-approved"), the owner accepting the AI review as it is ("owner-accepted"), the
+ * answer-key verifier ("verified": recomputed and solved blind, no person), or only an AI
+ * ("ai-reviewed", which cannot go live).
+ */
 export type DraftState =
-  "draft" | "ai-reviewed" | "human-approved" | "published" | "rejected" | "missing";
+  | "draft"
+  | "ai-reviewed"
+  | "verified"
+  | "owner-accepted"
+  | "human-approved"
+  | "published"
+  | "rejected"
+  | "missing";
+
+/** Approved in any way: the states a set's drafts must all be in before Publish is offered. */
+const APPROVED: readonly DraftState[] = [
+  "human-approved",
+  "owner-accepted",
+  "verified",
+  "ai-reviewed",
+];
 
 export function draftState(
   d: { status?: unknown; reviewKind?: unknown } | undefined | null,
 ): DraftState {
   if (!d) return "missing";
   if (d.status === "published") return "published";
-  if (d.status === "approved") return d.reviewKind === "ai" ? "ai-reviewed" : "human-approved";
+  if (d.status === "approved") {
+    if (d.reviewKind === "ai") return "ai-reviewed";
+    // The verifier's mark says a machine checked it, not a person. Publish still refuses it if the
+    // problem was edited since (the stored hash), which this label cannot show.
+    if (d.reviewKind === "verified") return "verified";
+    if (d.reviewKind === "owner-accepted") return "owner-accepted";
+    return "human-approved";
+  }
   if (d.status === "rejected") return "rejected";
   return "draft";
 }
 
 /**
  * Every draft is approved. AI-reviewed ones count: the server still refuses them outside the local
- * emulator and says why, which the Sets tab shows.
+ * emulator and says why, which the Sets tab shows. The same goes for a verified draft edited since.
  */
 export function setReadyToPublish(states: DraftState[]): boolean {
-  return states.length > 0 && states.every((s) => s === "human-approved" || s === "ai-reviewed");
+  return states.length > 0 && states.every((s) => APPROVED.includes(s));
+}
+
+/**
+ * A published set whose definition now lists more problems: the drafts after the published ones are
+ * all approved, so they can be added to it. `states` are the set's drafts in definition order.
+ */
+export function setReadyToAppend(states: DraftState[]): boolean {
+  const added = states.filter((s) => s !== "published");
+  const firstNew = states.findIndex((s) => s !== "published");
+  return (
+    added.length > 0 && firstNew > 0 && states.slice(firstNew).every((s) => APPROVED.includes(s))
+  );
 }
 
 /** A published global waypoint that belongs to a set. */
@@ -46,6 +85,8 @@ export interface ClassAssignment {
   dueDate?: Date | null;
   /** Archived copies are hidden from students and count as not assigned; assigning restores them. */
   archived?: boolean;
+  /** Questions in this copy (a set can be assigned with 3 to 10 of its problems). */
+  questionCount?: number;
 }
 
 /**
@@ -79,6 +120,10 @@ export interface RoadmapSet {
   copyTitle?: string | null;
   /** An archived copy of this set in the class: assigning restores it instead of copying again. */
   archivedId?: string | null;
+  /** Questions in that archived copy, when known. */
+  archivedCount?: number;
+  /** Questions in the class's own copy, when assigned and known. */
+  questionCount?: number | null;
 }
 export interface RoadmapUnit {
   unit: number;
@@ -92,6 +137,7 @@ export interface RoadmapUnit {
 /**
  * The roadmap for one class. With a `plan` (the class's own order and skipped sets) units and sets
  * come in that order and skipped sets are not assignable; without one it is the course as written.
+ * A set the class has assigned is never shown as skipped.
  */
 export function deriveRoadmap(
   curriculumId: string,
@@ -130,12 +176,21 @@ export function deriveRoadmap(
           assigned: assignedByKey.has(set.key),
           assignmentId: assignedByKey.get(set.key)?.id ?? null,
           dueDate: assignedByKey.get(set.key)?.dueDate ?? null,
-          skipped: skipped.includes(set.key),
+          // An assigned set is being done, so it is not skipped (see livePlan).
+          skipped: skipped.includes(set.key) && !assignedByKey.has(set.key),
           ...(assignedByKey.get(set.key)?.title
             ? { copyTitle: assignedByKey.get(set.key)!.title }
             : {}),
+          ...(typeof assignedByKey.get(set.key)?.questionCount === "number"
+            ? { questionCount: assignedByKey.get(set.key)!.questionCount }
+            : {}),
           ...(!assignedByKey.has(set.key) && archivedByKey.get(set.key)?.id
-            ? { archivedId: archivedByKey.get(set.key)!.id }
+            ? {
+                archivedId: archivedByKey.get(set.key)!.id,
+                ...(typeof archivedByKey.get(set.key)!.questionCount === "number"
+                  ? { archivedCount: archivedByKey.get(set.key)!.questionCount }
+                  : {}),
+              }
             : {}),
         }));
       const wanted = sets.filter((s) => s.published && !s.skipped);

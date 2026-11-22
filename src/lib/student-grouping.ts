@@ -7,6 +7,9 @@ export interface GroupableAssignment {
   dueDate: Date | null;
   curriculumSetKey?: unknown;
   curriculumSequence?: unknown;
+  /** The course the set came from (set keys and unit numbers repeat between courses). */
+  curriculumId?: unknown;
+  apCourse?: unknown;
 }
 
 export interface AssignmentGroup<T> {
@@ -34,6 +37,8 @@ const time = (d: Date | null) => {
  * Roadmap order: units ascending (or in the class's own `order`), each unit's sets by their place in
  * `order`, else `curriculumSequence`, then due date; everything
  * without a course set key goes last under "Other assignments". Empty groups are left out.
+ * With `curriculumId` (the course the class follows now), sets the class was given from another
+ * course also go under "Other assignments": their unit numbers mean something else there.
  */
 export function groupByUnit<T extends GroupableAssignment>(
   items: T[],
@@ -41,7 +46,14 @@ export function groupByUnit<T extends GroupableAssignment>(
   order?: readonly string[],
   /** The AP course the class's roadmap belongs to (unit numbers repeat between courses). */
   course?: ApCourseId,
+  curriculumId?: string,
 ): AssignmentGroup<T>[] {
+  const fromAnotherCourse = (a: T) =>
+    curriculumId !== undefined &&
+    (typeof a.curriculumId === "string"
+      ? a.curriculumId !== curriculumId
+      : // Older copies carry no course id, only the AP course their tags belong to.
+        typeof a.apCourse === "string" && course !== undefined && a.apCourse !== course);
   const position = new Map((order ?? []).map((key, i) => [key, i]));
   const firstOfUnit = new Map<number, number>();
   (order ?? []).forEach((key, i) => {
@@ -52,7 +64,7 @@ export function groupByUnit<T extends GroupableAssignment>(
   const units = new Map<number, T[]>();
   const other: T[] = [];
   for (const a of items) {
-    const unit = keyUnit(a.curriculumSetKey);
+    const unit = fromAnotherCourse(a) ? null : keyUnit(a.curriculumSetKey);
     if (unit === null) other.push(a);
     else units.set(unit, [...(units.get(unit) ?? []), a]);
   }

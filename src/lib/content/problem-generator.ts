@@ -4,7 +4,7 @@
 
 import { DEFAULT_AP_COURSE, apCourseName, apTopic, apUnit, type ApCourseId } from "@/data/ap";
 import { misconceptionsForUnit } from "../../../functions/src/misconceptions";
-import { DIAGRAM_REFERENCE } from "../diagram/prompt";
+import { DIAGRAM_REFERENCE, diagramReference } from "../diagram/prompt";
 import { attachDiagram, type DiagramOutcome } from "./problem-diagram";
 import {
   answerAgrees,
@@ -42,6 +42,8 @@ const COURSE_METHODS: Record<ApCourseId, string> = {
     'Every problem must be solvable with AP Physics 2 methods (algebra and trigonometry, no calculus) and must test the given topic. Give any constant a student needs that is not g (for example k = 8.99 x 10^9 N*m^2/C^2, e = 1.60 x 10^-19 C, h = 6.63 x 10^-34 J*s, c = 3.00 x 10^8 m/s, R = 8.31 J/(mol*K), k_B = 1.38 x 10^-23 J/K, specific heats, indices of refraction). The answer checker cannot read degrees Celsius as a unit: when a numeric answer is a temperature in degrees Celsius, end the question with "Give your answer in degrees Celsius." and make "correctAnswer" the number alone (for example "59"); a temperature in kelvins or a temperature change keeps its unit ("332 K").',
   "physics-c-mech":
     "Every problem must be at the level of AP Physics C: Mechanics and must test the given topic. The course is calculus-based: where the topic calls for it, use derivatives and integrals (forces, velocities or potential energies given as functions, non-constant acceleration, moments of inertia by integration, differential equations for drag and oscillation). Do not write problems that only need AP Physics 1 algebra when the topic is about a calculus idea. Write all mathematics as plain text, the way it is typed on a keyboard: v(t) = 3.0t^2 - 2.0t, r(t) = (2.0t^3) i + (5.0t) j, dx/dt, the integral of F dx from x = 0 to x = 2.0 m, sqrt(2gh), theta, omega. Never use LaTeX, backslashes or dollar signs: students see the text exactly as written.",
+  "physics-c-em":
+    "Every problem must be at the level of AP Physics C: Electricity and Magnetism and must test the given topic. The course is calculus-based: where the topic calls for it, use derivatives and integrals (fields and potentials of continuous charge by integration, Gauss's law and Ampere's law with a stated symmetry, E = -dV/dr, current as dq/dt, the Biot-Savart law, emf = -d(flux)/dt, and the exponential or oscillating solutions of RC, LR and LC circuits). Do not write problems that only need AP Physics 2 algebra when the topic is about a calculus idea. Give any constant a student needs (for example k = 8.99 x 10^9 N*m^2/C^2, epsilon_0 = 8.85 x 10^-12 C^2/(N*m^2), mu_0 = 4 pi x 10^-7 T*m/A, e = 1.60 x 10^-19 C). Write all mathematics as plain text, the way it is typed on a keyboard: E(r) = kQ/r^2, lambda = 3.0 x 10^-6 C/m, dq/dt, the integral of E dr from r = a to r = b, I(t) = (emf/R)(1 - e^(-Rt/L)), sqrt(1/(LC)), theta, omega. Never use LaTeX, backslashes or dollar signs: students see the text exactly as written.",
 };
 
 export function generatorSystemInstruction(course: ApCourseId = DEFAULT_AP_COURSE): string {
@@ -60,7 +62,7 @@ Rules:
 - "diagram": add ONE diagram in the diagram language below whenever the problem involves any of: a graph described in words (position, velocity, acceleration or force against time or position); an incline, ramp, curved track or loop; a pulley or a string over something; a spring; a pendulum; a lever, beam, door, wrench or hinge; a force at an angle; two objects that touch or collide. Leave it out only when there is no geometry to show (for example a formula with numbers, or an orbit described only by numbers). The text must still state every value, so the problem works without the picture. The diagram shows only what the text states: never the answer, never a step the student must do (no free-body diagram when the question is about the forces), and no numbers the text does not give. Write only the diagram source, without a fence.
 
 DIAGRAM LANGUAGE:
-${DIAGRAM_REFERENCE}
+${diagramReference(course)}
 
 Return ONLY JSON: {"problems": [{"text": string, "type": "numeric" | "multiple-choice", "options"?: string[], "correctAnswer": string, "solution": string, "distractors": [{"answer": string, "misconception": string}], "difficulty": "easy" | "medium" | "hard", "diagram"?: string}]}`;
 }
@@ -203,7 +205,7 @@ export async function generateProblems(
   input: { apTopic: string; count: number; difficulty?: Difficulty; apCourse?: ApCourseId },
   call: ModelCall,
 ): Promise<GeneratedDraft[]> {
-  const count = Math.max(1, Math.min(5, Math.floor(input.count)));
+  const count = Math.max(1, Math.min(10, Math.floor(input.count)));
   const course = input.apCourse ?? DEFAULT_AP_COURSE;
   const reply = await call({
     systemInstruction: generatorSystemInstruction(course),

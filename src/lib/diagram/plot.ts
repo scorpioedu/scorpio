@@ -11,7 +11,7 @@
 
 import { compile } from "./expr";
 import { type Cmd, type DgError, type Doc, num, pair, range } from "./parse";
-import { ACCENT, arrow, f1, line, plain, poly, text, wrap, type P } from "./svg";
+import { ACCENT, arrow, f1, line, plain, poly, text, textWidth, wrap, type P } from "./svg";
 
 export type Series = {
   pts: P[];
@@ -150,6 +150,17 @@ export function renderPlot(
   const axX = sx(Math.min(Math.max(0, x0), x1));
 
   let out = "";
+  // Every label goes through put(), which remembers how far text reaches left and right, so the
+  // view box can grow to show it: a y-axis label such as "ω (rad/s)" is wider than the left margin.
+  let minX = Infinity,
+    maxX = -Infinity;
+  const put = (p: P, s: string, anchor: "start" | "middle" | "end") => {
+    const w = textWidth(s);
+    const left = anchor === "start" ? p[0] : anchor === "end" ? p[0] - w : p[0] - w / 2;
+    minX = Math.min(minX, left);
+    maxX = Math.max(maxX, left + w);
+    return text(p, s, anchor, ` stroke="none"`);
+  };
   if ("grid" in h.kv || h.args.includes("grid")) {
     for (const t of xt ?? autoTicks(x0, x1))
       out += line([sx(t.v), T], [sx(t.v), H - B], ` stroke-opacity=".15" stroke-width="1"`);
@@ -179,29 +190,25 @@ export function renderPlot(
     if (r.s)
       out +=
         r.axis === "h"
-          ? text([W - R + 4, sy(r.v)], r.s, "start", ` stroke="none"`)
-          : text([sx(r.v), T - 10], r.s, "middle", ` stroke="none"`);
+          ? put([W - R + 4, sy(r.v)], r.s, "start")
+          : put([sx(r.v), T - 10], r.s, "middle");
   }
   // axes with arrowheads
   out += arrow([L - 6, axY], [W - R + 14, axY], "currentColor", 1.5, 7);
   out += arrow([axX, H - B + 6], [axX, T - 14], "currentColor", 1.5, 7);
-  out += text([W - R + 20, axY], xAx.text, "start", ` stroke="none"`);
-  out += text([axX - 8, T - 12], yAx.text, "end", ` stroke="none"`);
+  out += put([W - R + 20, axY], xAx.text, "start");
+  out += put([axX - 8, T - 12], yAx.text, "end");
   // ticks
   for (const t of xt === null ? [] : (xt ?? autoTicks(x0, x1))) {
     if (t.v === 0 && axX === sx(0) && axY === sy(0)) continue;
-    out +=
-      line([sx(t.v), axY - 3], [sx(t.v), axY + 3]) +
-      text([sx(t.v), axY + 13], t.s, "middle", ` stroke="none"`);
+    out += line([sx(t.v), axY - 3], [sx(t.v), axY + 3]) + put([sx(t.v), axY + 13], t.s, "middle");
   }
   for (const t of yt === null ? [] : (yt ?? autoTicks(y0, y1))) {
     if (t.v === 0 && axY === sy(0)) continue;
-    out +=
-      line([axX - 3, sy(t.v)], [axX + 3, sy(t.v)]) +
-      text([axX - 6, sy(t.v)], t.s, "end", ` stroke="none"`);
+    out += line([axX - 3, sy(t.v)], [axX + 3, sy(t.v)]) + put([axX - 6, sy(t.v)], t.s, "end");
   }
   if ((xt !== null || yt !== null) && axX === sx(0) && axY === sy(0))
-    out += text([axX - 6, axY + 12], "0", "end", ` stroke="none"`);
+    out += put([axX - 6, axY + 12], "0", "end");
   // series
   for (const s of series) {
     out += poly(
@@ -211,15 +218,25 @@ export function renderPlot(
     );
     if (s.label) {
       const e = S(s.pts[s.pts.length - 1]);
-      out += text([e[0] + 4, e[1] - 10], s.label, "start", ` stroke="none"`);
+      out += put([e[0] + 4, e[1] - 10], s.label, "start");
     }
   }
   for (const p of pts) {
     const q = S(p.p);
     out += `<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="3.5" fill="${p.open ? "var(--dg-bg,#fff)" : "currentColor"}"/>`;
-    if (p.s) out += text([q[0] + 7, q[1] - 10], p.s, "start", ` stroke="none"`);
+    if (p.s) out += put([q[0] + 7, q[1] - 10], p.s, "start");
   }
-  for (const n of notes) out += text(S(n.p), n.s, "middle", ` stroke="none"`);
+  // A note is centred on its point; near the y-axis or an edge, slide it sideways so it stays on
+  // the data side of the axis and inside the frame instead of running over the tick labels.
+  for (const n of notes) {
+    const [cx, cy] = S(n.p);
+    const half = textWidth(n.s) / 2;
+    let x = cx;
+    if (cx >= axX && x - half < axX + 4) x = axX + 4 + half;
+    if (x + half > W - 2) x = Math.max(W - 2 - half, cx >= axX ? axX + 4 + half : half + 2);
+    if (x - half < 2) x = half + 2;
+    out += put([x, cy], n.s, "middle");
+  }
 
   readable(
     "x",
@@ -268,7 +285,13 @@ export function renderPlot(
   }
 
   const alt = altText(xAx, yAx, series, pts, xt);
-  return { svg: wrap(W, H, out, alt), alt, model: { series, xLabel: xAx.text, yLabel: yAx.text } };
+  const ox = minX < 0 ? Math.floor(minX - 4) : 0;
+  const right = maxX > W ? Math.ceil(maxX + 4) : W;
+  return {
+    svg: wrap(right - ox, H, out, alt, ox),
+    alt,
+    model: { series, xLabel: xAx.text, yLabel: yAx.text },
+  };
 }
 
 // "v[m/s]" -> text "v (m/s)"

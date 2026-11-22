@@ -1,0 +1,1413 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 10,
+  "guides": [
+    {
+      "topic": "10.1",
+      "bigIdea": "Charge comes in two kinds, like charges repel and opposite charges attract, and the force between two point charges grows with the product of the charges and falls off as the square of the distance between them.",
+      "picture": {
+        "diagram": "scene\nball A 1,1 r=.35 \"+q_1\"\nball B 5,1 r=.35 \"-q_2\"\nf A.r+0.1,0 right 1.2 \"F\"\nf B.l+-0.1,0 left 1.2 \"F\"\ndim 1,0.2 5,0.2 \"r\"",
+        "caption": "Opposite charges pull on each other. The two arrows are the same length: each charge feels a force of the same size, $k\\,|q_1 q_2|/r^2$, whichever charge is larger."
+      },
+      "explanation": "Electric charge is a property of matter, like mass. Unlike mass, it comes in two kinds, called positive and negative. Protons carry positive charge and electrons carry negative charge, each of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$, the smallest amount of charge found on its own. An object's net charge is therefore a whole number of these: an object is neutral when it holds equal numbers of protons and electrons, negative when it has extra electrons and positive when it is missing some. Charge is measured in coulombs, and a coulomb is a lot: everyday charged objects carry nanocoulombs or microcoulombs.\n\nTwo charged objects push or pull on each other without touching. Like charges repel and opposite charges attract. For two point charges (objects small compared with the distance between them), Coulomb's law gives the size of the force: $F_E = k\\,|q_1 q_2|/r^2$, with $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$. The force acts along the line joining the charges. Use the formula for the size and the attract-or-repel rule for the direction.\n\nThe $r^2$ underneath makes this an inverse-square law. Doubling the distance cuts the force to a quarter, and tripling it cuts the force to a ninth. Doubling either charge doubles the force. The two forces are a Newton's third law pair, so they are always equal in size and opposite in direction, even when one charge is far larger than the other.\n\nWhen more than two charges are present, find the force that each one exerts on the charge you care about as if the others were not there, then add those forces as vectors. Coulomb's law has the same form as Newton's law of gravitation, but the electric force can repel as well as attract, and between charged particles it is enormously stronger than gravity.",
+      "equations": [
+        {
+          "latex": "F_E = k\\,\\frac{|q_1 q_2|}{r^2}",
+          "meaning": "The size of the electric force between two point charges: proportional to both charges and to one over the distance squared.",
+          "variables": [
+            {
+              "symbol": "F_E",
+              "name": "size of the electric force on each charge",
+              "unit": "N"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant, $8.99 \\times 10^9$",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the two charges",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the charges' centres",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two point charges, or two charged spheres, a known distance apart.",
+          "notWhen": "It gives only the size. Do not put the signs of the charges in and read the sign of the answer as a direction; decide the direction from attract or repel. Convert μC, nC and cm to C and m first."
+        },
+        {
+          "latex": "q = \\pm N e",
+          "meaning": "The net charge of an object is a whole number of elementary charges.",
+          "variables": [
+            {
+              "symbol": "q",
+              "name": "net charge of the object",
+              "unit": "C"
+            },
+            {
+              "symbol": "N",
+              "name": "number of extra or missing electrons",
+              "unit": ""
+            },
+            {
+              "symbol": "e",
+              "name": "elementary charge, $1.60 \\times 10^{-19}$",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Converting between a charge in coulombs and a number of electrons gained or lost.",
+          "notWhen": "The sign is not in the formula: extra electrons make the object negative, missing electrons make it positive."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "How much charge on a rubbed balloon?",
+          "prompt": "Two identical balloons are rubbed on hair, so each carries the same negative charge. Hung side by side, they repel each other with a force of $0.020\\ \\text{N}$ when their centres are $0.25\\ \\text{m}$ apart. Treating them as point charges, what is the size of the charge on each balloon? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Coulomb's law gives the size of the force: $F_E = k\\,\\dfrac{|q_1 q_2|}{r^2}$. The two charges are equal, so $|q_1 q_2| = q^2$.",
+            "Rearrange for the charge: $q^2 = \\dfrac{F_E r^2}{k}$, so $q = r\\sqrt{\\dfrac{F_E}{k}}$.",
+            "Substitute: $q = (0.25\\ \\text{m})\\sqrt{\\dfrac{0.020\\ \\text{N}}{8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2}} = (0.25)(1.49 \\times 10^{-6})\\ \\text{C} = 3.7 \\times 10^{-7}\\ \\text{C}$.",
+            "Each balloon carries $-3.7 \\times 10^{-7}\\ \\text{C}$, about $0.37\\ \\mu\\text{C}$. The force is repulsive, as it must be for two charges of the same sign.",
+            "Check the size: everyday static charges are well under a microcoulomb, yet at these distances they give forces large enough to push light balloons apart."
+          ],
+          "answer": "$|q| = 3.7 \\times 10^{-7}\\ \\text{C}$ on each balloon (the charges are negative)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "F": {
+                "value": 0.02,
+                "unit": "N"
+              },
+              "r": {
+                "value": 0.25,
+                "unit": "m"
+              }
+            },
+            "expr": "r*sqrt(F/k)",
+            "unit": "C"
+          }
+        },
+        {
+          "title": "Three charges on a line",
+          "prompt": "Three point charges are fixed on the x-axis. Charge A, $+3.0\\ \\mu\\text{C}$, is at $x = 0$. Charge B, $+2.0\\ \\mu\\text{C}$, is at $x = 0.20\\ \\text{m}$. Charge C, $-4.0\\ \\mu\\text{C}$, is at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric force on charge B. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Two forces act on B, one from A and one from C. Find each as if the other charge were absent, then add them as vectors along the x-axis.",
+            "A and B are both positive, so A repels B: the force on B points away from A, in the $+x$ direction. Its size is $F_{AB} = \\dfrac{(8.99 \\times 10^9)(3.0 \\times 10^{-6})(2.0 \\times 10^{-6})}{(0.20)^2} = 1.35\\ \\text{N}$.",
+            "B is positive and C is negative, so C attracts B: the force on B points toward C, which is also the $+x$ direction. The distance is $0.60 - 0.20 = 0.40\\ \\text{m}$, so $F_{CB} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(4.0 \\times 10^{-6})}{(0.40)^2} = 0.45\\ \\text{N}$.",
+            "Both forces point in the $+x$ direction, so their sizes add: $F_{\\text{net}} = 1.35 + 0.45 = 1.8\\ \\text{N}$."
+          ],
+          "answer": "$F_{\\text{net}} = 1.8\\ \\text{N}$ in the $+x$ direction (toward C)",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "qA": {
+                "value": 3,
+                "unit": "μC"
+              },
+              "qB": {
+                "value": 2,
+                "unit": "μC"
+              },
+              "qC": {
+                "value": 4,
+                "unit": "μC"
+              },
+              "xB": {
+                "value": 0.2,
+                "unit": "m"
+              },
+              "xC": {
+                "value": 0.6,
+                "unit": "m"
+              }
+            },
+            "expr": "k*qA*qB/xB^2 + k*qB*qC/(xC - xB)^2",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "A $+8\\ \\mu\\text{C}$ charge pushes on a $+1\\ \\mu\\text{C}$ charge eight times harder than the small charge pushes back.",
+          "right": "The two forces are a Newton's third law pair: equal in size, opposite in direction. Coulomb's law uses the product $q_1 q_2$, so it gives one number that is the force on each charge."
+        },
+        {
+          "tag": "inverse-square-misapplied",
+          "wrong": "Moving two charges twice as far apart halves the force between them.",
+          "right": "The force depends on $1/r^2$, so twice the distance gives $1/2^2$, a quarter of the force. Halving the distance makes the force four times larger."
+        },
+        {
+          "tag": "sign-error",
+          "wrong": "Putting $q_2 = -4\\ \\mu\\text{C}$ into Coulomb's law gives a negative force, so the force points in the negative x-direction.",
+          "right": "The sign of the product only says attract (negative) or repel (positive). Which way that is along the axis depends on where the charges sit. Work out the size with absolute values and the direction from a sketch."
+        },
+        {
+          "tag": "charging-moves-positive-charge",
+          "wrong": "A positively charged object has gained protons.",
+          "right": "Protons are bound in the nuclei of atoms and stay put in a solid. An object becomes positive by losing electrons and negative by gaining them."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Two charges repel with a force of $0.36\\ \\text{N}$. What is the force if the distance between them is halved?",
+          "a": "$1.44\\ \\text{N}$. Half the distance means $1/(1/2)^2 = 4$ times the force."
+        },
+        {
+          "q": "A balloon has a net charge of $-3.2 \\times 10^{-9}\\ \\text{C}$. How many extra electrons does it hold?",
+          "a": "$N = \\dfrac{3.2 \\times 10^{-9}\\ \\text{C}}{1.60 \\times 10^{-19}\\ \\text{C}} = 2.0 \\times 10^{10}$ electrons."
+        },
+        {
+          "q": "Both charges in a pair are doubled and the distance between them is also doubled. What happens to the force?",
+          "a": "It stays the same. Doubling both charges multiplies the force by $2 \\times 2 = 4$, and doubling the distance divides it by $2^2 = 4$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nball A {{4-r/20}},1 r=.3 \"+\"\nball B {{4+r/20}},1 r=.3 \"+\"\nf A.l left {{150/r^2}} \"F\"\nf B.r right {{150/r^2}} \"F\"\ntext 4,2.1 \"r = {{r}} cm, F = {{round(35960/r^2)/100}} N\"",
+        "caption": "Two $+2.0\\ \\mu\\text{C}$ charges. Slide them apart and watch the force arrows: doubling the distance leaves a quarter of the force.",
+        "params": [
+          {
+            "name": "r",
+            "label": "Distance",
+            "min": 10,
+            "max": 40,
+            "step": 5,
+            "default": 20,
+            "unit": "cm"
+          }
+        ]
+      },
+      "prerequisites": [],
+      "teacherNotes": "Ask students to predict the force when the distance doubles before they calculate anything; \"half\" is the usual answer, and it comes back for fields in 10.3. Insist on sizes from the formula and directions from a sketch, because signed charges fed into Coulomb's law produce most of the direction errors in set 10A. A good discussion question: which charge feels the larger force, the $8\\ \\mu\\text{C}$ one or the $1\\ \\mu\\text{C}$ one?"
+    },
+    {
+      "topic": "10.2",
+      "bigIdea": "Charge is never created or destroyed, only moved from place to place, so objects become charged when electrons are transferred by rubbing, by contact or by induction.",
+      "picture": {
+        "diagram": "scene\nball S 3,1 r=.8\ntext 2.45,1 \"+ +\"\ntext 3.55,1 \"− −\"\nblock R 5.6,0.75 w=2.2 h=.5 \"+ + + +\"\ntext 3,2.2 \"neutral metal sphere\"\ntext 5.6,1.7 \"charged rod\"",
+        "caption": "A positive rod held near a neutral metal sphere pulls the sphere's free electrons to the near side and leaves the far side positive. The sphere is polarized, but its net charge is still zero."
+      },
+      "explanation": "The net charge of an isolated system never changes. Charging an object does not make charge; it moves electrons from one place to another. Rub a balloon on your hair and electrons move from hair to balloon: the balloon ends up negative, your hair equally positive, and the total is still zero. This is charging by friction.\n\nWhat happens next depends on the material. In a conductor, such as a metal, some electrons are free to move through the whole object, so excess charge spreads over its surface. In an insulator, such as plastic, charge stays where it was put. Charging by contact uses this: touch a charged conductor to another and electrons flow until the two settle. Identical spheres end with equal charges, each half of the total.\n\nA charged object also affects a neutral one without touching it. Near a positive rod, a conductor's free electrons shift toward the rod. The object is still neutral, but it is polarized: the near side is negative and the far side positive. The near side is closer, so its attraction beats the far side's repulsion, and the neutral object is pulled toward the rod. Insulators polarize too, molecule by molecule.\n\nCharging by induction adds one step. While the rod is near, connect the conductor to ground: the Earth, a huge conductor that can supply or accept electrons. With a positive rod nearby, electrons flow from ground onto the conductor. Remove the ground connection, then the rod, and the conductor keeps those extra electrons: its charge is opposite in sign to the rod's, and the rod has lost nothing.",
+      "equations": [
+        {
+          "latex": "q_{1i} + q_{2i} = q_{1f} + q_{2f}",
+          "meaning": "The total charge of an isolated system is the same before and after any transfer.",
+          "variables": [
+            {
+              "symbol": "q_{1i},\\ q_{2i}",
+              "name": "charges of the two objects before, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "q_{1f},\\ q_{2f}",
+              "name": "charges of the two objects after, with signs",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Objects exchange charge with each other and with nothing else: rubbing, touching, sparks.",
+          "notWhen": "Not when the system is grounded during the process; ground supplies or removes charge, so include it or the total will seem to change."
+        },
+        {
+          "latex": "q_f = \\frac{q_1 + q_2}{2}",
+          "meaning": "Two identical conducting spheres that touch share the total charge equally.",
+          "variables": [
+            {
+              "symbol": "q_f",
+              "name": "charge on each sphere after touching",
+              "unit": "C"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "charges before touching, with signs",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Two conducting spheres of the same size touch and are then separated.",
+          "notWhen": "Not for spheres of different sizes (the larger one takes more) and not for insulators, where charge does not flow."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Two spheres touch",
+          "prompt": "Two identical metal spheres sit on insulating stands. Sphere A has a charge of $+8.0\\ \\text{nC}$ and sphere B has a charge of $-2.0\\ \\text{nC}$. The spheres are touched together and then separated. What is the charge on each sphere afterwards, and which way did electrons move?",
+          "steps": [
+            "The stands are insulators, so the spheres form an isolated system with total charge $(+8.0) + (-2.0) = +6.0\\ \\text{nC}$.",
+            "While they touch, the spheres act as one conductor. They are identical, so the total is shared equally: $q_f = \\dfrac{+6.0\\ \\text{nC}}{2} = +3.0\\ \\text{nC}$ each.",
+            "Sphere B went from $-2.0\\ \\text{nC}$ to $+3.0\\ \\text{nC}$, so it became more positive: it lost electrons. Sphere A became less positive: it gained them. Electrons moved from B to A."
+          ],
+          "answer": "Each sphere ends with $+3.0\\ \\text{nC}$; electrons moved from B to A",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "qA": {
+                "value": 8,
+                "unit": "nC"
+              },
+              "qB": {
+                "value": -2,
+                "unit": "nC"
+              }
+            },
+            "expr": "(qA + qB)/2",
+            "unit": "nC"
+          }
+        },
+        {
+          "title": "Two touching spheres and a charged rod",
+          "prompt": "Two neutral metal spheres, A and B, sit on insulating stands and touch each other. A positively charged rod is brought close to sphere A without touching it. While the rod is held there, the spheres are pulled apart; then the rod is taken away. Determine the sign of the final charge on each sphere and compare the sizes of the two charges. Justify your answer in terms of the motion of electrons.",
+          "steps": [
+            "While the spheres touch, they act as one conductor. The positive rod attracts free electrons, so some move across the contact onto sphere A, nearest the rod, leaving sphere B short of electrons. The pair is still neutral.",
+            "Pulling the spheres apart with the rod still near traps this arrangement: the extra electrons on A cannot return to B. If the rod were removed first, the electrons would spread back and both spheres would end neutral.",
+            "When the rod is taken away, each sphere's charge spreads over its own surface. Sphere A is negative and sphere B is positive.",
+            "The rod touched neither sphere, and no electrons left the pair. The pair started neutral, so by conservation of charge the electrons A gained are exactly those B lost: the charges are equal in size."
+          ],
+          "answer": "Sphere A, nearer the rod, ends negative and sphere B ends positive, with charges of equal size, because electrons moved from B to A while the spheres touched",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "charging-moves-positive-charge",
+          "wrong": "When a positive sphere touches a neutral one, positive charges flow onto the neutral sphere.",
+          "right": "In solids only electrons move. Electrons flow from the neutral sphere to the positive one, which leaves the neutral sphere positive too."
+        },
+        {
+          "tag": "neutral-means-no-charge",
+          "wrong": "A neutral object contains no charge, so a charged rod cannot attract it.",
+          "right": "A neutral object holds equal amounts of positive and negative charge. A nearby rod shifts them apart, and the nearer, opposite charge is attracted more strongly than the farther charge is repelled."
+        },
+        {
+          "tag": "induction-grounding-misread",
+          "wrong": "An object charged by induction gets the same sign of charge as the rod.",
+          "right": "That is charging by contact. In induction the rod drives its own sign of charge away to ground, so the object is left with the opposite sign."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Identical metal spheres carry $-6\\ \\text{nC}$ and $+2\\ \\text{nC}$. They touch and separate. What charge does each have?",
+          "a": "$-2\\ \\text{nC}$ each: the total is $-4\\ \\text{nC}$, shared equally."
+        },
+        {
+          "q": "A charged comb picks up small scraps of neutral paper. Why is the paper attracted, even though it is an insulator?",
+          "a": "The comb polarizes the paper: the charge in each molecule shifts slightly, so the side nearer the comb has the opposite sign and is attracted more strongly than the far side is repelled."
+        },
+        {
+          "q": "During induction with a positive rod, which way do electrons flow in the ground wire?",
+          "a": "From ground onto the object. The positive rod attracts electrons, so the object ends up negative."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ntext 0.8,3.3 \"Before\"\nball A 3,3 r=.45\nball B 5,3 r=.45\ntext 3,3.9 \"{{qa}} nC\"\ntext 5,3.9 \"{{qb}} nC\"\ntext 0.8,1 \"Touching\"\nball C 3.55,0.7 r=.45\nball D 4.45,0.7 r=.45\ntext 4,1.6 \"total {{qa+qb}} nC\"\ntext 0.8,-1.3 \"After\"\nball E 3,-1.6 r=.45\nball F 5,-1.6 r=.45\ntext 3,-0.7 \"{{(qa+qb)/2}} nC\"\ntext 5,-0.7 \"{{(qa+qb)/2}} nC\"",
+        "caption": "Choose the starting charges of two identical metal spheres. The total never changes, and after touching each sphere holds half of it.",
+        "params": [
+          {
+            "name": "qa",
+            "label": "Charge on A",
+            "min": -10,
+            "max": 10,
+            "step": 1,
+            "default": 8,
+            "unit": "nC"
+          },
+          {
+            "name": "qb",
+            "label": "Charge on B",
+            "min": -10,
+            "max": 10,
+            "step": 1,
+            "default": -2,
+            "unit": "nC"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.1"
+      ],
+      "teacherNotes": "Have students narrate induction as a story about electrons only: where they are pushed, where they flow, what is left. The two reliable mistakes are moving protons and removing the rod before the ground wire. For contact problems, ask for the total charge first; students who split each sphere's charge separately have not used conservation."
+    },
+    {
+      "topic": "10.3",
+      "bigIdea": "An electric field fills the space around charges and tells you the force per unit charge that any charge placed at a point would feel.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 -1 \"-q\"\ntest 0,1.5 + \"q_0\"",
+        "caption": "Field lines leave the positive charge and end on the negative one. A positive test charge $q_0$ feels a force along the line through its position; where lines crowd together the field is stronger."
+      },
+      "explanation": "Coulomb's law describes two charges acting on each other across empty space. The field idea splits that into two steps: a source charge sets up an electric field everywhere around it, and any other charge placed in that field feels a force. The field at a point is defined as the force per unit charge on a small positive test charge placed there, $\\vec{E} = \\vec{F}_E/q$, in newtons per coulomb. It is a vector that points the way a positive charge would be pushed.\n\nThe field belongs to the point, not to the test charge. Put twice the charge there and it feels twice the force, so the ratio $F_E/q$ is unchanged. Once you know the field, the force on any charge is $\\vec{F}_E = q\\vec{E}$: along the field for a positive charge and opposite to the field for a negative one.\n\nFor a single point charge, dividing Coulomb's law by the test charge gives $E = k|q|/r^2$, pointing away from a positive source and toward a negative one. With several sources the fields add as vectors, direction included. Two large parallel plates carrying opposite charges produce a uniform field between them: the same size and direction everywhere, from the positive plate to the negative plate.\n\nField lines picture all this. They start on positive charges and end on negative ones, the field at any point is tangent to the line there, and lines are closer together where the field is stronger. Lines never cross. A conductor in equilibrium is a special case: the field inside the metal is zero, any excess charge sits on its surface, and the field just outside meets the surface at a right angle.",
+      "equations": [
+        {
+          "latex": "\\vec{E} = \\frac{\\vec{F}_E}{q}",
+          "meaning": "The electric field at a point is the electric force per unit charge on a charge placed there. Rearranged, the force on a charge in a field is qE.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field at the point",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{F}_E",
+              "name": "electric force on the charge placed there",
+              "unit": "N"
+            },
+            {
+              "symbol": "q",
+              "name": "the charge placed at the point, with its sign",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "You know the field and want the force on a charge, or you know the force on a charge and want the field.",
+          "notWhen": "Here q is the charge feeling the field, not the charge that makes it. A negative q feels a force opposite to the field."
+        },
+        {
+          "latex": "E = k\\,\\frac{|q|}{r^2}",
+          "meaning": "The size of the field a distance r from a point charge. It points away from a positive charge and toward a negative one.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "size of the field at the point",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant, $8.99 \\times 10^9$",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q",
+              "name": "the source charge that makes the field",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the source charge to the point",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The field is made by a point charge, or by a charged sphere at a point outside it.",
+          "notWhen": "Not between parallel plates, where the field is uniform. With several sources, find each field this way and then add them as vectors, not as plain numbers."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Field of a point charge, then a force",
+          "prompt": "A small sphere carries a charge of $+6.0\\ \\text{nC}$. Point P is $0.30\\ \\text{m}$ from the sphere. (a) What is the electric field at P? (b) A dust grain with a charge of $-2.0\\ \\text{nC}$ is placed at P. What force does it feel? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "The source is a point charge, so $E = k\\,\\dfrac{|q|}{r^2}$, with $q = 6.0 \\times 10^{-9}\\ \\text{C}$.",
+            "Substitute: $E = \\dfrac{(8.99 \\times 10^9)(6.0 \\times 10^{-9})}{(0.30)^2} = \\dfrac{53.9}{0.090} = 6.0 \\times 10^2\\ \\text{N/C}$.",
+            "The source is positive, so the field at P points directly away from the sphere. This is true whether or not anything is placed at P.",
+            "Now place the grain there. The size of the force is $F_E = |q|E = (2.0 \\times 10^{-9}\\ \\text{C})(6.0 \\times 10^2\\ \\text{N/C}) = 1.2 \\times 10^{-6}\\ \\text{N}$.",
+            "The grain is negative, so the force on it is opposite to the field: toward the sphere. That agrees with opposite charges attracting."
+          ],
+          "answer": "(a) $E = 6.0 \\times 10^2\\ \\text{N/C}$, away from the sphere; (b) $F_E = 1.2 \\times 10^{-6}\\ \\text{N}$, toward the sphere",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "q": {
+                "value": 6,
+                "unit": "nC"
+              },
+              "r": {
+                "value": 0.3,
+                "unit": "m"
+              }
+            },
+            "expr": "k*q/r^2",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "Field above two equal charges",
+          "prompt": "Two $+3.0\\ \\text{nC}$ point charges are fixed on the x-axis at $x = -0.30\\ \\text{m}$ and $x = +0.30\\ \\text{m}$. Point P is on the y-axis at $y = 0.40\\ \\text{m}$. Determine the magnitude and direction of the net electric field at P. Then state the direction of the net field at P if the charge at $x = +0.30\\ \\text{m}$ were negative instead, and justify your answer. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Each charge is $r = \\sqrt{0.30^2 + 0.40^2} = 0.50\\ \\text{m}$ from P, so each makes a field of the same size: $E = \\dfrac{(8.99 \\times 10^9)(3.0 \\times 10^{-9})}{(0.50)^2} = 108\\ \\text{N/C}$, pointing away from its charge.",
+            "Split each field into components. The x-components are $\\pm(108)(0.30/0.50)$, equal and opposite, so they cancel. The y-components are both $(108)(0.40/0.50) = 86.3\\ \\text{N/C}$ upward.",
+            "Add the components that survive: $E_{\\text{net}} = 2(86.3\\ \\text{N/C}) = 1.7 \\times 10^2\\ \\text{N/C}$ in the $+y$ direction. This is less than twice $108\\ \\text{N/C}$, because the fields were not parallel.",
+            "If the right-hand charge were negative, its field at P would point toward it, down and to the right. Then the y-components cancel and the x-components add, so the net field points in the $+x$ direction, from the positive charge's side toward the negative charge's side."
+          ],
+          "answer": "$E_{\\text{net}} = 1.7 \\times 10^2\\ \\text{N/C}$ in the $+y$ direction; with the right-hand charge negative, the net field would point in the $+x$ direction",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "q": {
+                "value": 3,
+                "unit": "nC"
+              },
+              "a": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "y": {
+                "value": 0.4,
+                "unit": "m"
+              }
+            },
+            "expr": "2*k*q*y/((a^2 + y^2)*sqrt(a^2 + y^2))",
+            "unit": "N/C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "field-force-confusion",
+          "wrong": "A bigger test charge feels a bigger force, so the field at that point is bigger.",
+          "right": "The force doubles when the test charge doubles, so the ratio $F_E/q$ stays the same. The field is set by the source charges and exists at the point even when nothing is there to feel it."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "An electron placed in a field is pushed along the field lines, in the direction of the arrows.",
+          "right": "The arrows show the force on a positive charge. A negative charge feels a force the opposite way, because $\\vec{F}_E = q\\vec{E}$ with $q$ negative."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "Halfway between two equal positive charges the fields add to twice the field of one charge.",
+          "right": "Fields are vectors. At the midpoint the two fields are equal in size and point in opposite directions, so they cancel and the net field is zero."
+        },
+        {
+          "tag": "conductor-interior-field",
+          "wrong": "Excess charge on a metal sphere spreads through the whole sphere, so there is a field inside the metal.",
+          "right": "The excess charges repel each other to the surface and settle where the field inside the metal is zero. If it were not zero, the free electrons would still be moving."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The field $1\\ \\text{m}$ from a point charge is $800\\ \\text{N/C}$. What is it $2\\ \\text{m}$ from the charge?",
+          "a": "$200\\ \\text{N/C}$. The field of a point charge falls as $1/r^2$, so twice the distance gives a quarter of the field."
+        },
+        {
+          "q": "A uniform field of $500\\ \\text{N/C}$ points east. What force acts on a charge of $-4\\ \\mu\\text{C}$ in it?",
+          "a": "$F_E = (4 \\times 10^{-6}\\ \\text{C})(500\\ \\text{N/C}) = 2 \\times 10^{-3}\\ \\text{N}$, pointing west, because the charge is negative."
+        },
+        {
+          "q": "Why can two electric field lines never cross?",
+          "a": "The field at a point has one direction, tangent to the line through that point. A crossing would give two directions at the same point."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 -{{n}} \"-{{n}}q\"",
+        "caption": "Make the negative charge larger. The number of lines ending on a charge is proportional to its size, so the larger charge collects lines from far away as well as all of those leaving the positive charge.",
+        "params": [
+          {
+            "name": "n",
+            "label": "Size of the negative charge",
+            "min": 1,
+            "max": 3,
+            "step": 1,
+            "default": 2,
+            "unit": "q"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.1"
+      ],
+      "teacherNotes": "The core difficulty is separating the charge that makes the field from the charge that feels it; ask \"whose $q$ is this?\" every time a formula is written. Students also add field sizes without directions, so have them draw each source's field arrow at the point before any arithmetic. For field-line pictures, ask where a negative charge would be pushed: many will follow the arrows."
+    },
+    {
+      "topic": "10.4",
+      "bigIdea": "A system of charges stores electric potential energy that depends on how far apart the charges are, rising when like charges are pushed together and falling when opposite charges come together.",
+      "picture": {
+        "diagram": "plot x=r y=U_E xr=-0.05,1 yr=-4,4\nfn 0.4/r 0.1..1\nfn -0.4/r 0.1..1\nxt none\nyt 0\nnote 0.42,2.6 \"like charges: U_E > 0\"\nnote 0.42,-2.6 \"opposite charges: U_E < 0\"",
+        "caption": "Potential energy of two point charges against their separation. Both curves approach zero at large $r$. For like charges the energy climbs as they are pushed together; for opposite charges it drops, becoming more and more negative."
+      },
+      "explanation": "Pushing two positive charges closer together takes effort, like compressing a spring. The work you do is not lost: it is stored in the system as electric potential energy, and the charges fly apart and turn it into kinetic energy if you let go. The energy belongs to the pair of charges, not to either one alone, just as gravitational potential energy belongs to an object and the Earth together.\n\nFor two point charges a distance $r$ apart, $U_E = k\\,q_1 q_2/r$. Three things differ from Coulomb's law. The distance is not squared. The signs of the charges go in, so the result can be negative. And the result is a scalar: an amount of energy with no direction. The zero is chosen where the charges are infinitely far apart.\n\nThe sign has a meaning. Like charges give a positive $U_E$: it took work to bring them in from far away, and they would release that energy if freed. Opposite charges give a negative $U_E$: they attract, so they would speed up coming together on their own, and it takes work to pull them apart. Left to themselves, charges always move in the direction that lowers the system's potential energy.\n\nWhen an outside agent moves a charge slowly, so that nothing gains kinetic energy, the work it does equals the change in potential energy: $W_{\\text{ext}} = \\Delta U_E$. For more than two charges, add the potential energy of every pair. Three charges make three pairs, and because energies are scalars the terms simply add, signs included.",
+      "equations": [
+        {
+          "latex": "U_E = k\\,\\frac{q_1 q_2}{r}",
+          "meaning": "The electric potential energy of two point charges, taking zero to be when they are very far apart.",
+          "variables": [
+            {
+              "symbol": "U_E",
+              "name": "electric potential energy of the pair",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant, $8.99 \\times 10^9$",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the two charges, with their signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the charges",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two point charges a known distance apart, or each pair in a larger group.",
+          "notWhen": "Do not square the distance, and do not drop the signs. It is not the energy of one charge on its own."
+        },
+        {
+          "latex": "W_{\\text{ext}} = \\Delta U_E = U_{E,f} - U_{E,i}",
+          "meaning": "The work an outside agent does to rearrange charges slowly equals the change in the system's potential energy.",
+          "variables": [
+            {
+              "symbol": "W_{\\text{ext}}",
+              "name": "work done on the system by the outside agent",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\Delta U_E",
+              "name": "change in electric potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "U_{E,f}",
+              "name": "potential energy after the move",
+              "unit": "J"
+            },
+            {
+              "symbol": "U_{E,i}",
+              "name": "potential energy before the move",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "A charge is moved from one place to another with no change in kinetic energy.",
+          "notWhen": "If the charge is released and speeds up, no outside work is done; the lost potential energy becomes kinetic energy instead (see 10.7)."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Energy of a hydrogen atom",
+          "prompt": "In a hydrogen atom the electron and the proton are, on average, $5.3 \\times 10^{-11}\\ \\text{m}$ apart. Each has a charge of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$. What is the electric potential energy of the electron–proton system? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Write the charges with their signs: the proton is $q_1 = +1.60 \\times 10^{-19}\\ \\text{C}$ and the electron is $q_2 = -1.60 \\times 10^{-19}\\ \\text{C}$.",
+            "Use the potential energy of two point charges, with the signs kept: $U_E = k\\,\\dfrac{q_1 q_2}{r}$.",
+            "Substitute: $U_E = \\dfrac{(8.99 \\times 10^9)(+1.60 \\times 10^{-19})(-1.60 \\times 10^{-19})}{5.3 \\times 10^{-11}} = \\dfrac{-2.30 \\times 10^{-28}}{5.3 \\times 10^{-11}} = -4.3 \\times 10^{-18}\\ \\text{J}$.",
+            "Read the sign. Negative means the system has less energy than when the two particles are far apart, so energy must be supplied to separate them. That is why the atom holds together."
+          ],
+          "answer": "$U_E = -4.3 \\times 10^{-18}\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "r": {
+                "value": 5.3e-11,
+                "unit": "m"
+              }
+            },
+            "expr": "-k*q^2/r",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Work to push two charges together",
+          "prompt": "A $+2.0\\ \\mu\\text{C}$ point charge is fixed in place. A second point charge of $+3.0\\ \\mu\\text{C}$ is moved slowly from a point $0.50\\ \\text{m}$ from the fixed charge to a point $0.20\\ \\text{m}$ from it. Determine the work done by the agent moving the charge, and explain the meaning of its sign. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "The charge is moved slowly, so no kinetic energy is gained and the agent's work equals the change in the system's potential energy: $W_{\\text{ext}} = U_{E,f} - U_{E,i}$.",
+            "Initial energy, at $0.50\\ \\text{m}$: $U_{E,i} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{0.50} = 0.108\\ \\text{J}$.",
+            "Final energy, at $0.20\\ \\text{m}$: $U_{E,f} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{0.20} = 0.270\\ \\text{J}$.",
+            "$W_{\\text{ext}} = 0.270 - 0.108 = +0.16\\ \\text{J}$.",
+            "The work is positive because the charges repel: the agent must push against the electric force the whole way in. That energy is now stored in the system. If the moving charge were released at $0.20\\ \\text{m}$, it would be pushed back out and the stored energy would become kinetic energy."
+          ],
+          "answer": "$W_{\\text{ext}} = +0.16\\ \\text{J}$; positive, because the agent pushes against the repulsion and stores energy in the system",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "q1": {
+                "value": 2,
+                "unit": "μC"
+              },
+              "q2": {
+                "value": 3,
+                "unit": "μC"
+              },
+              "ri": {
+                "value": 0.5,
+                "unit": "m"
+              },
+              "rf": {
+                "value": 0.2,
+                "unit": "m"
+              }
+            },
+            "expr": "k*q1*q2/rf - k*q1*q2/ri",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "inverse-square-misapplied",
+          "wrong": "Potential energy follows the same rule as force, so doubling the separation gives a quarter of the potential energy.",
+          "right": "Force goes as $1/r^2$, but potential energy goes as $1/r$. Doubling the separation halves the size of $U_E$."
+        },
+        {
+          "tag": "sign-error",
+          "wrong": "Energy cannot be negative, so the signs of the charges should be left out, as in Coulomb's law.",
+          "right": "Potential energy is measured from a chosen zero (charges far apart), and it can be below that zero. A negative value says the charges are bound: energy must be added to separate them."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "To find the energy of three charges, add the pair energies as vectors, using the directions between the charges.",
+          "right": "Energy is a scalar. Work out one signed number for each pair and add the numbers. Directions never enter."
+        },
+        {
+          "tag": "potential-energy-potential-confusion",
+          "wrong": "Bringing any two charges closer together always increases the potential energy.",
+          "right": "Only for like charges. Opposite charges attract, so moving them closer lowers the potential energy, just as lowering a ball toward the Earth does."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Two charges have a potential energy of $+0.60\\ \\text{J}$ when they are $0.10\\ \\text{m}$ apart. What is it when they are $0.30\\ \\text{m}$ apart?",
+          "a": "$+0.20\\ \\text{J}$. Potential energy goes as $1/r$, so three times the distance gives one third of the energy."
+        },
+        {
+          "q": "A positive and a negative charge are released from rest near each other. Does the system's potential energy rise or fall as they move?",
+          "a": "It falls. They attract and speed up toward each other, so potential energy (already negative) becomes more negative as kinetic energy grows."
+        },
+        {
+          "q": "How many pair terms are needed for the potential energy of four point charges?",
+          "a": "Six: with charges 1 to 4 the pairs are 1–2, 1–3, 1–4, 2–3, 2–4 and 3–4."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[m] y=U_E[mJ] xr=-0.05,1.05 yr=-560,560\nfn {{18*q}}/r 0.1..1\npt {{r}},{{18*q/r}}\nnote 0.45,470 \"U_E = {{round(18*q/r)}} mJ\"",
+        "caption": "A $+2.0\\ \\mu\\text{C}$ charge is fixed. Choose the second charge and the distance between them. A negative second charge flips the whole curve below zero, and the energy changes fastest at small distances.",
+        "params": [
+          {
+            "name": "q",
+            "label": "Second charge",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": 2,
+            "unit": "μC"
+          },
+          {
+            "name": "r",
+            "label": "Distance",
+            "min": 0.1,
+            "max": 1,
+            "step": 0.05,
+            "default": 0.3,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.1"
+      ],
+      "teacherNotes": "Students carry the habits of Coulomb's law straight into this topic: they square $r$ and strip the signs. Put $F_E$ and $U_E$ side by side and ask what is different. The gravitational analogy helps with the negative sign for attraction, but ask what has no gravitational counterpart: the positive energy of a repelling pair. Set 10C mixes this with potential, so make sure \"energy of the system\" is secure first."
+    },
+    {
+      "topic": "10.5",
+      "bigIdea": "Electric potential is the potential energy per unit charge at a point, a scalar set by the source charges alone, and the electric field points from high potential toward low potential.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 -1 \"-q\"\nequi",
+        "caption": "Field lines (solid) and equipotential lines (dashed) for a positive and a negative charge. The two sets of lines cross at right angles everywhere. Potential is high near the positive charge, low near the negative one, and zero along the vertical line midway between them, where the field is not zero."
+      },
+      "explanation": "The electric field is force per unit charge. Electric potential does the same job for energy: the potential at a point is the potential energy per unit charge that a charge would have there, $V = U_E/q$. Its unit is the volt, $1\\ \\text{V} = 1\\ \\text{J/C}$. Like the field, potential describes the point itself and is set by the source charges. Unlike the field, it is a scalar: a number with a sign but no direction.\n\nFor a point charge, $V = kq/r$, positive around a positive source and negative around a negative one, and zero far away. With several sources, add their potentials as signed numbers. Once the potential is known, a charge $q$ placed there has $U_E = qV$, and moving it through a potential difference changes the energy by $\\Delta U_E = q\\,\\Delta V$. Only differences in potential matter, which is why a battery is labelled by the potential difference between its ends.\n\nAn equipotential line joins points at the same potential. Moving a charge along one takes no work, so the field has no component along it: field lines always cross equipotentials at right angles. The field points \"downhill\", from high potential to low. Its size is how quickly the potential changes with position, $E = |\\Delta V/\\Delta r|$, so where equipotentials drawn at equal steps are close together the field is strong. Between parallel plates the field is uniform, the equipotentials are evenly spaced, and $E = \\Delta V/d$.\n\nWatch the sign of the charge. A positive charge released from rest moves toward lower potential. A negative charge moves toward higher potential. In both cases the potential energy $qV$ goes down. And since the field measures how the potential changes rather than its value, one can be zero where the other is not. A conductor in equilibrium has zero field inside, so the whole conductor is at one potential.",
+      "equations": [
+        {
+          "latex": "V = k\\,\\frac{q}{r}",
+          "meaning": "The potential a distance r from a point charge, taking zero to be far away. Potentials from several charges add as signed numbers.",
+          "variables": [
+            {
+              "symbol": "V",
+              "name": "electric potential at the point",
+              "unit": "V"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant, $8.99 \\times 10^9$",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q",
+              "name": "the source charge, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the source charge to the point",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The sources are point charges or charged spheres, and you want the potential at a point outside them.",
+          "notWhen": "Do not square the distance or drop the sign of the charge. Not between parallel plates, where the potential changes steadily with position."
+        },
+        {
+          "latex": "\\Delta U_E = q\\,\\Delta V",
+          "meaning": "A charge moved through a potential difference changes the system's potential energy by the charge times that difference.",
+          "variables": [
+            {
+              "symbol": "\\Delta U_E",
+              "name": "change in electric potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "the charge that moves, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "final potential minus initial potential",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "You know the potentials at the start and end of a charge's path. The path taken in between does not matter.",
+          "notWhen": "Do not leave out the sign of q: a negative charge loses potential energy when the potential rises."
+        },
+        {
+          "latex": "E = \\left|\\frac{\\Delta V}{\\Delta r}\\right|",
+          "meaning": "The size of the field is the rate at which potential changes with distance along the field direction. The field points toward lower potential.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "size of the electric field",
+              "unit": "V/m (the same as N/C)"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference between two nearby points",
+              "unit": "V"
+            },
+            {
+              "symbol": "\\Delta r",
+              "name": "distance between those points, measured along the field",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A uniform field, such as between parallel plates, or an average field between two neighbouring equipotential lines.",
+          "notWhen": "The distance must be measured along the field, straight across the equipotentials. It gives no information about the value of V itself."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Potential from two charges",
+          "prompt": "A $+6.0\\ \\text{nC}$ point charge and a $-4.0\\ \\text{nC}$ point charge are fixed in place. Point P is $0.30\\ \\text{m}$ from the positive charge and $0.40\\ \\text{m}$ from the negative charge. What is the electric potential at P? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Potential is a scalar, so find each charge's potential at P and add them as signed numbers. No directions or components are needed.",
+            "From the positive charge: $V_1 = \\dfrac{(8.99 \\times 10^9)(+6.0 \\times 10^{-9})}{0.30} = +180\\ \\text{V}$.",
+            "From the negative charge: $V_2 = \\dfrac{(8.99 \\times 10^9)(-4.0 \\times 10^{-9})}{0.40} = -90\\ \\text{V}$.",
+            "Add: $V = (+180) + (-90) = +90\\ \\text{V}$.",
+            "Interpret it. Each coulomb of charge placed at P would have $90\\ \\text{J}$ of potential energy. A proton there has positive potential energy; an electron there has negative potential energy."
+          ],
+          "answer": "$V = +90\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "q1": {
+                "value": 6,
+                "unit": "nC"
+              },
+              "q2": {
+                "value": -4,
+                "unit": "nC"
+              },
+              "r1": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "r2": {
+                "value": 0.4,
+                "unit": "m"
+              }
+            },
+            "expr": "k*q1/r1 + k*q2/r2",
+            "unit": "V"
+          }
+        },
+        {
+          "title": "Field and energy between charged plates",
+          "prompt": "Two large horizontal metal plates are $4.0\\ \\text{cm}$ apart. The lower plate is at $0\\ \\text{V}$ and the upper plate is at $+600\\ \\text{V}$. The dashed lines in the diagram are equipotentials. Point P is $1.0\\ \\text{cm}$ above the lower plate. Determine (a) the magnitude and direction of the electric field between the plates, (b) the potential at P, and (c) the change in potential energy when an electron moves from the lower plate to P.\n\n```dg\nfield\nplates 0,1 0,-1 w=6\nequi n=3\npt 0,-0.5 \"P\"\n```",
+          "steps": [
+            "(a) Between large parallel plates the field is uniform, so $E = \\dfrac{\\Delta V}{d} = \\dfrac{600\\ \\text{V}}{0.040\\ \\text{m}} = 1.5 \\times 10^4\\ \\text{V/m}$. The field points from high potential to low potential: from the upper plate down toward the lower plate.",
+            "(b) In a uniform field the potential changes steadily with distance. P is $1.0\\ \\text{cm}$ of the $4.0\\ \\text{cm}$ gap above the $0\\ \\text{V}$ plate, so $V_P = (1.5 \\times 10^4\\ \\text{V/m})(0.010\\ \\text{m}) = 150\\ \\text{V}$. P lies on the lowest dashed line, a quarter of the way up.",
+            "(c) For the electron, $q = -1.60 \\times 10^{-19}\\ \\text{C}$ and $\\Delta V = 150 - 0 = +150\\ \\text{V}$, so $\\Delta U_E = q\\,\\Delta V = (-1.60 \\times 10^{-19})(+150) = -2.4 \\times 10^{-17}\\ \\text{J}$.",
+            "The potential energy falls even though the potential rises, because the charge is negative. This fits the forces: the field points down, so the force on an electron points up, toward P, and the field does positive work on it."
+          ],
+          "answer": "(a) $E = 1.5 \\times 10^4\\ \\text{V/m}$, directed from the upper plate toward the lower plate; (b) $V_P = 150\\ \\text{V}$; (c) $\\Delta U_E = -2.4 \\times 10^{-17}\\ \\text{J}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "dV": {
+                "value": 600,
+                "unit": "V"
+              },
+              "d": {
+                "value": 4,
+                "unit": "cm"
+              }
+            },
+            "expr": "dV/d",
+            "unit": "V/m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "field-potential-zero-together",
+          "wrong": "Midway between a positive charge and an equal negative charge the potential is zero, so the field there is zero too.",
+          "right": "The potentials cancel there, but both fields point from the positive charge toward the negative one and add. The field is how fast the potential changes, and at that point it is changing quickly."
+        },
+        {
+          "tag": "potential-energy-potential-confusion",
+          "wrong": "Potential and potential energy are the same thing, so every charge has the least energy where the potential is lowest.",
+          "right": "Potential is energy per unit charge and belongs to the point. The energy is $U_E = qV$, so a negative charge has its lowest energy where the potential is highest."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "Halfway between two equal positive charges the potentials cancel, just as the fields do.",
+          "right": "Potentials are signed numbers, not vectors. Two positive charges each give a positive potential, and the two add. The field there is zero while the potential is not."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "All charges move from high potential to low potential when released.",
+          "right": "Positive charges do. A negative charge feels a force opposite to the field, so it moves toward higher potential. Both are moving toward lower potential energy."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "How much work does the electric field do on a $+2\\ \\mu\\text{C}$ charge that moves from one point to another along a single equipotential line?",
+          "a": "Zero. The potential is the same at both ends, so $\\Delta U_E = q\\,\\Delta V = 0$."
+        },
+        {
+          "q": "Two parallel plates are $2.0\\ \\text{mm}$ apart with a potential difference of $12\\ \\text{V}$ between them. What is the field between the plates?",
+          "a": "$E = \\dfrac{12\\ \\text{V}}{0.0020\\ \\text{m}} = 6.0 \\times 10^3\\ \\text{V/m}$, pointing from the higher-potential plate to the lower."
+        },
+        {
+          "q": "The potential $1\\ \\text{m}$ from a point charge is $300\\ \\text{V}$. What is it $3\\ \\text{m}$ from the charge?",
+          "a": "$100\\ \\text{V}$. Potential goes as $1/r$, not $1/r^2$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4..4 yr=-3..3 lines=6\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 +{{n}} \"+{{n}}q\"\nequi",
+        "caption": "Two positive charges. The dashed equipotentials wrap each charge closely and merge farther out. Between the charges there is a point where the field is zero; watch it shift toward the smaller charge as the other grows. The potential there is not zero.",
+        "params": [
+          {
+            "name": "n",
+            "label": "Size of the right-hand charge",
+            "min": 1,
+            "max": 3,
+            "step": 1,
+            "default": 1,
+            "unit": "q"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.3",
+        "10.4"
+      ],
+      "teacherNotes": "Keep a four-box table on the board: force and field are vectors, potential energy and potential are scalars; field and potential are \"per unit charge\". Most errors are a slide between boxes. A contour map of a hill is the best analogy for equipotentials: steepest where the contours crowd, and downhill is at right angles to them. Ask where the field is zero and where the potential is zero for two like and two opposite charges; students expect the answers to match."
+    },
+    {
+      "topic": "10.6",
+      "bigIdea": "A capacitor stores separated charge and energy on two plates, and its capacitance, the charge stored per volt, is fixed by the plates' area, their separation and the material between them.",
+      "picture": {
+        "diagram": "field\nplates 0,1 0,-1 w=5",
+        "caption": "A parallel-plate capacitor seen edge-on. The upper plate holds $+Q$ and the lower plate $-Q$. Between the plates the field is uniform: straight, evenly spaced lines from the positive plate to the negative one. It bulges only near the edges."
+      },
+      "explanation": "A capacitor is two conductors separated by an insulator. The standard one is a pair of parallel metal plates. Connect it to a battery and electrons are moved from one plate to the other until the potential difference between the plates equals the battery's. One plate then holds $+Q$ and the other $-Q$. The net charge is zero; what is stored is the separation of charge, and \"the charge on a capacitor\" means $Q$.\n\nThe charge is proportional to the potential difference: $Q = C\\,\\Delta V$. The constant $C$ is the capacitance, in farads ($1\\ \\text{F} = 1\\ \\text{C/V}$). It is a property of the device. For parallel plates, $C = \\kappa\\varepsilon_0 A/d$: larger plates hold more charge at the same voltage, and so do plates that are closer together. The dielectric constant $\\kappa$ describes the insulator between the plates. It is 1 for a vacuum, very nearly 1 for air and larger for other materials, so a dielectric raises the capacitance. Between the plates the field is uniform, with size $E = \\Delta V/d$. In terms of the charge, $E = Q/(\\kappa\\varepsilon_0 A)$: it depends on how densely the charge is spread over the plates, not on how far apart they are.\n\nCharging a capacitor takes work, and that work is stored as potential energy: $U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}C(\\Delta V)^2$. The half is there because the first bit of charge moves across almost no potential difference and the last bit across the full $\\Delta V$; the average is half.\n\nWhen a capacitor is changed, first ask what is held fixed. If it stays connected to the battery, $\\Delta V$ is fixed and $Q$ adjusts. If it is disconnected first, the charge is trapped, so $Q$ is fixed and $\\Delta V$ adjusts.",
+      "equations": [
+        {
+          "latex": "C = \\frac{Q}{\\Delta V}",
+          "meaning": "Capacitance is the charge stored on each plate per volt of potential difference between the plates.",
+          "variables": [
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            },
+            {
+              "symbol": "Q",
+              "name": "size of the charge on each plate",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference between the plates",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Relating the charge, voltage and capacitance of any capacitor.",
+          "notWhen": "It does not say that C changes when Q or ΔV changes. Their ratio is fixed by how the capacitor is built."
+        },
+        {
+          "latex": "C = \\kappa\\varepsilon_0\\frac{A}{d}",
+          "meaning": "The capacitance of a parallel-plate capacitor, from its geometry and the material between the plates.",
+          "variables": [
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant of the material between the plates (1 for vacuum or air)",
+              "unit": ""
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space, $8.85 \\times 10^{-12}$",
+              "unit": "C²/(N·m²)"
+            },
+            {
+              "symbol": "A",
+              "name": "area of one plate",
+              "unit": "m²"
+            },
+            {
+              "symbol": "d",
+              "name": "separation of the plates",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A parallel-plate capacitor whose plates are large compared with the gap between them.",
+          "notWhen": "A is the area of one plate, not both. Convert cm² and mm to m² and m before substituting."
+        },
+        {
+          "latex": "E = \\frac{Q}{\\kappa\\varepsilon_0 A}",
+          "meaning": "The size of the uniform field between the plates of a parallel-plate capacitor. It also equals ΔV/d.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "size of the electric field between the plates",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "Q",
+              "name": "size of the charge on each plate",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant",
+              "unit": ""
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space, $8.85 \\times 10^{-12}$",
+              "unit": "C²/(N·m²)"
+            },
+            {
+              "symbol": "A",
+              "name": "area of one plate",
+              "unit": "m²"
+            }
+          ],
+          "useWhen": "You know the charge and plate area, or want to see how the field responds when the plates are moved with the charge fixed.",
+          "notWhen": "Not near the edges of the plates or outside them, where the field is not uniform."
+        },
+        {
+          "latex": "U_C = \\frac{1}{2}Q\\,\\Delta V = \\frac{1}{2}C(\\Delta V)^2",
+          "meaning": "The energy stored in a charged capacitor.",
+          "variables": [
+            {
+              "symbol": "U_C",
+              "name": "energy stored in the capacitor",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q",
+              "name": "size of the charge on each plate",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference between the plates",
+              "unit": "V"
+            },
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            }
+          ],
+          "useWhen": "Finding the stored energy, or comparing it before and after a change.",
+          "notWhen": "Do not forget the half: the stored energy is not QΔV. Choose the form that contains the quantity that stays fixed."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Designing a foil capacitor",
+          "prompt": "A capacitor is to be made from two strips of aluminium foil separated by a plastic film $0.020\\ \\text{mm}$ thick, with dielectric constant $\\kappa = 2.3$. It must have a capacitance of $0.50\\ \\mu\\text{F}$. What area must each strip have, and how much energy will the capacitor store when it is connected to a $9.0\\ \\text{V}$ battery? Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
+          "steps": [
+            "Convert to SI units: $C = 0.50\\ \\mu\\text{F} = 5.0 \\times 10^{-7}\\ \\text{F}$ and $d = 0.020\\ \\text{mm} = 2.0 \\times 10^{-5}\\ \\text{m}$.",
+            "Solve $C = \\kappa\\varepsilon_0\\dfrac{A}{d}$ for the area: $A = \\dfrac{Cd}{\\kappa\\varepsilon_0} = \\dfrac{(5.0 \\times 10^{-7})(2.0 \\times 10^{-5})}{(2.3)(8.85 \\times 10^{-12})} = 0.49\\ \\text{m}^2$.",
+            "That is a sheet about $70\\ \\text{cm}$ on a side, which is why real capacitors roll long foil strips into a small cylinder. The film helps twice: being thin keeps $d$ small, and $\\kappa = 2.3$ cuts the area needed by a factor of $2.3$.",
+            "On the battery: $Q = C\\,\\Delta V = (5.0 \\times 10^{-7}\\ \\text{F})(9.0\\ \\text{V}) = 4.5\\ \\mu\\text{C}$, and $U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}(4.5 \\times 10^{-6}\\ \\text{C})(9.0\\ \\text{V}) = 2.0 \\times 10^{-5}\\ \\text{J}$."
+          ],
+          "answer": "$A = 0.49\\ \\text{m}^2$ for each strip; $U_C = 2.0 \\times 10^{-5}\\ \\text{J}$ at $9.0\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "eps0": {
+                "value": 8.85e-12,
+                "unit": "F/m"
+              },
+              "C": {
+                "value": 0.5,
+                "unit": "μF"
+              },
+              "d": {
+                "value": 0.02,
+                "unit": "mm"
+              },
+              "kappa": {
+                "value": 2.3,
+                "unit": ""
+              }
+            },
+            "expr": "C*d/(kappa*eps0)",
+            "unit": "m^2"
+          }
+        },
+        {
+          "title": "Pulling the plates apart",
+          "prompt": "A $6.0\\ \\mu\\text{F}$ air-filled parallel-plate capacitor is charged by a $12\\ \\text{V}$ battery and then disconnected from it. The plates are then pulled apart until their separation is twice as large. Determine the energy stored in the capacitor after the plates are moved, and explain where any change in energy comes from.",
+          "steps": [
+            "Before the move: $Q = C\\,\\Delta V = (6.0\\ \\mu\\text{F})(12\\ \\text{V}) = 72\\ \\mu\\text{C}$ and $U_C = \\tfrac{1}{2}C(\\Delta V)^2 = \\tfrac{1}{2}(6.0 \\times 10^{-6})(12)^2 = 4.3 \\times 10^{-4}\\ \\text{J}$.",
+            "Decide what is fixed. The capacitor is disconnected, so the charge has nowhere to go: $Q$ stays at $72\\ \\mu\\text{C}$.",
+            "Capacitance is $\\kappa\\varepsilon_0 A/d$, so doubling $d$ halves it: $C = 3.0\\ \\mu\\text{F}$. Then $\\Delta V = \\dfrac{Q}{C} = \\dfrac{72\\ \\mu\\text{C}}{3.0\\ \\mu\\text{F}} = 24\\ \\text{V}$. The potential difference doubles.",
+            "New energy: $U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}(72 \\times 10^{-6}\\ \\text{C})(24\\ \\text{V}) = 8.6 \\times 10^{-4}\\ \\text{J}$, twice the original.",
+            "The plates carry opposite charges and attract each other, so whoever pulls them apart does positive work against that attraction. That work is the extra $4.3 \\times 10^{-4}\\ \\text{J}$. The field, $Q/(\\kappa\\varepsilon_0 A)$, is unchanged; the same field now fills twice the volume."
+          ],
+          "answer": "$U_C = 8.6 \\times 10^{-4}\\ \\text{J}$, double the original, supplied by the work done pulling the attracting plates apart",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "C0": {
+                "value": 6,
+                "unit": "μF"
+              },
+              "V0": {
+                "value": 12,
+                "unit": "V"
+              }
+            },
+            "expr": "0.5*(C0*V0)*(2*V0)",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "capacitance-depends-on-charge",
+          "wrong": "Since $C = Q/\\Delta V$, putting more charge on a capacitor increases its capacitance.",
+          "right": "More charge comes with proportionally more voltage, so the ratio stays the same. Capacitance changes only when the plate area, the separation or the material between the plates changes."
+        },
+        {
+          "tag": "capacitor-wrong-quantity-fixed",
+          "wrong": "When the plates of a capacitor are moved apart, the voltage across it stays the same.",
+          "right": "Only if a battery is still connected to hold the voltage fixed. If the capacitor has been disconnected, the charge is what stays the same and the voltage rises as the capacitance falls."
+        },
+        {
+          "tag": "capacitor-net-charge",
+          "wrong": "A charged capacitor holds a net charge Q.",
+          "right": "It holds $+Q$ on one plate and $-Q$ on the other, a net charge of zero. Charging a capacitor moves charge from one plate to the other; it does not add any."
+        },
+        {
+          "tag": "energy-scaled-linearly",
+          "wrong": "Charging a capacitor to twice the voltage stores twice the energy.",
+          "right": "Twice the voltage also means twice the charge, so the energy, $\\tfrac{1}{2}C(\\Delta V)^2$, is four times larger."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $4\\ \\mu\\text{F}$ capacitor is connected to a $6\\ \\text{V}$ battery. What charge is on its plates, and how much energy does it store?",
+          "a": "$Q = (4\\ \\mu\\text{F})(6\\ \\text{V}) = 24\\ \\mu\\text{C}$, and $U_C = \\tfrac{1}{2}(24\\ \\mu\\text{C})(6\\ \\text{V}) = 72\\ \\mu\\text{J}$."
+        },
+        {
+          "q": "A capacitor stays connected to its battery while a dielectric is slid between the plates. What happens to the capacitance, the voltage and the charge?",
+          "a": "The capacitance rises by the factor κ. The battery holds the voltage fixed, so the charge rises by the same factor: the battery moves more charge onto the plates."
+        },
+        {
+          "q": "Each plate of a capacitor is replaced by one with twice the area, and the gap is also doubled. What happens to the capacitance?",
+          "a": "Nothing. $C$ depends on $A/d$, and both are doubled."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=V[V] y=Q[μC] xr=-0.6,13 yr=0,125\nseg 0,0 {{V}},{{C*V}}\nshade 0..{{V}}\npt {{V}},{{C*V}} \"Q = {{C*V}} μC\"\nnote 3.2,115 \"U_C = area = {{0.5*C*V*V}} μJ\"",
+        "caption": "Charge against potential difference for a capacitor. The slope of the line is the capacitance, and the shaded triangle, half of charge times voltage, is the stored energy. Doubling the voltage makes the triangle four times larger.",
+        "params": [
+          {
+            "name": "C",
+            "label": "Capacitance",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 5,
+            "unit": "μF"
+          },
+          {
+            "name": "V",
+            "label": "Potential difference",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 6,
+            "unit": "V"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.3",
+        "10.5"
+      ],
+      "teacherNotes": "Before any change to a capacitor, make students write \"battery connected: $\\Delta V$ fixed\" or \"disconnected: $Q$ fixed\" as the first line; nearly every wrong answer in set 10D starts from holding the wrong one. Then have them track $C$, $Q$, $\\Delta V$, $E$ and $U_C$ in a table. Ask where the energy goes or comes from each time: the battery, or the person moving the plates or the dielectric."
+    },
+    {
+      "topic": "10.7",
+      "bigIdea": "When only electric forces do work on a charge, the potential energy it loses by moving through a potential difference reappears as kinetic energy, so the total energy of the system stays the same.",
+      "picture": {
+        "diagram": "bars energy unit=eV\ninitial K 0 U_E 120\nfinal K 120 U_E 0",
+        "caption": "An electron released from rest moves to a place where the potential is $120\\ \\text{V}$ higher. The system's potential energy drops by $120\\ \\text{eV}$ and the electron's kinetic energy rises by the same amount. The total is unchanged."
+      },
+      "explanation": "Energy conservation works for electric systems exactly as it does for a ball falling under gravity. If the electric force is the only force doing work, the sum of kinetic energy and electric potential energy stays constant: $K_i + U_{E,i} = K_f + U_{E,f}$. Whatever potential energy is lost becomes kinetic energy, and the other way round.\n\nThe change in potential energy for a charge $q$ that moves through a potential difference is $\\Delta U_E = q\\,\\Delta V$, so $\\Delta K = -q\\,\\Delta V$. A positive charge speeds up when it moves to lower potential. A negative charge speeds up when it moves to higher potential. Either way the charge is moving the way the electric force pushes it, and the potential energy falls. For a charge released from rest, $\\tfrac{1}{2}mv^2 = |q\\,\\Delta V|$. Only the potential difference between the start and the end matters; the path and the details of the field in between do not.\n\nAn energy bar chart keeps the accounting honest. Draw bars for $K$ and $U_E$ at the start and at the end. With no outside work the totals must match. If an outside force does work, or the system is not isolated, add that work to the initial side.\n\nFor charged particles the joule is awkwardly large, so energies are often given in electronvolts: $1\\ \\text{eV} = 1.60 \\times 10^{-19}\\ \\text{J}$ is the energy a charge of size $e$ gains crossing $1\\ \\text{V}$. An electron that crosses $120\\ \\text{V}$ gains $120\\ \\text{eV}$, with no arithmetic needed. Near a point charge the potential energy is $kq_1q_2/r$ from 10.4, and the same conservation equation applies: a charge fired at a like charge slows down, stops where all of its kinetic energy has become potential energy, and is pushed back out.",
+      "equations": [
+        {
+          "latex": "K_i + U_{E,i} = K_f + U_{E,f}",
+          "meaning": "With only electric forces doing work, the total of kinetic and electric potential energy is the same at the start and at the end.",
+          "variables": [
+            {
+              "symbol": "K_i,\\ K_f",
+              "name": "kinetic energy at the start and at the end",
+              "unit": "J"
+            },
+            {
+              "symbol": "U_{E,i},\\ U_{E,f}",
+              "name": "electric potential energy at the start and at the end",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "A charge moves freely in an electric field and you want a speed, an energy or a turning point.",
+          "notWhen": "If another force does work (a hand, friction), add its work to the left side. It gives speeds, not times or directions."
+        },
+        {
+          "latex": "\\Delta K = -q\\,\\Delta V",
+          "meaning": "The kinetic energy a charge gains equals the potential energy lost, which is the charge times the potential difference it moves through.",
+          "variables": [
+            {
+              "symbol": "\\Delta K",
+              "name": "change in the charge's kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "the moving charge, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "final potential minus initial potential",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "You know the potential difference between the start and end points, as between capacitor plates or the electrodes of an accelerator.",
+          "notWhen": "Do not drop the signs: a positive charge moving to higher potential slows down."
+        },
+        {
+          "latex": "\\frac{1}{2}mv^2 = |q\\,\\Delta V|",
+          "meaning": "The speed reached by a charge that starts from rest and is accelerated through a potential difference.",
+          "variables": [
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "final speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "q",
+              "name": "charge of the particle",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference it is accelerated through",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "A particle is released from rest and moves the way the electric force pushes it.",
+          "notWhen": "Not if the particle starts with some speed (use the full conservation equation), and not for speeds close to the speed of light."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A proton that runs out of energy",
+          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) passes through a small hole in plate A at $1.2 \\times 10^5\\ \\text{m/s}$, heading straight toward plate B, $0.030\\ \\text{m}$ away. Plate B is at a potential $100\\ \\text{V}$ higher than plate A, and the field between the plates is uniform. Does the proton reach plate B? If not, how far from plate A does it stop?",
+          "steps": [
+            "The proton's kinetic energy at the hole: $K_i = \\tfrac{1}{2}(1.67 \\times 10^{-27}\\ \\text{kg})(1.2 \\times 10^5\\ \\text{m/s})^2 = 1.20 \\times 10^{-17}\\ \\text{J}$, which is $75\\ \\text{eV}$.",
+            "Moving toward higher potential, a positive charge gains potential energy: reaching B would need $\\Delta U_E = q\\,\\Delta V = e(100\\ \\text{V}) = 100\\ \\text{eV}$. It has only $75\\ \\text{eV}$, so it stops short and is pushed back.",
+            "In a uniform field the potential rises steadily with distance, so the proton stops where it has climbed $75\\ \\text{V}$ of the $100\\ \\text{V}$: $x = \\dfrac{75.2\\ \\text{V}}{100\\ \\text{V}}(0.030\\ \\text{m}) = 2.3 \\times 10^{-2}\\ \\text{m}$ from plate A.",
+            "Check with energy conservation: there $K = 0$ and $\\Delta U_E = +75\\ \\text{eV}$, so $K + U_E$ is unchanged. The proton then returns through the hole at its original speed."
+          ],
+          "answer": "No; it stops $2.3 \\times 10^{-2}\\ \\text{m}$ from plate A and is pushed back",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 1.67e-27,
+                "unit": "kg"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "v": {
+                "value": 120000,
+                "unit": "m/s"
+              },
+              "dV": {
+                "value": 100,
+                "unit": "V"
+              },
+              "D": {
+                "value": 0.03,
+                "unit": "m"
+              }
+            },
+            "expr": "D*0.5*m*v^2/(q*dV)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Escaping from a charged sphere",
+          "prompt": "A small metal sphere of radius $0.020\\ \\text{m}$ carries a charge of $+1.0\\ \\text{nC}$. An electron (mass $9.11 \\times 10^{-31}\\ \\text{kg}$, charge $-1.60 \\times 10^{-19}\\ \\text{C}$) leaves the surface of the sphere, moving straight outward. Determine the smallest speed with which it must leave for it to get very far away. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Only the electric force acts, so the energy of the electron-sphere system is conserved. Outside the sphere its charge acts as if it were at the centre, so the electron starts at $r = 0.020\\ \\text{m}$ from a point charge.",
+            "The charges attract, so the potential energy is negative at the surface: $U_{E,i} = \\dfrac{kqQ}{r} = \\dfrac{(8.99 \\times 10^9)(-1.60 \\times 10^{-19})(1.0 \\times 10^{-9})}{0.020} = -7.19 \\times 10^{-17}\\ \\text{J}$. Far away, $U_{E,f} = 0$. With the smallest launch speed the electron just arrives there with $K_f = 0$.\n\n```dg\nbars energy\ninitial K 4 U_E -4\nfinal K 0 U_E 0\n```",
+            "Conservation gives $\\tfrac{1}{2}mv^2 + U_{E,i} = 0$, so $v = \\sqrt{\\dfrac{2|U_{E,i}|}{m}} = \\sqrt{\\dfrac{2(7.19 \\times 10^{-17})}{9.11 \\times 10^{-31}}} = 1.3 \\times 10^7\\ \\text{m/s}$.",
+            "Any slower and the electron stops at some distance and falls back. The speed is about 4% of the speed of light, still small enough for $\\tfrac{1}{2}mv^2$."
+          ],
+          "answer": "$v = 1.3 \\times 10^7\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "Q": {
+                "value": 1,
+                "unit": "nC"
+              },
+              "r": {
+                "value": 0.02,
+                "unit": "m"
+              },
+              "m": {
+                "value": 9.11e-31,
+                "unit": "kg"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              }
+            },
+            "expr": "sqrt(2*k*q*Q/(m*r))",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "A charge that speeds up in an electric field gains kinetic energy from nowhere; the field just gives it energy.",
+          "right": "The kinetic energy comes out of the system's electric potential energy, which falls by exactly the amount the kinetic energy rises. A bar chart shows the total unchanged."
+        },
+        {
+          "tag": "potential-energy-potential-confusion",
+          "wrong": "An electron moving to a higher potential is going uphill, so it gains potential energy and slows down.",
+          "right": "For a negative charge, $\\Delta U_E = q\\,\\Delta V$ is negative when the potential rises. The electron loses potential energy and speeds up."
+        },
+        {
+          "wrong": "A proton and an electron accelerated from rest through the same potential difference reach the same speed.",
+          "right": "They gain the same kinetic energy, $e\\,\\Delta V$, because their charges have the same size. The electron is about 1800 times lighter, so its speed is about 43 times greater."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "Charges released from rest always move along the field, toward lower potential.",
+          "right": "Positive charges do. Negative charges are pushed against the field, toward higher potential. Both lose potential energy and gain kinetic energy."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A proton is released from rest and moves through a potential difference of $500\\ \\text{V}$. What kinetic energy does it gain, in electronvolts and in joules?",
+          "a": "$500\\ \\text{eV}$, which is $(500)(1.60 \\times 10^{-19}\\ \\text{J}) = 8.0 \\times 10^{-17}\\ \\text{J}$."
+        },
+        {
+          "q": "The potential difference accelerating an electron from rest is made four times larger. What happens to its final speed?",
+          "a": "It doubles. The kinetic energy is four times larger, and speed goes as the square root of kinetic energy."
+        },
+        {
+          "q": "An electron moving at high speed enters a region where the potential drops by $50\\ \\text{V}$ along its path. Does it speed up or slow down?",
+          "a": "It slows down. For a negative charge a drop in potential is a rise in potential energy, so it loses $50\\ \\text{eV}$ of kinetic energy."
+        }
+      ],
+      "tryIt": {
+        "diagram": "bars energy unit=eV\ninitial K {{K0}} U_E {{dV}}\nfinal K {{K0+dV}} U_E 0",
+        "caption": "An electron enters with some kinetic energy and moves to a place where the potential is higher. Each volt of rise turns one electronvolt of potential energy into kinetic energy; the two sides of the chart always have the same total.",
+        "params": [
+          {
+            "name": "K0",
+            "label": "Initial kinetic energy",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "default": 20,
+            "unit": "eV"
+          },
+          {
+            "name": "dV",
+            "label": "Rise in potential",
+            "min": 20,
+            "max": 200,
+            "step": 20,
+            "default": 120,
+            "unit": "V"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.4",
+        "10.5"
+      ],
+      "teacherNotes": "Ask for a bar chart before any equation, and ask which way the particle is pushed before deciding the sign of $\\Delta U_E$; students who reason \"higher potential means more energy\" get electrons backwards. The electronvolt removes most of the arithmetic, so use it for quick comparisons (same $\\Delta V$, different particles: same energy, different speeds). The turning-point problem links back to $U_E = kq_1q_2/r$ in 10.4."
+    }
+  ]
+}

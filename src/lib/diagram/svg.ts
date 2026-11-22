@@ -128,21 +128,52 @@ export function unsupportedLabelMarkup(src: string): string[] {
   ];
 }
 
+/**
+ * E_th -> E_{th}. The newer kinds (bars, circuit, field) take one-word labels, where a model
+ * writes a whole-word subscript without braces; plot, fbd and scene keep the stricter F_{net}.
+ */
+export function braceSubscripts(s: string): string {
+  return s.replace(/_([A-Za-z0-9]{2,})(?![A-Za-z0-9{}])/g, "_{$1}");
+}
+
+/** The vector arrow \vec{} adds: U+20D7 COMBINING RIGHT ARROW ABOVE. */
+/**
+ * The arrow over a vector, as a small raised "→" pulled back over the letter before it. The
+ * combining U+20D7 itself is missing from system-ui on most systems, and Chrome then draws it
+ * apart from its letter, as a broken glyph. dx and dy are in the arrow's own em (70% of the
+ * label's): -0.85em is about one letter back, and it sits VEC_LIFT of the label's em above the
+ * baseline. svgTexts() reads it back as U+20D7.
+ */
+export const VEC_LIFT = 0.56; // label em
+const vecTspan = (from: number) =>
+  `<tspan class="vec" dx="-0.85em" dy="${f1((-VEC_LIFT - from) / 0.7)}em" font-size="70%">→</tspan>`;
+
 /** Label markup: F_N, F_{net}, v^2, \theta, \Delta x. Returns tspans. */
 export function label(s: string): string {
   s = normalizeLabel(s);
   let out = "";
   let shift = 0; // em, current baseline offset to undo
-  const re = /([_^])(\{([^}]*)\}|(.))|([^_^]+)/g;
+  let lifted = false; // the last thing drawn was a vector arrow, VEC_LIFT above the baseline
+  const re = /([_^])(\{([^}]*)\}|(.))|(\u20d7)|([^_^\u20d7]+)/g;
   for (const m of s.matchAll(re)) {
     if (m[5] !== undefined) {
-      out += shift ? `<tspan dy="${-shift}em">${esc(m[5])}</tspan>` : esc(m[5]);
+      if (lifted) continue;
+      out += vecTspan(shift * 0.75); // from the baseline, or from a sub/superscript (75% em)
       shift = 0;
+      lifted = true;
+    } else if (m[6] !== undefined) {
+      if (lifted) out += `<tspan dy="${VEC_LIFT}em">${esc(m[6])}</tspan>`;
+      else out += shift ? `<tspan dy="${-shift}em">${esc(m[6])}</tspan>` : esc(m[6]);
+      shift = 0;
+      lifted = false;
     } else {
-      const body = m[3] ?? m[4];
+      const body = (m[3] ?? m[4]).replace(/\u20d7/g, ""); // an arrow inside a subscript is dropped
       const dy = m[1] === "_" ? 0.3 : -0.45;
-      out += `<tspan dy="${f1(dy - shift)}em" font-size="75%">${esc(body)}</tspan>`;
-      shift = dy;
+      // after an arrow, drop by its lift too, in this tspan's own (75%) em
+      const from = lifted ? f1(dy + VEC_LIFT / 0.75) : f1(dy - shift);
+      out += `<tspan dy="${from}em" font-size="75%">${esc(body)}</tspan>`;
+      shift = lifted ? +(from * 0.75 - VEC_LIFT).toFixed(2) : dy;
+      lifted = false;
     }
   }
   return out;

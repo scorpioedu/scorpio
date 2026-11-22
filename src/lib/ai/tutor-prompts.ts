@@ -12,6 +12,11 @@ export interface TutorPromptParts {
   message: string;
   /** Whether Raise may draw a diagram in this reply. */
   diagrams: boolean;
+  /**
+   * The AP course the student is working in, when the server knows it. The diagram reference then
+   * lists that course's kinds only; without it, every kind is sent.
+   */
+  course?: string;
 }
 
 export function buildExplainPrompt(p: TutorPromptParts): string {
@@ -28,7 +33,7 @@ Instructions for your response:
 2. Pedagogical Style & Notation:
    - Explain physics concepts with intuitive physical intuition, clear step-by-step logic, and proper LaTeX notation ($...$ or $$...$$) for formulas and variables.
    - Keep responses concise and engaging.
-   - End with a thought-provoking check for understanding or offer a natural next concept/example.${p.diagrams ? tutorDiagramSection("explain") : ""}`;
+   - End with a thought-provoking check for understanding or offer a natural next concept/example.${p.diagrams ? tutorDiagramSection("explain", p.course) : ""}`;
 }
 
 /** `context` is the assignment context block ("" when there is none). */
@@ -48,7 +53,7 @@ Instructions for your response:
    - NEVER say "I cannot see the assignment" or "I don't have access to the text" if the information IS provided in the context above.
 3. Notation & Conciseness:
    - Format equations, symbols, and units in proper LaTeX ($...$ or $$...$$).
-   - Keep your guidance concise and focused on the student's immediate blocker.${p.diagrams ? tutorDiagramSection("solve") : ""}`;
+   - Keep your guidance concise and focused on the student's immediate blocker.${p.diagrams ? tutorDiagramSection("solve", p.course) : ""}`;
 }
 
 export interface TeacherPromptParts {

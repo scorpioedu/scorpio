@@ -1,0 +1,777 @@
+{
+ "curriculumId": "ap-physics-2",
+ "unit": 13,
+ "guides": [
+  {
+   "topic": "13.1",
+   "bigIdea": "Light leaves a surface at the same angle to the normal at which it arrived, and that single rule puts a flat mirror's image as far behind the mirror as the object is in front.",
+   "picture": {
+    "diagram": "scene\nsurf 0,0 6,0\ndash 3,0 3,2.7\nf 0.702,1.928 -40 3 \"\"\nf 3,0 40 3 \"\"\nang 3,0 90 140 \"50°\"\nang 3,0 40 90 \"50°\"\ntext 3,2.95 \"normal\"\ntext 0.6,2.3 \"incident ray\"\ntext 5.4,2.3 \"reflected ray\"\ntext 3,-0.4 \"mirror\"",
+    "caption": "The normal is the dashed line perpendicular to the mirror where the ray lands. The ray arrives at $50^\\circ$ to the normal and leaves at $50^\\circ$ to the normal, on the other side."
+   },
+   "explanation": "To say which way light bounces off a surface, draw the **normal**: a line perpendicular to the surface at the point where the ray lands. The angle of incidence $\\theta_i$ is the angle between the incoming ray and the normal, and the angle of reflection $\\theta_r$ is the angle between the outgoing ray and the normal. The law of reflection says they are equal, $\\theta_r = \\theta_i$, with both rays and the normal lying in one plane. The angles are measured from the normal, not from the surface: a ray that skims in at $20^\\circ$ to a mirror has $\\theta_i = 70^\\circ$.\n\nEvery surface obeys this law, one ray at a time. A mirror is smooth, so parallel rays meet parallel normals and leave still parallel. That is **specular** reflection, seen only from the one direction the beam travels. Paper is rough on the scale of light's wavelength, so neighbouring rays meet normals tilted every which way and scatter in all directions. That is **diffuse** reflection, and it is why a page can be read from anywhere in the room.\n\nThe same law explains a flat mirror. Rays spreading from one point of an object are still spreading after they reflect, and your eye assumes that light reaching it has travelled in a straight line. Traced backward, the reflected rays all seem to come from one point behind the mirror, exactly as far behind it as the object is in front, on the same perpendicular line. That point is the **image**. No light actually goes there (the mirror may hang on a brick wall), so it is a **virtual** image: a screen placed there shows nothing. It is upright and the same size as the object.",
+   "equations": [
+    {
+     "latex": "\\theta_r = \\theta_i",
+     "meaning": "The angle of reflection equals the angle of incidence, both measured from the normal.",
+     "variables": [
+      {
+       "symbol": "\\theta_r",
+       "name": "angle of reflection, from the normal",
+       "unit": "°"
+      },
+      {
+       "symbol": "\\theta_i",
+       "name": "angle of incidence, from the normal",
+       "unit": "°"
+      }
+     ],
+     "useWhen": "A ray reflects from any surface, flat or curved, smooth or rough. On a curved surface, use the normal at the point the ray hits.",
+     "notWhen": "Do not use an angle measured from the surface. If you are given one, subtract it from $90^\\circ$ first."
+    },
+    {
+     "latex": "d_i = -d_o",
+     "meaning": "A plane mirror's image is as far behind the mirror as the object is in front. The minus sign marks it as virtual.",
+     "variables": [
+      {
+       "symbol": "d_i",
+       "name": "image distance from the mirror (negative: behind the mirror, virtual)",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_o",
+       "name": "object distance from the mirror",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "The mirror is flat. Measure both distances along the perpendicular to the mirror.",
+     "notWhen": "Not for curved mirrors, where the image distance depends on the focal length as well (topic 13.2)."
+    },
+    {
+     "latex": "h_i = h_o",
+     "meaning": "A plane mirror's image is upright and the same size as the object: the magnification is +1.",
+     "variables": [
+      {
+       "symbol": "h_i",
+       "name": "image height",
+       "unit": "m"
+      },
+      {
+       "symbol": "h_o",
+       "name": "object height",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "The mirror is flat, at any object distance.",
+     "notWhen": "The image looks smaller from far away only because it is farther from your eye, not because it has shrunk."
+    }
+   ],
+   "workedExamples": [
+    {
+     "title": "A laser beam on a floor mirror",
+     "prompt": "A laser beam strikes a flat mirror lying on the floor. The beam makes an angle of $25^\\circ$ with the mirror's surface. What is the angle between the incoming beam and the reflected beam?",
+     "steps": [
+      "Draw the normal, a vertical line where the beam lands, and turn the given angle into an angle of incidence. The $25^\\circ$ is measured from the surface, and the surface and the normal are $90^\\circ$ apart, so $\\theta_i = 90^\\circ - 25^\\circ = 65^\\circ$.",
+      "Apply the law of reflection: $\\theta_r = \\theta_i = 65^\\circ$, on the other side of the normal.",
+      "The two beams lie on opposite sides of the normal, so the angle between them is $\\theta_i + \\theta_r = 65^\\circ + 65^\\circ = 130^\\circ$."
+     ],
+     "answer": "$130°$ between the beams (each is $65^\\circ$ from the normal)",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "a": {
+        "value": 25,
+        "unit": "deg"
+       }
+      },
+      "expr": "2*(pi/2 - a)",
+      "unit": "°"
+     }
+    },
+    {
+     "title": "Where on the mirror the reflection is",
+     "prompt": "A lamp hangs $2.40\\ \\text{m}$ above the floor, $1.50\\ \\text{m}$ in front of a large vertical wall mirror. A person whose eyes are $1.60\\ \\text{m}$ above the floor stands $3.00\\ \\text{m}$ in front of the mirror, in the same vertical plane as the lamp and perpendicular to the mirror, and sees the lamp's reflection. At what height above the floor does the light reaching the person's eyes strike the mirror? Justify your method.",
+     "steps": [
+      "The lamp's image is as far behind the mirror as the lamp is in front: $1.50\\ \\text{m}$ behind, still $2.40\\ \\text{m}$ up. Reflected light reaches the eye as if it travelled in a straight line from that image, so the reflection point is where the line from the eye to the image crosses the mirror.",
+      "The eye and the image are $3.00 + 1.50 = 4.50\\ \\text{m}$ apart horizontally, and the image is $2.40 - 1.60 = 0.80\\ \\text{m}$ higher. The mirror is $3.00\\ \\text{m}$ along that line from the eye, so the line has risen $\\tfrac{3.00}{4.50}(0.80\\ \\text{m}) = 0.53\\ \\text{m}$ there.",
+      "The light strikes the mirror at $1.60 + 0.53 = 2.13\\ \\text{m}$ above the floor.",
+      "Check with the law of reflection: from the lamp the ray drops $0.27\\ \\text{m}$ over $1.50\\ \\text{m}$, and from the mirror to the eye $0.53\\ \\text{m}$ over $3.00\\ \\text{m}$. Both slopes are $0.178$, so the ray makes equal angles with the normal on the way in and the way out."
+     ],
+     "answer": "$2.13\\ \\text{m}$ above the floor",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "h_l": {
+        "value": 2.4,
+        "unit": "m"
+       },
+       "d_l": {
+        "value": 1.5,
+        "unit": "m"
+       },
+       "h_e": {
+        "value": 1.6,
+        "unit": "m"
+       },
+       "d_e": {
+        "value": 3,
+        "unit": "m"
+       }
+      },
+      "expr": "h_e + (h_l - h_e)*d_e/(d_e + d_l)",
+      "unit": "m"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "plane-mirror-image-location",
+     "wrong": "The image in a flat mirror is on the surface of the mirror, like a picture on a screen.",
+     "right": "The image is behind the mirror, as far back as the object is in front. A camera pointed at your reflection from $1\\ \\text{m}$ away has to focus at $2\\ \\text{m}$, not at $1\\ \\text{m}$."
+    },
+    {
+     "tag": "real-virtual-image-confusion",
+     "wrong": "The image is behind the mirror, so light must travel through the mirror to get there.",
+     "right": "No light reaches a virtual image. The reflected rays stay in front of the mirror; they only look as though they came from a point behind it. That is why a screen behind the mirror shows nothing."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "A ray strikes a mirror making $20^\\circ$ with the mirror's surface. What is its angle of reflection?",
+     "a": "$70^\\circ$. The angle of incidence is measured from the normal: $90^\\circ - 20^\\circ = 70^\\circ$, and the angle of reflection equals it."
+    },
+    {
+     "q": "You walk straight toward a plane mirror at $1.2\\ \\text{m/s}$. How fast does the distance between you and your image shrink?",
+     "a": "At $2.4\\ \\text{m/s}$. The image stays as far behind the mirror as you are in front, so it approaches the mirror at $1.2\\ \\text{m/s}$ too, and the gap closes at twice your speed."
+    },
+    {
+     "q": "A lamp's reflection in a polished table is a bright spot seen from one place only, but a matte wall looks evenly lit from everywhere. Why?",
+     "a": "The table reflects specularly: its normals are parallel, so the lamp's light leaves in one direction. The rough wall reflects diffusely: its normals point every way, so light scatters to every viewer."
+    }
+   ],
+   "tryIt": {
+    "diagram": "ray mirror plane unit=cm num=all\nobj {{d}} h={{h}}",
+    "caption": "Move the object and change its height. The image (dashed) always sits the same distance behind the mirror and stays the same size; the dashed lines are where the reflected rays seem to come from.",
+    "params": [
+     {
+      "name": "d",
+      "label": "Object distance",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "cm"
+     },
+     {
+      "name": "h",
+      "label": "Object height",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "cm"
+     }
+    ]
+   },
+   "teacherNotes": "Ask students to point at where their image is before any ray tracing; many point at the glass. Having them focus a phone camera on their reflection, then on the mirror's frame, settles it quickly. The other persistent error is measuring angles from the surface, which gives the right answer for reflection by luck and the wrong one as soon as Snell's law arrives in 13.3, so insist on drawing the normal now. The half-height mirror result is worth doing with a real mirror and masking tape."
+  },
+  {
+   "topic": "13.2",
+   "bigIdea": "A curved mirror sends parallel rays to, or apparently from, a focal point, and the object's distance compared with the focal length decides where the image forms, how large it is and whether it is real or virtual.",
+   "picture": {
+    "diagram": "ray mirror f=12 unit=cm num=all\nobj 30 h=4",
+    "caption": "A concave mirror with $f = 12\\ \\text{cm}$ and an object $30\\ \\text{cm}$ away, beyond $C$. Three rays from the object's top cross in front of the mirror, so the image is real; it is inverted and smaller, $20\\ \\text{cm}$ from the mirror."
+   },
+   "explanation": "A curved mirror is a slice of a sphere, and each small patch of it obeys the law of reflection. Because the patches face slightly different ways, a **concave** mirror (the inside of a spoon) turns rays that arrive parallel to its axis inward, so that they cross at one point: the **focal point** $F$. It lies halfway between the mirror and the centre of the sphere, $C$, so the focal length is $f = R/2$. A **convex** mirror (the back of the spoon) spreads parallel rays apart as if they came from a focal point behind the mirror, and its focal length is counted as negative.\n\nTo find an image, follow rays from the top of the object whose reflections you can predict. A ray parallel to the axis reflects through $F$. A ray through $F$ reflects parallel to the axis. A ray that hits the centre of the mirror reflects at an equal angle on the other side of the axis. Where the reflected rays meet is the top of the image. If they really cross, in front of the mirror, light passes through that point and the image is **real**: a card held there shows it. If they only seem to spread from a point behind the mirror, the image is **virtual**.\n\nThe mirror equation says the same thing in numbers: $\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}$ (some books and equation sheets write the distances as $s_o$ and $s_i$). The signs carry the meaning. A positive $d_i$ is a real image in front of the mirror; a negative $d_i$ is a virtual image behind it. The magnification $m = h_i/h_o = -d_i/d_o$ is negative for an inverted image and positive for an upright one, and its size tells you whether the image is larger or smaller than the object.\n\nFor a concave mirror, where the object stands decides everything. Beyond $C$ the image is real, inverted and smaller. Between $C$ and $F$ it is real, inverted and larger. Inside $F$ the reflected rays no longer cross, and the image is virtual, upright and larger, as in a makeup mirror. A convex mirror, drawn below, gives only one kind of image, virtual, upright and smaller, which is why it is used where a wide view matters.\n\n```dg\nray mirror f=-12 unit=cm num=all\nobj 20 h=4\n```",
+   "equations": [
+    {
+     "latex": "\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}",
+     "meaning": "The mirror equation: the object distance and the image distance are tied together by the focal length.",
+     "variables": [
+      {
+       "symbol": "d_o",
+       "name": "object distance from the mirror (positive)",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_i",
+       "name": "image distance (positive: real, in front; negative: virtual, behind)",
+       "unit": "m"
+      },
+      {
+       "symbol": "f",
+       "name": "focal length (positive: concave; negative: convex)",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "You know two of the object distance, image distance and focal length of a spherical mirror and want the third.",
+     "notWhen": "Do not put in a convex mirror's focal length as a positive number. And remember to invert at the end: the equation gives $1/d_i$, not $d_i$."
+    },
+    {
+     "latex": "f = \\frac{R}{2}",
+     "meaning": "The focal point is halfway between the mirror and its centre of curvature.",
+     "variables": [
+      {
+       "symbol": "f",
+       "name": "focal length",
+       "unit": "m"
+      },
+      {
+       "symbol": "R",
+       "name": "radius of curvature of the mirror",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "A problem gives the radius of curvature instead of the focal length.",
+     "notWhen": "Not for lenses: a lens's focal length also depends on its glass."
+    },
+    {
+     "latex": "m = \\frac{h_i}{h_o} = -\\frac{d_i}{d_o}",
+     "meaning": "Magnification compares image height with object height, and equals minus the ratio of the distances.",
+     "variables": [
+      {
+       "symbol": "m",
+       "name": "magnification (negative: inverted; positive: upright)",
+       "unit": ""
+      },
+      {
+       "symbol": "h_i",
+       "name": "image height (negative when inverted)",
+       "unit": "m"
+      },
+      {
+       "symbol": "h_o",
+       "name": "object height",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_i",
+       "name": "image distance, with its sign",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_o",
+       "name": "object distance",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "You want the image's size or orientation, or you are told the magnification and need a distance.",
+     "notWhen": "Do not drop the minus sign or the sign of $d_i$; together they tell you which way up the image is."
+    }
+   ],
+   "workedExamples": [
+    {
+     "title": "A candle in front of a concave mirror",
+     "prompt": "A candle flame $2.0\\ \\text{cm}$ tall is $24\\ \\text{cm}$ in front of a concave mirror whose radius of curvature is $36\\ \\text{cm}$. Where is the image, and what is it like?",
+     "steps": [
+      "Find the focal length. The mirror is concave, so $f$ is positive: $f = R/2 = (36\\ \\text{cm})/2 = 18\\ \\text{cm}$.",
+      "Predict before calculating. The object is at $24\\ \\text{cm}$, between $F$ ($18\\ \\text{cm}$) and $C$ ($36\\ \\text{cm}$), so expect a real, inverted, enlarged image.",
+      "Solve the mirror equation for the image: $\\frac{1}{d_i} = \\frac{1}{f} - \\frac{1}{d_o} = \\frac{1}{18\\ \\text{cm}} - \\frac{1}{24\\ \\text{cm}} = \\frac{4 - 3}{72\\ \\text{cm}} = \\frac{1}{72\\ \\text{cm}}$, so $d_i = +72\\ \\text{cm}$.",
+      "Read the sign: positive $d_i$ means a real image, $72\\ \\text{cm}$ in front of the mirror.",
+      "Find the magnification: $m = -d_i/d_o = -(72)/(24) = -3.0$. The image is inverted (negative $m$) and three times as tall: $h_i = m h_o = (-3.0)(2.0\\ \\text{cm}) = -6.0\\ \\text{cm}$, as predicted."
+     ],
+     "answer": "$d_i = +72\\ \\text{cm}$: a real, inverted image $6.0\\ \\text{cm}$ tall, in front of the mirror",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "R": {
+        "value": 36,
+        "unit": "cm"
+       },
+       "d_o": {
+        "value": 24,
+        "unit": "cm"
+       }
+      },
+      "expr": "1/(2/R - 1/d_o)",
+      "unit": "cm"
+     }
+    },
+    {
+     "title": "Placing the bulb in a headlight",
+     "prompt": "A car headlight uses a concave mirror with a radius of curvature of $20.0\\ \\text{cm}$. Where must the bulb be for a parallel beam? If the bulb sits $9.0\\ \\text{cm}$ from the mirror instead, where is its image, and what does the beam do?",
+     "steps": [
+      "Light from $F$ reflects parallel to the axis, so the bulb belongs at $f = R/2 = 10.0\\ \\text{cm}$.",
+      "At $9.0\\ \\text{cm}$, just inside $F$: $\\frac{1}{d_i} = \\frac{1}{10.0\\ \\text{cm}} - \\frac{1}{9.0\\ \\text{cm}}$, so $d_i = -90\\ \\text{cm}$.",
+      "A virtual image $90\\ \\text{cm}$ behind the mirror: the reflected rays spread out as if they came from that point, so the beam diverges and lights less of the road ahead."
+     ],
+     "answer": "At $F$, $10.0\\ \\text{cm}$ from the mirror; at $9.0\\ \\text{cm}$ the image is virtual, $d_i = -90\\ \\text{cm}$, and the beam spreads",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "R": {
+        "value": 20,
+        "unit": "cm"
+       },
+       "d_o": {
+        "value": 9,
+        "unit": "cm"
+       }
+      },
+      "expr": "1/(2/R - 1/d_o)",
+      "unit": "cm"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "optics-sign-convention",
+     "wrong": "A convex mirror with a $20\\ \\text{cm}$ focal length goes into the mirror equation as $f = +20\\ \\text{cm}$.",
+     "right": "A convex mirror's focal point is behind the mirror, so $f = -20\\ \\text{cm}$. With the correct sign, $d_i$ always comes out negative: a virtual image, as the ray diagram shows."
+    },
+    {
+     "tag": "real-virtual-image-confusion",
+     "wrong": "A virtual image is not really there, so it cannot be seen; only real images are visible.",
+     "right": "You see a virtual image every time you look in a bathroom mirror. Light actually passes through a real image, so a screen can catch it; light only appears to come from a virtual one."
+    },
+    {
+     "tag": "focal-length-equals-radius",
+     "wrong": "The focal point is at the centre of the sphere the mirror is cut from, so $f = R$.",
+     "right": "A ray through the centre $C$ hits the mirror head-on and returns the way it came. Parallel rays cross halfway out, at $f = R/2$."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "An object is $10\\ \\text{cm}$ in front of a concave mirror with $f = 15\\ \\text{cm}$. Find $d_i$ and describe the image.",
+     "a": "$\\frac{1}{d_i} = \\frac{1}{15} - \\frac{1}{10} = -\\frac{1}{30}$, so $d_i = -30\\ \\text{cm}$: virtual, behind the mirror. $m = -(-30)/10 = +3$: upright and three times as large."
+    },
+    {
+     "q": "A mirror gives an upright image that is smaller than the object. Is the mirror concave or convex, and is the image real or virtual?",
+     "a": "Convex, and virtual. Upright images in a single mirror are always virtual, and a concave mirror's virtual images are enlarged, not reduced."
+    },
+    {
+     "q": "Where must an object be placed in front of a concave mirror so that its image is real, inverted and exactly the same size?",
+     "a": "At the centre of curvature, $d_o = 2f$. Then $\\frac{1}{d_i} = \\frac{1}{f} - \\frac{1}{2f} = \\frac{1}{2f}$, so $d_i = 2f$ and $m = -1$."
+    }
+   ],
+   "tryIt": {
+    "diagram": "ray mirror f={{f}} unit=cm num=all\nobj {{d}} h=3",
+    "caption": "Slide the object toward the concave mirror. The real, inverted image moves away and grows as the object nears $F$; at $F$ the reflected rays are parallel and there is no image; inside $F$ the image jumps behind the mirror, virtual and upright.",
+    "params": [
+     {
+      "name": "d",
+      "label": "Object distance",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "default": 30,
+      "unit": "cm"
+     },
+     {
+      "name": "f",
+      "label": "Focal length",
+      "min": 8,
+      "max": 16,
+      "step": 2,
+      "default": 12,
+      "unit": "cm"
+     }
+    ]
+   },
+   "prerequisites": [
+    "13.1"
+   ],
+   "teacherNotes": "Have students predict real or virtual, upright or inverted, larger or smaller from the object's position before they touch the equation, then use the signs of $d_i$ and $m$ to confirm. Most wrong answers are a positive focal length for a convex mirror or a forgotten reciprocal at the last step. A large spoon shows all three cases in ten seconds: ask what happens to the image as the spoon's bowl approaches the eye, and why the back of the spoon never flips anyone."
+  },
+  {
+   "topic": "13.3",
+   "bigIdea": "Light changes speed when it passes from one material into another, which bends its path toward the normal when it slows down and away from the normal when it speeds up.",
+   "picture": {
+    "diagram": "ray refract n1=1 n2=1.33 in=50 reflect num=all m1=\"air\" m2=\"water\"",
+    "caption": "A ray in air meets water at $50^\\circ$ from the normal. Most of the light enters the water and bends toward the normal, to $35.2^\\circ$; the fainter ray is the part that reflects, at $50^\\circ$."
+   },
+   "explanation": "Light travels at $c = 3.00 \\times 10^8\\ \\text{m/s}$ in a vacuum and more slowly in any material. The **index of refraction**, $n = c/v$, says how much more slowly: it is $1.00$ for air (very nearly), $1.33$ for water and about $1.5$ for glass. When light crosses into a new material its frequency does not change, because the source sets it and every wave crest that arrives at the boundary must also leave it. Since $v = f\\lambda$, the wavelength changes in step with the speed: $\\lambda_n = \\lambda/n$.\n\nA change of speed bends a ray that arrives at an angle. This bending is **refraction**. Picture rows of a marching band crossing at a slant from pavement into mud: the end of each row that reaches the mud first slows first, and the row swings round. Snell's law gives the amount, $n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2$, with both angles measured from the normal. Entering a medium of higher index (slower), the ray bends toward the normal; entering one of lower index (faster), it bends away. A ray travelling along the normal changes speed but not direction. At every boundary some light is also reflected, at the usual equal angle.\n\nBending away from the normal has a limit. As the angle of incidence inside the slower medium grows, the refracted ray swings outward until it skims along the surface at $90^\\circ$. The angle of incidence at which this happens is the **critical angle**, $\\sin\\theta_c = n_2/n_1$. Beyond it, Snell's law would need $\\sin\\theta_2$ to be greater than 1, which no angle can supply, so no light gets out. All of it reflects: **total internal reflection**. This can happen only when light tries to pass from higher index to lower index, as it does inside an optical fibre or when light under water heads up toward the air.",
+   "equations": [
+    {
+     "latex": "n = \\frac{c}{v}",
+     "meaning": "A material's index of refraction is the speed of light in a vacuum divided by the speed of light in the material.",
+     "variables": [
+      {
+       "symbol": "n",
+       "name": "index of refraction (1 or greater)",
+       "unit": ""
+      },
+      {
+       "symbol": "c",
+       "name": "speed of light in a vacuum, 3.00 × 10^8",
+       "unit": "m/s"
+      },
+      {
+       "symbol": "v",
+       "name": "speed of light in the material",
+       "unit": "m/s"
+      }
+     ],
+     "useWhen": "You need the speed of light in a material, or its index from a measured speed.",
+     "notWhen": "Do not turn it upside down: a larger $n$ means slower light. No material has $n < 1$."
+    },
+    {
+     "latex": "n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2",
+     "meaning": "Snell's law: index times the sine of the angle from the normal is the same on both sides of a boundary.",
+     "variables": [
+      {
+       "symbol": "n_1,\\ n_2",
+       "name": "indices of the medium the light starts in and the medium it enters",
+       "unit": ""
+      },
+      {
+       "symbol": "\\theta_1,\\ \\theta_2",
+       "name": "angles of incidence and refraction, from the normal",
+       "unit": "°"
+      }
+     ],
+     "useWhen": "A ray crosses a boundary between two transparent materials and you know three of the four quantities.",
+     "notWhen": "Do not use angles measured from the surface. If it gives $\\sin\\theta_2 > 1$ there is no refracted ray: the light is totally internally reflected."
+    },
+    {
+     "latex": "\\sin\\theta_c = \\frac{n_2}{n_1}",
+     "meaning": "The critical angle is the angle of incidence for which the refracted ray lies along the boundary.",
+     "variables": [
+      {
+       "symbol": "\\theta_c",
+       "name": "critical angle, from the normal",
+       "unit": "°"
+      },
+      {
+       "symbol": "n_1",
+       "name": "index of the medium the light is in (the larger index)",
+       "unit": ""
+      },
+      {
+       "symbol": "n_2",
+       "name": "index of the medium beyond the boundary (the smaller index)",
+       "unit": ""
+      }
+     ],
+     "useWhen": "Light travels from a higher index toward a lower index, $n_1 > n_2$, and you want the angle beyond which it cannot escape.",
+     "notWhen": "There is no critical angle for light entering a higher index: $n_2/n_1$ would be greater than 1."
+    },
+    {
+     "latex": "\\lambda_n = \\frac{\\lambda}{n}",
+     "meaning": "Inside a material the wavelength is shorter than in a vacuum by the factor n; the frequency is unchanged.",
+     "variables": [
+      {
+       "symbol": "\\lambda_n",
+       "name": "wavelength in the material",
+       "unit": "m"
+      },
+      {
+       "symbol": "\\lambda",
+       "name": "wavelength in a vacuum (or air)",
+       "unit": "m"
+      },
+      {
+       "symbol": "n",
+       "name": "index of refraction of the material",
+       "unit": ""
+      }
+     ],
+     "useWhen": "You need the wavelength of light inside glass, water or a thin film.",
+     "notWhen": "Do not change the frequency. It is the same in every medium the light passes through."
+    }
+   ],
+   "workedExamples": [
+    {
+     "title": "Through a film of oil into water",
+     "prompt": "A thin layer of oil ($n = 1.47$) floats on still water ($n = 1.33$). A beam of light in air ($n = 1.00$) strikes the oil at an angle of incidence of $50.0^\\circ$. At what angle from the normal does the beam travel in the oil, and then in the water?",
+     "steps": [
+      "The surfaces are parallel, so the normal is vertical at both boundaries, and the beam meets the water at the angle it has in the oil.",
+      "Air to oil: $\\sin\\theta_{\\text{oil}} = \\frac{(1.00)\\sin 50.0^\\circ}{1.47} = \\frac{0.766}{1.47} = 0.521$, so $\\theta_{\\text{oil}} = 31.4^\\circ$, bent toward the normal.",
+      "Oil to water: $\\sin\\theta_{\\text{water}} = \\frac{(1.47)(0.521)}{1.33} = 0.576$, so $\\theta_{\\text{water}} = 35.2^\\circ$, bent back away from the normal because water's index is lower than oil's.",
+      "$n\\sin\\theta = 0.766$ in all three layers, so $\\theta_{\\text{water}}$ is the $35.2^\\circ$ of the picture above, as if the oil were not there."
+     ],
+     "answer": "$\\theta_{\\text{oil}} = 31.4°$ and $\\theta_{\\text{water}} = 35.2°$ from the normal",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "a": {
+        "value": 50,
+        "unit": "deg"
+       },
+       "n1": {
+        "value": 1,
+        "unit": ""
+       },
+       "n3": {
+        "value": 1.33,
+        "unit": ""
+       }
+      },
+      "expr": "asin(n1*sin(a)/n3)",
+      "unit": "°"
+     }
+    },
+    {
+     "title": "Glass against water",
+     "prompt": "A ray travels inside a block of crown glass ($n = 1.52$) and reaches a flat face that is in contact with water ($n = 1.33$). Calculate the critical angle for this boundary, and state what happens to rays that reach it at $45^\\circ$ and at $70^\\circ$ from the normal.",
+     "steps": [
+      "The light is in the higher-index medium ($n_1 = 1.52$) heading for the lower ($n_2 = 1.33$), so a critical angle exists.",
+      "At the critical angle the refracted ray lies along the surface, $\\theta_2 = 90^\\circ$. Snell's law gives $n_1 \\sin\\theta_c = n_2 \\sin 90^\\circ = n_2$, so $\\sin\\theta_c = \\frac{n_2}{n_1} = \\frac{1.33}{1.52} = 0.875$ and $\\theta_c = 61.0^\\circ$.",
+      "At $45^\\circ$, less than $\\theta_c$: the ray refracts into the water. $\\sin\\theta_2 = \\frac{1.52 \\sin 45^\\circ}{1.33} = 0.808$, so $\\theta_2 = 53.9^\\circ$. It bends away from the normal, as it must on entering a lower index, and a weaker ray reflects back into the glass.",
+      "At $70^\\circ$, greater than $\\theta_c$: Snell's law would need $\\sin\\theta_2 = \\frac{1.52 \\sin 70^\\circ}{1.33} = 1.07$, which is impossible. No light enters the water. The ray is totally internally reflected at $70^\\circ$ to the normal."
+     ],
+     "answer": "$\\sin\\theta_c = 0.875$, so $\\theta_c = 61.0°$; at $45^\\circ$ the ray refracts into the water at $53.9^\\circ$ (with a weak reflection), and at $70^\\circ$ it is totally internally reflected",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "n1": {
+        "value": 1.52,
+        "unit": ""
+       },
+       "n2": {
+        "value": 1.33,
+        "unit": ""
+       }
+      },
+      "expr": "asin(n2/n1)",
+      "unit": "°"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "refraction-wrong-way",
+     "wrong": "Light entering glass from air bends away from the normal, because the glass pushes it aside.",
+     "right": "Entering a higher index, light slows and bends toward the normal: $\\theta_2 < \\theta_1$. It bends away only when it speeds up, on leaving for a lower index."
+    },
+    {
+     "tag": "frequency-changes-in-medium",
+     "wrong": "Light slows down in glass because its frequency drops.",
+     "right": "The frequency is set by the source and is the same in every medium. The wavelength is what shrinks, $\\lambda_n = \\lambda/n$, so that $v = f\\lambda$ still holds."
+    },
+    {
+     "tag": "total-internal-reflection-direction",
+     "wrong": "Shine light from air onto water at a large enough angle and it will be totally reflected.",
+     "right": "Total internal reflection needs the light to start in the higher-index medium. From air into water, Snell's law always has a solution, so some light always gets in, even at grazing angles."
+    },
+    {
+     "tag": "refraction-wrong-way",
+     "wrong": "The larger the index of refraction, the faster light travels in the material.",
+     "right": "The reverse: $v = c/n$. In diamond ($n = 2.42$) light moves at well under half its speed in air."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "How fast does light travel in glass with $n = 1.50$?",
+     "a": "$v = c/n = (3.00 \\times 10^8\\ \\text{m/s})/1.50 = 2.00 \\times 10^8\\ \\text{m/s}$."
+    },
+    {
+     "q": "Red laser light with a wavelength of $650\\ \\text{nm}$ in air enters water ($n = 1.33$). What are its wavelength and its frequency in the water, compared with in air?",
+     "a": "The wavelength shortens to $650\\ \\text{nm}/1.33 = 489\\ \\text{nm}$. The frequency is unchanged."
+    },
+    {
+     "q": "A ray inside a glass block hits the glass-air surface at $30^\\circ$ from the normal. The critical angle is $42^\\circ$. Does the ray get out? Which way does it bend?",
+     "a": "Yes. $30^\\circ$ is below the critical angle, so most of the light refracts into the air, bending away from the normal (to about $49^\\circ$ for glass of $n = 1.5$). Some reflects back inside."
+    }
+   ],
+   "tryIt": {
+    "diagram": "ray refract n1={{n}} n2=1 in={{theta}} reflect up num=all m1=\"glass\" m2=\"air\"",
+    "caption": "Light inside glass heads up toward the air. Increase the angle of incidence and watch the refracted ray swing down toward the surface, then vanish: beyond the critical angle the faint reflected ray becomes the only ray. A higher index makes the critical angle smaller.",
+    "params": [
+     {
+      "name": "theta",
+      "label": "Angle of incidence",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 30,
+      "unit": "°"
+     },
+     {
+      "name": "n",
+      "label": "Index of the glass",
+      "min": 1.3,
+      "max": 2.4,
+      "step": 0.1,
+      "default": 1.5,
+      "unit": ""
+     }
+    ]
+   },
+   "prerequisites": [
+    "13.1"
+   ],
+   "teacherNotes": "Before any calculation ask \"does it speed up or slow down, so which way does it bend?\" and have students sketch the ray; the sketch catches swapped indices and angles taken from the surface. Students often believe total internal reflection is a property of steep angles in general, so ask whether a swimmer can ever fail to see any of the sky (no) and whether a fish can fail to see the bank (yes, beyond the critical angle). Keep stressing that frequency is fixed across a boundary: it is needed again for thin films in unit 14."
+  },
+  {
+   "topic": "13.4",
+   "bigIdea": "A thin lens refracts the rays from each point of an object so that they meet at, or appear to spread from, a single image point, whose position follows from the focal length and the object distance.",
+   "picture": {
+    "diagram": "ray lens f=10 unit=cm num=all\nobj 25 h=4",
+    "caption": "A converging lens with $f = 10\\ \\text{cm}$ and an object $25\\ \\text{cm}$ away. Three rays from the object's top meet on the far side of the lens, $16.7\\ \\text{cm}$ from it: a real, inverted, smaller image."
+   },
+   "explanation": "A lens forms images by refraction: light bends entering the glass and again leaving it. A **converging** lens, thicker in the middle, bends rays that arrive parallel to its axis so that they cross at a **focal point** $F$ on the far side, a distance $f$ from the lens. A **diverging** lens, thinner in the middle, spreads them so that they seem to come from a focal point on the side they arrived from; its $f$ is negative. A thin lens has a focal point on each side, the same distance away.\n\nThree rays from the top of the object locate the image. For a converging lens, a ray parallel to the axis leaves through the far $F$; a ray through the centre of the lens goes straight on; a ray through the near $F$ leaves parallel to the axis. Where they meet is the top of the image. For a diverging lens, drawn below, the parallel ray leaves as if it came from the near $F$, and the ray aimed at the far $F$ leaves parallel.\n\nThe thin-lens equation is the mirror equation again, $\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}$, with the same magnification, $m = h_i/h_o = -d_i/d_o$. One thing changes. Light goes through a lens, so a real image ($d_i > 0$) forms on the far side from the object, and a virtual image ($d_i < 0$) on the same side as the object. A converging lens gives a real, inverted image when the object is outside $F$ (a camera) and a virtual, upright, enlarged image when it is inside $F$ (a magnifying glass). A diverging lens always gives a virtual, upright, smaller image.\n\nEvery point of a real image is built from rays through every part of the lens, so covering half the lens dims the whole image; it does not remove half of it.\n\n```dg\nray lens f=-10 unit=cm num=all\nobj 15 h=4\n```",
+   "equations": [
+    {
+     "latex": "\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}",
+     "meaning": "The thin-lens equation: the object distance and the image distance are tied together by the focal length.",
+     "variables": [
+      {
+       "symbol": "d_o",
+       "name": "object distance from the lens (positive)",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_i",
+       "name": "image distance (positive: real, far side; negative: virtual, object's side)",
+       "unit": "m"
+      },
+      {
+       "symbol": "f",
+       "name": "focal length (positive: converging; negative: diverging)",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "You know two of the object distance, image distance and focal length of a thin lens and want the third.",
+     "notWhen": "Do not use a positive $f$ for a diverging lens, and do not stop at $1/d_i$: take the reciprocal."
+    },
+    {
+     "latex": "m = \\frac{h_i}{h_o} = -\\frac{d_i}{d_o}",
+     "meaning": "Magnification compares image height with object height, and equals minus the ratio of the distances.",
+     "variables": [
+      {
+       "symbol": "m",
+       "name": "magnification (negative: inverted; positive: upright)",
+       "unit": ""
+      },
+      {
+       "symbol": "h_i",
+       "name": "image height (negative when inverted)",
+       "unit": "m"
+      },
+      {
+       "symbol": "h_o",
+       "name": "object height",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_i",
+       "name": "image distance, with its sign",
+       "unit": "m"
+      },
+      {
+       "symbol": "d_o",
+       "name": "object distance",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "You want the image's size or orientation, or a required magnification fixes the ratio of the distances.",
+     "notWhen": "Do not read \"magnification\" as \"bigger\": $|m| < 1$ is a reduced image."
+    }
+   ],
+   "derivation": "Both equations come from similar triangles in the picture above. The image is inverted, so $h_i$ is negative and its length is $-h_i$.\n\n**The centre ray** is one straight line from the object's top to the image's top. It makes a right triangle with legs $h_o$ and $d_o$ on the object's side and one with legs $-h_i$ and $d_i$ on the image's side. They are similar, so $\\frac{-h_i}{d_i} = \\frac{h_o}{d_o}$, which is $m = \\frac{h_i}{h_o} = -\\frac{d_i}{d_o}$.\n\n**The parallel ray** leaves the lens at height $h_o$, crosses the axis at $F$, a distance $f$ beyond the lens, and reaches the image's top a further $d_i - f$ along. The triangles on either side of $F$ are similar: $\\frac{h_o}{f} = \\frac{-h_i}{d_i - f}$.\n\nBoth results give $-h_i/h_o$, so $\\frac{d_i}{d_o} = \\frac{d_i - f}{f} = \\frac{d_i}{f} - 1$. Dividing every term by $d_i$ gives $\\frac{1}{d_o} = \\frac{1}{f} - \\frac{1}{d_i}$, the thin-lens equation.",
+   "workedExamples": [
+    {
+     "title": "The image in a door peephole",
+     "prompt": "A door peephole contains a diverging lens of focal length $-2.0\\ \\text{cm}$. A visitor $1.70\\ \\text{m}$ tall stands $1.00\\ \\text{m}$ in front of it. Where is the visitor's image, and how tall is it?",
+     "steps": [
+      "With signs: $f = -2.0\\ \\text{cm}$ (diverging), $d_o = 100\\ \\text{cm}$, $h_o = 170\\ \\text{cm}$. A diverging lens gives a virtual, upright, smaller image, so expect a negative $d_i$.",
+      "$\\frac{1}{d_i} = \\frac{1}{f} - \\frac{1}{d_o} = \\frac{1}{-2.0\\ \\text{cm}} - \\frac{1}{100\\ \\text{cm}} = -0.51\\ \\text{cm}^{-1}$, so $d_i = -1.96\\ \\text{cm}$, on the visitor's side.",
+      "$m = -d_i/d_o = +0.0196$, so $h_i = (0.0196)(170\\ \\text{cm}) = 3.3\\ \\text{cm}$: the whole visitor fits in a tiny upright image."
+     ],
+     "answer": "$d_i = -1.96\\ \\text{cm}$: a virtual, upright image $3.3\\ \\text{cm}$ tall",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "f": {
+        "value": -2,
+        "unit": "cm"
+       },
+       "d_o": {
+        "value": 1,
+        "unit": "m"
+       }
+      },
+      "expr": "1/(1/f - 1/d_o)",
+      "unit": "cm"
+     }
+    },
+    {
+     "title": "Choosing a reading lens",
+     "prompt": "A farsighted person cannot focus on anything closer than $75.0\\ \\text{cm}$. They want glasses for reading a page $25.0\\ \\text{cm}$ from their eyes. Treating the lens as at the eye, determine its focal length and whether it is converging or diverging.",
+     "steps": [
+      "The lens must make an image of the page $75.0\\ \\text{cm}$ away, on the page's side, so the image is virtual: $d_o = 25.0\\ \\text{cm}$, $d_i = -75.0\\ \\text{cm}$.",
+      "$\\frac{1}{f} = \\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{25.0\\ \\text{cm}} - \\frac{1}{75.0\\ \\text{cm}} = \\frac{2}{75.0\\ \\text{cm}}$, so $f = +37.5\\ \\text{cm}$.",
+      "Positive $f$: a converging lens. The page is inside its focal point, as under a magnifying glass, so the image is virtual, upright and farther away."
+     ],
+     "answer": "$f = +37.5\\ \\text{cm}$: a converging lens, with the page inside its focal point",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "d_o": {
+        "value": 25,
+        "unit": "cm"
+       },
+       "d_i": {
+        "value": -75,
+        "unit": "cm"
+       }
+      },
+      "expr": "1/(1/d_o + 1/d_i)",
+      "unit": "cm"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "partial-lens-partial-image",
+     "wrong": "Cover the top half of a lens and the top half of the image disappears.",
+     "right": "With half the lens covered, the other half still sends rays to every image point: the whole image stays, only dimmer."
+    },
+    {
+     "tag": "optics-sign-convention",
+     "wrong": "A diverging lens \"of focal length $15\\ \\text{cm}$\" goes into the equation as $f = +15\\ \\text{cm}$.",
+     "right": "Its focal length is $-15\\ \\text{cm}$. With an object at $30\\ \\text{cm}$ that gives $d_i = -10\\ \\text{cm}$, a virtual image on the object's side."
+    },
+    {
+     "tag": "real-virtual-image-confusion",
+     "wrong": "The image seen through a magnifying glass could be caught on a sheet of paper held in the right place.",
+     "right": "That image is virtual: the rays leaving the lens spread apart and never meet, so no paper can catch it."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "An object is $30\\ \\text{cm}$ from a diverging lens with $f = -15\\ \\text{cm}$. Find the image distance and the magnification.",
+     "a": "$\\frac{1}{d_i} = \\frac{1}{-15} - \\frac{1}{30} = -\\frac{3}{30}$, so $d_i = -10\\ \\text{cm}$: virtual, on the object's side. $m = -(-10)/30 = +\\tfrac{1}{3}$: upright, one-third the size."
+    },
+    {
+     "q": "A converging lens has $f = 10\\ \\text{cm}$. Describe the image when the object is $5.0\\ \\text{cm}$ from the lens.",
+     "a": "The object is inside $F$, so the image is virtual, upright and enlarged. Check: $\\frac{1}{d_i} = \\frac{1}{10} - \\frac{1}{5.0}$ gives $d_i = -10\\ \\text{cm}$ and $m = +2.0$."
+    },
+    {
+     "q": "A lens forms a real image twice as far from the lens as the object is. What is the magnification, and what does it tell you?",
+     "a": "$m = -d_i/d_o = -2$: the image is inverted and twice as tall as the object."
+    }
+   ],
+   "tryIt": {
+    "diagram": "ray lens f={{f}} unit=cm num=all\nobj {{d}} h=3",
+    "caption": "Bring the object toward the converging lens. Outside $F$ the image is real and inverted, growing and moving away as the object nears $F$; at $F$ the rays leave parallel; inside $F$ the image is virtual, upright and enlarged, on the object's side.",
+    "params": [
+     {
+      "name": "d",
+      "label": "Object distance",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "default": 30,
+      "unit": "cm"
+     },
+     {
+      "name": "f",
+      "label": "Focal length",
+      "min": 8,
+      "max": 16,
+      "step": 2,
+      "default": 10,
+      "unit": "cm"
+     }
+    ]
+   },
+   "prerequisites": [
+    "13.2",
+    "13.3"
+   ],
+   "teacherNotes": "Lenses reuse the mirror equation, so the new idea to check is which side a real image is on: ask students to say it in words (\"where the light actually goes\") instead of memorising two tables. A lit bulb, a lens and a wall let them find the image, then cover half the lens and see the whole image dim; predict first, because most expect half an image. Watch for a positive focal length used for a diverging lens, and for answers left as $1/d_i$."
+  }
+ ]
+}

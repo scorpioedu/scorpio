@@ -1,5 +1,5 @@
 import { apUnits } from "@/data/ap";
-import { CURRICULA } from "@/data/curricula";
+import { CURRICULA, hasContent } from "@/data/curricula";
 import rail from "./workflow-rail.module.css";
 import reveal from "./home-reveal.module.css";
 import { card, Section, Split, statement } from "./split-kit";
@@ -135,7 +135,7 @@ const setupSteps: Step[] = [
     text: "Every AP unit, with problem sets already written.",
     preview: (
       <div className="grid gap-1.5">
-        {CURRICULA.map((c, i) => (
+        {CURRICULA.filter(hasContent).map((c, i) => (
           <div
             key={c.id}
             className={`flex items-center justify-between gap-3 rounded-lg border px-2.5 py-2 ${i === 0 ? "border-primary/50 bg-primary/5 font-semibold text-primary" : "border-border"}`}

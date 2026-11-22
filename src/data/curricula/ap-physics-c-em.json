@@ -1,0 +1,464 @@
+{
+  "id": "ap-physics-c-em",
+  "apCourse": "physics-c-em",
+  "name": "AP Physics C: Electricity and Magnetism",
+  "description": "Scorpio's roadmap through the six AP Physics C: Electricity and Magnetism units (8 to 13), with calculus throughout: ready-made, auto-graded sets in a teaching order.",
+  "sets": [
+    {
+      "key": "8A",
+      "unit": 8,
+      "title": "Charge and Coulomb's law",
+      "description": "Charging objects, conservation of charge and vector sums of forces between point charges.",
+      "topics": ["8.1", "8.2"],
+      "draftIds": [
+        "OBwNgOhRqsleSZ1SHygi",
+        "o4J5ZoFG3l4KciUKhqk4",
+        "Fn7h79mUoKtsTqT5lj7O",
+        "KlJMy2VsfnB0zlApts4z",
+        "cM03XELyNHPPhoQvuEyi",
+        "1tIsGfix4oGWC0C4P00K",
+        "4Yutfi73RkNXGD6v991A",
+        "jmzT9DrtybDp9YDDZlYC",
+        "Cb8vYWSwQJChkRICSW42",
+        "1Fkin9sSZ1h2ftefSBm7"
+      ]
+    },
+    {
+      "key": "8B",
+      "unit": 8,
+      "title": "Electric fields of point charges",
+      "description": "Field vectors, field lines and superposition for arrangements of point charges.",
+      "topics": ["8.3"],
+      "draftIds": [
+        "nrqR0Vmu4zTho7MkOnoh",
+        "NeMyBTf2rB5mlQo5bBHV",
+        "7kFxynpv0r6DUJCPxwrv",
+        "jEbFbcc9XvC3QC4POrVZ",
+        "OSH6DwvcMCBut1EingrJ",
+        "wXsdFJN6RURuumsDZdDd",
+        "Wgw7AXqeuaV5ghJjP5nN",
+        "oUAvP5SAFrAzq63DkPnx",
+        "QY02UG1wIuXNWu5l5ApE",
+        "YUmBiuCp1fpvmzmTwhqQ"
+      ]
+    },
+    {
+      "key": "8C",
+      "unit": 8,
+      "title": "Fields of continuous charge",
+      "description": "Setting up and evaluating the integral for the field of a line, ring or arc of charge.",
+      "topics": ["8.4"],
+      "draftIds": [
+        "CAVzwaMkOhSVw7PfgpaI",
+        "PFG6cJH86uILDSgHQ2hW",
+        "KiLo8DHsNOB0AJUgjyOR",
+        "9HQjFPUgnxhG5mExt8IG",
+        "UC7tsr5eXs6rCDDjz0Cu",
+        "9Rfncthm0La5TmP5miXT",
+        "erTwgN1TnpSgWOeoIVoN",
+        "LBzAIAq8ipv6dDyTc12Y",
+        "iEX9XtTJDIMEqkFlTgcV",
+        "F30C9WuQ8auVQtKDT9VY"
+      ]
+    },
+    {
+      "key": "8D",
+      "unit": 8,
+      "title": "Flux and Gauss's law",
+      "description": "Electric flux through a surface, and Gauss's law for symmetric charge distributions.",
+      "topics": ["8.5", "8.6"],
+      "draftIds": [
+        "2oluzsrrQcYZ02CtL9er",
+        "UOHIUaLy1sBDvm49zD58",
+        "IYnJLlP8QbPnfkMPflYD",
+        "54wX2G3X5zruA53zfcxw",
+        "CnXshzptTBYkUarK9L2q",
+        "YMwZQkDP9amO0MmLs0Rv",
+        "ZXK3L98yhOcokB8OQ7ce",
+        "fxfC0UwTRHMuT8NMSXA6",
+        "pfrbRvoSBMcLUQKhb6yg",
+        "le5Idc9KcxYJVCr80WbO"
+      ]
+    },
+    {
+      "key": "9A",
+      "unit": 9,
+      "title": "Electric potential energy",
+      "description": "Energy of systems of point charges and the work to assemble or rearrange them.",
+      "topics": ["9.1"],
+      "draftIds": [
+        "lRHiWR9RwdsmIlv9xPzk",
+        "4sdfca4931HwehJLZMeD",
+        "lO8FsY6qV8KfqUilNgK7",
+        "i1l8fJPNf2XCuBijWXDS",
+        "iwOcDkgDq2yLKvbUnsKB",
+        "c8s7BhW3XvJLwxsGFsQS",
+        "fDKtyl6xNLtRigewjxCX",
+        "CFMlSv6WXLqK0KsNMmX2",
+        "R35TXAOofNPwSwc55H76",
+        "Bx5lgtN4GgI8WUHnjM6X"
+      ]
+    },
+    {
+      "key": "9B",
+      "unit": 9,
+      "title": "Potential of charges and distributions",
+      "description": "Potential of point charges by superposition and of continuous charge by integration.",
+      "topics": ["9.2"],
+      "draftIds": [
+        "bu6S8fJZpZNWEUMPEqvW",
+        "N54EZRf6hBhnp7IbGU7l",
+        "KQjtRD7uB5773oqIDrNp",
+        "ycudlgqxLUsiO43YcH6Y",
+        "6o6gcHSfysTVyrfDCjQq",
+        "SbfNVfl8ivbCYwcSnuP6",
+        "fSwOPHXZM2XMkhZ0pRQ4",
+        "2WtItdDx9ZrjqiXxxzfz",
+        "2HGHLO62oZvKmKzXT7Uy",
+        "zfz3LB5PtF7HQNipIcXx"
+      ]
+    },
+    {
+      "key": "9C",
+      "unit": 9,
+      "title": "Potential and field",
+      "description": "Equipotentials, the field as the negative slope of potential, and potential difference as an integral of the field.",
+      "topics": ["9.2"],
+      "draftIds": [
+        "pkAGpS5uKwy9aKGVDd3c",
+        "wWtW1WbLIo54Ngkg4AOO",
+        "Zsf1OvXlaJDBF7sQku2W",
+        "e2AJq6oRB3SLrQ2IzbjV",
+        "pdLe968BAsCCpqcD1zzr",
+        "T3n67WjDjvFOWsSHK96H",
+        "bPUHNcWe6RfJa8xSNEzf",
+        "G3GGKLWzRJu79aOHQfDu",
+        "nJQBeGobjI9Y4FN0D4Fo",
+        "itz48mWOIDThfvOLPOec"
+      ]
+    },
+    {
+      "key": "9D",
+      "unit": 9,
+      "title": "Conservation of electric energy",
+      "description": "Speeds and energies of charges that move through a potential difference.",
+      "topics": ["9.3"],
+      "draftIds": [
+        "UOYjC7ixfQNdDYJetzMj",
+        "3bK8QwMnjNKLo0lnvC4x",
+        "HzgcdzZUiKZ17a4D78fW",
+        "7i1Fgw2QwX1WONfzjcmi",
+        "siugjist4hdbt73trpEC",
+        "iHpOwomRYW3ABbaEbEgE",
+        "CX5ZcE2trvr1cyorakoq",
+        "O6zuoQuyDXEvfE5NO1eu",
+        "rjFp3G0bB421biLr7juw",
+        "yAnk7jzqEByHHHjYkLn2"
+      ]
+    },
+    {
+      "key": "10A",
+      "unit": 10,
+      "title": "Conductors in equilibrium",
+      "description": "Field, charge and potential in and on a conductor, and shielding.",
+      "topics": ["10.1"],
+      "draftIds": [
+        "joXogrz2YUYuUiYfDlZj",
+        "2sB6dEKGKkH2hxg0q3Ga",
+        "wzFSlIeRDwMEDs7d8Aga",
+        "AsdISAUqiQk963pZMgem",
+        "OJeYJVhaSlTfqrheOpdD",
+        "SZIo0FS9NB2D1PJWRHly",
+        "DmQPl7rz5rPl27l3kHG7",
+        "0cU4Ywu1qn1sikcUCjFi",
+        "UpDywde87E29a2qyiZQI",
+        "yWNHq8THXHnSsW7cQRNb"
+      ]
+    },
+    {
+      "key": "10B",
+      "unit": 10,
+      "title": "Sharing charge between conductors",
+      "description": "How charge redistributes when conductors touch, are connected or are grounded.",
+      "topics": ["10.2"],
+      "draftIds": [
+        "g5lMn5QC4PoNKpMYJgeS",
+        "ZPXaTUaYZ1VDTlJQdyCB",
+        "4wEo67jOqVh5fKbK666w",
+        "AQ6FUEHxQWFS4q1DSWub",
+        "4foDoCczzxhYoiZgAjXT",
+        "EEhWYW2dewSBHbQel3P1",
+        "GWAViwbnzL4zHyx8OWpE",
+        "iTLh1G5EMejYs0X02scc",
+        "8lhZADVcEk24H7mHQ1mt",
+        "QnUskAbbXv5VfjCeHD7H"
+      ]
+    },
+    {
+      "key": "10C",
+      "unit": 10,
+      "title": "Capacitors",
+      "description": "Capacitance from geometry, the field between the plates and stored energy.",
+      "topics": ["10.3"],
+      "draftIds": [
+        "lY41ASWGNwDnbXYwlIOJ",
+        "HKQ2uAl8NL3Y43JIJWJq",
+        "heRbC4lGjalDB9iFKiEh",
+        "awQBgEH26JenozOBZnoz",
+        "qSzrjVOdbGGWKtem15Tn",
+        "xn56e0gEA5PVnDnqmVlZ",
+        "Qhsa4EkGHfmpjcOK0M5d",
+        "C1C75I5SCKtC4DsPoRZC",
+        "liWrVbLKBD5DP8ksMWaB",
+        "iWcOWeH0H9uP8rGOQy6S"
+      ]
+    },
+    {
+      "key": "10D",
+      "unit": 10,
+      "title": "Dielectrics",
+      "description": "What changes when an insulator fills a capacitor, with the battery connected or removed.",
+      "topics": ["10.4"],
+      "draftIds": [
+        "X9EFKQWR0KfroODhkukh",
+        "upDhbNENtNtfY9mlo6Tt",
+        "pxIlWD29s5d4wEyS3zm8",
+        "V2rPiBwADpqWN5Jyaph5",
+        "dpZLGMmXYky18A1Eqgbz",
+        "Q2DWGalaEJe4B10P1FaY",
+        "AFGUmqyxASjjokC49qTc",
+        "TJOSldKiZ2id4AJLRisu",
+        "J9k8QjSB6KDcAMEYHVL4",
+        "H7Rm6nJYhQUOoSi69jzO"
+      ]
+    },
+    {
+      "key": "11A",
+      "unit": 11,
+      "title": "Current and simple circuits",
+      "description": "Current as a rate of charge flow, current density and drift speed, and reading circuit diagrams.",
+      "topics": ["11.1", "11.2"],
+      "draftIds": [
+        "4bSrhwa3aPQC6HWPBE22",
+        "RYyDLZwBGNOTP0rHo9rx",
+        "Ecrd9Nthwk1DdAnRkb9V",
+        "KkGSkRQX21qKq1pIfd9S",
+        "AlZRHrRPQZ5DcM5XSodS",
+        "9De3hLbTnd54kW2BSoyj",
+        "ZOuFTt8FDYbwJa6zKWaR",
+        "WRx372q8GONAjewPF0g2",
+        "ETUcxmrY8QiY0XLT6Uv1",
+        "sCXrwK7yc2FKXz0Rk7FA"
+      ]
+    },
+    {
+      "key": "11B",
+      "unit": 11,
+      "title": "Resistance, Ohm's law and power",
+      "description": "Resistivity, ohmic and non-ohmic elements, and the rate of energy transfer in a circuit.",
+      "topics": ["11.3", "11.4"],
+      "draftIds": [
+        "s0ZySKUlBLPPoJCAEsLQ",
+        "V7AiirYPmGpGJLnQbwg2",
+        "TauxUBD9gy8YJBtLonmO",
+        "iDZNe62B0Dk6F47VO8U8",
+        "K9zULWmyCCjGbIQqtHPc",
+        "NErvXGM47GklssGlQnWh",
+        "aWc9zo51hIFCSiLduklk",
+        "mdL9WsFIZ0G3OrPQud3n",
+        "7rCQ5mNTwAzpztF4x51P",
+        "c2u4m87IP1DV5jy44efR"
+      ]
+    },
+    {
+      "key": "11C",
+      "unit": 11,
+      "title": "Compound circuits and Kirchhoff's rules",
+      "description": "Equivalent resistance, internal resistance, and loop and junction rules for multi-branch circuits.",
+      "topics": ["11.5", "11.6", "11.7"],
+      "draftIds": [
+        "AplFWGJ0lvqxe5GgraZP",
+        "7skzTBGBNAztAJtu2LTR",
+        "4Gy3y1GEgGdXfpj3kEmN",
+        "lHi1s5fBhHBz4fmxbEHj",
+        "MiPnyNDYkSW99tS4uFAV",
+        "VFR2QmngTDSkzmDI6ZUW",
+        "ckLL6J0dOJcqNzAj1OvF",
+        "3Fv8oenwHfLzCxFFh1rL",
+        "eJi9pXUihJCyWKASJ1UG",
+        "IbLd21EqExgCaI8MVYic"
+      ]
+    },
+    {
+      "key": "11D",
+      "unit": 11,
+      "title": "RC circuits",
+      "description": "Equivalent capacitance, and exponential charging and discharging with a time constant.",
+      "topics": ["11.8"],
+      "draftIds": [
+        "JpQOL3QAzHkgNOQmRuxk",
+        "zI5yFVJnIEXAOxgrgXZi",
+        "NoCyp8sXhSs23aIdM36E",
+        "WzeyRlWpOcOWQfDOaW4q",
+        "BjHBBj8zKJ4QU167UG0U",
+        "eBdCqhXUSEisMAV8CGov",
+        "EVzQdBHrOx8uJgLr83Qg",
+        "JUyBjDk5hvsfyG5Zfkdf",
+        "xQciPNWp2JnFktQDdFZO",
+        "MH9C9g5Gw8RSsCllqsSc"
+      ]
+    },
+    {
+      "key": "12A",
+      "unit": 12,
+      "title": "Magnetic fields",
+      "description": "Properties of magnetic fields, dipoles and magnetic materials.",
+      "topics": ["12.1"],
+      "draftIds": [
+        "GLcTf4l0CMFvFgtF60yk",
+        "ECHtzSswbbEYXWzZfnQH",
+        "qeYkc2jiuBK88d1xXrfl",
+        "ikNIp6xI5yTRVzPlEwlA",
+        "lSYOSd4ZoSqhrhLdr0di",
+        "dU4XxFp39kWlBommqRCp",
+        "9jDkMa2KqW3hBIoev7J1",
+        "SaX2qc3OEa4IP04ez0uo",
+        "bHfQRgnFuLXQrG4XXSxP",
+        "vSGIZdtYN1DiMGcgI33F"
+      ]
+    },
+    {
+      "key": "12B",
+      "unit": 12,
+      "title": "Forces on moving charges",
+      "description": "The cross-product magnetic force, circular paths and the Hall effect.",
+      "topics": ["12.2"],
+      "draftIds": [
+        "uNKqvYSL3NkuwZJmH0Ie",
+        "9gmJ3GZgxHk35NRR1cHy",
+        "uIGtv2tHFjLEz7TAzpVx",
+        "6UQyi7wZTfj7JpApr9cj",
+        "Ye3I94pl5Jioq4CJSelM",
+        "izvTNjqAqqOdSKS4rkfg",
+        "M2W7suG63K5EuprKRxYB",
+        "NWOeeae628vcYanvg6Yq",
+        "xdIMkHDt85jNSilJTgAe",
+        "RqQ7L8oJL5Tt4kNJhtqz"
+      ]
+    },
+    {
+      "key": "12C",
+      "unit": 12,
+      "title": "Wires and the Biot-Savart law",
+      "description": "Fields of wires and loops by integrating current elements, and forces on and between wires.",
+      "topics": ["12.3"],
+      "draftIds": [
+        "E92kfA5V25pMWP7yJWGe",
+        "CYzQn8S0MfuE5B3Dd56g",
+        "OGAnaZ0oFxjH2RHIGDo6",
+        "5ZwADiGHFNA4BtlaWP5v",
+        "m7GCiMXUZVkbktMI0aLn",
+        "P0MgQWnC117GfXffL3lZ",
+        "eRBsjrtUljAmQiOmw2ic",
+        "vN8N8vvvK0F8552l9gae",
+        "1IKOsgIGoEYEpG5WgCn1",
+        "5StCnzotDPjESsNwUbko"
+      ]
+    },
+    {
+      "key": "12D",
+      "unit": 12,
+      "title": "Ampère's law",
+      "description": "Enclosed current and the field of long wires, thick conductors and solenoids.",
+      "topics": ["12.4"],
+      "draftIds": [
+        "BtOvoKiyXFBdXuimCUBI",
+        "3ztgvahpPOugOWMrUjAz",
+        "FzbF4yZYA7MZtjW4cxea",
+        "jyL6V2M3PBjTKvdTUPMo",
+        "2vSdTvF74eKcQqooBv2d",
+        "iCvcTfWmkAZsMPAklPGx",
+        "Mg9OGOFbvZ5ucc7ntQRF",
+        "hTXQGrCNE9sRplgGAiUf",
+        "cC2ULSqJiG6SAfYW2uEI",
+        "JAnlt1nFOmYLFYIPwDcK"
+      ]
+    },
+    {
+      "key": "13A",
+      "unit": 13,
+      "title": "Magnetic flux and Faraday's law",
+      "description": "Flux through a loop, and the emf induced when that flux changes.",
+      "topics": ["13.1", "13.2"],
+      "draftIds": [
+        "OKHhUedrMle6M3qQixx8",
+        "PmXavQSqesH0bLwnQ70t",
+        "bgoax55epFA8Xo8EF6fa",
+        "CK0vOlAy3pltiFQ5qI5n",
+        "siN0vuJ9eBF4iKEIGRju",
+        "ZAURFDadt9H5tbzAEx5Z",
+        "NvhXjYZ9xLPvjskY78qh",
+        "BVYJmXEPnccUZKKvEOj2",
+        "HjBkzcYE82iSts8wBzQt",
+        "mPirB3zHSvqeu0nmEqk3"
+      ]
+    },
+    {
+      "key": "13B",
+      "unit": 13,
+      "title": "Induced currents and forces",
+      "description": "Lenz's law, moving rods and loops, and the magnetic force on an induced current.",
+      "topics": ["13.3"],
+      "draftIds": [
+        "z4WYgjBnjWUEWMnuJVYk",
+        "QOMQehbL1H2DMjnahMsp",
+        "aW3AcS0xDCoRZk6MRszl",
+        "I62zk6kxkHYzUCyPbjkF",
+        "MHKpysIZhOoOGL0yPUlj",
+        "kt5MQYzAxP79ApFBs0vr",
+        "CkqLmA2lUDqXqaS0JzE0",
+        "0aYEBLDLZNVenkK8J5Bs",
+        "NcjywpF92DAYSpvz0scl",
+        "nGJhryJU1xFyPfmcdNIM"
+      ]
+    },
+    {
+      "key": "13C",
+      "unit": 13,
+      "title": "Inductance and LR circuits",
+      "description": "Self-induced emf, energy stored in an inductor, and current that grows or decays exponentially.",
+      "topics": ["13.4", "13.5"],
+      "draftIds": [
+        "shQFziohvnXiQc5a2XG9",
+        "1aApXTSOHchkBPWRGOnW",
+        "ruBXkGHds9VR3a5XWXrw",
+        "BFJGKzW0NNDmZvV1NCI5",
+        "UEy8vhhtl6fCA9oFeaHN",
+        "68ReqSeosmI2HDHh0yOE",
+        "V6iTN29EAfv4p8FpTNEf",
+        "26akGAtsIuvvnZqgpRMw",
+        "TE44dbnDaTO8QBCEGZib",
+        "wltahsSWBC0vQFE7N434"
+      ]
+    },
+    {
+      "key": "13D",
+      "unit": 13,
+      "title": "LC circuits",
+      "description": "Oscillating charge and current, and energy passing between capacitor and inductor.",
+      "topics": ["13.6"],
+      "draftIds": [
+        "xiU68D1VfumLOxdE9sjg",
+        "cb9Da6eUu4rjhN0zrT6P",
+        "s61QcvlvEpCDitGC4VFb",
+        "xiH41DBqTHhXHpBUZ1Gg",
+        "9OM4wzql5mxkYprZDZZN",
+        "34iZ3w4v1UxEc2x8W7r6",
+        "40fbUCJRZ64IE54HXt0Q",
+        "pIlYeELBXw7ksAjuIvye",
+        "g58Dpv9NAbrj1kOzrft2",
+        "Lg3j0TPfSYUg9XowmSpf"
+      ]
+    }
+  ]
+}

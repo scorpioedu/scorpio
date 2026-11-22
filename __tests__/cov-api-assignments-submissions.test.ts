@@ -110,7 +110,8 @@ describe("POST /api/assignments", () => {
       answerKeySeparated: true,
       questions: [{ id: "q1", text: "Compute", points: 5 }],
     });
-    expect(JSON.stringify(assignment.data)).not.toContain("42");
+    // The key "42" as a quoted value; a bare 42 would also match the clock in createdAt.
+    expect(JSON.stringify(assignment.data)).not.toContain('"42"');
     expect((assignment.data as { dueDate: Date }).dueDate).toEqual(
       new Date("2030-01-01T00:00:00Z"),
     );

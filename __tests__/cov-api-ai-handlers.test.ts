@@ -155,6 +155,26 @@ describe('POST /api/ai/generate', () => {
     expect(mockRecordUsage).toHaveBeenCalledWith('o1', 'generation', 5, 6);
   });
 
+  test('passes the answer checks through, and says so when fewer questions were made', async () => {
+    mockDocs.set('users/u1', { organizationId: 'o1' });
+    const questions = [{ text: 'Q', answerCheck: 'disagrees', checkedAnswer: 'B' }];
+    mockGenerateQuestions.mockResolvedValue({ questions, usage: { inputTokens: 9, outputTokens: 4 }, message: 'Made 1 of the 20 questions you asked for.' });
+    const res = await call(generatePost, { ...body, count: 20 });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ questions, message: 'Made 1 of the 20 questions you asked for.' });
+    // One request, one budget check, and usage that already includes the check calls.
+    expect(mockGenerateQuestions).toHaveBeenCalledTimes(1);
+    expect(mockGenerateQuestions).toHaveBeenCalledWith('Kinematics', 20, 'easy', 'text', 'ctx');
+    expect(mockCheckBudget).toHaveBeenCalledTimes(1);
+    expect(mockRecordUsage).toHaveBeenCalledWith('o1', 'generation', 9, 4);
+  });
+
+  test.each([[21], [50], [0], ['3']])('400 for a count outside 1 to 20 (%j)', async count => {
+    mockDocs.set('users/u1', { organizationId: 'o1' });
+    expect((await call(generatePost, { ...body, count })).status).toBe(400);
+    expect(mockGenerateQuestions).not.toHaveBeenCalled();
+  });
+
   test('zero-fills missing token counts', async () => {
     mockDocs.set('users/u1', { organizationId: 'o1' });
     mockGenerateQuestions.mockResolvedValue({ questions: [], usage: {} });

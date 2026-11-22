@@ -14,7 +14,9 @@ import {
 } from "../src/data/ap";
 import {
   CURRICULA,
+  curriculumNamedIn,
   curriculumUnits,
+  displayTitle,
   getCurriculum,
   hasContent,
   validateCurriculum,
@@ -29,17 +31,18 @@ import { setProfile } from "../src/data/curricula/profiles";
 import { CONTENT_FILES } from "../src/data/curricula/content-files";
 import { describeWithContent } from "../tests/helpers/course-content";
 import { validateDraftProblem } from "../src/lib/content/problem-format";
+import { verificationIsCurrent, type VerifiableDraft } from "../src/lib/content/verify";
 import { misconceptionTag, misconceptionUnits } from "../functions/src/misconceptions";
 import fs from "fs";
 import path from "path";
 
 describe("AP course data", () => {
-  test("three courses, each with well-formed units and topics", () => {
-    expect(AP_COURSE_IDS).toEqual(["physics-1", "physics-2", "physics-c-mech"]);
+  test("four courses, each with well-formed units and topics", () => {
+    expect(AP_COURSE_IDS).toEqual(["physics-1", "physics-2", "physics-c-mech", "physics-c-em"]);
     for (const id of AP_COURSE_IDS) {
       const units = apUnits(id);
       expect(AP_COURSES[id].course).toBe(id);
-      expect(units.length).toBeGreaterThanOrEqual(7);
+      expect(units.length).toBeGreaterThanOrEqual(6);
       const ids = units.flatMap((u) => u.topics.map((t) => t.id));
       expect(new Set(ids).size).toBe(ids.length);
       for (const u of units) {
@@ -57,6 +60,34 @@ describe("AP course data", () => {
     expect(apCourseName()).toBe("AP Physics 1");
   });
 
+  test("AP Physics C: Electricity and Magnetism follows the College Board outline: units 8-13, 31 topics", () => {
+    expect(apCourseName("physics-c-em")).toBe("AP Physics C: Electricity and Magnetism");
+    // Unit numbers and topics per unit, as in the Course and Exam Description's course at a glance.
+    expect(apUnits("physics-c-em").map((u) => [u.unit, u.topics.length])).toEqual([
+      [8, 6],
+      [9, 3],
+      [10, 4],
+      [11, 8],
+      [12, 4],
+      [13, 6],
+    ]);
+    expect(apUnits("physics-c-em").map((u) => u.title)).toEqual([
+      "Electric charges, fields and Gauss's law",
+      "Electric potential",
+      "Conductors and capacitors",
+      "Electric circuits",
+      "Magnetic fields and electromagnetism",
+      "Electromagnetic induction",
+    ]);
+    expect(apTopicLabel("8.6", "physics-c-em")).toBe("8.6 Gauss's law");
+    expect(apTopicLabel("12.4", "physics-c-em")).toBe("12.4 Ampère's law");
+    expect(apTopicLabel("13.6", "physics-c-em")).toMatch(/LC circuits/);
+    // The source and the day it was read are recorded with the data.
+    expect(AP_COURSES["physics-c-em"].note).toMatch(/apcentral\.collegeboard\.org/);
+    expect(AP_COURSES["physics-c-em"].note).toMatch(/retrieved \d{4}-\d{2}-\d{2}/);
+    expect(AP_COURSES["physics-c-em"].note).toMatch(/Scorpio's own words/);
+  });
+
   test("the same unit number or topic id means different things per course", () => {
     expect(apUnitLabel(2)).toBe("Unit 2: Force and translational dynamics");
     expect(apTopicLabel("2.9", "physics-c-mech")).toBe("2.9 Resistive forces");
@@ -68,7 +99,22 @@ describe("AP course data", () => {
     expect(apTopic("12.4", "physics-2")?.unit).toBe(12);
     expect(apTopic("12.4")).toBeUndefined();
     expect(apUnitLabel(12)).toBe("Unit 12");
+    // C: E&M's unit numbers overlap AP Physics 1 (8) and AP Physics 2 (9-13); each stays its own.
+    expect(apUnit(8)?.title).toBe("Fluids");
+    expect(apUnit(8, "physics-c-em")?.title).toBe("Electric charges, fields and Gauss's law");
+    expect(apUnit(8, "physics-2")).toBeUndefined();
+    expect(apUnit(8, "physics-c-mech")).toBeUndefined();
+    expect(apUnitLabel(9, "physics-2")).toBe("Unit 9: Thermodynamics");
+    expect(apUnitLabel(9, "physics-c-em")).toBe("Unit 9: Electric potential");
+    expect(apUnitLabel(13, "physics-2")).toBe("Unit 13: Geometric optics");
+    expect(apUnitLabel(13, "physics-c-em")).toBe("Unit 13: Electromagnetic induction");
+    expect(apTopicLabel("12.4", "physics-2")).not.toBe(apTopicLabel("12.4", "physics-c-em"));
+    expect(isApTopicId("9.4", "physics-2")).toBe(true);
+    expect(isApTopicId("9.4", "physics-c-em")).toBe(false); // C: E&M unit 9 stops at 9.3
+    expect(apUnit(14, "physics-c-em")).toBeUndefined();
+    expect(apUnit(7, "physics-c-em")).toBeUndefined();
     expect(isApCourseId("physics-2")).toBe(true);
+    expect(isApCourseId("physics-c-em")).toBe(true);
     expect(isApCourseId("physics-3")).toBe(false);
     expect(isApCourseId("constructor")).toBe(false);
   });
@@ -91,6 +137,20 @@ describe("AP course data", () => {
       apUnit: 2,
       apTopics: ["2.9", "2.10"],
     });
+    expect(
+      normaliseApTags({ apCourse: "physics-c-em", apTopics: ["13.6", "13.1", "9.1", "13.9"] }),
+    ).toEqual({ apCourse: "physics-c-em", apUnit: 13, apTopics: ["13.1", "13.6"] });
+    // 14 is a unit of AP Physics 2 only, and 9.4 a topic of AP Physics 2 only.
+    expect(normaliseApTags({ apCourse: "physics-c-em", apUnit: 14 })).toEqual({
+      apCourse: null,
+      apUnit: null,
+      apTopics: [],
+    });
+    expect(normaliseApTags({ apCourse: "physics-c-em", apUnit: 9, apTopics: ["9.4"] })).toEqual({
+      apCourse: "physics-c-em",
+      apUnit: 9,
+      apTopics: [],
+    });
     expect(normaliseApTags({ apCourse: "nope", apUnit: 4 })).toMatchObject({
       apCourse: "physics-1",
       apUnit: 4,
@@ -104,11 +164,12 @@ describe("AP course data", () => {
 });
 
 describe("course definitions", () => {
-  test("three courses; every set of the two newer ones is either written (5 problems) or planned", () => {
+  test("four courses; every set of the two newer written ones is either written (5 problems) or planned", () => {
     expect(CURRICULA.map((c) => c.id)).toEqual([
       "ap-physics-1",
       "ap-physics-2",
       "ap-physics-c-mech",
+      "ap-physics-c-em",
     ]);
     for (const c of CURRICULA) expect(validateCurriculum(c)).toEqual([]);
     expect(hasContent(getCurriculum("ap-physics-1")!)).toBe(true);
@@ -118,7 +179,8 @@ describe("course definitions", () => {
       expect(c.sets).toHaveLength(28);
       // A set is planned (no problems) or complete; only written sets have a profile.
       for (const s of c.sets) {
-        expect([s.key, [0, 5].includes(s.draftIds.length)]).toEqual([s.key, true]);
+        const n = s.draftIds.length;
+        expect([s.key, n === 0 || (n >= 5 && n <= 10)]).toEqual([s.key, true]);
         expect([s.key, !!setProfile(id, s.key)]).toEqual([s.key, s.draftIds.length > 0]);
       }
       // Every topic of the course is covered by some set.
@@ -130,6 +192,66 @@ describe("course definitions", () => {
     expect(getCurriculum("ap-physics-2")!.sets[0].key).toBe("9A");
     expect(defaultOrder("ap-physics-2").slice(-1)).toEqual(["15D"]);
     expect(curriculumUnits("ap-physics-2").map((u) => u.unit)).toEqual([9, 10, 11, 12, 13, 14, 15]);
+  });
+
+  test("AP Physics C: Electricity and Magnetism is written: 24 sets, 8A-13D, ten problems each", () => {
+    const id = "ap-physics-c-em";
+    const c = getCurriculum(id)!;
+    expect(c).toMatchObject({ apCourse: "physics-c-em", name: apCourseName("physics-c-em") });
+    expect(c.sets.map((s) => s.key)).toEqual(
+      [8, 9, 10, 11, 12, 13].flatMap((u) => ["A", "B", "C", "D"].map((l) => `${u}${l}`)),
+    );
+    // Every set is written and has a profile, and the content file is listed.
+    for (const s of c.sets) expect([s.key, s.draftIds.length]).toEqual([s.key, 10]);
+    expect(hasContent(c)).toBe(true);
+    expect(c.sets.filter((s) => !setProfile(id, s.key))).toEqual([]);
+    expect(CONTENT_FILES[id]).toEqual(["content/ap-physics-c-em/units-8-13.json"]);
+    expect(c.description).not.toMatch(/planned|not written yet/i);
+    // The sets cover every topic of every unit, four sets a unit.
+    const covered = new Set(c.sets.flatMap((s) => s.topics));
+    const all = apUnits(c.apCourse).flatMap((u) => u.topics.map((t) => t.id));
+    expect(all.filter((t) => !covered.has(t))).toEqual([]);
+    expect(curriculumUnits(id).map((u) => [u.unit, u.sets.length, !!u.info])).toEqual(
+      [8, 9, 10, 11, 12, 13].map((u) => [u, 4, true]),
+    );
+    for (const s of c.sets)
+      expect([s.key, !!s.title.trim() && !!s.description.trim()]).toEqual([s.key, true]);
+    // Written but not yet published: every set is awaiting publication, none is "planned".
+    const road = deriveRoadmap(id, [], []);
+    expect(road.map((u) => u.unit)).toEqual([8, 9, 10, 11, 12, 13]);
+    expect(new Set(road.flatMap((u) => u.sets.map((s) => s.availability)))).toEqual(
+      new Set(["awaiting"]),
+    );
+    // A published set of another course with the same key ("9A" is also AP Physics 2) changes nothing.
+    const fromP2 = { id: "a", curriculumId: "ap-physics-2", curriculumSetKey: "9A" };
+    expect(deriveRoadmap(id, [], [fromP2])[1].sets[0]).toMatchObject({ assigned: false });
+    expect(deriveRoadmap("ap-physics-2", [], [fromP2])[0].sets[0]).toMatchObject({
+      assigned: true,
+    });
+    expect(displayTitle(c.sets[0], c.name)).toBe(
+      "AP Physics C: Electricity and Magnetism · Unit 8A · Charge and Coulomb's law",
+    );
+  });
+
+  test("a class's name suggests its course; the two AP Physics C courses are never confused", () => {
+    const named = (name: string) => curriculumNamedIn(name)?.id;
+    expect(named("AP Physics 1")).toBe("ap-physics-1");
+    expect(named("ap physics 2 - Period 3")).toBe("ap-physics-2");
+    expect(named("AP Physics C: Mechanics (P4)")).toBe("ap-physics-c-mech");
+    expect(named("AP Physics C: Electricity and Magnetism")).toBe("ap-physics-c-em");
+    expect(named("P6 AP PHYSICS C: ELECTRICITY AND MAGNETISM")).toBe("ap-physics-c-em");
+    // A class that takes both, named for both: the longer name wins.
+    expect(named("AP Physics C: Mechanics / AP Physics C: Electricity and Magnetism")).toBe(
+      "ap-physics-c-em",
+    );
+    // Neither C course is a prefix of the other, and short forms match nothing rather than the wrong one.
+    expect(named("AP Physics C")).toBeUndefined();
+    expect(named("AP Physics C: E&M")).toBeUndefined();
+    expect(named("AP Physics C: Electricity")).toBeUndefined();
+    expect(named("Honors Physics")).toBeUndefined();
+    // Every course is found by its own name, whatever the others are called.
+    for (const c of CURRICULA)
+      expect([c.name, named(`${c.name} - Period 1`)]).toEqual([c.name, c.id]);
   });
 
   test("validation: two-digit units are fine, an unknown AP course or foreign topic is not", () => {
@@ -231,16 +353,28 @@ describeWithContent("reviewed content of every course", () => {
     }
   });
 
-  test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5, 140 problems each", () => {
+  test("the newest course has its content: one file with every set's ten problems", () => {
+    expect(CONTENT_FILES["ap-physics-c-em"]).toEqual(["content/ap-physics-c-em/units-8-13.json"]);
+    expect(load("ap-physics-c-em").size).toBe(240);
+  });
+
+  test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5 to 10 problems each", () => {
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
       expect(hasContent(c)).toBe(true);
-      expect(c.sets.map((s) => s.draftIds.length)).toEqual(Array(28).fill(5));
+      expect(c.sets).toHaveLength(28);
+      for (const s of c.sets) {
+        expect([id, s.key, s.draftIds.length >= 5 && s.draftIds.length <= 10]).toEqual([
+          id,
+          s.key,
+          true,
+        ]);
+      }
       expect(c.description).not.toMatch(/planned|not written/i);
     }
   });
 
-  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed", () => {
+  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed or verified", () => {
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
       const drafts = load(id);
@@ -251,7 +385,14 @@ describeWithContent("reviewed content of every course", () => {
           expect([where, d.course]).toEqual([where, c.apCourse]);
           expect([where, d.apUnit]).toEqual([where, set.unit]);
           expect([where, set.topics.includes(d.apTopic)]).toEqual([where, true]);
-          expect([where, d.reviewKind]).toEqual([where, "ai"]);
+          // Nothing here was checked by a person: a draft is AI-reviewed, or carries the verifier's
+          // mark, which only counts while it is for the problem as it is now.
+          expect([where, ["ai", "verified"].includes(d.reviewKind ?? "")]).toEqual([where, true]);
+          if (d.reviewKind === "verified")
+            expect([where, verificationIsCurrent(d as unknown as VerifiableDraft)]).toEqual([
+              where,
+              true,
+            ]);
           expect([where, /a person still needs to check/.test(d.reviewNote ?? "")]).toEqual([
             where,
             true,

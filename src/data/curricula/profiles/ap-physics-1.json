@@ -1,100 +1,299 @@
 {
   "1A": {
-    "problems": 5,
-    "minutes": 9,
+    "problems": 10,
+    "minutes": 25,
     "difficulty": {
       "easy": 5,
-      "medium": 0,
-      "hard": 0
+      "medium": 3,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "distance-displacement-confusion",
-        "problems": 3
+        "problems": 7
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
+        "problems": 4
       },
       {
         "tag": "acceleration-sign-means-slowing",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
       },
       {
-        "tag": "velocity-acceleration-confusion",
-        "problems": 2
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["acceleration-sign-means-slowing", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["acceleration-sign-means-slowing", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["distance-displacement-confusion", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
       }
     ]
   },
   "1B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
-        "tag": "distance-displacement-confusion",
-        "problems": 3
-      },
-      {
         "tag": "velocity-acceleration-confusion",
-        "problems": 3
+        "problems": 6
       },
       {
         "tag": "graph-as-picture",
-        "problems": 2
+        "problems": 5
+      },
+      {
+        "tag": "distance-displacement-confusion",
+        "problems": 4
       },
       {
         "tag": "acceleration-sign-means-slowing",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "acceleration-sign-means-slowing",
+          "graph-as-picture",
+          "velocity-acceleration-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["graph-as-picture"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["velocity-acceleration-confusion"]
+      }
     ]
   },
   "1C": {
-    "problems": 5,
-    "minutes": 15,
+    "problems": 10,
+    "minutes": 30,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "numeric": 5
+      "multiple-choice": 2,
+      "numeric": 8
     },
     "misconceptions": [
       {
+        "tag": "relative-velocity-confusion",
+        "problems": 3
+      },
+      {
         "tag": "distance-displacement-confusion",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "projectile-components-coupled",
+        "problems": 2
+      },
+      {
+        "tag": "velocity-acceleration-confusion",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["projectile-components-coupled", "relative-velocity-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["distance-displacement-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["relative-velocity-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["relative-velocity-confusion"]
       }
     ]
   },
   "1D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "projectile-components-coupled",
-        "problems": 3
+        "problems": 8
       },
       {
         "tag": "heavier-falls-faster",
@@ -104,21 +303,91 @@
         "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["heavier-falls-faster", "projectile-components-coupled"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["projectile-components-coupled", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["projectile-components-coupled"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["projectile-components-coupled"]
+      }
     ]
   },
   "2A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "system-boundary",
+        "problems": 4
+      },
+      {
+        "tag": "mass-weight-confusion",
+        "problems": 2
+      },
       {
         "tag": "normal-force-equals-weight",
         "problems": 2
@@ -132,69 +401,197 @@
         "problems": 1
       },
       {
-        "tag": "mass-weight-confusion",
-        "problems": 1
-      },
-      {
-        "tag": "system-boundary",
+        "tag": "net-force-vector-addition",
         "problems": 1
       },
       {
         "tag": "third-law-unequal-forces",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["force-implies-motion", "system-boundary", "third-law-unequal-forces"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["impetus-force"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["mass-weight-confusion", "normal-force-equals-weight"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["net-force-vector-addition"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["mass-weight-confusion"]
+      }
     ]
   },
   "2B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "system-boundary",
+        "problems": 3
+      },
+      {
+        "tag": "motion-requires-force",
+        "problems": 2
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 2
+      },
       {
         "tag": "impetus-force",
         "problems": 1
       },
       {
-        "tag": "motion-requires-force",
-        "problems": 1
-      },
-      {
-        "tag": "system-boundary",
+        "tag": "net-force-vector-addition",
         "problems": 1
       },
       {
         "tag": "third-law-pair-same-object",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["third-law-unequal-forces"]
       },
       {
-        "tag": "third-law-unequal-forces",
-        "problems": 1
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["third-law-pair-same-object"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["impetus-force", "motion-requires-force"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["third-law-unequal-forces"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["net-force-vector-addition"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["system-boundary"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["motion-requires-force"]
       }
     ]
   },
   "2C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "normal-force-equals-weight",
+        "problems": 3
+      },
+      {
+        "tag": "mass-weight-confusion",
         "problems": 2
       },
       {
@@ -202,7 +599,15 @@
         "problems": 1
       },
       {
+        "tag": "heavier-falls-faster",
+        "problems": 1
+      },
+      {
         "tag": "motion-requires-force",
+        "problems": 1
+      },
+      {
+        "tag": "net-force-vector-addition",
         "problems": 1
       },
       {
@@ -213,414 +618,1408 @@
         "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["no-gravity-in-orbit"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["friction-always-opposes-motion", "motion-requires-force"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["mass-weight-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["heavier-falls-faster"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["net-force-vector-addition"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["mass-weight-confusion"]
+      }
     ]
   },
   "2D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "centrifugal-force",
+        "problems": 2
+      },
       {
         "tag": "motion-requires-force",
         "problems": 2
       },
       {
-        "tag": "centrifugal-force",
-        "problems": 1
+        "tag": "normal-force-equals-weight",
+        "problems": 2
       },
       {
         "tag": "force-implies-motion",
         "problems": 1
       },
       {
+        "tag": "friction-always-opposes-motion",
+        "problems": 1
+      },
+      {
+        "tag": "mass-weight-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "net-force-vector-addition",
+        "problems": 1
+      },
+      {
         "tag": "no-gravity-in-orbit",
         "problems": 1
       },
       {
-        "tag": "normal-force-equals-weight",
+        "tag": "power-of-ten",
         "problems": 1
       },
       {
         "tag": "velocity-acceleration-confusion",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["force-implies-motion", "motion-requires-force", "velocity-acceleration-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["centrifugal-force", "no-gravity-in-orbit"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["motion-requires-force"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["normal-force-equals-weight"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["centrifugal-force", "friction-always-opposes-motion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["mass-weight-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["net-force-vector-addition"]
+      }
     ]
   },
   "3A": {
-    "problems": 5,
-    "minutes": 12,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 2,
-      "medium": 3,
-      "hard": 0
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "work-sign",
-        "problems": 3
+        "problems": 7
       },
       {
         "tag": "energy-force-confusion",
-        "problems": 2
+        "problems": 3
       },
       {
         "tag": "momentum-kinetic-energy-confusion",
         "problems": 2
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion", "work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion", "work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion", "work-sign"]
       }
     ]
   },
   "3B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
-        "tag": "energy-force-confusion",
-        "problems": 2
+        "tag": "potential-energy-reference",
+        "problems": 5
       },
       {
-        "tag": "potential-energy-reference",
-        "problems": 2
+        "tag": "energy-force-confusion",
+        "problems": 4
       },
       {
         "tag": "work-sign",
         "problems": 2
+      },
+      {
+        "tag": "conservative-force-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "constant-acceleration-assumed",
+        "problems": 1
+      },
+      {
+        "tag": "potential-energy-of-one-object",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["potential-energy-of-one-object", "potential-energy-reference", "work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["potential-energy-reference", "work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["constant-acceleration-assumed", "energy-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["energy-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["potential-energy-reference"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["conservative-force-confusion", "potential-energy-reference"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["potential-energy-reference"]
       }
     ]
   },
   "3C": {
-    "problems": 5,
-    "minutes": 14,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 1,
-      "numeric": 4
+      "multiple-choice": 3,
+      "numeric": 7
     },
     "misconceptions": [
       {
         "tag": "energy-not-conserved",
+        "problems": 5
+      },
+      {
+        "tag": "energy-force-confusion",
         "problems": 2
       },
       {
         "tag": "potential-energy-reference",
+        "problems": 2
+      },
+      {
+        "tag": "conservative-force-confusion",
         "problems": 1
       },
       {
         "tag": "work-sign",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-not-conserved", "work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-not-conserved"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["potential-energy-reference"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["energy-not-conserved"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["energy-not-conserved"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["conservative-force-confusion", "energy-not-conserved"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion", "potential-energy-reference"]
       }
     ]
   },
   "3D": {
-    "problems": 5,
-    "minutes": 15,
+    "problems": 10,
+    "minutes": 29,
     "difficulty": {
-      "easy": 0,
-      "medium": 4,
-      "hard": 1
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
-        "tag": "energy-force-confusion",
-        "problems": 4
+        "tag": "power-energy-confusion",
+        "problems": 6
       },
       {
-        "tag": "power-energy-confusion",
-        "problems": 3
+        "tag": "energy-force-confusion",
+        "problems": 5
       },
       {
         "tag": "energy-not-conserved",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "work-sign",
-        "problems": 1
+        "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion", "energy-not-conserved", "power-energy-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-force-confusion", "power-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion", "power-energy-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["power-energy-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-not-conserved", "work-sign"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["power-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["power-energy-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["energy-force-confusion"]
       }
     ]
   },
   "4A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 4
+        "problems": 7
       },
       {
         "tag": "momentum-not-vector",
-        "problems": 4
+        "problems": 6
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-not-vector"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
       }
     ]
   },
   "4B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "impulse-force-confusion",
-        "problems": 3
+        "problems": 5
       },
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 2
+        "problems": 4
       },
       {
         "tag": "momentum-not-vector",
-        "problems": 2
+        "problems": 4
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
       },
       {
         "tag": "third-law-unequal-forces",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["impulse-force-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["impulse-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["third-law-unequal-forces"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["impulse-force-confusion", "momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["impulse-force-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["impulse-force-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["system-boundary"]
       }
     ]
   },
   "4C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 5
+      },
+      {
         "tag": "system-boundary",
+        "problems": 3
+      },
+      {
+        "tag": "momentum-not-vector",
         "problems": 2
       },
       {
         "tag": "third-law-unequal-forces",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
       },
       {
-        "tag": "momentum-kinetic-energy-confusion",
-        "problems": 1
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
       },
       {
-        "tag": "momentum-not-vector",
-        "problems": 1
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["system-boundary", "third-law-unequal-forces"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion", "system-boundary", "third-law-unequal-forces"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion", "system-boundary"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion"]
       }
     ]
   },
   "4D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 3
+        "problems": 8
       },
       {
         "tag": "momentum-not-vector",
+        "problems": 3
+      },
+      {
+        "tag": "elastic-inelastic-confusion",
         "problems": 2
       },
       {
         "tag": "third-law-unequal-forces",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["momentum-not-vector"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion", "third-law-unequal-forces"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["elastic-inelastic-confusion", "momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["momentum-kinetic-energy-confusion", "momentum-not-vector"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["elastic-inelastic-confusion", "momentum-kinetic-energy-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["momentum-kinetic-energy-confusion"]
+      }
     ]
   },
   "5A": {
-    "problems": 5,
-    "minutes": 11,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
       "easy": 3,
-      "medium": 2,
-      "hard": 0
+      "medium": 5,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "linear-angular-confusion",
-        "problems": 3
+        "problems": 8
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
       }
     ]
   },
   "5B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "torque-ignores-lever-arm",
+        "problems": 9
+      },
+      {
+        "tag": "equilibrium-forces-only",
+        "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["equilibrium-forces-only", "torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["equilibrium-forces-only"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["torque-ignores-lever-arm"]
+      }
+    ]
+  },
+  "5C": {
+    "problems": 10,
+    "minutes": 28,
+    "difficulty": {
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 4
+      },
       {
         "tag": "torque-ignores-lever-arm",
         "problems": 4
       },
       {
         "tag": "equilibrium-forces-only",
-        "problems": 2
+        "problems": 3
       }
-    ]
-  },
-  "5C": {
-    "problems": 5,
-    "minutes": 13,
-    "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
-    },
-    "types": {
-      "multiple-choice": 2,
-      "numeric": 3
-    },
-    "misconceptions": [
+    ],
+    "each": [
       {
-        "tag": "equilibrium-forces-only",
-        "problems": 2
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
       },
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 2
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["rotational-inertia-mass-only", "torque-ignores-lever-arm"]
       },
       {
-        "tag": "torque-ignores-lever-arm",
-        "problems": 2
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["equilibrium-forces-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["equilibrium-forces-only", "torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["equilibrium-forces-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
       }
     ]
   },
   "5D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 3
+        "tag": "torque-ignores-lever-arm",
+        "problems": 6
       },
       {
-        "tag": "torque-ignores-lever-arm",
-        "problems": 3
+        "tag": "rotational-inertia-mass-only",
+        "problems": 4
       },
       {
         "tag": "linear-angular-confusion",
-        "problems": 2
+        "problems": 3
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion", "rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "linear-angular-confusion",
+          "rotational-inertia-mass-only",
+          "torque-ignores-lever-arm"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["rotational-inertia-mass-only", "torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["torque-ignores-lever-arm"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
       }
     ]
   },
   "6A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 4
+      },
+      {
+        "tag": "work-sign",
+        "problems": 4
+      },
       {
         "tag": "linear-angular-confusion",
         "problems": 3
       },
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 2
-      },
-      {
-        "tag": "work-sign",
-        "problems": 2
+        "tag": "angle-not-in-radians",
+        "problems": 1
       },
       {
         "tag": "energy-not-conserved",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion", "rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["angle-not-in-radians", "work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["energy-not-conserved", "work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
+      }
     ]
   },
   "6B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 3
+      },
+      {
         "tag": "angular-momentum-not-conserved",
-        "problems": 1
+        "problems": 2
+      },
+      {
+        "tag": "linear-angular-confusion",
+        "problems": 2
       },
       {
         "tag": "centrifugal-force",
@@ -635,173 +2034,282 @@
         "problems": 1
       },
       {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 1
-      },
-      {
         "tag": "work-sign",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-not-conserved", "work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["centrifugal-force", "no-gravity-in-orbit"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["linear-angular-confusion"]
       }
     ]
   },
   "6C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "angular-momentum-not-conserved",
-        "problems": 4
+        "problems": 7
       },
       {
         "tag": "energy-not-conserved",
-        "problems": 2
+        "problems": 4
       },
       {
         "tag": "rotational-inertia-mass-only",
-        "problems": 2
+        "problems": 3
       },
       {
         "tag": "work-sign",
         "problems": 1
       }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved", "energy-not-conserved", "work-sign"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "angular-momentum-not-conserved",
+          "energy-not-conserved",
+          "rotational-inertia-mass-only"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["energy-not-conserved"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved", "energy-not-conserved"]
+      }
     ]
   },
   "6D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
+      {
+        "tag": "rotational-inertia-mass-only",
+        "problems": 3
+      },
       {
         "tag": "angular-momentum-not-conserved",
         "problems": 2
       },
       {
         "tag": "linear-angular-confusion",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "no-gravity-in-orbit",
-        "problems": 1
-      },
-      {
-        "tag": "rotational-inertia-mass-only",
-        "problems": 1
+        "problems": 2
       },
       {
         "tag": "work-sign",
+        "problems": 2
+      },
+      {
+        "tag": "centrifugal-force",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion", "rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["angular-momentum-not-conserved"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["angular-momentum-not-conserved", "no-gravity-in-orbit", "work-sign"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["linear-angular-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["work-sign"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["centrifugal-force", "no-gravity-in-orbit"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["rotational-inertia-mass-only"]
       }
     ]
   },
   "7A": {
-    "problems": 5,
-    "minutes": 11,
+    "problems": 10,
+    "minutes": 26,
     "difficulty": {
-      "easy": 2,
-      "medium": 3,
-      "hard": 0
-    },
-    "types": {
-      "multiple-choice": 3,
-      "numeric": 2
-    },
-    "misconceptions": [
-      {
-        "tag": "shm-max-at-wrong-point",
-        "problems": 2
-      },
-      {
-        "tag": "pendulum-period-depends-on-mass",
-        "problems": 1
-      },
-      {
-        "tag": "period-depends-on-amplitude",
-        "problems": 1
-      }
-    ]
-  },
-  "7B": {
-    "problems": 5,
-    "minutes": 13,
-    "difficulty": {
-      "easy": 0,
+      "easy": 3,
       "medium": 5,
-      "hard": 0
-    },
-    "types": {
-      "multiple-choice": 2,
-      "numeric": 3
-    },
-    "misconceptions": [
-      {
-        "tag": "period-depends-on-amplitude",
-        "problems": 2
-      },
-      {
-        "tag": "graph-as-picture",
-        "problems": 1
-      },
-      {
-        "tag": "pendulum-period-depends-on-mass",
-        "problems": 1
-      },
-      {
-        "tag": "shm-max-at-wrong-point",
-        "problems": 1
-      }
-    ]
-  },
-  "7C": {
-    "problems": 5,
-    "minutes": 16,
-    "difficulty": {
-      "easy": 0,
-      "medium": 3,
       "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
-    },
-    "misconceptions": [
-      {
-        "tag": "shm-max-at-wrong-point",
-        "problems": 5
-      },
-      {
-        "tag": "graph-as-picture",
-        "problems": 1
-      }
-    ]
-  },
-  "7D": {
-    "problems": 5,
-    "minutes": 13,
-    "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
-    },
-    "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 5,
+      "numeric": 5
     },
     "misconceptions": [
       {
@@ -809,104 +2317,729 @@
         "problems": 4
       },
       {
+        "tag": "pendulum-period-depends-on-mass",
+        "problems": 3
+      },
+      {
+        "tag": "period-depends-on-amplitude",
+        "problems": 3
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["pendulum-period-depends-on-mass"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["pendulum-period-depends-on-mass", "period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["pendulum-period-depends-on-mass", "period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["power-of-ten", "shm-max-at-wrong-point"]
+      }
+    ]
+  },
+  "7B": {
+    "problems": 10,
+    "minutes": 27,
+    "difficulty": {
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "period-depends-on-amplitude",
+        "problems": 3
+      },
+      {
+        "tag": "graph-as-picture",
+        "problems": 2
+      },
+      {
+        "tag": "algebra-error",
+        "problems": 1
+      },
+      {
+        "tag": "pendulum-period-depends-on-mass",
+        "problems": 1
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 1
+      },
+      {
+        "tag": "shm-max-at-wrong-point",
+        "problems": 1
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["pendulum-period-depends-on-mass"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture", "period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["algebra-error"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      }
+    ]
+  },
+  "7C": {
+    "problems": 10,
+    "minutes": 29,
+    "difficulty": {
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "shm-max-at-wrong-point",
+        "problems": 8
+      },
+      {
+        "tag": "angle-not-in-radians",
+        "problems": 1
+      },
+      {
+        "tag": "graph-as-picture",
+        "problems": 1
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 1
+      },
+      {
+        "tag": "sign-error",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["graph-as-picture", "shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point", "sign-error"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["angle-not-in-radians"]
+      }
+    ]
+  },
+  "7D": {
+    "problems": 10,
+    "minutes": 27,
+    "difficulty": {
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "shm-max-at-wrong-point",
+        "problems": 6
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 2
+      },
+      {
+        "tag": "pendulum-period-depends-on-mass",
+        "problems": 1
+      },
+      {
         "tag": "period-depends-on-amplitude",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["period-depends-on-amplitude"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["shm-max-at-wrong-point"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["pendulum-period-depends-on-mass"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["power-of-ten"]
       }
     ]
   },
   "8A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 2,
-      "medium": 3,
-      "hard": 0
-    },
-    "types": {
-      "multiple-choice": 1,
-      "numeric": 4
-    },
-    "misconceptions": [
-      {
-        "tag": "pressure-force-confusion",
-        "problems": 2
-      },
-      {
-        "tag": "buoyancy-depends-on-object-weight",
-        "problems": 1
-      },
-      {
-        "tag": "faster-fluid-higher-pressure",
-        "problems": 1
-      }
-    ]
-  },
-  "8B": {
-    "problems": 5,
-    "minutes": 15,
-    "difficulty": {
-      "easy": 0,
-      "medium": 4,
-      "hard": 1
-    },
-    "types": {
-      "multiple-choice": 2,
-      "numeric": 3
-    },
-    "misconceptions": [
-      {
-        "tag": "pressure-force-confusion",
-        "problems": 3
-      },
-      {
-        "tag": "buoyancy-depends-on-object-weight",
-        "problems": 1
-      }
-    ]
-  },
-  "8C": {
-    "problems": 5,
-    "minutes": 15,
-    "difficulty": {
-      "easy": 0,
-      "medium": 3,
+      "easy": 3,
+      "medium": 5,
       "hard": 2
     },
     "types": {
       "multiple-choice": 3,
-      "numeric": 2
+      "numeric": 7
     },
     "misconceptions": [
+      {
+        "tag": "pressure-force-confusion",
+        "problems": 4
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 2
+      },
+      {
+        "tag": "buoyancy-depends-on-object-weight",
+        "problems": 1
+      },
+      {
+        "tag": "faster-fluid-higher-pressure",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight", "faster-fluid-higher-pressure"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      }
+    ]
+  },
+  "8B": {
+    "problems": 10,
+    "minutes": 29,
+    "difficulty": {
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "pressure-force-confusion",
+        "problems": 5
+      },
       {
         "tag": "buoyancy-depends-on-object-weight",
         "problems": 3
       },
       {
+        "tag": "buoyancy-left-out",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["buoyancy-left-out"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      }
+    ]
+  },
+  "8C": {
+    "problems": 10,
+    "minutes": 28,
+    "difficulty": {
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 5,
+      "numeric": 5
+    },
+    "misconceptions": [
+      {
+        "tag": "buoyancy-depends-on-object-weight",
+        "problems": 8
+      },
+      {
         "tag": "pressure-force-confusion",
         "problems": 2
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight", "pressure-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": ["pressure-force-confusion"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["buoyancy-depends-on-object-weight"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["buoyancy-depends-on-object-weight"]
       }
     ]
   },
   "8D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "faster-fluid-higher-pressure",
-        "problems": 3
+        "problems": 5
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 2
       },
       {
         "tag": "pressure-force-confusion",
         "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": ["faster-fluid-higher-pressure"]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": []
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["faster-fluid-higher-pressure"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["faster-fluid-higher-pressure", "pressure-force-confusion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["faster-fluid-higher-pressure"]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": []
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": ["unit-conversion"]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": ["faster-fluid-higher-pressure"]
       }
     ]
   }

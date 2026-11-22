@@ -1,0 +1,1179 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 9,
+  "guides": [
+    {
+      "topic": "9.1",
+      "bigIdea": "The temperature of a gas measures the average kinetic energy of its randomly moving particles, and its pressure is the combined push of those particles colliding with the walls of the container.",
+      "picture": {
+        "diagram": "plot x=v[m/s] y=N xr=0,2000 yr=0,1.15\nfn (v/422)^2*exp(1-(v/422)^2) 0..2000\nfn 0.5*(v/844)^2*exp(1-(v/844)^2) 0..2000\nnote 640,1.02 \"300 K\"\nnote 1250,0.5 \"1200 K\"\nyt none",
+        "caption": "The number of nitrogen molecules, $N$, moving at each speed $v$, at two temperatures. At $300\\ \\text{K}$ the most common speed is about $420\\ \\text{m/s}$, but the speeds are spread widely. At $1200\\ \\text{K}$, four times the kelvin temperature, the whole curve shifts to about twice the speed and flattens."
+      },
+      "explanation": "A gas is mostly empty space, with an enormous number of particles (atoms or molecules) flying about in random directions. Each time a particle bounces off a wall its momentum changes, so the wall must have pushed on it, and by Newton's third law the particle pushed back on the wall. One such push is far too small to notice, but each square centimetre of wall is hit by something like $10^{23}$ particles every second, and together they add up to a steady outward force. Pressure is that force on each unit of area, $P = F/A$. More hits per second (more particles, or the same particles in a smaller space) or harder hits (faster particles) mean a higher pressure.\n\nTemperature is the other large-scale quantity that the particle picture explains. The kelvin temperature of a gas is proportional to the average kinetic energy of its particles as they move from place to place: $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$, where $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$ is Boltzmann's constant. Double the kelvin temperature and the average kinetic energy doubles. The formula contains no mass, so at one temperature every ideal gas has the same average kinetic energy per particle, whether the particles are light or heavy.\n\nThe word \"average\" matters. At any instant some particles are slow and some are very fast, and collisions keep reshuffling who is which; the picture shows the spread. Warming the gas shifts the whole distribution toward higher speeds and widens it. A typical speed comes from setting $\\tfrac{1}{2}m v^2$ equal to the average kinetic energy, which gives the root-mean-square speed $v_{\\text{rms}} = \\sqrt{3k_B T/m}$. Because of the square root, the temperature must be four times as high to double the speed, and at the same temperature lighter particles move faster than heavier ones.",
+      "equations": [
+        {
+          "latex": "K_{\\text{avg}} = \\tfrac{3}{2}k_B T",
+          "meaning": "The average kinetic energy of one gas particle's motion through space is proportional to the kelvin temperature.",
+          "variables": [
+            {
+              "symbol": "K_{\\text{avg}}",
+              "name": "average translational kinetic energy of one particle",
+              "unit": "J"
+            },
+            {
+              "symbol": "k_B",
+              "name": "Boltzmann's constant, $1.38 \\times 10^{-23}$",
+              "unit": "J/K"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "You want the average kinetic energy per particle at a known temperature, or want to compare temperatures by comparing particle energies.",
+          "notWhen": "Never with a Celsius temperature. It is an average over many particles, not the energy of any particular one."
+        },
+        {
+          "latex": "v_{\\text{rms}} = \\sqrt{\\frac{3k_B T}{m}}",
+          "meaning": "The root-mean-square speed, a typical particle speed, grows with the square root of the kelvin temperature and is larger for lighter particles.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{rms}}",
+              "name": "root-mean-square speed of the particles",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "k_B",
+              "name": "Boltzmann's constant",
+              "unit": "J/K"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature",
+              "unit": "K"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of one particle",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "You need a typical speed for the particles of a gas, or want to compare the speeds of two gases or of one gas at two temperatures.",
+          "notWhen": "$m$ is the mass of a single particle in kilograms, not the mass of the sample and not the molar mass in grams. Not every particle has this speed."
+        },
+        {
+          "latex": "P = \\frac{F}{A}",
+          "meaning": "Pressure is the size of the force the gas exerts at right angles to a surface, divided by the area of that surface.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "F",
+              "name": "force the gas exerts perpendicular to the surface",
+              "unit": "N"
+            },
+            {
+              "symbol": "A",
+              "name": "area of the surface",
+              "unit": "m²"
+            }
+          ],
+          "useWhen": "Relating the pressure of a gas to the force on a piston, lid or wall.",
+          "notWhen": "It does not say why the pressure has the value it has; for that, use the particle picture or the ideal gas law (topic 9.2)."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A temperature from a molecular speed",
+          "prompt": "High in the atmosphere, the oxygen molecules have a root-mean-square speed of $1.10 \\times 10^3\\ \\text{m/s}$. One oxygen molecule has a mass of $5.31 \\times 10^{-26}\\ \\text{kg}$. Boltzmann's constant is $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$. What is the temperature of the gas there?",
+          "steps": [
+            "The root-mean-square speed fixes the average kinetic energy of one molecule: $K_{\\text{avg}} = \\tfrac{1}{2}m v_{\\text{rms}}^2 = \\tfrac{1}{2}(5.31 \\times 10^{-26}\\ \\text{kg})(1.10 \\times 10^3\\ \\text{m/s})^2 = 3.21 \\times 10^{-20}\\ \\text{J}$.",
+            "Temperature is a measure of that average: $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$, so $T = \\dfrac{2K_{\\text{avg}}}{3k_B}$, which is the same as $T = \\dfrac{m v_{\\text{rms}}^2}{3k_B}$.",
+            "Put in the numbers: $T = \\dfrac{2(3.21 \\times 10^{-20}\\ \\text{J})}{3(1.38 \\times 10^{-23}\\ \\text{J/K})} = 1.55 \\times 10^3\\ \\text{K}$.",
+            "The answer is in kelvin because $k_B$ is in joules per kelvin: about $1280\\ \\text{°C}$."
+          ],
+          "answer": "$T = 1.55 \\times 10^3\\ \\text{K}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "kB": {
+                "value": 1.38e-23,
+                "unit": "J/K"
+              },
+              "v": {
+                "value": 1100,
+                "unit": "m/s"
+              },
+              "m": {
+                "value": 5.31e-26,
+                "unit": "kg"
+              }
+            },
+            "expr": "m*v^2/(3*kB)",
+            "unit": "K"
+          }
+        },
+        {
+          "title": "Matching a lighter gas's speed",
+          "prompt": "Helium in a balloon is at $293\\ \\text{K}$. The molar mass of helium is $4.00\\ \\text{g/mol}$ and that of nitrogen is $28.0\\ \\text{g/mol}$. To what temperature would a sample of nitrogen have to be heated for its molecules to have the same root-mean-square speed as the helium atoms? At that temperature, how does the average kinetic energy of a nitrogen molecule compare with that of a helium atom?",
+          "steps": [
+            "The average kinetic energy per particle is $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$, and $\\tfrac{1}{2}m v_{\\text{rms}}^2 = K_{\\text{avg}}$ gives $v_{\\text{rms}} = \\sqrt{3k_B T/m}$. Two gases have equal root-mean-square speeds only when $T/m$ is the same for both.",
+            "So the temperature must rise in proportion to the particle mass: $T_{\\text{N}_2} = T_{\\text{He}}\\,\\dfrac{m_{\\text{N}_2}}{m_{\\text{He}}} = (293\\ \\text{K})\\,\\dfrac{28.0\\ \\text{g/mol}}{4.00\\ \\text{g/mol}} = 2.05 \\times 10^3\\ \\text{K}$. The ratio of the particle masses equals the ratio of the molar masses.",
+            "At that temperature each nitrogen molecule has $7$ times the average kinetic energy of a helium atom: equal speeds with seven times the mass.",
+            "Speed alone is not a measure of temperature; the average kinetic energy per particle is."
+          ],
+          "answer": "$T = 2.05 \\times 10^3\\ \\text{K}$; the nitrogen molecules then have $7$ times the average kinetic energy of the helium atoms",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "T": {
+                "value": 293,
+                "unit": "K"
+              },
+              "M_N2": {
+                "value": 28,
+                "unit": "g/mol"
+              },
+              "M_He": {
+                "value": 4,
+                "unit": "g/mol"
+              }
+            },
+            "expr": "T*M_N2/M_He",
+            "unit": "K"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "molecular-speed-same-at-same-temperature",
+          "wrong": "At a given temperature all the molecules of a gas move at the same speed.",
+          "right": "Temperature fixes the average kinetic energy, not each molecule's. Speeds are spread over a wide range, and collisions keep changing which molecules are the fast ones."
+        },
+        {
+          "tag": "celsius-as-absolute",
+          "wrong": "Warming a gas from $20\\ \\text{°C}$ to $40\\ \\text{°C}$ doubles the average kinetic energy of its molecules.",
+          "right": "The energy is proportional to the kelvin temperature, which goes from $293\\ \\text{K}$ to $313\\ \\text{K}$: an increase of about 7%, not 100%."
+        },
+        {
+          "tag": "pressure-force-confusion",
+          "wrong": "Gas pressure is caused by the weight of the gas pressing down, so a gas pushes only on the bottom of its container.",
+          "right": "Pressure comes from particles hitting the walls, and they move in every direction, so a gas pushes outward on every wall, the lid included."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "More air is pumped into a rigid tank and the temperature is allowed to return to its original value. Use the particle picture to explain why the pressure is higher.",
+          "a": "The particles have the same average kinetic energy as before, so each hit on the wall is as hard as before. But there are more particles in the same space, so each patch of wall is hit more often, and the total force on it is larger."
+        },
+        {
+          "q": "A gas is warmed from $300\\ \\text{K}$ to $600\\ \\text{K}$. By what factor does the average kinetic energy of its particles change? By what factor does their root-mean-square speed change?",
+          "a": "The average kinetic energy doubles, because it is proportional to $T$. The speed goes as $\\sqrt{T}$, so it increases by a factor of $\\sqrt{2} \\approx 1.4$."
+        },
+        {
+          "q": "Room air is mostly nitrogen and oxygen, and an oxygen molecule has more mass than a nitrogen molecule. Which molecules have the greater average kinetic energy? Which are faster on average?",
+          "a": "The average kinetic energies are equal, because the two gases are at the same temperature. The lighter nitrogen molecules are faster on average."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=v[m/s] y=N xr=0,2500 yr=0,1.9\nfn {{sqrt(300/T)}}*(v/{{422*sqrt(T/300)}})^2*exp(1-(v/{{422*sqrt(T/300)}})^2) 0..2500\nnote 1750,1.7 \"T = {{T}} K\"\nnote 1750,1.5 \"v_{rms} = {{round(29.85*sqrt(T))}} m/s\"\nyt none",
+        "caption": "The number of nitrogen molecules, $N$, at each speed $v$. Raise the temperature: the peak moves to higher speeds and the curve flattens, because the same number of molecules is spread over more speeds. To double $v_{\\text{rms}}$, the kelvin temperature must be four times as high.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Temperature",
+            "min": 100,
+            "max": 1500,
+            "step": 50,
+            "default": 300,
+            "unit": "K"
+          }
+        ]
+      },
+      "teacherNotes": "Ask students to explain pressure in a sentence that uses the words \"collisions\" and \"momentum\" before any formula appears; the link back to impulse from mechanics is the heart of the explanation. The two errors to listen for are \"all the molecules go at the same speed\" and \"heavier molecules have more energy at the same temperature\". A quick diagnostic is to ask which is faster in room air, nitrogen or oxygen, and which has more kinetic energy on average. Set 9A practises this topic."
+    },
+    {
+      "topic": "9.2",
+      "bigIdea": "For an ideal gas the pressure multiplied by the volume is proportional to the amount of gas multiplied by its kelvin temperature, so a change in one of these quantities must be matched by a change in at least one of the others.",
+      "picture": {
+        "diagram": "pv num P=kPa V=L\nstate A V=2 P=300\nstate B V=6\nstate C V=6 P=300\nisothermal A B \"same T\"\nisobaric A C \"T triples\"",
+        "caption": "A pressure–volume (PV) diagram for a fixed amount of gas. Along the curve from A to B the product $PV$ stays at $(300\\ \\text{kPa})(2\\ \\text{L}) = 600\\ \\text{J}$, so the temperature is constant and the pressure falls to $100\\ \\text{kPa}$. Going from A to C at constant pressure triples the volume, so $PV$ and the kelvin temperature both triple."
+      },
+      "explanation": "Experiments on a sample of gas show three simple patterns. Squeeze it at constant temperature and the pressure rises in proportion as the volume falls. Warm it at constant pressure and the volume grows in proportion to the kelvin temperature. Warm it in a rigid container and the pressure grows in proportion to the kelvin temperature. And at a fixed temperature and volume, more gas means proportionally more pressure. One equation holds all of this: $PV = nRT$.\n\nIn SI units $P$ is in pascals, $V$ in cubic metres, $n$ in moles and $T$ in kelvin, with $R = 8.31\\ \\text{J/(mol·K)}$. Two conversions come up constantly: $1\\ \\text{L} = 10^{-3}\\ \\text{m}^3$, and the kelvin temperature is the Celsius temperature plus 273. Counting particles instead of moles gives the same law as $PV = N k_B T$. The law describes ordinary gases well as long as they are not close to turning liquid.\n\nFor a sealed sample $n$ cannot change, so $PV/T$ keeps one value and two states of the gas can be compared directly: $P_1V_1/T_1 = P_2V_2/T_2$. The shortcuts \"pressure is inversely proportional to volume\" and \"pressure is proportional to temperature\" are this equation with one quantity held fixed. Before using one, check that the third quantity really is fixed.\n\nA PV diagram plots the pressure of a gas against its volume. Each point is one state of the gas, and a line is a process that takes it from state to state. Since $T = PV/(nR)$, the temperature at any point is set by the product $PV$. All the states at one temperature lie on a curve called an isotherm, where $P$ is inversely proportional to $V$, and isotherms farther from the origin are hotter.",
+      "equations": [
+        {
+          "latex": "PV = nRT",
+          "meaning": "The pressure, volume, amount and kelvin temperature of an ideal gas are tied together: fix any three and the fourth is determined.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "V",
+              "name": "volume",
+              "unit": "m³"
+            },
+            {
+              "symbol": "n",
+              "name": "amount of gas",
+              "unit": "mol"
+            },
+            {
+              "symbol": "R",
+              "name": "ideal gas constant, $8.31$",
+              "unit": "J/(mol·K)"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "You know three of pressure, volume, amount and temperature for one state of a gas and want the fourth.",
+          "notWhen": "Not with Celsius temperatures or litres left unconverted, and not for a gas that is close to condensing or at very high density."
+        },
+        {
+          "latex": "PV = N k_B T",
+          "meaning": "The same law written for a number of particles instead of a number of moles.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "V",
+              "name": "volume",
+              "unit": "m³"
+            },
+            {
+              "symbol": "N",
+              "name": "number of particles",
+              "unit": ""
+            },
+            {
+              "symbol": "k_B",
+              "name": "Boltzmann's constant, $1.38 \\times 10^{-23}$",
+              "unit": "J/K"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "The amount of gas is given, or wanted, as a number of atoms or molecules.",
+          "notWhen": "Do not mix the two forms: $n$ goes with $R$, and $N$ goes with $k_B$."
+        },
+        {
+          "latex": "\\frac{P_1 V_1}{T_1} = \\frac{P_2 V_2}{T_2}",
+          "meaning": "For a fixed amount of gas, pressure times volume divided by kelvin temperature is the same in every state.",
+          "variables": [
+            {
+              "symbol": "P_1,\\ P_2",
+              "name": "pressures in the two states",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "V_1,\\ V_2",
+              "name": "volumes in the two states",
+              "unit": "m³"
+            },
+            {
+              "symbol": "T_1,\\ T_2",
+              "name": "absolute temperatures in the two states",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "A sealed sample of gas changes from one state to another. Any pressure or volume unit works, as long as both states use the same one.",
+          "notWhen": "Not if gas leaks out or is added between the two states. The temperatures must still be in kelvin."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "The volume of a helium balloon",
+          "prompt": "A weather balloon is filled with $2.5\\ \\text{mol}$ of helium. On the ground the helium is at $15\\ \\text{°C}$ and a pressure of $101\\ \\text{kPa}$. What is the volume of the balloon? Use $R = 8.31\\ \\text{J/(mol·K)}$.",
+          "steps": [
+            "Put everything in SI units. $T = 15 + 273 = 288\\ \\text{K}$, and $P = 101\\ \\text{kPa} = 1.01 \\times 10^5\\ \\text{Pa}$.",
+            "One state of the gas, three quantities known, one wanted: use $PV = nRT$ and solve for the volume, $V = \\dfrac{nRT}{P}$.",
+            "$V = \\dfrac{(2.5\\ \\text{mol})(8.31\\ \\text{J/(mol·K)})(288\\ \\text{K})}{1.01 \\times 10^5\\ \\text{Pa}} = \\dfrac{5.98 \\times 10^3\\ \\text{J}}{1.01 \\times 10^5\\ \\text{Pa}} = 0.059\\ \\text{m}^3$.",
+            "Check the size: $0.059\\ \\text{m}^3$ is 59 litres, a sphere about half a metre across, which is sensible for a small balloon."
+          ],
+          "answer": "$V = 0.059\\ \\text{m}^3$ (59 litres)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "n": {
+                "value": 2.5,
+                "unit": "mol"
+              },
+              "R": {
+                "value": 8.31,
+                "unit": "J/(mol K)"
+              },
+              "T": {
+                "value": 15,
+                "unit": "°C"
+              },
+              "P": {
+                "value": 101,
+                "unit": "kPa"
+              }
+            },
+            "expr": "n*R*T/P",
+            "unit": "m^3"
+          }
+        },
+        {
+          "title": "Squeezed and warmed at once",
+          "prompt": "A sealed syringe holds $60\\ \\text{mL}$ of air at $20\\ \\text{°C}$ and $1.0 \\times 10^5\\ \\text{Pa}$. The plunger is pushed in until the volume is $25\\ \\text{mL}$, and the air is found to have warmed to $50\\ \\text{°C}$. Determine the new pressure. A student predicts $2.4 \\times 10^5\\ \\text{Pa}$ by multiplying the original pressure by $60/25$. Explain what the student has left out.",
+          "steps": [
+            "The syringe is sealed, so the amount of gas is fixed and $\\dfrac{P_1V_1}{T_1} = \\dfrac{P_2V_2}{T_2}$. Solving for the new pressure gives $P_2 = P_1 \\cdot \\dfrac{V_1}{V_2} \\cdot \\dfrac{T_2}{T_1}$.",
+            "The temperatures must be in kelvin: $T_1 = 293\\ \\text{K}$ and $T_2 = 323\\ \\text{K}$. The volumes appear only as a ratio, so millilitres can stay.",
+            "$P_2 = (1.0 \\times 10^5\\ \\text{Pa})\\left(\\dfrac{60\\ \\text{mL}}{25\\ \\text{mL}}\\right)\\left(\\dfrac{323\\ \\text{K}}{293\\ \\text{K}}\\right) = (1.0 \\times 10^5\\ \\text{Pa})(2.4)(1.10) = 2.6 \\times 10^5\\ \\text{Pa}$.",
+            "The student used \"pressure is inversely proportional to volume\", which holds only at constant temperature. Here the temperature rose as well, which raises the pressure by a further 10%: the faster molecules hit the walls harder and more often."
+          ],
+          "answer": "$P_2 = 2.6 \\times 10^5\\ \\text{Pa}$; the student's value ignores the rise in temperature",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "P1": {
+                "value": 100000,
+                "unit": "Pa"
+              },
+              "V1": {
+                "value": 60,
+                "unit": "mL"
+              },
+              "V2": {
+                "value": 25,
+                "unit": "mL"
+              },
+              "T1": {
+                "value": 20,
+                "unit": "°C"
+              },
+              "T2": {
+                "value": 50,
+                "unit": "°C"
+              }
+            },
+            "expr": "P1*V1*T2/(V2*T1)",
+            "unit": "Pa"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "celsius-as-absolute",
+          "wrong": "Heating the gas in a rigid tank from $20\\ \\text{°C}$ to $40\\ \\text{°C}$ doubles its pressure.",
+          "right": "Pressure is proportional to the kelvin temperature. Going from $293\\ \\text{K}$ to $313\\ \\text{K}$ raises the pressure by a factor of $313/293$, about 7%. To double it the gas would have to reach $586\\ \\text{K}$, which is $313\\ \\text{°C}$."
+        },
+        {
+          "tag": "gas-variable-in-isolation",
+          "wrong": "Halving the volume of a gas always doubles its pressure.",
+          "right": "Only if the temperature and the amount of gas stay the same. A quick squeeze also warms the gas, so the pressure more than doubles; if gas escapes, the pressure rises by less."
+        },
+        {
+          "tag": "gas-variable-in-isolation",
+          "wrong": "On a PV diagram the state that is higher up, at the greater pressure, is always the hotter one.",
+          "right": "Temperature goes with the product $PV$, not with pressure alone. A state at high pressure and small volume can be colder than one at low pressure and large volume. Multiply the two coordinates and compare."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A sealed rigid container of gas is heated from $27\\ \\text{°C}$ to $327\\ \\text{°C}$. By what factor does the pressure change?",
+          "a": "It doubles. The volume and the amount are fixed, so pressure is proportional to the kelvin temperature, which goes from $300\\ \\text{K}$ to $600\\ \\text{K}$. (The ratio of the Celsius readings, about 12, means nothing.)"
+        },
+        {
+          "q": "On a PV diagram for a sealed sample, state X is at $1\\ \\text{L}$ and $400\\ \\text{kPa}$ and state Y is at $4\\ \\text{L}$ and $100\\ \\text{kPa}$. Which state is hotter?",
+          "a": "Neither. $PV$ is $400\\ \\text{J}$ in both states ($1\\ \\text{kPa} \\times 1\\ \\text{L} = 1\\ \\text{J}$), so they are at the same temperature and lie on the same isotherm."
+        },
+        {
+          "q": "A balloon is carried from a warm room into a walk-in freezer and shrinks, while the pressure inside stays close to atmospheric. Explain why, using the ideal gas law.",
+          "a": "The amount of gas and the pressure are both fixed, so the volume is proportional to the kelvin temperature. As the gas cools its particles slow down and push less on the skin, and the balloon contracts until the particles hit the smaller surface often enough to balance the air outside again."
+        }
+      ],
+      "tryIt": {
+        "diagram": "pv num P=kPa V=L\nstate C V=2 P=600\nstate D V=8\nisothermal C D \"600 K\"\nstate A V=2 P={{T}}\nstate B V=8\nisothermal A B \"T = {{T}} K\"",
+        "caption": "Isotherms for $0.24\\ \\text{mol}$ of gas, for which $nR = 2.0\\ \\text{J/K}$. The upper curve is fixed at $600\\ \\text{K}$. Change the temperature of the lower one: a hotter isotherm sits farther from the origin, and at every volume its pressure is higher in proportion to $T$.",
+        "params": [
+          {
+            "name": "T",
+            "label": "Temperature",
+            "min": 200,
+            "max": 500,
+            "step": 50,
+            "default": 300,
+            "unit": "K"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.1"
+      ],
+      "teacherNotes": "Most wrong answers here come from one of two habits: putting Celsius temperatures into a ratio, or applying a two-variable proportionality without checking what is held fixed. Ask \"what stays the same?\" before every gas problem. When reading PV diagrams, have students rank the temperatures of several labelled states by multiplying the coordinates; it prepares them for the first law, where the change in internal energy is read the same way. Set 9A practises this topic."
+    },
+    {
+      "topic": "9.3",
+      "bigIdea": "Energy passes spontaneously from a hotter object to a colder one, by conduction, convection or radiation, until the two are at the same temperature.",
+      "picture": {
+        "diagram": "plot x=t[min] y=T[°C] xr=0,10 yr=0,90\nfn 40+40*exp(-t/2) 0..10\nfn 40-20*exp(-t/2) 0..10\nhl 40 \"equilibrium\"\nnote 3.4,62 \"hot block\"\nnote 3.4,24 \"cool water\"",
+        "caption": "A hot block is lowered into cool water in an insulated cup. Energy passes from the block to the water, quickly at first and more slowly as the temperatures approach each other, until both are at $40\\ \\text{°C}$. The water warms by less than the block cools because it takes more energy to change the water's temperature."
+      },
+      "explanation": "Put a hot object in contact with a cold one and energy passes from hot to cold. Energy transferred because of a temperature difference is called heat, or heating, written $Q$ and measured in joules. An object does not contain heat; it has internal energy, the energy of its particles' random motion. And nothing called \"cold\" ever flows: an ice cube cools a drink by taking energy from it.\n\nThere are three ways the energy can travel. In conduction, particles collide where the objects touch, and on average the more energetic particles of the hot object hand kinetic energy to the less energetic particles of the cold one. In convection, a liquid or gas carries the energy by moving: warmed fluid expands, becomes less dense and rises, while cooler fluid sinks to take its place. In radiation, the energy is carried by electromagnetic waves, which need no material to travel through; that is how the Sun warms the Earth.\n\nAs the hot object cools and the cold one warms, the temperature difference shrinks and the transfer slows. When the two temperatures are equal the net transfer stops, and the objects are in thermal equilibrium. Their particles still exchange energy, but as much goes one way as the other. Equilibrium means equal temperatures, not equal energies: a spoon in equilibrium with a bathtub of water has far less internal energy than the water.\n\nIf the two objects are insulated from everything else, the energy the hot one loses is the energy the cold one gains: $Q_{\\text{hot}} + Q_{\\text{cold}} = 0$. How fast energy is transferred is a power, $P = Q/\\Delta t$, in watts.",
+      "equations": [
+        {
+          "latex": "Q_{\\text{hot}} + Q_{\\text{cold}} = 0",
+          "meaning": "When two objects exchange energy only with each other, the energy that leaves the hotter one is the energy that enters the colder one.",
+          "variables": [
+            {
+              "symbol": "Q_{\\text{hot}}",
+              "name": "energy transferred to the hotter object (negative: it loses energy)",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q_{\\text{cold}}",
+              "name": "energy transferred to the colder object (positive: it gains energy)",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Two objects, or an object and a liquid, come to equilibrium inside an insulated container.",
+          "notWhen": "Not when a significant amount of energy escapes to the surroundings; then the cold object gains less than the hot one loses."
+        },
+        {
+          "latex": "P = \\frac{Q}{\\Delta t}",
+          "meaning": "The rate of energy transfer by heating is the energy transferred divided by the time it takes.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "rate of energy transfer (power)",
+              "unit": "W"
+            },
+            {
+              "symbol": "Q",
+              "name": "energy transferred by heating",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know how fast energy is being transferred and for how long, or want the average rate of a transfer.",
+          "notWhen": "This $P$ is power, not pressure. The rate usually falls as the temperatures approach each other, so over a long time it gives only an average."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A mug of coffee warming a room",
+          "prompt": "A mug of coffee at $75\\ \\text{°C}$ stands on a desk in a room at $22\\ \\text{°C}$. Over the next $5.0\\ \\text{min}$ the coffee transfers energy to the room at an average rate of $18\\ \\text{W}$. How much energy is transferred in that time?",
+          "steps": [
+            "The coffee is hotter than the room, so energy passes from the coffee to the room, at $18\\ \\text{J}$ every second.",
+            "Convert the time: $\\Delta t = 5.0\\ \\text{min} \\times 60\\ \\text{s/min} = 300\\ \\text{s}$.",
+            "Rearrange $P = Q/\\Delta t$ for the energy: $Q = P\\,\\Delta t = (18\\ \\text{W})(300\\ \\text{s}) = 5.4 \\times 10^3\\ \\text{J}$.",
+            "The coffee's internal energy fell by this amount and the room's rose by the same amount. As the coffee nears $22\\ \\text{°C}$ the rate drops, and the transfer stops when the coffee reaches room temperature."
+          ],
+          "answer": "$Q = 5.4 \\times 10^3\\ \\text{J}$, from the coffee to the room",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "P": {
+                "value": 18,
+                "unit": "W"
+              },
+              "t": {
+                "value": 5,
+                "unit": "min"
+              }
+            },
+            "expr": "P*t",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Why a vacuum flask keeps soup hot",
+          "prompt": "A vacuum flask has a double glass wall with the air pumped out of the gap between the walls, silvered surfaces facing the gap, and a tight plastic stopper. Hot soup poured into it is still hot hours later. For each of conduction, convection and radiation, explain which feature of the flask reduces that transfer of energy.",
+          "steps": [
+            "The soup is warmer than its surroundings, so energy leaves it by every route open to it. The flask cannot stop the transfer, only slow each route.",
+            "Conduction passes energy from particle to particle. The gap holds almost no particles, so almost nothing conducts across it; what is left is the thin glass at the neck and the plastic stopper, both poor conductors.",
+            "Convection needs a fluid that can flow. There is no air in the gap to circulate, and the stopper keeps warm air and vapour from rising out of the top.",
+            "Radiation needs no medium, so it does cross the vacuum. The silvered surfaces emit little infrared and reflect most of what reaches them back toward the soup."
+          ],
+          "answer": "The vacuum stops conduction and convection across the gap, the stopper stops convection out of the top, and the silvering reduces radiation; the soup still cools, only slowly",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "cold-as-substance",
+          "wrong": "Opening a window in winter lets the cold in.",
+          "right": "There is no substance called cold. Energy leaves the warm room with the air that flows out, and the room cools because it has lost energy."
+        },
+        {
+          "tag": "heat-temperature-confusion",
+          "wrong": "Two objects are in equilibrium when they contain the same amount of heat.",
+          "right": "Objects have internal energy; heat is energy on its way from one object to another. Equilibrium means equal temperatures: a lake has vastly more internal energy than a cup of water in equilibrium with it."
+        },
+        {
+          "tag": "conduction-rate-factors",
+          "wrong": "A metal bench feels colder than a wooden one on the same day, so the metal is at a lower temperature.",
+          "right": "Both are at the temperature of the air. Metal conducts energy away from your skin faster, and that rate is what you feel."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A spacecraft far from any star or planet slowly cools. By which process does it lose energy, and why not by the other two?",
+          "a": "By radiation: electromagnetic waves need no material to travel through. Conduction and convection both need matter in contact with the spacecraft, and there is essentially none."
+        },
+        {
+          "q": "A stone at $60\\ \\text{°C}$ is dropped into water at $20\\ \\text{°C}$ in an insulated container. What can you say about the final temperature without knowing anything else?",
+          "a": "It lies between $20\\ \\text{°C}$ and $60\\ \\text{°C}$, and it is the same for the stone and the water. Where it falls in that range depends on the masses and materials (topic 9.5)."
+        },
+        {
+          "q": "Once two objects in contact have reached thermal equilibrium, have their particles stopped exchanging energy?",
+          "a": "No. Particles at the boundary still collide and pass energy both ways, but as much goes in one direction as the other, so the net transfer is zero."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[min] y=T[°C] xr=0,10 yr=0,110\nfn {{(Th+40)/3}}+{{2*(Th-20)/3}}*exp(-t/2) 0..10\nfn {{(Th+40)/3}}-{{(Th-20)/3}}*exp(-t/2) 0..10\nhl {{(Th+40)/3}}\nnote 7,{{(Th+40)/3+9}} \"equilibrium at {{round((Th+40)/3)}} °C\"",
+        "caption": "A hot block goes into water at $20\\ \\text{°C}$; the water needs twice as much energy per degree as the block does. Change the block's starting temperature. The two curves always meet, at a temperature closer to the water's start than to the block's, and the block always cools by twice as much as the water warms.",
+        "params": [
+          {
+            "name": "Th",
+            "label": "Starting temperature of the block",
+            "min": 40,
+            "max": 100,
+            "step": 10,
+            "default": 80,
+            "unit": "°C"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.1"
+      ],
+      "teacherNotes": "Listen for \"heat\" used as a noun for something an object has; rephrasing it as \"energy transferred because of a temperature difference\" every time is tedious but it works. A touch question with a metal and a wooden object side by side (the bench in Set 9B) is the best way to surface the belief that conductors are colder: have students predict the readings of a thermometer on each before explaining. Students also tend to say that the transfer stops at equilibrium because the energies are equal; ask about a small object in a large bath. Set 9B practises this topic."
+    },
+    {
+      "topic": "9.4",
+      "bigIdea": "The internal energy of a gas changes by exactly the energy transferred to it by heating plus the work done on it, which is conservation of energy applied to a thermal system.",
+      "picture": {
+        "diagram": "pv num P=kPa V=L\nstate A V=2 P=150\nstate B V=6\nisobaric A B shade \"expansion\"",
+        "caption": "A gas expands at a constant pressure of $150\\ \\text{kPa}$ from $2\\ \\text{L}$ to $6\\ \\text{L}$. The shaded area under the path, $(150\\ \\text{kPa})(4\\ \\text{L}) = 600\\ \\text{J}$, is the work the gas does on the piston. The work done on the gas is therefore $W = -600\\ \\text{J}$."
+      },
+      "explanation": "The internal energy $U$ of an ideal gas is the total kinetic energy of its particles, so it depends only on the amount of gas and its temperature; for a monatomic ideal gas $U = \\tfrac{3}{2}nRT$. There are two ways to change it: heating, $Q$, and work, $W$, energy transferred by a force that moves a boundary such as a piston. The first law of thermodynamics says $\\Delta U = Q + W$. Here $Q$ is positive when energy enters the gas by heating, and $W$ is the work done on the gas, positive in a compression. Some problems instead use the work done by the gas, $W_{\\text{by}} = -W$, and write $\\Delta U = Q - W_{\\text{by}}$: the words \"by the gas\", or a minus sign before the work in the first law, mark that convention.\n\nAt constant pressure the work done on the gas is $W = -P\\,\\Delta V$. In a compression $\\Delta V$ is negative, so $W$ is positive and energy goes into the gas. In an expansion the gas does work on its surroundings, so $W$ is negative. On a PV diagram the size of the work is the area under the path, even when the pressure changes.\n\nFour processes have names. Isochoric (constant volume): $W = 0$, so $\\Delta U = Q$. Isobaric (constant pressure): $W = -P\\,\\Delta V$. Isothermal (constant temperature): $\\Delta U = 0$, so $Q = -W$; any energy that enters by heating leaves as work. Adiabatic (no heating): $Q = 0$, so $\\Delta U = W$; compressing the gas warms it.\n\nBecause $U$ depends only on the state of the gas, $\\Delta U$ between two states is the same along every path, while $Q$ and $W$ depend on the path. In a cycle the gas returns to its starting state, so $\\Delta U = 0$, and the net work is the area the cycle encloses; in a clockwise cycle the gas does net work on its surroundings.",
+      "equations": [
+        {
+          "latex": "\\Delta U = Q + W",
+          "meaning": "The change in a system's internal energy equals the energy transferred to it by heating plus the work done on it.",
+          "variables": [
+            {
+              "symbol": "\\Delta U",
+              "name": "change in the internal energy of the gas",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q",
+              "name": "energy transferred to the gas by heating (negative if it leaves)",
+              "unit": "J"
+            },
+            {
+              "symbol": "W",
+              "name": "work done on the gas (negative if the gas expands)",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Any process on a gas: find the two quantities you can, and the first law gives the third.",
+          "notWhen": "Do not mix sign conventions. Some books write $\\Delta U = Q - W$ with $W$ as the work done by the gas; the physics is the same, but decide which $W$ you mean and keep to it."
+        },
+        {
+          "latex": "W = -P\\,\\Delta V",
+          "meaning": "At constant pressure, the work done on a gas is minus the pressure times the change in volume.",
+          "variables": [
+            {
+              "symbol": "W",
+              "name": "work done on the gas",
+              "unit": "J"
+            },
+            {
+              "symbol": "P",
+              "name": "pressure of the gas",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "change in volume, final minus initial",
+              "unit": "m³"
+            }
+          ],
+          "useWhen": "The pressure is constant while the volume changes. With pascals and cubic metres the answer is in joules; kilopascals times litres also gives joules.",
+          "notWhen": "If the pressure changes during the process, use the area under the path on the PV diagram instead, with the same sign rule."
+        },
+        {
+          "latex": "\\Delta U = \\tfrac{3}{2}nR\\,\\Delta T",
+          "meaning": "The internal energy of a monatomic ideal gas changes only when its temperature does, and in proportion to the temperature change.",
+          "variables": [
+            {
+              "symbol": "\\Delta U",
+              "name": "change in internal energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "n",
+              "name": "amount of gas",
+              "unit": "mol"
+            },
+            {
+              "symbol": "R",
+              "name": "ideal gas constant, $8.31$",
+              "unit": "J/(mol·K)"
+            },
+            {
+              "symbol": "\\Delta T",
+              "name": "change in temperature",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "A monatomic ideal gas (helium, neon, argon) changes temperature by any process. Since $nRT = PV$, it can also be written $\\Delta U = \\tfrac{3}{2}\\Delta(PV)$.",
+          "notWhen": "The factor $\\tfrac{3}{2}$ is for monatomic gases only. For any ideal gas, though, it is still true that $\\Delta U = 0$ when the temperature does not change."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Heating a gas at constant pressure",
+          "prompt": "A cylinder closed by a freely sliding piston holds $0.150\\ \\text{mol}$ of helium, a monatomic ideal gas, at constant pressure. The gas is warmed from $20\\ \\text{°C}$ to $80\\ \\text{°C}$. How much energy must enter the gas by heating? Use $R = 8.31\\ \\text{J/(mol·K)}$.",
+          "steps": [
+            "A temperature change is the same in kelvins as in degrees Celsius: $\\Delta T = 60\\ \\text{K}$. For a monatomic ideal gas $U = \\tfrac{3}{2}nRT$, so $\\Delta U = \\tfrac{3}{2}(0.150\\ \\text{mol})(8.31\\ \\text{J/(mol·K)})(60\\ \\text{K}) = +112\\ \\text{J}$.",
+            "At constant pressure $W = -P\\,\\Delta V$, and the ideal gas law turns $P\\,\\Delta V$ into $nR\\,\\Delta T$: $W = -(0.150)(8.31)(60)\\ \\text{J} = -74.8\\ \\text{J}$, negative because the gas pushes the piston out.",
+            "First law: $Q = \\Delta U - W = 112\\ \\text{J} - (-74.8\\ \\text{J}) = +187\\ \\text{J}$.",
+            "Check: a rigid container would need only $112\\ \\text{J}$; the extra $74.8\\ \\text{J}$ leaves as work on the piston."
+          ],
+          "answer": "$Q = +187\\ \\text{J}$: that much energy must enter the gas by heating",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "n": {
+                "value": 0.15,
+                "unit": "mol"
+              },
+              "R": {
+                "value": 8.31,
+                "unit": "J/(mol·K)"
+              },
+              "T_i": {
+                "value": 20,
+                "unit": "°C"
+              },
+              "T_f": {
+                "value": 80,
+                "unit": "°C"
+              }
+            },
+            "expr": "2.5*n*R*(T_f - T_i)",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "A cycle run the other way",
+          "prompt": "A fixed amount of gas is taken around the triangular cycle A to B to C and back to A shown on the PV diagram. Determine the net work done on the gas in one cycle and the net energy transferred to the gas by heating. Is the gas acting as a heat engine?\n\n```dg\npv num P=kPa V=L\nstate A V=1 P=100\nstate B V=3 P=100\nstate C V=1 P=400\nisobaric A B\nline B C\nisochoric C A\nshade cycle\n```",
+          "steps": [
+            "From A to B the gas expands by $2\\ \\text{L}$ at $100\\ \\text{kPa}$, doing $200\\ \\text{J}$ of work on its surroundings ($1\\ \\text{kPa} \\times 1\\ \\text{L} = 1\\ \\text{J}$): $W_{AB} = -200\\ \\text{J}$.",
+            "From B to C the gas is compressed; the work done on it is the trapezoid under the line: $W_{BC} = \\tfrac{1}{2}(100 + 400)\\ \\text{kPa} \\times 2\\ \\text{L} = +500\\ \\text{J}$. From C to A, $W_{CA} = 0$.",
+            "Net work done on the gas: $W = -200\\ \\text{J} + 500\\ \\text{J} = +300\\ \\text{J}$, the triangle's area, positive because the counterclockwise cycle compresses at higher pressures than it expands.",
+            "The gas returns to A, so $\\Delta U = 0$ and $Q = -W = -300\\ \\text{J}$: a net $300\\ \\text{J}$ leaves by heating. Work goes in and heating comes out, the reverse of an engine, as in a refrigerator."
+          ],
+          "answer": "The net work done on the gas is $+300\\ \\text{J}$ per cycle and a net $300\\ \\text{J}$ leaves it by heating, so it is not a heat engine",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "P_hi": {
+                "value": 400,
+                "unit": "kPa"
+              },
+              "P_lo": {
+                "value": 100,
+                "unit": "kPa"
+              },
+              "V_hi": {
+                "value": 3,
+                "unit": "L"
+              },
+              "V_lo": {
+                "value": 1,
+                "unit": "L"
+              }
+            },
+            "expr": "(P_hi - P_lo)*(V_hi - V_lo)/2",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "thermal-work-sign",
+          "wrong": "A gas is compressed, so $\\Delta V$ is negative and the work done on it is negative.",
+          "right": "Compressing a gas puts energy into it, so the work done on the gas is positive: $W = -P\\,\\Delta V$, and minus a negative is positive."
+        },
+        {
+          "tag": "isothermal-adiabatic-confusion",
+          "wrong": "In an isothermal process the temperature does not change, so no energy is transferred by heating.",
+          "right": "Constant temperature means $\\Delta U = 0$, not $Q = 0$. A gas that expands isothermally does work, and that much energy must enter by heating. The process with $Q = 0$ is adiabatic, and in it the temperature does change."
+        },
+        {
+          "tag": "heat-temperature-confusion",
+          "wrong": "A gas cannot get hotter unless it is heated.",
+          "right": "Temperature follows the internal energy, which changes through heating and work together. A gas compressed quickly gets hotter with no heating at all, as a bicycle pump shows."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An ideal gas expands at constant temperature and does $250\\ \\text{J}$ of work on a piston. What are $\\Delta U$, $W$ and $Q$ for the gas?",
+          "a": "$\\Delta U = 0$, because the temperature does not change. The gas does the work, so the work done on it is $W = -250\\ \\text{J}$. Then $Q = \\Delta U - W = +250\\ \\text{J}$: that much energy enters by heating."
+        },
+        {
+          "q": "A gas in a well-insulated cylinder is compressed quickly, and $400\\ \\text{J}$ of work is done on it. What happens to its internal energy and its temperature?",
+          "a": "No energy is transferred by heating ($Q = 0$), so $\\Delta U = W = +400\\ \\text{J}$. The internal energy rises, and so does the temperature."
+        },
+        {
+          "q": "A gas is taken from state X to state Y along two different paths on a PV diagram. The area under path 1 is larger than the area under path 2. Compare the changes in internal energy and the energy transferred by heating.",
+          "a": "$\\Delta U$ is the same for both paths, since it depends only on the two states. The amounts of work differ, so $Q = \\Delta U - W$ must differ too."
+        }
+      ],
+      "tryIt": {
+        "diagram": "pv num P=kPa V=L\nstate A V=2 P=300\nstate M V=2 P={{p}}\nstate N V=8 P={{p}}\nstate C V=8 P=75\nisochoric A M\nisobaric M N shade \"work by gas = {{6*p}} J\"\nisochoric N C",
+        "caption": "Three steps take a gas from A to C: the pressure is lowered at constant volume, the gas expands at constant pressure, then the pressure is lowered again. Change the pressure of the expansion. A and C are at the same temperature ($PV = 600\\ \\text{J}$ at both), so $\\Delta U = 0$ for every path, yet the work, and with it the heating, is different each time.",
+        "params": [
+          {
+            "name": "p",
+            "label": "Pressure during the expansion",
+            "min": 125,
+            "max": 250,
+            "step": 25,
+            "default": 200,
+            "unit": "kPa"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.1",
+        "9.2",
+        "9.3"
+      ],
+      "teacherNotes": "Sign errors dominate this topic. Have students write, in words, \"energy in by heating: … ; work done on the gas: …\" with a sign on each before they touch the equation, and tell them which convention the course uses ($\\Delta U = Q + W$, with $W$ the work done on the gas) because other sources use the opposite one. The second sticking point is isothermal against adiabatic: ask for $Q$, $W$ and $\\Delta U$ in each of the four named processes as a table. On PV diagrams, ask for $\\Delta U$ between two states before any path is drawn, to establish that it does not depend on the path. Set 9C practises this topic."
+    },
+    {
+      "topic": "9.5",
+      "bigIdea": "A material's specific heat sets how much energy each kilogram of it needs for each degree of temperature change, and its thermal conductivity sets how quickly energy passes through it.",
+      "picture": {
+        "diagram": "plot x=Q[kJ] y=T[°C] xr=0,45 yr=0,70\nseg 0,20 36,60\nseg 0,20 42,30\nnote 11,54 \"1 kg of aluminium\"\nnote 34,16 \"1 kg of water\"\nxt 0 6 12 18 24 30 36 42\nyt 0 10 20 30 40 50 60",
+        "caption": "Temperature against energy supplied for $1\\ \\text{kg}$ of aluminium and $1\\ \\text{kg}$ of water, both starting at $20\\ \\text{°C}$. With $36\\ \\text{kJ}$ the aluminium warms by $40\\ \\text{°C}$; the water needs $42\\ \\text{kJ}$ to warm by just $10\\ \\text{°C}$. The gentler slope belongs to the larger specific heat."
+      },
+      "explanation": "Give the same amount of energy to a kilogram of water and to a kilogram of aluminium and the aluminium ends up much hotter. The property that describes this is the specific heat, $c$: the energy needed to change the temperature of one kilogram of a material by one degree. Water's is unusually large, about $4186\\ \\text{J/(kg·°C)}$; aluminium's is about $900$ and copper's about $385$. For an object of mass $m$, the energy that must be transferred to change its temperature by $\\Delta T$ is $Q = mc\\,\\Delta T$. If the object cools, $\\Delta T$ and $Q$ are both negative: energy leaves.\n\nSpecific heat settles where two objects end up when they come to equilibrium. If they exchange energy only with each other, the energy one loses is the energy the other gains, so $m_1c_1(T_f - T_1) + m_2c_2(T_f - T_2) = 0$, with the same final temperature $T_f$ in both terms. The final temperature is not simply halfway between the starting ones: it lies closer to the starting temperature of the object with the larger product $mc$, because that object's temperature is harder to change.\n\nThermal conductivity, $k$, describes something different: how fast energy is conducted through a material. For a slab of area $A$ and thickness $L$ with a temperature difference $\\Delta T$ between its faces, the rate is $Q/\\Delta t = kA\\,\\Delta T/L$. A larger area or a larger temperature difference raises the rate; a thicker slab lowers it. Metals have large conductivities; those of brick, glass and wood are hundreds of times smaller, and still air and foam are smaller again, which is why they insulate.",
+      "equations": [
+        {
+          "latex": "Q = mc\\,\\Delta T",
+          "meaning": "The energy transferred to an object by heating equals its mass times its specific heat times its change in temperature.",
+          "variables": [
+            {
+              "symbol": "Q",
+              "name": "energy transferred to the object by heating",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "c",
+              "name": "specific heat of the material",
+              "unit": "J/(kg·°C)"
+            },
+            {
+              "symbol": "\\Delta T",
+              "name": "change in temperature, final minus initial",
+              "unit": "°C or K"
+            }
+          ],
+          "useWhen": "An object or a liquid changes temperature without melting, freezing or boiling.",
+          "notWhen": "Not during a change of phase, when energy is transferred with no change in temperature. And keep the sign: a cooling object has negative $Q$."
+        },
+        {
+          "latex": "\\frac{Q}{\\Delta t} = \\frac{kA\\,\\Delta T}{L}",
+          "meaning": "The rate at which energy is conducted through a slab is proportional to its conductivity, its area and the temperature difference across it, and inversely proportional to its thickness.",
+          "variables": [
+            {
+              "symbol": "Q",
+              "name": "energy conducted through the slab",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time taken",
+              "unit": "s"
+            },
+            {
+              "symbol": "k",
+              "name": "thermal conductivity of the material",
+              "unit": "W/(m·K)"
+            },
+            {
+              "symbol": "A",
+              "name": "area of the slab that the energy passes through",
+              "unit": "m²"
+            },
+            {
+              "symbol": "\\Delta T",
+              "name": "temperature difference between the two faces",
+              "unit": "K or °C"
+            },
+            {
+              "symbol": "L",
+              "name": "thickness of the slab",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Energy is conducted steadily through a wall, window, rod or layer whose two faces are held at different temperatures.",
+          "notWhen": "Here $\\Delta T$ is a difference between two places, not a change over time. $\\Delta T$ must be the difference between the faces of the slab itself, which is usually smaller than the difference between the air on either side."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Mixing hot and cold water",
+          "prompt": "A sink holds $10.0\\ \\text{kg}$ of water at $14.0\\ \\text{°C}$. What mass of hot water at $70.0\\ \\text{°C}$ must be added to bring the mixture to $38.0\\ \\text{°C}$? Ignore any energy exchanged with the sink and the air.",
+          "steps": [
+            "Only the two portions of water exchange energy, so $Q_{\\text{hot}} + Q_{\\text{cold}} = 0$, and both finish at $T_f = 38.0\\ \\text{°C}$.",
+            "Write each $Q$ as $mc\\,\\Delta T$ with $\\Delta T$ as final minus initial: $m_h c\\,(38.0 - 70.0)\\ \\text{°C} + (10.0\\ \\text{kg})\\,c\\,(38.0 - 14.0)\\ \\text{°C} = 0$.",
+            "Both portions are water, so the specific heat $c$ is the same in both terms and cancels: $-32.0\\,m_h + (10.0\\ \\text{kg})(24.0) = 0$.",
+            "Solve: $m_h = \\dfrac{(10.0\\ \\text{kg})(24.0)}{32.0} = 7.50\\ \\text{kg}$.",
+            "Check with $c = 4186\\ \\text{J/(kg·°C)}$: the cold water gains $(10.0)(4186)(24.0) \\approx 1.00 \\times 10^6\\ \\text{J}$ and the hot water loses $(7.50)(4186)(32.0) \\approx 1.00 \\times 10^6\\ \\text{J}$. Less hot water is needed than cold because the hot water starts further from $38.0\\ \\text{°C}$."
+          ],
+          "answer": "$m_{\\text{hot}} = 7.50\\ \\text{kg}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m_c": {
+                "value": 10,
+                "unit": "kg"
+              },
+              "T_c": {
+                "value": 14,
+                "unit": "°C"
+              },
+              "T_h": {
+                "value": 70,
+                "unit": "°C"
+              },
+              "T_f": {
+                "value": 38,
+                "unit": "°C"
+              }
+            },
+            "expr": "m_c*(T_f - T_c)/(T_h - T_f)",
+            "unit": "kg"
+          }
+        },
+        {
+          "title": "Energy conducted through a window",
+          "prompt": "A single pane of window glass has an area of $1.5\\ \\text{m}^2$ and is $4.0\\ \\text{mm}$ thick. On a cold day its inside surface is at $12.5\\ \\text{°C}$ and its outside surface is at $11.0\\ \\text{°C}$. The thermal conductivity of glass is $0.80\\ \\text{W/(m·K)}$. Determine the rate at which energy is conducted through the pane, and explain how the rate would change if the glass were twice as thick with the same surface temperatures.",
+          "steps": [
+            "Energy is conducted steadily through a slab, so $\\dfrac{Q}{\\Delta t} = \\dfrac{kA\\,\\Delta T}{L}$, where $\\Delta T$ is the difference between the two surfaces of the glass.",
+            "$\\Delta T = 12.5\\ \\text{°C} - 11.0\\ \\text{°C} = 1.5\\ \\text{°C}$, which is also $1.5\\ \\text{K}$, and $L = 4.0\\ \\text{mm} = 4.0 \\times 10^{-3}\\ \\text{m}$.",
+            "$\\dfrac{Q}{\\Delta t} = \\dfrac{(0.80\\ \\text{W/(m·K)})(1.5\\ \\text{m}^2)(1.5\\ \\text{K})}{4.0 \\times 10^{-3}\\ \\text{m}} = 4.5 \\times 10^2\\ \\text{W}$, from the warmer inside surface to the colder outside surface.",
+            "The rate is inversely proportional to the thickness. With $k$, $A$ and $\\Delta T$ unchanged, glass twice as thick conducts energy at half the rate, $225\\ \\text{W}$: the same temperature difference is spread over twice the distance."
+          ],
+          "answer": "$4.5 \\times 10^2\\ \\text{W}$, from inside to outside; doubling the thickness halves the rate, to $225\\ \\text{W}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k_g": {
+                "value": 0.8,
+                "unit": "W/(m·K)"
+              },
+              "A": {
+                "value": 1.5,
+                "unit": "m^2"
+              },
+              "T_in": {
+                "value": 12.5,
+                "unit": "°C"
+              },
+              "T_out": {
+                "value": 11,
+                "unit": "°C"
+              },
+              "L": {
+                "value": 4,
+                "unit": "mm"
+              }
+            },
+            "expr": "k_g*A*(T_in - T_out)/L",
+            "unit": "W"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "specific-heat-ignored",
+          "wrong": "When a hot object and a cold object are put together, they finish at the average of their two temperatures.",
+          "right": "Only if they have the same product $mc$, as with equal masses of the same material. Otherwise the final temperature is closer to the start of whichever is harder to change."
+        },
+        {
+          "tag": "conduction-rate-factors",
+          "wrong": "A thicker wall lets more energy through, because there is more material to carry it.",
+          "right": "The rate of conduction is inversely proportional to thickness. Doubling the thickness of a wall halves the rate at which it conducts energy; it is a larger area, not a greater thickness, that raises the rate."
+        },
+        {
+          "tag": "conduction-rate-factors",
+          "wrong": "Specific heat and thermal conductivity both measure how easily a material heats up, so a material with a large value of one has a large value of the other.",
+          "right": "Specific heat is about how much energy a temperature change takes; conductivity is about how fast energy travels through. Water has a very large specific heat and is a poor conductor."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "On a sunny beach, equal masses of dry sand and sea water absorb about the same energy from the Sun, yet the sand becomes much hotter. What does this say about their specific heats?",
+          "a": "The sand has the smaller specific heat. With the same $Q$ and the same $m$, the temperature rise $Q/(mc)$ is larger for the material with the smaller $c$."
+        },
+        {
+          "q": "How much energy must be transferred to $2.0\\ \\text{kg}$ of water to warm it by $10\\ \\text{°C}$? Take the specific heat of water as $4186\\ \\text{J/(kg·°C)}$.",
+          "a": "$Q = mc\\,\\Delta T = (2.0\\ \\text{kg})(4186\\ \\text{J/(kg·°C)})(10\\ \\text{°C}) = 8.4 \\times 10^4\\ \\text{J}$."
+        },
+        {
+          "q": "A wall is rebuilt from the same material with twice the thickness and twice the area, and the temperatures of its two faces are the same as before. How does the rate at which energy is conducted through it change?",
+          "a": "It does not change. Doubling the area doubles the rate, and doubling the thickness halves it."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nblock W 4,0 w={{4*L}} h=2.4\ntext 1.4,1.3 \"inside: 20 °C\"\ntext 6.6,1.3 \"outside: 0 °C\"\nf 2.4,3.1 right {{0.3/L}} \"{{round(120/L)}} W\"\ntext 4,-0.6 \"wall thickness L = {{L}} m\"",
+        "caption": "A brick wall of area $10\\ \\text{m}^2$ and conductivity $0.6\\ \\text{W/(m·K)}$, with its faces held at $20\\ \\text{°C}$ and $0\\ \\text{°C}$. Change the thickness: the arrow shows the rate at which energy is conducted through the wall. Each doubling of the thickness halves the rate.",
+        "params": [
+          {
+            "name": "L",
+            "label": "Wall thickness",
+            "min": 0.1,
+            "max": 0.5,
+            "step": 0.05,
+            "default": 0.2,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.3"
+      ],
+      "teacherNotes": "The reliable diagnostic is a mixing question with unequal masses or different materials: students who answer with the plain average have not connected $mc$ to \"how hard the temperature is to change\". Insist on $\\Delta T$ as final minus initial for both objects with the sum of the $Q$s set to zero; the alternative, \"heat lost equals heat gained\" with hand-fixed signs, produces more errors. For conduction, ask which of area, thickness and temperature difference raises the rate and which lowers it before using the formula, and keep $\\Delta T$ across a slab distinct from $\\Delta T$ over time. Set 9B practises this topic."
+    },
+    {
+      "topic": "9.6",
+      "bigIdea": "In every process that happens by itself the total entropy of a system and its surroundings increases or, at best, stays the same, which is why heat flows from hot to cold and why no engine can turn all the heat it takes in into work.",
+      "picture": {
+        "diagram": "scene\nblock H 4,5 w=3.4 h=0.8 \"hot reservoir, 600 K\"\nball E 4,2.9 r=.6 \"engine\"\nblock C 4,0.45 w=3.4 h=0.8 \"cold reservoir, 300 K\"\nf 4,5 down 1.5\ntext 5.3,4.25 \"Q_H = 1000 J\"\nf 4,2.3 down 1.05\ntext 5.2,1.78 \"Q_C = 700 J\"\nf E.r right 0.45 \"W = 300 J\"",
+        "caption": "Energy flow in one cycle of a heat engine. It takes in $1000\\ \\text{J}$ by heating from the hot reservoir, delivers $300\\ \\text{J}$ as work, and must exhaust the remaining $700\\ \\text{J}$ to the cold reservoir. Its efficiency is $300/1000 = 0.30$."
+      },
+      "explanation": "The first law would allow a cold drink to get colder while the warm room gets warmer, as long as the energy balances. That never happens. The second law of thermodynamics says which energy-conserving processes actually occur, and the quantity that keeps track is entropy, $S$. Entropy measures how spread out, or disordered, the energy of a system is: the more ways its particles could share the energy and still look the same from outside, the higher the entropy.\n\nWhen energy $Q$ enters a system by heating at kelvin temperature $T$, its entropy rises by $\\Delta S = Q/T$; when energy leaves, $Q$ is negative and the entropy falls. Let $Q$ flow from a hot object at $T_H$ to a cold one at $T_C$. The hot object loses entropy $Q/T_H$ and the cold one gains $Q/T_C$, which is larger because $T_C$ is smaller. The total goes up. The reverse flow would make the total go down, and that is what the second law forbids: the total entropy of a system and its surroundings never decreases. One part can lose entropy, as water does when it freezes, but only if another part gains at least as much.\n\nThe same law limits heat engines. An engine takes in energy $Q_H$ from a hot reservoir, does work $W$, and exhausts $Q_C$ to a cold reservoir, with $W = Q_H - Q_C$ in each cycle. Taking in $Q_H$ removes entropy $Q_H/T_H$ from the hot reservoir. To keep the total from falling, the engine must give the cold reservoir at least as much entropy, $Q_C/T_C \\ge Q_H/T_H$, so some exhaust is unavoidable. The efficiency, $e = W/Q_H$, can therefore never exceed $1 - T_C/T_H$, with both temperatures in kelvin.",
+      "equations": [
+        {
+          "latex": "\\Delta S = \\frac{Q}{T}",
+          "meaning": "When energy is transferred to a system by heating at a steady temperature, its entropy changes by the energy divided by the kelvin temperature.",
+          "variables": [
+            {
+              "symbol": "\\Delta S",
+              "name": "change in the entropy of the system",
+              "unit": "J/K"
+            },
+            {
+              "symbol": "Q",
+              "name": "energy transferred to the system by heating (negative if it leaves)",
+              "unit": "J"
+            },
+            {
+              "symbol": "T",
+              "name": "absolute temperature of the system",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "Energy enters or leaves something whose temperature stays essentially constant: a large reservoir, or a substance that is melting or boiling.",
+          "notWhen": "Not with Celsius temperatures. To judge whether a process can happen, add the changes for every part involved; one part's change alone settles nothing."
+        },
+        {
+          "latex": "e = \\frac{W}{Q_H} = 1 - \\frac{Q_C}{Q_H}",
+          "meaning": "An engine's efficiency is the fraction of the energy it takes in by heating that comes out as work.",
+          "variables": [
+            {
+              "symbol": "e",
+              "name": "efficiency, a number between 0 and 1",
+              "unit": ""
+            },
+            {
+              "symbol": "W",
+              "name": "net work done by the engine in one cycle",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q_H",
+              "name": "energy taken in from the hot reservoir per cycle",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q_C",
+              "name": "energy exhausted to the cold reservoir per cycle",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Any heat engine for which you know two of $Q_H$, $Q_C$ and $W$; energy conservation, $W = Q_H - Q_C$, gives the third.",
+          "notWhen": "All three are sizes here, taken as positive. The efficiency is not $Q_C/Q_H$; that is the fraction wasted."
+        },
+        {
+          "latex": "e_{\\text{max}} = 1 - \\frac{T_C}{T_H}",
+          "meaning": "The second law's upper limit on the efficiency of any engine working between two reservoirs.",
+          "variables": [
+            {
+              "symbol": "e_{\\text{max}}",
+              "name": "largest possible efficiency",
+              "unit": ""
+            },
+            {
+              "symbol": "T_C",
+              "name": "absolute temperature of the cold reservoir",
+              "unit": "K"
+            },
+            {
+              "symbol": "T_H",
+              "name": "absolute temperature of the hot reservoir",
+              "unit": "K"
+            }
+          ],
+          "useWhen": "Testing whether a claimed engine is possible, or finding the most work that could be obtained from a given amount of heating.",
+          "notWhen": "It is a limit, not the efficiency of a real engine, and Celsius temperatures give a wrong answer."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Entropy change as ice melts",
+          "prompt": "A $0.200\\ \\text{kg}$ ice cube at $273\\ \\text{K}$ melts on a table in a room at $298\\ \\text{K}$. Melting ice takes in $3.34 \\times 10^5\\ \\text{J}$ for each kilogram, and the ice stays at $273\\ \\text{K}$ until it has all melted. The room's temperature does not change. What is the total change in entropy of the ice and the room?",
+          "steps": [
+            "The energy needed to melt the ice: $Q = (0.200\\ \\text{kg})(3.34 \\times 10^5\\ \\text{J/kg}) = 6.68 \\times 10^4\\ \\text{J}$. It enters the ice and leaves the room.",
+            "The ice stays at one temperature while it melts, so $\\Delta S_{\\text{ice}} = \\dfrac{+6.68 \\times 10^4\\ \\text{J}}{273\\ \\text{K}} = +244.7\\ \\text{J/K}$.",
+            "The room gives up that energy at $298\\ \\text{K}$: $\\Delta S_{\\text{room}} = \\dfrac{-6.68 \\times 10^4\\ \\text{J}}{298\\ \\text{K}} = -224.2\\ \\text{J/K}$.",
+            "Add them: $\\Delta S_{\\text{total}} = 244.7\\ \\text{J/K} - 224.2\\ \\text{J/K} = +20.5\\ \\text{J/K}$.",
+            "The total is positive, as the second law requires: the room's entropy fell by less than the ice's rose, because the energy left at a higher temperature."
+          ],
+          "answer": "$\\Delta S_{\\text{total}} = +20.5\\ \\text{J/K}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
+              },
+              "L": {
+                "value": 334000.0,
+                "unit": "J/kg"
+              },
+              "T_C": {
+                "value": 273,
+                "unit": "K"
+              },
+              "T_H": {
+                "value": 298,
+                "unit": "K"
+              }
+            },
+            "expr": "m*L/T_C - m*L/T_H",
+            "unit": "J/K"
+          }
+        },
+        {
+          "title": "Is this engine possible?",
+          "prompt": "In each cycle a heat engine takes in $5000\\ \\text{J}$ by heating from a reservoir at $450\\ \\text{K}$ and exhausts $3500\\ \\text{J}$ to a reservoir at $300\\ \\text{K}$. Determine the engine's efficiency, and show that the engine is consistent with the second law of thermodynamics.",
+          "steps": [
+            "Energy is conserved over a cycle, so the work done is $W = Q_H - Q_C = 5000\\ \\text{J} - 3500\\ \\text{J} = 1500\\ \\text{J}$.",
+            "The efficiency is $e = \\dfrac{W}{Q_H} = \\dfrac{1500\\ \\text{J}}{5000\\ \\text{J}} = 0.30$.",
+            "The greatest efficiency the second law allows between these reservoirs is $e_{\\text{max}} = 1 - \\dfrac{T_C}{T_H} = 1 - \\dfrac{300\\ \\text{K}}{450\\ \\text{K}} = 0.33$. The engine's $0.30$ is below this, so it is possible.",
+            "The same conclusion follows from entropy. Each cycle the hot reservoir's entropy changes by $-5000\\ \\text{J}/450\\ \\text{K} = -11.1\\ \\text{J/K}$ and the cold reservoir's by $+3500\\ \\text{J}/300\\ \\text{K} = +11.7\\ \\text{J/K}$. The engine returns to its starting state, so its own entropy is unchanged. The total change is about $+0.6\\ \\text{J/K}$, which is positive."
+          ],
+          "answer": "$e = 0.30$, which is less than the limit of $0.33$; the total entropy rises each cycle, so the engine is allowed",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "Q_H": {
+                "value": 5000,
+                "unit": "J"
+              },
+              "Q_C": {
+                "value": 3500,
+                "unit": "J"
+              }
+            },
+            "expr": "(Q_H - Q_C)/Q_H",
+            "unit": ""
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "entropy-never-decreases-locally",
+          "wrong": "Entropy can never decrease, so water freezing into orderly ice would break the second law.",
+          "right": "The law is about the total. Freezing water gives energy to colder surroundings, whose entropy rises by more than the water's falls."
+        },
+        {
+          "tag": "engine-converts-all-heat",
+          "wrong": "A well-enough built engine, with no friction at all, could turn all the heat it takes in into work.",
+          "right": "Even a perfect engine must exhaust energy to a cold reservoir, to give back the entropy it took from the hot one. The best possible efficiency is $1 - T_C/T_H$, which is less than 1 for any cold reservoir above absolute zero."
+        },
+        {
+          "tag": "celsius-as-absolute",
+          "wrong": "An engine running between $200\\ \\text{°C}$ and $100\\ \\text{°C}$ can have an efficiency of up to $1 - 100/200 = 50\\%$.",
+          "right": "The limit uses kelvin temperatures: $1 - 373/473 = 0.21$, so 21% at the very most."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "The energy an engine wastes has been used up.",
+          "right": "Energy is conserved: all of it ends up in the cold reservoir or as work. What is lost is usefulness: energy at a low temperature cannot be turned into as much work."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A tray of water in a freezer turns to ice, and the entropy of the water decreases. Explain why this does not violate the second law.",
+          "a": "The freezer exhausts the energy it takes from the water, plus the work its motor does, into the kitchen. The kitchen's entropy rises by more than the water's falls."
+        },
+        {
+          "q": "$100\\ \\text{J}$ of energy flows from a reservoir at $400\\ \\text{K}$ to a reservoir at $200\\ \\text{K}$. What is the total change in entropy?",
+          "a": "The hot reservoir changes by $-100/400 = -0.25\\ \\text{J/K}$ and the cold one by $+100/200 = +0.50\\ \\text{J/K}$, so the total is $+0.25\\ \\text{J/K}$."
+        },
+        {
+          "q": "An engine maker claims an engine that takes in energy from combustion gases at $800\\ \\text{K}$, exhausts to the air at $300\\ \\text{K}$, and turns 70% of the energy it takes in into work. Should you believe the claim?",
+          "a": "No. The most the second law allows is $1 - 300/800 = 62.5\\%$. An engine at 70% would make the total entropy decrease."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nblock H 4,5 w=3.4 h=0.8 \"hot reservoir, 600 K\"\nball E 4,2.9 r=.6 \"engine\"\nblock C 4,{{1.5-Tc/400}} w=3.4 h=0.8 \"cold reservoir, {{Tc}} K\"\nf 4,5 down 1.5\ntext 5.3,4.25 \"Q_H = 1200 J\"\nf 4,2.3 down {{Tc/400}}\ntext 5.3,{{2.3-Tc/800}} \"Q_C = {{2*Tc}} J\"\nf E.r right {{1.5-Tc/400}} \"W = {{1200-2*Tc}} J\"",
+        "caption": "The best engine the second law allows, taking $1200\\ \\text{J}$ per cycle from a reservoir at $600\\ \\text{K}$. Change the temperature of the cold reservoir. The colder it is, the less energy has to be exhausted and the more comes out as work, but the exhaust never reaches zero.",
+        "params": [
+          {
+            "name": "Tc",
+            "label": "Temperature of the cold reservoir",
+            "min": 150,
+            "max": 500,
+            "step": 50,
+            "default": 300,
+            "unit": "K"
+          }
+        ]
+      },
+      "prerequisites": [
+        "9.3",
+        "9.4"
+      ],
+      "teacherNotes": "Students readily learn \"entropy always increases\" and then apply it to a single object. Give them a process in which one object's entropy clearly falls (freezing water, a refrigerator's contents) and ask them to find where the larger increase is. For engines, have students draw the energy-flow picture and check $Q_H = W + Q_C$ before computing any efficiency, always with kelvin temperatures. Set 9D practises this topic."
+    }
+  ]
+}

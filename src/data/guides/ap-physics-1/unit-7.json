@@ -1,0 +1,808 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 7,
+  "guides": [
+    {
+      "topic": "7.1",
+      "bigIdea": "Simple harmonic motion is the back-and-forth motion that results when the net force on an object always points toward an equilibrium position and is directly proportional to the object's displacement from it.",
+      "picture": {
+        "diagram": "scene\nground 0..8\nwall 0 0..1.6\nblock A 5.5,0 \"m\"\nspring 0,0.35 A.l\ndash 4,-0.25 4,1.7\ntext 4,2 \"equilibrium\"\ndim 4,-0.25 5.5,-0.25 \"x\" off=-14\nf A.t+0,0.35 left 1.5 \"F_s = -kx\"",
+        "caption": "A block on a spring has been pulled a displacement $x$ to the right of its equilibrium position. The spring pulls it back to the left, toward equilibrium, with a force of size $kx$. Pull it twice as far and the force doubles."
+      },
+      "explanation": "Every oscillator has an **equilibrium position**, where the net force on it is zero. Move it away and a **restoring force** appears that points back toward equilibrium. The motion is simple harmonic motion (SHM) when that restoring force is directly proportional to the displacement: twice as far from equilibrium, twice the force pulling back.\n\nAn ideal spring does exactly this. Measure the position $x$ from equilibrium; the spring's force is $F_s = -kx$, where the spring constant $k$ says how stiff the spring is. The minus sign means the force is always opposite to the displacement: with the block to the right ($x > 0$) the force points left, and with the block to the left ($x < 0$) it points right. Newton's second law then gives the acceleration, $a = -(k/m)x$. This acceleration changes as $x$ changes, so the constant-acceleration equations from kinematics do not apply to an oscillator.\n\nFollow one cycle. Released from rest at $x = +A$, the block feels its largest force and speeds up toward equilibrium. At $x = 0$ the force is zero, but the fast-moving block's inertia carries it through. Now the force points the other way and slows the block until it stops for an instant at $x = -A$, a turning point, and the motion runs in reverse. The **amplitude** $A$ is the greatest distance from equilibrium.\n\nOther systems qualify too. A mass on a vertical spring oscillates in SHM about the position where it hangs at rest. A pendulum swinging through small angles (less than about $15^\\circ$) is very nearly in SHM, because the part of the gravitational force pulling it back along its arc is then almost proportional to how far it has swung. Not everything that repeats is SHM, though: the force on a bouncing ball in flight is constant.",
+      "equations": [
+        {
+          "latex": "F_s = -kx",
+          "meaning": "An ideal spring pulls or pushes back toward equilibrium with a force proportional to the displacement from equilibrium.",
+          "variables": [
+            {
+              "symbol": "F_s",
+              "name": "force exerted by the spring, along the line of motion",
+              "unit": "N"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant (stiffness)",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from the equilibrium position, with sign",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want the restoring force at a known displacement, or the spring constant from a measured force and stretch.",
+          "notWhen": "Do not measure $x$ from the wall or from the end of the track; it is measured from equilibrium. The law fails for a spring stretched so far that it deforms."
+        },
+        {
+          "latex": "a = -\\frac{k}{m}\\,x",
+          "meaning": "When the spring force is the net force, the acceleration is proportional to the displacement and opposite to it.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "acceleration of the object, with sign",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium, with sign",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You need the acceleration at one position, or you are testing whether a motion is simple harmonic (is $a$ proportional to $-x$?).",
+          "notWhen": "It is the acceleration at one instant only. Do not put it into $v = v_0 + at$ or $\\Delta x = v_0 t + \\tfrac{1}{2}at^2$: those need a constant acceleration."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Force and acceleration at the moment of release",
+          "prompt": "A $0.40\\ \\text{kg}$ block on a level, frictionless surface is attached to a spring of spring constant $50\\ \\text{N/m}$. The block is pulled $0.060\\ \\text{m}$ to the right of its equilibrium position and released from rest. What is the block's acceleration at the instant it is released?",
+          "steps": [
+            "Choose right as positive and measure $x$ from equilibrium, so $x = +0.060\\ \\text{m}$ at release.",
+            "Find the spring force: $F_s = -kx = -(50\\ \\text{N/m})(0.060\\ \\text{m}) = -3.0\\ \\text{N}$. Negative means left, back toward equilibrium.",
+            "The surface is level and frictionless, so the spring force is the net force, and the block will start moving left. Newton's second law gives $a = \\dfrac{F_s}{m} = \\dfrac{-3.0\\ \\text{N}}{0.40\\ \\text{kg}} = -7.5\\ \\text{m/s}^2$."
+          ],
+          "answer": "$a = -7.5\\ \\text{m/s}^2$, directed left, toward equilibrium",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 50,
+                "unit": "N/m"
+              },
+              "x": {
+                "value": 0.06,
+                "unit": "m"
+              },
+              "m": {
+                "value": 0.4,
+                "unit": "kg"
+              }
+            },
+            "expr": "-k*x/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "A mass hanging from a spring",
+          "prompt": "A $0.25\\ \\text{kg}$ mass is hung from a vertical spring and lowered gently until it hangs at rest, with the spring stretched $0.049\\ \\text{m}$ beyond its natural length. Use $g = 9.8\\ \\text{m/s}^2$. (a) Determine the spring constant. (b) The mass is then pulled a little farther down and released. Explain why the motion that follows is simple harmonic.",
+          "steps": [
+            "(a) While the mass hangs at rest, the upward spring force balances the downward gravitational force, so $kd = mg$, where $d$ is the stretch.",
+            "$k = \\dfrac{mg}{d} = \\dfrac{(0.25\\ \\text{kg})(9.8\\ \\text{m/s}^2)}{0.049\\ \\text{m}} = \\dfrac{2.45\\ \\text{N}}{0.049\\ \\text{m}} = 50\\ \\text{N/m}$.",
+            "(b) Let $y$ be how far the mass is below its hanging position. The spring is now stretched $d + y$ and pulls up with $k(d + y)$, while gravity pulls down with $mg$. The net upward force is $k(d + y) - mg = ky$, because $kd = mg$.",
+            "So the net force has size $ky$ and points up when the mass is below the hanging position; the same algebra shows it points down when the mass is above. A net force toward equilibrium, proportional to the displacement, is the condition for simple harmonic motion.",
+            "Gravity's only effect is to move the equilibrium position down by $d$."
+          ],
+          "answer": "$k = 50\\ \\text{N/m}$; the net force, $ky$ toward the hanging position, is proportional to the displacement",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.25,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              },
+              "d": {
+                "value": 0.049,
+                "unit": "m"
+              }
+            },
+            "expr": "m*g/d",
+            "unit": "N/m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The block is moving fastest as it passes through equilibrium, so the force on it must be largest there.",
+          "right": "At equilibrium the displacement is zero, so the force and the acceleration are zero. The block is fast there because the force has been speeding it up all the way in. The force is largest at the turning points."
+        },
+        {
+          "tag": "spring-force-misread",
+          "wrong": "The minus sign in $F_s = -kx$ means the spring force is always negative, so it always points left.",
+          "right": "The sign means opposite to the displacement. Left of equilibrium, $x$ is negative and the force is positive, to the right."
+        },
+        {
+          "wrong": "Any motion that repeats itself is simple harmonic motion.",
+          "right": "Repeating makes a motion periodic. It is simple harmonic only if the restoring force is proportional to the displacement from equilibrium. A cart rolling between two bumpers is periodic but not simple harmonic."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A block on a horizontal spring is at its left-hand turning point, $x = -A$. Taking right as positive, what are the signs of its displacement, velocity and acceleration?",
+          "a": "Displacement is negative, velocity is zero, and acceleration is positive: the compressed spring pushes the block to the right with the largest force of the cycle."
+        },
+        {
+          "q": "A spring pulls back with $6\\ \\text{N}$ when it is stretched $0.03\\ \\text{m}$ from equilibrium. How large is the restoring force at $0.09\\ \\text{m}$?",
+          "a": "$18\\ \\text{N}$. The force is proportional to the displacement, so three times the stretch gives three times the force."
+        },
+        {
+          "q": "A marble rolls back and forth in a V-shaped track made of two straight ramps. Is its motion simple harmonic?",
+          "a": "No. On each straight ramp the force along the track has the same size wherever the marble is, so it is not proportional to the distance from the bottom."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nwall 0 0..1.6\nblock A {{4+10*x}},0 \"m\"\nspring 0,0.35 A.l\ndash 4,-0.25 4,1.7\ntext 4,2.9 \"x = {{100*x}} cm\"\ntext 4,2.3 \"F_s = {{-40*x}} N\"\nf A.t+0,0.35 right {{-8*x}}",
+        "caption": "A block on a spring with $k = 40\\ \\text{N/m}$. Move the block to either side of the dashed equilibrium line: the spring force always points back toward the line, and it grows in step with the displacement.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Displacement from equilibrium",
+            "min": -0.15,
+            "max": 0.15,
+            "step": 0.05,
+            "default": 0.1,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "2.5",
+        "2.8"
+      ],
+      "teacherNotes": "Ask students to state the size and direction of the force at five places (both turning points, equilibrium, and halfway on each side) before any formula appears; the common slip is a large force at equilibrium \\\"because it is going fastest\\\". Make them say where $x$ is measured from, since many measure from the wall or from the spring's natural length in the vertical case. The hanging-mass argument in the second example is worth doing live: it is the reason vertical and horizontal springs share one analysis. Set 7A practises the restoring-force idea."
+    },
+    {
+      "topic": "7.2",
+      "bigIdea": "The period of a simple harmonic oscillator is fixed by the system itself, by mass and spring constant for a spring and by length and gravitational field strength for a pendulum, and not by how large the oscillation is.",
+      "picture": {
+        "diagram": "plot x=t[s] y=x[m] xr=0,4.2 yr=-0.135,0.155\nfn 0.10*cos(pi*t) 0..4\nfn 0.05*cos(pi*t) 0..4 dash\nnote 3,0.135 \"solid: released at 0.10 m\"\nnote 3,-0.118 \"dashed: released at 0.05 m\"\nxt 0 1 2:T 3 4:2T\nyt -0.10 -0.05 0 0.05 0.10",
+        "caption": "The same cart on the same spring, released first from $0.10\\ \\text{m}$ and then from $0.05\\ \\text{m}$. The larger oscillation covers twice the distance, but both take $T = 2\\ \\text{s}$ for each cycle."
+      },
+      "explanation": "The **period** $T$ is the time for one complete cycle: out, back, through to the other side and back to the start. The **frequency** $f$ is the number of cycles each second, measured in hertz ($1\\ \\text{Hz}$ is one cycle per second). Each is the reciprocal of the other, $T = 1/f$. To measure a period well, time many cycles and divide: 20 swings in $30\\ \\text{s}$ means $T = 1.5\\ \\text{s}$.\n\nFor a mass on a spring, $T = 2\\pi\\sqrt{m/k}$, and each factor makes sense. More mass means more inertia, so the same spring force changes the motion more slowly and the period is longer. A stiffer spring pulls harder at every displacement, so the cycle finishes sooner. Because of the square root, the changes are gentler than you might guess: it takes four times the mass to double the period.\n\nFor a simple pendulum, a small bob on a light string swinging through small angles, $T = 2\\pi\\sqrt{\\ell/g}$. A longer pendulum is slower; a stronger gravitational field makes it faster. The bob's mass is missing, and that is not an oversight. A heavier bob is pulled back by a proportionally larger gravitational force, and it also has proportionally more inertia, so the two effects cancel exactly as they do for objects in free fall.\n\nNeither formula contains the amplitude. A wider oscillation has farther to travel, but the restoring force is larger all along the way, so the object moves faster and finishes the cycle in the same time. This is a special property of simple harmonic motion, and it is why a pendulum can keep time while its swing slowly dies away.",
+      "equations": [
+        {
+          "latex": "T = \\frac{1}{f}",
+          "meaning": "The period (seconds per cycle) and the frequency (cycles per second) are reciprocals.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period: time for one complete cycle",
+              "unit": "s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency: cycles per second",
+              "unit": "Hz"
+            }
+          ],
+          "useWhen": "Converting between period and frequency, or finding either from a count of cycles in a measured time.",
+          "notWhen": "Count complete cycles only. From one turning point to the other is half a period, not a whole one."
+        },
+        {
+          "latex": "T_s = 2\\pi\\sqrt{\\frac{m}{k}}",
+          "meaning": "The period of a mass on an ideal spring depends only on the mass and the spring constant.",
+          "variables": [
+            {
+              "symbol": "T_s",
+              "name": "period of the mass–spring oscillator",
+              "unit": "s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            }
+          ],
+          "useWhen": "A mass oscillates on an ideal spring, horizontally or vertically, with negligible friction.",
+          "notWhen": "Do not put in the amplitude or $g$; neither affects this period. Use kilograms, not grams."
+        },
+        {
+          "latex": "T_p = 2\\pi\\sqrt{\\frac{\\ell}{g}}",
+          "meaning": "The period of a simple pendulum depends only on its length and the gravitational field strength.",
+          "variables": [
+            {
+              "symbol": "T_p",
+              "name": "period of the pendulum",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length from the pivot to the centre of the bob",
+              "unit": "m"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength (9.8 on Earth's surface)",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "A small bob swings on a light string through small angles, less than about $15^\\circ$.",
+          "notWhen": "Not for large swings, and not for a swinging object whose mass is spread along its length, such as a metre stick. The bob's mass never appears."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Period and frequency of a cart on a spring",
+          "prompt": "A $0.50\\ \\text{kg}$ cart on a level, low-friction track is attached to a spring of spring constant $32\\ \\text{N/m}$ and set oscillating. What are the period and the frequency of the oscillation?",
+          "steps": [
+            "This is a mass on a spring, so the period is $T = 2\\pi\\sqrt{m/k}$. No amplitude is given, and none is needed.",
+            "Work out the ratio under the root first: $\\dfrac{m}{k} = \\dfrac{0.50\\ \\text{kg}}{32\\ \\text{N/m}} = 0.0156\\ \\text{s}^2$. The units work because $1\\ \\text{N} = 1\\ \\text{kg·m/s}^2$.",
+            "Take the square root: $\\sqrt{0.0156\\ \\text{s}^2} = 0.125\\ \\text{s}$.",
+            "Multiply by $2\\pi$: $T = 2\\pi(0.125\\ \\text{s}) = 0.785\\ \\text{s}$, which rounds to $0.79\\ \\text{s}$.",
+            "The frequency is the reciprocal: $f = \\dfrac{1}{T} = \\dfrac{1}{0.785\\ \\text{s}} = 1.3\\ \\text{Hz}$. A little more than one cycle each second, which is a believable pace for a lab cart."
+          ],
+          "answer": "$T = 0.79\\ \\text{s}$ and $f = 1.3\\ \\text{Hz}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "k": {
+                "value": 32,
+                "unit": "N/m"
+              }
+            },
+            "expr": "2*pi*sqrt(m/k)",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "Designing a pendulum for a display",
+          "prompt": "A museum wants a simple pendulum that takes exactly $2.0\\ \\text{s}$ for each complete swing. Use $g = 9.8\\ \\text{m/s}^2$. (a) Determine the length the pendulum must have. (b) The designers think about using a bob four times as massive, and about starting it from a slightly wider (but still small) angle. Explain what each change would do to the period.",
+          "steps": [
+            "(a) For small swings $T = 2\\pi\\sqrt{\\ell/g}$. Square both sides to free the length: $T^2 = 4\\pi^2\\,\\dfrac{\\ell}{g}$, so $\\ell = \\dfrac{gT^2}{4\\pi^2}$.",
+            "$\\ell = \\dfrac{(9.8\\ \\text{m/s}^2)(2.0\\ \\text{s})^2}{4\\pi^2} = \\dfrac{39.2\\ \\text{m}}{39.5} = 0.99\\ \\text{m}$, measured from the pivot to the centre of the bob.",
+            "(b) The mass of the bob does not appear in the expression for the period. A bob four times as massive is pulled back by four times the force but has four times the inertia, so its motion is the same and the period stays at $2.0\\ \\text{s}$.",
+            "The amplitude does not appear either. For small angles a wider swing means a larger restoring force and a higher speed, which make up for the longer path. The period is unchanged."
+          ],
+          "answer": "$\\ell = 0.99\\ \\text{m}$; neither the heavier bob nor the wider small swing changes the period",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "T": {
+                "value": 2,
+                "unit": "s"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "g*T^2/(4*pi^2)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "period-depends-on-amplitude",
+          "wrong": "Pulling the block back farther makes each cycle take longer, because it has farther to go.",
+          "right": "It does travel farther, but the spring force is larger everywhere along the way, so it also moves faster. The two effects cancel and the period is the same for any amplitude."
+        },
+        {
+          "tag": "pendulum-period-depends-on-mass",
+          "wrong": "A heavier pendulum bob swings more slowly (or more quickly) than a light one on the same string.",
+          "right": "A simple pendulum's period depends only on its length and on $g$. The larger gravitational force on a heavier bob is matched by its larger inertia."
+        },
+        {
+          "tag": "pendulum-period-depends-on-mass",
+          "wrong": "Mass does not affect a pendulum, so it does not affect a mass on a spring either.",
+          "right": "The spring's force depends on the stretch, not on the mass attached, so a larger mass really is harder for it to move. For a spring, $T = 2\\pi\\sqrt{m/k}$: more mass, longer period."
+        },
+        {
+          "wrong": "Doubling the mass on a spring doubles the period.",
+          "right": "The period depends on the square root of the mass. Doubling the mass multiplies the period by $\\sqrt{2}$, about 1.4. Doubling the period takes four times the mass."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A mass on a spring completes 12 full oscillations in $9.0\\ \\text{s}$. What are its period and frequency?",
+          "a": "$T = (9.0\\ \\text{s})/12 = 0.75\\ \\text{s}$, and $f = 1/T = 1.3\\ \\text{Hz}$."
+        },
+        {
+          "q": "A pendulum and a mass on a spring both have a period of $1.0\\ \\text{s}$ on Earth. Both are taken to the Moon, where $g$ is about one sixth as large. What happens to each period?",
+          "a": "The pendulum's period gets longer, by a factor of $\\sqrt{6}$, to about $2.4\\ \\text{s}$, because $T$ depends on $\\sqrt{\\ell/g}$. The spring's period stays at $1.0\\ \\text{s}$: neither $m$ nor $k$ has changed."
+        },
+        {
+          "q": "A block on a spring oscillates with a period of $1.0\\ \\text{s}$. It is replaced by a block with four times the mass. What is the new period?",
+          "a": "$2.0\\ \\text{s}$. The period is proportional to $\\sqrt{m}$, and $\\sqrt{4} = 2$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=x[cm] xr=0,4 yr=-6,8.5\nfn 5*cos({{sqrt(k/m)}}*t) 0..4\nnote 2,7.6 \"T = {{round(100*2*pi*sqrt(m/k))/100}} s\"\nxt 0 1 2 3 4\nyt -5 0 5",
+        "caption": "Position against time for a block on a spring, always released from $5\\ \\text{cm}$. Raise the mass and the cycles stretch out; stiffen the spring and they bunch together.",
+        "params": [
+          {
+            "name": "m",
+            "label": "Mass",
+            "min": 0.25,
+            "max": 2,
+            "step": 0.25,
+            "default": 0.5,
+            "unit": "kg"
+          },
+          {
+            "name": "k",
+            "label": "Spring constant",
+            "min": 5,
+            "max": 40,
+            "step": 5,
+            "default": 20,
+            "unit": "N/m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.6",
+        "2.8",
+        "7.1"
+      ],
+      "teacherNotes": "Before giving either formula, have students predict what changing the amplitude, the mass and the length will do, then test with a stopwatch and ten cycles; the predictions most often wrong are that amplitude matters and that a pendulum's mass matters. Watch for half-cycles being counted as periods and for the two formulas being swapped, usually by putting $m$ into the pendulum. Ask \\\"what would four times the mass do?\\\" to check the square root. Sets 7A and 7B cover what the period does and does not depend on."
+    },
+    {
+      "topic": "7.3",
+      "bigIdea": "In simple harmonic motion the position, velocity and acceleration all vary sinusoidally with the same period but peak at different moments, with the speed greatest at equilibrium and the acceleration greatest at the turning points.",
+      "picture": {
+        "diagram": "plot x=t[s] y=x[m] xr=0,2.3 yr=-0.055,0.06\nfn 0.04*cos(pi*t) 0..2.2\npt 0,0.04 \"P\"\npt 0.5,0 \"Q\"\npt 1,-0.04 \"R\"\npt 1.5,0 \"S\"\nxt 0 0.5 1 1.5 2\nyt -0.04 -0.02 0 0.02 0.04",
+        "caption": "Position against time for an oscillator with $A = 0.04\\ \\text{m}$ and $T = 2\\ \\text{s}$. At P and R (turning points) the graph is flat, so the velocity is zero, and the acceleration is at its largest. At Q and S (equilibrium) the graph is steepest, so the speed is greatest, and the acceleration is zero."
+      },
+      "explanation": "Plot an oscillator's position against time and you get a smooth wave, a sinusoid. Two things can be read from it. The **amplitude** $A$ is the height of a peak above the equilibrium line (half the distance from trough to peak). The **period** $T$ is the time from one peak to the next. If the object is released from $x = +A$ at $t = 0$, its position is $x = A\\cos(2\\pi f t)$; the quantity $2\\pi f t$ is an angle in radians, so set your calculator to radians.\n\nVelocity is the slope of the position–time graph. At a peak or trough the graph is flat: the object is at a turning point and momentarily at rest. Where the graph crosses the equilibrium line it is steepest, so the object is moving fastest there, with $v_{\\text{max}} = 2\\pi f A$. The velocity graph for the motion in the picture looks like this:\n\n```dg\nplot x=t[s] y=v[m/s] xr=-0.12,2.3 yr=-0.17,0.17\nfn -0.126*sin(pi*t) 0..2.2\nxt 0 0.5 1 1.5 2\nyt -0.1 0 0.1\n```\n\nAcceleration follows from the restoring force: $a = -(k/m)x$. It is always opposite to the position, so its graph is the position graph turned upside down. When the object is at $x = +A$ the acceleration has its largest negative value; at $x = -A$ it has its largest positive value, $a_{\\text{max}} = (2\\pi f)^2 A$; at equilibrium it is zero.\n\nSo each quarter of a period takes the object from one landmark to the next: at rest at $+A$, fastest through equilibrium, at rest at $-A$, fastest back through equilibrium. These graphs show how one coordinate changes in time; the object itself just moves back and forth along a straight line.",
+      "equations": [
+        {
+          "latex": "x = A\\cos(2\\pi f t)",
+          "meaning": "The position of an oscillator released from its positive turning point at time zero.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "position, measured from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude: the greatest distance from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "t",
+              "name": "time since release",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know the amplitude and the frequency (or period) and want the position at a given time, for an object that starts at $x = +A$.",
+          "notWhen": "If the object starts at equilibrium moving in the positive direction, use $x = A\\sin(2\\pi f t)$ instead. Do not work in degrees."
+        },
+        {
+          "latex": "v_{\\text{max}} = 2\\pi f A",
+          "meaning": "The greatest speed, reached each time the object passes through equilibrium. It follows from energy conservation (topic 7.4), which gives $v_{\\text{max}} = A\\sqrt{k/m}$, together with $\\sqrt{k/m} = 2\\pi/T = 2\\pi f$.",
+          "variables": [
+            {
+              "symbol": "v_{\\text{max}}",
+              "name": "maximum speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency (equal to $1/T$)",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You have the amplitude and the period or frequency, for example read from a position–time graph.",
+          "notWhen": "It is the speed at equilibrium only. Everywhere else the object is slower, and at the turning points it is at rest."
+        },
+        {
+          "latex": "a_{\\text{max}} = (2\\pi f)^2 A",
+          "meaning": "The greatest size of the acceleration, reached at the turning points; for a spring it equals $kA/m$.",
+          "variables": [
+            {
+              "symbol": "a_{\\text{max}}",
+              "name": "maximum magnitude of the acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want the largest acceleration, or the largest net force $ma_{\\text{max}}$, during the motion.",
+          "notWhen": "It is a magnitude. The direction is always toward equilibrium: negative at $x = +A$, positive at $x = -A$."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "When does the mass reach a given height?",
+          "prompt": "A mass hanging from a vertical spring bobs up and down with amplitude $0.050\\ \\text{m}$ and period $0.80\\ \\text{s}$. At $t = 0$ it is released from rest at its lowest point, $y = -0.050\\ \\text{m}$ (up positive, equilibrium at $y = 0$). At what time does it first reach $y = +0.025\\ \\text{m}$?",
+          "steps": [
+            "The mass starts at its negative turning point, so its position is $y = -A\\cos(2\\pi t/T)$.",
+            "Set $y = +0.025\\ \\text{m}$: $\\cos(2\\pi t/T) = -\\dfrac{0.025\\ \\text{m}}{0.050\\ \\text{m}} = -0.50$.",
+            "In radian mode, the first angle whose cosine is $-0.50$ is $\\cos^{-1}(-0.50) = 2.09\\ \\text{rad}$.",
+            "Solve for the time: $t = \\dfrac{T}{2\\pi}(2.09\\ \\text{rad}) = \\dfrac{0.80\\ \\text{s}}{2\\pi}(2.09) = 0.27\\ \\text{s}$, one third of a period.",
+            "Check against the cycle. The mass passes equilibrium at $T/4 = 0.20\\ \\text{s}$ and reaches the top at $T/2 = 0.40\\ \\text{s}$. Halfway up from equilibrium should come between those, and $0.27\\ \\text{s}$ does."
+          ],
+          "answer": "$t = 0.27\\ \\text{s}$ (one third of a period), on the way up",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "A": {
+                "value": 0.05,
+                "unit": "m"
+              },
+              "T": {
+                "value": 0.8,
+                "unit": "s"
+              },
+              "y": {
+                "value": 0.025,
+                "unit": "m"
+              }
+            },
+            "expr": "T*acos(-y/A)/(2*pi)",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "Reading an oscillation from its graph",
+          "prompt": "The graph shows the position of a block on a spring as a function of time. The block moves between $x = +0.040\\ \\text{m}$ and $x = -0.040\\ \\text{m}$, and successive peaks of the graph are $0.50\\ \\text{s}$ apart. (a) State the amplitude, period and frequency. (b) Determine the block's maximum speed. (c) Identify one time at which the block's acceleration has its greatest positive value, and justify your choice.\n\n```dg\nplot x=t[s] y=x[m] xr=0,1.3 yr=-0.05,0.05 grid\nfn 0.04*cos(4*pi*t) 0..1.25\nxt 0 0.25 0.5 0.75 1 1.25\nyt -0.04 -0.02 0 0.02 0.04\n```",
+          "steps": [
+            "(a) The amplitude is the greatest displacement from equilibrium: $A = 0.040\\ \\text{m}$, not the $0.080\\ \\text{m}$ from trough to peak. The period is the time between successive peaks, $T = 0.50\\ \\text{s}$, so $f = 1/T = 2.0\\ \\text{Hz}$.",
+            "(b) The maximum speed occurs where the graph is steepest, at the equilibrium crossings: $v_{\\text{max}} = 2\\pi f A = 2\\pi(2.0\\ \\text{Hz})(0.040\\ \\text{m}) = 0.50\\ \\text{m/s}$.",
+            "(c) The acceleration is $a = -(k/m)x$, opposite to the position and largest where the displacement is largest. It is most positive where $x$ is most negative, at a trough of the graph.",
+            "The first trough is half a period after the start, at $t = 0.25\\ \\text{s}$ (another is at $0.75\\ \\text{s}$). There the block is at $x = -0.040\\ \\text{m}$, and the restoring force on it is at its largest, in the positive direction."
+          ],
+          "answer": "$A = 0.040\\ \\text{m}$, $T = 0.50\\ \\text{s}$, $f = 2.0\\ \\text{Hz}$; $v_{\\text{max}} = 0.50\\ \\text{m/s}$; the acceleration is most positive at $t = 0.25\\ \\text{s}$, when the block is at $x = -A$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "A": {
+                "value": 0.04,
+                "unit": "m"
+              },
+              "T": {
+                "value": 0.5,
+                "unit": "s"
+              }
+            },
+            "expr": "2*pi*A/T",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The object is fastest at the turning points, where the spring is stretched the most.",
+          "right": "At a turning point the object has stopped to reverse, so its speed is zero. The stretched spring gives it its greatest acceleration there, not its greatest speed. Speed peaks at equilibrium."
+        },
+        {
+          "tag": "velocity-acceleration-confusion",
+          "wrong": "At a turning point the velocity is zero, so the acceleration is zero too.",
+          "right": "Zero velocity for an instant does not mean the velocity has stopped changing. At the turning point the restoring force is largest, so the velocity is changing faster than anywhere else."
+        },
+        {
+          "tag": "graph-as-picture",
+          "wrong": "The wavy position–time graph shows the path of the object, so the object moves up and down along a wave.",
+          "right": "The graph shows one coordinate against time. The object moves back and forth along a straight line; the wave appears only because time runs along the horizontal axis."
+        },
+        {
+          "wrong": "The amplitude is the distance from the bottom of the graph to the top.",
+          "right": "Amplitude is measured from equilibrium to a peak. The trough-to-peak distance is $2A$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An object in SHM is at $x = +A$ at $t = 0$ and has a period of $4\\ \\text{s}$. Where is it, and which way is it moving, at $t = 1\\ \\text{s}$, $2\\ \\text{s}$ and $3\\ \\text{s}$?",
+          "a": "At $1\\ \\text{s}$ it is at equilibrium, moving in the negative direction at maximum speed. At $2\\ \\text{s}$ it is at rest at $x = -A$. At $3\\ \\text{s}$ it is at equilibrium again, moving in the positive direction at maximum speed."
+        },
+        {
+          "q": "At the instant an oscillator passes through equilibrium, what are its speed, its acceleration and the net force on it?",
+          "a": "The speed is at its maximum. The acceleration and net force are zero, because the displacement is zero."
+        },
+        {
+          "q": "Two oscillators have the same amplitude, but the second has twice the frequency of the first. Compare their maximum speeds and their maximum accelerations.",
+          "a": "The second has twice the maximum speed, since $v_{\\text{max}} = 2\\pi f A$, and four times the maximum acceleration, since $a_{\\text{max}} = (2\\pi f)^2 A$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=x[cm] xr=0,4 yr=-11,18\nfn {{A}}*cos({{2*f}}*pi*t) 0..4\nnote 2,16.6 \"T = {{round(100/f)/100}} s\"\nnote 2,13.4 \"v_{max} = {{round(2*pi*f*A)}} cm/s\"\nxt 0 1 2 3 4\nyt -10 -5 0 5 10",
+        "caption": "The graph of $x = A\\cos(2\\pi f t)$. The amplitude sets how tall the wave is and the frequency sets how tightly the cycles are packed; raising either one makes the steepest slope, the maximum speed, larger.",
+        "params": [
+          {
+            "name": "A",
+            "label": "Amplitude",
+            "min": 2,
+            "max": 10,
+            "step": 1,
+            "default": 5,
+            "unit": "cm"
+          },
+          {
+            "name": "f",
+            "label": "Frequency",
+            "min": 0.25,
+            "max": 2,
+            "step": 0.25,
+            "default": 0.5,
+            "unit": "Hz"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.3",
+        "7.1",
+        "7.2"
+      ],
+      "teacherNotes": "Have students annotate one cycle of a position–time graph with the sign and relative size of $x$, $v$ and $a$ at each quarter period before they meet any formula; pointing at a spot and asking \\\"faster or slower here? which way is the force?\\\" exposes most errors. The usual mistakes are zero acceleration at the turning points, amplitude read as trough-to-peak, and a calculator left in degree mode. Students should be able to use both $x = A\\cos(2\\pi f t)$ and $x = A\\sin(2\\pi f t)$; the maximum speed and acceleration can also be reached through energy and Newton's second law. Sets 7B and 7C use graphs and equations of motion."
+    },
+    {
+      "topic": "7.4",
+      "bigIdea": "As a simple harmonic oscillator moves, its energy passes back and forth between kinetic and potential forms while the total stays constant at a value set by the amplitude.",
+      "picture": {
+        "diagram": "bars energy unit=J \"From x = A to x = A/2\"\ninitial K 0 U_s 4\nfinal K 3 U_s 1",
+        "caption": "A block–spring system with $4\\ \\text{J}$ of energy. At the turning point ($x = A$, left) it is all spring potential energy. At half the amplitude (right) the spring holds only $1\\ \\text{J}$, a quarter of the total, because $U_s$ depends on $x^2$; the other $3\\ \\text{J}$ is kinetic."
+      },
+      "explanation": "Take the block and the spring together as the system, with no friction. Two kinds of energy matter: the block's kinetic energy, $K = \\tfrac{1}{2}mv^2$, and the spring's elastic potential energy, $U_s = \\tfrac{1}{2}kx^2$. At a turning point the block is at rest, so the energy is all potential, and the total is $E = \\tfrac{1}{2}kA^2$. At equilibrium the spring is relaxed, so the energy is all kinetic, $\\tfrac{1}{2}mv_{\\text{max}}^2$. Those are the same total, seen at two moments.\n\nIn between, the energy is shared, and conservation of energy links any two points of the motion: $\\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2$. This is the tool for finding a speed at a given position, which the constant-acceleration equations cannot do. The sharing is not even along the path. Potential energy grows with $x^2$, so at half the amplitude it is only a quarter of the total, and the block still has three quarters of its maximum kinetic energy.\n\nThe amplitude sets the total: $E$ is proportional to $A^2$. Double the amplitude and the system has four times the energy and twice the maximum speed. The period does not change, because the faster block has a proportionally longer trip.\n\nA pendulum does the same with gravitational potential energy: highest and at rest at the ends of its swing, lowest and fastest at the bottom. In real oscillators friction slowly turns mechanical energy into thermal energy. The total falls, so the amplitude shrinks, while the period stays essentially the same.",
+      "equations": [
+        {
+          "latex": "U_s = \\tfrac{1}{2}kx^2",
+          "meaning": "The elastic potential energy stored in a spring stretched or compressed a distance x from its relaxed length.",
+          "variables": [
+            {
+              "symbol": "U_s",
+              "name": "elastic potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You need the potential energy at one position of a mass–spring oscillator.",
+          "notWhen": "It is not proportional to $x$: half the displacement stores a quarter of the energy. It is never negative, whichever side of equilibrium the block is on."
+        },
+        {
+          "latex": "E = \\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv_{\\text{max}}^2",
+          "meaning": "The total mechanical energy equals the potential energy at a turning point and the kinetic energy at equilibrium.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "total mechanical energy of the oscillator",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_{\\text{max}}",
+              "name": "speed at equilibrium",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Relating amplitude to maximum speed, or finding the total energy from either one.",
+          "notWhen": "Not when friction is doing significant work during the interval; then the total falls and the amplitude with it."
+        },
+        {
+          "latex": "\\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2",
+          "meaning": "At every point of the motion the kinetic and potential energies add up to the same total.",
+          "variables": [
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed at position $x$",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want the speed at a given position, or the position at which the object has a given speed.",
+          "notWhen": "It gives the speed, not the direction of motion; at any position between the turning points the object may be heading either way."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Speed partway through a swing",
+          "prompt": "A child on a swing is released from rest $0.80\\ \\text{m}$ above the bottom of the arc. Ignore air resistance. How fast is the child moving when $0.30\\ \\text{m}$ above the bottom of the arc? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "The acceleration is not constant, so use energy. The rope's pull is perpendicular to the motion and does no work, so the swing–Earth system's mechanical energy is constant.",
+            "Measured from the bottom, the energy at release is all potential: $E = mg(0.80\\ \\text{m})$.",
+            "At $0.30\\ \\text{m}$ the potential energy is $mg(0.30\\ \\text{m})$, and the rest is kinetic: $\\tfrac{1}{2}mv^2 = mg(0.80 - 0.30)\\ \\text{m} = mg(0.50\\ \\text{m})$.",
+            "The mass cancels: $v = \\sqrt{2g\\,\\Delta h} = \\sqrt{2(9.8\\ \\text{m/s}^2)(0.50\\ \\text{m})} = 3.1\\ \\text{m/s}$.",
+            "Check: the maximum speed, at the bottom, is $\\sqrt{2(9.8)(0.80)} = 4.0\\ \\text{m/s}$. Partway up the child is slower, as expected."
+          ],
+          "answer": "$v = 3.1\\ \\text{m/s}$, whichever way the swing is moving",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "h_1": {
+                "value": 0.8,
+                "unit": "m"
+              },
+              "h_2": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "sqrt(2*g*(h_1 - h_2))",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Amplitude from a measured speed, and a damped oscillator",
+          "prompt": "A $0.50\\ \\text{kg}$ cart attached to a spring of spring constant $200\\ \\text{N/m}$ oscillates on a level track. A motion sensor records a speed of $1.2\\ \\text{m/s}$ as the cart passes through equilibrium. (a) Determine the amplitude of the oscillation. (b) Some time later, friction has reduced the amplitude to half of this value. Determine the fraction of the original mechanical energy that remains, and state what has happened to the period.",
+          "steps": [
+            "(a) At equilibrium the spring is relaxed, so the system's energy is entirely kinetic: $E = \\tfrac{1}{2}mv_{\\text{max}}^2 = \\tfrac{1}{2}(0.50\\ \\text{kg})(1.2\\ \\text{m/s})^2 = 0.36\\ \\text{J}$.",
+            "At a turning point the same energy is entirely elastic potential energy: $\\tfrac{1}{2}kA^2 = 0.36\\ \\text{J}$.",
+            "$A = \\sqrt{\\dfrac{2E}{k}} = \\sqrt{\\dfrac{2(0.36\\ \\text{J})}{200\\ \\text{N/m}}} = \\sqrt{0.0036\\ \\text{m}^2} = 0.060\\ \\text{m}$.",
+            "(b) The total energy is proportional to the square of the amplitude. With half the amplitude the system has $\\left(\\tfrac{1}{2}\\right)^2 = \\tfrac{1}{4}$ of its original energy, $0.090\\ \\text{J}$. The other three quarters has been transformed into thermal energy by friction.",
+            "The period is $T = 2\\pi\\sqrt{m/k}$, which does not contain the amplitude. The mass and the spring are unchanged, so the period is the same as before."
+          ],
+          "answer": "$A = 0.060\\ \\text{m}$; one quarter of the energy remains ($0.090\\ \\text{J}$ of $0.36\\ \\text{J}$), and the period is unchanged",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "k": {
+                "value": 200,
+                "unit": "N/m"
+              },
+              "v": {
+                "value": 1.2,
+                "unit": "m/s"
+              }
+            },
+            "expr": "v*sqrt(m/k)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "energy-scaled-linearly",
+          "wrong": "Halfway between equilibrium and the turning point, the energy is half kinetic and half potential.",
+          "right": "Potential energy depends on $x^2$. At $x = A/2$ it is one quarter of the total and the kinetic energy is three quarters. The two are equal farther out, at $x = A/\\sqrt{2}$, about $0.71A$."
+        },
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The kinetic energy is greatest at the turning points, because that is where the spring is pulling hardest.",
+          "right": "At the turning points the block is at rest, so the kinetic energy is zero and the energy is all potential. The kinetic energy is greatest at equilibrium, where the spring exerts no force at all."
+        },
+        {
+          "tag": "period-depends-on-amplitude",
+          "wrong": "An oscillator given more energy moves faster, so it completes each cycle in less time.",
+          "right": "More energy means a larger amplitude and a larger maximum speed, in the same proportion. The block goes faster but farther, and the period is unchanged."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "Each time the block stops at a turning point its energy is gone, and the spring has to create it again.",
+          "right": "Nothing is lost at the turning point. The kinetic energy has been stored as elastic potential energy in the spring, and it is handed back as the block returns."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The amplitude of a mass–spring oscillator is tripled. What happens to its total energy, its maximum speed and its period?",
+          "a": "The total energy becomes nine times as large, because $E$ is proportional to $A^2$. The maximum speed triples. The period does not change."
+        },
+        {
+          "q": "A block on a spring has a total energy of $2.0\\ \\text{J}$. How much kinetic energy does it have at the turning points, at equilibrium, and at half the amplitude?",
+          "a": "Zero at the turning points, $2.0\\ \\text{J}$ at equilibrium, and $1.5\\ \\text{J}$ at half the amplitude, where the potential energy is a quarter of the total, $0.5\\ \\text{J}$."
+        },
+        {
+          "q": "A pendulum bob passes through the bottom of its swing at $1.4\\ \\text{m/s}$. How high above the bottom does it rise, and does the answer depend on the bob's mass?",
+          "a": "Kinetic energy becomes gravitational potential energy: $\\tfrac{1}{2}mv^2 = mgh$, so $h = v^2/2g = (1.4\\ \\text{m/s})^2/(2 \\times 9.8\\ \\text{m/s}^2) = 0.10\\ \\text{m}$. The mass cancels, so it does not matter."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[cm] y=E[mJ] xr=-11,11 yr=0,680\nfn 5*x^2 {{-A}}..{{A}}\nfn 5*({{A*A}}-x^2) {{-A}}..{{A}} dash\nhl {{5*A*A}}\nnote -6,640 \"solid U_s, dashed K\"\nnote 6,640 \"total = {{5*A*A}} mJ\"\nxt -10 -5 0 5 10\nyt 0 200 400",
+        "caption": "Potential energy (solid) and kinetic energy (dashed) against position for a block on a spring with $k = 100\\ \\text{N/m}$. Change the amplitude: the curves always add up to the dashed total line, and doubling the amplitude makes that total four times as large.",
+        "params": [
+          {
+            "name": "A",
+            "label": "Amplitude",
+            "min": 2,
+            "max": 10,
+            "step": 1,
+            "default": 6,
+            "unit": "cm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "3.1",
+        "3.3",
+        "3.4",
+        "7.1",
+        "7.2"
+      ],
+      "teacherNotes": "Energy bar charts at the turning point, at equilibrium and at half amplitude are the quickest check of understanding; many students draw equal bars at half amplitude, and asking \\\"what is $(1/2)^2$?\\\" usually fixes it. Ask which quantities change when the amplitude doubles (energy, maximum speed, maximum force) and which do not (period, frequency). When damping comes up, insist on saying where the mechanical energy went. Set 7D practises energy in springs and pendulums."
+    }
+  ]
+}

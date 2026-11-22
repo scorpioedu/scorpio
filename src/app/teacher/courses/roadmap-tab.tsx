@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
 import type { ApCourseId } from "@/data/ap";
 import type { Curriculum } from "@/data/curricula";
-import { setProfile } from "@/data/curricula/profiles";
+import { shownProfile } from "@/data/curricula/profiles";
 import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course-board";
 import { AVAILABILITY_LABEL, type RoadmapSet, type RoadmapUnit } from "@/lib/curriculum-roadmap";
 import type { UnitInsight } from "@/lib/course-progress";
@@ -165,7 +165,8 @@ function SetRow({
   onPreview: (t: PreviewTarget) => void;
   actions?: SetRowActions;
 }) {
-  const profile = setProfile(curriculumId, s.set.key);
+  // What the class has (its copy's own size) or, not assigned yet, what it would get by default.
+  const profile = shownProfile(curriculumId, s.set.key, s.assigned ? s.questionCount : null);
   const p = progress?.sets[s.set.key];
   const title = setDisplayTitle(curriculumId, s);
   const canAssign = hasClass && !!s.published && !s.assigned && !s.skipped && !!actions.onAssignSet;
@@ -220,7 +221,7 @@ function SetRow({
           {profile && (
             <span className="whitespace-nowrap">
               {" "}
-              · {profile.problems} problems · about {profile.minutes} min
+              · {profile.count} · about {profile.minutes} min
             </span>
           )}
         </p>
@@ -269,7 +270,7 @@ function SetRow({
                       </DropdownMenuItem>
                       {actions.onToggleSkip && (
                         <DropdownMenuItem onSelect={() => actions.onToggleSkip!(s)}>
-                          <EyeOff /> {s.skipped ? "Stop skipping" : "Skip in this class's plan"}
+                          <EyeOff /> Skip and unassign
                         </DropdownMenuItem>
                       )}
                     </>

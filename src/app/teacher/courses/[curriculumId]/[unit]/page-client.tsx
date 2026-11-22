@@ -18,17 +18,20 @@ import {
 } from "lucide-react";
 import { apTopic, misconceptionTag } from "@/data/ap";
 import { getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
-import { setProfile, typeSummary } from "@/data/curricula/profiles";
+import { shownProfile, typeSummary } from "@/data/curricula/profiles";
 import { assignmentHref } from "@/lib/assignment-actions";
 import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course-board";
 import type { ReteachAction, UnitInsight } from "@/lib/course-progress";
 import { deriveRoadmap, type RoadmapSet } from "@/lib/curriculum-roadmap";
 import { normalisePlan } from "@/lib/curriculum-plan";
+import { hasUnitGuide, topicAnchor, topicFromAnchor } from "@/lib/guides";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClassPicker } from "@/components/teacher/class-picker";
 import { CourseBadge } from "@/components/teacher/course-icon";
+import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
+import { useUnitGuide } from "@/components/guide/use-unit-guide";
 import { SetPreviewDialog, type PreviewTarget } from "../../set-preview-dialog";
 import {
   SetSegments,
@@ -65,6 +68,11 @@ const RETEACH: Record<ReteachAction, { label: string; Icon: typeof Users; tone: 
 };
 
 /** The chosen class is on another course (or none): say so instead of showing this unit. */
+
+/** A set as the class has it (its copy's own size) or, not assigned yet, as it is assigned by default. */
+const shown = (curriculumId: string, s: RoadmapSet) =>
+  shownProfile(curriculumId, s.set.key, s.assigned ? s.questionCount : null);
+
 function OtherCourse({
   curriculum,
   selected,
@@ -189,7 +197,13 @@ export default function UnitGuideClient({
   const data = useCourseData(curriculumId);
   const { classes, selected, published, classAssignments, progress, classLoaded } = data;
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
-  const [tab, setTab] = useState<GuideTab>("sets");
+  // A link to #topic-4-1 opens "What it covers" on that topic. (Nothing of the tabs is rendered
+  // until the classes have loaded in the browser, so reading the address here is safe.)
+  const [tab, setTab] = useState<GuideTab>(() =>
+    typeof window !== "undefined" && topicFromAnchor(window.location.hash) ? "topics" : "sets",
+  );
+  // The unit's topic guides, when it has a guide file (src/data/guides).
+  const topicGuides = useUnitGuide(curriculumId, unit);
 
   const follows = selected?.curriculumId === curriculumId;
   const roadmap = useMemo(
@@ -214,7 +228,7 @@ export default function UnitGuideClient({
   const targeted = useMemo(() => {
     const byTag = new Map<string, string[]>();
     for (const s of roadmapUnit?.sets ?? [])
-      for (const m of setProfile(curriculumId, s.set.key)?.misconceptions ?? [])
+      for (const m of shown(curriculumId, s)?.misconceptions ?? [])
         byTag.set(m.tag, [...(byTag.get(m.tag) ?? []), s.set.key]);
     return [...byTag.entries()].sort((a, b) => b[1].length - a[1].length);
   }, [curriculumId, roadmapUnit]);
@@ -241,7 +255,7 @@ export default function UnitGuideClient({
   const hasClass = written && !!selected;
   // Nothing about the class is said until its assignments have loaded (no "0 of 4" flash).
   const classReady = hasClass && classLoaded && published !== null;
-  const profiles = roadmapUnit.sets.map((s) => setProfile(curriculumId, s.set.key));
+  const profiles = roadmapUnit.sets.map((s) => shown(curriculumId, s));
   const problems = profiles.reduce((n, p) => n + (p?.problems ?? 0), 0);
   const minutes = profiles.reduce((n, p) => n + (p?.minutes ?? 0), 0);
   const topics = [...new Set(roadmapUnit.sets.flatMap((s) => s.set.topics))];
@@ -340,7 +354,8 @@ export default function UnitGuideClient({
       </header>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as GuideTab)} className="gap-5">
-        <TabsList className="h-10 self-start">
+        {/* Three long labels are wider than a phone: the strip scrolls sideways, not the page. */}
+        <TabsList className="h-10 max-w-full justify-start self-start overflow-x-auto overflow-y-hidden [&>*]:flex-none">
           <TabsTrigger value="sets">Sets ({roadmapUnit.sets.length})</TabsTrigger>
           <TabsTrigger value="topics">What it covers ({topics.length})</TabsTrigger>
           <TabsTrigger value="wrong">
@@ -351,7 +366,7 @@ export default function UnitGuideClient({
         <TabsContent value="sets">
           <ol className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
             {roadmapUnit.sets.map((s) => {
-              const p = setProfile(curriculumId, s.set.key);
+              const p = shown(curriculumId, s);
               const st: SetStatus = status.get(s.set.key) ?? "upNext";
               const result = s.assigned ? progress?.sets[s.set.key] : undefined;
               const outOf = result ? Math.max(students, result.submitted) : 0;
@@ -394,7 +409,7 @@ export default function UnitGuideClient({
                     </p>
                     {p && (
                       <p className="text-xs text-muted-foreground">
-                        {plural(p.problems, "problem")} ({typeSummary(p)}) ·{" "}
+                        {p.count} ({typeSummary(p)}) ·{" "}
                         {(["easy", "medium", "hard"] as const)
                           .filter((d) => p.difficulty[d] > 0)
                           .map((d) => `${p.difficulty[d]} ${d}`)
@@ -490,30 +505,40 @@ export default function UnitGuideClient({
           </ol>
         </TabsContent>
 
-        <TabsContent value="topics">
-          <ol className="grid gap-3 sm:grid-cols-2">
-            {topics.map((id) => {
-              const t = apTopic(id, curriculum.apCourse);
-              const sets = roadmapUnit.sets.filter((s) => s.set.topics.includes(id));
-              return (
-                <li key={id} className="space-y-2 rounded-2xl border border-border bg-card p-4">
-                  <p className="flex items-baseline gap-2">
-                    <span
-                      className={cn(
-                        "rounded-lg px-1.5 py-0.5 text-sm font-semibold tabular-nums",
-                        look.tile,
-                      )}
-                    >
-                      {id}
-                    </span>
-                    <span className="min-w-0 break-words font-semibold">{t?.title}</span>
-                  </p>
-                  {t?.summary && (
-                    <p className="text-sm leading-relaxed text-muted-foreground">{t.summary}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Practised in{" "}
-                    {sets.map((s, i) => (
+        <TabsContent value="topics" className="space-y-3">
+          {topicGuides.failed && (
+            <p role="alert" className="text-sm text-muted-foreground">
+              The topic guides could not be loaded. Reload the page to try again.
+            </p>
+          )}
+          {topicGuides.exists ? (
+            <UnitGuideTopics
+              course={curriculum.apCourse}
+              topics={topics}
+              guide={topicGuides.guide}
+              teacher
+              chipClassName={look.tile}
+              practiceFor={(id) =>
+                roadmapUnit.sets
+                  .filter((s) => s.set.topics.includes(id))
+                  .map((s) => ({
+                    label: `${s.set.key} · ${s.set.title}`,
+                    href: `#set-${s.set.key}`,
+                    onClick: toSet(s.set.key),
+                  }))
+              }
+              prerequisiteHref={(id) => {
+                const at = apTopic(id, curriculum.apCourse);
+                return at && hasUnitGuide(curriculumId, at.unit)
+                  ? `/teacher/courses/${curriculumId}/${at.unit}#${topicAnchor(id)}`
+                  : undefined;
+              }}
+              meta={(id) => (
+                <p className="text-xs text-muted-foreground">
+                  Practised in{" "}
+                  {roadmapUnit.sets
+                    .filter((s) => s.set.topics.includes(id))
+                    .map((s, i) => (
                       <span key={s.set.key}>
                         {i > 0 && ", "}
                         <a
@@ -525,11 +550,50 @@ export default function UnitGuideClient({
                         </a>
                       </span>
                     ))}
-                  </p>
-                </li>
-              );
-            })}
-          </ol>
+                </p>
+              )}
+            />
+          ) : (
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {topics.map((id) => {
+                const t = apTopic(id, curriculum.apCourse);
+                const sets = roadmapUnit.sets.filter((s) => s.set.topics.includes(id));
+                return (
+                  <li key={id} className="space-y-2 rounded-2xl border border-border bg-card p-4">
+                    <p className="flex items-baseline gap-2">
+                      <span
+                        className={cn(
+                          "rounded-lg px-1.5 py-0.5 text-sm font-semibold tabular-nums",
+                          look.tile,
+                        )}
+                      >
+                        {id}
+                      </span>
+                      <span className="min-w-0 break-words font-semibold">{t?.title}</span>
+                    </p>
+                    {t?.summary && (
+                      <p className="text-sm leading-relaxed text-muted-foreground">{t.summary}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      Practised in{" "}
+                      {sets.map((s, i) => (
+                        <span key={s.set.key}>
+                          {i > 0 && ", "}
+                          <a
+                            href={`#set-${s.set.key}`}
+                            onClick={toSet(s.set.key)}
+                            className="font-medium text-foreground underline-offset-2 hover:underline"
+                          >
+                            {s.set.key}
+                          </a>
+                        </span>
+                      ))}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </TabsContent>
 
         <TabsContent value="wrong" className="space-y-8">
@@ -641,7 +705,7 @@ export default function UnitGuideClient({
         )}
       </nav>
 
-      <SetPreviewDialog target={preview} onClose={() => setPreview(null)} />
+      <SetPreviewDialog canShowKey target={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

@@ -7,15 +7,16 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import { loadSetPool } from "@/lib/set-pool";
 import { apTopicLabel, misconceptionTag } from "@/data/ap";
-import { getCurriculum, type CurriculumSet } from "@/data/curricula";
-import { setProfile, typeSummary } from "@/data/curricula/profiles";
+import { DEFAULT_SET_SIZE, getCurriculum, type CurriculumSet } from "@/data/curricula";
+import { shownProfile, typeSummary } from "@/data/curricula/profiles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { assignmentHref } from "@/lib/assignment-actions";
-import { LazyMarkdownRenderer } from "@/components/lazy-markdown-renderer";
+import { Maths } from "./maths";
 import {
   Dialog,
   DialogContent,
@@ -44,25 +45,6 @@ export interface PreviewTarget {
 
 const TYPE: Record<string, string> = { "multiple-choice": "Multiple choice", numeric: "Numeric" };
 
-/**
- * Problem text as students see it: Markdown with $…$ math typeset by KaTeX (loaded when the dialog
- * first shows problems). `inline` keeps a choice or an answer on its line.
- */
-function Maths({ children, inline }: { children: string; inline?: boolean }) {
-  return (
-    <LazyMarkdownRenderer
-      noProse
-      className={
-        inline
-          ? "min-w-0 break-words [&_p]:m-0 [&_p]:inline"
-          : "space-y-2 break-words leading-relaxed [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden"
-      }
-    >
-      {children}
-    </LazyMarkdownRenderer>
-  );
-}
-
 export function SetPreviewDialog({
   target,
   onClose,
@@ -70,6 +52,7 @@ export function SetPreviewDialog({
   assignLabel = "Assign this set",
   assignBusy = false,
   keyNote = "Answers are shown once the set is assigned to your class.",
+  canShowKey = false,
 }: {
   target: PreviewTarget | null;
   onClose: () => void;
@@ -80,6 +63,8 @@ export function SetPreviewDialog({
   assignBusy?: boolean;
   /** Where the answers can be seen, for a set that is not the class's own copy. */
   keyNote?: string;
+  /** A teacher may read a published course set's answers before assigning it (the Courses pages). */
+  canShowKey?: boolean;
 }) {
   const [questions, setQuestions] = useState<PreviewQuestion[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -110,9 +95,17 @@ export function SetPreviewDialog({
   }
 
   async function loadKey() {
-    if (!target?.assignmentId) return;
+    if (!target) return;
     setKeyBusy(true);
     try {
+      // Not assigned yet: the published set's own problems and answers.
+      if (!target.assignmentId) {
+        if (!target.publishedId) return;
+        const pool = await loadSetPool(target.publishedId);
+        setQuestions(pool.map((q, i) => ({ ...q, id: `pool-${i}` })));
+        setShowKey(true);
+        return;
+      }
       const res = await authenticatedFetch(
         `/api/assignments?id=${encodeURIComponent(target.assignmentId)}`,
       );
@@ -129,7 +122,15 @@ export function SetPreviewDialog({
 
   if (!target) return null;
   const { set } = target;
-  const profile = setProfile(target.curriculumId, set.key);
+  // The class's copy is described by its own size (known once its problems load); a set that is not
+  // assigned, by what a class gets by default.
+  const profile =
+    target.assignmentId && questions === null
+      ? undefined
+      : shownProfile(target.curriculumId, set.key, target.assignmentId ? questions?.length : null);
+  // Problems past the default are only assigned when the teacher chooses more.
+  const extraFrom =
+    !target.assignmentId && profile && profile.pool > DEFAULT_SET_SIZE ? DEFAULT_SET_SIZE : null;
   const course = getCurriculum(target.curriculumId)?.apCourse;
   const planned = set.draftIds.length === 0;
 
@@ -168,7 +169,7 @@ export function SetPreviewDialog({
           <p className="text-muted-foreground">
             {set.topics.map((t) => apTopicLabel(t, course)).join(" · ")}
             {profile
-              ? ` · ${profile.problems} problems (${typeSummary(profile)}) · about ${profile.minutes} min`
+              ? ` · ${profile.count} (${typeSummary(profile)}) · about ${profile.minutes} min`
               : ""}
           </p>
           {profile && profile.misconceptions.length > 0 && (
@@ -204,21 +205,24 @@ export function SetPreviewDialog({
             <>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-medium">What students see</p>
-                {target.assignmentId ? (
-                  !showKey && (
+                {!showKey &&
+                  (target.assignmentId || canShowKey ? (
                     <Button variant="outline" size="sm" onClick={loadKey} disabled={keyBusy}>
                       {keyBusy ? "Loading…" : "Show answers"}
                     </Button>
-                  )
-                ) : (
-                  <span className="text-xs text-muted-foreground">
-                    {keyNote}
-                  </span>
-                )}
+                  ) : (
+                    <span className="text-xs text-muted-foreground">{keyNote}</span>
+                  ))}
               </div>
               <ol className="space-y-3">
                 {questions.map((q, i) => (
                   <li key={q.id ?? i} className="space-y-2 rounded-xl border border-border p-4">
+                    {extraFrom !== null && i === extraFrom && (
+                      <p className="-mx-4 -mt-4 mb-2 rounded-t-xl border-b border-border bg-muted/40 px-4 py-2 text-xs text-muted-foreground">
+                        Problems {extraFrom + 1} to {questions.length} are extra: assigned only when
+                        you choose more than {extraFrom}.
+                      </p>
+                    )}
                     <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">Problem {i + 1}</span>
                       <span>{TYPE[q.type ?? ""] ?? q.type ?? "Question"}</span>

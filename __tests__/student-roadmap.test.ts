@@ -122,4 +122,45 @@ describe("grouping in the class's order", () => {
     expect(groups.map((g) => g.id)).toEqual(["unit-2", "unit-1", "other"]);
     expect(groups[1].items.map((i) => i.curriculumSetKey)).toEqual(["1B", "1A"]);
   });
+  test("after the class changes course, sets from the old course are not filed under the new course's units", () => {
+    const mixed = [
+      {
+        id: "old",
+        title: "old 1A",
+        dueDate: null,
+        curriculumSetKey: "1A",
+        curriculumId: "ap-physics-1",
+      },
+      {
+        id: "new",
+        title: "new 1A",
+        dueDate: null,
+        curriculumSetKey: "1A",
+        curriculumId: "ap-physics-c-mech",
+      },
+      // A copy from before copies carried a course id: only its AP course says where it is from.
+      {
+        id: "legacy",
+        title: "legacy 2A",
+        dueDate: null,
+        curriculumSetKey: "2A",
+        apCourse: "physics-1",
+      },
+      {
+        id: "mine",
+        title: "legacy own 2B",
+        dueDate: null,
+        curriculumSetKey: "2B",
+        apCourse: "physics-c-mech",
+      },
+    ];
+    const groups = groupByUnit(mixed, undefined, "physics-c-mech", "ap-physics-c-mech");
+    expect(groups.map((g) => [g.id, g.items.map((i) => i.id)])).toEqual([
+      ["unit-1", ["new"]],
+      ["unit-2", ["mine"]],
+      ["other", ["legacy", "old"]],
+    ]);
+    // Without the class's course nothing is known, and grouping is by key as before.
+    expect(groupByUnit(mixed).map((g) => g.id)).toEqual(["unit-1", "unit-2"]);
+  });
 });

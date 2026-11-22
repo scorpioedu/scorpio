@@ -1,0 +1,1608 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 14,
+  "guides": [
+    {
+      "topic": "14.1",
+      "bigIdea": "A wave is a disturbance that carries energy through a medium while the medium itself only moves back and forth about where it started, and the medium alone sets how fast the disturbance travels.",
+      "picture": {
+        "diagram": "plot x=x[m] y=y[cm] xr=-0.5,10 yr=-1,4\nseg 0,0 1,0 2,3 3,0 10,0\nseg 0,0 5,0 6,3 7,0 10,0 dash=1\nnote 2,3.5 \"t = 0\"\nnote 6,3.5 \"t = 2 s\"\npt 4,0 \"P\"\nxt 0 1 2 3 4 5 6 7 8 9 10",
+        "caption": "Two snapshots of one pulse on a rope. In $2\\ \\text{s}$ the peak moves from $x = 2\\ \\text{m}$ to $x = 6\\ \\text{m}$, so the pulse travels at $2\\ \\text{m/s}$. Point P on the rope rises $3\\ \\text{cm}$ as the pulse passes and comes back down: it never moves along the rope."
+      },
+      "explanation": "Flick the end of a stretched rope once and a single bump, called a **pulse**, runs down it. Each piece of rope rises as the pulse arrives, falls back, and ends exactly where it began. What travelled along the rope was the shape and the energy that came with it, not the rope. That is what a wave is: a disturbance that moves through a **medium** (the rope, the air, the water) and carries energy from place to place without carrying the medium along. A pulse is one disturbance; keep shaking and you get a continuous wave.\n\nWaves are sorted by how the medium moves compared with the way the wave travels. In a **transverse** wave the medium moves perpendicular to the direction of travel: the rope moves up and down while the pulse runs along it. In a **longitudinal** wave the medium moves back and forth along the direction of travel. Sound is longitudinal: air is squeezed together (a compression) and spread apart (a rarefaction) along the line the sound travels. The **amplitude** is the largest displacement of the medium from its rest position, and a larger amplitude means the wave carries more energy.\n\nThe speed of a wave is set by the medium, not by whoever made the wave. On a string the speed depends on only two things: the tension $F_T$, which pulls each displaced piece back into line, and the mass per unit length $\\mu = m/L$, which measures how sluggish each piece is. A tighter string gives a faster wave; a heavier string gives a slower one. Sound travels at about $343\\ \\text{m/s}$ in room-temperature air and faster in water and in steel. Flicking the rope harder makes a taller pulse, and flicking it more quickly makes a narrower one, but neither arrives sooner. In a uniform medium the speed is constant, so a pulse simply covers distance $\\Delta x = v\\,\\Delta t$.",
+      "equations": [
+        {
+          "latex": "v = \\sqrt{\\dfrac{F_T}{\\mu}}",
+          "meaning": "The speed of a wave on a stretched string depends only on the tension and on the string's mass per unit length.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "wave speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "F_T",
+              "name": "tension in the string",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\mu",
+              "name": "mass per unit length of the string, $m/L$",
+              "unit": "kg/m"
+            }
+          ],
+          "useWhen": "A pulse or wave travels along a string, rope or wire and you know (or want) the tension or the mass per length.",
+          "notWhen": "Not for sound or light, and never put frequency or amplitude into it: they do not affect the speed. Use the string's whole mass divided by its whole length for $\\mu$, not the mass alone."
+        },
+        {
+          "latex": "v = \\dfrac{\\Delta x}{\\Delta t}",
+          "meaning": "In a uniform medium a wave moves at constant speed, so its speed is the distance it covers divided by the time taken.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "wave speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\Delta x",
+              "name": "distance the pulse or wave travels",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time taken",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You are timing a pulse, an echo or a wave crest over a known distance.",
+          "notWhen": "For an echo the sound goes out and back, so the distance travelled is twice the distance to the reflector. This is the speed of the wave, not of the particles of the medium."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Tension for a required pulse speed",
+          "prompt": "A rope of mass $0.60\\ \\text{kg}$ and length $8.0\\ \\text{m}$ is stretched between two posts. What tension is needed for a pulse to travel the length of the rope in $0.25\\ \\text{s}$?",
+          "steps": [
+            "Find the speed the pulse must have. It covers $8.0\\ \\text{m}$ in $0.25\\ \\text{s}$, so $v = \\dfrac{\\Delta x}{\\Delta t} = \\dfrac{8.0\\ \\text{m}}{0.25\\ \\text{s}} = 32\\ \\text{m/s}$.",
+            "Find the rope's mass per unit length: $\\mu = \\dfrac{m}{L} = \\dfrac{0.60\\ \\text{kg}}{8.0\\ \\text{m}} = 0.075\\ \\text{kg/m}$.",
+            "Solve $v = \\sqrt{F_T/\\mu}$ for the tension. Squaring both sides gives $v^2 = F_T/\\mu$, so $F_T = \\mu v^2$.",
+            "Substitute: $F_T = (0.075\\ \\text{kg/m})(32\\ \\text{m/s})^2 = 76.8\\ \\text{N}$, which rounds to $77\\ \\text{N}$.",
+            "Check that it is sensible: $77\\ \\text{N}$ is about the weight of an $8\\ \\text{kg}$ mass, a firm pull on a rope but not an extreme one."
+          ],
+          "answer": "$F_T \\approx 77\\ \\text{N}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.6,
+                "unit": "kg"
+              },
+              "L": {
+                "value": 8,
+                "unit": "m"
+              },
+              "t": {
+                "value": 0.25,
+                "unit": "s"
+              }
+            },
+            "expr": "(m/L)*(L/t)^2",
+            "unit": "N"
+          }
+        },
+        {
+          "title": "Depth from a sonar echo",
+          "prompt": "A ship sends a short sound pulse straight down. The echo from the sea floor returns $0.84\\ \\text{s}$ later. Sound travels at $1500\\ \\text{m/s}$ in seawater. Determine the depth of the water, and explain whether a louder pulse would return sooner.",
+          "steps": [
+            "The pulse travels at constant speed through the water, so the total distance it covers is $\\Delta x = v\\,\\Delta t = (1500\\ \\text{m/s})(0.84\\ \\text{s}) = 1260\\ \\text{m}$.",
+            "That distance is down to the sea floor and back up, which is twice the depth. So the depth is $\\dfrac{1260\\ \\text{m}}{2} = 630\\ \\text{m}$.",
+            "A louder pulse has a larger amplitude, so it carries more energy and gives a stronger echo. But the speed of sound in seawater is a property of the seawater. The louder pulse travels at the same $1500\\ \\text{m/s}$ and returns after the same $0.84\\ \\text{s}$."
+          ],
+          "answer": "The water is $630\\ \\text{m}$ deep. A louder pulse returns after the same time, because amplitude does not change wave speed.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "v": {
+                "value": 1500,
+                "unit": "m/s"
+              },
+              "t": {
+                "value": 0.84,
+                "unit": "s"
+              }
+            },
+            "expr": "v*t/2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "wave-carries-matter",
+          "wrong": "A wave on a rope carries the rope along with it, and a sound wave is air blowing from the speaker to your ear.",
+          "right": "The medium only oscillates about its rest position. A ribbon tied to the rope bobs up and down and stays where it is along the rope; the air in front of a speaker shuffles back and forth. Energy travels, matter does not."
+        },
+        {
+          "tag": "wave-speed-depends-on-source",
+          "wrong": "Flick the rope harder, or shout louder, and the wave gets there sooner.",
+          "right": "The medium sets the speed. A harder flick makes a bigger amplitude, and more energy, at the same speed. To change the speed on a string you must change the tension or the mass per unit length."
+        },
+        {
+          "tag": "graph-as-picture",
+          "wrong": "Sound is drawn as a wavy line, so the air must move up and down as the sound goes past.",
+          "right": "The wavy line is a graph of pressure or displacement, not a picture of the air. Sound is longitudinal: the air moves back and forth along the direction the sound travels."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A cork floats on a pond as ripples pass under it. Describe the cork's motion.",
+          "a": "It bobs up and down (with a little back-and-forth) about one spot and is not carried across the pond. The ripple moves on; the water and the cork stay behind."
+        },
+        {
+          "q": "The tension in a string is made four times larger. What happens to the speed of a pulse on it?",
+          "a": "It doubles. The speed depends on the square root of the tension, and $\\sqrt{4} = 2$."
+        },
+        {
+          "q": "You see a hammer strike a distant post and hear the sound $0.50\\ \\text{s}$ later. The speed of sound is $340\\ \\text{m/s}$. How far away is the post?",
+          "a": "$170\\ \\text{m}$, from $\\Delta x = v\\,\\Delta t$. This is a one-way trip, so there is no factor of two."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=y[cm] xr=-0.5,12 yr=-1,4\nseg 0,0 {{v*t}},0 {{v*t+1}},3 {{v*t+2}},0 12,0\nnote 6,3.6 \"peak at x = {{v*t+1}} m\"\nxt 0 1 2 3 4 5 6 7 8 9 10 11 12",
+        "caption": "Step the time forward and the pulse slides along at the wave speed. Its height and shape do not change, and no piece of rope moves sideways.",
+        "params": [
+          {
+            "name": "t",
+            "label": "Time",
+            "min": 0,
+            "max": 3,
+            "step": 0.5,
+            "default": 1,
+            "unit": "s"
+          },
+          {
+            "name": "v",
+            "label": "Wave speed",
+            "min": 1,
+            "max": 3,
+            "step": 0.5,
+            "default": 2,
+            "unit": "m/s"
+          }
+        ]
+      },
+      "teacherNotes": "Students come in believing that a wave is stuff moving: a ribbon on a slinky, or a floating cork, settles it faster than any argument. Ask \"what would make the pulse arrive sooner?\" and expect \"flick it harder\"; time two pulses of different sizes on the same spring before giving the formula. In calculations the usual slips are using the mass in place of the mass per unit length and forgetting that an echo travels the distance twice."
+    },
+    {
+      "topic": "14.2",
+      "bigIdea": "A periodic wave repeats in space every wavelength and in time every period, and those two repeats are tied together by the wave speed: $v = f\\lambda$.",
+      "picture": {
+        "diagram": "wave travel lambda=2 A=0.5 unit=m v=right num",
+        "caption": "A snapshot of a periodic wave. The wavelength $\\lambda$ is the distance from one crest to the next ($2\\ \\text{m}$ here) and the amplitude $A$ is the height of a crest above the rest position ($0.5\\ \\text{m}$), not the crest-to-trough height."
+      },
+      "explanation": "Shake the end of a rope steadily and pulse follows pulse in a repeating pattern: a **periodic wave**. Two different repeats describe it. Freeze the wave in a photograph and the pattern repeats along the rope; the length of one full cycle, crest to crest, is the **wavelength** $\\lambda$. Now watch one point of the rope instead and it bobs up and down; the time for one full cycle is the **period** $T$, and the number of cycles each second is the **frequency** $f = 1/T$, measured in hertz ($1\\ \\text{Hz}$ is one cycle per second). The frequency is set by the source: every point of the medium is driven at the rate the source shakes.\n\nIn one period the source makes exactly one new cycle, and the wave moves forward by exactly one wavelength. Speed is distance over time, so $v = \\lambda/T$, which is the same as $v = f\\lambda$. Read this equation with care. The medium fixes $v$, and the source fixes $f$, so the wavelength is the quantity that has to adjust: $\\lambda = v/f$. Shake a rope twice as often and the waves do not travel faster; the crests are simply half as far apart. And when a wave passes into a different medium its speed changes while its frequency stays the same, so its wavelength changes in step with the speed.\n\nEach kind of repeat has its own graph, and they look alike. A graph of displacement against **position** is a snapshot of the whole wave at one instant; the distance between crests on it is the wavelength, as in the picture above. A graph of displacement against **time** is the history of one point; the spacing of its crests is the period:\n\n```dg\nplot x=t[s] y=y[m] xr=-0.03,0.55 yr=-0.7,0.7\nfn 0.5*cos(2*pi*t/0.25) 0..0.5\nxt 0.25 0.5\nyt -0.5 0.5\n```\n\nThis point completes a cycle every $0.25\\ \\text{s}$, so $T = 0.25\\ \\text{s}$ and $f = 4\\ \\text{Hz}$. Always read the horizontal axis label before reading anything off a wave graph. Both graphs show the amplitude as the height of a crest.",
+      "equations": [
+        {
+          "latex": "v = f\\lambda",
+          "meaning": "A wave moves forward one wavelength in each period, so its speed is its frequency times its wavelength.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "wave speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Any periodic wave (rope, sound, water, light) when you know two of speed, frequency and wavelength.",
+          "notWhen": "Do not read it as \"raising the frequency raises the speed\". In one medium $v$ is fixed, so a higher frequency means a shorter wavelength."
+        },
+        {
+          "latex": "T = \\dfrac{1}{f}",
+          "meaning": "The period is the time for one cycle, and the frequency is the number of cycles per second, so each is one divided by the other.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period",
+              "unit": "s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency",
+              "unit": "Hz"
+            }
+          ],
+          "useWhen": "You have a time per cycle and need cycles per second, or the reverse.",
+          "notWhen": "If you counted several cycles, divide the total time by the number of cycles first; the period is the time for one."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Wave speed from two graphs",
+          "prompt": "A snapshot of a wave on a long spring shows that neighbouring crests are $0.40\\ \\text{m}$ apart. A graph of the displacement of one coil against time shows that the coil completes one full cycle every $0.050\\ \\text{s}$. What is the speed of the wave?",
+          "steps": [
+            "Decide what each graph gives. The snapshot is displacement against position, so the crest spacing on it is the wavelength: $\\lambda = 0.40\\ \\text{m}$.",
+            "The second graph is displacement against time for one coil, so the time for one cycle on it is the period: $T = 0.050\\ \\text{s}$.",
+            "Find the frequency: $f = \\dfrac{1}{T} = \\dfrac{1}{0.050\\ \\text{s}} = 20\\ \\text{Hz}$.",
+            "Use $v = f\\lambda = (20\\ \\text{Hz})(0.40\\ \\text{m}) = 8.0\\ \\text{m/s}$.",
+            "Check with the meaning of the equation: the wave should advance one wavelength, $0.40\\ \\text{m}$, in one period, $0.050\\ \\text{s}$, and $0.40/0.050$ is indeed $8.0\\ \\text{m/s}$."
+          ],
+          "answer": "$v = 8.0\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 0.4,
+                "unit": "m"
+              },
+              "T": {
+                "value": 0.05,
+                "unit": "s"
+              }
+            },
+            "expr": "lambda/T",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Waves between a boat and a pier",
+          "prompt": "A boat at anchor rocks up and down with a period of $4.0\\ \\text{s}$ as water waves pass it. A crest takes $8.0\\ \\text{s}$ to travel from the boat to a pier $24\\ \\text{m}$ away. Determine the wavelength of the waves, and explain whether larger waves with the same period, on the same water, would have a different wavelength.",
+          "steps": [
+            "A crest moves at the wave speed, so timing one crest over a known distance gives $v = \\dfrac{24\\ \\text{m}}{8.0\\ \\text{s}} = 3.0\\ \\text{m/s}$.",
+            "The boat is one point of the medium, so its rocking period is the wave's period. In one period a crest moves one wavelength: $\\lambda = vT = (3.0\\ \\text{m/s})(4.0\\ \\text{s}) = 12\\ \\text{m}$. At any instant there are two wavelengths between the boat and the pier.",
+            "Larger waves have a larger amplitude, but the speed is set by the medium (here, the depth of the water), not by the amplitude. With the same speed and the same period, $\\lambda = vT$ is unchanged.",
+            "So bigger waves on the same water, with the same period, have the same $12\\ \\text{m}$ wavelength; they just rise higher and carry more energy."
+          ],
+          "answer": "$\\lambda = 12\\ \\text{m}$. Larger waves with the same period travel at the same speed on the same water, so their wavelength is the same.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "D": {
+                "value": 24,
+                "unit": "m"
+              },
+              "t": {
+                "value": 8,
+                "unit": "s"
+              },
+              "T": {
+                "value": 4,
+                "unit": "s"
+              }
+            },
+            "expr": "D/t*T",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "wave-speed-depends-on-source",
+          "wrong": "Since $v = f\\lambda$, doubling the frequency doubles the speed of the wave.",
+          "right": "In a given medium the speed is fixed. Doubling the frequency halves the wavelength, and the product $f\\lambda$ is unchanged."
+        },
+        {
+          "tag": "frequency-changes-in-medium",
+          "wrong": "When a wave slows down in a new medium, its frequency drops and its wavelength stays the same.",
+          "right": "The frequency is set by the source and is the same on both sides of a boundary. The speed changes, so the wavelength changes with it."
+        },
+        {
+          "tag": "graph-as-picture",
+          "wrong": "The distance between crests on any wave graph is the wavelength.",
+          "right": "Only on a displacement-against-position graph. On a displacement-against-time graph the crest spacing is the period. Check the horizontal axis first."
+        },
+        {
+          "tag": "amplitude-frequency-confusion",
+          "wrong": "A taller wave has a higher frequency, and the amplitude is the height from trough to crest.",
+          "right": "Amplitude and frequency are independent: one is how far the medium moves, the other how often. Amplitude is measured from the rest position to a crest, which is half the trough-to-crest height."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A note of frequency $170\\ \\text{Hz}$ travels through air at $340\\ \\text{m/s}$. What is its wavelength?",
+          "a": "$2.0\\ \\text{m}$, from $\\lambda = v/f$."
+        },
+        {
+          "q": "A wave graph has \"time (s)\" on its horizontal axis and its crests are $0.2$ apart. What have you measured, and what is the frequency?",
+          "a": "The period, $T = 0.2\\ \\text{s}$, because the graph is the history of one point. The frequency is $1/T = 5\\ \\text{Hz}$."
+        },
+        {
+          "q": "A student shakes a rope faster without changing the tension. What happens to the wave's speed, frequency and wavelength?",
+          "a": "The speed is unchanged (same rope, same tension), the frequency increases, and the wavelength decreases."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=y[cm] xr=-0.3,8 yr=-3,3\nfn 2*cos(2*pi*x*{{f}}/8) 0..8\nnote 4,2.7 \"f = {{f}} Hz, λ = {{8/f}} m\"\nxt 0 4 8",
+        "caption": "A snapshot of a wave on a rope where the wave speed is fixed at $8\\ \\text{m/s}$. Raise the frequency and the crests crowd together: the wavelength is always $8/f$ metres.",
+        "params": [
+          {
+            "name": "f",
+            "label": "Frequency",
+            "min": 1,
+            "max": 4,
+            "step": 1,
+            "default": 2,
+            "unit": "Hz"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.1"
+      ],
+      "teacherNotes": "The equation $v = f\\lambda$ invites the reading \"more frequency, more speed\". Ask which of the three quantities the source controls, which the medium controls, and which is left to adjust. Give the same wave as a snapshot and as a history graph side by side and have students say what each crest spacing means; mixing up wavelength and period on graphs is the most common lost point here. Counting cycles (fifteen bobs, not fifteen crests seen) is worth a minute too."
+    },
+    {
+      "topic": "14.3",
+      "bigIdea": "When a wave meets a boundary part of it reflects and part may carry on, with the reflection flipped upside down only when the wave meets something harder to move, and a transverse wave can also be polarized so that it vibrates along a single direction.",
+      "picture": {
+        "diagram": "plot x=x y=y yr=-2,2 xr=-0.3,6.5\nseg 0,0 2,0 2.5,1 3,0 6,0\nseg 0,0 3.5,0 4,-1 4.5,0 6,0 dash=1\nvl 6 \"fixed end\"\nnote 2.5,1.4 \"incident →\"\nnote 4,-1.5 \"← reflected\"\nxt none\nyt none",
+        "caption": "A pulse on a string tied to a wall. It arrives upright (solid) and returns inverted (dashed), with the same size and speed. At a free end it would return upright."
+      },
+      "explanation": "What happens when a pulse reaches the end of its string depends on what the end can do. At a **fixed end** the string is tied down. The arriving pulse pulls up on the wall, the wall pulls down just as hard, and that pull sends a pulse back **inverted**. At a **free end**, such as a string tied to a light ring that slides on a pole, nothing holds the end down, and the pulse returns **upright**. Either way the reflected pulse keeps its speed, because it is still in the same medium.\n\nJoin a light string to a heavy one and part of the pulse is **transmitted** while part is reflected. Going from light to heavy, the junction is hard to move, a little like a fixed end, so the reflected pulse is inverted. Going from heavy to light it is easy to move, like a free end, and the reflected pulse is upright. The transmitted pulse is never inverted. The frequency is the same on both sides, but the speed differs, so the transmitted pulse has a different length.\n\n**Polarization** is about the direction of vibration. A transverse wave on a rope can vibrate up and down, side to side, or at any angle between; a wave that keeps to one direction is **polarized**. Light from a lamp or the Sun is **unpolarized**: its vibrations point in every direction perpendicular to its travel. A polarizing filter passes only the part of the vibration along its axis, so an ideal filter passes half the intensity of unpolarized light, and what emerges is polarized along that axis.\n\nSend that polarized light of intensity $I_0$ into a second filter whose axis is turned by angle $\\theta$ and it passes $I = I_0\\cos^2\\theta$: all of it when the axes are parallel, none when they are crossed at $90^\\circ$. Only transverse waves can be polarized: a longitudinal wave has just one possible direction of vibration. Sound cannot be polarized; light can, which shows that light is transverse.",
+      "equations": [
+        {
+          "latex": "I = \\tfrac{1}{2} I_0",
+          "meaning": "An ideal polarizing filter passes half the intensity of unpolarized light.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "intensity after the filter",
+              "unit": "W/m^2"
+            },
+            {
+              "symbol": "I_0",
+              "name": "intensity of the unpolarized light arriving",
+              "unit": "W/m^2"
+            }
+          ],
+          "useWhen": "Unpolarized light (a lamp, the Sun) meets its first polarizer.",
+          "notWhen": "Not for light that is already polarized; the fraction then depends on the angle. The half does not depend on which way the first filter is turned."
+        },
+        {
+          "latex": "I = I_0 \\cos^2\\theta",
+          "meaning": "A polarizer passes a fraction $\\cos^2\\theta$ of the intensity of light that is already polarized.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "intensity after the filter",
+              "unit": "W/m^2"
+            },
+            {
+              "symbol": "I_0",
+              "name": "intensity of the polarized light arriving",
+              "unit": "W/m^2"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the light's polarization direction and the filter's axis",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "Polarized light meets a polarizer; with several filters, apply it one filter at a time, using the angle between that filter and the one before it.",
+          "notWhen": "Not for unpolarized light. Square the cosine, and measure $\\theta$ from the polarization of the light arriving at this filter, not from the vertical."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Light through two polarizers",
+          "prompt": "Unpolarized light of intensity $80\\ \\text{W/m}^2$ passes through two ideal polarizing filters. The axis of the second filter is turned $60^\\circ$ from the axis of the first. What is the intensity of the light that emerges?",
+          "steps": [
+            "Take the filters one at a time. The light reaching the first filter is unpolarized, so half gets through: $I_1 = \\tfrac{1}{2}(80\\ \\text{W/m}^2) = 40\\ \\text{W/m}^2$.",
+            "The light leaving the first filter is polarized along that filter's axis, so at the second filter $\\theta = 60^\\circ$ and $I_2 = I_1\\cos^2\\theta$. Since $\\cos 60^\\circ = 0.50$, $\\cos^2 60^\\circ = 0.25$.",
+            "$I_2 = (40\\ \\text{W/m}^2)(0.25) = 10\\ \\text{W/m}^2$."
+          ],
+          "answer": "$I = 10\\ \\text{W/m}^2$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "I_0": {
+                "value": 80,
+                "unit": "W/m^2"
+              },
+              "theta": {
+                "value": 60,
+                "unit": "deg"
+              }
+            },
+            "expr": "0.5*I_0*cos(theta)^2",
+            "unit": "W/m^2"
+          }
+        },
+        {
+          "title": "A pulse meeting a lighter string",
+          "prompt": "A thick, heavy rope is joined to a thin, light string, and both are under the same tension. An upright pulse travels along the heavy rope toward the junction. Describe the reflected pulse and the transmitted pulse: say whether each is upright or inverted, and compare each one's speed and length with the incident pulse.",
+          "steps": [
+            "Speeds first. The tension is the same and the light string has the smaller mass per unit length, so from $v = \\sqrt{F_T/\\mu}$ waves travel faster on the light string.",
+            "Reflected pulse: the junction leads to something easier to move, so it acts like a free end and the reflected pulse is upright. It travels back along the heavy rope, so it has the same speed and length as the incident pulse.",
+            "Transmitted pulse: a transmitted pulse is never inverted, so it is upright. On the light string it travels faster.",
+            "The junction moves up and down for the same time whichever side you watch from, so the transmitted pulse lasts as long as the incident pulse did. Travelling faster for the same time, it is longer."
+          ],
+          "answer": "Reflected: upright, same speed and length as the incident pulse. Transmitted: upright, faster and longer.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "boundary-phase-change",
+          "wrong": "A pulse always comes back upside down when it reflects.",
+          "right": "Only when it reflects from something harder to move: a fixed end or a heavier string. From a free end or a lighter string it comes back upright."
+        },
+        {
+          "tag": "frequency-changes-in-medium",
+          "wrong": "A wave that crosses onto a heavier string slows down, so its frequency goes down.",
+          "right": "The junction shakes the new string at the frequency of the arriving wave. The speed drops, so the wavelength shortens; the frequency is unchanged."
+        },
+        {
+          "wrong": "Every polarizer cuts the light in half, so two polarizers always pass one quarter.",
+          "right": "Half applies only to unpolarized light at the first filter. After that the light is polarized and the fraction passed is $\\cos^2\\theta$, anywhere from all of it to none."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An upright pulse on a light string reaches a junction with a much heavier rope. Which way up are the reflected and transmitted pulses?",
+          "a": "Reflected: inverted, because the heavier rope is harder to move. Transmitted: upright."
+        },
+        {
+          "q": "Two ideal polarizers have their axes at $90^\\circ$ to each other. How much unpolarized light gets through the pair?",
+          "a": "None. The first passes half, polarized along its axis; the second passes $\\cos^2 90^\\circ = 0$ of that."
+        },
+        {
+          "q": "Why can light be polarized but sound in air cannot?",
+          "a": "Polarization picks one of the many directions perpendicular to the travel, so it needs a transverse wave. Sound in air is longitudinal: its vibration has only one possible direction."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=\\theta[°] y=I/I_0 xr=-5,90 yr=0,1.1\nfn cos(x*pi/180)^2 0..90\npt {{theta}},{{cos(theta*pi/180)^2}}\nnote 62,0.95 \"θ = {{theta}}°: I/I_0 = {{round(100*cos(theta*pi/180)^2)/100}}\"\nxt 0 30 60 90\nyt 0.5 1",
+        "caption": "Polarized light meets a filter turned by angle $\\theta$. Turn the filter and watch the fraction that passes: it falls slowly at first, reaches one half at $45^\\circ$ and zero at $90^\\circ$.",
+        "params": [
+          {
+            "name": "theta",
+            "label": "Angle between polarization and filter axis",
+            "min": 0,
+            "max": 90,
+            "step": 5,
+            "default": 30,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.1",
+        "14.2"
+      ],
+      "teacherNotes": "\"Reflections flip\" is over-learned from the fixed-end demonstration, so show the free end (a string on a ring, or a slinky on a long thread) the same day and ask students to predict first. For two joined strings, have them decide which side is faster before deciding anything else. With polarizers the usual errors are applying the factor of one half at every filter and measuring every angle from the vertical instead of from the previous filter; three filters, with the middle one at $45^\\circ$ between crossed filters, exposes both."
+    },
+    {
+      "topic": "14.4",
+      "bigIdea": "Light is a transverse wave of electric and magnetic fields that needs no medium, and every kind of it, from radio waves to gamma rays, crosses a vacuum at the same speed $c$.",
+      "picture": {
+        "diagram": "plot x=x y=field xr=-0.2,2.6 yr=-1.5,1.5\nfn cos(2*pi*x) 0..2.5\nfn 0.6*cos(2*pi*x) 0..2.5 dash\nnote 0.55,1.25 \"E (solid)\"\nnote 1.55,1.25 \"B (dashed)\"\nxt 1:λ 2:2λ\nyt none",
+        "caption": "The electric field $E$ and the magnetic field $B$ along an electromagnetic wave at one instant. They rise and fall together, repeating every wavelength. In space the two fields point at right angles to each other, and both are at right angles to the direction the wave travels. (They are drawn with different heights only because they have different units.)"
+      },
+      "explanation": "A changing magnetic field creates an electric field: that is electromagnetic induction. It turns out that the reverse is also true, so a changing electric field creates a magnetic field. Put the two together and something new becomes possible. Shake an electric charge and the changing fields around it keep regenerating each other, and the disturbance moves away as an **electromagnetic wave**. Because the wave is made of fields rather than of moving matter, it needs no medium. Sunlight reaches Earth across empty space; sound could not.\n\nIn an electromagnetic wave the electric field and the magnetic field are perpendicular to each other, and both are perpendicular to the direction the wave travels, so the wave is **transverse**. That is why light can be polarized: the polarization direction is the direction of the electric field. The two fields oscillate in step, reaching their peaks at the same places and times.\n\nIn a vacuum every electromagnetic wave travels at the same speed, $c = 3.00 \\times 10^8\\ \\text{m/s}$, whatever its frequency, wavelength or brightness. So the wave relation becomes $c = f\\lambda$: a higher frequency always means a shorter wavelength. The full range is the **electromagnetic spectrum**. In order of increasing frequency (and decreasing wavelength) it runs radio waves, microwaves, infrared, visible light, ultraviolet, X-rays and gamma rays. These are all the same kind of wave; the names only mark ranges of frequency. Visible light is a narrow band with wavelengths from about $700\\ \\text{nm}$ (red) to about $400\\ \\text{nm}$ (violet).\n\nInside a material such as glass or water, light travels more slowly than $c$, by the factor of the index of refraction. As for any wave crossing a boundary, the frequency does not change, so the wavelength inside the material is shorter. The brightness of light is a matter of amplitude, the strength of the fields, and has nothing to do with its frequency or its speed.",
+      "equations": [
+        {
+          "latex": "c = f\\lambda",
+          "meaning": "For an electromagnetic wave in a vacuum, frequency times wavelength always equals the speed of light.",
+          "variables": [
+            {
+              "symbol": "c",
+              "name": "speed of light in a vacuum, $3.00 \\times 10^8$",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength in a vacuum",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know the frequency or the wavelength of any electromagnetic wave in a vacuum (or in air, where the speed is almost the same) and want the other.",
+          "notWhen": "Not for sound. Inside glass or water the speed is smaller than $c$, so use that speed there. Convert nm, MHz and GHz to metres and hertz first."
+        },
+        {
+          "latex": "\\Delta x = c\\,\\Delta t",
+          "meaning": "Light travels at constant speed in a vacuum, so the distance it covers is the speed of light times the travel time.",
+          "variables": [
+            {
+              "symbol": "\\Delta x",
+              "name": "distance travelled",
+              "unit": "m"
+            },
+            {
+              "symbol": "c",
+              "name": "speed of light in a vacuum",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "travel time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "A signal delay or travel time: radio links to spacecraft, radar, light from the Sun.",
+          "notWhen": "For radar and other echoes the signal goes out and back, so the distance travelled is twice the range."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Frequency of green laser light",
+          "prompt": "A green laser pointer emits light with a wavelength of $532\\ \\text{nm}$ in air. Taking the speed of light as $3.00 \\times 10^8\\ \\text{m/s}$, what is the frequency of the light?",
+          "steps": [
+            "Convert the wavelength to metres. One nanometre is $10^{-9}\\ \\text{m}$, so $\\lambda = 532 \\times 10^{-9}\\ \\text{m} = 5.32 \\times 10^{-7}\\ \\text{m}$.",
+            "Solve $c = f\\lambda$ for the frequency: $f = \\dfrac{c}{\\lambda}$.",
+            "Substitute: $f = \\dfrac{3.00 \\times 10^8\\ \\text{m/s}}{5.32 \\times 10^{-7}\\ \\text{m}} = 5.64 \\times 10^{14}\\ \\text{Hz}$.",
+            "Check the size. Visible light has frequencies of a few times $10^{14}\\ \\text{Hz}$, hundreds of millions of millions of cycles each second, so this is the right range."
+          ],
+          "answer": "$f = 5.64 \\times 10^{14}\\ \\text{Hz}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "c": {
+                "value": 300000000,
+                "unit": "m/s"
+              },
+              "lambda": {
+                "value": 532,
+                "unit": "nm"
+              }
+            },
+            "expr": "c/lambda",
+            "unit": "Hz"
+          }
+        },
+        {
+          "title": "Radio delay to a Mars rover",
+          "prompt": "Mission control sends a radio command to a rover on Mars when Mars is $2.25 \\times 10^{11}\\ \\text{m}$ from Earth. The speed of light is $3.00 \\times 10^8\\ \\text{m/s}$. Determine how long the command takes to arrive, and explain whether sending it at a higher radio frequency would shorten the delay.",
+          "steps": [
+            "Radio waves are electromagnetic waves, so in the vacuum of space they travel at $c$.",
+            "The trip is one way, so $\\Delta t = \\dfrac{\\Delta x}{c} = \\dfrac{2.25 \\times 10^{11}\\ \\text{m}}{3.00 \\times 10^8\\ \\text{m/s}} = 750\\ \\text{s}$, which is $12.5$ minutes.",
+            "A higher frequency would not help. In a vacuum all electromagnetic waves travel at the same speed, so a higher frequency only means a shorter wavelength ($\\lambda = c/f$). The delay is set by the distance and by $c$ alone."
+          ],
+          "answer": "$\\Delta t = 750\\ \\text{s}$ (12.5 min). The delay is the same at any frequency, because all electromagnetic waves travel at $c$ in a vacuum.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "d": {
+                "value": 225000000000,
+                "unit": "m"
+              },
+              "c": {
+                "value": 300000000,
+                "unit": "m/s"
+              }
+            },
+            "expr": "d/c",
+            "unit": "s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "light-speed-varies-in-vacuum",
+          "wrong": "Gamma rays and X-rays are more powerful than radio waves, so they travel faster through space.",
+          "right": "All electromagnetic waves travel at $c$ in a vacuum. They differ in frequency and wavelength, not in speed."
+        },
+        {
+          "tag": "light-speed-varies-in-vacuum",
+          "wrong": "Like every wave, light needs something to travel through, so space must be filled with some medium.",
+          "right": "An electromagnetic wave is made of electric and magnetic fields, which exist in empty space. It is the one kind of wave in this unit that needs no medium."
+        },
+        {
+          "wrong": "Radio waves are a kind of sound, because a radio produces sound.",
+          "right": "Radio waves are electromagnetic: transverse, travelling at $c$, and able to cross a vacuum. The radio set uses the signal they carry to drive a loudspeaker, and only then is there sound."
+        },
+        {
+          "tag": "amplitude-frequency-confusion",
+          "wrong": "Brighter light has a higher frequency, so turning up a lamp shifts its colour toward blue.",
+          "right": "Brightness is amplitude; colour is frequency. A brighter red beam is still red, with the same frequency and wavelength."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Put these in order of increasing frequency: ultraviolet, microwaves, red light, X-rays.",
+          "a": "Microwaves, red light, ultraviolet, X-rays. The wavelengths run the opposite way: microwaves are the longest."
+        },
+        {
+          "q": "A radio station broadcasts at $100\\ \\text{MHz}$. What is the wavelength of its waves?",
+          "a": "$3.00\\ \\text{m}$: $\\lambda = c/f = (3.00 \\times 10^8\\ \\text{m/s})/(1.00 \\times 10^8\\ \\text{Hz})$."
+        },
+        {
+          "q": "A flash of visible light and a burst of radio waves leave a distant star at the same moment. Which reaches Earth first?",
+          "a": "They arrive together. Both are electromagnetic waves, and in a vacuum both travel at $c$."
+        }
+      ],
+      "prerequisites": [
+        "12.4",
+        "13.3",
+        "14.2",
+        "14.3"
+      ],
+      "teacherNotes": "Students rank the spectrum by \"strength\" and let speed follow, so ask early which gets here first from the Sun, the ultraviolet or the infrared. Keep three things apart on the board: speed (the same for all in a vacuum), frequency and wavelength (which trade off through $c = f\\lambda$), and brightness (amplitude). Unit conversions cause most numerical errors: nm, MHz and GHz need to become metres and hertz before anything is divided."
+    },
+    {
+      "topic": "14.5",
+      "bigIdea": "When a source of waves and an observer move toward each other the observer receives the crests more often than the source emits them, and when they move apart less often, so the observed frequency depends on their relative motion.",
+      "picture": {
+        "diagram": "scene\ndash -4,0 4.4,0\nrod -3.5,-0.5 -3.5,0.5\nrod -2.25,-0.5 -2.25,0.5\nrod -1,-0.5 -1,0.5\nrod 0.25,-0.5 0.25,0.5\nrod 1.75,-0.5 1.75,0.5\nrod 2.5,-0.5 2.5,0.5\nrod 3.25,-0.5 3.25,0.5\nrod 4,-0.5 4,0.5\ndot 1,0 \"S\"\nf 1,0.9 right 0.6 \"v_s\"\ndim -3.5,-0.5 -2.25,-0.5 \"λ behind\" off=-14\ndim 2.5,-0.5 3.25,-0.5 \"λ ahead\" off=-14",
+        "caption": "Crests (bars) sent out by a source S that moves to the right at one quarter of the wave speed. Ahead of the source the crests are crowded to three quarters of their normal spacing; behind it they are stretched to five quarters. Every crest still travels at the same wave speed."
+      },
+      "explanation": "Stand by a road as a siren passes: the pitch is high while it approaches and drops as it goes by. The siren has not changed; what has changed is how often its wave crests reach you. This is the **Doppler effect**.\n\nPicture the source sending out one crest every period $T$. A source moving toward you chases its own waves: by the time it emits the next crest it has moved closer to the previous one. The crests ahead of it are crowded together, so they have a shorter wavelength, and since they still travel at the wave speed $v$ they arrive more often. You observe a **higher frequency**. Behind the source the crests are stretched apart and an observer there receives a **lower frequency**.\n\nA moving observer gets a similar result for a different reason. The wavelength in the air is normal, but an observer moving toward the source runs into the crests, meeting them at a relative speed greater than $v$, and so receives them more often. Moving away, the observer receives them less often. In every case the rule is the same: **moving closer together raises the observed frequency; moving apart lowers it.**\n\nThe shift depends on velocity, not on distance. A siren approaching at steady speed is heard at one steady, raised pitch, which drops as it passes. What grows as it nears is the loudness, which is amplitude, not frequency. Light shows the same effect: light from a galaxy moving away from us is shifted to lower frequency (a redshift), and from one approaching to higher frequency (a blueshift).",
+      "equations": [
+        {
+          "latex": "f_o = f_s\\,\\dfrac{v}{v \\mp v_s}",
+          "meaning": "For a source moving through still air toward a stationary observer (minus sign) the observed frequency is raised; for a source moving away (plus sign) it is lowered.",
+          "variables": [
+            {
+              "symbol": "f_o",
+              "name": "frequency the observer receives",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "f_s",
+              "name": "frequency the source emits",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the wave in the medium",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_s",
+              "name": "speed of the source",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "A source of sound moves straight toward or away from an observer who is at rest in the air, at a speed less than the speed of sound.",
+          "notWhen": "Choose the sign by the rule, not by memory: approaching must give a higher frequency, so the denominator must get smaller. Not for a moving observer, and never put distance into it."
+        },
+        {
+          "latex": "f_o = f_s\\,\\dfrac{v \\pm v_o}{v}",
+          "meaning": "For an observer moving toward a stationary source (plus sign) the observed frequency is raised; for an observer moving away (minus sign) it is lowered.",
+          "variables": [
+            {
+              "symbol": "f_o",
+              "name": "frequency the observer receives",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "f_s",
+              "name": "frequency the source emits",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the wave in the medium",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_o",
+              "name": "speed of the observer",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "The source is at rest in the air and the observer moves straight toward or away from it.",
+          "notWhen": "Do not use the source's formula here; the two give different numbers for the same speed. Approaching must give a higher frequency, so the numerator must get larger."
+        }
+      ],
+      "derivation": "**Source moving toward a stationary observer.** The source emits one crest every period $T = 1/f_s$.\n\nIn one period a crest travels a distance $vT$ through the air. In that same time the source moves forward $v_s T$ before emitting the next crest. So the distance between neighbouring crests ahead of the source is\n\n$$\\lambda' = vT - v_s T = \\dfrac{v - v_s}{f_s}$$\n\nThese crests travel past the observer at the wave speed $v$, so the observer receives them at frequency\n\n$$f_o = \\dfrac{v}{\\lambda'} = f_s\\,\\dfrac{v}{v - v_s}$$\n\nBehind the source the crests are spaced $vT + v_s T$ apart, which changes the minus sign to a plus.",
+      "workedExamples": [
+        {
+          "title": "Wavelengths around a racing car",
+          "prompt": "A racing car moves at $60.0\\ \\text{m/s}$ while its horn emits $500\\ \\text{Hz}$. The speed of sound is $343\\ \\text{m/s}$. What is the wavelength of the sound directly in front of the car, and directly behind it?",
+          "steps": [
+            "With the car at rest the crests would be $\\lambda = v/f = 343/500 = 0.686\\ \\text{m}$ apart.",
+            "In each period the car moves $v_s/f$ toward the crest it just emitted, so in front the crests are closer: $\\lambda_{\\text{front}} = \\dfrac{v - v_s}{f} = \\dfrac{343 - 60.0}{500}\\ \\text{m} = 0.566\\ \\text{m}$.",
+            "Behind, the car moves away from its last crest, so: $\\lambda_{\\text{behind}} = \\dfrac{v + v_s}{f} = \\dfrac{343 + 60.0}{500}\\ \\text{m} = 0.806\\ \\text{m}$.",
+            "The sound still travels at $343\\ \\text{m/s}$, so someone ahead hears $343/0.566 = 606\\ \\text{Hz}$, as $f_s\\,\\dfrac{v}{v - v_s}$ gives."
+          ],
+          "answer": "$\\lambda_{\\text{front}} = 0.566\\ \\text{m}$ and $\\lambda_{\\text{behind}} = 0.806\\ \\text{m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "f": {
+                "value": 500,
+                "unit": "Hz"
+              },
+              "v": {
+                "value": 343,
+                "unit": "m/s"
+              },
+              "v_s": {
+                "value": 60,
+                "unit": "m/s"
+              }
+            },
+            "expr": "(v - v_s)/f",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Cycling past a siren",
+          "prompt": "A cyclist rides at $12\\ \\text{m/s}$ straight toward a stationary warning siren that emits $680\\ \\text{Hz}$. The speed of sound is $340\\ \\text{m/s}$. Determine the frequency the cyclist hears while approaching, and describe how the pitch changes during the approach and as the cyclist passes the siren.",
+          "steps": [
+            "The source is at rest in the air and the observer moves, so $f_o = f_s\\,\\dfrac{v \\pm v_o}{v}$. Approaching must raise the frequency, so use the plus sign.",
+            "$f_o = (680\\ \\text{Hz})\\,\\dfrac{340\\ \\text{m/s} + 12\\ \\text{m/s}}{340\\ \\text{m/s}} = (680\\ \\text{Hz})\\,\\dfrac{352}{340} = 704\\ \\text{Hz}$.",
+            "During the approach the cyclist's velocity is constant, so the pitch stays at $704\\ \\text{Hz}$. It does not climb as the siren gets nearer; only the loudness increases.",
+            "After passing, the cyclist moves away at the same speed, so the sign reverses: $f_o = (680\\ \\text{Hz})\\,\\dfrac{340 - 12}{340} = 656\\ \\text{Hz}$. The pitch drops from above the true $680\\ \\text{Hz}$ to below it as the cyclist goes by."
+          ],
+          "answer": "$704\\ \\text{Hz}$ throughout the approach, falling to $656\\ \\text{Hz}$ once the cyclist has passed.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "f": {
+                "value": 680,
+                "unit": "Hz"
+              },
+              "v": {
+                "value": 340,
+                "unit": "m/s"
+              },
+              "v_o": {
+                "value": 12,
+                "unit": "m/s"
+              }
+            },
+            "expr": "f*(v+v_o)/v",
+            "unit": "Hz"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "doppler-depends-on-distance",
+          "wrong": "As the ambulance gets closer the pitch keeps rising, and it is highest just as it reaches you.",
+          "right": "The shift depends on the relative velocity, not the distance. At a steady approach speed the pitch is steady and raised; it gets louder, not higher. The pitch falls as the ambulance passes."
+        },
+        {
+          "tag": "wave-speed-depends-on-source",
+          "wrong": "Sound from an approaching siren reaches you at a higher frequency because the moving siren throws the sound forward faster.",
+          "right": "Once emitted, the sound travels at the speed set by the air. The source's motion squeezes the crests closer together, and a shorter wavelength at the same speed means a higher frequency."
+        },
+        {
+          "wrong": "The siren really does produce a different frequency when the vehicle is moving.",
+          "right": "The driver, who moves with the siren, hears the true frequency throughout. The source is unchanged; observers ahead and behind receive its crests at different rates."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A police car drives toward you at constant speed with its siren on. Compare what you hear with what the driver hears.",
+          "a": "You hear a higher pitch than the driver. The driver is not moving relative to the siren and hears the frequency it emits."
+        },
+        {
+          "q": "A stationary horn emits $500\\ \\text{Hz}$ and the speed of sound is $340\\ \\text{m/s}$. You walk away from it at $3.4\\ \\text{m/s}$. What frequency do you hear?",
+          "a": "$495\\ \\text{Hz}$. Moving observer, moving apart: $f_o = (500\\ \\text{Hz})(340 - 3.4)/340$, one percent lower."
+        },
+        {
+          "q": "Light from a distant galaxy arrives with all its wavelengths longer than the same light measured in a laboratory. What does that say about the galaxy's motion?",
+          "a": "It is moving away from us. Longer wavelength means lower observed frequency, which is what happens when source and observer move apart."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndash -5,0 4.4,0\nrod {{1-3*(1+u)}},-0.5 {{1-3*(1+u)}},0.5\nrod {{1-2*(1+u)}},-0.5 {{1-2*(1+u)}},0.5\nrod {{1-(1+u)}},-0.5 {{1-(1+u)}},0.5\nrod {{1+(1-u)}},-0.5 {{1+(1-u)}},0.5\nrod {{1+2*(1-u)}},-0.5 {{1+2*(1-u)}},0.5\nrod {{1+3*(1-u)}},-0.5 {{1+3*(1-u)}},0.5\ndot 1,0\ntext 1,0.8 \"S\"\ntext 1,1.4 \"source speed = {{u}} × wave speed\"\ntext -2.5,-1.1 \"behind: λ × {{1+u}}\"\ntext 3,-1.1 \"ahead: λ × {{1-u}}\"",
+        "caption": "The source S moves to the right. Raise its speed (as a fraction of the wave speed) and the crests ahead crowd together while those behind spread out. At zero the spacing is the same both ways.",
+        "params": [
+          {
+            "name": "u",
+            "label": "Source speed ÷ wave speed",
+            "min": 0,
+            "max": 0.7,
+            "step": 0.1,
+            "default": 0.3,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.1",
+        "14.2"
+      ],
+      "teacherNotes": "Almost every student first describes the pitch as rising steadily while the source approaches, because loudness does. Ask them to sketch pitch against time for a car passing at constant speed before any formula appears; the right sketch is two flat stretches with a drop between. With the equations, have students pick the sign from \"closer together means higher\" every time, and check the answer against that rule. Mixing the moving-source and moving-observer forms is the usual numerical error."
+    },
+    {
+      "topic": "14.6",
+      "bigIdea": "Where waves overlap their displacements simply add, and when a wave overlaps its own reflection in a string or pipe the sum is a standing wave that can exist only at the particular frequencies that fit the length.",
+      "picture": {
+        "diagram": "wave string n=3 L=1.2 unit=m num=all",
+        "caption": "The third harmonic of a $1.2\\ \\text{m}$ string fixed at both ends. The nodes (N) never move; the antinodes (A) swing between the solid and dashed shapes. Three half-wavelengths fit the string, so $\\lambda = 0.8\\ \\text{m}$."
+      },
+      "explanation": "When two waves meet, the displacement of the medium at each point is the sum of the displacements each wave would give alone. This is **superposition**. Crest on crest gives a larger displacement (constructive interference); crest on trough gives a smaller one, or none (destructive interference). Below, a pulse of height $2$ meets an inverted pulse of height $1$: where they overlap the string sits at $2 + (-1) = 1$.\n\n```dg\nwave pulses xr=0..10\npulse 4.5 h=2 w=2 rect v=right\npulse 5.5 h=-1 w=2 rect v=left\n```\n\nThe overlap is temporary: the pulses pass straight through each other and carry on with their original shapes, as if they had never met. Sound waves add in the same way. Two sounds of slightly different frequency drift in and out of step, so their sum swells and fades. These pulsations are **beats**, and they occur at the difference of the two frequencies: notes of $440\\ \\text{Hz}$ and $444\\ \\text{Hz}$ together beat $4$ times per second.\n\nNow let a wave on a string overlap its own reflection from a fixed end. Two identical waves travelling in opposite directions add to a pattern that does not travel: a **standing wave**. At some points, the **nodes**, the two waves always cancel and the string never moves. Halfway between them are the **antinodes**, where it moves most. Neighbouring nodes are half a wavelength apart. A string fixed at both ends must have a node at each end, so a whole number of half-wavelengths must fit its length: $L = n\\lambda/2$. Only those wavelengths, and so only the frequencies $f_n = nv/2L$, can stand on the string. These are its **harmonics**; $n = 1$ is the **fundamental**, and every harmonic is a whole-number multiple of it.\n\nAir in a pipe does the same with sound. The air at an open end is free to move, so there is an antinode there; at a closed end the air cannot move, so there is a node. A pipe open at both ends has an antinode at each end and, like the string, fits whole numbers of half-wavelengths: $f_n = nv/2L$. A pipe closed at one end has a node at one end and an antinode at the other, so it fits an odd number of quarter-wavelengths: $L = n\\lambda/4$ and $f_n = nv/4L$ with $n = 1, 3, 5, \\dots$ only. Its fundamental is half that of an open pipe of the same length, and its even harmonics are missing.",
+      "equations": [
+        {
+          "latex": "f_n = \\dfrac{nv}{2L}",
+          "meaning": "A string fixed at both ends, or a pipe open at both ends, fits $n$ half-wavelengths ($\\lambda_n = 2L/n$), so its harmonics are every whole-number multiple of $v/2L$.",
+          "variables": [
+            {
+              "symbol": "f_n",
+              "name": "frequency of the $n$th harmonic",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "n",
+              "name": "harmonic number: 1, 2, 3, …",
+              "unit": ""
+            },
+            {
+              "symbol": "v",
+              "name": "wave speed on the string, or speed of sound in the pipe",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "L",
+              "name": "length of the string or pipe",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Both ends are alike: a string fixed at both ends, or an air column open at both ends.",
+          "notWhen": "Not for a pipe closed at one end. For a string, $v$ is the speed of waves on the string, not the speed of sound in air."
+        },
+        {
+          "latex": "f_n = \\dfrac{nv}{4L}",
+          "meaning": "A pipe closed at one end fits an odd number of quarter-wavelengths ($\\lambda_n = 4L/n$), so only odd harmonics occur.",
+          "variables": [
+            {
+              "symbol": "f_n",
+              "name": "frequency of the $n$th harmonic",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "n",
+              "name": "harmonic number, odd only: 1, 3, 5, …",
+              "unit": ""
+            },
+            {
+              "symbol": "v",
+              "name": "speed of sound in the pipe",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "L",
+              "name": "length of the pipe",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The two ends are different: an air column closed at one end and open at the other.",
+          "notWhen": "Never use an even $n$. The next resonance above the fundamental is $3f_1$, not $2f_1$."
+        },
+        {
+          "latex": "f_{\\text{beat}} = |f_1 - f_2|",
+          "meaning": "Two tones of nearly equal frequency produce beats at a rate equal to the difference of their frequencies.",
+          "variables": [
+            {
+              "symbol": "f_{\\text{beat}}",
+              "name": "number of beats per second",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "f_1,\\ f_2",
+              "name": "frequencies of the two tones",
+              "unit": "Hz"
+            }
+          ],
+          "useWhen": "Two steady tones of close frequency sound together and you hear the loudness pulse.",
+          "notWhen": "The beat frequency does not tell you which tone is the higher one, and it is not the pitch you hear, which is close to the two tones."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Three loops on a string",
+          "prompt": "A string $0.90\\ \\text{m}$ long is fixed at both ends. Waves travel along it at $180\\ \\text{m/s}$. The string is driven so that it vibrates in a standing wave with $3$ antinodes. At what frequency is it vibrating?",
+          "steps": [
+            "Identify the harmonic. A string fixed at both ends has one antinode in each half-wavelength loop, so $3$ antinodes means $3$ half-wavelengths fit the string: $n = 3$.",
+            "Find the wavelength from $L = n\\lambda/2$: $\\lambda = \\dfrac{2L}{n} = \\dfrac{2(0.90\\ \\text{m})}{3} = 0.60\\ \\text{m}$.",
+            "Use $v = f\\lambda$ with the speed of waves on the string: $f = \\dfrac{v}{\\lambda} = \\dfrac{180\\ \\text{m/s}}{0.60\\ \\text{m}} = 300\\ \\text{Hz}$.",
+            "Check with the harmonic formula. The fundamental is $f_1 = \\dfrac{v}{2L} = \\dfrac{180}{1.8} = 100\\ \\text{Hz}$, and the third harmonic is three times that."
+          ],
+          "answer": "$f_3 = 300\\ \\text{Hz}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "L": {
+                "value": 0.9,
+                "unit": "m"
+              },
+              "v": {
+                "value": 180,
+                "unit": "m/s"
+              },
+              "n": {
+                "value": 3,
+                "unit": ""
+              }
+            },
+            "expr": "n*v/(2*L)",
+            "unit": "Hz"
+          }
+        },
+        {
+          "title": "An organ pipe on a cold day",
+          "prompt": "An organ pipe open at both ends is tuned to $262\\ \\text{Hz}$ when the speed of sound is $343\\ \\text{m/s}$. On a cold day the speed of sound is $331\\ \\text{m/s}$. Determine the pipe's frequency then, and explain what a listener hears if it is played with a piano note at $262\\ \\text{Hz}$.",
+          "steps": [
+            "The standing wave must fit the pipe: $\\lambda_1 = 2L$. The length barely changes with temperature, so the wavelength is fixed.",
+            "With $\\lambda$ fixed, $f = v/\\lambda$ is proportional to the speed: $f_{\\text{cold}} = (262\\ \\text{Hz})\\,\\dfrac{331\\ \\text{m/s}}{343\\ \\text{m/s}} = 253\\ \\text{Hz}$.",
+            "With the piano note, the two sounds drift in and out of step $262 - 253 \\approx 9$ times a second: about $9$ beats per second, with the organ flat."
+          ],
+          "answer": "$f = 253\\ \\text{Hz}$; with the $262\\ \\text{Hz}$ note the listener hears about $9$ beats per second",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "f": {
+                "value": 262,
+                "unit": "Hz"
+              },
+              "v1": {
+                "value": 343,
+                "unit": "m/s"
+              },
+              "v2": {
+                "value": 331,
+                "unit": "m/s"
+              }
+            },
+            "expr": "f*v2/v1",
+            "unit": "Hz"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "superposition-not-temporary",
+          "wrong": "When two pulses meet they bounce off each other, or an upward and a downward pulse wipe each other out for good.",
+          "right": "They add only while they overlap, then continue unchanged. Even when the string is momentarily flat, it is moving, and both pulses reappear."
+        },
+        {
+          "tag": "standing-wave-harmonics",
+          "wrong": "The fundamental has one full wavelength on the string, so $\\lambda = L$.",
+          "right": "The fundamental of a string fixed at both ends is a single loop, which is half a wavelength: $\\lambda = 2L$. A full wavelength on the string is the second harmonic."
+        },
+        {
+          "tag": "standing-wave-harmonics",
+          "wrong": "A pipe closed at one end has harmonics at $f_1$, $2f_1$, $3f_1$, like any other instrument.",
+          "right": "With a node at one end and an antinode at the other, only odd numbers of quarter-wavelengths fit. The resonances are $f_1$, $3f_1$, $5f_1$."
+        },
+        {
+          "wrong": "The beat frequency of $440\\ \\text{Hz}$ and $444\\ \\text{Hz}$ is their average, $442\\ \\text{Hz}$.",
+          "right": "You hear a pitch near $442\\ \\text{Hz}$ whose loudness pulses $4$ times per second. The beat frequency is the difference, $4\\ \\text{Hz}$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A string fixed at both ends has a fundamental of $110\\ \\text{Hz}$. What are its next two harmonics? What would they be for a closed pipe with the same fundamental?",
+          "a": "String: $220\\ \\text{Hz}$ and $330\\ \\text{Hz}$. Closed pipe: $330\\ \\text{Hz}$ and $550\\ \\text{Hz}$, because only odd multiples occur."
+        },
+        {
+          "q": "In a standing wave the distance between neighbouring nodes is $0.25\\ \\text{m}$. What is the wavelength?",
+          "a": "$0.50\\ \\text{m}$. Neighbouring nodes are half a wavelength apart."
+        },
+        {
+          "q": "A guitarist plays a string together with a $330\\ \\text{Hz}$ tuning fork and hears $3$ beats per second. What could the string's frequency be?",
+          "a": "Either $327\\ \\text{Hz}$ or $333\\ \\text{Hz}$. Beats give the difference but not which tone is higher."
+        }
+      ],
+      "tryIt": {
+        "diagram": "wave string n={{n}} L=1.2 unit=m num=all",
+        "caption": "Step through the harmonics of a $1.2\\ \\text{m}$ string. Each step adds one more half-wavelength loop and one more node, and the wavelength is always $2L/n$.",
+        "params": [
+          {
+            "name": "n",
+            "label": "Harmonic number",
+            "min": 1,
+            "max": 6,
+            "step": 1,
+            "default": 2,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.1",
+        "14.2",
+        "14.3"
+      ],
+      "teacherNotes": "Ask what the string looks like at the instant an upward pulse and an equal downward pulse overlap exactly, then ask where the energy is; students who say it has gone have not yet separated displacement from motion. For standing waves, have students draw the pattern and count half-wavelength loops before reaching for a formula: most wrong answers come from $\\lambda = L$ for the fundamental or from giving a closed pipe a second harmonic. Stress that the $v$ for a string is the speed on the string, while the sound it makes travels through the air at the speed of sound with the same frequency."
+    },
+    {
+      "topic": "14.7",
+      "bigIdea": "Waves spread out after passing through an opening, more strongly the narrower the opening is compared with the wavelength, and for light through a single slit the spreading produces a wide central bright band with dark fringes on either side.",
+      "picture": {
+        "diagram": "wave single orders=3 lambda=600nm a=0.05mm L=2m num=all",
+        "caption": "Brightness across the screen for $600\\ \\text{nm}$ light through a $0.05\\ \\text{mm}$ slit, $2\\ \\text{m}$ away. The numbered marks are the dark fringes, $2.4\\ \\text{cm}$ apart. The central maximum runs from $-2.4\\ \\text{cm}$ to $+2.4\\ \\text{cm}$: it is twice as wide as the side fringes and far brighter."
+      },
+      "explanation": "You can hear someone talking around the corner of an open door, though you cannot see them. Sound bends through the doorway; light, apparently, does not. The bending and spreading of a wave as it passes through an opening or around an edge is **diffraction**, and how much of it happens depends on the size of the opening compared with the wavelength. An opening many wavelengths wide lets the wave through almost straight, leaving a sharp shadow. An opening about one wavelength wide, or narrower, spreads the wave in all directions. Speech has wavelengths of around a metre, about the width of a door, so it fills the room. Visible light has wavelengths near $500\\ \\text{nm}$, so a door is millions of wavelengths wide; light diffracts noticeably only through very narrow openings.\n\nShine a laser through a narrow slit of width $a$ and a distant screen shows a wide, bright **central maximum** with dark fringes on each side and much dimmer bright fringes between them. The reason is interference between light from different parts of the same slit. Straight ahead, light from every part of the slit travels the same distance and arrives in step: bright. Now pick the angle at which light from one edge of the slit travels exactly one wavelength farther than light from the other edge. Light from the edge and light from the middle of the slit then differ by half a wavelength and cancel. So does every other pair of points half a slit apart, and the screen is dark there. This gives the rule for the **dark** fringes: $a\\sin\\theta = m\\lambda$, with $m = \\pm 1, \\pm 2, \\dots$\n\nWhen the screen is far away the angles are small, and the dark fringes are at distances $y = m\\lambda L/a$ from the centre of the pattern. The central maximum stretches between the first dark fringes on either side, so its width is $2\\lambda L/a$. Notice what is in the denominator: a **narrower** slit gives a **wider** pattern, the opposite of what a shadow would do. A longer wavelength also widens the pattern, so red light spreads more than blue.",
+      "equations": [
+        {
+          "latex": "a\\sin\\theta = m\\lambda",
+          "meaning": "The dark fringes of a single-slit pattern lie in the directions for which the paths from the two edges of the slit differ by a whole number of wavelengths.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "width of the slit",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle from the straight-through direction to the dark fringe",
+              "unit": "°"
+            },
+            {
+              "symbol": "m",
+              "name": "which dark fringe: ±1, ±2, … (never 0)",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "One slit or opening, and you want the directions of the dark fringes (or the wavelength or slit width from them).",
+          "notWhen": "It locates dark fringes, not bright ones, and $m = 0$ is the bright centre. Do not confuse it with the two-slit equation, which looks the same but gives bright fringes."
+        },
+        {
+          "latex": "y = \\dfrac{m\\lambda L}{a}",
+          "meaning": "On a distant screen the dark fringes are evenly spaced, a distance $\\lambda L/a$ apart, on either side of the centre.",
+          "variables": [
+            {
+              "symbol": "y",
+              "name": "distance on the screen from the centre of the pattern to the dark fringe",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "which dark fringe: ±1, ±2, …",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            },
+            {
+              "symbol": "L",
+              "name": "distance from the slit to the screen",
+              "unit": "m"
+            },
+            {
+              "symbol": "a",
+              "name": "width of the slit",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The screen is far from the slit compared with the size of the pattern, so the angles are small (true for nearly all light experiments).",
+          "notWhen": "Not when the angle is large, as for sound through a doorway; use the angle form then. The central maximum is $2\\lambda L/a$ wide, from $m = -1$ to $m = +1$."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Slit width from the central maximum",
+          "prompt": "Light of wavelength $600\\ \\text{nm}$ passes through a single slit and falls on a screen $2.0\\ \\text{m}$ away. The central bright band on the screen is $3.0\\ \\text{cm}$ wide. How wide is the slit?",
+          "steps": [
+            "The central band is bounded by the first dark fringe on each side, $m = -1$ and $m = +1$. So the first dark fringe is half the band's width from the centre: $y = 1.5\\ \\text{cm} = 0.015\\ \\text{m}$.",
+            "Convert the wavelength: $\\lambda = 600\\ \\text{nm} = 6.00 \\times 10^{-7}\\ \\text{m}$.",
+            "The pattern is tiny compared with the $2.0\\ \\text{m}$ to the screen, so use $y = \\dfrac{m\\lambda L}{a}$ with $m = 1$ and solve for the slit width: $a = \\dfrac{\\lambda L}{y}$.",
+            "Substitute: $a = \\dfrac{(6.00 \\times 10^{-7}\\ \\text{m})(2.0\\ \\text{m})}{0.015\\ \\text{m}} = 8.0 \\times 10^{-5}\\ \\text{m}$.",
+            "In millimetres this is $0.080\\ \\text{mm}$, about the thickness of a hair."
+          ],
+          "answer": "$a = 0.080\\ \\text{mm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 600,
+                "unit": "nm"
+              },
+              "L": {
+                "value": 2,
+                "unit": "m"
+              },
+              "w": {
+                "value": 3,
+                "unit": "cm"
+              }
+            },
+            "expr": "2*lambda*L/w",
+            "unit": "mm"
+          }
+        },
+        {
+          "title": "Sound through a doorway",
+          "prompt": "A loudspeaker outside a room plays a pure tone toward an open doorway $0.900\\ \\text{m}$ wide. Inside the room the sound is quietest in the direction $30.0^\\circ$ from straight ahead, the first minimum of the diffraction pattern. The speed of sound is $343\\ \\text{m/s}$. Determine the frequency of the tone, and explain why a $200\\ \\text{Hz}$ tone would have no quiet direction at all.",
+          "steps": [
+            "Treat the doorway as a single slit of width $a = 0.900\\ \\text{m}$. The first minimum is at $a\\sin\\theta = \\lambda$. The angle is not small, so use the angle form directly.",
+            "$\\lambda = (0.900\\ \\text{m})\\sin 30.0^\\circ = (0.900\\ \\text{m})(0.500) = 0.450\\ \\text{m}$.",
+            "$f = \\dfrac{v}{\\lambda} = \\dfrac{343\\ \\text{m/s}}{0.450\\ \\text{m}} = 762\\ \\text{Hz}$.",
+            "A $200\\ \\text{Hz}$ tone has wavelength $\\lambda = \\dfrac{343\\ \\text{m/s}}{200\\ \\text{Hz}} = 1.7\\ \\text{m}$, which is longer than the doorway is wide. The first minimum would need $\\sin\\theta = \\lambda/a$ to be greater than $1$, which no angle can satisfy. The central maximum fills the whole room."
+          ],
+          "answer": "$f = 762\\ \\text{Hz}$. A $200\\ \\text{Hz}$ tone has a wavelength longer than the doorway's width, so it has no minimum and spreads through the whole room.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "a": {
+                "value": 0.9,
+                "unit": "m"
+              },
+              "theta": {
+                "value": 30,
+                "unit": "deg"
+              },
+              "v": {
+                "value": 343,
+                "unit": "m/s"
+              }
+            },
+            "expr": "v/(a*sin(theta))",
+            "unit": "Hz"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "slit-width-pattern-width",
+          "wrong": "Making the slit narrower makes the bright band on the screen narrower, like a narrower shadow.",
+          "right": "A narrower slit diffracts the light more. The width of the central maximum is $2\\lambda L/a$, so halving the slit width doubles the width of the pattern (and makes it dimmer)."
+        },
+        {
+          "tag": "interference-condition-swapped",
+          "wrong": "$a\\sin\\theta = m\\lambda$ gives the bright fringes of a single slit, just as it does for two slits.",
+          "right": "For a single slit this condition gives the dark fringes. A whole wavelength of path difference across the slit lets the light from its two halves cancel in pairs."
+        },
+        {
+          "wrong": "Light does not diffract; only sound and water waves bend around things.",
+          "right": "All waves diffract. Light's wavelength is so small that everyday openings are millions of wavelengths wide, so the spreading is too slight to notice."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "In a single-slit experiment the red laser is replaced by a blue one. What happens to the pattern?",
+          "a": "It gets narrower. Blue light has a shorter wavelength, and every distance in the pattern is proportional to $\\lambda$."
+        },
+        {
+          "q": "The first dark fringe of a single-slit pattern is $4\\ \\text{mm}$ from the centre. Where is the second dark fringe, and how wide is the central maximum?",
+          "a": "The second is $8\\ \\text{mm}$ from the centre, since dark fringes are evenly spaced. The central maximum is $8\\ \\text{mm}$ wide, from $-4\\ \\text{mm}$ to $+4\\ \\text{mm}$."
+        },
+        {
+          "q": "Why does the bass from a neighbour's music come round corners and through doorways better than the treble?",
+          "a": "Bass notes have long wavelengths, as large as or larger than doorways, so they diffract strongly. Treble has short wavelengths and spreads much less."
+        }
+      ],
+      "tryIt": {
+        "diagram": "wave single orders=3 lambda=600nm a={{a}}mm L=2m num=all",
+        "caption": "Change the slit width and read the positions printed under the dark fringes (the drawing is rescaled to fit, so its shape stays the same). A narrower slit pushes every fringe farther out.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Slit width",
+            "min": 0.02,
+            "max": 0.1,
+            "step": 0.01,
+            "default": 0.05,
+            "unit": "mm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.2",
+        "14.6"
+      ],
+      "teacherNotes": "Before showing a pattern, ask what will happen to the bright band when the slit is squeezed; most students predict it narrows, and an adjustable slit in a laser beam makes the correction memorable. The condition $a\\sin\\theta = m\\lambda$ marking dark fringes collides with the two-slit bright condition in the next topic, so have students say \"single slit, dark\" aloud each time. In calculations, watch for the full width of the central maximum being used as the distance to the first dark fringe."
+    },
+    {
+      "topic": "14.8",
+      "bigIdea": "Light from two slits arrives at each point of a screen by two paths, and the point is bright where the paths differ by a whole number of wavelengths and dark where they differ by a whole number plus a half.",
+      "picture": {
+        "diagram": "wave double orders=3 lambda=600nm d=0.2mm L=2m num=all",
+        "caption": "Brightness across the screen for $600\\ \\text{nm}$ light through two slits $0.2\\ \\text{mm}$ apart, $2\\ \\text{m}$ away. The bright fringes are evenly spaced, $6\\ \\text{mm}$ apart, and numbered by $m$, the number of whole wavelengths by which the two paths differ."
+      },
+      "explanation": "Pass light from a single laser through two narrow slits a small distance $d$ apart. Each slit diffracts the light, so the two beams spread and overlap on a distant screen. You might expect a broad patch of light. Instead there is a row of evenly spaced bright and dark **fringes**. Light added to light has given darkness in places, which only waves can do. This experiment is the classic evidence that light is a wave.\n\nThe fringes come from the difference between the two paths. To reach the centre of the screen, light from both slits travels the same distance, arrives in step and adds: the central bright fringe. To reach a point off to one side, at angle $\\theta$, light from the farther slit must travel an extra distance $\\Delta L = d\\sin\\theta$. If that extra distance is a whole number of wavelengths, the two waves still arrive crest on crest, and the point is **bright**: $d\\sin\\theta = m\\lambda$. If it is a whole number plus a half, they arrive crest on trough, and the point is **dark**: $d\\sin\\theta = (m + \\tfrac{1}{2})\\lambda$. The whole number $m$ is called the order of the fringe.\n\nWhen the screen is far away the angles are small, and the bright fringes are at distances $y = m\\lambda L/d$ from the centre, so neighbouring bright fringes are $\\Delta y = \\lambda L/d$ apart. Read the dependence off that expression: a longer wavelength or a more distant screen spreads the fringes out; slits that are **farther apart** squeeze the fringes **closer together**.\n\nA **diffraction grating** has thousands of equally spaced slits. Its bright fringes obey the same condition, $d\\sin\\theta = m\\lambda$, where $d$ is now the distance between neighbouring slits: a grating with $N$ lines per metre has $d = 1/N$. With so many slits the bright fringes become very sharp and bright, with wide dark gaps between them. Because $d$ is tiny the angles are large, so use $\\sin\\theta$ itself, not the small-angle form. Each wavelength goes to its own angle, so a grating spreads white light into a spectrum, which makes it a tool for measuring wavelengths.",
+      "equations": [
+        {
+          "latex": "d\\sin\\theta = m\\lambda",
+          "meaning": "Bright fringes from two slits, or from a grating, lie in the directions for which the paths from neighbouring slits differ by a whole number of wavelengths.",
+          "variables": [
+            {
+              "symbol": "d",
+              "name": "distance between neighbouring slits (centre to centre)",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle from the straight-through direction to the bright fringe",
+              "unit": "°"
+            },
+            {
+              "symbol": "m",
+              "name": "order of the bright fringe: 0, ±1, ±2, …",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two slits or a grating, and you want the direction of a bright fringe. For a grating given in lines per millimetre, find $d$ first.",
+          "notWhen": "Here $d$ is the slit separation, not the slit width. For dark fringes of two slits replace $m$ by $m + \\tfrac{1}{2}$."
+        },
+        {
+          "latex": "d\\sin\\theta = \\left(m + \\tfrac{1}{2}\\right)\\lambda",
+          "meaning": "Dark fringes from two slits lie where the two paths differ by a whole number of wavelengths plus a half.",
+          "variables": [
+            {
+              "symbol": "d",
+              "name": "distance between the slits",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle from the straight-through direction to the dark fringe",
+              "unit": "°"
+            },
+            {
+              "symbol": "m",
+              "name": "0, ±1, ±2, …",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want the directions in which light from two slits cancels.",
+          "notWhen": "The first dark fringe has $m = 0$: a path difference of half a wavelength, not a whole one."
+        },
+        {
+          "latex": "\\Delta y = \\dfrac{\\lambda L}{d}",
+          "meaning": "On a distant screen, neighbouring bright fringes (or neighbouring dark fringes) from two slits are a distance $\\lambda L/d$ apart; the $m$th bright fringe is $m$ times this far from the centre.",
+          "variables": [
+            {
+              "symbol": "\\Delta y",
+              "name": "spacing of neighbouring fringes on the screen",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength",
+              "unit": "m"
+            },
+            {
+              "symbol": "L",
+              "name": "distance from the slits to the screen",
+              "unit": "m"
+            },
+            {
+              "symbol": "d",
+              "name": "distance between the slits",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two slits and a distant screen, where the angles are small.",
+          "notWhen": "Not for a grating, whose angles are too large for the small-angle form. Keep every length in metres before dividing."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Wavelength from a grating",
+          "prompt": "Light from a sodium lamp falls straight onto a diffraction grating with $500$ lines per millimetre. The second-order ($m = 2$) bright line is seen at $36.0^\\circ$ from the straight-through direction. What is the wavelength of the light?",
+          "steps": [
+            "Find the slit spacing. With $500$ lines in each millimetre, neighbouring slits are $d = \\dfrac{1\\ \\text{mm}}{500} = 2.00 \\times 10^{-3}\\ \\text{mm} = 2.00 \\times 10^{-6}\\ \\text{m}$ apart.",
+            "The bright lines of a grating obey $d\\sin\\theta = m\\lambda$. The angle is large, so use the sine itself: $\\sin 36.0^\\circ = 0.588$.",
+            "Solve for the wavelength: $\\lambda = \\dfrac{d\\sin\\theta}{m} = \\dfrac{(2.00 \\times 10^{-6}\\ \\text{m})(0.588)}{2} = 5.88 \\times 10^{-7}\\ \\text{m}$.",
+            "Convert: $\\lambda = 588\\ \\text{nm}$. That is yellow light, the colour of a sodium lamp, so the answer is sensible."
+          ],
+          "answer": "$\\lambda = 588\\ \\text{nm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "N": {
+                "value": 500,
+                "unit": "mm^-1"
+              },
+              "theta": {
+                "value": 36,
+                "unit": "deg"
+              },
+              "m": {
+                "value": 2,
+                "unit": ""
+              }
+            },
+            "expr": "sin(theta)/(N*m)",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "Where two colours' fringes meet",
+          "prompt": "Light containing two wavelengths, $600\\ \\text{nm}$ and $450\\ \\text{nm}$, passes through two slits $0.20\\ \\text{mm}$ apart onto a screen $1.5\\ \\text{m}$ away. Apart from the centre, how far from the central fringe is the nearest point where bright fringes of both colours fall in the same place? Explain why the pattern looks coloured elsewhere.",
+          "steps": [
+            "A point is bright for a colour when the path difference is a whole number of its wavelengths. Both colours are bright together where $m_1(600\\ \\text{nm}) = m_2(450\\ \\text{nm})$.",
+            "So $m_2/m_1 = 600/450 = 4/3$. The smallest whole numbers are $m_1 = 3$ and $m_2 = 4$: a path difference of $1800\\ \\text{nm}$, three of one wavelength and four of the other.",
+            "Position: $y = \\dfrac{m_1\\lambda_1 L}{d} = \\dfrac{(3)(6.00 \\times 10^{-7}\\ \\text{m})(1.5\\ \\text{m})}{2.0 \\times 10^{-4}\\ \\text{m}} = 1.35 \\times 10^{-2}\\ \\text{m} = 13.5\\ \\text{mm}$. The blue light gives the same: $(4)(4.50 \\times 10^{-7})(1.5)/(2.0 \\times 10^{-4}) = 13.5\\ \\text{mm}$.",
+            "Elsewhere the two colours' fringes fall at different places, because each colour's spacing is $\\lambda L/d$, so the bright bands alternate in colour. Only the centre and these coincidences show both colours together."
+          ],
+          "answer": "$y = 13.5\\ \\text{mm}$, where the third-order $600\\ \\text{nm}$ fringe meets the fourth-order $450\\ \\text{nm}$ fringe",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "lambda1": {
+                "value": 600,
+                "unit": "nm"
+              },
+              "L": {
+                "value": 1.5,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.2,
+                "unit": "mm"
+              }
+            },
+            "expr": "3*lambda1*L/d",
+            "unit": "mm"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "interference-condition-swapped",
+          "wrong": "A point is bright when the path difference is half a wavelength, or one and a half, and so on.",
+          "right": "Half-wavelength differences bring crest onto trough and give dark fringes. Bright fringes need the waves in step: a path difference of $0, \\lambda, 2\\lambda, \\dots$"
+        },
+        {
+          "tag": "slit-width-pattern-width",
+          "wrong": "Moving the two slits closer together moves the fringes closer together.",
+          "right": "The spacing is $\\lambda L/d$. A smaller slit separation means a larger angle is needed to build up one wavelength of path difference, so the fringes spread apart."
+        },
+        {
+          "wrong": "The dark fringes are shadows of the barrier between the slits, and the light that would have landed there is lost.",
+          "right": "Light from both slits reaches the dark fringes; the two waves cancel there. Cover one slit and those places light up. No energy is lost: it turns up in the bright fringes instead."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "At one point on the screen, light from one slit has travelled exactly $2.5$ wavelengths farther than light from the other. Is the point bright or dark?",
+          "a": "Dark. A whole number plus a half means crest meets trough."
+        },
+        {
+          "q": "A two-slit pattern has fringes $4\\ \\text{mm}$ apart. The screen is moved to twice the distance. What is the new spacing?",
+          "a": "$8\\ \\text{mm}$. The spacing $\\lambda L/d$ is proportional to the distance to the screen."
+        },
+        {
+          "q": "White light passes through a grating. In the first-order spectrum, which is bent through the larger angle, red or violet? What is seen straight through?",
+          "a": "Red, because it has the longer wavelength and $\\sin\\theta = \\lambda/d$. Straight through ($m = 0$) every wavelength is bright, so the central line is white."
+        }
+      ],
+      "tryIt": {
+        "diagram": "wave double orders=3 lambda=600nm d={{d}}mm L=2m num=all",
+        "caption": "Change the slit separation and read the positions printed under the bright fringes (the drawing is rescaled to fit). Moving the slits closer together spreads the fringes out.",
+        "params": [
+          {
+            "name": "d",
+            "label": "Slit separation",
+            "min": 0.1,
+            "max": 0.5,
+            "step": 0.05,
+            "default": 0.2,
+            "unit": "mm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "14.2",
+        "14.6",
+        "14.7"
+      ],
+      "teacherNotes": "Build everything on path difference: ask \"how much farther did the light from this slit travel, in wavelengths?\" for several points before writing an equation, and the bright and dark conditions follow. Students commonly reverse the effect of slit separation, and confuse $d$ here with the slit width $a$ of the single slit. For gratings, the conversion from lines per millimetre to $d$ in metres and the use of the small-angle formula where it does not apply are the usual sources of wrong numbers."
+    },
+    {
+      "topic": "14.9",
+      "bigIdea": "Light reflected from the top and from the bottom of a thin film interferes, and whether a colour is strengthened or cancelled depends on the film's thickness and index and on which reflections are flipped by half a wavelength.",
+      "picture": {
+        "diagram": "scene\ndash 0,1 6,1\ndash 0,0 6,0\ntext 5,1.6 \"air, n = 1.00\"\ntext 5,0.5 \"film, n = 1.38\"\ntext 5,-0.5 \"glass, n = 1.50\"\nf 1.3,2.2 -60 1.39 \"incident\"\nrope 2,1 2.5,0\nrope 2.5,0 3,1\nf 2,1 60 1.4 \"1\"\nf 3,1 60 1.4 \"2\"\ndim 0.5,0 0.5,1 \"t\"",
+        "caption": "A thin coating on glass. Ray 1 reflects from the top of the film; ray 2 crosses the film, reflects from the glass and crosses it again, travelling an extra distance of about $2t$. Here both reflections are from a higher index, so both are shifted by half a wavelength. (The rays are drawn at an angle to keep them apart; the equations are for light arriving almost straight down.)"
+      },
+      "explanation": "The swirling colours of a soap bubble or of oil on a wet road are not pigments. A thin transparent film reflects light twice, once from its top surface and once from its bottom, and the two reflected waves interfere. For some wavelengths they are in step and that colour is reflected strongly; for others they cancel and that colour is missing. Two things decide which.\n\nThe first is the extra path. The wave reflected from the bottom crosses the film twice, so for light arriving nearly straight on it travels an extra distance $2t$, where $t$ is the film's thickness. What matters is how many wavelengths fit into that distance, and inside the film the wavelength is shorter than in air. Light slows down in the film while its frequency stays the same, so $\\lambda_{\\text{film}} = \\lambda/n$, where $n$ is the film's index of refraction.\n\nThe second is what reflection does. Just as a pulse on a string is inverted when it reflects from a heavier string, light is inverted when it reflects from a medium with a **higher** index of refraction than the one it is travelling in. Inverting a wave is the same as shifting it by half a wavelength. Reflection from a medium of **lower** index causes no shift.\n\nNow combine them. If both reflections are shifted, or neither is, the shifts make no difference between the two waves, and the reflection is strongest when the extra path holds a whole number of wavelengths: $2t = m\\lambda/n$. It is weakest when $2t = (m + \\tfrac{1}{2})\\lambda/n$. If exactly **one** reflection is shifted, the two conditions swap. A soap film in air has one shift (at its top surface), so it reflects most strongly when $2t = (m + \\tfrac{1}{2})\\lambda/n$. A coating whose index lies between those of air and glass has two shifts, so that same condition makes it reflect least; that is how a non-reflective lens coating works.",
+      "equations": [
+        {
+          "latex": "\\lambda_{\\text{film}} = \\dfrac{\\lambda}{n}",
+          "meaning": "Inside the film light has the same frequency but a lower speed, so its wavelength is shorter by the factor of the film's index of refraction.",
+          "variables": [
+            {
+              "symbol": "\\lambda_{\\text{film}}",
+              "name": "wavelength inside the film",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength in air or vacuum",
+              "unit": "m"
+            },
+            {
+              "symbol": "n",
+              "name": "index of refraction of the film",
+              "unit": ""
+            }
+          ],
+          "useWhen": "Always, before comparing the extra path $2t$ with a wavelength.",
+          "notWhen": "Use the index of the film itself, not of the material under it. The other indices only decide the reflection shifts."
+        },
+        {
+          "latex": "2t = \\dfrac{m\\lambda}{n}",
+          "meaning": "The extra path through the film holds a whole number of film wavelengths: the reflection is strongest if zero or two of the reflections are shifted, and weakest if exactly one is.",
+          "variables": [
+            {
+              "symbol": "t",
+              "name": "thickness of the film",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "a whole number: 1, 2, 3, …",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength in air or vacuum",
+              "unit": "m"
+            },
+            {
+              "symbol": "n",
+              "name": "index of refraction of the film",
+              "unit": ""
+            }
+          ],
+          "useWhen": "Light arrives almost straight onto a thin film, after you have counted how many of the two reflections are from a higher index.",
+          "notWhen": "Do not assume it means \"bright\". With exactly one shifted reflection (a soap film in air, oil on water when the oil has the higher index) it is the condition for the weakest reflection."
+        },
+        {
+          "latex": "2t = \\left(m + \\tfrac{1}{2}\\right)\\dfrac{\\lambda}{n}",
+          "meaning": "The extra path holds a whole number of film wavelengths plus a half: the reflection is weakest if zero or two of the reflections are shifted, and strongest if exactly one is.",
+          "variables": [
+            {
+              "symbol": "t",
+              "name": "thickness of the film",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "a whole number: 0, 1, 2, …",
+              "unit": ""
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "wavelength in air or vacuum",
+              "unit": "m"
+            },
+            {
+              "symbol": "n",
+              "name": "index of refraction of the film",
+              "unit": ""
+            }
+          ],
+          "useWhen": "The same situation; this is the partner of the equation above, and the thinnest film that satisfies it has $m = 0$, giving $t = \\lambda/4n$.",
+          "notWhen": "It is not always \"dark\". Count the shifted reflections first, then decide which equation is the bright one."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Thinnest soap film that looks green",
+          "prompt": "A soap film (index of refraction $1.33$) has air on both sides. White light shines almost straight onto it. What is the smallest thickness for which the film strongly reflects green light of wavelength $560\\ \\text{nm}$?",
+          "steps": [
+            "Count the shifted reflections. Top surface: light in air ($n = 1.00$) reflects from soapy water ($n = 1.33$), a higher index, so this reflection is shifted by half a wavelength. Bottom surface: light in soapy water reflects from air, a lower index, so there is no shift.",
+            "Exactly one reflection is shifted, so the conditions are swapped: the reflection is strongest when the extra path is a whole number of film wavelengths plus a half, $2t = (m + \\tfrac{1}{2})\\dfrac{\\lambda}{n}$.",
+            "The smallest thickness has $m = 0$: $2t = \\dfrac{\\lambda}{2n}$, so $t = \\dfrac{\\lambda}{4n}$.",
+            "Substitute: $t = \\dfrac{560\\ \\text{nm}}{4(1.33)} = \\dfrac{560\\ \\text{nm}}{5.32} = 105\\ \\text{nm}$."
+          ],
+          "answer": "$t = 105\\ \\text{nm}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 560,
+                "unit": "nm"
+              },
+              "n": {
+                "value": 1.33,
+                "unit": ""
+              }
+            },
+            "expr": "lambda/(4*n)",
+            "unit": "nm"
+          }
+        },
+        {
+          "title": "The colour a coated lens reflects",
+          "prompt": "A glass lens (index $1.50$) is coated with a transparent layer of index $1.25$ and thickness $220\\ \\text{nm}$. White light in air shines almost straight onto it. Determine the wavelength of visible light ($400\\ \\text{nm}$ to $700\\ \\text{nm}$) that is reflected most strongly, and justify the condition you use.",
+          "steps": [
+            "Top surface: air ($1.00$) to coating ($1.25$) is a reflection from a higher index, so it is shifted. Bottom surface: coating ($1.25$) to glass ($1.50$) is also from a higher index, so it is shifted too.",
+            "Both reflections are shifted by half a wavelength, so the shifts cancel out. The two reflected waves are in step when the extra path alone is a whole number of film wavelengths: $2t = \\dfrac{m\\lambda}{n}$, which gives $\\lambda = \\dfrac{2nt}{m}$.",
+            "$2nt = 2(1.25)(220\\ \\text{nm}) = 550\\ \\text{nm}$. For $m = 1$, $\\lambda = 550\\ \\text{nm}$; for $m = 2$, $\\lambda = 275\\ \\text{nm}$, which is ultraviolet.",
+            "The only visible wavelength reflected most strongly is $550\\ \\text{nm}$, so the coating gives the lens a green tint in reflected light."
+          ],
+          "answer": "$\\lambda = 550\\ \\text{nm}$ (green), from $2t = m\\lambda/n$ with $m = 1$, because both reflections are shifted.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "n": {
+                "value": 1.25,
+                "unit": ""
+              },
+              "t": {
+                "value": 220,
+                "unit": "nm"
+              }
+            },
+            "expr": "2*n*t",
+            "unit": "nm"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "boundary-phase-change",
+          "wrong": "Light is flipped every time it reflects, so the two reflections from a film always cancel each other's shift.",
+          "right": "A reflection is shifted by half a wavelength only when it is from a higher index than the light is travelling in. A soap film in air has one shifted reflection, not two."
+        },
+        {
+          "tag": "interference-condition-swapped",
+          "wrong": "If the extra path $2t$ is a whole number of wavelengths, the film always reflects that colour brightly.",
+          "right": "Only when zero or two reflections are shifted. With exactly one shifted reflection, a whole number of wavelengths of extra path gives cancellation instead."
+        },
+        {
+          "tag": "frequency-changes-in-medium",
+          "wrong": "The wavelength to compare with the film's thickness is the wavelength of the light in air.",
+          "right": "The extra path is inside the film, where the wavelength is $\\lambda/n$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A film of oil ($n = 1.45$) floats on water ($n = 1.33$) with air above. Which of the two reflections is shifted by half a wavelength?",
+          "a": "Only the top one. Air to oil is a reflection from a higher index (shifted); oil to water is from a lower index (not shifted)."
+        },
+        {
+          "q": "Just before a soap film in air breaks, it becomes far thinner than a wavelength of light. Does it look bright or dark in reflected light?",
+          "a": "Dark. The extra path is almost zero, so the only difference between the two reflected waves is the single half-wavelength shift, and they cancel for every colour."
+        },
+        {
+          "q": "Light of wavelength $600\\ \\text{nm}$ in air enters a film of index $1.50$. What is its wavelength in the film, and what has happened to its frequency?",
+          "a": "$400\\ \\text{nm}$, from $\\lambda/n$. The frequency is unchanged."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ndash 0,1 6,1\ndash 0,0 6,0\ntext 3,1.5 \"air\"\ntext 3,0.5 \"soap film, n = 1.33, t = {{t}} nm\"\ntext 3,-0.5 \"air\"\ntext 3,-1.3 \"reflected most strongly: λ = {{round(4*1.33*t)}} nm\"",
+        "caption": "A soap film in air reflects most strongly the wavelength for which $t = \\lambda/4n$. Make the film thicker and that wavelength moves from violet (near $400\\ \\text{nm}$) toward red (near $700\\ \\text{nm}$), which is why a draining bubble shows bands of colour.",
+        "params": [
+          {
+            "name": "t",
+            "label": "Film thickness",
+            "min": 75,
+            "max": 130,
+            "step": 5,
+            "default": 100,
+            "unit": "nm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "13.3",
+        "14.3",
+        "14.6",
+        "14.8"
+      ],
+      "teacherNotes": "Give students a fixed routine and insist on it: label the three indices, mark each reflection \"shifted\" or \"not shifted\", count the shifts, and only then choose the condition. Most errors come from memorising \"$2t = m\\lambda$ is bright\" without the count, or from using the wavelength in air inside the film. The black top of a draining soap film is a good puzzle to pose: a film of almost no thickness that reflects almost nothing shows the single shift directly."
+    }
+  ]
+}

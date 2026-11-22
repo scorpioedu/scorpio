@@ -1,0 +1,1430 @@
+{
+  "curriculumId": "ap-physics-2",
+  "unit": 11,
+  "guides": [
+    {
+      "topic": "11.1",
+      "bigIdea": "Electric current is the rate at which charge passes a point in a circuit, and by convention its direction is the way positive charge would move, from higher potential to lower potential through the circuit.",
+      "picture": {
+        "diagram": "scene\nrod 1,1 7,1\ndot 2,1 \"e^-\"\ndot 3.5,1 \"e^-\"\ndot 5,1 \"e^-\"\ndot 6.5,1 \"e^-\"\nf 4,1.9 right 2 \"conventional current I\"\nf 4,0.3 left 1 \"electron drift\"\ntext 0.6,1 \"+\"\ntext 7.4,1 \"−\"",
+        "caption": "A piece of wire with its left end at the higher potential. The electrons drift slowly toward that end, to the left. The conventional current $I$ is drawn the other way, to the right, the way positive charge would move."
+      },
+      "explanation": "A metal wire is full of electrons that are free to wander. Left alone they move randomly, so as much charge crosses any slice of the wire one way as the other and there is no net flow. Connect the ends of the wire to the terminals of a battery and that changes: the battery holds one end at a higher electric potential than the other, an electric field appears inside the wire, and the whole crowd of free electrons begins to drift. That net flow of charge is an electric current. Its size is the amount of charge passing a point each second, $I = \\Delta q/\\Delta t$, measured in amperes: $1\\ \\text{A} = 1\\ \\text{C/s}$.\n\nCurrent has an agreed direction: the way positive charge would move, which is from higher potential to lower potential through the wires, out of the battery's positive terminal and back into its negative terminal. In a metal the moving charges are electrons, which are negative, so they drift the opposite way. Both descriptions say the same thing, because negative charge moving left changes the charge on each side exactly as positive charge moving right would. Every current arrow in this course shows the conventional direction.\n\nTwo facts follow. First, a current needs a potential difference to drive it: no difference in potential between the ends of a wire, no net flow. Second, charge is conserved and does not pile up anywhere in a steady circuit, so along a single path the current is the same at every point. The number of coulombs entering a bulb each second equals the number leaving it. What the bulb takes from the charge is energy, not charge. The drift itself is slow, usually a fraction of a millimetre per second, yet a lamp lights at once, because the wire is already full of charge, like a pipe already full of water.",
+      "equations": [
+        {
+          "latex": "I = \\frac{\\Delta q}{\\Delta t}",
+          "meaning": "Current is the charge that passes a point divided by the time it takes to pass.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "current",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\Delta q",
+              "name": "charge passing the point",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know two of: a steady current, the charge that has passed, and the time. For a changing current it gives the average.",
+          "notWhen": "Do not use the total charge sitting in the wire: only charge that crosses the chosen point counts. Convert minutes and hours to seconds first."
+        },
+        {
+          "latex": "\\Delta q = N e",
+          "meaning": "A quantity of charge is a whole number of elementary charges.",
+          "variables": [
+            {
+              "symbol": "\\Delta q",
+              "name": "charge passing the point",
+              "unit": "C"
+            },
+            {
+              "symbol": "N",
+              "name": "number of electrons (or other singly charged carriers)",
+              "unit": ""
+            },
+            {
+              "symbol": "e",
+              "name": "elementary charge, $1.60 \\times 10^{-19}$ C",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "A question asks how many electrons pass a point, or gives a number of charge carriers.",
+          "notWhen": "It gives a count, not a direction: electrons move opposite to the conventional current."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "How long a torch battery lasts",
+          "prompt": "A torch battery is rated to supply a current of $2500\\ \\text{mA}$ for $1.0\\ \\text{h}$; it is labelled \\\"2500 mAh\\\". The torch's LED draws a steady current of $0.15\\ \\text{A}$. How much charge can the battery deliver, and for how long will it run the torch?",
+          "steps": [
+            "A current multiplied by a time is a charge, so the rating is a charge in disguise. In SI units: $\\Delta q = I\\,\\Delta t = (2.5\\ \\text{A})(3600\\ \\text{s}) = 9.0 \\times 10^3\\ \\text{C}$.",
+            "The same charge flows through the torch at its own current, so $\\Delta t = \\dfrac{\\Delta q}{I} = \\dfrac{9.0 \\times 10^3\\ \\text{C}}{0.15\\ \\text{A}} = 6.0 \\times 10^4\\ \\text{s}$.",
+            "Convert to hours: $\\dfrac{6.0 \\times 10^4\\ \\text{s}}{3600\\ \\text{s/h}} = 17\\ \\text{h}$.",
+            "Check the size: the torch draws $0.15\\ \\text{A}$, about one-seventeenth of $2.5\\ \\text{A}$, so the battery should last about seventeen times as long as one hour. It does."
+          ],
+          "answer": "$\\Delta q = 9.0 \\times 10^3\\ \\text{C}$; the torch runs for about $17\\ \\text{h}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "I_r": {
+                "value": 2500,
+                "unit": "mA"
+              },
+              "t_r": {
+                "value": 1,
+                "unit": "h"
+              },
+              "I": {
+                "value": 0.15,
+                "unit": "A"
+              }
+            },
+            "expr": "I_r*t_r/I",
+            "unit": "h"
+          }
+        },
+        {
+          "title": "Counting electrons in a lamp cord",
+          "prompt": "The cord of a desk lamp carries a steady current of $0.80\\ \\text{A}$ directed from the wall plug toward the lamp. The elementary charge is $1.6 \\times 10^{-19}\\ \\text{C}$. Calculate the number of electrons that pass a point in the cord in $5.0\\ \\text{s}$, and state which way they are moving.",
+          "steps": [
+            "The charge that passes the point is $\\Delta q = I\\,\\Delta t = (0.80\\ \\text{A})(5.0\\ \\text{s}) = 4.0\\ \\text{C}$.",
+            "Each electron carries a charge of magnitude $e$, so the number of electrons is $N = \\dfrac{\\Delta q}{e} = \\dfrac{4.0\\ \\text{C}}{1.6 \\times 10^{-19}\\ \\text{C}} = 2.5 \\times 10^{19}$.",
+            "The current is given in the conventional direction, the way positive charge would move: from the plug toward the lamp. Electrons are negative, so they drift the opposite way, from the lamp toward the plug.",
+            "The number is enormous because each electron carries so little charge. That is also why the drift can be slow: a huge number of carriers each moving a little makes a sizeable current."
+          ],
+          "answer": "About $2.5 \\times 10^{19}$ electrons, drifting from the lamp toward the plug, opposite to the current.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "I": {
+                "value": 0.8,
+                "unit": "A"
+              },
+              "t": {
+                "value": 5,
+                "unit": "s"
+              },
+              "q_e": {
+                "value": 1.6e-19,
+                "unit": "C"
+              }
+            },
+            "expr": "I*t/q_e",
+            "unit": ""
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "current-used-up",
+          "wrong": "Current gets used up as it goes around: less current comes out of a bulb than went into it.",
+          "right": "Charge is conserved, so the current into a bulb equals the current out of it. The bulb lowers the energy of the charge that passes through; it does not remove any charge."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "Electrons flow out of the positive terminal and around to the negative terminal, because that is the direction of the current.",
+          "right": "That is the conventional direction, defined for positive charge. Electrons are negative, so the same electric field pushes them the other way: they leave the negative terminal and drift toward the positive one."
+        },
+        {
+          "wrong": "A lamp lights instantly because electrons race from the switch to the lamp at nearly the speed of light.",
+          "right": "Individual electrons drift at a fraction of a millimetre per second. The lamp lights at once because the wire is already full of mobile charge, and all of it starts moving almost together."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The current in a wire is $0.30\\ \\text{A}$. How long does it take for $36\\ \\text{C}$ of charge to pass a point in the wire?",
+          "a": "$\\Delta t = \\dfrac{\\Delta q}{I} = \\dfrac{36\\ \\text{C}}{0.30\\ \\text{A}} = 120\\ \\text{s}$, which is $2.0\\ \\text{min}$."
+        },
+        {
+          "q": "The current in a copper wire is directed east. Which way are the electrons in the wire drifting, and which end of the wire is at the higher potential?",
+          "a": "The electrons drift west, opposite to the conventional current. Conventional current runs from higher to lower potential, so the west end is at the higher potential."
+        },
+        {
+          "q": "An ammeter placed just before a bulb in a single loop reads $0.40\\ \\text{A}$. What does an identical ammeter placed just after the bulb read?",
+          "a": "Also $0.40\\ \\text{A}$. Charge does not disappear in the bulb or collect there, so the same charge per second leaves as enters."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=q[C] xr=-0.6,10 yr=0,30\nseg 0,0 10,{{10*I}} \"I = {{I}} A\"\nxt 0 2 4 6 8 10\nyt 0 10 20 30",
+        "caption": "The charge that has passed a point, against time, for a steady current. The current is the slope of the line: a larger current is a steeper line.",
+        "params": [
+          {
+            "name": "I",
+            "label": "Current",
+            "min": 0.5,
+            "max": 3,
+            "step": 0.5,
+            "default": 1.5,
+            "unit": "A"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.1",
+        "10.2",
+        "10.5"
+      ],
+      "teacherNotes": "Ask students to predict two ammeter readings, one on each side of a bulb, before measuring: the \"current is used up\" idea is the most persistent misconception in this unit and it needs to fail in front of them. Keep the language strict from the first day: current goes *through* an element, charge is conserved, and it is energy that the element takes. Students also mix up the conventional direction with electron drift, so have them mark both on one diagram at least once."
+    },
+    {
+      "topic": "11.2",
+      "bigIdea": "A circuit is a closed conducting loop in which a battery raises the potential energy of charge and the elements around the loop take that energy back out, so there is a current only when the loop is complete.",
+      "picture": {
+        "diagram": "circuit\nbattery a c 6V \"ε\"\nswitch a b open S\nbulb b c",
+        "caption": "A circuit diagram of a battery, a switch and a bulb. The long line of the battery symbol is its positive terminal. With switch $S$ open the loop is broken and there is no current anywhere; closing it completes the loop and the bulb lights."
+      },
+      "explanation": "A simple circuit has a few standard parts. A **battery** keeps a potential difference between its two terminals. **Wires** are conducting paths. A **switch** opens or closes a gap in a path. A **load**, such as a resistor or a bulb, turns electrical energy into something else. A circuit diagram, or schematic, draws each part as a standard symbol, joined by lines that stand for ideal wires with no resistance, so every point along an unbroken line is at the same potential. A schematic shows what is connected to what, not where things sit, so two diagrams that look different can be the same circuit.\n\nA battery does not make charge: the charge is already in the wires and the load. The battery uses chemical energy to move charge from its low-potential terminal to its high-potential terminal, and the energy it gives to each unit of charge is its **emf**, $\\varepsilon$. Emf is measured in volts, and a volt is a joule per coulomb: a $6\\ \\text{V}$ battery gives $6\\ \\text{J}$ of electric potential energy to every coulomb that passes through it. The charge then gives that energy up in the load, as light and thermal energy.\n\nBecause charge must return to the battery, a current needs a closed loop of conductor from one terminal around to the other. Break the loop anywhere, for instance by opening a switch, and the current stops everywhere in that loop at once, not only beyond the gap. The opposite fault is a **short circuit**: a bare wire joining the battery's terminals directly. With almost no resistance in the path, the current becomes very large and the battery and wire heat up.",
+      "equations": [
+        {
+          "latex": "\\varepsilon = \\frac{W}{q}",
+          "meaning": "The emf of a battery is the energy it gives to charge, per unit of charge that passes through it.",
+          "variables": [
+            {
+              "symbol": "\\varepsilon",
+              "name": "emf of the battery",
+              "unit": "V"
+            },
+            {
+              "symbol": "W",
+              "name": "energy the battery transfers to the charge",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "charge that passes through the battery",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "You need the energy a battery supplies to a known amount of charge, or the meaning of a battery's voltage rating.",
+          "notWhen": "Emf is not a force, despite its old name, and it is not the current. It is energy per charge, the same kind of quantity as a potential difference."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Energy supplied by a battery",
+          "prompt": "A $9.0\\ \\text{V}$ battery drives a steady current of $0.25\\ \\text{A}$ through a buzzer for $2.0\\ \\text{s}$. How much energy does the battery supply to the circuit in that time?",
+          "steps": [
+            "Emf is energy per charge, so first find how much charge passed through the battery: $q = I\\,\\Delta t = (0.25\\ \\text{A})(2.0\\ \\text{s}) = 0.50\\ \\text{C}$.",
+            "Each coulomb is given $9.0\\ \\text{J}$, because $9.0\\ \\text{V} = 9.0\\ \\text{J/C}$. Rearranging $\\varepsilon = W/q$ gives $W = q\\,\\varepsilon$.",
+            "$W = (0.50\\ \\text{C})(9.0\\ \\text{V}) = 4.5\\ \\text{J}$.",
+            "Follow the energy. The battery's chemical energy falls by $4.5\\ \\text{J}$, and the buzzer turns that $4.5\\ \\text{J}$ into sound and thermal energy. The charge is not used up: it returns to the battery."
+          ],
+          "answer": "$W = 4.5\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "emf": {
+                "value": 9,
+                "unit": "V"
+              },
+              "I": {
+                "value": 0.25,
+                "unit": "A"
+              },
+              "t": {
+                "value": 2,
+                "unit": "s"
+              }
+            },
+            "expr": "emf*I*t",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "A switch between two bulbs",
+          "prompt": "In the circuit shown, identical bulbs $A$ and $B$ have switch $S$ between them. With the switch open, a student claims that $A$ is lit and $B$ is dark, \"because the current from the positive terminal reaches $A$ before the gap.\" Evaluate the claim, and state what happens if the switch is moved to the other side of bulb $B$ and closed.\n\n```dg\ncircuit\nbattery a c 6V \"ε\"\nseries a c bulb A switch open S bulb B\n```",
+          "steps": [
+            "A steady current needs a closed conducting loop from one battery terminal around to the other. With $S$ open there is none.",
+            "Charge cannot flow through $A$ and pile up at the switch: a tiny build-up is enough to cancel the battery's push. So the current is zero everywhere in the loop, including in bulb $A$.",
+            "The claim is wrong. Both bulbs are dark. Being \"before\" the gap does not matter, because a circuit responds as a whole, not one element at a time.",
+            "Moving the switch changes the drawing, not the circuit: it is still one loop. With the switch closed, wherever it sits, the same current passes through both identical bulbs, so both light equally."
+          ],
+          "answer": "The claim is incorrect: with $S$ open the current is zero everywhere and both bulbs are dark. With the switch closed, in either position, both light equally.",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "wrong": "A battery is a container of charge that it pours into the circuit until it runs out.",
+          "right": "The mobile charge is in the wires all along. The battery gives that charge energy and keeps it circulating. A dead battery has run out of chemical energy, not of charge."
+        },
+        {
+          "tag": "sequential-circuit-reasoning",
+          "wrong": "With a switch open, the elements between the positive terminal and the switch still work, because the current reaches them before it meets the gap.",
+          "right": "Current does not set out from one terminal and discover the circuit as it goes. A gap anywhere in a loop means no current anywhere in it."
+        },
+        {
+          "tag": "battery-constant-current",
+          "wrong": "A $6\\ \\text{V}$ battery pushes out the same current whatever is connected to it.",
+          "right": "A battery fixes the potential difference between its terminals, not the current. A different load on the same battery draws a different current."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A flashlight cell is labelled $1.5\\ \\text{V}$. What does that number say about the energy and the charge?",
+          "a": "The cell gives $1.5\\ \\text{J}$ of electric potential energy to every coulomb of charge that passes through it."
+        },
+        {
+          "q": "A battery, a switch and a bulb form one loop. Does it matter whether the switch is on the positive side of the bulb or the negative side?",
+          "a": "No. Either way it is a single loop with the same three elements: the bulb is off when the switch is open and on when it is closed."
+        },
+        {
+          "q": "Why does a bare wire connected straight across a battery's terminals get hot, while the same wire used to connect a bulb does not?",
+          "a": "Across the terminals it is a short circuit, with nothing to limit the current. In a loop with a bulb, the bulb limits the current."
+        }
+      ],
+      "prerequisites": [
+        "10.4",
+        "10.5",
+        "11.1"
+      ],
+      "teacherNotes": "Give each pair one cell, one bulb and one wire and ask them to light the bulb before any schematic is drawn: finding that the bulb needs two contacts makes the closed-loop idea concrete. Then have students redraw one circuit three ways so they stop reading meaning into the layout. Listen for \"the current gets to\" and \"before the switch\": that is sequential reasoning, and it returns in compound circuits if it is not challenged here."
+    },
+    {
+      "topic": "11.3",
+      "bigIdea": "Resistance is the potential difference needed per ampere of current through an element, and for a uniform wire it is set by the material, the length and the cross-sectional area.",
+      "picture": {
+        "diagram": "plot x=V[V] y=I[A] xr=-0.6,12 yr=0,3\nseg 0,0 12,2.4 \"resistor\"\nfn 0.8*sqrt(V) 0..12 \"bulb\"\nxt 0 3 6 9 12\nyt 0 0.8 1.6 2.4",
+        "caption": "Current against potential difference for two elements. The resistor's graph is a straight line through the origin, so its resistance is constant ($5.0\\ \\Omega$ here): it is ohmic. The bulb's graph bends over, because its filament's resistance rises as it heats up: it is non-ohmic."
+      },
+      "explanation": "Put the same potential difference across different objects and you get different currents. The **resistance** of an element says how hard it is to drive current through it: $R = \\Delta V/I$, the potential difference across the element divided by the current through it. The unit is the ohm, $1\\ \\Omega = 1\\ \\text{V/A}$. Turned around, $I = \\Delta V/R$: for a given potential difference, a larger resistance means a smaller current.\n\nResistance comes from the conduction electrons colliding with the atoms of the material as they drift. For a wire of uniform thickness, $R = \\rho\\ell/A$. A longer wire has more resistance, because the electrons must get through more material. A thicker wire has less, because a larger cross-sectional area gives the charge more room to flow side by side. The **resistivity** $\\rho$ is a property of the material itself: tiny for good conductors such as copper, much larger for the alloys used in heaters, enormous for insulators. Resistivity also depends on temperature, and for metals it rises as the metal gets hotter.\n\nFor many conductors held at a steady temperature, the resistance is the same whatever potential difference is applied. Then current is directly proportional to potential difference, and a graph of $I$ against $\\Delta V$ is a straight line through the origin. This behaviour is **Ohm's law**, and elements that follow it are called ohmic. Not everything does. A filament bulb gets hotter as the current rises, its resistance goes up, and its graph curves. You can still work out $R = \\Delta V/I$ for a non-ohmic element at any one operating point, but the value changes from point to point. For an ohmic resistor, the resistance is a fixed property of the object: it does not change when the potential difference or the current does.",
+      "equations": [
+        {
+          "latex": "I = \\frac{\\Delta V}{R}",
+          "meaning": "The current through an element is the potential difference across it divided by its resistance.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "current through the element",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference across the element",
+              "unit": "V"
+            },
+            {
+              "symbol": "R",
+              "name": "resistance of the element",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "You know two of the current through, the potential difference across, and the resistance of one element.",
+          "notWhen": "All three must belong to the same element: do not pair the battery's voltage with one resistor's resistance unless that resistor is connected directly across the battery. For a non-ohmic element, R is not a constant."
+        },
+        {
+          "latex": "R = \\frac{\\rho \\ell}{A}",
+          "meaning": "A uniform wire's resistance is its material's resistivity times its length, divided by its cross-sectional area.",
+          "variables": [
+            {
+              "symbol": "R",
+              "name": "resistance of the wire",
+              "unit": "Ω"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "resistivity of the material",
+              "unit": "Ω·m"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length of the wire",
+              "unit": "m"
+            },
+            {
+              "symbol": "A",
+              "name": "cross-sectional area",
+              "unit": "m^2"
+            }
+          ],
+          "useWhen": "You are finding or comparing the resistance of wires from their size and material.",
+          "notWhen": "The area is the cross-section the current passes through, not the surface area of the wire. For a round wire $A = \\pi r^2$, so doubling the diameter makes the area four times as large."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Resistance of an extension cord wire",
+          "prompt": "One copper conductor in an extension cord is $12\\ \\text{m}$ long and has a cross-sectional area of $1.0\\ \\text{mm}^2$. The resistivity of copper is $1.7 \\times 10^{-8}\\ \\Omega\\text{·m}$. What is the resistance of the conductor?",
+          "steps": [
+            "The conductor is a uniform wire, so $R = \\dfrac{\\rho\\ell}{A}$.",
+            "Convert the area to square metres. One millimetre is $10^{-3}\\ \\text{m}$, so $1\\ \\text{mm}^2 = (10^{-3}\\ \\text{m})^2 = 10^{-6}\\ \\text{m}^2$, and $A = 1.0 \\times 10^{-6}\\ \\text{m}^2$.",
+            "Substitute: $R = \\dfrac{(1.7 \\times 10^{-8}\\ \\Omega\\text{·m})(12\\ \\text{m})}{1.0 \\times 10^{-6}\\ \\text{m}^2} = 0.204\\ \\Omega$.",
+            "To two significant figures, $R = 0.20\\ \\Omega$. This is small compared with the resistance of an appliance, which is why treating connecting wires as having no resistance is usually a good approximation."
+          ],
+          "answer": "$R = 0.20$ Ω",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "rho": {
+                "value": 1.7e-8,
+                "unit": "Ω·m"
+              },
+              "L": {
+                "value": 12,
+                "unit": "m"
+              },
+              "A": {
+                "value": 1,
+                "unit": "mm^2"
+              }
+            },
+            "expr": "rho*L/A",
+            "unit": "Ω"
+          }
+        },
+        {
+          "title": "Ohmic or not?",
+          "prompt": "A carbon resistor carries $0.25\\ \\text{A}$ when the potential difference across it is $3.0\\ \\text{V}$. (a) Assuming the resistor is ohmic, predict the current through it at $9.0\\ \\text{V}$. (b) A small bulb also carries $0.25\\ \\text{A}$ at $3.0\\ \\text{V}$, but at $9.0\\ \\text{V}$ its measured current is $0.50\\ \\text{A}$. Is the bulb ohmic? Justify your answer.",
+          "steps": [
+            "(a) Find the resistance from the known point: $R = \\dfrac{\\Delta V}{I} = \\dfrac{3.0\\ \\text{V}}{0.25\\ \\text{A}} = 12\\ \\Omega$.",
+            "An ohmic resistor keeps that resistance, so at $9.0\\ \\text{V}$ the current is $I = \\dfrac{\\Delta V}{R} = \\dfrac{9.0\\ \\text{V}}{12\\ \\Omega} = 0.75\\ \\text{A}$. The potential difference tripled, and so did the current.",
+            "(b) Work out the bulb's resistance at each point. At $3.0\\ \\text{V}$ it is $3.0/0.25 = 12\\ \\Omega$. At $9.0\\ \\text{V}$ it is $9.0/0.50 = 18\\ \\Omega$.",
+            "The resistance is not constant: tripling the potential difference only doubled the current. The bulb is not ohmic. Its filament is hotter at the larger current, and a hotter metal has a larger resistivity."
+          ],
+          "answer": "(a) $I = 0.75\\ \\text{A}$. (b) The bulb is not ohmic: its resistance rises from $12\\ \\Omega$ to $18\\ \\Omega$.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "V_1": {
+                "value": 3,
+                "unit": "V"
+              },
+              "I_1": {
+                "value": 0.25,
+                "unit": "A"
+              },
+              "V_2": {
+                "value": 9,
+                "unit": "V"
+              }
+            },
+            "expr": "V_2*I_1/V_1",
+            "unit": "A"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "voltage-current-confusion",
+          "wrong": "Voltage flows through a resistor, and a resistor with more voltage simply has more current in it stored up.",
+          "right": "Current is what flows through an element. Potential difference is a difference between two points, so it is measured across an element. They are different quantities with different units, linked for one element by its resistance."
+        },
+        {
+          "wrong": "Since $R = \\Delta V/I$, doubling the potential difference across a resistor doubles its resistance.",
+          "right": "For an ohmic resistor the resistance is fixed by its material and shape. Doubling the potential difference doubles the current, and the ratio stays the same."
+        },
+        {
+          "wrong": "A thicker wire has more resistance, because there is more material in the way.",
+          "right": "A thicker wire gives charge a wider path, like adding lanes to a road, so its resistance is smaller. Resistance grows with length and shrinks with cross-sectional area."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "What is the current through a $150\\ \\Omega$ resistor with $6.0\\ \\text{V}$ across it?",
+          "a": "$I = \\Delta V/R = 6.0/150 = 0.040\\ \\text{A}$, or $40\\ \\text{mA}$."
+        },
+        {
+          "q": "Wire X and wire Y are made of the same metal and have the same length, but Y has twice the diameter of X. How do their resistances compare?",
+          "a": "Y has one quarter of X's resistance. Twice the diameter means four times the cross-sectional area, and resistance is inversely proportional to area."
+        },
+        {
+          "q": "On a graph of $I$ against $\\Delta V$, an element's curve gets less steep as $\\Delta V$ increases. Is its resistance rising, falling or constant?",
+          "a": "Rising. Each extra volt adds less and less current, so the ratio $\\Delta V/I$ is growing. A filament bulb behaves this way."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=V[V] y=I[A] xr=-0.6,12 yr=0,6\nseg 0,0 12,{{12/R}} \"R = {{R}} Ω\"\nxt 0 3 6 9 12\nyt 0 2 4 6",
+        "caption": "The current through an ohmic resistor against the potential difference across it. A larger resistance gives a flatter line: less current for every volt.",
+        "params": [
+          {
+            "name": "R",
+            "label": "Resistance",
+            "min": 2,
+            "max": 12,
+            "step": 1,
+            "default": 4,
+            "unit": "Ω"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.5",
+        "11.1",
+        "11.2"
+      ],
+      "teacherNotes": "Have students take current and voltage data for a resistor and for a small filament bulb and plot both: the curved bulb graph is the best protection against treating $\\Delta V = IR$ as a law of nature rather than a description of some materials. Ask \"across or through?\" every time a student says \"the voltage in the resistor\". For $R = \\rho\\ell/A$, expect diameter and area to be confused; a quick ratio question (double the diameter, what happens to $R$?) finds it."
+    },
+    {
+      "topic": "11.4",
+      "bigIdea": "Electric power is the rate at which a circuit element transfers energy, and it equals the current through the element multiplied by the potential difference across it.",
+      "picture": {
+        "diagram": "plot x=V[V] y=P[W] xr=-0.6,12 yr=0,40\nfn V^2/4 0..12\npt 6,9 \"9 W\"\npt 12,36 \"36 W\"\nxt 0 3 6 9 12\nyt 0 9 18 27 36",
+        "caption": "The power dissipated by a $4\\ \\Omega$ resistor against the potential difference across it. Doubling the potential difference from $6\\ \\text{V}$ to $12\\ \\text{V}$ also doubles the current, so the power goes up by a factor of four, from $9\\ \\text{W}$ to $36\\ \\text{W}$."
+      },
+      "explanation": "When a charge $q$ moves through an element that has a potential difference $\\Delta V$ across it, the charge's electric potential energy changes by $q\\,\\Delta V$. Charge passes through at the rate $I$, in coulombs per second, so energy is transferred at the rate $P = I\\,\\Delta V$. This rate is the **power**, measured in watts: $1\\ \\text{W} = 1\\ \\text{J/s} = 1\\ \\text{V·A}$. A battery supplies power, turning chemical energy into electrical energy at the rate $I\\varepsilon$. A resistor dissipates power, turning electrical energy into thermal energy, and in a bulb some of it into light.\n\nFor a resistor, $\\Delta V = IR$ lets you write the power two more ways: $P = I^2R$ and $P = (\\Delta V)^2/R$. All three give the same number for the same element. Which is most useful depends on what you know and on what stays the same in a comparison. Elements that carry the same current, such as two bulbs in a single loop, are compared with $P = I^2R$: the larger resistance gets more power. Elements with the same potential difference across them, such as two bulbs each connected straight across the same battery, are compared with $P = (\\Delta V)^2/R$: the smaller resistance gets more power.\n\nThe brightness of a bulb goes with the power it dissipates, so \"which bulb is brighter?\" is a question about power. The energy transferred in a time $\\Delta t$ is $\\Delta E = P\\,\\Delta t$. Electricity bills measure this energy in kilowatt-hours, where $1\\ \\text{kW·h}$ is $1000\\ \\text{W}$ for $3600\\ \\text{s}$, or $3.6 \\times 10^{6}\\ \\text{J}$. Energy is conserved in a circuit: at every moment the power supplied by the battery equals the total power dissipated by all the elements it drives.",
+      "equations": [
+        {
+          "latex": "P = I\\,\\Delta V",
+          "meaning": "The power transferred by an element is the current through it times the potential difference across it.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "power",
+              "unit": "W"
+            },
+            {
+              "symbol": "I",
+              "name": "current through the element",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference across the element",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Any element at all: a battery, a resistor, a bulb, a motor. It needs no assumption about resistance.",
+          "notWhen": "Use the current through and the potential difference across the same element, not the battery's values for a single resistor in a larger circuit."
+        },
+        {
+          "latex": "P = I^2 R = \\frac{(\\Delta V)^2}{R}",
+          "meaning": "For a resistor, power can be written with the current alone or the potential difference alone.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "power dissipated in the resistor",
+              "unit": "W"
+            },
+            {
+              "symbol": "I",
+              "name": "current through the resistor",
+              "unit": "A"
+            },
+            {
+              "symbol": "R",
+              "name": "resistance",
+              "unit": "Ω"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference across the resistor",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Comparing resistors: use $I^2R$ when they share a current and $(\\Delta V)^2/R$ when they share a potential difference.",
+          "notWhen": "Do not conclude from one form alone that more resistance always means more power, or always less. It depends on which quantity is held the same."
+        },
+        {
+          "latex": "\\Delta E = P\\,\\Delta t",
+          "meaning": "The energy transferred is the power multiplied by the time it runs.",
+          "variables": [
+            {
+              "symbol": "\\Delta E",
+              "name": "energy transferred",
+              "unit": "J"
+            },
+            {
+              "symbol": "P",
+              "name": "power",
+              "unit": "W"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You want the energy used by a device that runs at a steady power for a known time.",
+          "notWhen": "Power in watts needs time in seconds to give joules. Kilowatts with hours gives kilowatt-hours, which is also an energy."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A toaster's power and energy",
+          "prompt": "A toaster connected to a $120\\ \\text{V}$ outlet draws a current of $7.5\\ \\text{A}$. What power does it dissipate, and how much energy does it transfer in the $2.0\\ \\text{min}$ it takes to make toast?",
+          "steps": [
+            "The current through the toaster and the potential difference across it are both known, so use $P = I\\,\\Delta V$.",
+            "$P = (7.5\\ \\text{A})(120\\ \\text{V}) = 900\\ \\text{W}$. The toaster turns $900\\ \\text{J}$ of electrical energy into thermal energy every second.",
+            "Energy is power times time, with the time in seconds: $\\Delta t = 2.0\\ \\text{min} = 120\\ \\text{s}$.",
+            "$\\Delta E = P\\,\\Delta t = (900\\ \\text{W})(120\\ \\text{s}) = 108\\,000\\ \\text{J}$, which is $1.1 \\times 10^{5}\\ \\text{J}$ to two significant figures."
+          ],
+          "answer": "$P = 900\\ \\text{W}$ and $\\Delta E = 1.1 \\times 10^{5}\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "V": {
+                "value": 120,
+                "unit": "V"
+              },
+              "I": {
+                "value": 7.5,
+                "unit": "A"
+              },
+              "t": {
+                "value": 2,
+                "unit": "min"
+              }
+            },
+            "expr": "V*I*t",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Which bulb is brighter?",
+          "prompt": "Bulb X has a resistance of $240\\ \\Omega$ and bulb Y has a resistance of $480\\ \\Omega$. Treat the resistances as constant. (a) The bulbs are connected one after the other in a single loop, and the current in the loop is $0.25\\ \\text{A}$. Calculate the power dissipated by bulb Y and state which bulb is brighter. (b) Each bulb is instead connected directly across a $120\\ \\text{V}$ supply. Which bulb is brighter now? Justify your answer.",
+          "steps": [
+            "(a) In a single loop the same current passes through both bulbs, so compare them with $P = I^2R$. For Y: $P_Y = (0.25\\ \\text{A})^2(480\\ \\Omega) = 30\\ \\text{W}$.",
+            "For X: $P_X = (0.25\\ \\text{A})^2(240\\ \\Omega) = 15\\ \\text{W}$. With the current the same, the bulb with the larger resistance dissipates more power, so Y is brighter.",
+            "(b) Now each bulb has the same potential difference, $120\\ \\text{V}$, across it, so compare with $P = (\\Delta V)^2/R$. $P_X = \\dfrac{(120\\ \\text{V})^2}{240\\ \\Omega} = 60\\ \\text{W}$ and $P_Y = \\dfrac{(120\\ \\text{V})^2}{480\\ \\Omega} = 30\\ \\text{W}$.",
+            "With the potential difference the same, the smaller resistance draws more current and dissipates more power, so X is brighter. The ranking reversed, because what the two bulbs have in common changed from current to potential difference."
+          ],
+          "answer": "(a) $P_Y = 30\\ \\text{W}$, and Y is brighter. (b) X is brighter: $60\\ \\text{W}$ against $30\\ \\text{W}$.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "I": {
+                "value": 0.25,
+                "unit": "A"
+              },
+              "R_Y": {
+                "value": 480,
+                "unit": "Ω"
+              }
+            },
+            "expr": "I^2*R_Y",
+            "unit": "W"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "power-energy-confusion",
+          "wrong": "A $100\\ \\text{W}$ bulb uses $100$ units of energy, so it always costs more to run than a $60\\ \\text{W}$ bulb.",
+          "right": "Power is a rate: joules per second. The energy used is the power multiplied by the time, so a low-power device left on for long enough uses more energy than a high-power one used briefly."
+        },
+        {
+          "tag": "resistance-brightness-rule",
+          "wrong": "The bulb with the larger resistance is always the dimmer one, because resistance holds the current back.",
+          "right": "It depends on what the bulbs share. With the same potential difference, the larger resistance is dimmer ($P = (\\Delta V)^2/R$). With the same current, the larger resistance is brighter ($P = I^2R$)."
+        },
+        {
+          "tag": "current-used-up",
+          "wrong": "A bulb gives off light by using up some of the current that goes through it.",
+          "right": "The current leaving the bulb equals the current entering. The light comes from the energy each coulomb loses as it drops through the potential difference across the bulb."
+        },
+        {
+          "tag": "rated-power-fixed",
+          "wrong": "A bulb marked $60\\ \\text{W}$ dissipates $60\\ \\text{W}$ in any circuit.",
+          "right": "The rating is the power at the potential difference the bulb was designed for. Give it a smaller potential difference and it dissipates less power and glows more dimly."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A car headlamp carries $3.0\\ \\text{A}$ with $12\\ \\text{V}$ across it. What power does it dissipate?",
+          "a": "$P = I\\,\\Delta V = (3.0\\ \\text{A})(12\\ \\text{V}) = 36\\ \\text{W}$."
+        },
+        {
+          "q": "How much energy, in joules, does a $100\\ \\text{W}$ lamp transfer in $10\\ \\text{h}$?",
+          "a": "$\\Delta E = P\\,\\Delta t = (100\\ \\text{W})(36\\,000\\ \\text{s}) = 3.6 \\times 10^{6}\\ \\text{J}$, which is one kilowatt-hour."
+        },
+        {
+          "q": "Resistors of resistance $R$ and $2R$ each have the same potential difference across them. Which dissipates more power, and by what factor?",
+          "a": "The resistor $R$, by a factor of two. With $\\Delta V$ the same, $P = (\\Delta V)^2/R$, so half the resistance gives twice the power."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=V[V] y=P[W] xr=-0.6,12 yr=0,75\nfn V^2/{{R}} 0..12\npt 12,{{144/R}}\nhl {{144/R}}\nnote 4.5,60 \"R = {{R}} Ω: {{round(1440/R)/10}} W at 12 V\"\nxt 0 3 6 9 12\nyt 0 25 50 75",
+        "caption": "Power against potential difference for a resistor. Raise the resistance and, at the same potential difference, the power falls.",
+        "params": [
+          {
+            "name": "R",
+            "label": "Resistance",
+            "min": 2,
+            "max": 12,
+            "step": 1,
+            "default": 4,
+            "unit": "Ω"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.5",
+        "11.1",
+        "11.3"
+      ],
+      "teacherNotes": "Before any calculation, ask which bulb of a 40 W and 100 W pair will be brighter when the two are wired in a single loop, then show it: the \"wrong\" bulb wins, and students need $P = I^2R$ to see why. Push them to say what the two elements have in common before choosing a form of the power equation. Watch for power and energy being used as synonyms, especially around kilowatt-hours."
+    },
+    {
+      "topic": "11.5",
+      "bigIdea": "Resistors in series share one current and their resistances add, resistors in parallel share one potential difference and combine to less than the smallest of them, and any mixture of the two can be collapsed step by step into a single equivalent resistance.",
+      "picture": {
+        "diagram": "circuit\nbattery a c 12V \"ε\"\nresistor a b 4Ω R_1\nresistor b c 6Ω R_2\nresistor b c 3Ω R_3",
+        "caption": "$R_2$ and $R_3$ join the same two points, so they are in parallel and act like a single $2\\ \\Omega$ resistor. That combination is in series with $R_1$, so the battery sees $4\\ \\Omega + 2\\ \\Omega = 6\\ \\Omega$ and supplies $2\\ \\text{A}$."
+      },
+      "explanation": "Two elements are in **series** when they lie on the same path with no branch between them, so every charge that passes through one must pass through the other. They carry the same current, and the potential differences across them add up. Series resistors behave like one resistor with $R_s = R_1 + R_2 + \\dots$, larger than any one of them.\n\nTwo elements are in **parallel** when both ends of one are joined to both ends of the other. They have the same potential difference across them, and the current divides between them. The equivalent resistance obeys $\\dfrac{1}{R_p} = \\dfrac{1}{R_1} + \\dfrac{1}{R_2} + \\dots$ and is always smaller than the smallest branch, because every added branch is another path for charge. To analyse a mixed circuit, replace the innermost series or parallel group by its equivalent, redraw, and repeat until one resistor is left. That gives the battery's current. Then work back outward, using \"same current\" for series parts and \"same potential difference\" for parallel parts.\n\nMeters must not disturb what they measure. An **ammeter** goes in series with an element, so the current passes through the meter, and an ideal one has zero resistance. A **voltmeter** goes in parallel, across the element, and an ideal one has infinite resistance, so no current is diverted through it.\n\nA real battery has an **internal resistance** $r$ that acts as a small resistor in series with its emf. When the battery supplies a current $I$, a potential difference $Ir$ is lost inside it, so the potential difference between its terminals is $\\Delta V_{\\text{terminal}} = \\varepsilon - Ir$. The terminal voltage equals the emf only when no current flows, and it falls as the battery is asked for more current.",
+      "equations": [
+        {
+          "latex": "R_s = R_1 + R_2 + \\dots",
+          "meaning": "Resistances in series add.",
+          "variables": [
+            {
+              "symbol": "R_s",
+              "name": "equivalent resistance of the series group",
+              "unit": "Ω"
+            },
+            {
+              "symbol": "R_1,\\ R_2",
+              "name": "the individual resistances",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "The resistors are on one unbranched path, so the same current passes through each.",
+          "notWhen": "Not for resistors separated by a junction where current can leave or join. Being drawn in a line is not enough."
+        },
+        {
+          "latex": "\\frac{1}{R_p} = \\frac{1}{R_1} + \\frac{1}{R_2} + \\dots",
+          "meaning": "For resistors in parallel, the reciprocals of the resistances add to give the reciprocal of the equivalent resistance.",
+          "variables": [
+            {
+              "symbol": "R_p",
+              "name": "equivalent resistance of the parallel group",
+              "unit": "Ω"
+            },
+            {
+              "symbol": "R_1,\\ R_2",
+              "name": "the individual resistances",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "Both ends of each resistor are joined to the same two points, so they share one potential difference.",
+          "notWhen": "Do not stop at the sum of reciprocals: that sum is $1/R_p$, and you must invert it. The result must be smaller than the smallest branch."
+        },
+        {
+          "latex": "\\Delta V_{\\text{terminal}} = \\varepsilon - Ir",
+          "meaning": "A battery's terminal voltage is its emf minus the potential difference lost across its internal resistance.",
+          "variables": [
+            {
+              "symbol": "\\Delta V_{\\text{terminal}}",
+              "name": "potential difference between the battery's terminals",
+              "unit": "V"
+            },
+            {
+              "symbol": "\\varepsilon",
+              "name": "emf of the battery",
+              "unit": "V"
+            },
+            {
+              "symbol": "I",
+              "name": "current through the battery",
+              "unit": "A"
+            },
+            {
+              "symbol": "r",
+              "name": "internal resistance of the battery",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "A problem gives an internal resistance, or a battery's measured voltage drops when it is connected to a load.",
+          "notWhen": "For an ideal battery r is zero and the terminal voltage is simply the emf. Use the current through the battery, not through one branch."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Collapsing a series-parallel circuit",
+          "prompt": "In the circuit shown, $\\varepsilon = 24\\ \\text{V}$, $R_1 = 8.0\\ \\Omega$, $R_2 = 20\\ \\Omega$ and $R_3 = 30\\ \\Omega$. The battery is ideal. What is the current through $R_3$?\n\n```dg\ncircuit\nbattery a c 24V \"ε\"\nresistor a b 8Ω R_1\nresistor b c 20Ω R_2\nresistor b c 30Ω R_3\n```",
+          "steps": [
+            "Find the structure. $R_2$ and $R_3$ connect the same two points, so they are in parallel. That pair is in series with $R_1$.",
+            "Collapse the parallel pair: $\\dfrac{1}{R_p} = \\dfrac{1}{20\\ \\Omega} + \\dfrac{1}{30\\ \\Omega} = \\dfrac{5}{60\\ \\Omega}$, so $R_p = 12\\ \\Omega$. It is smaller than $20\\ \\Omega$, as it must be.",
+            "Add the series resistor: $R_{\\text{eq}} = 8.0\\ \\Omega + 12\\ \\Omega = 20\\ \\Omega$. The battery current is $I = \\dfrac{\\varepsilon}{R_{\\text{eq}}} = \\dfrac{24\\ \\text{V}}{20\\ \\Omega} = 1.2\\ \\text{A}$.",
+            "Work back out. All $1.2\\ \\text{A}$ passes through $R_1$, so the potential difference across it is $(1.2\\ \\text{A})(8.0\\ \\Omega) = 9.6\\ \\text{V}$. That leaves $24 - 9.6 = 14.4\\ \\text{V}$ across the parallel pair.",
+            "Both parallel resistors have $14.4\\ \\text{V}$ across them, so $I_3 = \\dfrac{14.4\\ \\text{V}}{30\\ \\Omega} = 0.48\\ \\text{A}$. As a check, $I_2 = 14.4/20 = 0.72\\ \\text{A}$, and $0.48 + 0.72 = 1.2\\ \\text{A}$."
+          ],
+          "answer": "$I_3 = 0.48\\ \\text{A}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "emf": {
+                "value": 24,
+                "unit": "V"
+              },
+              "R_1": {
+                "value": 8,
+                "unit": "Ω"
+              },
+              "R_2": {
+                "value": 20,
+                "unit": "Ω"
+              },
+              "R_3": {
+                "value": 30,
+                "unit": "Ω"
+              }
+            },
+            "expr": "emf/(R_1 + R_2*R_3/(R_2+R_3)) * (R_2*R_3/(R_2+R_3)) / R_3",
+            "unit": "A"
+          }
+        },
+        {
+          "title": "A battery with internal resistance",
+          "prompt": "A battery has an emf of $9.0\\ \\text{V}$ and an internal resistance of $0.50\\ \\Omega$. (a) A $4.0\\ \\Omega$ resistor is connected across its terminals. Calculate the reading of an ideal voltmeter connected across the terminals. (b) A second $4.0\\ \\Omega$ resistor is then added in parallel with the first. Does the voltmeter reading increase, decrease or stay the same? Justify your answer.",
+          "steps": [
+            "(a) The internal resistance is in series with the external resistor, so the total resistance of the loop is $4.0\\ \\Omega + 0.50\\ \\Omega = 4.5\\ \\Omega$ and the current is $I = \\dfrac{9.0\\ \\text{V}}{4.5\\ \\Omega} = 2.0\\ \\text{A}$.",
+            "The voltmeter reads the terminal voltage: $\\Delta V_{\\text{terminal}} = \\varepsilon - Ir = 9.0\\ \\text{V} - (2.0\\ \\text{A})(0.50\\ \\Omega) = 8.0\\ \\text{V}$. This is also the potential difference across the external resistor, $(2.0\\ \\text{A})(4.0\\ \\Omega)$.",
+            "(b) Two $4.0\\ \\Omega$ resistors in parallel are equivalent to $2.0\\ \\Omega$, so the external resistance falls and the battery current rises: $I = \\dfrac{9.0\\ \\text{V}}{2.0\\ \\Omega + 0.50\\ \\Omega} = 3.6\\ \\text{A}$.",
+            "A larger current means a larger loss inside the battery: $Ir = (3.6\\ \\text{A})(0.50\\ \\Omega) = 1.8\\ \\text{V}$. The terminal voltage is now $9.0 - 1.8 = 7.2\\ \\text{V}$, so the reading decreases."
+          ],
+          "answer": "(a) $8.0\\ \\text{V}$. (b) It decreases, to $7.2\\ \\text{V}$, because the larger current drops more potential across the internal resistance.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "emf": {
+                "value": 9,
+                "unit": "V"
+              },
+              "r": {
+                "value": 0.5,
+                "unit": "Ω"
+              },
+              "R": {
+                "value": 4,
+                "unit": "Ω"
+              }
+            },
+            "expr": "emf - emf/(R + r)*r",
+            "unit": "V"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "series-parallel-confusion",
+          "wrong": "Adding another resistor in parallel raises the total resistance, because there is more resistance in the circuit.",
+          "right": "Each added branch is an extra path for charge, so the equivalent resistance goes down. It is series resistors, which share one current, whose resistances add."
+        },
+        {
+          "tag": "battery-constant-current",
+          "wrong": "When a second bulb is added in parallel with the first across an ideal battery, the battery's current is split between them and both glow dimmer.",
+          "right": "An ideal battery keeps the same potential difference across each branch, so the first bulb is just as bright as before. The battery supplies more current in total, enough for both."
+        },
+        {
+          "tag": "sequential-circuit-reasoning",
+          "wrong": "Changing a resistor only affects the parts of the circuit that come after it.",
+          "right": "A steady current has no before and after. Changing any resistance changes the equivalent resistance, so the battery current changes, and with it the potential differences elsewhere."
+        },
+        {
+          "tag": "terminal-voltage-equals-emf",
+          "wrong": "A $9\\ \\text{V}$ battery always has $9\\ \\text{V}$ between its terminals.",
+          "right": "Only when it supplies no current. With a current $I$, the potential difference $Ir$ is lost across the internal resistance, and the terminals are at $\\varepsilon - Ir$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "What is the equivalent resistance of a $6\\ \\Omega$ and a $12\\ \\Omega$ resistor connected in parallel? In series?",
+          "a": "In parallel, $\\dfrac{1}{R_p} = \\dfrac{1}{6} + \\dfrac{1}{12} = \\dfrac{3}{12}$, so $R_p = 4\\ \\Omega$. In series, $18\\ \\Omega$."
+        },
+        {
+          "q": "Two identical bulbs are connected in parallel across an ideal battery. One bulb is unscrewed. What happens to the brightness of the other, and to the battery's current?",
+          "a": "The other bulb stays just as bright, because it still has the full battery voltage across it. The battery's current halves, since only one branch now draws current."
+        },
+        {
+          "q": "A student connects a voltmeter in series with a bulb instead of across it. What happens?",
+          "a": "The bulb goes out. A voltmeter has a very large resistance, so in series it reduces the current in the loop to almost zero."
+        }
+      ],
+      "tryIt": {
+        "diagram": "circuit\nbattery a d 12V \"ε\"\nresistor a b 4Ω R_1\nresistor b c 6Ω R_2\nresistor b c {{R}}Ω R_3\nammeter c d \"{{round(100*12/(4+6*R/(6+R)))/100}} A\"",
+        "caption": "Change $R_3$ and watch the ammeter, which reads the battery's current. A smaller $R_3$ lowers the resistance of the parallel pair, so the whole circuit draws more current.",
+        "params": [
+          {
+            "name": "R",
+            "label": "R_3",
+            "min": 1,
+            "max": 30,
+            "step": 1,
+            "default": 3,
+            "unit": "Ω"
+          }
+        ]
+      },
+      "prerequisites": [
+        "11.1",
+        "11.2",
+        "11.3",
+        "11.4"
+      ],
+      "teacherNotes": "Ranking tasks with identical bulbs do more here than calculations: ask students to rank brightness, then to predict what happens to each bulb when one is removed or shorted. Listen for \"the current gets split, so each gets less\" for bulbs in parallel across a battery, which treats the battery as a constant-current source. Have students redraw awkwardly drawn circuits before combining anything, since most errors come from misreading which resistors are in series and which in parallel."
+    },
+    {
+      "topic": "11.6",
+      "bigIdea": "Around any closed loop of a circuit the rises and drops in potential add to zero, because a charge that returns to its starting point returns to the same potential, having gained and lost equal amounts of energy.",
+      "picture": {
+        "diagram": "circuit\nbattery a d 12V \"ε\"\nresistor a b 2Ω R_1 i=I\nresistor b c 4Ω R_2\nwire c d\nnode a \"A\"\nnode b \"B\"\nnode c \"C\"",
+        "caption": "The current is $2\\ \\text{A}$. Starting at the battery's negative terminal and walking clockwise: up $12\\ \\text{V}$ through the battery to $A$, down $4\\ \\text{V}$ across $R_1$ to $B$, down $8\\ \\text{V}$ across $R_2$ to $C$, and back to the start with nothing left over: $+12 - 4 - 8 = 0$."
+      },
+      "explanation": "Electric potential is a property of each point in a circuit, in the way height is a property of each point on a hillside. Walk a loop trail and you climb and descend, but back where you began your total change in height is zero. In the same way, follow any closed path through a circuit, add up the changes in potential across the elements you cross, and the sum is zero: $\\sum \\Delta V = 0$. This is **Kirchhoff's loop rule**. It is conservation of energy, written per unit of charge: whatever energy a charge gains in the batteries of a loop, it loses in the other elements of that loop.\n\nUsing the rule is a matter of signs. First mark a direction for the current, guessing if need be. Then choose a direction to walk around the loop and record the change in potential at each element. Crossing a battery from its negative to its positive terminal is a rise, $+\\varepsilon$, and from positive to negative is a drop, $-\\varepsilon$. Current passes through a resistor from its higher-potential end to its lower-potential end, so crossing a resistor in the direction of the current is a drop, $-IR$, and crossing it against the current is a rise, $+IR$. An ideal wire has no change.\n\nFor a single loop the rule gives one equation, which you solve for the current. If the current comes out negative, nothing has gone wrong: the true direction is opposite to your guess, and the size is correct. In a circuit with several loops, the rule holds for every closed path, including paths that contain no battery. That is why parallel branches have equal potential differences: go down one branch and back up the other and the two changes must cancel.",
+      "equations": [
+        {
+          "latex": "\\sum \\Delta V = 0",
+          "meaning": "The changes in potential across the elements of any closed loop, with their signs, add to zero.",
+          "variables": [
+            {
+              "symbol": "\\Delta V",
+              "name": "change in potential across one element of the loop, positive for a rise",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Any closed path in any circuit: to find a current, an unknown emf or resistance, or the potential difference across one element.",
+          "notWhen": "Do not mix walking directions within one equation, and do not leave out an element on the path. The path must end where it began."
+        },
+        {
+          "latex": "\\varepsilon - IR_1 - IR_2 = 0",
+          "meaning": "For one battery and two resistors in a single loop, the rise in the battery equals the sum of the drops across the resistors.",
+          "variables": [
+            {
+              "symbol": "\\varepsilon",
+              "name": "emf of the battery",
+              "unit": "V"
+            },
+            {
+              "symbol": "I",
+              "name": "current in the loop",
+              "unit": "A"
+            },
+            {
+              "symbol": "R_1,\\ R_2",
+              "name": "the resistances",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "A single loop walked in the direction of the current, starting at the battery's negative terminal.",
+          "notWhen": "It is one example of the loop rule, not a general formula. With a second battery or a branch, write the sum for that circuit from the sign rules."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Mapping the potential around a loop",
+          "prompt": "In the single loop shown, a $9.0\\ \\text{V}$ battery and a $3.0\\ \\text{V}$ battery both push current the same way around the loop, in series with resistors $R_1 = 2.0\\ \\Omega$ and $R_2 = 4.0\\ \\Omega$. The batteries are ideal, and the negative terminal of the $9.0\\ \\text{V}$ battery is taken as zero potential. What is the potential at the point between the $3.0\\ \\text{V}$ battery and $R_2$?\n\n```dg\ncircuit\nbattery a d 9V \"ε_1\"\nresistor a b 2Ω R_1\nbattery c b 3V \"ε_2\"\nresistor c d 4Ω R_2\nground d\n```",
+          "steps": [
+            "Both batteries drive the current clockwise: out of the $9.0\\ \\text{V}$ battery's positive terminal and through $R_1$ first. The loop rule gives $+9.0 - 2.0I + 3.0 - 4.0I = 0$, so $I = 12.0/6.0 = 2.0\\ \\text{A}$.",
+            "Walk clockwise from the zero point, keeping a running total. Through the $9.0\\ \\text{V}$ battery from negative to positive: $0 + 9.0 = 9.0\\ \\text{V}$. Across $R_1$ with the current: $9.0 - (2.0\\ \\text{A})(2.0\\ \\Omega) = 5.0\\ \\text{V}$.",
+            "Through the $3.0\\ \\text{V}$ battery from negative to positive: $5.0 + 3.0 = 8.0\\ \\text{V}$. That is the point asked about.",
+            "Check by walking the other way, from the zero point back through $R_2$ against the current: a rise of $(2.0\\ \\text{A})(4.0\\ \\Omega) = 8.0\\ \\text{V}$. The potential at a point does not depend on the path."
+          ],
+          "answer": "$V = 8.0\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "E_1": {
+                "value": 9,
+                "unit": "V"
+              },
+              "E_2": {
+                "value": 3,
+                "unit": "V"
+              },
+              "R_1": {
+                "value": 2,
+                "unit": "Ω"
+              },
+              "R_2": {
+                "value": 4,
+                "unit": "Ω"
+              }
+            },
+            "expr": "(E_1 + E_2)*R_2/(R_1 + R_2)",
+            "unit": "V"
+          }
+        },
+        {
+          "title": "Choosing a resistor for an LED",
+          "prompt": "An LED is lit by an ideal $5.0\\ \\text{V}$ battery with a resistor in series. Whenever the LED is lit, the potential difference across it is $2.0\\ \\text{V}$, almost regardless of the current. What resistance gives a current of $20\\ \\text{mA}$? Explain why the loop rule applies to the LED but Ohm's law does not.",
+          "steps": [
+            "In a single loop the same current passes through every element. Walk the loop in the direction of the current from the battery's negative terminal: $+5.0\\ \\text{V} - \\Delta V_R - 2.0\\ \\text{V} = 0$, so $\\Delta V_R = 3.0\\ \\text{V}$.",
+            "Ohm's law for the resistor: $R = \\dfrac{\\Delta V_R}{I} = \\dfrac{3.0\\ \\text{V}}{0.020\\ \\text{A}} = 150\\ \\Omega$.",
+            "The LED is not ohmic: its potential difference stays near $2.0\\ \\text{V}$ while its current changes a lot. The loop rule is conservation of energy and holds for any element; Ohm's law was used only for the resistor.",
+            "Without the resistor the LED would need all $5.0\\ \\text{V}$, and its current would rise far above $20\\ \\text{mA}$."
+          ],
+          "answer": "$R = 150\\ Ω$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "emf": {
+                "value": 5,
+                "unit": "V"
+              },
+              "V_LED": {
+                "value": 2,
+                "unit": "V"
+              },
+              "I": {
+                "value": 20,
+                "unit": "mA"
+              }
+            },
+            "expr": "(emf - V_LED)/I",
+            "unit": "Ω"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "loop-rule-sign",
+          "wrong": "Every resistor in a loop equation gets $-IR$ and every battery gets $+\\varepsilon$.",
+          "right": "The sign depends on which way you cross the element. A resistor crossed against the current is a rise. A battery crossed from its positive to its negative terminal is a drop."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "The drops across the resistors in a loop can add up to less than the battery's emf, with some voltage left over when the charge gets back to the battery.",
+          "right": "Nothing is left over. The drops across the other elements always add up to exactly the rises, because the current settles at the value that makes this true."
+        },
+        {
+          "wrong": "A negative value for the current means there is a mistake in the working.",
+          "right": "It means the current flows opposite to the direction you assumed. The size is correct."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $9.0\\ \\text{V}$ battery is connected in a single loop with two resistors. The potential difference across the first is $5.5\\ \\text{V}$. What is it across the second?",
+          "a": "$3.5\\ \\text{V}$. The two drops must add up to the $9.0\\ \\text{V}$ rise in the battery."
+        },
+        {
+          "q": "You cross a resistor $R$ while walking opposite to the current $I$ through it. What change in potential do you record?",
+          "a": "A rise, $+IR$. Current runs from the higher-potential end to the lower, so walking against it takes you from lower to higher potential."
+        },
+        {
+          "q": "Use the loop rule to explain why two resistors connected in parallel have the same potential difference across them.",
+          "a": "The two resistors form a closed loop on their own. Down one is a drop, back up the other is a rise, and the two add to zero, so they are equal in size."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=position y=V[V] xr=-0.4,4 yr=0,14\nseg 0,0 0,12 1,12 1,{{12-24/(2+R)}} 2,{{12-24/(2+R)}} 2,0 4,0\nxt 0:battery 1:R_1 2:R_2 4:start\nyt 0 4 8 12\nnote 1.5,13 \"R_1: −{{round(240/(2+R))/10}} V\"\nnote 3,6 \"R_2: −{{round(10*(12-24/(2+R)))/10}} V\"",
+        "caption": "The potential on a walk around a single loop: up $12\\ \\text{V}$ through the battery, then down across $R_1 = 2\\ \\Omega$ and across $R_2$. Change $R_2$. The two drops share the $12\\ \\text{V}$ differently, but they always add up to exactly $12\\ \\text{V}$.",
+        "params": [
+          {
+            "name": "R",
+            "label": "R_2",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 4,
+            "unit": "Ω"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.5",
+        "10.7",
+        "11.3",
+        "11.5"
+      ],
+      "teacherNotes": "Have students sketch the potential against position around a loop (a \"voltage walk\") before writing any equation; the signs then come from the picture, not from memorised rules. The usual failure is giving every resistor $-IR$ whatever the walking direction, which only shows up in two-battery or two-loop circuits, so include one early. Ask what a negative current would mean before one turns up in a solution."
+    },
+    {
+      "topic": "11.7",
+      "bigIdea": "At any junction in a circuit the total current flowing in equals the total current flowing out, because charge is conserved and cannot pile up or disappear at a point.",
+      "picture": {
+        "diagram": "circuit\nbattery a c 12V \"ε\"\nresistor a b 2Ω R_1 i=I_1\nresistor b c 6Ω R_2 i=I_2\nresistor b c 3Ω R_3 i=I_3\nnode b \"J\"",
+        "caption": "At junction $J$ the current $I_1 = 3\\ \\text{A}$ arrives and divides into $I_2 = 1\\ \\text{A}$ and $I_3 = 2\\ \\text{A}$. The branch with half the resistance carries twice the current, and the two rejoin at the bottom junction to give $3\\ \\text{A}$ back to the battery."
+      },
+      "explanation": "A **junction** is a point where three or more conducting paths meet, so current has a choice of ways to go. Charge is conserved, and in a steady circuit it does not collect at a junction or drain away from it. So the charge arriving each second must equal the charge leaving each second: $\\sum I_{\\text{in}} = \\sum I_{\\text{out}}$. This is **Kirchhoff's junction rule**. Picture water pipes meeting at a tee: the litres per second flowing in must equal the litres per second flowing out.\n\nThe junction rule says the currents must add up, but not how a current divides. The loop rule settles that. Branches joined at both ends have the same potential difference, so each branch carries $I = \\Delta V/R$ for its own resistance. More current takes the branch with less resistance, in inverse proportion: a branch with half the resistance carries twice the current. Every branch with a potential difference across it carries some current. It is not true that all the current follows the easiest path.\n\nTogether the two rules solve circuits that cannot be collapsed into series and parallel groups, such as circuits with batteries in different branches. Label a current in every branch, each with a guessed direction. Write the junction rule at a junction. Write the loop rule around enough loops to bring every element in at least once. You need as many independent equations as there are unknown currents. Then solve the equations together. A current that comes out negative simply flows opposite to the arrow you drew.",
+      "equations": [
+        {
+          "latex": "\\sum I_{\\text{in}} = \\sum I_{\\text{out}}",
+          "meaning": "The currents flowing into a junction add up to the currents flowing out of it.",
+          "variables": [
+            {
+              "symbol": "I_{\\text{in}}",
+              "name": "a current directed toward the junction",
+              "unit": "A"
+            },
+            {
+              "symbol": "I_{\\text{out}}",
+              "name": "a current directed away from the junction",
+              "unit": "A"
+            }
+          ],
+          "useWhen": "Any point where wires meet: to find one branch current from the others, or as one of the equations for a multi-loop circuit.",
+          "notWhen": "It does not by itself tell you how the current divides. A circuit with two junctions gives only one independent junction equation, since the second repeats the first."
+        },
+        {
+          "latex": "I_n = \\frac{\\Delta V_p}{R_n}",
+          "meaning": "Each parallel branch carries a current equal to the shared potential difference divided by that branch's resistance.",
+          "variables": [
+            {
+              "symbol": "I_n",
+              "name": "current in one branch",
+              "unit": "A"
+            },
+            {
+              "symbol": "\\Delta V_p",
+              "name": "potential difference across the parallel branches",
+              "unit": "V"
+            },
+            {
+              "symbol": "R_n",
+              "name": "resistance of that branch",
+              "unit": "Ω"
+            }
+          ],
+          "useWhen": "Branches that contain only resistance and are joined at both ends, once you know the potential difference across them.",
+          "notWhen": "Not for a branch that contains a battery: there the potential difference across the branch is not just the current times the resistance."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Finding a missing branch current",
+          "prompt": "A $12\\ \\text{V}$ ideal battery supplies a total current of $2.6\\ \\text{A}$ to three parallel branches: an $8.0\\ \\Omega$ resistor, a $24\\ \\Omega$ resistor and a small motor. What is the current through the motor?",
+          "steps": [
+            "Each branch is connected directly across the battery, so each has $12\\ \\text{V}$ across it.",
+            "Find the two resistor currents: $I_1 = \\dfrac{12\\ \\text{V}}{8.0\\ \\Omega} = 1.5\\ \\text{A}$ and $I_2 = \\dfrac{12\\ \\text{V}}{24\\ \\Omega} = 0.50\\ \\text{A}$.",
+            "Apply the junction rule where the battery's current divides into the three branches: $2.6\\ \\text{A} = 1.5\\ \\text{A} + 0.50\\ \\text{A} + I_{\\text{motor}}$.",
+            "$I_{\\text{motor}} = 2.6 - 1.5 - 0.50 = 0.60\\ \\text{A}$. The motor is not a simple resistor, but the junction rule does not care what the branch contains: charge is conserved either way."
+          ],
+          "answer": "$I_{\\text{motor}} = 0.60\\ \\text{A}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "V": {
+                "value": 12,
+                "unit": "V"
+              },
+              "I": {
+                "value": 2.6,
+                "unit": "A"
+              },
+              "R_1": {
+                "value": 8,
+                "unit": "Ω"
+              },
+              "R_2": {
+                "value": 24,
+                "unit": "Ω"
+              }
+            },
+            "expr": "I - V/R_1 - V/R_2",
+            "unit": "A"
+          }
+        },
+        {
+          "title": "Two batteries in different branches",
+          "prompt": "In the circuit shown, $\\varepsilon_1 = 10\\ \\text{V}$, $\\varepsilon_2 = 4.0\\ \\text{V}$, $R_1 = 2.0\\ \\Omega$, $R_2 = 4.0\\ \\Omega$ and $R_3 = 4.0\\ \\Omega$. The batteries are ideal. Using the current directions marked, determine $I_3$, and state the direction of the current through battery $\\varepsilon_2$.\n\n```dg\ncircuit\nbattery x c 10V \"ε_1\"\nresistor x b 2Ω R_1 i=I_1\nresistor b c 4Ω R_3 i=I_3\nbattery y c 4V \"ε_2\"\nresistor y b 4Ω R_2 i=I_2\nnode b \"B\"\n```",
+          "steps": [
+            "Junction rule at $B$: $I_1$ and $I_2$ are drawn flowing in and $I_3$ flowing out, so $I_1 + I_2 = I_3$.",
+            "Loop rule around the left loop, clockwise from the negative terminal of $\\varepsilon_1$: up through the battery, across $R_1$ with $I_1$, down $R_3$ with $I_3$. This gives $10 - 2.0I_1 - 4.0I_3 = 0$, so $I_1 = 5.0 - 2.0I_3$.",
+            "Loop rule around the right loop, counterclockwise from the negative terminal of $\\varepsilon_2$: up through the battery, across $R_2$ with $I_2$, down $R_3$ with $I_3$. This gives $4.0 - 4.0I_2 - 4.0I_3 = 0$, so $I_2 = 1.0 - I_3$.",
+            "Substitute both into the junction equation: $(5.0 - 2.0I_3) + (1.0 - I_3) = I_3$, so $6.0 = 4.0I_3$ and $I_3 = 1.5\\ \\text{A}$, downward through $R_3$ as drawn.",
+            "Then $I_1 = 5.0 - 3.0 = 2.0\\ \\text{A}$ and $I_2 = 1.0 - 1.5 = -0.50\\ \\text{A}$. The negative sign means $I_2$ really flows away from $B$, through $R_2$ and into the positive terminal of $\\varepsilon_2$: that battery is being charged. Check the junction with the true directions: $2.0\\ \\text{A}$ in, $1.5\\ \\text{A} + 0.50\\ \\text{A}$ out."
+          ],
+          "answer": "$I_3 = 1.5\\ \\text{A}$, downward through $R_3$. The current through $\\varepsilon_2$ is $0.50\\ \\text{A}$ entering its positive terminal, opposite to the marked direction.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "E_1": {
+                "value": 10,
+                "unit": "V"
+              },
+              "E_2": {
+                "value": 4,
+                "unit": "V"
+              },
+              "R_1": {
+                "value": 2,
+                "unit": "Ω"
+              },
+              "R_2": {
+                "value": 4,
+                "unit": "Ω"
+              },
+              "R_3": {
+                "value": 4,
+                "unit": "Ω"
+              }
+            },
+            "expr": "(E_1/R_1 + E_2/R_2)/(1/R_1 + 1/R_2 + 1/R_3)/R_3",
+            "unit": "A"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "junction-rule-ignored",
+          "wrong": "Each branch leaving a junction carries the full current that arrived at it.",
+          "right": "The arriving current divides. The branch currents add up to the current that came in, so each one is smaller than the total."
+        },
+        {
+          "tag": "current-used-up",
+          "wrong": "When the branches rejoin, the current is smaller than it was before the split, because the resistors in the branches used some up.",
+          "right": "The current that leaves the second junction equals the current that entered the first. The resistors take energy from the charge, not charge from the circuit."
+        },
+        {
+          "tag": "current-split-wrong",
+          "wrong": "Current always splits equally at a junction.",
+          "right": "It splits equally only between identical branches. Otherwise the branch with less resistance carries more current, since all the branches have the same potential difference."
+        },
+        {
+          "tag": "current-split-wrong",
+          "wrong": "All of the current takes the path of least resistance.",
+          "right": "Most of it does, not all. Any branch with a potential difference across it and a finite resistance carries some current."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Three wires meet at a junction. One carries $5.0\\ \\text{A}$ toward the junction and another carries $2.0\\ \\text{A}$ away from it. What is the current in the third wire, and which way does it flow?",
+          "a": "$3.0\\ \\text{A}$, away from the junction, so that $5.0\\ \\text{A}$ in equals $2.0\\ \\text{A} + 3.0\\ \\text{A}$ out."
+        },
+        {
+          "q": "A total current of $4.0\\ \\text{A}$ divides between a $10\\ \\Omega$ resistor and a $30\\ \\Omega$ resistor in parallel. What is the current in each?",
+          "a": "$3.0\\ \\text{A}$ in the $10\\ \\Omega$ resistor and $1.0\\ \\text{A}$ in the $30\\ \\Omega$ resistor. One third of the resistance carries three times the current, and both have the same $30\\ \\text{V}$ across them."
+        },
+        {
+          "q": "A circuit has two junctions and three branches. How many useful junction equations and loop equations do you need to find the three branch currents?",
+          "a": "One junction equation, because the second junction gives the same equation again, and two loop equations: three independent equations for three unknowns."
+        }
+      ],
+      "tryIt": {
+        "diagram": "circuit\nbattery a c 12V \"ε\"\nammeter a b \"I = {{round(100*(2+12/R))/100}} A\"\nresistor b c 6Ω R_1 \"I_1 = 2 A\"\nresistor b c {{R}}Ω R_2 \"I_2 = {{round(100*12/R)/100}} A\"",
+        "caption": "Change $R_2$. The current in $R_1$ does not change, because it still has $12\\ \\text{V}$ across it. The current in $R_2$ does, and the ammeter always reads the sum of the two branch currents.",
+        "params": [
+          {
+            "name": "R",
+            "label": "R_2",
+            "min": 2,
+            "max": 24,
+            "step": 1,
+            "default": 3,
+            "unit": "Ω"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.2",
+        "11.1",
+        "11.5",
+        "11.6"
+      ],
+      "teacherNotes": "Three ammeters around a junction, read before and after a branch resistance is changed, settle most doubts about whether current is conserved. In multi-loop problems, insist that students draw and label a current arrow in every branch before writing anything, and that they keep those arrows even when an answer comes out negative. The most common algebra failure is writing both junction equations and believing they are independent."
+    },
+    {
+      "topic": "11.8",
+      "bigIdea": "When a capacitor charges or discharges through a resistor, its charge and the current change quickly at first and then more and more slowly, on a time scale set by the time constant $\\tau = RC$.",
+      "picture": {
+        "diagram": "circuit\nbattery a d 9V \"ε\"\nswitch a b open S\nresistor b c 2kΩ R\ncapacitor c d 500μF C",
+        "caption": "A series RC circuit with the capacitor uncharged. When switch $S$ closes, the current starts at $\\varepsilon/R = 4.5\\ \\text{mA}$ and dies away as the capacitor charges toward $9\\ \\text{V}$. The time constant is $RC = (2000\\ \\Omega)(500 \\times 10^{-6}\\ \\text{F}) = 1.0\\ \\text{s}$."
+      },
+      "explanation": "Close the switch on a battery, a resistor and an uncharged capacitor in one loop. At that first instant the capacitor holds no charge, so the potential difference across it, $\\Delta V_C = q/C$, is zero. The loop rule then puts the whole emf across the resistor, and the current is $I_0 = \\varepsilon/R$, exactly as if the capacitor were a plain wire. As charge builds up on the plates, $\\Delta V_C$ rises and less of the emf is left for the resistor, so the current falls and the charging slows. After a long time the capacitor's potential difference equals the emf and the current is zero. The capacitor then holds $q = C\\varepsilon$ and acts like a break in the wire.\n\nHow long this takes is set by the **time constant**, $\\tau = RC$. A larger resistance means a smaller current, and a larger capacitance needs more charge for each volt, so either makes charging slower. After one time constant a charging capacitor has about 63% of its final charge and potential difference, and the current has fallen to about 37% of its starting value. After about five time constants the process is practically finished. The graphs are curves that level off, not straight lines.\n\n```dg\nplot x=t[s] y=V_C[V] xr=-0.4,6 yr=0,10\nfn 9*(1-exp(-t/1)) 0..6\nhl 9 \"ε = 9 V\"\nvl 1 \"τ\"\npt 1,5.7 \"63%\"\nxt 0 1 2 3 4 5 6\nyt 0 3 5.7 9\n```\n\n**Discharging** runs the same way in reverse. Connect a charged capacitor across a resistor and, as charge leaves, its potential difference and the current both drop. Each falls to about 37% of their starting values in one time constant.\n\nIn a circuit with several branches, use the two limits. Just after a switch closes, treat each uncharged capacitor as a wire. A long time later, treat it as an open switch: its branch carries no current, and its potential difference equals that of whatever is in parallel with it. Capacitors combine the opposite way to resistors: in parallel the capacitances add, and in series the reciprocals add.",
+      "equations": [
+        {
+          "latex": "\\tau = R_{\\text{eq}} C_{\\text{eq}}",
+          "meaning": "The time constant of an RC circuit is the resistance the capacitor charges or discharges through, times the capacitance.",
+          "variables": [
+            {
+              "symbol": "\\tau",
+              "name": "time constant",
+              "unit": "s"
+            },
+            {
+              "symbol": "R_{\\text{eq}}",
+              "name": "equivalent resistance in the charging or discharging path",
+              "unit": "Ω"
+            },
+            {
+              "symbol": "C_{\\text{eq}}",
+              "name": "equivalent capacitance",
+              "unit": "F"
+            }
+          ],
+          "useWhen": "You need the time scale of charging or discharging: about 63% of the change is complete after one time constant and nearly all of it after five.",
+          "notWhen": "It is not the time to charge fully. Convert kilohms to ohms and microfarads to farads before multiplying."
+        },
+        {
+          "latex": "C_p = C_1 + C_2 + \\dots",
+          "meaning": "Capacitances in parallel add.",
+          "variables": [
+            {
+              "symbol": "C_p",
+              "name": "equivalent capacitance of the parallel group",
+              "unit": "F"
+            },
+            {
+              "symbol": "C_1,\\ C_2",
+              "name": "the individual capacitances",
+              "unit": "F"
+            }
+          ],
+          "useWhen": "Capacitors joined at both ends, so they share one potential difference and their charges add.",
+          "notWhen": "This is the rule resistors follow in series, not in parallel. Do not carry the resistor rules over unchanged."
+        },
+        {
+          "latex": "\\frac{1}{C_s} = \\frac{1}{C_1} + \\frac{1}{C_2} + \\dots",
+          "meaning": "For capacitors in series, the reciprocals of the capacitances add.",
+          "variables": [
+            {
+              "symbol": "C_s",
+              "name": "equivalent capacitance of the series group",
+              "unit": "F"
+            },
+            {
+              "symbol": "C_1,\\ C_2",
+              "name": "the individual capacitances",
+              "unit": "F"
+            }
+          ],
+          "useWhen": "Capacitors on one unbranched path, which all carry the same charge.",
+          "notWhen": "Remember to invert at the end. The result is smaller than the smallest capacitance in the group."
+        },
+        {
+          "latex": "q = C\\,\\Delta V_C",
+          "meaning": "The charge on a capacitor is its capacitance times the potential difference across it.",
+          "variables": [
+            {
+              "symbol": "q",
+              "name": "charge on the capacitor",
+              "unit": "C"
+            },
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            },
+            {
+              "symbol": "\\Delta V_C",
+              "name": "potential difference across the capacitor",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "At any instant, and in particular for the final charge once the steady-state potential difference is known.",
+          "notWhen": "The potential difference is the capacitor's own, which equals the battery's emf only when no other element in the loop has a potential difference across it."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Setting a delay with an RC circuit",
+          "prompt": "A delay circuit charges an uncharged $220\\ \\mu\\text{F}$ capacitor from a $9.0\\ \\text{V}$ battery through a resistor. A sensor switches on a light one time constant after charging begins, when the capacitor reaches 63% of $9.0\\ \\text{V}$. What resistance gives a delay of $5.0\\ \\text{s}$? If the sensor switched at 86% instead, about how long would the delay be?",
+          "steps": [
+            "The delay is one time constant: $\\tau = RC = 5.0\\ \\text{s}$, so $R = \\dfrac{\\tau}{C} = \\dfrac{5.0\\ \\text{s}}{2.2 \\times 10^{-4}\\ \\text{F}} = 2.3 \\times 10^4\\ \\Omega = 23\\ \\text{k}\\Omega$.",
+            "The switching level, $0.63 \\times 9.0\\ \\text{V} \\approx 5.7\\ \\text{V}$, does not depend on $R$ or $C$; only the time to reach it does. A larger resistor gives a longer delay.",
+            "A charging capacitor reaches about 86% after two time constants, so the delay becomes about $10\\ \\text{s}$: charging slows as it goes."
+          ],
+          "answer": "$R = 23$ kΩ; with the 86% setting the delay is about $10\\ \\text{s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "tau": {
+                "value": 5,
+                "unit": "s"
+              },
+              "C": {
+                "value": 220,
+                "unit": "μF"
+              }
+            },
+            "expr": "tau/C",
+            "unit": "kΩ"
+          }
+        },
+        {
+          "title": "A capacitor in one branch",
+          "prompt": "In the circuit shown, $\\varepsilon = 12\\ \\text{V}$, $R_1 = 2.0\\ \\text{k}\\Omega$, $R_2 = 4.0\\ \\text{k}\\Omega$ and $C = 50\\ \\mu\\text{F}$. The capacitor is uncharged when switch $S$ is closed. (a) Describe the current in $R_2$ immediately after the switch is closed. (b) Determine the charge on the capacitor a long time after the switch is closed.\n\n```dg\ncircuit\nbattery a d 12V \"ε\"\nswitch a s closed S\nresistor s b 2kΩ R_1\nresistor b d 4kΩ R_2\ncapacitor b d 50μF C\n```",
+          "steps": [
+            "(a) Immediately after the switch closes the capacitor is uncharged, so the potential difference across it is zero and it behaves like a wire. $R_2$ is in parallel with it, so the potential difference across $R_2$, and the current in it, are also zero. All of the battery's current, $\\varepsilon/R_1 = 12\\ \\text{V}/2.0\\ \\text{k}\\Omega = 6.0\\ \\text{mA}$, goes onto the capacitor.",
+            "(b) A long time later the capacitor's branch carries no current, so leave it out when finding the currents. What remains is a single loop: the battery, $R_1$ and $R_2$ in series.",
+            "The steady current is $I = \\dfrac{\\varepsilon}{R_1 + R_2} = \\dfrac{12\\ \\text{V}}{6.0\\ \\text{k}\\Omega} = 2.0\\ \\text{mA}$, and the potential difference across $R_2$ is $IR_2 = (2.0\\ \\text{mA})(4.0\\ \\text{k}\\Omega) = 8.0\\ \\text{V}$.",
+            "The capacitor is in parallel with $R_2$, so it has $8.0\\ \\text{V}$ across it, not $12\\ \\text{V}$. Its charge is $q = C\\,\\Delta V_C = (50\\ \\mu\\text{F})(8.0\\ \\text{V}) = 400\\ \\mu\\text{C}$."
+          ],
+          "answer": "(a) Zero: the uncharged capacitor has no potential difference across it, so neither does $R_2$. (b) $q = 4.0 \\times 10^{-4}\\ \\text{C}$, which is $400\\ \\mu\\text{C}$.",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "emf": {
+                "value": 12,
+                "unit": "V"
+              },
+              "R_1": {
+                "value": 2,
+                "unit": "kΩ"
+              },
+              "R_2": {
+                "value": 4,
+                "unit": "kΩ"
+              },
+              "C": {
+                "value": 50,
+                "unit": "μF"
+              }
+            },
+            "expr": "C*emf*R_2/(R_1 + R_2)",
+            "unit": "C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "capacitor-steady-current",
+          "wrong": "An uncharged capacitor blocks the current when the switch is first closed, and once it is full it lets a steady current through.",
+          "right": "It is the other way round. An uncharged capacitor acts like a wire, so the current is largest at the start. A fully charged capacitor acts like an open switch, and the current in its branch is zero."
+        },
+        {
+          "tag": "rc-linear-change",
+          "wrong": "A capacitor charges at a steady rate, so it is half charged after half the charging time.",
+          "right": "The current, and so the rate of charging, falls as the capacitor's potential difference rises: about 63% after one time constant, about 86% after two."
+        },
+        {
+          "tag": "capacitance-depends-on-charge",
+          "wrong": "As a capacitor charges up, its capacitance increases.",
+          "right": "Capacitance is fixed by the plates and what is between them. As the capacitor charges, charge and potential difference grow together and their ratio stays the same."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "What is the time constant of a $10\\ \\text{k}\\Omega$ resistor in series with a $200\\ \\mu\\text{F}$ capacitor?",
+          "a": "$\\tau = RC = (1.0 \\times 10^{4}\\ \\Omega)(2.0 \\times 10^{-4}\\ \\text{F}) = 2.0\\ \\text{s}$."
+        },
+        {
+          "q": "A bulb is connected in series with a battery, an open switch and an uncharged capacitor. Describe the bulb's brightness from the moment the switch is closed.",
+          "a": "It is brightest at the instant the switch closes, when the current is largest. It then dims, quickly at first and more slowly later, and goes out once the capacitor is fully charged."
+        },
+        {
+          "q": "In a series RC charging circuit the resistance is doubled. What happens to the capacitor's final charge and to the time it takes to charge?",
+          "a": "The final charge is unchanged, $C\\varepsilon$. The time constant doubles, so charging takes twice as long."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=V_C[V] xr=-0.6,10 yr=0,10\nfn 9*(1-exp(-t/{{R*C/1000}})) 0..10\nhl 9 \"ε = 9 V\"\nvl {{R*C/1000}}\npt {{R*C/1000}},5.7\nnote 7,2 \"τ = RC = {{R*C/1000}} s\"\nxt 0 2 4 6 8 10\nyt 0 3 5.7 9",
+        "caption": "The potential difference across a capacitor charging from a $9\\ \\text{V}$ battery. Change $R$ and $C$. The dashed line marks one time constant, where the curve reaches 63% of $9\\ \\text{V}$. The final value never changes, only how quickly it is approached.",
+        "params": [
+          {
+            "name": "R",
+            "label": "Resistance",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 2,
+            "unit": "kΩ"
+          },
+          {
+            "name": "C",
+            "label": "Capacitance",
+            "min": 200,
+            "max": 1000,
+            "step": 200,
+            "default": 500,
+            "unit": "μF"
+          }
+        ]
+      },
+      "prerequisites": [
+        "10.6",
+        "11.3",
+        "11.5",
+        "11.6"
+      ],
+      "teacherNotes": "A bulb in series with a large capacitor makes the whole story visible: bright, dimming, dark, and bright again in the other sense when the capacitor is discharged through it. Ask for the current at $t = 0$ and after a long time before any graph is drawn; students who can replace the capacitor by a wire and then by an open switch can handle most RC questions. Expect straight-line graphs and \"half charged at half time\", and expect the full emf to be put across a capacitor that sits in parallel with only part of the circuit."
+    }
+  ]
+}

@@ -1,0 +1,821 @@
+{
+  "curriculumId": "ap-physics-c-em",
+  "unit": 10,
+  "guides": [
+    {
+      "topic": "10.1",
+      "bigIdea": "In electrostatic equilibrium the charges in a conductor are at rest, which forces the field inside the metal to be zero, any excess charge onto the surface, and the whole conductor to one potential.",
+      "picture": {
+        "diagram": "scene\nball S 0,0 r=1.4 \"E = 0\"\ntext 0,1.15 \"+\"\ntext 0.81,0.81 \"+\"\ntext 1.15,0 \"+\"\ntext 0.81,-0.81 \"+\"\ntext 0,-1.15 \"+\"\ntext -0.81,-0.81 \"+\"\ntext -1.15,0 \"+\"\ntext -0.81,0.81 \"+\"\nf 0,1.45 up 0.8 \"E\"\nf 1.45,0 right 0.8\nf 0,-1.45 down 0.8\nf -1.45,0 left 0.8\nf 1.03,1.03 45 0.8\nf 1.03,-1.03 -45 0.8\nf -1.03,-1.03 225 0.8\nf -1.03,1.03 135 0.8",
+        "caption": "A positively charged metal sphere in equilibrium. The excess charge sits on the surface, the field inside the metal is zero, and the field just outside points straight out from the surface."
+      },
+      "explanation": "A conductor has charges that are free to move: in a metal, electrons. A field inside the metal would push them along, so they shift, within about a nanosecond, until the field they create cancels whatever was there. Electrostatic equilibrium therefore means $E = 0$ everywhere inside the conducting material.\n\nThree results follow. First, Gauss's law for any closed surface inside the metal gives zero flux, so zero enclosed charge: excess charge lives on the surface. Second, the field just outside is perpendicular to the surface, because a component along the surface would push surface charge sideways; its size is $E = \\sigma/\\varepsilon_0$, where $\\sigma$ is the local surface charge density. Charge crowds onto sharply curved parts, so the field is strongest near points. Third, because $\\Delta V = -\\int \\vec{E}\\cdot d\\vec{r}$ and $E = 0$ inside, the conductor is an equipotential, surface and interior alike.\n\nZero field does not mean zero potential. A sphere of radius $R$ with charge $Q$ looks from outside like a point charge, so its surface is at $V = kQ/R$, and every interior point has that same value.\n\nThe same reasoning explains shielding: an empty cavity in a conductor has no field in it, whatever charges sit outside. A charge $+q$ placed in the cavity draws $-q$ to the inner wall, keeping the field in the metal zero, and on a neutral conductor the matching $+q$ appears on the outer surface.",
+      "equations": [
+        {
+          "latex": "\\vec{E}_{\\text{inside}} = 0",
+          "meaning": "The electric field is zero at every point within the material of a conductor in electrostatic equilibrium.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}_{\\text{inside}}",
+              "name": "electric field inside the conducting material",
+              "unit": "N/C"
+            }
+          ],
+          "useWhen": "The charges have come to rest: any conductor in an electrostatics problem, whatever its shape or charge.",
+          "notWhen": "Not while charge is still flowing (a wire carrying a current), and not in a cavity that holds a charge: the cavity is not conducting material."
+        },
+        {
+          "latex": "E = \\frac{\\sigma}{\\varepsilon_0}",
+          "meaning": "Just outside a conductor the field is perpendicular to the surface, with a size set by the surface charge density at that spot.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "electric field just outside the surface",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\sigma",
+              "name": "surface charge density at that point",
+              "unit": "C/m^2"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C^2/(N·m^2)"
+            }
+          ],
+          "useWhen": "You know the charge per area on a conductor's surface and want the field next to it, or the reverse.",
+          "notWhen": "Not for a sheet of charge on an insulator, where the field is $\\sigma/2\\varepsilon_0$ on each side, and not far from the surface, where the field depends on the whole shape."
+        },
+        {
+          "latex": "V = \\frac{kQ}{R}",
+          "meaning": "A charged conducting sphere has this potential at its surface and at every point inside it (with zero potential far away).",
+          "variables": [
+            {
+              "symbol": "V",
+              "name": "potential of the sphere",
+              "unit": "V"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m^2/C^2"
+            },
+            {
+              "symbol": "Q",
+              "name": "net charge on the sphere",
+              "unit": "C"
+            },
+            {
+              "symbol": "R",
+              "name": "radius of the sphere",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "An isolated conducting sphere, or a sphere far from other charges.",
+          "notWhen": "Outside the sphere the potential falls as $kQ/r$; do not carry that $1/r$ inside, where the potential is flat."
+        }
+      ],
+      "derivation": "**Excess charge is on the surface.** Draw any closed Gaussian surface entirely inside the metal. $E = 0$ all over it, so Gauss's law, $\\oint \\vec{E}\\cdot d\\vec{A} = q_{\\text{enc}}/\\varepsilon_0$, gives $q_{\\text{enc}} = 0$. This holds for a surface around any interior point, so there is no net charge anywhere inside.\n\n**The field just outside.** Take a small pillbox of end area $A$ that straddles the surface. The end inside the metal has no flux, because $E = 0$ there. The side walls have none, because the field outside is perpendicular to the surface and runs along them. The outer end has flux $EA$, and the pillbox encloses charge $\\sigma A$:\n$$EA = \\frac{\\sigma A}{\\varepsilon_0} \\quad\\Rightarrow\\quad E = \\frac{\\sigma}{\\varepsilon_0}.$$\n\n**One potential.** Between any two points $a$ and $b$ of the conductor, along a path through the metal, $V_b - V_a = -\\int_a^b \\vec{E}\\cdot d\\vec{r} = 0$. For a sphere the field outside is $kQ/r^2$, so integrating in from far away gives the potential of the surface and everything inside it:\n$$V = -\\int_\\infty^R \\frac{kQ}{r^2}\\,dr = \\frac{kQ}{R}.$$",
+      "workedExamples": [
+        {
+          "title": "Field just outside a charged sphere",
+          "prompt": "A metal sphere of radius $8.0\\ \\text{cm}$ on an insulating stand carries a net charge of $+32\\ \\text{nC}$. Find the surface charge density and the electric field just outside the surface. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)$.",
+          "steps": [
+            "The sphere is a conductor in equilibrium, so all the charge is on its surface, spread evenly by symmetry over the area $4\\pi R^2 = 4\\pi(0.080\\ \\text{m})^2 = 0.0804\\ \\text{m}^2$.",
+            "$\\sigma = \\dfrac{Q}{4\\pi R^2} = \\dfrac{32 \\times 10^{-9}\\ \\text{C}}{0.0804\\ \\text{m}^2} = 3.98 \\times 10^{-7}\\ \\text{C/m}^2$.",
+            "Just outside a conductor, $E = \\dfrac{\\sigma}{\\varepsilon_0} = \\dfrac{3.98 \\times 10^{-7}\\ \\text{C/m}^2}{8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)} = 4.5 \\times 10^4\\ \\text{N/C}$, pointing straight out from the surface because the charge is positive.",
+            "Check: outside a sphere the point-charge form applies, and $kQ/R^2 = (8.99 \\times 10^9)(32 \\times 10^{-9})/(0.080)^2 = 4.5 \\times 10^4\\ \\text{N/C}$ as well."
+          ],
+          "answer": "$\\sigma = 4.0 \\times 10^{-7}\\ \\text{C/m}^2$ and $E = 4.5 \\times 10^4\\ \\text{N/C}$, directed outward",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "Q": {
+                "value": 32,
+                "unit": "nC"
+              },
+              "R": {
+                "value": 8,
+                "unit": "cm"
+              },
+              "eps0": {
+                "value": 8.85e-12,
+                "unit": "C^2/(N·m^2)"
+              }
+            },
+            "expr": "Q/(4*pi*R^2)/eps0",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "A charge inside a hollow conductor",
+          "prompt": "A point charge of $+5.0\\ \\text{nC}$ sits at the centre of the cavity in a neutral metal shell of inner radius $6.0\\ \\text{cm}$ and outer radius $9.0\\ \\text{cm}$. (a) Determine the charge on the shell's inner and outer surfaces, justifying your answer with Gauss's law. (b) Calculate the shell's potential, taking the potential to be zero far away. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "(a) Draw a spherical Gaussian surface inside the metal, with a radius between $6.0$ and $9.0\\ \\text{cm}$. The field is zero all over it, so it encloses zero net charge.",
+            "It encloses the point charge and the inner wall, so $q_{\\text{inner}} = -5.0\\ \\text{nC}$. The shell is neutral, so $q_{\\text{outer}} = +5.0\\ \\text{nC}$.",
+            "(b) The outer charge is spread evenly, so outside the shell the field is that of a point charge $q = +5.0\\ \\text{nC}$: $E = kq/r^2$.",
+            "The whole shell is at the potential of its outer surface. Integrate in from far away to that surface, of radius $b = 0.090\\ \\text{m}$: $V = -\\displaystyle\\int_\\infty^{b} \\frac{kq}{r^2}\\,dr = \\frac{kq}{b} = \\frac{(8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2)(5.0 \\times 10^{-9}\\ \\text{C})}{0.090\\ \\text{m}} = 5.0 \\times 10^2\\ \\text{V}$."
+          ],
+          "answer": "(a) $-5.0\\ \\text{nC}$ on the inner surface and $+5.0\\ \\text{nC}$ on the outer surface; (b) $V = 5.0 \\times 10^2\\ \\text{V}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "q": {
+                "value": 5,
+                "unit": "nC"
+              },
+              "b": {
+                "value": 9,
+                "unit": "cm"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "k*q/b",
+            "unit": "V"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "conductor-interior-field",
+          "wrong": "Extra charge put on a metal ball spreads evenly through the whole ball.",
+          "right": "Like charges repel and are free to move, so they spread as far apart as they can: onto the surface."
+        },
+        {
+          "tag": "conductor-interior-field",
+          "wrong": "The field inside a charged conductor is zero, so the potential inside is zero too.",
+          "right": "Zero field means the potential does not change from place to place, not that it is zero. The inside of a charged sphere is at the surface value, $kQ/R$."
+        },
+        {
+          "tag": "conductor-interior-field",
+          "wrong": "A metal shell shields both ways, so a charge hidden in its cavity makes no field outside.",
+          "right": "An isolated shell keeps outside fields out of its cavity, but not the reverse: $+q$ in the cavity leaves $+q$ on the outer surface, which makes a field outside. Only a grounded shell hides the charge."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A solid copper cube is given excess charge. Where does the charge go, and where is the field outside the cube strongest?",
+          "a": "To the surface. It is densest at the corners and edges, so the field is strongest there."
+        },
+        {
+          "q": "A metal sphere of radius $0.20\\ \\text{m}$ has a surface potential of $900\\ \\text{V}$. What are the potential and the field at its centre?",
+          "a": "$900\\ \\text{V}$ and zero: with no field in the metal, the potential cannot change between the surface and the centre."
+        },
+        {
+          "q": "A neutral metal can sits in a uniform electric field. What is the field inside it, and why?",
+          "a": "Zero. Electrons shift over the can's surface until the field of the surface charges cancels the applied field everywhere inside."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[m] y=V[V] xr=-0.03,0.5 yr=0,2200\nseg 0,{{89.9/R}} {{R}},{{89.9/R}}\nfn 89.9/r {{R}}..0.5\nvl {{R}} \"R\"\nnote 0.39,1900 \"V inside = {{round(89.9/R)}} V\"\nnote 0.39,1660 \"E inside = 0\"",
+        "caption": "A metal sphere carrying $10\\ \\text{nC}$. Change its radius: inside, the potential is flat at $kQ/R$ because the field there is zero; outside, the curve is the point-charge $kQ/r$ and does not move.",
+        "params": [
+          {
+            "name": "R",
+            "label": "Radius of the sphere",
+            "min": 0.05,
+            "max": 0.25,
+            "step": 0.01,
+            "default": 0.1,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "8.6",
+        "9.2"
+      ],
+      "teacherNotes": "Ask students to say why the field must be zero (the charges would still be moving otherwise) before they use it; those who only memorise the rule apply it to cavities that hold charge and to current-carrying wires. The most common slip is \"zero field, so zero potential\"; sketching $E(r)$ and $V(r)$ for a charged sphere on the same axes is a quick cure. For shells, insist on a Gaussian surface drawn inside the metal as the justification for the inner-wall charge. Set 10A practises all of these."
+    },
+    {
+      "topic": "10.2",
+      "bigIdea": "When conductors touch or are joined by a wire they act as one conductor, so charge flows between them until they share a single potential, with the total charge unchanged.",
+      "picture": {
+        "diagram": "scene\nball A 1,1.6 r=0.6 \"R\"\nball B 5.4,1.6 r=1.2 \"2R\"\nrope A.r B.l\ntext 3,1.85 \"wire\"\ntext 1,2.6 \"q_1 = Q/3\"\ntext 5.4,3.2 \"q_2 = 2Q/3\"\ntext 1,0.6 \"potential V\"\ntext 5.4,0 \"potential V\"",
+        "caption": "Two distant metal spheres joined by a wire settle at the same potential $V$. The sphere with twice the radius holds twice the charge, but the smaller sphere has twice the surface charge density."
+      },
+      "explanation": "Join two conductors with a wire, or let them touch, and they become one conductor, which in equilibrium has one potential. So charge flows through the connection until any potential difference is gone. In metals the charge that moves is electrons, which drift toward higher potential. The total charge afterwards equals the total before.\n\nThe condition is equal potential, not equal charge. For two spheres far enough apart that each one's potential is $kq/R$, equal potentials mean $q_1/R_1 = q_2/R_2$: the larger sphere gets more of the charge. The smaller sphere, though, has the larger surface charge density, since $\\sigma = q/4\\pi R^2 \\propto 1/R$, and so the stronger surface field.\n\nA charged object can also rearrange a conductor's charge without touching it. Hold a negative rod near a neutral metal sphere and electrons retreat to the far side, leaving the near side positive. The sphere is polarised, but still neutral overall.\n\nGrounding connects a conductor to the Earth, a huge conductor whose potential is taken as zero, and charge flows until the conductor is at zero potential too. An isolated conductor loses its net charge. With the rod nearby it does not: electrons repelled by the rod escape to the Earth, and if the ground wire is removed before the rod, the sphere is left positively charged. That is charging by induction.",
+      "equations": [
+        {
+          "latex": "q_{1f} + q_{2f} = q_{1i} + q_{2i}",
+          "meaning": "Charge only moves between the conductors, so the total afterwards equals the total before, signs included.",
+          "variables": [
+            {
+              "symbol": "q_{1i},\\ q_{2i}",
+              "name": "charges on the conductors before they are connected",
+              "unit": "C"
+            },
+            {
+              "symbol": "q_{1f},\\ q_{2f}",
+              "name": "charges after the flow has stopped",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Conductors touch or are wired together and nothing else is connected to them.",
+          "notWhen": "Not when one of them is grounded: the Earth can supply or take charge, so the pair's total is not fixed."
+        },
+        {
+          "latex": "\\frac{kq_{1f}}{R_1} = \\frac{kq_{2f}}{R_2}",
+          "meaning": "Two connected spheres finish at the same potential.",
+          "variables": [
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m^2/C^2"
+            },
+            {
+              "symbol": "q_{1f},\\ q_{2f}",
+              "name": "final charges on the spheres",
+              "unit": "C"
+            },
+            {
+              "symbol": "R_1,\\ R_2",
+              "name": "radii of the spheres",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Conducting spheres far enough apart that each one's potential is just its own $kq/R$.",
+          "notWhen": "Not for spheres close together or conductors of other shapes: they still reach one potential, but it is no longer this simple expression."
+        },
+        {
+          "latex": "\\frac{\\sigma_1}{\\sigma_2} = \\frac{R_2}{R_1}",
+          "meaning": "On connected spheres the surface charge density, and so the surface field, is larger on the smaller sphere.",
+          "variables": [
+            {
+              "symbol": "\\sigma_1,\\ \\sigma_2",
+              "name": "surface charge densities of the spheres",
+              "unit": "C/m^2"
+            },
+            {
+              "symbol": "R_1,\\ R_2",
+              "name": "radii of the spheres",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Comparing how crowded the charge is, or how strong the surface field is, on two connected spheres.",
+          "notWhen": "It compares charge per area, not charge: the larger sphere still holds more charge in total."
+        }
+      ],
+      "derivation": "Two metal spheres of radii $R_1$ and $R_2$ are far apart, joined by a long thin wire, and hold total charge $Q$. Let sphere 1 hold $q$, so that sphere 2 holds $Q - q$.\n\n**Equal potentials.** Far apart, each sphere's potential is its own $kq/R$. Equilibrium requires\n$$\\frac{kq}{R_1} = \\frac{k(Q-q)}{R_2} \\quad\\Rightarrow\\quad q = Q\\,\\frac{R_1}{R_1+R_2}, \\qquad Q - q = Q\\,\\frac{R_2}{R_1+R_2}.$$\n\n**Surface charge density.** With $\\sigma = q/4\\pi R^2$ and $q_1/q_2 = R_1/R_2$,\n$$\\frac{\\sigma_1}{\\sigma_2} = \\frac{q_1}{q_2}\\cdot\\frac{R_2^2}{R_1^2} = \\frac{R_2}{R_1}.$$\n\n**The same answer from energy.** Charging a sphere from zero to $q$ takes work $\\int_0^q (kq'/R)\\,dq' = kq^2/2R$, so the pair stores\n$$U(q) = \\frac{kq^2}{2R_1} + \\frac{k(Q-q)^2}{2R_2}.$$\nSetting $\\dfrac{dU}{dq} = \\dfrac{kq}{R_1} - \\dfrac{k(Q-q)}{R_2} = 0$ gives the equal-potential condition again, and $\\dfrac{d^2U}{dq^2} = \\dfrac{k}{R_1} + \\dfrac{k}{R_2} > 0$, so it is a minimum: charge flows until the stored energy is as small as it can be.",
+      "workedExamples": [
+        {
+          "title": "Charge drawn onto a grounded sphere",
+          "prompt": "A metal sphere of radius $0.10\\ \\text{m}$ is connected to the ground. A small sphere carrying $+6.0\\ \\text{nC}$ is held fixed $0.30\\ \\text{m}$ from its centre. Taking the potential to be zero far away, what net charge does the grounded sphere hold?",
+          "steps": [
+            "Grounding holds the whole metal sphere at zero potential, its centre included.",
+            "At the centre the small sphere gives $kq/d$, with $d = 0.30\\ \\text{m}$. The induced charge $Q$, however it crowds, is all $R = 0.10\\ \\text{m}$ from the centre, so it gives $kQ/R$.",
+            "$\\dfrac{kq}{d} + \\dfrac{kQ}{R} = 0$, so $Q = -q\\,\\dfrac{R}{d} = -(6.0\\ \\text{nC})\\left(\\dfrac{0.10}{0.30}\\right) = -2.0\\ \\text{nC}$: electrons drawn up the ground wire.",
+            "Remove the wire, then the small sphere, and this charge stays: charging by induction."
+          ],
+          "answer": "$Q = -2.0\\ \\text{nC}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "q": {
+                "value": 6,
+                "unit": "nC"
+              },
+              "R": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.3,
+                "unit": "m"
+              }
+            },
+            "expr": "-q*R/d",
+            "unit": "nC"
+          }
+        },
+        {
+          "title": "Charging two spheres by induction",
+          "prompt": "Two identical, neutral metal spheres, X and Y, on insulating stands touch each other. A negatively charged rod is held near X, on the side away from Y. With the rod in place the spheres are moved apart; then the rod is removed. (a) Describe the final charge on each sphere, and justify your answer. (b) The spheres are then touched together again. What is the charge on each?",
+          "steps": [
+            "(a) While they touch, X and Y are one conductor. The rod repels its free electrons, so some move from X across to Y.",
+            "X is left positive and Y negative. The pair began neutral and no charge has entered or left it, so the charges are equal in size: $+q$ on X and $-q$ on Y.",
+            "Separating the spheres first removes the path back, so the charges stay when the rod is removed.",
+            "(b) Touching makes them one conductor again. Identical spheres share the total charge equally, and the total is zero, so each ends up neutral."
+          ],
+          "answer": "(a) X is positive and Y is negative, with charges of equal size; (b) both spheres are neutral",
+          "style": "ap"
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "charge-shared-equally",
+          "wrong": "When two conductors are connected, charge flows until each has the same amount.",
+          "right": "Charge flows until the potentials are equal. For distant spheres that puts the charge in proportion to the radii; only identical conductors split it evenly."
+        },
+        {
+          "tag": "charging-moves-positive-charge",
+          "wrong": "A positively charged sphere touches a neutral one, and positive charges flow across to the neutral sphere.",
+          "right": "In a metal only electrons are free to move. Electrons flow from the neutral sphere to the positive one, which leaves the neutral sphere positive."
+        },
+        {
+          "tag": "induction-grounding-misread",
+          "wrong": "Grounding a conductor always leaves it with no charge.",
+          "right": "Grounding fixes its potential at zero. Alone, that means no net charge. Near a charged rod, a grounded conductor holds a net charge opposite in sign to the rod's."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Identical metal spheres: A carries $+12\\ \\text{nC}$, B and C are neutral. A touches B, then B touches C. What charge does each end with?",
+          "a": "A has $+6\\ \\text{nC}$, and B and C $+3\\ \\text{nC}$ each: every touch splits the pair's total equally."
+        },
+        {
+          "q": "A small sphere and a large sphere are joined by a wire and charged. Which holds more charge? Which has the stronger field at its surface?",
+          "a": "The large sphere holds more charge, since $q \\propto R$. The small sphere has the stronger surface field: $E = kq/R^2 = V/R$, and $V$ is the same for both."
+        },
+        {
+          "q": "A positive rod is held near a grounded metal sphere. The ground wire is removed, and then the rod. What is the sign of the sphere's charge, and where did it come from?",
+          "a": "Negative. The rod attracted electrons from the Earth onto the sphere, and removing the wire trapped them there."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nball A 1,2 r=0.4 \"2 cm\"\nball B {{2.6+0.2*R2}},2 r={{0.2*R2}} \"{{R2}} cm\"\nrope A.r B.l\ntext 1,{{2.5+0.2*R2}} \"q_1 = {{round(240/(2+R2))/10}} nC\"\ntext {{2.6+0.2*R2}},{{2.5+0.2*R2}} \"q_2 = {{round(120*R2/(2+R2))/10}} nC\"\ntext {{1.8+0.1*R2}},{{1.3-0.2*R2}} \"V = {{round(10788/(2+R2))}} V\"",
+        "caption": "Two distant spheres share $12\\ \\text{nC}$ through a wire. Sphere 1 has radius $2\\ \\text{cm}$; change the radius of sphere 2. The charges divide in proportion to the radii, and the common potential falls as the pair gets bigger.",
+        "params": [
+          {
+            "name": "R2",
+            "label": "Radius of sphere 2",
+            "min": 2,
+            "max": 8,
+            "step": 0.5,
+            "default": 4,
+            "unit": "cm"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.2",
+        "9.2",
+        "10.1"
+      ],
+      "teacherNotes": "The first instinct is to split the charge equally. Before any algebra, ask \"what is the same for both spheres once the charge stops moving?\" and wait for \"potential\". For induction and grounding, have students narrate where the electrons go at each step, and vary the order (rod removed before the ground wire) to check they are reasoning rather than reciting. The energy-minimum view in the derivation is a good link back to $U$ from Unit 9 for stronger students. Set 10B covers sharing, induction and grounding."
+    },
+    {
+      "topic": "10.3",
+      "bigIdea": "A capacitor is a pair of conductors holding equal and opposite charges, and its capacitance, the charge it stores per volt between them, is set by its geometry and the material in the gap.",
+      "picture": {
+        "diagram": "field xr=-3.5..3.5 yr=-2..2\nplates 0,1 0,-1 w=5\nequi",
+        "caption": "The field between the plates of a charged capacitor runs straight from the positive plate to the negative one and is uniform except near the edges. The dashed equipotentials are evenly spaced, so the potential changes steadily across the gap: $\\Delta V = Ed$."
+      },
+      "explanation": "A capacitor is a pair of conductors separated by a gap. Move charge from one to the other, as a battery does, and one plate holds $+Q$ and the other $-Q$, with a potential difference $\\Delta V$ between them. The two are proportional, since doubling the charge doubles the field everywhere and so doubles $\\Delta V$. Their constant ratio is the capacitance, $C = Q/\\Delta V$, measured in farads ($1\\ \\text{F} = 1\\ \\text{C/V}$). It depends on the conductors' size, shape and spacing, not on how much charge is on them.\n\nFor two parallel plates of area $A$ a small distance $d$ apart, the field between them is uniform, $E = \\sigma/\\varepsilon_0 = Q/\\varepsilon_0 A$, so $\\Delta V = Ed$ and $C = \\varepsilon_0 A/d$. Any other geometry yields to the same recipe: put $\\pm Q$ on the conductors, find the field between them with Gauss's law, integrate it to get $\\Delta V$, and divide.\n\nCharging a capacitor takes work, because each new bit of charge $dq$ is moved across the potential difference already there, $q/C$. Adding these up gives the stored energy, $U_C = Q^2/2C = \\tfrac{1}{2}C(\\Delta V)^2$. The energy is held in the field itself, with density $u_E = \\tfrac{1}{2}\\varepsilon_0 E^2$.\n\nWhen a capacitor is changed, ask first what is held fixed. Connected to a battery, $\\Delta V$ stays fixed and the charge adjusts. Disconnected, the charge is trapped and $\\Delta V$ adjusts. Pull the plates of a disconnected capacitor apart and $C$ falls while $Q$ stays, so $\\Delta V$ and the stored energy both rise: the work you do against the plates' attraction goes into the field.",
+      "equations": [
+        {
+          "latex": "C = \\frac{Q}{\\Delta V}",
+          "meaning": "Capacitance is the charge on either conductor divided by the potential difference between the two.",
+          "variables": [
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            },
+            {
+              "symbol": "Q",
+              "name": "size of the charge on each conductor",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference between the conductors",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Relating the charge and potential difference of any capacitor, or defining capacitance for a new geometry.",
+          "notWhen": "It does not say that capacitance changes with charge or voltage; the ratio stays the same when either changes."
+        },
+        {
+          "latex": "C = \\frac{\\varepsilon_0 A}{d}",
+          "meaning": "A parallel-plate capacitor with an empty (or air) gap has a capacitance set by its plate area and separation.",
+          "variables": [
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "F/m"
+            },
+            {
+              "symbol": "A",
+              "name": "area of one plate, facing the other",
+              "unit": "m^2"
+            },
+            {
+              "symbol": "d",
+              "name": "separation of the plates",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Flat parallel plates whose separation is small compared with their width, so the field is uniform.",
+          "notWhen": "Not for spheres or cylinders, which need their own integral, and not unchanged when an insulator fills the gap (see topic 10.4)."
+        },
+        {
+          "latex": "U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}C(\\Delta V)^2 = \\frac{Q^2}{2C}",
+          "meaning": "The energy stored in a charged capacitor, written three equivalent ways.",
+          "variables": [
+            {
+              "symbol": "U_C",
+              "name": "energy stored in the capacitor",
+              "unit": "J"
+            },
+            {
+              "symbol": "Q",
+              "name": "size of the charge on each conductor",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\Delta V",
+              "name": "potential difference between the conductors",
+              "unit": "V"
+            },
+            {
+              "symbol": "C",
+              "name": "capacitance",
+              "unit": "F"
+            }
+          ],
+          "useWhen": "Pick the form whose quantities are fixed: $\\tfrac{1}{2}C(\\Delta V)^2$ with a battery connected, $Q^2/2C$ for an isolated capacitor.",
+          "notWhen": "It is not $Q\\,\\Delta V$: the charge was moved across a potential difference that grew from zero, so the average is half the final value."
+        },
+        {
+          "latex": "u_E = \\tfrac{1}{2}\\varepsilon_0 E^2",
+          "meaning": "Wherever there is an electric field in empty space, this much energy is stored in each cubic metre.",
+          "variables": [
+            {
+              "symbol": "u_E",
+              "name": "energy density of the electric field",
+              "unit": "J/m^3"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "F/m"
+            },
+            {
+              "symbol": "E",
+              "name": "electric field strength at that place",
+              "unit": "N/C"
+            }
+          ],
+          "useWhen": "Finding the energy in a region from the field in it: multiply by the volume if the field is uniform, integrate if it is not.",
+          "notWhen": "It is energy per volume, not energy; do not compare it directly with a capacitor's stored energy."
+        }
+      ],
+      "derivation": "**Parallel plates.** Give the plates charges $+Q$ and $-Q$, so the surface charge density is $\\sigma = Q/A$. Apply Gauss's law to a pillbox of end area $a$ with one end inside the positive plate's metal, where $E = 0$, and the other in the gap: $Ea = \\sigma a/\\varepsilon_0$, so $E = Q/\\varepsilon_0 A$, the same everywhere in the gap. The potential difference between the plates is\n$$\\Delta V = \\int_0^d E\\,dx = \\frac{Qd}{\\varepsilon_0 A}, \\qquad\\text{so}\\qquad C = \\frac{Q}{\\Delta V} = \\frac{\\varepsilon_0 A}{d}.$$\n\n**Stored energy.** When the capacitor holds charge $q$, the potential difference is $q/C$, and moving a further $dq$ from the negative plate to the positive plate takes work $dU = (q/C)\\,dq$. Charging from zero to $Q$:\n$$U_C = \\int_0^Q \\frac{q}{C}\\,dq = \\frac{Q^2}{2C} = \\tfrac{1}{2}C(\\Delta V)^2 = \\tfrac{1}{2}Q\\,\\Delta V.$$\n\n**Energy density.** For parallel plates, substitute $C = \\varepsilon_0 A/d$ and $\\Delta V = Ed$ to get $U_C = \\tfrac{1}{2}\\varepsilon_0 E^2\\,(Ad)$. Dividing by the volume of the gap, $Ad$, gives $u_E = \\tfrac{1}{2}\\varepsilon_0 E^2$.",
+      "workedExamples": [
+        {
+          "title": "A capacitor with a metal sheet in the gap",
+          "prompt": "Two metal plates of area $0.030\\ \\text{m}^2$ are $2.0\\ \\text{mm}$ apart in air, and a metal sheet $0.80\\ \\text{mm}$ thick, as large as the plates, is slid into the gap without touching them. The capacitor is connected to a $12\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
+          "steps": [
+            "With no field inside the metal, $E = Q/\\varepsilon_0 A$ fills only the air, of total width $d - t = 1.2\\ \\text{mm}$: $C = \\dfrac{\\varepsilon_0 A}{d - t} = \\dfrac{(8.85 \\times 10^{-12})(0.030)}{1.2 \\times 10^{-3}} = 221\\ \\text{pF}$, wherever the sheet sits.",
+            "$Q = C\\,\\Delta V = (221\\ \\text{pF})(12\\ \\text{V}) = 2.7\\ \\text{nC}$, and $U_C = \\tfrac{1}{2}C(\\Delta V)^2 = 16\\ \\text{nJ}$."
+          ],
+          "answer": "$C = 221\\ \\text{pF}$, $Q = 2.7\\ \\text{nC}$ and $U_C = 16\\ \\text{nJ}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "eps0": {
+                "value": 8.85e-12,
+                "unit": "F/m"
+              },
+              "A": {
+                "value": 0.03,
+                "unit": "m^2"
+              },
+              "d": {
+                "value": 2,
+                "unit": "mm"
+              },
+              "t": {
+                "value": 0.8,
+                "unit": "mm"
+              },
+              "V": {
+                "value": 12,
+                "unit": "V"
+              }
+            },
+            "expr": "0.5*eps0*A/(d - t)*V^2",
+            "unit": "nJ"
+          }
+        },
+        {
+          "title": "Capacitance of two concentric spheres",
+          "prompt": "A spherical capacitor is made of a solid metal sphere of radius $a = 5.0\\ \\text{cm}$ at the centre of a thin metal shell of radius $b = 8.0\\ \\text{cm}$, with air between them. (a) Derive an expression for the capacitance in terms of $a$, $b$ and the Coulomb constant $k$. (b) Calculate its value. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "(a) Put $+Q$ on the inner sphere and $-Q$ on the shell. A spherical Gaussian surface of radius $r$ in the gap, between $a$ and $b$, encloses $+Q$, so Gauss's law gives $E(4\\pi r^2) = Q/\\varepsilon_0$, or $E = kQ/r^2$, directed outward.",
+            "The potential difference between the conductors is the integral of this field across the gap: $\\Delta V = \\displaystyle\\int_a^b \\frac{kQ}{r^2}\\,dr = kQ\\left(\\frac{1}{a} - \\frac{1}{b}\\right) = kQ\\,\\frac{b-a}{ab}$, with the inner sphere at the higher potential.",
+            "Divide: $C = \\dfrac{Q}{\\Delta V} = \\dfrac{ab}{k(b-a)}$. The charge cancels, as it must: the capacitance depends only on the geometry.",
+            "(b) $C = \\dfrac{(0.050\\ \\text{m})(0.080\\ \\text{m})}{(8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2)(0.030\\ \\text{m})} = 1.5 \\times 10^{-11}\\ \\text{F} = 15\\ \\text{pF}$.",
+            "Check the limit: when the gap $d = b - a$ is much smaller than the radii, $ab \\approx a^2$ and $C \\approx a^2/kd = \\varepsilon_0(4\\pi a^2)/d$, which is the parallel-plate result with plate area $4\\pi a^2$."
+          ],
+          "answer": "(a) $C = \\dfrac{ab}{k(b-a)}$; (b) $C = 15\\ \\text{pF}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "a": {
+                "value": 5,
+                "unit": "cm"
+              },
+              "b": {
+                "value": 8,
+                "unit": "cm"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "a*b/(k*(b - a))",
+            "unit": "pF"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "capacitance-depends-on-charge",
+          "wrong": "$C = Q/\\Delta V$, so putting more charge on a capacitor increases its capacitance.",
+          "right": "More charge brings proportionally more potential difference, so the ratio does not change. Capacitance is fixed by the geometry and the material in the gap: $\\varepsilon_0 A/d$ has no $Q$ or $\\Delta V$ in it."
+        },
+        {
+          "tag": "capacitor-wrong-quantity-fixed",
+          "wrong": "When the plates of a disconnected capacitor are pulled apart, the potential difference stays the same.",
+          "right": "With no battery, it is the charge that cannot change. The capacitance falls, so $\\Delta V = Q/C$ rises. The potential difference stays fixed only while a battery is connected."
+        },
+        {
+          "tag": "capacitor-net-charge",
+          "wrong": "A capacitor charged to $Q$ has a net charge of $Q$.",
+          "right": "One plate has $+Q$ and the other $-Q$, so the net charge is zero. Charging a capacitor moves charge from one plate to the other; it does not add any."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "A battery that moves charge $Q$ through $\\Delta V$ does work $Q\\,\\Delta V$, so the capacitor stores $Q\\,\\Delta V$.",
+          "right": "The capacitor stores $\\tfrac{1}{2}Q\\,\\Delta V$. The other half is dissipated as thermal energy in the resistance of the wires while the charge flows."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A capacitor holds $60\\ \\mu\\text{C}$ when it is connected to $12\\ \\text{V}$. What is its capacitance, and how much charge would it hold at $6\\ \\text{V}$?",
+          "a": "$C = Q/\\Delta V = 5\\ \\mu\\text{F}$. At $6\\ \\text{V}$ it holds $30\\ \\mu\\text{C}$; the capacitance is the same."
+        },
+        {
+          "q": "The plates of a capacitor that stays connected to a battery are pushed closer together. What happens to $C$, $\\Delta V$, $Q$ and the stored energy?",
+          "a": "$C$ rises, since $d$ is smaller. $\\Delta V$ is fixed by the battery, so $Q = C\\,\\Delta V$ rises and $U_C = \\tfrac{1}{2}C(\\Delta V)^2$ rises."
+        },
+        {
+          "q": "The potential difference across a capacitor is tripled. By what factor does its stored energy change?",
+          "a": "It becomes nine times larger: $U_C = \\tfrac{1}{2}C(\\Delta V)^2$, and $C$ does not change."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=q[μC] y=ΔV[V] xr=-3,65 yr=0,14\nseg 0,0 {{Q}},{{Q/5}}\nshade 0..{{Q}}\nnote 22,12.8 \"ΔV = {{Q/5}} V\"\nnote 22,11.3 \"U = area = {{Q*Q/10}} μJ\"",
+        "caption": "Charging a $5\\ \\mu\\text{F}$ capacitor. The potential difference grows in step with the charge, and the shaded area, $\\tfrac{1}{2}Q\\,\\Delta V$, is the energy stored. Double the charge and the area is four times as large.",
+        "params": [
+          {
+            "name": "Q",
+            "label": "Charge on the capacitor",
+            "min": 10,
+            "max": 60,
+            "step": 5,
+            "default": 30,
+            "unit": "μC"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.6",
+        "9.2",
+        "10.1"
+      ],
+      "teacherNotes": "Students read $C = Q/\\Delta V$ as a recipe for changing $C$; ask early \"what would you have to do to this capacitor to change its capacitance?\" Before every \"what happens when...\" question, have them write \"battery connected: $\\Delta V$ fixed\" or \"isolated: $Q$ fixed\" as the first line. In this course they should be able to carry out the Gauss-then-integrate recipe for spherical and cylindrical capacitors, not just quote the parallel-plate result. Set 10C practises geometry, energy and changes to a charged capacitor."
+    },
+    {
+      "topic": "10.4",
+      "bigIdea": "An insulating material between a capacitor's plates polarises and weakens the field there, which multiplies the capacitance by the material's dielectric constant.",
+      "picture": {
+        "diagram": "scene\nrod 0,2 4,2\nrod 0,0 4,0\nblock D 2,0.25 w=3.6 h=1.5 \"κ = 2\"\ntext 2,2.25 \"+  +  +  +  +  +  +  +\"\ntext 2,-0.25 \"−  −  −  −  −  −  −  −\"\ntext 2,1.55 \"−      −      −      −\"\ntext 2,0.45 \"+      +      +      +\"\nf 4.7,1.8 down 1.6 \"E_0\"\nf 5.6,0.6 up 0.8 \"E_b\"\nf 6.5,1.4 down 0.8 \"E\"",
+        "caption": "A dielectric slab between charged plates. The plates' charge alone would give the field $E_0$. Bound charge on the slab's faces makes an opposing field $E_b$, so the net field inside is $E = E_0 - E_b = E_0/\\kappa$. The picture is drawn for $\\kappa = 2$."
+      },
+      "explanation": "A dielectric is an insulator placed between a capacitor's plates, such as paper, plastic or glass. Its charges cannot flow, but its molecules stretch or turn in the plates' field, so the face of the slab next to the positive plate becomes slightly negative and the opposite face slightly positive. This bound surface charge makes a field of its own, opposite to the plates' field. The net field inside the material is therefore weaker than in a vacuum by a factor called the dielectric constant, $\\kappa$: $E = E_0/\\kappa$ for the same charge on the plates. The constant is one for a vacuum, barely more for air, and about two to six for common plastics and glass.\n\nA weaker field means a smaller potential difference for the same charge, $\\Delta V = Ed = \\Delta V_0/\\kappa$, and so a larger capacitance: $C = \\kappa C_0$, which is $\\kappa\\varepsilon_0 A/d$ for parallel plates. A dielectric always raises the capacitance.\n\nWhat else happens depends on what is held fixed. If the capacitor is isolated, $Q$ cannot change: inserting the slab divides $\\Delta V$ and $E$ by $\\kappa$, and the stored energy $Q^2/2C$ falls by the same factor. The capacitor pulls the slab in and does work on it, which is where that energy goes. If the battery stays connected, $\\Delta V$ and $E = \\Delta V/d$ cannot change: the battery pushes extra charge onto the plates until $Q = \\kappa Q_0$, and the stored energy $\\tfrac{1}{2}C(\\Delta V)^2$ rises by the factor $\\kappa$.",
+      "equations": [
+        {
+          "latex": "C = \\kappa C_0 = \\frac{\\kappa\\varepsilon_0 A}{d}",
+          "meaning": "Filling the gap with a dielectric multiplies the capacitance by the dielectric constant; the second form is for parallel plates.",
+          "variables": [
+            {
+              "symbol": "C",
+              "name": "capacitance with the dielectric",
+              "unit": "F"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant of the material (1 or more)",
+              "unit": ""
+            },
+            {
+              "symbol": "C_0",
+              "name": "capacitance with an empty gap",
+              "unit": "F"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "F/m"
+            },
+            {
+              "symbol": "A",
+              "name": "plate area",
+              "unit": "m^2"
+            },
+            {
+              "symbol": "d",
+              "name": "plate separation",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The dielectric fills the whole gap between the conductors.",
+          "notWhen": "Never divide by $\\kappa$. And if the slab fills only part of the gap, add the potential differences across the two regions instead (see the derivation)."
+        },
+        {
+          "latex": "E = \\frac{E_0}{\\kappa}",
+          "meaning": "For the same charge on the plates, the field inside the dielectric is smaller than the vacuum field by the dielectric constant.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "field inside the dielectric",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "E_0",
+              "name": "field the same plate charge would give with an empty gap",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant",
+              "unit": ""
+            }
+          ],
+          "useWhen": "The plate charge is fixed: an isolated capacitor, before and after the dielectric goes in.",
+          "notWhen": "Not when a battery holds $\\Delta V$ fixed; then the field stays $\\Delta V/d$ and the charge grows instead."
+        },
+        {
+          "latex": "Q = \\kappa Q_0",
+          "meaning": "With a battery holding the potential difference fixed, inserting a dielectric multiplies the charge on the plates by the dielectric constant.",
+          "variables": [
+            {
+              "symbol": "Q",
+              "name": "plate charge with the dielectric",
+              "unit": "C"
+            },
+            {
+              "symbol": "Q_0",
+              "name": "plate charge with an empty gap at the same potential difference",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant",
+              "unit": ""
+            }
+          ],
+          "useWhen": "The capacitor stays connected to the battery while the dielectric is inserted or removed.",
+          "notWhen": "Not for an isolated capacitor, whose charge cannot change."
+        }
+      ],
+      "derivation": "**A filled gap.** Put free charge $\\pm Q$ on plates of area $A$, so $\\sigma = Q/A$. With an empty gap the field is $E_0 = \\sigma/\\varepsilon_0$. The slab's bound charge, of density $\\sigma_b$ on each face, makes an opposing field $\\sigma_b/\\varepsilon_0$, so inside the slab\n$$E = \\frac{\\sigma - \\sigma_b}{\\varepsilon_0} = \\frac{E_0}{\\kappa}.$$\nFor ordinary dielectrics the polarisation, and with it $\\sigma_b$, is proportional to the field, so the ratio $\\kappa$ is a constant of the material. Solving for the bound charge gives $\\sigma_b = \\sigma(1 - 1/\\kappa)$. Then\n$$\\Delta V = \\int_0^d E\\,dx = \\frac{E_0 d}{\\kappa} = \\frac{Qd}{\\kappa\\varepsilon_0 A}, \\qquad C = \\frac{Q}{\\Delta V} = \\frac{\\kappa\\varepsilon_0 A}{d} = \\kappa C_0.$$\n\n**A partly filled gap.** If the slab has thickness $t$, less than $d$, the field is $E_0$ in the empty part and $E_0/\\kappa$ in the slab. The integral splits in two:\n$$\\Delta V = E_0(d - t) + \\frac{E_0}{\\kappa}\\,t = \\frac{Q}{\\varepsilon_0 A}\\left(d - t + \\frac{t}{\\kappa}\\right), \\qquad C = \\frac{\\varepsilon_0 A}{d - t + t/\\kappa}.$$\nCheck the ends: $t = 0$ gives $C_0$, and $t = d$ gives $\\kappa C_0$. A metal slab behaves like $\\kappa \\to \\infty$: the field inside it is zero, and $C = \\varepsilon_0 A/(d - t)$.",
+      "workedExamples": [
+        {
+          "title": "A slab that partly fills an isolated capacitor",
+          "prompt": "An air capacitor with a $3.0\\ \\text{mm}$ gap is charged to $90\\ \\text{V}$ and disconnected. A plastic slab as large as the plates, $2.0\\ \\text{mm}$ thick and with $\\kappa = 3.0$, is slid in, leaving $1.0\\ \\text{mm}$ of air. Find the field in the air, the field in the plastic and the new potential difference.",
+          "steps": [
+            "Isolated, so $Q$ is fixed, and so is the field it makes in air: $E_0 = \\Delta V_0/d = (90\\ \\text{V})/(3.0\\ \\text{mm}) = 3.0 \\times 10^4\\ \\text{V/m}$.",
+            "In the air the field stays $E_0$; in the plastic it is $E_0/\\kappa = 1.0 \\times 10^4\\ \\text{V/m}$.",
+            "$\\Delta V = E_0(d - t) + \\dfrac{E_0}{\\kappa}t = 30\\ \\text{V} + 20\\ \\text{V} = 50\\ \\text{V}$, between $90\\ \\text{V}$ (no slab) and $30\\ \\text{V}$ (gap filled).",
+            "With $Q$ fixed, the stored energy $\\tfrac{1}{2}Q\\,\\Delta V$ falls to $50/90$ of its first value."
+          ],
+          "answer": "$3.0 \\times 10^4\\ \\text{V/m}$ in the air, $1.0 \\times 10^4\\ \\text{V/m}$ in the plastic; $\\Delta V = 50\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "V_0": {
+                "value": 90,
+                "unit": "V"
+              },
+              "d": {
+                "value": 3,
+                "unit": "mm"
+              },
+              "t": {
+                "value": 2,
+                "unit": "mm"
+              },
+              "kappa": {
+                "value": 3,
+                "unit": ""
+              }
+            },
+            "expr": "V_0*(d - t + t/kappa)/d",
+            "unit": "V"
+          }
+        },
+        {
+          "title": "Energy bookkeeping with the battery connected",
+          "prompt": "An air-filled capacitor of capacitance $40\\ \\text{pF}$ stays connected to a $12\\ \\text{V}$ battery, as shown, while a glass slab with $\\kappa = 5.0$ is slid in to fill the gap. (a) Calculate the change in the stored energy. (b) Calculate the work done by the battery, and account for the difference.\n\n```dg\ncircuit\nbattery a b 12V\ncapacitor a b 40pF C_0\n```",
+          "steps": [
+            "(a) $\\Delta V$ is fixed while $C$ rises to $\\kappa C_0$, so $\\Delta U_C = \\tfrac{1}{2}(\\kappa - 1)C_0(\\Delta V)^2 = \\tfrac{1}{2}(4.0)(40\\ \\text{pF})(12\\ \\text{V})^2 = 11.5\\ \\text{nJ}$, an increase.",
+            "(b) The battery moves the extra charge $\\Delta Q = (\\kappa - 1)C_0\\,\\Delta V = 1.92\\ \\text{nC}$ through $12\\ \\text{V}$: $W_{\\text{batt}} = \\Delta Q\\,\\Delta V = 23.0\\ \\text{nJ}$.",
+            "The battery supplies twice what the capacitor gains. The other $11.5\\ \\text{nJ}$ is work the field does pulling the slab in, which ends up as the slab's kinetic energy or in whatever holds it back."
+          ],
+          "answer": "(a) The stored energy rises by $11.5\\ \\text{nJ}$; (b) the battery does $23.0\\ \\text{nJ}$, half of it spent pulling the slab in",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "C_0": {
+                "value": 40,
+                "unit": "pF"
+              },
+              "V": {
+                "value": 12,
+                "unit": "V"
+              },
+              "kappa": {
+                "value": 5,
+                "unit": ""
+              }
+            },
+            "expr": "(kappa - 1)*C_0*V^2/2",
+            "unit": "nJ"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "dielectric-misapplied",
+          "wrong": "An insulator in the gap gets in the way, so it reduces the capacitance: $C = C_0/\\kappa$.",
+          "right": "The dielectric weakens the field for a given charge, so each coulomb needs less potential difference, and the capacitance goes up: $C = \\kappa C_0$."
+        },
+        {
+          "tag": "capacitor-wrong-quantity-fixed",
+          "wrong": "Inserting a dielectric always lowers the potential difference across a capacitor.",
+          "right": "Only if the capacitor is isolated, so that $Q$ is fixed. With the battery connected, $\\Delta V$ cannot change; the charge rises to $\\kappa Q_0$ instead."
+        },
+        {
+          "tag": "dielectric-misapplied",
+          "wrong": "The dielectric's charges cancel the field inside it completely, as a conductor's would.",
+          "right": "Its charges are bound to their molecules and can only shift slightly, so they cancel part of the field: $E = E_0/\\kappa$, not zero."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "When a dielectric slides into an isolated capacitor the stored energy drops, so energy has disappeared.",
+          "right": "The field pulls the slab in and does work on it: the energy goes to the slab, or to whatever holds it back."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $10\\ \\mu\\text{F}$ air capacitor has its gap filled with a material of dielectric constant 4. What is its new capacitance?",
+          "a": "$40\\ \\mu\\text{F}$. $C = \\kappa C_0$: a dielectric multiplies the capacitance."
+        },
+        {
+          "q": "An isolated, charged capacitor has its dielectric slab pulled out. What happens to $Q$, $\\Delta V$ and the stored energy?",
+          "a": "$Q$ stays the same. $C$ falls by the factor $\\kappa$, so $\\Delta V = Q/C$ and $U_C = Q^2/2C$ both rise by $\\kappa$."
+        },
+        {
+          "q": "Why does a dielectric reduce the field between plates that carry a fixed charge?",
+          "a": "Its molecules polarise, leaving bound charge on each face of the slab, opposite in sign to the plate beside it. That bound charge makes a field opposing the plates' field."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=quantity y=ratio xr=0,8.6 yr=0,5.6\nseg 0.5,0 0.5,1 1.5,1 1.5,0\nseg 2.5,0 2.5,{{k}} 3.5,{{k}} 3.5,0\nseg 4.5,0 4.5,{{1/k}} 5.5,{{1/k}} 5.5,0\nseg 6.5,0 6.5,{{1/k}} 7.5,{{1/k}} 7.5,0\nhl 1 \"before\"\nxt 1:Q 3:C 5:ΔV 7:U\nyt 0 1 2 3 4 5",
+        "caption": "An isolated capacitor has a dielectric slid into its gap. Each bar is a quantity divided by its value before. Raise $\\kappa$: the charge cannot change, the capacitance is multiplied by $\\kappa$, and the potential difference and stored energy are divided by it.",
+        "params": [
+          {
+            "name": "k",
+            "label": "Dielectric constant κ",
+            "min": 1,
+            "max": 5,
+            "step": 0.5,
+            "default": 2,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.6",
+        "10.1",
+        "10.3"
+      ],
+      "teacherNotes": "Two questions sort most of the class: \"does a dielectric raise or lower $C$?\" and \"which quantity is fixed here, $Q$ or $\\Delta V$?\" Students who answer the second by habit (\"voltage drops\") have memorised the isolated case only, so pair every isolated problem with its battery-connected twin. The partly filled gap in the derivation is worth doing live: it shows that $E_0/\\kappa$ applies inside the material only. Set 10D covers both cases and the energy changes."
+    }
+  ]
+}

@@ -39,6 +39,7 @@ import {
 } from "@/lib/curriculum-plan";
 import { redateToOrder } from "@/lib/course-pacing";
 import { apiError, undoToast } from "@/lib/undo-toast";
+import { updateAssignment } from "@/lib/assignment-actions";
 import { useUnsavedGuard } from "@/hooks/use-unsaved-guard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -142,15 +143,19 @@ export function PlanEditor({
       });
     };
 
-  async function patchPlan(next: CurriculumPlan | null) {
+  /** The class's copies archived by the last save (sets that were skipped while assigned). */
+  async function patchPlan(next: CurriculumPlan | null, unassign = false) {
     const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(classId)}/plan`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan: next }),
+      body: JSON.stringify({ plan: next, ...(unassign ? { unassignSkipped: true } : {}) }),
     });
     if (!res.ok) throw new Error(await apiError(res, "Could not save the order."));
     const body = await res.json();
-    return (body.plan ?? null) as CurriculumPlan | null;
+    return {
+      plan: (body.plan ?? null) as CurriculumPlan | null,
+      archived: Array.isArray(body.archived) ? (body.archived as string[]) : [],
+    };
   }
 
   async function moveDates(changes: { id: string; due: Date }[]) {
@@ -199,16 +204,24 @@ export function PlanEditor({
     setBusy(true);
     const previous = saved;
     try {
-      const stored = await patchPlan(next);
+      // Skipping a set the class has takes it away from the class (its copy is archived).
+      const { plan: stored, archived } = await patchPlan(next, true);
       onSaved(stored);
+      if (archived.length) await onDatesMoved();
       const effective = stored ?? { order: defaultOrder(curriculumId), skipped: [] };
       setPlan(effective);
+      const took = archived.length
+        ? ` ${archived.length} skipped set${archived.length === 1 ? " was" : "s were"} taken away from the class; students' work is kept.`
+        : "";
       undoToast(
-        stored ? `Order saved for ${className}` : `${className} follows the course as written`,
+        (stored ? `Order saved for ${className}.` : `${className} follows the course as written.`) +
+          took,
         async () => {
           const back = await patchPlan(isDefaultPlan(curriculumId, previous) ? null : previous);
-          onSaved(back);
-          setPlan(back ?? { order: defaultOrder(curriculumId), skipped: [] });
+          for (const id of archived) await updateAssignment(id, { archived: false });
+          onSaved(back.plan);
+          if (archived.length) await onDatesMoved();
+          setPlan(back.plan ?? { order: defaultOrder(curriculumId), skipped: [] });
         },
       );
       offerRedate(effective.order);
@@ -227,8 +240,8 @@ export function PlanEditor({
           <span className="font-medium">Editing the order for {className}.</span>{" "}
           <span className="text-muted-foreground">
             Drag units or sets by the handle (or focus a handle and use the arrow keys), or use the
-            arrows. Skipped sets are never offered for assigning; sets already assigned stay
-            assigned.
+            arrows. A skipped set is left out of the class: if it is already assigned, saving takes
+            it away from students and keeps their work.
           </span>
         </p>
         <div className="flex gap-2">
@@ -321,7 +334,7 @@ export function PlanEditor({
                                             }
                                             aria-label={`Skip ${key}`}
                                           />
-                                          Skip{assignedKeys.has(key) ? " (stays assigned)" : ""}
+                                          Skip{assignedKeys.has(key) ? " (unassigns it)" : ""}
                                         </label>
                                         <Button
                                           variant="ghost"

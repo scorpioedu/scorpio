@@ -1,0 +1,1329 @@
+{
+ "curriculumId": "ap-physics-c-em",
+ "unit": 13,
+ "guides": [
+  {
+   "topic": "13.1",
+   "bigIdea": "Magnetic flux measures how much magnetic field passes through a surface: the part of the field perpendicular to the surface, added up over the whole area.",
+   "picture": {
+    "diagram": "scene\nrod 3,0.6 5,3.4\nf 0.3,3.2 right 1.2 \"B\"\nf 0.3,2.4 right 1.2\nf 0.3,1.6 right 1.2\nf 0.3,0.8 right 1.2\nf 4,2 -35.5 1.7 \"\\vec{A}\"\ndash 4,2 6,2\nang 4,2 -35.5 0 \"\\theta\"\ntext 5.2,3.7 \"loop, seen edge-on\"",
+    "caption": "A flat loop seen edge-on in a uniform field. The area vector $\\vec{A}$ is perpendicular to the loop, and $\\theta$ is the angle between $\\vec{A}$ and $\\vec{B}$, not the angle between the loop and the field. The flux is $\\Phi_B = BA\\cos\\theta$."
+   },
+   "explanation": "Induction is about how much magnetic field threads through a loop, so the unit starts by measuring that. For a flat surface of area $A$ in a uniform field, the magnetic flux is $\\Phi_B = BA\\cos\\theta$. Here $\\theta$ is the angle between $\\vec{B}$ and the surface's **area vector** $\\vec{A}$, whose length is the area and which points perpendicular to the surface, so the flux is the dot product $\\vec{B}\\cdot\\vec{A}$. The unit is the weber: $1\\ \\text{Wb} = 1\\ \\text{T·m}^2$.\n\nThe cosine is there because only the component of the field that goes *through* the surface counts. A loop facing the field head-on ($\\theta = 0$) catches the most, $BA$; turned edge-on ($\\theta = 90°$), the field skims along it and the flux is zero. Flux is a scalar with a sign: $\\vec{A}$ could point either way along the perpendicular, and field passing through against it counts as negative. Pick one direction and keep it.\n\nWhen the field varies over the surface, one value of $B$ will not do. Cut the surface into strips so thin that the field is constant on each, write the small flux $d\\Phi_B = \\vec{B}\\cdot d\\vec{A}$ for one strip, and integrate: $\\Phi_B = \\int \\vec{B}\\cdot d\\vec{A}$. The skill is choosing strips that run along the direction in which the field does not change. A coil of $N$ identical turns links a total flux $N\\Phi_B$.",
+   "equations": [
+    {
+     "latex": "\\Phi_B = BA\\cos\\theta",
+     "meaning": "The flux through a flat surface in a uniform field is the field strength times the area times the cosine of the angle between the field and the perpendicular to the surface.",
+     "variables": [
+      {
+       "symbol": "\\Phi_B",
+       "name": "magnetic flux",
+       "unit": "Wb"
+      },
+      {
+       "symbol": "B",
+       "name": "magnetic field strength",
+       "unit": "T"
+      },
+      {
+       "symbol": "A",
+       "name": "area of the surface",
+       "unit": "m^2"
+      },
+      {
+       "symbol": "\\theta",
+       "name": "angle between the field and the area vector (the perpendicular to the surface)",
+       "unit": "degrees or rad"
+      }
+     ],
+     "useWhen": "The surface is flat and the field has the same size and direction everywhere on it.",
+     "notWhen": "Do not use the angle between the field and the plane of the loop; that is $90° - \\theta$. And do not use it when the field varies across the surface: integrate instead."
+    },
+    {
+     "latex": "\\Phi_B = \\int \\vec{B}\\cdot d\\vec{A}",
+     "meaning": "The flux through any surface is the sum, over small pieces of the surface, of the perpendicular component of the field times the area of the piece.",
+     "variables": [
+      {
+       "symbol": "\\Phi_B",
+       "name": "magnetic flux",
+       "unit": "Wb"
+      },
+      {
+       "symbol": "\\vec{B}",
+       "name": "magnetic field at the piece of surface",
+       "unit": "T"
+      },
+      {
+       "symbol": "d\\vec{A}",
+       "name": "area vector of a small piece of the surface",
+       "unit": "m^2"
+      }
+     ],
+     "useWhen": "The field changes from place to place on the surface, as it does beside a long wire.",
+     "notWhen": "Do not replace it with (field at the centre) × (area) unless the field varies linearly; in general the average field is not the field at the middle."
+    }
+   ],
+   "derivation": "**Flux through a rectangular loop beside a long straight wire.** The wire carries current $I$. The loop lies in the same plane as the wire, with its near side a distance $a$ from the wire, its far side at $a + w$, and length $\\ell$ parallel to the wire.\n\n```dg\nscene\nrope 0,-0.9 0,4\nf 0,3 up 0.8 \"I\"\nrod 1.5,0.5 4,0.5\nrod 4,0.5 4,3\nrod 4,3 1.5,3\nrod 1.5,3 1.5,0.5\ndim 0,-0.4 1.5,-0.4 \"a\"\ndim 1.5,-0.4 4,-0.4 \"w\"\ndim 4.7,0.5 4.7,3 \"ℓ\"\ndash 2.6,0.5 2.6,3\ndash 2.9,0.5 2.9,3\ntext 2.75,3.3 \"dr\"\ndim 0,3.8 2.6,3.8 \"r\"\n```\n\nThe wire's field, $B = \\dfrac{\\mu_0 I}{2\\pi r}$, points straight through the loop, so $\\vec{B}\\cdot d\\vec{A} = B\\,dA$. But it weakens with distance $r$, so it cannot be taken outside the integral.\n\nUse strips parallel to the wire: a strip at distance $r$ with width $dr$ has area $dA = \\ell\\,dr$, and the field is the same all along it. Its flux is\n\n$$d\\Phi_B = \\frac{\\mu_0 I}{2\\pi r}\\,\\ell\\,dr$$\n\nAdd the strips from the near side to the far side:\n\n$$\\Phi_B = \\frac{\\mu_0 I \\ell}{2\\pi}\\int_a^{a+w}\\frac{dr}{r} = \\frac{\\mu_0 I \\ell}{2\\pi}\\ln\\!\\left(\\frac{a+w}{a}\\right)$$\n\nCheck: for a narrow loop, $w \\ll a$, the logarithm is approximately $w/a$ and the flux becomes $\\dfrac{\\mu_0 I}{2\\pi a}\\,\\ell w$, the field at distance $a$ times the area, as it should.",
+   "workedExamples": [
+    {
+     "title": "Flux through a loop round a solenoid",
+     "prompt": "A long solenoid of radius $2.0\\ \\text{cm}$ has $1200$ turns per metre and carries $3.0\\ \\text{A}$. A circular wire loop of radius $5.0\\ \\text{cm}$ encircles it near its middle, with the loop's plane perpendicular to the solenoid's axis. What is the magnetic flux through the loop?",
+     "steps": [
+      "Find the field. Inside a long solenoid $B = \\mu_0 nI = (4\\pi \\times 10^{-7}\\ \\text{T·m/A})(1200\\ \\text{m}^{-1})(3.0\\ \\text{A}) = 4.52 \\times 10^{-3}\\ \\text{T}$, along the axis. Outside it the field is negligible.",
+      "Find the angle. The loop is perpendicular to the axis, so its area vector is parallel to $\\vec{B}$ and $\\cos\\theta = 1$.",
+      "Find the area the field actually crosses. Only the solenoid's own cross-section carries field, so it is $\\pi(0.020\\ \\text{m})^2 = 1.26 \\times 10^{-3}\\ \\text{m}^2$, not the loop's $\\pi(0.050\\ \\text{m})^2$.",
+      "$\\Phi_B = BA = (4.52 \\times 10^{-3}\\ \\text{T})(1.26 \\times 10^{-3}\\ \\text{m}^2) = 5.7 \\times 10^{-6}\\ \\text{Wb}$. A larger loop round the same solenoid would have the same flux."
+     ],
+     "answer": "$\\Phi_B = 5.7 \\times 10^{-6}\\ \\text{Wb}$",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "n": {
+        "value": 1200,
+        "unit": "m^-1"
+       },
+       "I": {
+        "value": 3,
+        "unit": "A"
+       },
+       "r_s": {
+        "value": 2,
+        "unit": "cm"
+       }
+      },
+      "expr": "mu0*n*I*pi*r_s^2",
+      "unit": "Wb"
+     }
+    },
+    {
+     "title": "Flux of a field that varies across the loop",
+     "prompt": "A square loop of side $0.20\\ \\text{m}$ lies in the $xy$-plane with one corner at the origin and its sides along the $x$- and $y$-axes. The magnetic field points in the $+z$ direction with magnitude $B = \\alpha x^2$, where $\\alpha = 3.0\\ \\text{T/m}^2$. Calculate the magnetic flux through the loop, and compare it with the field at the loop's centre multiplied by its area.",
+     "steps": [
+      "The field is perpendicular to the loop but changes with $x$, so integrate. The field does not depend on $y$, so use strips parallel to the $y$-axis: a strip at position $x$ with width $dx$ has area $dA = s\\,dx$, where $s = 0.20\\ \\text{m}$.",
+      "$\\Phi_B = \\displaystyle\\int B\\,dA = \\int_0^{s} \\alpha x^2\\,s\\,dx = \\alpha s\\left[\\frac{x^3}{3}\\right]_0^{s} = \\frac{\\alpha s^4}{3}$.",
+      "$\\Phi_B = \\dfrac{(3.0\\ \\text{T/m}^2)(0.20\\ \\text{m})^4}{3} = 1.6 \\times 10^{-3}\\ \\text{Wb}$.",
+      "Using the field at the centre instead gives $B = \\alpha(0.10\\ \\text{m})^2 = 0.030\\ \\text{T}$ and $BA = (0.030\\ \\text{T})(0.040\\ \\text{m}^2) = 1.2 \\times 10^{-3}\\ \\text{Wb}$, which is too small: the field grows as $x^2$, so its average over the loop is larger than its value at the middle."
+     ],
+     "answer": "$\\Phi_B = \\dfrac{\\alpha s^4}{3} = 1.6 \\times 10^{-3}\\ \\text{Wb}$; the centre-field estimate is too small",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "alpha": {
+        "value": 3,
+        "unit": "T/m^2"
+       },
+       "s": {
+        "value": 0.2,
+        "unit": "m"
+       }
+      },
+      "expr": "alpha*s^4/3",
+      "unit": "Wb"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "flux-ignores-orientation",
+     "wrong": "The flux through a loop is just $BA$, whichever way the loop faces.",
+     "right": "Only the field component perpendicular to the loop passes through it: $\\Phi_B = BA\\cos\\theta$. Turn the loop edge-on and the flux is zero even though $B$ and $A$ have not changed."
+    },
+    {
+     "tag": "flux-ignores-orientation",
+     "wrong": "The $\\theta$ in $BA\\cos\\theta$ is the angle between the field and the loop.",
+     "right": "It is the angle between the field and the area vector, which is perpendicular to the loop. A loop whose plane is at $30°$ to the field has $\\theta = 60°$."
+    },
+    {
+     "tag": "nonuniform-treated-as-uniform",
+     "wrong": "When the field varies over the loop, use the field at the centre times the area.",
+     "right": "That works only if the field varies linearly. In general, integrate $B\\,dA$ over strips on which the field is constant."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "A loop has flux $\\Phi$ through it when it faces a uniform field head-on. What is the flux after the loop is rotated by $60°$ about an axis in its own plane?",
+     "a": "$\\Phi/2$, because $\\cos 60° = 0.5$."
+    },
+    {
+     "q": "A loop is moved, without turning, from one place to another inside a region of uniform field. Does the flux through it change?",
+     "a": "No. $B$, $A$ and $\\theta$ are all unchanged."
+    },
+    {
+     "q": "In the derivation above, why are the strips taken parallel to the wire rather than perpendicular to it?",
+     "a": "The field depends only on the distance $r$ from the wire. A parallel strip is all at one distance, so the field is constant on it; a perpendicular strip would cross a range of field values."
+    }
+   ],
+   "tryIt": {
+    "diagram": "scene\nrod {{4-1.8*sin(th*pi/180)}},{{2+1.8*cos(th*pi/180)}} {{4+1.8*sin(th*pi/180)}},{{2-1.8*cos(th*pi/180)}}\nf 0.3,3.2 right 1.2 \"B = 0.50 T\"\nf 0.3,2.4 right 1.2\nf 0.3,1.6 right 1.2\nf 0.3,0.8 right 1.2\ndash 4,2 6.4,2\nf 4,2 {{th}} 1.7 \"\\vec{A}\"\ntext 4,-0.6 \"θ = {{th}}°,  Φ = {{round(200*cos(th*pi/180))/10}} mWb\"",
+    "caption": "A loop of area $0.040\\ \\text{m}^2$ in a $0.50\\ \\text{T}$ field, seen edge-on. Turn the loop: the flux is largest ($20\\ \\text{mWb}$) when the area vector lies along the field and falls to zero when the loop is edge-on to the field.",
+    "params": [
+     {
+      "name": "th",
+      "label": "Angle between field and area vector",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 30,
+      "unit": "°"
+     }
+    ]
+   },
+   "prerequisites": [
+    "8.5",
+    "12.1",
+    "12.3"
+   ],
+   "teacherNotes": "Students met electric flux in unit 8, so ask what is the same here (the dot product, the area vector) and what is different (the surface is usually open, bounded by a wire loop). The most common slip is the angle: have students sketch the area vector before writing any cosine. For the integral, ask \"along which direction is the field constant?\" before anyone writes $dA$; students who cut strips the wrong way end up with an integral they cannot do."
+  },
+  {
+   "topic": "13.2",
+   "bigIdea": "A changing magnetic flux through a loop induces an emf equal to the rate at which the flux changes, in the direction that drives a current opposing the change.",
+   "picture": {
+    "diagram": "plot x=t[s] y=Φ[Wb] xr=-0.3,5.6 yr=0,5\nseg 0,0 2,4 4,4 5,0\nnote 2,1.5 \"ε = -2 V\"\nnote 3,4.4 \"ε = 0\"\nnote 4.6,4.4 \"ε = +4 V\"\nxt 0 1 2 3 4 5\nyt 0 2 4",
+    "caption": "The flux through a single loop rises steadily for $2\\ \\text{s}$, holds, then falls in $1\\ \\text{s}$. The emf is minus the slope of this graph: $-2\\ \\text{V}$ while the flux rises, zero while the flux is steady (even though it is at its largest), and $+4\\ \\text{V}$ during the faster fall."
+   },
+   "explanation": "Push a magnet into a coil and a current flows, with no battery anywhere. Hold the magnet still and it stops. Faraday's law says why: an emf is induced around a loop whenever the magnetic flux through it *changes*, and its size is the rate of change. With $N$ turns the emfs add in series, so $\\mathcal{E} = -N\\,\\dfrac{d\\Phi_B}{dt}$. A large steady flux induces nothing.\n\nSince $\\Phi_B = BA\\cos\\theta$, there are three ways to change the flux: change the field, change the area inside the field, or turn the loop. When the flux is given as a function of time, differentiate it. Dividing a change in flux by the time taken gives only the average emf, unless the flux changes at a steady rate.\n\nThe minus sign is **Lenz's law**: the induced current flows in the direction whose own magnetic field opposes the *change* in flux. Work it out in four steps. (1) Which way does the original field pass through the loop? (2) Is that flux increasing or decreasing? (3) If increasing, the induced field inside the loop points against the original field; if decreasing, it points with it, to prop the flux up. (4) Point your right thumb along the induced field; your curled fingers give the current.\n\nAn emf appears even in a loop at rest, where no magnetic force pushes the charges. What pushes them is an electric field created by the changing magnetic field, with $\\oint \\vec{E}\\cdot d\\vec{\\ell} = -\\dfrac{d\\Phi_B}{dt}$ around the loop. Unlike the field of static charges, it is not conservative.",
+   "equations": [
+    {
+     "latex": "\\mathcal{E} = -N\\frac{d\\Phi_B}{dt}",
+     "meaning": "The emf induced in a coil is the number of turns times the rate of change of the flux through one turn; the minus sign says it opposes the change.",
+     "variables": [
+      {
+       "symbol": "\\mathcal{E}",
+       "name": "induced emf",
+       "unit": "V"
+      },
+      {
+       "symbol": "N",
+       "name": "number of turns",
+       "unit": ""
+      },
+      {
+       "symbol": "\\Phi_B",
+       "name": "magnetic flux through one turn",
+       "unit": "Wb"
+      },
+      {
+       "symbol": "t",
+       "name": "time",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "The flux through a loop or coil is changing for any reason: a changing field, a changing area, or rotation.",
+     "notWhen": "Do not use $\\Delta\\Phi_B/\\Delta t$ for the emf at an instant unless the flux changes at a constant rate. And do not use the flux itself: a large constant flux gives zero emf."
+    },
+    {
+     "latex": "\\mathcal{E} = NBA\\omega\\sin\\omega t",
+     "meaning": "A coil turning at a steady rate in a uniform field has an emf that alternates sinusoidally, with peak value NBAω.",
+     "variables": [
+      {
+       "symbol": "\\mathcal{E}",
+       "name": "induced emf",
+       "unit": "V"
+      },
+      {
+       "symbol": "N",
+       "name": "number of turns",
+       "unit": ""
+      },
+      {
+       "symbol": "B",
+       "name": "magnetic field strength",
+       "unit": "T"
+      },
+      {
+       "symbol": "A",
+       "name": "area of the coil",
+       "unit": "m^2"
+      },
+      {
+       "symbol": "\\omega",
+       "name": "angular speed of the coil",
+       "unit": "rad/s"
+      },
+      {
+       "symbol": "t",
+       "name": "time, measured from when the coil faces the field",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "A flat coil rotates at constant angular speed about an axis perpendicular to a uniform field (a generator).",
+     "notWhen": "Do not expect the peak emf when the flux is greatest. The emf peaks when the coil is edge-on and the flux is passing through zero."
+    },
+    {
+     "latex": "\\oint \\vec{E}\\cdot d\\vec{\\ell} = -\\frac{d\\Phi_B}{dt}",
+     "meaning": "A changing magnetic flux creates an electric field that circulates around it; the field added up around a closed path equals minus the rate of change of flux through the path.",
+     "variables": [
+      {
+       "symbol": "\\vec{E}",
+       "name": "induced electric field",
+       "unit": "V/m"
+      },
+      {
+       "symbol": "d\\vec{\\ell}",
+       "name": "a small step along the closed path",
+       "unit": "m"
+      },
+      {
+       "symbol": "\\Phi_B",
+       "name": "magnetic flux through the path",
+       "unit": "Wb"
+      },
+      {
+       "symbol": "t",
+       "name": "time",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "You need the electric field produced by a changing magnetic field, usually on a circular path where symmetry makes the field constant.",
+     "notWhen": "Do not use it for the field of static charges; that field adds up to zero around every closed path."
+    }
+   ],
+   "derivation": "**The emf of a rotating coil.** A coil of $N$ turns and area $A$ turns at constant angular speed $\\omega$ about an axis perpendicular to a uniform field $B$. It faces the field at $t = 0$, so $\\theta = \\omega t$.\n\nThe flux through one turn is\n\n$$\\Phi_B = BA\\cos\\omega t$$\n\nOnly the angle changes. Apply Faraday's law, using the chain rule on $\\cos\\omega t$:\n\n$$\\mathcal{E} = -N\\frac{d\\Phi_B}{dt} = -NBA\\,\\frac{d}{dt}\\cos\\omega t = NBA\\omega\\sin\\omega t$$\n\nThe peak emf is $NBA\\omega$, so spinning the coil faster raises the emf as well as the frequency. And the emf is a sine where the flux is a cosine: facing the field, the flux is at its maximum but momentarily not changing, so the emf is zero; a quarter turn later the flux is zero but changing fastest, and the emf peaks.",
+   "workedExamples": [
+    {
+     "title": "Emf from an alternating field",
+     "prompt": "A search coil of $200$ turns, each of area $2.0 \\times 10^{-4}\\ \\text{m}^2$, faces a field that alternates as $B = B_0\\sin(2\\pi ft)$, with $B_0 = 5.0 \\times 10^{-4}\\ \\text{T}$ and $f = 60\\ \\text{Hz}$. What is the largest emf induced in the coil, and when does it occur?",
+     "steps": [
+      "The coil faces the field, so the flux through one turn is $\\Phi_B = BA = B_0A\\sin(2\\pi ft)$.",
+      "Faraday's law: $|\\mathcal{E}| = N\\,\\dfrac{d\\Phi_B}{dt} = 2\\pi fNB_0A\\,|\\cos(2\\pi ft)|$, largest when the cosine is $\\pm 1$.",
+      "$|\\mathcal{E}|_{\\max} = 2\\pi(60\\ \\text{Hz})(200)(5.0 \\times 10^{-4}\\ \\text{T})(2.0 \\times 10^{-4}\\ \\text{m}^2) = 7.5 \\times 10^{-3}\\ \\text{V}$, each time $B$ passes through zero, where it changes fastest.",
+      "Dividing the rise from $0$ to $B_0$ by the quarter period gives only the average emf over that quarter, $4.8\\ \\text{mV}$."
+     ],
+     "answer": "$|\\mathcal{E}|_{\\max} = 7.5\\ \\text{mV}$, each time the field passes through zero",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "N": {
+        "value": 200,
+        "unit": ""
+       },
+       "A": {
+        "value": 0.0002,
+        "unit": "m^2"
+       },
+       "B_0": {
+        "value": 0.0005,
+        "unit": "T"
+       },
+       "f": {
+        "value": 60,
+        "unit": "Hz"
+       }
+      },
+      "expr": "2*pi*f*N*B_0*A",
+      "unit": "mV"
+     }
+    },
+    {
+     "title": "A loop pulled out of a field",
+     "prompt": "A rectangular wire loop, $0.30\\ \\text{m}$ long and $0.10\\ \\text{m}$ wide, has resistance $0.50\\ \\Omega$. It is pulled at a constant $2.0\\ \\text{m/s}$, in the direction of its length, out of a region of uniform magnetic field of $0.40\\ \\text{T}$ directed into the page, as shown. Determine the magnitude and direction of the current while the loop is leaving the field, and how long the current lasts.\n\n```dg\nscene\ndash 4,-0.4 4,3.4\ntext 2,3.4 \"B into page\"\ntext 1,0.5 \"×\"\ntext 2,0.5 \"×\"\ntext 3,0.5 \"×\"\ntext 1,1.5 \"×\"\ntext 2,1.5 \"×\"\ntext 3,1.5 \"×\"\ntext 1,2.5 \"×\"\ntext 2,2.5 \"×\"\ntext 3,2.5 \"×\"\nrod 2.5,0.9 5.5,0.9\nrod 5.5,0.9 5.5,2.1\nrod 5.5,2.1 2.5,2.1\nrod 2.5,2.1 2.5,0.9\nf 4.5,0.45 right 1 \"v\"\ndim 6.9,0.9 6.9,2.1 \"0.10 m\"\ntext 4.9,3.4 \"no field\"\n```",
+     "steps": [
+      "Let $x$ be the length of loop still inside the field and $h = 0.10\\ \\text{m}$ its width. The flux is $\\Phi_B = Bhx$, into the page.",
+      "As the loop is pulled out, $x$ shrinks at the rate $dx/dt = -v$. Faraday's law gives $\\mathcal{E} = -\\dfrac{d\\Phi_B}{dt} = -Bh\\dfrac{dx}{dt} = Bhv = (0.40\\ \\text{T})(0.10\\ \\text{m})(2.0\\ \\text{m/s}) = 0.080\\ \\text{V}$.",
+      "The current is $I = \\dfrac{\\mathcal{E}}{R} = \\dfrac{0.080\\ \\text{V}}{0.50\\ \\Omega} = 0.16\\ \\text{A}$.",
+      "The flux is into the page and decreasing, so the induced current must make a field into the page inside the loop. Right thumb into the page: the fingers curl clockwise.",
+      "The flux changes only while the loop straddles the edge of the field, for $\\dfrac{0.30\\ \\text{m}}{2.0\\ \\text{m/s}} = 0.15\\ \\text{s}$."
+     ],
+     "answer": "$I = 0.16\\ \\text{A}$, clockwise, for $0.15\\ \\text{s}$",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "B": {
+        "value": 0.4,
+        "unit": "T"
+       },
+       "h": {
+        "value": 0.1,
+        "unit": "m"
+       },
+       "v": {
+        "value": 2,
+        "unit": "m/s"
+       },
+       "R": {
+        "value": 0.5,
+        "unit": "Ω"
+       }
+      },
+      "expr": "B*h*v/R",
+      "unit": "A"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "induction-needs-change",
+     "wrong": "A strong magnet sitting inside a coil keeps a current flowing in the coil.",
+     "right": "A steady flux, however large, induces nothing. When the magnet stops moving, the current stops."
+    },
+    {
+     "tag": "lenz-opposes-field",
+     "wrong": "The induced current always makes a magnetic field opposite to the original field.",
+     "right": "It opposes the change in flux, not the field. If the flux is decreasing, the induced field points the same way as the original field."
+    },
+    {
+     "tag": "emf-from-flux-not-rate",
+     "wrong": "The emf in a rotating coil is largest when the coil faces the field, because the flux is largest then.",
+     "right": "Facing the field, the flux is at its peak and momentarily not changing, so the emf is zero. The emf peaks when the coil is edge-on."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "A loop lies flat on a table in a uniform field pointing up, and the field starts to increase. Seen from above, which way does the induced current flow?",
+     "a": "Clockwise. The upward flux is increasing, so the induced field inside the loop points down; with the right thumb down, the fingers curl clockwise seen from above."
+    },
+    {
+     "q": "The flux through a loop is $\\Phi_B = (6.0\\ \\text{Wb/s})\\,t - (1.0\\ \\text{Wb/s}^2)\\,t^2$. At what time is the induced emf zero?",
+     "a": "At $t = 3.0\\ \\text{s}$, where $d\\Phi_B/dt = 6.0 - 2.0t$ is zero and the flux is at its maximum."
+    },
+    {
+     "q": "The same changing flux passes through a copper ring and a rubber ring of the same size. Compare the emfs and the currents.",
+     "a": "The emfs are equal: emf depends only on the rate of change of flux. Only the copper ring carries a significant current."
+    }
+   ],
+   "tryIt": {
+    "diagram": "plot x=t[s] y=ε[V] xr=-0.2,3.3 yr=-6,6\nfn {{0.5*w}}*sin({{w}}*t) 0..3.14\nnote 2.3,5.5 \"peak = {{0.5*w}} V\"\nxt 0 1 2 3\nyt -4 -2 0 2 4",
+    "caption": "A generator coil with $NBA = 0.50\\ \\text{Wb}$. Spin it faster: the emf alternates more often, and its peak, $NBA\\omega$, grows in proportion, because the same flux is now changing more quickly.",
+    "params": [
+     {
+      "name": "w",
+      "label": "Angular speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4,
+      "unit": "rad/s"
+     }
+    ]
+   },
+   "prerequisites": [
+    "12.1",
+    "12.3",
+    "13.1"
+   ],
+   "teacherNotes": "Before any equation, ask students to predict what a galvanometer does as a magnet goes in, sits still, and comes out; the \"sits still\" prediction exposes the idea that field alone causes current. For Lenz's law, make students say the four steps aloud, and always include a case where the flux is decreasing, since \"opposes the field\" gets every increasing case right by accident. With calculus students, watch for $\\Delta\\Phi/\\Delta t$ used where a derivative is needed."
+  },
+  {
+   "topic": "13.3",
+   "bigIdea": "A conductor moving through a magnetic field has an emf induced along it, and the current this drives feels a magnetic force that always opposes the motion.",
+   "picture": {
+    "diagram": "field xr=-1..6 yr=-0.5..3.5\nuniform B in \"B\" x=0..5 y=0..3\ntest 2.5,1.5 + \"q\" v=right",
+    "caption": "A positive charge inside a metal rod that is carried to the right through a field into the page feels a magnetic force toward the top of the rod. Charge is driven along the rod, so the rod behaves like a battery of emf $BLv$, with its top end positive."
+   },
+   "explanation": "Move a metal rod of length $L$ sideways at speed $v$ through a field $B$ perpendicular to both the rod and its motion. Every charge in the rod moves with it and feels a magnetic force $qvB$ along the rod, as the picture shows. The rod is a source of emf: the work per unit charge along its length is $\\mathcal{E} = BLv$. This motional emf agrees with Faraday's law: if the rod slides on rails that complete a circuit, the circuit's area grows at the rate $Lv$, so the flux changes at the rate $BLv$.\n\nIf the circuit has resistance $R$, the current is $I = BLv/R$. The rod is now a current-carrying wire in a magnetic field, so it feels a force $F_B = ILB = B^2L^2v/R$. This force is always opposite to the velocity: Lenz's law showing up as a force. To keep the speed constant, something must push forward with an equal force, doing work at the rate $Fv = B^2L^2v^2/R$. That is exactly $I^2R$, the rate at which the resistor heats.\n\nBecause the force depends on the speed, Newton's second law becomes a differential equation. A rod left to coast slows exponentially. A rod pulled by a constant force, such as gravity, speeds up until the magnetic force balances the pull, then moves at a terminal speed.\n\nThe same reasoning handles a loop entering or leaving a field region. Current flows only while the loop straddles the boundary and its flux is changing, and the force opposes the motion on the way in and on the way out. Completely inside a uniform field, the flux is constant: no current and no force.",
+   "equations": [
+    {
+     "latex": "\\mathcal{E} = BLv",
+     "meaning": "A straight conductor moving perpendicular to its length and to a magnetic field has an emf equal to the field times its length times its speed.",
+     "variables": [
+      {
+       "symbol": "\\mathcal{E}",
+       "name": "motional emf",
+       "unit": "V"
+      },
+      {
+       "symbol": "B",
+       "name": "magnetic field strength",
+       "unit": "T"
+      },
+      {
+       "symbol": "L",
+       "name": "length of the conductor in the field",
+       "unit": "m"
+      },
+      {
+       "symbol": "v",
+       "name": "speed of the conductor",
+       "unit": "m/s"
+      }
+     ],
+     "useWhen": "A rod, or one side of a loop, moves through a uniform field with the field, the rod and the velocity all perpendicular to one another.",
+     "notWhen": "Do not use it for a conductor moving parallel to the field or along its own length; neither sweeps out any flux, so the emf is zero."
+    },
+    {
+     "latex": "F_B = ILB = \\frac{B^2L^2v}{R}",
+     "meaning": "The induced current makes the moving conductor feel a magnetic force proportional to its speed, directed against its motion.",
+     "variables": [
+      {
+       "symbol": "F_B",
+       "name": "magnetic force on the conductor",
+       "unit": "N"
+      },
+      {
+       "symbol": "I",
+       "name": "induced current",
+       "unit": "A"
+      },
+      {
+       "symbol": "L",
+       "name": "length of the conductor in the field",
+       "unit": "m"
+      },
+      {
+       "symbol": "B",
+       "name": "magnetic field strength",
+       "unit": "T"
+      },
+      {
+       "symbol": "v",
+       "name": "speed of the conductor",
+       "unit": "m/s"
+      },
+      {
+       "symbol": "R",
+       "name": "resistance of the circuit",
+       "unit": "Ω"
+      }
+     ],
+     "useWhen": "The only emf in the circuit is the motional emf, so that $I = BLv/R$.",
+     "notWhen": "Do not use the second form if the circuit also contains a battery or another moving conductor; find the current from the whole circuit first."
+    },
+    {
+     "latex": "v(t) = v_0 e^{-t/\\tau},\\quad \\tau = \\frac{mR}{B^2L^2}",
+     "meaning": "A rod left to coast on rails slows exponentially, with a time constant set by its mass, the resistance, the field and its length.",
+     "variables": [
+      {
+       "symbol": "v",
+       "name": "speed of the rod",
+       "unit": "m/s"
+      },
+      {
+       "symbol": "v_0",
+       "name": "speed at t = 0",
+       "unit": "m/s"
+      },
+      {
+       "symbol": "e",
+       "name": "base of the natural logarithm, about 2.718",
+       "unit": ""
+      },
+      {
+       "symbol": "t",
+       "name": "time",
+       "unit": "s"
+      },
+      {
+       "symbol": "\\tau",
+       "name": "time constant",
+       "unit": "s"
+      },
+      {
+       "symbol": "m",
+       "name": "mass of the rod",
+       "unit": "kg"
+      },
+      {
+       "symbol": "R",
+       "name": "resistance of the circuit",
+       "unit": "Ω"
+      },
+      {
+       "symbol": "B",
+       "name": "magnetic field strength",
+       "unit": "T"
+      },
+      {
+       "symbol": "L",
+       "name": "length of the rod between the rails",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "The magnetic force is the only horizontal force on the rod.",
+     "notWhen": "Do not use it when a constant force also acts; the rod then approaches a terminal speed instead of stopping."
+    }
+   ],
+   "derivation": "**A coasting rod slows exponentially.** A rod of mass $m$ and length $L$ slides without friction on horizontal rails joined by a resistance $R$, in a field $B$ perpendicular to the rails. It is given speed $v_0$ and released.\n\nAt speed $v$ the current is $BLv/R$ and the magnetic force $ILB$ is opposite to the velocity. It is the only horizontal force, so\n\n$$m\\frac{dv}{dt} = -\\frac{B^2L^2}{R}\\,v$$\n\nSeparate the variables and integrate from $v_0$ at $t = 0$:\n\n$$\\int_{v_0}^{v}\\frac{dv'}{v'} = -\\frac{B^2L^2}{mR}\\int_0^t dt' \\quad\\Longrightarrow\\quad \\ln\\frac{v}{v_0} = -\\frac{B^2L^2}{mR}\\,t$$\n\n$$v(t) = v_0\\,e^{-t/\\tau}, \\qquad \\tau = \\frac{mR}{B^2L^2}$$\n\nCheck the energy: integrating the dissipated power $I^2R = B^2L^2v^2/R$ over all time, with $v^2 = v_0^2e^{-2t/\\tau}$, gives $\\dfrac{B^2L^2v_0^2}{R}\\cdot\\dfrac{\\tau}{2} = \\tfrac{1}{2}mv_0^2$, all of the rod's kinetic energy.",
+   "workedExamples": [
+    {
+     "title": "Pulling a rod at constant speed",
+     "prompt": "A metal rod slides on two parallel rails $0.50\\ \\text{m}$ apart, joined at one end by a $2.0\\ \\Omega$ resistor. A uniform $0.80\\ \\text{T}$ field points into the page. The rod is pulled to the right at a constant $3.0\\ \\text{m/s}$. Ignoring friction, what force must the pull supply?\n\n```dg\nscene\nrope 0,0 6,0\nrope 0,2 6,2\nrope 0,0 0,2\ntext -0.4,0.9 \"R\"\nrod 3.5,-0.25 3.5,2.25\ntext 0.8,0.4 \"×\"\ntext 1.8,0.4 \"×\"\ntext 4.6,0.4 \"×\"\ntext 5.6,0.4 \"×\"\ntext 0.8,1.4 \"×\"\ntext 1.8,1.4 \"×\"\ntext 4.6,1.4 \"×\"\ntext 5.6,1.4 \"×\"\nf 3.6,1 right 1.2 \"v\"\nf 3.4,1 left 0.8 \"F_B\"\nf 1.9,2.25 left 0.8 \"I\"\ndim 6.4,0 6.4,2 \"L\"\n```",
+     "steps": [
+      "The rod is the source of emf: $\\mathcal{E} = BLv = (0.80\\ \\text{T})(0.50\\ \\text{m})(3.0\\ \\text{m/s}) = 1.2\\ \\text{V}$.",
+      "The current is $I = \\dfrac{\\mathcal{E}}{R} = \\dfrac{1.2\\ \\text{V}}{2.0\\ \\Omega} = 0.60\\ \\text{A}$. The flux into the page is growing, so the current is counterclockwise: up through the rod.",
+      "The magnetic force on the rod is $F_B = ILB = (0.60\\ \\text{A})(0.50\\ \\text{m})(0.80\\ \\text{T}) = 0.24\\ \\text{N}$. The right-hand rule gives a force to the left, against the motion.",
+      "Constant speed means zero net force: the pull is $0.24\\ \\text{N}$ to the right.",
+      "Check: the pull delivers $Fv = (0.24\\ \\text{N})(3.0\\ \\text{m/s}) = 0.72\\ \\text{W}$, and the resistor dissipates $I^2R = (0.60\\ \\text{A})^2(2.0\\ \\Omega) = 0.72\\ \\text{W}$."
+     ],
+     "answer": "$F = 0.24\\ \\text{N}$, in the direction of motion",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "B": {
+        "value": 0.8,
+        "unit": "T"
+       },
+       "L": {
+        "value": 0.5,
+        "unit": "m"
+       },
+       "v": {
+        "value": 3,
+        "unit": "m/s"
+       },
+       "R": {
+        "value": 2,
+        "unit": "Ω"
+       }
+      },
+      "expr": "B^2*L^2*v/R",
+      "unit": "N"
+     }
+    },
+    {
+     "title": "Terminal speed of a falling rod",
+     "prompt": "Two long vertical rails $0.25\\ \\text{m}$ apart are joined at the top by a $0.15\\ \\Omega$ resistor. A horizontal rod of mass $0.020\\ \\text{kg}$ slides down the rails without friction, staying in contact with them. A uniform $0.60\\ \\text{T}$ field is perpendicular to the plane of the rails. The rod is released from rest. Derive an expression for its speed as a function of time, and calculate its terminal speed, using $g = 9.8\\ \\text{m/s}^2$.",
+     "steps": [
+      "Take down as positive. At speed $v$ the rod carries current $BLv/R$, so the magnetic force on it is $B^2L^2v/R$, upward by Lenz's law.",
+      "Newton's second law for the rod: $m\\dfrac{dv}{dt} = mg - \\dfrac{B^2L^2}{R}v$.",
+      "The acceleration shrinks as the rod speeds up and reaches zero at the terminal speed: $mg = \\dfrac{B^2L^2}{R}v_T$, so $v_T = \\dfrac{mgR}{B^2L^2}$.",
+      "In terms of $v_T$ the equation of motion is $\\dfrac{dv}{dt} = \\dfrac{B^2L^2}{mR}(v_T - v)$. Separate and integrate from rest: $\\displaystyle\\int_0^v\\frac{dv'}{v_T - v'} = \\frac{B^2L^2}{mR}\\,t$, which gives $-\\ln\\dfrac{v_T - v}{v_T} = \\dfrac{t}{\\tau}$ with $\\tau = \\dfrac{mR}{B^2L^2}$.",
+      "So $v(t) = v_T\\left(1 - e^{-t/\\tau}\\right)$.",
+      "$v_T = \\dfrac{(0.020\\ \\text{kg})(9.8\\ \\text{m/s}^2)(0.15\\ \\Omega)}{(0.60\\ \\text{T})^2(0.25\\ \\text{m})^2} = 1.3\\ \\text{m/s}$."
+     ],
+     "answer": "$v(t) = v_T\\left(1 - e^{-t/\\tau}\\right)$ with $\\tau = \\dfrac{mR}{B^2L^2}$ and $v_T = \\dfrac{mgR}{B^2L^2} = 1.3\\ \\text{m/s}$",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "m": {
+        "value": 0.02,
+        "unit": "kg"
+       },
+       "g": {
+        "value": 9.8,
+        "unit": "m/s^2"
+       },
+       "R": {
+        "value": 0.15,
+        "unit": "Ω"
+       },
+       "B": {
+        "value": 0.6,
+        "unit": "T"
+       },
+       "L": {
+        "value": 0.25,
+        "unit": "m"
+       }
+      },
+      "expr": "m*g*R/(B^2*L^2)",
+      "unit": "m/s"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "magnetic-force-along-field",
+     "wrong": "The magnetic force on the moving rod points along the field, or along the rod.",
+     "right": "The force on a current is perpendicular to both the current and the field, so it lies along the rails, opposite to the velocity."
+    },
+    {
+     "tag": "energy-not-conserved",
+     "wrong": "Once the rod is moving, the induced current keeps it going, so the electrical energy is free.",
+     "right": "The force on the induced current opposes the motion. Every joule the resistor dissipates is work done by whatever pushes the rod."
+    },
+    {
+     "tag": "induction-needs-change",
+     "wrong": "A loop moving through a uniform field always carries a current, because its sides cut field lines.",
+     "right": "Wholly inside the field, the leading and trailing sides have equal emfs that cancel around the loop. The flux is constant: no current, no force."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "A rod is pulled along rails at constant speed. If that speed is doubled, what happens to the force needed and to the power dissipated?",
+     "a": "The force doubles and the power quadruples. $F = B^2L^2v/R$ is proportional to $v$, and $P = Fv$ is proportional to $v^2$."
+    },
+    {
+     "q": "A square loop falls through a region of uniform horizontal field. When does a magnetic force act on it, and in which direction?",
+     "a": "Only while it is entering or leaving, when its flux is changing. Both times the force is upward. Entirely inside, it falls freely."
+    },
+    {
+     "q": "For the coasting rod, why does a larger resistance lengthen the time constant $\\tau = mR/(B^2L^2)$?",
+     "a": "More resistance means less induced current at the same speed, so a weaker braking force."
+    }
+   ],
+   "tryIt": {
+    "diagram": "plot x=t[s] y=v[m/s] xr=-0.2,5.2 yr=0,4.6\nfn 4*exp(-t*{{B*B/0.2}}) 0..5\nnote 3.6,4.2 \"τ = {{round(20/(B*B))/100}} s\"\nxt 0 1 2 3 4 5\nyt 0 1 2 3 4",
+    "caption": "A $0.10\\ \\text{kg}$ rod on rails $0.50\\ \\text{m}$ apart, with $R = 0.50\\ \\Omega$, is launched at $4\\ \\text{m/s}$ and left to coast. Strengthen the field: the braking force grows as $B^2$, so the time constant $mR/(B^2L^2)$ shrinks quickly.",
+    "params": [
+     {
+      "name": "B",
+      "label": "Magnetic field",
+      "min": 0.2,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.4,
+      "unit": "T"
+     }
+    ]
+   },
+   "prerequisites": [
+    "12.2",
+    "12.3",
+    "13.1",
+    "13.2"
+   ],
+   "teacherNotes": "Ask students to find the direction of the force two ways: with the right-hand rule on the induced current, and by arguing from Lenz's law that it must oppose the motion. Disagreement between the two is the fastest way to find a sign slip. The energy check ($Fv = I^2R$) is worth doing every time. The falling-rod equation has the same form as the RC charging equation; students who recognise that can write the solution down, but should be able to separate variables on request."
+  },
+  {
+   "topic": "13.4",
+   "bigIdea": "A coil's own changing current changes the flux through its own turns, so it develops an emf that opposes the change in current, and it stores energy in its magnetic field.",
+   "picture": {
+    "diagram": "field xr=-4..4 yr=-2.6..2.6\nwire -2.5,1 out\nwire -1.5,1 out\nwire -0.5,1 out\nwire 0.5,1 out\nwire 1.5,1 out\nwire 2.5,1 out\nwire -2.5,-1 in\nwire -1.5,-1 in\nwire -0.5,-1 in\nwire 0.5,-1 in\nwire 1.5,-1 in\nwire 2.5,-1 in\npt 0,0 \"B\"",
+    "caption": "A solenoid cut down the middle: current comes out of the page in the top row of wires and goes back in along the bottom row. The field inside is strong, nearly uniform and proportional to the current. That field threads every turn of the same coil, so when the current changes, the coil induces an emf in itself."
+   },
+   "explanation": "A coil carrying current sits in its own magnetic field, and that field passes through its own turns. If the current changes, the flux changes, and Faraday's law gives an emf in the same coil that carries the current. This is self-induction. The flux linked by the coil is proportional to the current, and the constant of proportionality is the **inductance**: $N\\Phi_B = LI$. Differentiating, the self-induced emf is $\\mathcal{E}_L = -L\\,dI/dt$. Inductance is measured in henries: $1\\ \\text{H} = 1\\ \\text{V·s/A}$.\n\nBy Lenz's law the emf opposes the *change* in current, not the current. If the current is growing, the emf pushes against it; if the current is falling, the emf pushes along with it, trying to keep it going. In a loop equation this means that, moving through an inductor in the direction of the current, the potential changes by $-L\\,dI/dt$: a drop while the current rises and a rise while it falls. An ideal inductor carrying a steady current has no potential difference across it at all; it is just wire. An inductor gives a circuit inertia: the current through it cannot jump, because a jump would need an infinite emf.\n\nInductance depends only on how the coil is built. For a long solenoid with $N$ turns, length $\\ell$ and cross-sectional area $A$, $L = \\mu_0N^2A/\\ell$. The turns count twice, once because more turns make more field and once because more turns link that field, hence $N^2$.\n\nBuilding up a current against the back emf takes work, and that work is stored in the magnetic field: $U_L = \\tfrac{1}{2}LI^2$. Compare $\\tfrac{1}{2}CV^2$ for a capacitor. The energy is not dissipated; it comes back out when the current falls.",
+   "equations": [
+    {
+     "latex": "\\mathcal{E}_L = -L\\frac{dI}{dt}",
+     "meaning": "The emf an inductor develops is its inductance times the rate of change of its current, directed to oppose that change.",
+     "variables": [
+      {
+       "symbol": "\\mathcal{E}_L",
+       "name": "self-induced emf",
+       "unit": "V"
+      },
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "I",
+       "name": "current through the inductor",
+       "unit": "A"
+      },
+      {
+       "symbol": "t",
+       "name": "time",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "The current through a coil is changing and you want the emf across it, or you are writing a loop equation that includes an inductor.",
+     "notWhen": "Do not use the current itself in place of $dI/dt$. A large steady current gives no emf."
+    },
+    {
+     "latex": "L = \\frac{\\mu_0 N^2 A}{\\ell}",
+     "meaning": "The inductance of a long solenoid is set by its number of turns, its cross-sectional area and its length.",
+     "variables": [
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "\\mu_0",
+       "name": "permeability of free space",
+       "unit": "T·m/A"
+      },
+      {
+       "symbol": "N",
+       "name": "number of turns",
+       "unit": ""
+      },
+      {
+       "symbol": "A",
+       "name": "cross-sectional area",
+       "unit": "m^2"
+      },
+      {
+       "symbol": "\\ell",
+       "name": "length of the solenoid",
+       "unit": "m"
+      }
+     ],
+     "useWhen": "The coil is a long, tightly wound, air-filled solenoid, so the field inside is uniform.",
+     "notWhen": "Do not use it for a short, wide coil or a single loop, where the field is not uniform over the turns."
+    },
+    {
+     "latex": "U_L = \\tfrac{1}{2}LI^2",
+     "meaning": "The energy stored in an inductor's magnetic field is half its inductance times the square of its current.",
+     "variables": [
+      {
+       "symbol": "U_L",
+       "name": "energy stored in the inductor",
+       "unit": "J"
+      },
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "I",
+       "name": "current through the inductor",
+       "unit": "A"
+      }
+     ],
+     "useWhen": "You know the current at an instant and want the stored energy, or you are tracking energy between an inductor and the rest of a circuit.",
+     "notWhen": "Do not treat it as energy lost. An ideal inductor returns all of it when the current falls to zero."
+    }
+   ],
+   "derivation": "**Inductance of a long solenoid.** A solenoid has $N$ turns, length $\\ell$ and cross-sectional area $A$, and carries current $I$. From Ampère's law (unit 12) the field inside is uniform and equal to $\\mu_0$ times the turns per unit length times the current:\n\n$$B = \\mu_0\\frac{N}{\\ell}I$$\n\nThe field is perpendicular to each turn, so the flux through one turn is $\\Phi_B = BA$, and the flux linked by all $N$ turns is\n\n$$N\\Phi_B = N\\left(\\mu_0\\frac{N}{\\ell}I\\right)A = \\frac{\\mu_0N^2A}{\\ell}\\,I$$\n\nInductance is defined by $N\\Phi_B = LI$, so the factor multiplying $I$ is the inductance:\n\n$$L = \\frac{\\mu_0N^2A}{\\ell}$$\n\nThe current has cancelled: $L$ is a property of the coil, as capacitance is a property of the plates.\n\n**Energy stored.** To raise the current, an external source must push charge through the inductor against its back emf, of magnitude $L\\,dI/dt$. The power delivered is current times that potential difference:\n\n$$P = \\frac{dU_L}{dt} = I\\,L\\frac{dI}{dt}$$\n\nMultiply by $dt$ and integrate as the current rises from zero to its final value $I$:\n\n$$U_L = \\int_0^{I} L\\,I'\\,dI' = \\tfrac{1}{2}LI^2$$",
+   "workedExamples": [
+    {
+     "title": "Inductance of a toroid",
+     "prompt": "A toroid has $500$ turns wound on a non-magnetic core of rectangular cross-section, with inner radius $2.0\\ \\text{cm}$, outer radius $3.0\\ \\text{cm}$ and height $1.0\\ \\text{cm}$. What is its inductance?",
+     "steps": [
+      "Find the field. Ampère's law round a circle of radius $r$ inside the core gives $B(2\\pi r) = \\mu_0NI$, so $B = \\dfrac{\\mu_0NI}{2\\pi r}$.",
+      "Find the flux through one turn. $B$ varies across the cross-section, so cut it into strips of height $h$ and width $dr$: $\\Phi_B = \\displaystyle\\int_a^b \\frac{\\mu_0NI}{2\\pi r}\\,h\\,dr = \\frac{\\mu_0NIh}{2\\pi}\\ln\\frac{b}{a}$.",
+      "The flux linked by all $N$ turns is $N\\Phi_B = LI$, so $L = \\dfrac{\\mu_0N^2h}{2\\pi}\\ln\\dfrac{b}{a}$.",
+      "$L = \\dfrac{(4\\pi \\times 10^{-7}\\ \\text{T·m/A})(500)^2(0.010\\ \\text{m})}{2\\pi}\\ln 1.5 = (5.0 \\times 10^{-4}\\ \\text{H})(0.405) = 2.0 \\times 10^{-4}\\ \\text{H} = 0.20\\ \\text{mH}$."
+     ],
+     "answer": "$L = 0.20\\ \\text{mH}$",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "N": {
+        "value": 500,
+        "unit": ""
+       },
+       "a": {
+        "value": 2,
+        "unit": "cm"
+       },
+       "b": {
+        "value": 3,
+        "unit": "cm"
+       },
+       "h": {
+        "value": 1,
+        "unit": "cm"
+       }
+      },
+      "expr": "mu0*N^2*h*ln(b/a)/(2*pi)",
+      "unit": "mH"
+     }
+    },
+    {
+     "title": "Emf and energy for a changing current",
+     "prompt": "The current through an ideal $0.30\\ \\text{H}$ inductor varies with time as $I(t) = at - bt^2$, where $a = 4.0\\ \\text{A/s}$ and $b = 1.0\\ \\text{A/s}^2$, for $0 \\le t \\le 4.0\\ \\text{s}$. (a) Determine the self-induced emf at $t = 1.0\\ \\text{s}$ and state whether it acts with or against the current. (b) Determine the time at which the emf is zero. (c) Calculate the energy stored in the inductor at that time.",
+     "steps": [
+      "(a) Differentiate the current: $\\dfrac{dI}{dt} = a - 2bt$. At $t = 1.0\\ \\text{s}$ this is $4.0 - 2(1.0)(1.0) = 2.0\\ \\text{A/s}$.",
+      "$\\mathcal{E}_L = -L\\dfrac{dI}{dt} = -(0.30\\ \\text{H})(2.0\\ \\text{A/s}) = -0.60\\ \\text{V}$. The current is positive and increasing, and the negative sign says the emf acts against it, opposing the increase.",
+      "(b) The emf is zero when $dI/dt = 0$: $a - 2bt = 0$, so $t = \\dfrac{a}{2b} = 2.0\\ \\text{s}$. This is when the current is at its maximum, not when it is zero.",
+      "(c) The current at that time is $I = a(2.0\\ \\text{s}) - b(2.0\\ \\text{s})^2 = 8.0 - 4.0 = 4.0\\ \\text{A}$.",
+      "$U_L = \\tfrac{1}{2}LI^2 = \\tfrac{1}{2}(0.30\\ \\text{H})(4.0\\ \\text{A})^2 = 2.4\\ \\text{J}$. The stored energy is greatest at the moment the emf is zero."
+     ],
+     "answer": "(a) $0.60\\ \\text{V}$ in magnitude, acting against the current; (b) $t = 2.0\\ \\text{s}$; (c) $U_L = 2.4\\ \\text{J}$",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "L": {
+        "value": 0.3,
+        "unit": "H"
+       },
+       "a": {
+        "value": 4,
+        "unit": "A/s"
+       },
+       "b": {
+        "value": 1,
+        "unit": "A/s^2"
+       }
+      },
+      "expr": "0.5*L*(a*(a/(2*b)) - b*(a/(2*b))^2)^2",
+      "unit": "J"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "inductor-opposes-current",
+     "wrong": "An inductor resists current, so there is always a potential difference across it while current flows.",
+     "right": "An inductor opposes *changes* in current. With a steady current, $dI/dt = 0$ and an ideal inductor has no potential difference across it; it behaves like a plain wire."
+    },
+    {
+     "tag": "inductor-opposes-current",
+     "wrong": "The induced emf always pushes against the current.",
+     "right": "It pushes against the change. When the current is falling, the emf acts in the same direction as the current and tries to keep it flowing."
+    },
+    {
+     "tag": "capacitance-depends-on-charge",
+     "wrong": "Since $L = N\\Phi_B/I$, doubling the current halves the inductance.",
+     "right": "Doubling the current doubles the flux, so the ratio is unchanged. Inductance depends only on the coil's geometry (and any core), just as $C = Q/V$ does not depend on the charge."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "The current in a $2.0\\ \\text{H}$ inductor falls steadily from $3.0\\ \\text{A}$ to zero in $0.50\\ \\text{s}$. What is the size of the induced emf, and does it act with or against the current?",
+     "a": "$12\\ \\text{V}$, acting with the current. $dI/dt = -6.0\\ \\text{A/s}$, so $\\mathcal{E}_L = -L\\,dI/dt = +12\\ \\text{V}$: the emf tries to keep the falling current going."
+    },
+    {
+     "q": "A solenoid is rewound on the same tube with twice as many turns in the same length. By what factor does its inductance change?",
+     "a": "It is multiplied by four, because $L$ is proportional to $N^2$."
+    },
+    {
+     "q": "By what factor does the energy stored in an inductor change when its current is tripled?",
+     "a": "Nine. $U_L = \\tfrac{1}{2}LI^2$ is proportional to the square of the current."
+    }
+   ],
+   "tryIt": {
+    "diagram": "plot x=I[A] y=U[J] xr=-0.2,4.3 yr=0,17\nfn 0.5*{{L}}*I^2 0..4\nnote 1.3,15.5 \"U at 4 A = {{8*L}} J\"\nxt 0 1 2 3 4\nyt 0 4 8 12 16",
+    "caption": "Energy stored against current. The curve is a parabola: doubling the current quadruples the energy. Raise the inductance and the same current stores more.",
+    "params": [
+     {
+      "name": "L",
+      "label": "Inductance",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.25,
+      "default": 1,
+      "unit": "H"
+     }
+    ]
+   },
+   "prerequisites": [
+    "12.3",
+    "12.4",
+    "13.1",
+    "13.2"
+   ],
+   "teacherNotes": "Lean on the parallel with capacitance: both are geometry-only constants defined by a ratio, and both store energy with a one-half and a square. Ask what an ideal inductor \"looks like\" to a steady current (a wire) before LR circuits, because the limiting-behaviour questions depend on it. The sign of $-L\\,dI/dt$ causes the most trouble; have students state in words whether the current is rising or falling, then decide which way the emf pushes, before writing a loop equation."
+  },
+  {
+   "topic": "13.5",
+   "bigIdea": "In a circuit with a resistor and an inductor the current cannot jump, so it rises or falls exponentially toward its steady value with time constant $L/R$.",
+   "picture": {
+    "diagram": "circuit\nbattery a d 12V \"ε\"\nswitch a b closed S\nresistor b c 4Ω R i=I\ninductor c d 2H L",
+    "caption": "A series LR circuit. Just after the switch closes the current is zero and the inductor takes the whole $12\\ \\text{V}$. Long afterwards the current is steady at $\\mathcal{E}/R = 3\\ \\text{A}$ and the inductor is just a wire. The changeover takes a few time constants, $L/R = 0.5\\ \\text{s}$."
+   },
+   "explanation": "Close the switch in the circuit above and apply the loop rule: $\\mathcal{E} - IR - L\\,dI/dt = 0$. The battery's emf is shared between the resistor ($IR$) and the inductor ($L\\,dI/dt$). Two instants need no solving. Just after the switch closes, the current is still zero, because the current through an inductor cannot jump. The inductor takes all the voltage and acts like a break in the circuit, while the current starts to grow at the rate $\\mathcal{E}/L$. A long time later the current is steady, the inductor has no voltage across it and acts like a plain wire, and $I = \\mathcal{E}/R$.\n\nIn between, the current follows $I(t) = \\dfrac{\\mathcal{E}}{R}\\left(1 - e^{-t/\\tau}\\right)$ with time constant $\\tau = L/R$, reaching $63\\%$ of its final value after one time constant and $99\\%$ after five.\n\n```dg\nplot x=t[s] y=I[A] xr=-0.15,3.2 yr=0,3.6\nfn 3*(1-exp(-t/0.5)) 0..3\nhl 3 \"ε/R\"\nvl 0.5\nnote 1.05,1.7 \"63% at t = τ\"\nxt 0 0.5:τ 1 2 3\nyt 0 1 2 3\n```\n\nA larger $R$ makes $\\tau$ *shorter*, the opposite of an RC circuit: the final current is smaller, while the initial growth rate $\\mathcal{E}/L$ is unchanged. The inductance sets how long the rise takes, not where it ends.\n\nNow remove the battery from a circuit carrying current $I_0$, leaving the inductor connected across a resistor. The current does not stop. The inductor's emf keeps it flowing in the same direction, and it dies away as $I(t) = I_0e^{-t/\\tau}$ while the stored energy $\\tfrac{1}{2}LI_0^2$ is dissipated in the resistor. If the only path left is the air gap of an opening switch, that current produces a huge voltage: the spark seen when an inductive circuit is switched off.",
+   "equations": [
+    {
+     "latex": "\\tau = \\frac{L}{R}",
+     "meaning": "The time constant of an LR circuit is the inductance divided by the resistance the inductor's current flows through.",
+     "variables": [
+      {
+       "symbol": "\\tau",
+       "name": "time constant",
+       "unit": "s"
+      },
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "R",
+       "name": "resistance in the loop that carries the inductor's current",
+       "unit": "Ω"
+      }
+     ],
+     "useWhen": "You want the time scale on which the current in an LR circuit grows or decays.",
+     "notWhen": "Do not write $RL$ or copy the RC rule: more resistance makes an LR circuit settle faster, not slower. And use the resistance of the loop the current is actually in, which can change when a switch is thrown."
+    },
+    {
+     "latex": "I(t) = \\frac{\\mathcal{E}}{R}\\left(1 - e^{-t/\\tau}\\right)",
+     "meaning": "After a battery is connected to a series resistor and inductor, the current rises from zero toward its final value, quickly at first and then ever more slowly.",
+     "variables": [
+      {
+       "symbol": "I",
+       "name": "current",
+       "unit": "A"
+      },
+      {
+       "symbol": "t",
+       "name": "time since the switch closed",
+       "unit": "s"
+      },
+      {
+       "symbol": "\\mathcal{E}",
+       "name": "emf of the battery",
+       "unit": "V"
+      },
+      {
+       "symbol": "R",
+       "name": "resistance",
+       "unit": "Ω"
+      },
+      {
+       "symbol": "e",
+       "name": "base of the natural logarithm, about 2.718",
+       "unit": ""
+      },
+      {
+       "symbol": "\\tau",
+       "name": "time constant",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "A single-loop circuit of battery, resistor and inductor starts with zero current.",
+     "notWhen": "Do not use it if the current is not zero at the start, or for a multi-loop circuit without first finding the initial and final currents and the right resistance."
+    },
+    {
+     "latex": "I(t) = I_0\\,e^{-t/\\tau}",
+     "meaning": "With no battery in the loop, the current in an inductor and resistor dies away exponentially from its starting value.",
+     "variables": [
+      {
+       "symbol": "I",
+       "name": "current",
+       "unit": "A"
+      },
+      {
+       "symbol": "I_0",
+       "name": "current at the instant the battery is removed",
+       "unit": "A"
+      },
+      {
+       "symbol": "e",
+       "name": "base of the natural logarithm, about 2.718",
+       "unit": ""
+      },
+      {
+       "symbol": "t",
+       "name": "time since the battery was removed",
+       "unit": "s"
+      },
+      {
+       "symbol": "\\tau",
+       "name": "time constant of the loop the current now flows in",
+       "unit": "s"
+      }
+     ],
+     "useWhen": "An inductor carrying current is left connected only to a resistance.",
+     "notWhen": "Do not assume the current starts from the battery's steady value unless the circuit had long enough to reach it."
+    }
+   ],
+   "derivation": "**Growth of current in a series LR circuit.** The switch closes at $t = 0$ with no current flowing. Around the loop in the direction of the current, the potential rises by $\\mathcal{E}$ in the battery, drops by $IR$ in the resistor and drops by $L\\,dI/dt$ in the inductor:\n\n$$\\mathcal{E} - IR - L\\frac{dI}{dt} = 0 \\quad\\Longrightarrow\\quad \\frac{dI}{dt} = \\frac{R}{L}\\left(\\frac{\\mathcal{E}}{R} - I\\right)$$\n\nThe current grows at a rate proportional to its distance from $\\mathcal{E}/R$. Separate the variables and integrate from $I = 0$ at $t = 0$:\n\n$$\\int_0^{I}\\frac{dI'}{\\mathcal{E}/R - I'} = \\frac{R}{L}\\int_0^{t}dt' \\quad\\Longrightarrow\\quad -\\ln\\!\\left(\\frac{\\mathcal{E}/R - I}{\\mathcal{E}/R}\\right) = \\frac{R}{L}\\,t$$\n\nTake the exponential of both sides and solve for $I$:\n\n$$I(t) = \\frac{\\mathcal{E}}{R}\\left(1 - e^{-Rt/L}\\right) = \\frac{\\mathcal{E}}{R}\\left(1 - e^{-t/\\tau}\\right), \\qquad \\tau = \\frac{L}{R}$$\n\nCheck the ends: the bracket is zero at $t = 0$ and goes to one as $t \\to \\infty$. Differentiating gives the inductor's voltage, $L\\,dI/dt = \\mathcal{E}e^{-t/\\tau}$, which starts at the full emf and decays to zero.\n\n**Decay.** With the battery gone the loop rule is $-IR - L\\,dI/dt = 0$, so $dI/dt = -(R/L)I$. Separating variables, as for the coasting rod of topic 13.3, gives $I(t) = I_0e^{-t/\\tau}$.",
+   "workedExamples": [
+    {
+     "title": "When does the relay close?",
+     "prompt": "A relay coil has inductance $0.50\\ \\text{H}$ and resistance $25\\ \\Omega$. At $t = 0$ it is connected to an ideal $12\\ \\text{V}$ battery. The relay closes when the current reaches $0.30\\ \\text{A}$. When does it close?",
+     "steps": [
+      "Treat the coil as an ideal inductor in series with its resistance: $I_{\\text{final}} = \\mathcal{E}/R = 0.48\\ \\text{A}$ and $\\tau = L/R = 0.020\\ \\text{s}$.",
+      "$(0.48\\ \\text{A})\\left(1 - e^{-t/\\tau}\\right) = 0.30\\ \\text{A}$ gives $e^{-t/\\tau} = 0.375$, so $t = \\tau\\ln(1/0.375) = (0.020\\ \\text{s})(0.981) = 0.020\\ \\text{s}$.",
+      "About one time constant: $0.30/0.48 = 62.5\\%$, close to the $63\\%$ reached after one $\\tau$."
+     ],
+     "answer": "$t = 0.020\\ \\text{s}$",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "emf": {
+        "value": 12,
+        "unit": "V"
+       },
+       "R": {
+        "value": 25,
+        "unit": "Ω"
+       },
+       "L": {
+        "value": 0.5,
+        "unit": "H"
+       },
+       "I_1": {
+        "value": 0.3,
+        "unit": "A"
+       }
+      },
+      "expr": "L/R*ln(1/(1 - I_1*R/emf))",
+      "unit": "s"
+     }
+    },
+    {
+     "title": "Closing and then opening a switch",
+     "prompt": "In the circuit shown, the battery has emf $24\\ \\text{V}$, $R_1 = 8.0\\ \\Omega$, $R_2 = 12\\ \\Omega$ and the ideal inductor has $L = 0.60\\ \\text{H}$. The switch has been open for a long time. Determine the current in the battery (a) immediately after the switch is closed and (b) after it has been closed for a long time. (c) The switch is then opened. Determine the potential difference across $R_2$ immediately afterwards, and describe what follows.\n\n```dg\ncircuit\nbattery a d 24V \"ε\"\nswitch a b open S\nresistor b c 8Ω R_1\nresistor c d 12Ω R_2\ninductor c d 0.60H L\n```",
+     "steps": [
+      "(a) The inductor's current was zero and cannot jump, so it acts like a break. The current goes through $R_1$ and $R_2$ in series: $I = \\dfrac{24\\ \\text{V}}{8.0\\ \\Omega + 12\\ \\Omega} = 1.2\\ \\text{A}$.",
+      "(b) With steady currents the ideal inductor has no potential difference across it. Neither has $R_2$, in parallel with it, so $R_2$ carries no current. The battery sees only $R_1$: $I = \\dfrac{24\\ \\text{V}}{8.0\\ \\Omega} = 3.0\\ \\text{A}$, all of it through the inductor.",
+      "(c) Opening the switch removes the battery and $R_1$. The inductor still carries $3.0\\ \\text{A}$, and the only path left is through $R_2$: $V_2 = I R_2 = (3.0\\ \\text{A})(12\\ \\Omega) = 36\\ \\text{V}$.",
+      "That is more than the battery's emf, and the current in $R_2$ is opposite to its direction in part (a). The inductor is now the source.",
+      "The current then decays as $I = (3.0\\ \\text{A})e^{-t/\\tau}$ with $\\tau = \\dfrac{L}{R_2} = \\dfrac{0.60\\ \\text{H}}{12\\ \\Omega} = 0.050\\ \\text{s}$. Only $R_2$ is in the loop now."
+     ],
+     "answer": "(a) $1.2\\ \\text{A}$; (b) $3.0\\ \\text{A}$; (c) $36\\ \\text{V}$ across $R_2$, then the current decays to zero with $\\tau = 0.050\\ \\text{s}$",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "emf": {
+        "value": 24,
+        "unit": "V"
+       },
+       "R1": {
+        "value": 8,
+        "unit": "Ω"
+       },
+       "R2": {
+        "value": 12,
+        "unit": "Ω"
+       }
+      },
+      "expr": "emf/R1*R2",
+      "unit": "V"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "inductor-limits-swapped",
+     "wrong": "Right after the switch closes an inductor is just a wire, and after a long time it blocks the current.",
+     "right": "That is a capacitor. An inductor is the reverse: at the first instant it holds the current at its old value (zero here), like a break, and after a long time it has no voltage across it, like a wire."
+    },
+    {
+     "tag": "time-constant-misread",
+     "wrong": "Adding resistance makes an LR circuit take longer to settle, as it does in an RC circuit.",
+     "right": "$\\tau = L/R$, so more resistance means a shorter time constant. The current has less far to climb, at the same initial rate $\\mathcal{E}/L$."
+    },
+    {
+     "tag": "inductor-opposes-current",
+     "wrong": "A larger inductance lowers the final current.",
+     "right": "The final current is $\\mathcal{E}/R$ whatever the inductance, which affects only how long the current takes to get there."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "A series LR circuit has $\\mathcal{E} = 10\\ \\text{V}$, $R = 5.0\\ \\Omega$ and $L = 2.0\\ \\text{H}$. What is the rate of change of the current just after the switch closes, and what is the final current?",
+     "a": "$dI/dt = \\mathcal{E}/L = 5.0\\ \\text{A/s}$ at first, and the final current is $\\mathcal{E}/R = 2.0\\ \\text{A}$."
+    },
+    {
+     "q": "In a series LR circuit, the resistance is doubled. What happens to the final current and to the time taken to get close to it?",
+     "a": "Both halve. The final current $\\mathcal{E}/R$ halves, and so does the time constant $L/R$."
+    },
+    {
+     "q": "A current of $2.0\\ \\text{A}$ flows in an inductor connected across a resistor, with no battery. What is the current after two time constants?",
+     "a": "$I = (2.0\\ \\text{A})e^{-2} = 0.27\\ \\text{A}$."
+    }
+   ],
+   "tryIt": {
+    "diagram": "plot x=t[s] y=I[A] xr=-0.15,3.2 yr=0,8.6\nfn {{12/R}}*(1-exp(-t*{{R/2}})) 0..3\nnote 2.3,8.1 \"ε/R = {{round(120/R)/10}} A\"\nnote 2.3,7.3 \"τ = {{round(200/R)/100}} s\"\nxt 0 1 2 3\nyt 0 2 4 6",
+    "caption": "A $12\\ \\text{V}$ battery and a $2\\ \\text{H}$ inductor in series with a resistor. Raise the resistance: the final current drops and the circuit settles sooner, but every curve leaves the origin with the same slope, $\\mathcal{E}/L = 6\\ \\text{A/s}$.",
+    "params": [
+     {
+      "name": "R",
+      "label": "Resistance",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "Ω"
+     }
+    ]
+   },
+   "prerequisites": [
+    "11.6",
+    "11.8",
+    "13.4"
+   ],
+   "teacherNotes": "Have students fill in a two-row table for every LR question before any algebra: what the inductor's current is just after the switch is thrown (the same as just before) and what the inductor is after a long time (a wire). Most errors are RC habits carried over, so put an RC and an LR circuit side by side and ask which element takes the battery's voltage at the start and at the end of each. The switch-opening case, where a resistor's voltage exceeds the battery's, is worth predicting before calculating."
+  },
+  {
+   "topic": "13.6",
+   "bigIdea": "In a circuit of only a capacitor and an inductor, charge and current oscillate sinusoidally at angular frequency $1/\\sqrt{LC}$ as energy passes back and forth between the two.",
+   "picture": {
+    "diagram": "circuit\ncapacitor a b 50μF C\nswitch a c closed S\ninductor c b 20mH L",
+    "caption": "An LC circuit. The capacitor is charged to $12\\ \\text{V}$ and the switch is then closed. There is no battery and no resistor, so nothing adds energy and nothing removes it: the charge sloshes from one plate to the other and back at angular frequency $1/\\sqrt{LC} = 1000\\ \\text{rad/s}$."
+   },
+   "explanation": "Connect a charged capacitor across an inductor. The capacitor starts to discharge, but the inductor will not let the current jump, so the current builds gradually. By the time the capacitor is empty, the current is at its largest, and now the inductor will not let it stop. The current carries on, charging the capacitor the other way round, until it reaches zero with the capacitor fully charged in reverse. Then everything runs backwards. This is the electrical twin of a mass on a spring: charge plays the part of position, current of velocity, $L$ of mass and $1/C$ of the spring constant.\n\nThe loop rule turns that story into the equation $\\dfrac{d^2q}{dt^2} = -\\dfrac{1}{LC}\\,q$, the equation of simple harmonic motion. If the capacitor starts fully charged, $q(t) = Q_{\\max}\\cos\\omega t$ with $\\omega = 1/\\sqrt{LC}$, and the current is its derivative, of size $\\omega Q_{\\max}\\sin\\omega t$. Charge and current are a quarter cycle out of step: the current is zero when the capacitor is full and largest, $I_{\\max} = \\omega Q_{\\max}$, when it is empty. The frequency depends only on $L$ and $C$, not on the starting charge.\n\nEnergy tells the same story. The capacitor holds $q^2/(2C)$ and the inductor $\\tfrac{1}{2}LI^2$; each rises as the other falls, and their sum stays at $Q_{\\max}^2/(2C)$, as the graph shows for the circuit above. Each energy peaks twice per cycle. With no resistance the oscillation never dies; in real circuits resistance turns a little energy into thermal energy on every cycle, and the oscillation fades.\n\n```dg\nplot x=t[ms] y=U[mJ] xr=-0.5,6.8 yr=0,5.2\nfn 3.6*cos(t)^2 0..6.28\nfn 3.6*sin(t)^2 0..6.28 dash\nhl 3.6\nnote 1.3,4.8 \"solid: capacitor\"\nnote 4.8,4.8 \"dashed: inductor\"\nxt 0 2 4 6\nyt 0 1.8 3.6\n```",
+   "equations": [
+    {
+     "latex": "\\omega = \\frac{1}{\\sqrt{LC}}",
+     "meaning": "The angular frequency of an LC circuit's oscillation is one over the square root of inductance times capacitance. The period is 2π divided by this.",
+     "variables": [
+      {
+       "symbol": "\\omega",
+       "name": "angular frequency",
+       "unit": "rad/s"
+      },
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "C",
+       "name": "capacitance",
+       "unit": "F"
+      }
+     ],
+     "useWhen": "A capacitor and an inductor exchange energy with negligible resistance in the loop.",
+     "notWhen": "Do not treat $\\sqrt{LC}$ as a time constant for a decay: nothing decays in an ideal LC circuit. And do not confuse $\\omega$ (rad/s) with the frequency $f = \\omega/2\\pi$ (Hz)."
+    },
+    {
+     "latex": "q(t) = Q_{\\max}\\cos(\\omega t)",
+     "meaning": "The charge on the capacitor varies sinusoidally; this form starts with the capacitor fully charged at t = 0.",
+     "variables": [
+      {
+       "symbol": "q",
+       "name": "charge on the capacitor",
+       "unit": "C"
+      },
+      {
+       "symbol": "t",
+       "name": "time",
+       "unit": "s"
+      },
+      {
+       "symbol": "Q_{\\max}",
+       "name": "maximum charge",
+       "unit": "C"
+      },
+      {
+       "symbol": "\\omega",
+       "name": "angular frequency",
+       "unit": "rad/s"
+      }
+     ],
+     "useWhen": "The capacitor is fully charged and the current is zero at the instant the clock starts.",
+     "notWhen": "If the clock starts at another moment, for example with the capacitor empty and the current at its maximum, use a sine or add a phase constant."
+    },
+    {
+     "latex": "\\frac{q^2}{2C} + \\tfrac{1}{2}LI^2 = \\frac{Q_{\\max}^2}{2C} = \\tfrac{1}{2}LI_{\\max}^2",
+     "meaning": "The total energy of an LC circuit is constant: it equals the capacitor's energy when the charge is greatest and the inductor's energy when the current is greatest.",
+     "variables": [
+      {
+       "symbol": "q",
+       "name": "charge on the capacitor at some instant",
+       "unit": "C"
+      },
+      {
+       "symbol": "I",
+       "name": "current at the same instant",
+       "unit": "A"
+      },
+      {
+       "symbol": "C",
+       "name": "capacitance",
+       "unit": "F"
+      },
+      {
+       "symbol": "L",
+       "name": "inductance",
+       "unit": "H"
+      },
+      {
+       "symbol": "Q_{\\max}",
+       "name": "maximum charge",
+       "unit": "C"
+      },
+      {
+       "symbol": "I_{\\max}",
+       "name": "maximum current",
+       "unit": "A"
+      }
+     ],
+     "useWhen": "You want to relate charge and current at an instant, or the maximum current to the maximum charge, without finding the time.",
+     "notWhen": "Do not use it when the loop has significant resistance; the total energy then falls with time."
+    }
+   ],
+   "derivation": "**The loop rule gives simple harmonic motion.** Let $q$ be the charge on the capacitor plate that starts positive, and let $I$ be the current flowing away from that plate through the inductor. Current leaving the plate lowers its charge, so $I = -\\dfrac{dq}{dt}$.\n\nGo around the loop in the direction of the current. Through the inductor the potential changes by $-L\\,dI/dt$; crossing the capacitor from its negative plate back to its positive plate, it rises by $q/C$. The changes add to zero:\n\n$$\\frac{q}{C} - L\\frac{dI}{dt} = 0$$\n\nSubstitute $I = -dq/dt$, so that $dI/dt = -d^2q/dt^2$:\n\n$$\\frac{q}{C} + L\\frac{d^2q}{dt^2} = 0 \\quad\\Longrightarrow\\quad \\frac{d^2q}{dt^2} = -\\frac{1}{LC}\\,q$$\n\nThis is the same equation as $d^2x/dt^2 = -(k/m)x$ for a mass on a spring, whose solutions are sinusoids. Try $q = Q_{\\max}\\cos\\omega t$: differentiating twice gives $-\\omega^2q$, which satisfies the equation provided\n\n$$\\omega^2 = \\frac{1}{LC}, \\qquad \\omega = \\frac{1}{\\sqrt{LC}}, \\qquad T = \\frac{2\\pi}{\\omega} = 2\\pi\\sqrt{LC}$$\n\nThe current is $I = -dq/dt = \\omega Q_{\\max}\\sin\\omega t$, with maximum value $I_{\\max} = \\omega Q_{\\max}$.\n\n**Energy is constant.** Put these into the total energy:\n\n$$U = \\frac{q^2}{2C} + \\tfrac{1}{2}LI^2 = \\frac{Q_{\\max}^2}{2C}\\cos^2\\omega t + \\tfrac{1}{2}L\\omega^2Q_{\\max}^2\\sin^2\\omega t$$\n\nSince $L\\omega^2 = 1/C$, both terms have the same coefficient, and $\\cos^2 + \\sin^2 = 1$ leaves $U = \\dfrac{Q_{\\max}^2}{2C}$ at every instant.",
+   "workedExamples": [
+    {
+     "title": "From the inductor into the capacitor",
+     "prompt": "A $20\\ \\text{mH}$ inductor carries a steady $0.50\\ \\text{A}$. At $t = 0$ its supply is switched out and an uncharged $5.0\\ \\mu\\text{F}$ capacitor is switched across it; there is no resistance. What is the largest potential difference across the capacitor, and how much charge does it hold then?",
+     "steps": [
+      "At $t = 0$ all the energy, $\\tfrac{1}{2}LI_0^2$, is in the inductor. Its current cannot change instantly, so it carries on and charges the capacitor.",
+      "At maximum charge the current is zero and the energy is all in the capacitor: $\\tfrac{1}{2}LI_0^2 = \\tfrac{1}{2}C(\\Delta V_{\\max})^2$, so $\\Delta V_{\\max} = I_0\\sqrt{\\dfrac{L}{C}} = (0.50\\ \\text{A})\\sqrt{\\dfrac{20 \\times 10^{-3}\\ \\text{H}}{5.0 \\times 10^{-6}\\ \\text{F}}} = 32\\ \\text{V}$.",
+      "$Q_{\\max} = C\\,\\Delta V_{\\max} = (5.0 \\times 10^{-6}\\ \\text{F})(31.6\\ \\text{V}) = 1.6 \\times 10^{-4}\\ \\text{C}$. Check: $\\omega = 1/\\sqrt{LC} = 3.16 \\times 10^{3}\\ \\text{rad/s}$, and $\\omega Q_{\\max} = 0.50\\ \\text{A}$."
+     ],
+     "answer": "$\\Delta V_{\\max} = 32\\ \\text{V}$, with $Q_{\\max} = 1.6 \\times 10^{-4}\\ \\text{C}$",
+     "style": "stepped",
+     "spec": {
+      "givens": {
+       "I_0": {
+        "value": 0.5,
+        "unit": "A"
+       },
+       "L": {
+        "value": 20,
+        "unit": "mH"
+       },
+       "C": {
+        "value": 5,
+        "unit": "μF"
+       }
+      },
+      "expr": "I_0*sqrt(L/C)",
+      "unit": "V"
+     }
+    },
+    {
+     "title": "Current when the capacitor is partly discharged",
+     "prompt": "An ideal LC circuit has $L = 10\\ \\text{mH}$ and $C = 1.0\\ \\mu\\text{F}$. The maximum charge on the capacitor during the oscillation is $6.0\\ \\mu\\text{C}$. Calculate the magnitude of the current at an instant when the charge on the capacitor is $3.6\\ \\mu\\text{C}$, and determine what fraction of the circuit's energy is stored in the inductor at that instant.",
+     "steps": [
+      "There is no resistance, so the total energy is constant and equal to the capacitor's energy at maximum charge: $\\dfrac{q^2}{2C} + \\tfrac{1}{2}LI^2 = \\dfrac{Q_{\\max}^2}{2C}$.",
+      "Solve for the current: $I^2 = \\dfrac{Q_{\\max}^2 - q^2}{LC}$, so $I = \\sqrt{\\dfrac{Q_{\\max}^2 - q^2}{LC}}$.",
+      "$Q_{\\max}^2 - q^2 = (6.0\\ \\mu\\text{C})^2 - (3.6\\ \\mu\\text{C})^2 = 23.04\\ \\mu\\text{C}^2$, whose square root is $4.8\\ \\mu\\text{C}$. Also $\\sqrt{LC} = \\sqrt{(10 \\times 10^{-3}\\ \\text{H})(1.0 \\times 10^{-6}\\ \\text{F})} = 1.0 \\times 10^{-4}\\ \\text{s}$.",
+      "$I = \\dfrac{4.8 \\times 10^{-6}\\ \\text{C}}{1.0 \\times 10^{-4}\\ \\text{s}} = 0.048\\ \\text{A} = 48\\ \\text{mA}$.",
+      "The capacitor's share of the energy is $\\left(\\dfrac{q}{Q_{\\max}}\\right)^2 = (0.60)^2 = 0.36$, so the inductor holds the rest: $0.64$ of the total. The charge is still at $60\\%$ of its maximum, yet most of the energy has moved to the inductor, because energy goes as the square of the charge."
+     ],
+     "answer": "$I = 48\\ \\text{mA}$; the inductor holds $0.64$ of the energy",
+     "style": "ap",
+     "spec": {
+      "givens": {
+       "L": {
+        "value": 10,
+        "unit": "mH"
+       },
+       "C": {
+        "value": 1,
+        "unit": "μF"
+       },
+       "Qmax": {
+        "value": 6,
+        "unit": "μC"
+       },
+       "q": {
+        "value": 3.6,
+        "unit": "μC"
+       }
+      },
+      "expr": "sqrt((Qmax^2 - q^2)/(L*C))",
+      "unit": "mA"
+     }
+    }
+   ],
+   "misconceptions": [
+    {
+     "tag": "lc-charge-current-in-phase",
+     "wrong": "The current is largest when the capacitor is fully charged, because that is when the voltage driving it is largest.",
+     "right": "When the capacitor is fully charged the current is zero and about to reverse. The current is largest as the capacitor passes through zero charge."
+    },
+    {
+     "tag": "lc-charge-current-in-phase",
+     "wrong": "Once the capacitor has discharged, the current stops and the circuit is dead.",
+     "right": "At that instant the current is at its maximum, and the inductor keeps it flowing, recharging the capacitor with the opposite polarity."
+    },
+    {
+     "tag": "period-depends-on-amplitude",
+     "wrong": "Starting with more charge on the capacitor makes the circuit oscillate faster.",
+     "right": "The frequency is $1/\\sqrt{LC}$ and does not depend on the amplitude. More charge gives a larger maximum current, in proportion, but the same period."
+    }
+   ],
+   "checkYourself": [
+    {
+     "q": "An LC circuit oscillates with period $T$. The capacitor is fully charged at $t = 0$. At what times during the first period is all the energy in the inductor?",
+     "a": "At $t = T/4$ and $t = 3T/4$, when the charge passes through zero and the current is at its maximum (in opposite directions)."
+    },
+    {
+     "q": "The capacitance in an LC circuit is made four times larger. What happens to the period?",
+     "a": "It doubles, since $T = 2\\pi\\sqrt{LC}$."
+    },
+    {
+     "q": "In the mass-and-spring analogy, what corresponds to the energy stored in the inductor, and why?",
+     "a": "Kinetic energy. $\\tfrac{1}{2}LI^2$ has the same form as $\\tfrac{1}{2}mv^2$, with inductance as the inertia and current as the velocity."
+    }
+   ],
+   "tryIt": {
+    "diagram": "plot x=t[ms] y=q[μC] xr=-1.5,26 yr=-750,900\nfn 600*cos(t*{{sqrt(20/L)}}) 0..25\nnote 18,820 \"T = {{round(200*pi*sqrt(L/20))/100}} ms\"\nxt 0 5 10 15 20 25\nyt -600 0 600",
+    "caption": "Charge on a $50\\ \\mu\\text{F}$ capacitor that starts at $600\\ \\mu\\text{C}$ and is connected to an inductor. More inductance means more inertia: the period $2\\pi\\sqrt{LC}$ lengthens, but the charge still swings between the same extremes.",
+    "params": [
+     {
+      "name": "L",
+      "label": "Inductance",
+      "min": 5,
+      "max": 80,
+      "step": 5,
+      "default": 20,
+      "unit": "mH"
+     }
+    ]
+   },
+   "prerequisites": [
+    "10.3",
+    "11.6",
+    "13.4",
+    "13.5"
+   ],
+   "teacherNotes": "If students have taken mechanics, build the whole topic on the spring analogy and ask them to predict the formula for $\\omega$ from $\\sqrt{k/m}$ before deriving it. Ask where the energy is at $t = 0$, $T/8$, $T/4$ and $T/2$; the $T/8$ answer (half and half) checks that they are not reading the energy off the charge graph linearly. The usual error is putting the maximum current at maximum charge, an RC habit; a sketch of $q$ and $I$ on the same time axis fixes it."
+  }
+ ]
+}

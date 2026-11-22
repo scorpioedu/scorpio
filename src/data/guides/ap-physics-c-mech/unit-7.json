@@ -1,0 +1,1092 @@
+{
+  "curriculumId": "ap-physics-c-mech",
+  "unit": 7,
+  "guides": [
+    {
+      "topic": "7.1",
+      "bigIdea": "Simple harmonic motion is the motion that results whenever the net force on an object is a restoring force proportional to its displacement from equilibrium, because Newton's second law then becomes the differential equation $\\frac{d^2x}{dt^2} = -\\omega^2 x$.",
+      "picture": {
+        "diagram": "scene\nwall 0 0..1.6\nground 0..7\nblock W 4.5,0 \"m\"\nspring 0,0.35 W.l\ndash 3,0 3,1.5\ntext 3,1.8 \"x = 0\"\nf W.t+0,0.3 left 1.5 \"F = -kx\"\ndim 3,-0.1 4.5,-0.1 \"x\" off=-14",
+        "caption": "A block on a frictionless surface, pulled a distance $x$ to the right of its equilibrium position. The stretched spring pulls it back to the left with a force $-kx$: the further the block is from $x = 0$, the harder it is pulled back."
+      },
+      "explanation": "Every oscillator has an **equilibrium position**, where the net force on it is zero, and a **restoring force** that pushes it back toward that position whenever it is displaced. Simple harmonic motion (SHM) is the special case in which that force is directly proportional to the displacement: twice as far from equilibrium, twice the force. An ideal spring does exactly this. With $x$ measured from equilibrium, $F = -kx$, and the minus sign says the force always points opposite to the displacement.\n\nPut that force into Newton's second law and write the acceleration as a derivative: $m\\,\\frac{d^2x}{dt^2} = -kx$. This is an equation for the function $x(t)$. The acceleration changes with position at every instant, so the constant-acceleration equations are useless here. We need a function whose second derivative is a negative constant times itself. Sines and cosines do that, and the solution is $x(t) = A\\cos(\\omega t + \\phi)$ with $\\omega = \\sqrt{k/m}$.\n\nThe equation is the test for SHM. If Newton's second law for any system can be put in the form $\\frac{d^2x}{dt^2} = -(\\text{positive constant})\\,x$, the motion is simple harmonic and the constant is $\\omega^2$. A block hanging from a vertical spring passes the test (see the derivation), and so does a particle near the bottom of any smooth potential-energy well, where $F = -\\frac{dU}{dx} \\approx -k_{\\text{eff}}\\,x$.",
+      "equations": [
+        {
+          "latex": "F_{\\text{net}} = -kx",
+          "meaning": "The net force is a restoring force proportional to the displacement from equilibrium: the condition for simple harmonic motion.",
+          "variables": [
+            {
+              "symbol": "F_{\\text{net}}",
+              "name": "net force on the object, along the line of motion",
+              "unit": "N"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant (or the effective stiffness of the restoring force)",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from the equilibrium position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You are checking whether a motion is simple harmonic, or finding the force or acceleration at a known displacement.",
+          "notWhen": "If $x$ is not measured from equilibrium, or the restoring force is not proportional to displacement (a constant force, or one that goes as $x^3$), the motion is not simple harmonic."
+        },
+        {
+          "latex": "\\frac{\\mathrm{d}^2x}{\\mathrm{d}t^2} = -\\omega^2 x",
+          "meaning": "The equation of motion of every simple harmonic oscillator: the acceleration is proportional to the displacement and opposite to it.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency; $\\omega^2 = k/m$ for a mass on a spring",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "You have written Newton's second law for an oscillator and want to recognise SHM and read off $\\omega^2$ as the constant multiplying $x$.",
+          "notWhen": "Friction or drag adds a term that depends on velocity, and the motion is then damped rather than simple harmonic."
+        },
+        {
+          "latex": "k_{\\text{eff}} = \\left.\\frac{\\mathrm{d}^2U}{\\mathrm{d}x^2}\\right|_{x_0}",
+          "meaning": "Near a stable equilibrium any smooth potential energy acts like a spring whose stiffness is the curvature of the potential-energy graph at its minimum.",
+          "variables": [
+            {
+              "symbol": "k_{\\text{eff}}",
+              "name": "effective spring constant for small oscillations",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "U",
+              "name": "potential energy as a function of position",
+              "unit": "J"
+            },
+            {
+              "symbol": "x",
+              "name": "position",
+              "unit": "m"
+            },
+            {
+              "symbol": "x_0",
+              "name": "position of the stable equilibrium (the minimum of the potential energy)",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You are given $U(x)$ and asked about small oscillations about its minimum.",
+          "notWhen": "The oscillations are large enough for the potential energy to depart from a parabola, or the equilibrium is unstable (a maximum, where the second derivative is negative)."
+        }
+      ],
+      "derivation": "**The equation of motion.** For a block of mass $m$ on a frictionless horizontal surface, the spring force is the net force, so Newton's second law reads\n\n$$m\\,\\frac{d^2x}{dt^2} = -kx \\quad\\Longrightarrow\\quad \\frac{d^2x}{dt^2} = -\\frac{k}{m}\\,x.$$\n\n**Checking the solution.** Try $x(t) = A\\cos(\\omega t + \\phi)$, where $A$, $\\omega$ and $\\phi$ are constants. Differentiate twice with the chain rule:\n\n$$\\frac{dx}{dt} = -A\\omega\\sin(\\omega t + \\phi), \\qquad \\frac{d^2x}{dt^2} = -A\\omega^2\\cos(\\omega t + \\phi) = -\\omega^2 x.$$\n\nThis matches the equation of motion at every instant provided $\\omega^2 = k/m$. $A$ and $\\phi$ are not restricted: they are set by how the motion is started.\n\n**A vertical spring.** A hanging block at rest stretches the spring by $\\Delta\\ell$, with $k\\,\\Delta\\ell = mg$. Let $y$ be its displacement below that position (down positive). The total stretch is $\\Delta\\ell + y$, so\n\n$$F_{\\text{net}} = mg - k(\\Delta\\ell + y) = -ky.$$\n\nGravity cancels against the stretch the spring already had, so the motion is SHM about the new equilibrium with the same $\\omega = \\sqrt{k/m}$.",
+      "workedExamples": [
+        {
+          "title": "Acceleration on a spring along a slope",
+          "prompt": "A $0.50\\ \\text{kg}$ block rests on a frictionless ramp inclined at $30^\\circ$, held by a spring of spring constant $40\\ \\text{N/m}$ fixed at the top of the ramp. The block is pulled $0.050\\ \\text{m}$ down the slope from its equilibrium position and released. Taking down the slope as positive, what is its acceleration at the instant of release? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "At equilibrium the spring is already stretched enough to hold the block: $k\\,\\Delta\\ell = mg\\sin\\theta$, so $\\Delta\\ell = (0.50)(9.8)(0.50)/40 = 0.061\\ \\text{m}$.",
+            "At release the stretch is $\\Delta\\ell + x = 0.111\\ \\text{m}$. Net force along the slope: $F_{\\text{net}} = mg\\sin\\theta - k(\\Delta\\ell + x) = 2.45 - 4.45 = -2.0\\ \\text{N}$. The gravity term cancels the equilibrium stretch, leaving $F_{\\text{net}} = -kx$.",
+            "Apply Newton's second law: $a = \\dfrac{F_{\\text{net}}}{m} = -\\dfrac{kx}{m} = \\dfrac{-2.0\\ \\text{N}}{0.50\\ \\text{kg}} = -4.0\\ \\text{m/s}^2$, up the slope, toward equilibrium."
+          ],
+          "answer": "$a = -4.0\\ \\text{m/s}^2$ (up the slope, toward equilibrium)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 40,
+                "unit": "N/m"
+              },
+              "x": {
+                "value": 0.05,
+                "unit": "m"
+              },
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              }
+            },
+            "expr": "-k*x/m",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "Showing that a block on two springs in series moves in SHM",
+          "prompt": "A $0.20\\ \\text{kg}$ block on a level, frictionless surface is joined to a wall by two light springs connected end to end: $k_1 = 30\\ \\text{N/m}$ next to the wall and $k_2 = 60\\ \\text{N/m}$ next to the block. (a) Show that the block moves in simple harmonic motion when displaced along the line of the springs. (b) Determine the angular frequency.\n\n```dg\nscene\nwall 0 0..1.6\nground 0..8\nblock B 6,0 \"0.20 kg\"\nspring 0,0.35 3.5,0.35\ndot 3.5,0.35\nspring 3.5,0.35 B.l\ntext 1.75,1 \"k_1\"\ntext 4.5,1 \"k_2\"\n```",
+          "steps": [
+            "(a) Let $x$ be the block's displacement from equilibrium, where both springs are relaxed. The springs are light, so the net force on their junction is zero: both carry the same tension $T$.",
+            "Each spring stretches by its own amount, $x_1 = T/k_1$ and $x_2 = T/k_2$, and together they make up the block's displacement: $x = x_1 + x_2 = T\\left(\\dfrac{1}{k_1} + \\dfrac{1}{k_2}\\right)$.",
+            "The spring next to the block pulls it back with force $T$, so $F_{\\text{net}} = -k_{\\text{eff}}\\,x$ with $\\dfrac{1}{k_{\\text{eff}}} = \\dfrac{1}{k_1} + \\dfrac{1}{k_2}$. Newton's second law gives $\\dfrac{d^2x}{dt^2} = -\\dfrac{k_{\\text{eff}}}{m}\\,x$: simple harmonic motion.",
+            "(b) $k_{\\text{eff}} = \\dfrac{k_1k_2}{k_1 + k_2} = \\dfrac{(30)(60)}{90}\\ \\text{N/m} = 20\\ \\text{N/m}$, softer than either spring alone. Then $\\omega = \\sqrt{\\dfrac{20\\ \\text{N/m}}{0.20\\ \\text{kg}}} = 10\\ \\text{rad/s}$."
+          ],
+          "answer": "The net force is $-k_{\\text{eff}}x$ with $k_{\\text{eff}} = k_1k_2/(k_1 + k_2)$, so the motion is simple harmonic with $\\omega = 10\\ \\text{rad/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k1": {
+                "value": 30,
+                "unit": "N/m"
+              },
+              "k2": {
+                "value": 60,
+                "unit": "N/m"
+              },
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
+              }
+            },
+            "expr": "sqrt(k1*k2/((k1 + k2)*m))",
+            "unit": "rad/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "I know the acceleration at release, so I can use $x = \\tfrac{1}{2}at^2$ to find how long the block takes to reach equilibrium.",
+          "right": "The acceleration is $-\\omega^2 x$, so it shrinks as the block approaches equilibrium. The constant-acceleration equations do not apply; released from rest, the block takes a quarter of a period."
+        },
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The block's acceleration is greatest as it rushes through the equilibrium position.",
+          "right": "At equilibrium the net force is zero, so the acceleration is zero there, even though the speed is greatest. It is largest at the two ends of the motion, where the block is momentarily at rest."
+        },
+        {
+          "wrong": "Anything that moves back and forth is in simple harmonic motion.",
+          "right": "SHM needs a restoring force proportional to displacement. A bouncing ball repeats, but between bounces the force on it is constant (its weight), so its motion is periodic without being simple harmonic."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An object's equation of motion is $\\frac{d^2x}{dt^2} = -25x$, with $x$ in metres and $t$ in seconds. Is the motion simple harmonic, and if so what is $\\omega$?",
+          "a": "Yes: the acceleration is a negative constant times the displacement. The constant is $\\omega^2 = 25\\ \\text{s}^{-2}$, so $\\omega = 5\\ \\text{rad/s}$."
+        },
+        {
+          "q": "A block on a spring is at its greatest distance from equilibrium. What are its velocity and acceleration doing at that instant?",
+          "a": "Its velocity is zero, while its acceleration has its greatest magnitude and points back toward equilibrium."
+        },
+        {
+          "q": "A block hanging from a vertical spring is pulled down a little and released. Why does gravity not appear in its equation of motion?",
+          "a": "Gravity is balanced by the stretch the spring already has at the rest position. Measured from there, the net force is just $-ky$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nwall 0 0..1.6\nground 0..7.5\nblock W {{3.5+10*x}},0 \"m\"\nspring 0,0.35 W.l\ndash 3.5,0 3.5,1.5\ntext 3.5,1.8 \"x = 0\"\nf W.t+0,0.3 {{90+90*min(1,max(-1,1000*x))}} {{abs(10*x)}}\ntext 3.5,2.4 \"x = {{x}} m,  F = {{-40*x}} N\"",
+        "caption": "A block on a spring with $k = 40\\ \\text{N/m}$. Move the block either side of equilibrium: the force arrow always points back toward $x = 0$ and its length grows in proportion to the displacement.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Displacement",
+            "min": -0.15,
+            "max": 0.15,
+            "step": 0.01,
+            "default": 0.1,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.5",
+        "2.8"
+      ],
+      "teacherNotes": "Ask students to say in words what $\\frac{d^2x}{dt^2} = -\\omega^2 x$ claims before they solve anything: \"the acceleration is proportional to how far you are from equilibrium, and points back\". The commonest slip is reaching for constant-acceleration kinematics because a force and a mass are given; have them compute $a$ at two different positions and see that it changed. For \"show that the motion is SHM\" questions, insist on the full chain: net force in terms of displacement, Newton's second law, comparison with the standard form. Set 7A practises exactly this."
+    },
+    {
+      "topic": "7.2",
+      "bigIdea": "The period of a simple harmonic oscillator is set by its inertia and the stiffness of its restoring force, $T = 2\\pi\\sqrt{m/k}$ for a mass on a spring, and does not depend on the amplitude of the motion.",
+      "picture": {
+        "diagram": "plot x=t[s] y=x[m] xr=-0.1,2.2 yr=-0.25,0.25\nfn 0.2*cos(2*pi*t) 0..2 \"A = 0.20 m\"\nfn 0.1*cos(2*pi*t) 0..2 \"A = 0.10 m\" dash\nvl 1 \"T\"\nvl 2 \"2T\"",
+        "caption": "The same block on the same spring, released from rest $0.20\\ \\text{m}$ and then $0.10\\ \\text{m}$ from equilibrium. The amplitudes differ, but both motions repeat every $1.0\\ \\text{s}$."
+      },
+      "explanation": "Three numbers describe how quickly an oscillator repeats. The **period** $T$ is the time for one complete cycle. The **frequency** $f = 1/T$ is the number of cycles per second, in hertz. The **angular frequency** $\\omega = 2\\pi f$ is the rate, in radians per second, at which the argument of the cosine in $x(t) = A\\cos(\\omega t + \\phi)$ advances; one cycle is $2\\pi$ radians, so $\\omega T = 2\\pi$. The equation of motion hands you $\\omega$ directly, and $T$ and $f$ follow from it.\n\nFor a mass on an ideal spring, $\\omega = \\sqrt{k/m}$, so $T = 2\\pi\\sqrt{m/k}$. The dependence makes sense: a stiffer spring gives larger forces and a quicker return, while a larger mass responds more sluggishly to the same force. The square root matters when you scale things. Four times the mass doubles the period; four times the stiffness halves it.\n\nWhat is missing from the formula is as important as what is in it. The amplitude does not appear: pull the block back twice as far and it has twice as far to travel, but the restoring force is twice as large at every corresponding point, so it covers the larger distance in the same time. Gravity does not appear either, so a mass on a vertical spring has the same period as on a horizontal one, and the same period on the Moon.\n\nThe method works for any oscillator. Write Newton's second law, reduce it to $\\frac{d^2x}{dt^2} = -Cx$, and then $\\omega = \\sqrt{C}$ and $T = 2\\pi/\\sqrt{C}$. For a particle of mass $m$ making small oscillations about the minimum of a potential energy $U(x)$, $C = k_{\\text{eff}}/m$ with $k_{\\text{eff}}$ the second derivative of $U$ at the minimum.",
+      "equations": [
+        {
+          "latex": "T = \\frac{1}{f} = \\frac{2\\pi}{\\omega}",
+          "meaning": "Period, frequency and angular frequency are three ways of stating the same thing: how quickly the motion repeats.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period (time for one cycle)",
+              "unit": "s"
+            },
+            {
+              "symbol": "f",
+              "name": "frequency (cycles per second)",
+              "unit": "Hz"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "Converting between the period, the frequency and the angular frequency of any periodic motion.",
+          "notWhen": "Do not confuse $\\omega$ with $f$: they differ by a factor of $2\\pi$, and it is $\\omega$ that appears inside $\\cos(\\omega t + \\phi)$."
+        },
+        {
+          "latex": "\\omega = \\sqrt{\\frac{k}{m}}",
+          "meaning": "The angular frequency of a mass on a spring depends only on the spring constant and the mass.",
+          "variables": [
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant (or effective stiffness)",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "The restoring force is $-kx$, for a horizontal or a vertical ideal spring, or for any system with an effective stiffness $k_{\\text{eff}}$.",
+          "notWhen": "The spring's own mass is not negligible, or the restoring force is not proportional to displacement."
+        },
+        {
+          "latex": "T_s = 2\\pi\\sqrt{\\frac{m}{k}}",
+          "meaning": "The period of a mass on a spring grows with the square root of the mass and falls with the square root of the stiffness.",
+          "variables": [
+            {
+              "symbol": "T_s",
+              "name": "period of the mass on the spring",
+              "unit": "s"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the oscillating object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            }
+          ],
+          "useWhen": "You know two of the period, the mass and the spring constant and want the third, or you are comparing oscillators.",
+          "notWhen": "Not for a pendulum, whose period is set by its length and $g$ instead. And never put the amplitude into it."
+        }
+      ],
+      "derivation": "**From the solution to the period.** The motion is $x(t) = A\\cos(\\omega t + \\phi)$. A cosine repeats when its argument increases by $2\\pi$, so the period $T$ is the time for which\n\n$$\\omega(t + T) + \\phi = (\\omega t + \\phi) + 2\\pi \\quad\\Longrightarrow\\quad T = \\frac{2\\pi}{\\omega}.$$\n\n**The spring.** Substituting $x = A\\cos(\\omega t + \\phi)$ into $m\\,\\frac{d^2x}{dt^2} = -kx$ gives\n\n$$-mA\\omega^2\\cos(\\omega t + \\phi) = -kA\\cos(\\omega t + \\phi).$$\n\nThe factor $A\\cos(\\omega t + \\phi)$ cancels from both sides, leaving $m\\omega^2 = k$. Therefore\n\n$$\\omega = \\sqrt{\\frac{k}{m}}, \\qquad T = 2\\pi\\sqrt{\\frac{m}{k}}.$$\n\nNotice what cancelled. The amplitude $A$ dropped out because the equation of motion is linear in $x$: every term is proportional to $A$. That cancellation is the reason the period cannot depend on the amplitude.\n\n**Small oscillations in a potential well.** Let $U(x)$ have a minimum at $x_0$, so $\\frac{dU}{dx} = 0$ there. For a small displacement $s = x - x_0$, the force is $F = -\\frac{dU}{dx} \\approx -\\left(\\frac{d^2U}{dx^2}\\right)_{x_0} s$, because the slope of $U$ starts at zero and changes at the rate given by the second derivative. This is $-k_{\\text{eff}}\\,s$, so $\\omega = \\sqrt{k_{\\text{eff}}/m}$.",
+      "workedExamples": [
+        {
+          "title": "Period from how far a spring sags",
+          "prompt": "When a mass is hung from a vertical spring and allowed to come to rest, it stretches the spring by $9.8\\ \\text{cm}$. The mass is then pulled down a little and released. What is the period of its oscillation? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "At rest the spring holds up the weight: $k\\,\\Delta\\ell = mg$, so $\\dfrac{k}{m} = \\dfrac{g}{\\Delta\\ell}$. Neither $k$ nor $m$ is needed on its own.",
+            "Gravity only shifts the equilibrium, so the motion is SHM with $\\omega = \\sqrt{k/m} = \\sqrt{g/\\Delta\\ell} = \\sqrt{\\dfrac{9.8\\ \\text{m/s}^2}{0.098\\ \\text{m}}} = 10\\ \\text{rad/s}$.",
+            "$T = \\dfrac{2\\pi}{\\omega} = 2\\pi\\sqrt{\\dfrac{\\Delta\\ell}{g}} = 0.63\\ \\text{s}$. The frequency is $f = 1/T = 1.6\\ \\text{Hz}$.",
+            "How far the mass was pulled down was never given, because it sets the amplitude, not the period. A heavier mass on the same spring would sag further and oscillate more slowly."
+          ],
+          "answer": "$T = 2\\pi\\sqrt{\\Delta\\ell/g} = 0.63\\ \\text{s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "dl": {
+                "value": 0.098,
+                "unit": "m"
+              }
+            },
+            "expr": "2*pi*sqrt(dl/g)",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "Finding an unknown mass from two periods",
+          "prompt": "A light tray is fixed to the top of a vertical spring. With the tray empty, the system oscillates with a period of $0.60\\ \\text{s}$. When a $0.50\\ \\text{kg}$ calibration mass is placed on the tray, the period becomes $0.90\\ \\text{s}$. Determine the mass of the tray.",
+          "steps": [
+            "Although the spring is vertical, gravity only shifts the equilibrium position, so the period is $T = 2\\pi\\sqrt{m/k}$ in both cases. Let the tray's mass be $m$ and the added mass be $M = 0.50\\ \\text{kg}$.",
+            "Squaring the period formula gives $T^2 = \\dfrac{4\\pi^2}{k}\\,m$: the square of the period is proportional to the oscillating mass. The spring is the same in both trials, so $\\dfrac{T_2^2}{T_1^2} = \\dfrac{m + M}{m}$.",
+            "$\\dfrac{(0.90\\ \\text{s})^2}{(0.60\\ \\text{s})^2} = 2.25 = 1 + \\dfrac{M}{m}$, so $\\dfrac{M}{m} = 1.25$.",
+            "$m = \\dfrac{0.50\\ \\text{kg}}{1.25} = 0.40\\ \\text{kg}$.",
+            "Check: the total mass rose from $0.40\\ \\text{kg}$ to $0.90\\ \\text{kg}$, a factor of $2.25$, and the period rose by $\\sqrt{2.25} = 1.5$, as measured."
+          ],
+          "answer": "$m = 0.40\\ \\text{kg}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "T1": {
+                "value": 0.6,
+                "unit": "s"
+              },
+              "T2": {
+                "value": 0.9,
+                "unit": "s"
+              },
+              "M": {
+                "value": 0.5,
+                "unit": "kg"
+              }
+            },
+            "expr": "M*T1^2/(T2^2 - T1^2)",
+            "unit": "kg"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "period-depends-on-amplitude",
+          "wrong": "Pulling the block further back makes each oscillation take longer, because the block has further to go.",
+          "right": "It does have further to go, but the restoring force is larger in the same proportion, so it moves faster at every stage and the period is unchanged. The amplitude is not in the period formula."
+        },
+        {
+          "tag": "pendulum-period-depends-on-mass",
+          "wrong": "Mass does not affect the period of an oscillator, so a heavier block on the same spring oscillates just as quickly.",
+          "right": "That is true of a pendulum, not of a spring. The spring's force does not grow with the block's mass, so a heavier block accelerates less and takes longer: $T = 2\\pi\\sqrt{m/k}$."
+        },
+        {
+          "tag": "period-frequency-confusion",
+          "wrong": "The angular frequency $\\omega$ is the number of oscillations per second.",
+          "right": "That is the frequency $f$. The angular frequency is $2\\pi$ times larger, $\\omega = 2\\pi f$, and is measured in radians per second. An oscillator with $\\omega = 10\\ \\text{rad/s}$ completes only about $1.6$ cycles each second."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The mass on a spring is replaced by one four times as large. What happens to the period?",
+          "a": "It doubles. $T = 2\\pi\\sqrt{m/k}$ grows with the square root of the mass, and $\\sqrt{4} = 2$."
+        },
+        {
+          "q": "An oscillator completes 20 cycles in $8.0\\ \\text{s}$. Find its period, frequency and angular frequency.",
+          "a": "$T = (8.0\\ \\text{s})/20 = 0.40\\ \\text{s}$, $f = 1/T = 2.5\\ \\text{Hz}$, and $\\omega = 2\\pi f = 16\\ \\text{rad/s}$."
+        },
+        {
+          "q": "A particle's equation of motion is $\\frac{d^2x}{dt^2} = -16x$ in SI units. What is the period?",
+          "a": "$\\omega^2 = 16\\ \\text{s}^{-2}$, so $\\omega = 4\\ \\text{rad/s}$ and $T = 2\\pi/\\omega = 1.6\\ \\text{s}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=x[m] xr=-0.2,4.2 yr=-0.15,0.19\nfn 0.1*cos({{sqrt(20/m)}}*t) 0..4\nvl {{2*pi*sqrt(m/20)}} \"T\"\nnote 2.6,0.17 \"T = {{round(100*2*pi*sqrt(m/20))/100}} s\"\nxt 0 1 2 3 4\nyt -0.1 0 0.1",
+        "caption": "A block on a spring with $k = 20\\ \\text{N/m}$, released from $0.10\\ \\text{m}$. Change the block's mass: the cycles stretch out as the mass grows, but only as its square root.",
+        "params": [
+          {
+            "name": "m",
+            "label": "Mass of the block",
+            "min": 0.1,
+            "max": 2,
+            "step": 0.1,
+            "default": 0.5,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.8",
+        "7.1"
+      ],
+      "teacherNotes": "Before showing the formula, ask the class to predict what doubling the amplitude does to the period and then time ten cycles both ways; the result surprises most students and makes the cancellation in the derivation worth following. The usual errors are putting $f$ where $\\omega$ belongs and scaling linearly instead of with the square root (four times the mass, four times the period). Plotting $T^2$ against $m$ to get a straight line of slope $4\\pi^2/k$ is a standard experimental-design question; set 7B practises the scaling behind it, asking how the period changes when the mass, spring constant or amplitude changes."
+    },
+    {
+      "topic": "7.3",
+      "bigIdea": "The position of a simple harmonic oscillator is a sinusoid, $x(t) = A\\cos(\\omega t + \\phi)$, and differentiating it gives a velocity and an acceleration that are sinusoids of the same frequency, a quarter and a half cycle out of step with the position.",
+      "picture": {
+        "diagram": "plot x=t[s] y=x[m] xr=-0.1,2.3 yr=-0.15,0.17\nfn 0.1*cos(pi*t) 0..2\npt 0,0.1\npt 1,-0.1\nnote 0.42,0.125 \"at rest\"\nnote 0.95,0.02 \"fastest\"\nnote 1,-0.13 \"at rest\"\nxt 0 1 2\nyt -0.1:-A 0 0.1:A",
+        "caption": "Position against time for $x(t) = (0.10\\ \\text{m})\\cos(\\pi t)$, which has $A = 0.10\\ \\text{m}$ and $T = 2.0\\ \\text{s}$. The velocity is the slope of this graph: zero at the peaks and troughs, steepest where the curve crosses $x = 0$."
+      },
+      "explanation": "The solution of the SHM equation is $x(t) = A\\cos(\\omega t + \\phi)$, and each constant has a job. The **amplitude** $A$ is the greatest distance from equilibrium. The angular frequency $\\omega$ is fixed by the system ($\\sqrt{k/m}$ for a spring) and sets the period, $T = 2\\pi/\\omega$. The **phase constant** $\\phi$ says where in its cycle the oscillator is at $t = 0$. Released from rest at $x = +A$, $\\phi = 0$ and $x = A\\cos(\\omega t)$. Passing through equilibrium at $t = 0$ moving in the positive direction, $\\phi = -\\pi/2$, which is the same as $x = A\\sin(\\omega t)$.\n\nVelocity and acceleration come from differentiating: $v(t) = \\frac{dx}{dt} = -A\\omega\\sin(\\omega t + \\phi)$ and $a(t) = \\frac{dv}{dt} = -A\\omega^2\\cos(\\omega t + \\phi) = -\\omega^2 x$. Sine is largest where cosine is zero, so the speed peaks, at $v_{\\text{max}} = A\\omega$, as the object passes through equilibrium, and is zero at the turning points. The acceleration does the opposite: it is zero at equilibrium and reaches $a_{\\text{max}} = A\\omega^2$ at the turning points, always directed back toward $x = 0$. The velocity graph for the motion in the picture shows the quarter-cycle shift.\n\n```dg\nplot x=t[s] y=v[m/s] xr=-0.1,2.3 yr=-0.45,0.45\nfn -0.314*sin(pi*t) 0..2\nxt 0 0.5 1 1.5 2\nyt -0.314:-A\\omega 0 0.314:A\\omega\n```\n\nTo read a graph, take $A$ from the height of a peak and $T$ from the time between neighbouring peaks, then $\\omega = 2\\pi/T$. On a position graph the velocity is the slope; on a velocity graph the acceleration is the slope. To write the function from a description, fix $A$ and $\\phi$ from the position and velocity at $t = 0$. The quantity $\\omega t + \\phi$ is in radians, so a calculator must be in radian mode.",
+      "equations": [
+        {
+          "latex": "x(t) = A\\cos(\\omega t + \\phi)",
+          "meaning": "The displacement from equilibrium of a simple harmonic oscillator at any time.",
+          "variables": [
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude (greatest displacement)",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "phase constant, set by the conditions at $t = 0$",
+              "unit": "rad"
+            }
+          ],
+          "useWhen": "You need the position at a given time, or want to write the motion from its amplitude, period and starting conditions.",
+          "notWhen": "Do not drop $\\phi$ unless the object starts at rest at $x = +A$. Do not evaluate the cosine with a calculator set to degrees."
+        },
+        {
+          "latex": "v(t) = \\frac{\\mathrm{d}x}{\\mathrm{d}t} = -A\\omega\\sin(\\omega t + \\phi)",
+          "meaning": "The velocity is the time derivative of the position: a sinusoid of the same frequency, a quarter cycle ahead.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "phase constant",
+              "unit": "rad"
+            }
+          ],
+          "useWhen": "You want the velocity at a given time, or the direction of motion at a given instant.",
+          "notWhen": "It needs the same $A$, $\\omega$ and $\\phi$ as the position function; if the position is written with a sine, differentiate that form instead."
+        },
+        {
+          "latex": "a(t) = \\frac{\\mathrm{d}v}{\\mathrm{d}t} = -A\\omega^2\\cos(\\omega t + \\phi) = -\\omega^2 x",
+          "meaning": "The acceleration is the derivative of the velocity; it is always proportional to the displacement and opposite to it.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "acceleration",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "v",
+              "name": "velocity",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "\\phi",
+              "name": "phase constant",
+              "unit": "rad"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want the acceleration at a time, or at a known position (use $a = -\\omega^2 x$).",
+          "notWhen": "Do not treat this acceleration as constant over any interval of the motion."
+        },
+        {
+          "latex": "v_{\\text{max}} = A\\omega, \\qquad a_{\\text{max}} = A\\omega^2",
+          "meaning": "The greatest speed (at equilibrium) and the greatest acceleration (at the turning points).",
+          "variables": [
+            {
+              "symbol": "v_{\\text{max}}",
+              "name": "maximum speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a_{\\text{max}}",
+              "name": "maximum magnitude of the acceleration",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "Linking the amplitude to the largest speed or acceleration, or reading one from a graph of another.",
+          "notWhen": "These are peak values at particular instants, not the values at an arbitrary time or position."
+        }
+      ],
+      "derivation": "**Velocity and acceleration.** Start from $x(t) = A\\cos(\\omega t + \\phi)$ and use the chain rule, remembering that the derivative of $\\omega t + \\phi$ with respect to $t$ is $\\omega$:\n\n$$v = \\frac{dx}{dt} = -A\\omega\\sin(\\omega t + \\phi), \\qquad a = \\frac{dv}{dt} = -A\\omega^2\\cos(\\omega t + \\phi).$$\n\nSince sine and cosine never exceed 1 in magnitude, $v_{\\text{max}} = A\\omega$ and $a_{\\text{max}} = A\\omega^2$.\n\n**Amplitude and phase from the start of the motion.** Let the position and velocity at $t = 0$ be $x_0$ and $v_0$. Setting $t = 0$ in the two functions gives\n\n$$x_0 = A\\cos\\phi, \\qquad v_0 = -A\\omega\\sin\\phi.$$\n\nDivide the second by $\\omega$, square both and add. Because $\\cos^2\\phi + \\sin^2\\phi = 1$,\n\n$$x_0^2 + \\left(\\frac{v_0}{\\omega}\\right)^2 = A^2 \\quad\\Longrightarrow\\quad A = \\sqrt{x_0^2 + \\left(\\frac{v_0}{\\omega}\\right)^2}.$$\n\nDividing the second equation by the first instead gives $\\tan\\phi = -\\dfrac{v_0}{\\omega x_0}$. A tangent has two solutions half a cycle apart, so choose the $\\phi$ for which $\\cos\\phi$ has the sign of $x_0$ and $\\sin\\phi$ has the sign of $-v_0$.",
+      "workedExamples": [
+        {
+          "title": "When the block reaches a given position",
+          "prompt": "A block on a spring moves according to $x(t) = (0.080\\ \\text{m})\\cos(5.0t)$, with $t$ in seconds and the angle in radians. At what time does the block first reach $x = -0.040\\ \\text{m}$, and how fast is it moving then?",
+          "steps": [
+            "Read off the constants: $A = 0.080\\ \\text{m}$, $\\omega = 5.0\\ \\text{rad/s}$ and $\\phi = 0$. The block starts at $+A$, at rest.",
+            "Set $x(t) = -0.040\\ \\text{m}$: $\\cos(5.0t) = -0.040/0.080 = -0.50$. In radian mode, $\\cos^{-1}(-0.50) = 2.09\\ \\text{rad}$, so the first time is $t = 2.09/5.0 = 0.42\\ \\text{s}$.",
+            "That is a third of a period, $T = 2\\pi/\\omega = 1.26\\ \\text{s}$: the block has passed equilibrium and is halfway out to $-A$.",
+            "Differentiate for the velocity: $v = -A\\omega\\sin(\\omega t) = -(0.40\\ \\text{m/s})\\sin(2.09) = -0.35\\ \\text{m/s}$, negative because the block is still heading out toward $-A$."
+          ],
+          "answer": "$t = 0.42\\ \\text{s}$, when it is moving at $0.35\\ \\text{m/s}$ in the $-x$ direction",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "A": {
+                "value": 0.08,
+                "unit": "m"
+              },
+              "w": {
+                "value": 5,
+                "unit": "rad/s"
+              },
+              "x": {
+                "value": -0.04,
+                "unit": "m"
+              }
+            },
+            "expr": "acos(x/A)/w",
+            "unit": "s"
+          }
+        },
+        {
+          "title": "Amplitude and frequency from two snapshots",
+          "prompt": "A motion sensor watches a cart oscillating in simple harmonic motion on a spring. When the cart is $0.060\\ \\text{m}$ from equilibrium its speed is $0.40\\ \\text{m/s}$; when it is $0.080\\ \\text{m}$ from equilibrium its speed is $0.30\\ \\text{m/s}$. Determine the angular frequency and the amplitude of the motion.",
+          "steps": [
+            "At any instant the time can be treated as a new $t = 0$, so the relation from the derivation holds at every point of the motion: $x^2 + (v/\\omega)^2 = A^2$.",
+            "Write it for both snapshots: $x_1^2 + v_1^2/\\omega^2 = A^2$ and $x_2^2 + v_2^2/\\omega^2 = A^2$. Subtract to remove $A$: $\\omega^2 = \\dfrac{v_1^2 - v_2^2}{x_2^2 - x_1^2} = \\dfrac{0.16 - 0.090}{0.0064 - 0.0036}\\ \\text{s}^{-2} = 25\\ \\text{s}^{-2}$, so $\\omega = 5.0\\ \\text{rad/s}$.",
+            "Then $A = \\sqrt{x_1^2 + (v_1/\\omega)^2} = \\sqrt{(0.060)^2 + (0.40/5.0)^2}\\ \\text{m} = 0.10\\ \\text{m}$.",
+            "Check with the second snapshot: $\\sqrt{(0.080)^2 + (0.30/5.0)^2} = 0.10\\ \\text{m}$, as it must be.",
+            "The signs of $x$ and $v$ were not needed: only squares enter."
+          ],
+          "answer": "$\\omega = 5.0\\ \\text{rad/s}$ and $A = 0.10\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "x1": {
+                "value": 0.06,
+                "unit": "m"
+              },
+              "v1": {
+                "value": 0.4,
+                "unit": "m/s"
+              },
+              "x2": {
+                "value": 0.08,
+                "unit": "m"
+              },
+              "v2": {
+                "value": 0.3,
+                "unit": "m/s"
+              }
+            },
+            "expr": "sqrt((x2^2*v1^2 - x1^2*v2^2)/(v1^2 - v2^2))",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The oscillator moves fastest at the ends of its motion, where the force on it is largest.",
+          "right": "A large force means a large acceleration, not a large speed. At the ends the object is momentarily at rest; the force then speeds it up all the way in to equilibrium, where the speed peaks at $A\\omega$."
+        },
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "At a turning point the velocity is zero, so the acceleration is zero there too.",
+          "right": "Zero velocity does not mean zero acceleration. At a turning point the velocity is changing sign, and the acceleration has its greatest magnitude, $A\\omega^2$."
+        },
+        {
+          "tag": "initial-conditions-ignored",
+          "wrong": "Every SHM problem starts from $x = A\\cos(\\omega t)$.",
+          "right": "That form assumes the object is at $x = +A$ and at rest when $t = 0$. Any other start needs a phase constant; an object passing through equilibrium at $t = 0$, for example, is described by a sine."
+        },
+        {
+          "wrong": "The phase $\\omega t + \\phi$ is an angle you could measure somewhere on the apparatus.",
+          "right": "Nothing in a block-and-spring system turns through that angle. The phase is just the argument of the cosine: it tracks how far through its cycle the oscillator is, with one full cycle counted as $2\\pi$ radians."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An oscillator has amplitude $0.050\\ \\text{m}$ and angular frequency $4.0\\ \\text{rad/s}$. What are its maximum speed and maximum acceleration, and where does each occur?",
+          "a": "$v_{\\text{max}} = A\\omega = 0.20\\ \\text{m/s}$, at the equilibrium position. $a_{\\text{max}} = A\\omega^2 = 0.80\\ \\text{m/s}^2$, at the turning points."
+        },
+        {
+          "q": "At $t = 0$ an oscillator is at $x = 0$ and moving in the negative direction. What is its phase constant in $x = A\\cos(\\omega t + \\phi)$?",
+          "a": "$\\phi = +\\pi/2$. Then $x(0) = A\\cos(\\pi/2) = 0$ and $v(0) = -A\\omega\\sin(\\pi/2) = -A\\omega$, which is negative as required."
+        },
+        {
+          "q": "On a position–time graph of SHM, how do you find the instants at which the acceleration is zero?",
+          "a": "Look for where the graph crosses $x = 0$. Since $a = -\\omega^2 x$, the acceleration is zero exactly when the displacement is zero (these are also the points where the graph is steepest and stops curving)."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=x[m] xr=-0.2,4.2 yr=-0.15,0.21\nfn 0.1*cos(pi*t+({{phi}})) 0..4\npt 0,{{0.1*cos(phi)}}\nnote 2,0.185 \"x_0 = {{round(1000*0.1*cos(phi))/1000}} m,  v_0 = {{round(-100*0.1*pi*sin(phi))/100}} m/s\"\nxt 0 1 2 3 4\nyt -0.1 0 0.1",
+        "caption": "$x(t) = (0.10\\ \\text{m})\\cos(\\pi t + \\phi)$. Change the phase constant: the curve keeps its amplitude and period and slides along the time axis, and the starting position and velocity change with it.",
+        "params": [
+          {
+            "name": "phi",
+            "label": "Phase constant",
+            "min": -3.1,
+            "max": 3.1,
+            "step": 0.1,
+            "default": 0,
+            "unit": "rad"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "1.3",
+        "7.1",
+        "7.2"
+      ],
+      "teacherNotes": "Have students sketch $x$, $v$ and $a$ on aligned time axes and mark, on all three, the instants of maximum speed and maximum acceleration; most errors in this topic are placing those at the wrong points. Ask \"what is the slope doing here?\" rather than \"what is the formula?\". On calculations, the two reliable slips are a calculator left in degree mode and a phase constant taken from $\\tan^{-1}$ without checking the quadrant, so require a check of the answer against the given data at the end, as in the second example. Set 7C practises these."
+    },
+    {
+      "topic": "7.4",
+      "bigIdea": "With no friction, the mechanical energy of a simple harmonic oscillator stays constant at $E = \\tfrac{1}{2}kA^2$ while it passes back and forth between kinetic energy and potential energy.",
+      "picture": {
+        "diagram": "bars energy \"spring–block system\"\ninitial U_s 4 K 0\nfinal U_s 1 K 3",
+        "caption": "Energy bars for a block released from rest at $x = A$ (initial) and later passing $x = A/2$ (final). Halving the displacement cuts the spring potential energy to a quarter, so three quarters of the energy is now kinetic. The total is unchanged."
+      },
+      "explanation": "Take the block and the spring together as the system, on a frictionless surface. Its mechanical energy is the block's kinetic energy plus the spring's potential energy, $E = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2$, and nothing removes any of it. At a turning point the block is at rest at $x = \\pm A$, so all the energy is potential: $E = \\tfrac{1}{2}kA^2$. At equilibrium the spring is relaxed, so all of it is kinetic: $E = \\tfrac{1}{2}mv_{\\text{max}}^2$. Setting these equal gives $v_{\\text{max}} = A\\sqrt{k/m} = A\\omega$, the same result that differentiating $x(t)$ gave.\n\nIn between, the energy is shared, and conservation gives the speed at any position without needing the time: $\\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}kA^2$, so $v = \\pm\\omega\\sqrt{A^2 - x^2}$. The sharing is not linear in $x$, because the potential energy goes as $x^2$. The graph shows both energies against position: the potential energy is a parabola, and the kinetic energy is whatever is left under the constant total.\n\n```dg\nplot x=x y=energy xr=-1.25,1.25 yr=0,1.25\nfn x^2 -1..1 \"U_s\"\nfn 1-x^2 -1..1 \"K\" dash\nhl 1 \"E\"\nxt -1:-A 0 1:A\nyt none\n```\n\nBecause $E = \\tfrac{1}{2}kA^2$, the energy grows with the square of the amplitude. Doubling the amplitude quadruples the energy and doubles the maximum speed, yet leaves the period alone. In time, the kinetic and potential energies each rise and fall twice per cycle of the motion. For a mass on a vertical spring, measure $y$ from the hanging equilibrium position; then $\\tfrac{1}{2}ky^2$ already accounts for the spring and gravity together.",
+      "equations": [
+        {
+          "latex": "E = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}kA^2",
+          "meaning": "The total mechanical energy is the sum of kinetic and spring potential energy at any instant, and equals the potential energy at the turning points.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "total mechanical energy of the oscillator",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "velocity at displacement $x$",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You want to relate speed and position, find the amplitude from a known speed and position, or compare energies of oscillators.",
+          "notWhen": "Friction or drag is doing work on the system: the mechanical energy and the amplitude then decrease with time."
+        },
+        {
+          "latex": "v = \\pm\\,\\omega\\sqrt{A^2 - x^2}",
+          "meaning": "The velocity at any displacement, from conservation of energy; the sign depends on which way the object is moving.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "velocity at displacement $x$",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular frequency, $\\sqrt{k/m}$ for a spring",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "A",
+              "name": "amplitude",
+              "unit": "m"
+            },
+            {
+              "symbol": "x",
+              "name": "displacement from equilibrium",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know where the oscillator is and want how fast it is moving, with no time given.",
+          "notWhen": "You need the direction of motion or the time; energy cannot tell you either."
+        },
+        {
+          "latex": "U_s = \\tfrac{1}{2}kx^2",
+          "meaning": "The potential energy stored in a spring stretched or compressed by x from its relaxed length.",
+          "variables": [
+            {
+              "symbol": "U_s",
+              "name": "spring potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "x",
+              "name": "stretch or compression of the spring",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Finding how the total energy is divided at a given displacement.",
+          "notWhen": "On a vertical spring, do not add $mgy$ as well if $x$ is measured from the hanging equilibrium; that would count gravity twice."
+        }
+      ],
+      "derivation": "**The energy is constant.** Substitute $x = A\\cos(\\omega t + \\phi)$ and $v = -A\\omega\\sin(\\omega t + \\phi)$ into the two energies, using $m\\omega^2 = k$:\n\n$$K = \\tfrac{1}{2}mv^2 = \\tfrac{1}{2}mA^2\\omega^2\\sin^2(\\omega t + \\phi) = \\tfrac{1}{2}kA^2\\sin^2(\\omega t + \\phi),$$\n\n$$U_s = \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}kA^2\\cos^2(\\omega t + \\phi).$$\n\nAdding them, and using $\\sin^2 + \\cos^2 = 1$,\n\n$$E = K + U_s = \\tfrac{1}{2}kA^2.$$\n\nThe time has disappeared: the total never changes, although each part does.\n\n**From energy back to the equation of motion.** The argument also runs the other way. If $E = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2$ is constant, its time derivative is zero. Using the chain rule, with $\\frac{dx}{dt} = v$ and $\\frac{dv}{dt} = a$,\n\n$$\\frac{dE}{dt} = mv\\,\\frac{dv}{dt} + kx\\,\\frac{dx}{dt} = v\\,(ma + kx) = 0.$$\n\nThe velocity is not zero throughout the motion, so $ma + kx = 0$, which is $\\frac{d^2x}{dt^2} = -\\frac{k}{m}x$. This gives a second way to find $\\omega$ for an unfamiliar oscillator: write its energy in the form $\\tfrac{1}{2}(\\text{inertia})v^2 + \\tfrac{1}{2}(\\text{stiffness})x^2$, and $\\omega^2$ is the stiffness divided by the inertia.",
+      "workedExamples": [
+        {
+          "title": "Amplitude from a sharp tap",
+          "prompt": "A $0.20\\ \\text{kg}$ block sits at rest at the equilibrium position of a horizontal spring of spring constant $45\\ \\text{N/m}$ on a frictionless surface. A sharp tap gives it a speed of $1.5\\ \\text{m/s}$. How far from equilibrium does it travel before it turns around?",
+          "steps": [
+            "No time is asked for, only a distance, so use conservation of energy for the block–spring system. Just after the tap the block is at $x = 0$, so all the energy is kinetic: $E = \\tfrac{1}{2}mv_0^2$.",
+            "At a turning point the block is momentarily at rest, so all the energy is in the spring: $\\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv_0^2$.",
+            "Solve for the amplitude: $A = v_0\\sqrt{\\dfrac{m}{k}} = (1.5\\ \\text{m/s})\\sqrt{\\dfrac{0.20\\ \\text{kg}}{45\\ \\text{N/m}}} = (1.5\\ \\text{m/s})(0.0667\\ \\text{s}) = 0.10\\ \\text{m}$.",
+            "Check: this is $A = v_{\\text{max}}/\\omega$ with $\\omega = \\sqrt{k/m} = 15\\ \\text{rad/s}$, the same as $v_{\\text{max}} = A\\omega$ read backwards. A tap twice as hard would double the amplitude, not quadruple it."
+          ],
+          "answer": "The block travels $0.10\\ \\text{m}$ from equilibrium",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
+              },
+              "k": {
+                "value": 45,
+                "unit": "N/m"
+              },
+              "v_0": {
+                "value": 1.5,
+                "unit": "m/s"
+              }
+            },
+            "expr": "v_0*sqrt(m/k)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Where the kinetic energy is three times the potential energy",
+          "prompt": "A $0.50\\ \\text{kg}$ block attached to a spring of spring constant $200\\ \\text{N/m}$ oscillates on a frictionless horizontal surface. It passes through the equilibrium position at $2.4\\ \\text{m/s}$. Determine the distance from equilibrium at which the block's kinetic energy is three times the spring's potential energy.",
+          "steps": [
+            "At equilibrium the spring is relaxed, so all the energy is kinetic: $E = \\tfrac{1}{2}mv_{\\text{max}}^2 = \\tfrac{1}{2}(0.50\\ \\text{kg})(2.4\\ \\text{m/s})^2 = 1.44\\ \\text{J}$.",
+            "With no friction this equals the potential energy at a turning point, $\\tfrac{1}{2}kA^2 = E$, so $A = v_{\\text{max}}\\sqrt{\\dfrac{m}{k}} = (2.4\\ \\text{m/s})\\sqrt{\\dfrac{0.50\\ \\text{kg}}{200\\ \\text{N/m}}} = 0.12\\ \\text{m}$.",
+            "If $K = 3U_s$, then $E = K + U_s = 4U_s$, so the potential energy is one quarter of the total: $\\tfrac{1}{2}kx^2 = \\tfrac{1}{4}\\left(\\tfrac{1}{2}kA^2\\right)$.",
+            "Cancelling $\\tfrac{1}{2}k$ gives $x^2 = \\tfrac{1}{4}A^2$, so $|x| = \\dfrac{A}{2} = 0.060\\ \\text{m}$, on either side of equilibrium."
+          ],
+          "answer": "$|x| = 0.060\\ \\text{m}$, half the amplitude",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.5,
+                "unit": "kg"
+              },
+              "k": {
+                "value": 200,
+                "unit": "N/m"
+              },
+              "v": {
+                "value": 2.4,
+                "unit": "m/s"
+              }
+            },
+            "expr": "v*sqrt(m/k)/2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "energy-scaled-linearly",
+          "wrong": "Halfway between equilibrium and the turning point, the energy is half kinetic and half potential.",
+          "right": "Potential energy goes as $x^2$, so at $x = A/2$ it is only a quarter of the total and the other three quarters is kinetic. The even split happens further out, at $x = A/\\sqrt{2} \\approx 0.71A$."
+        },
+        {
+          "tag": "energy-scaled-linearly",
+          "wrong": "Doubling the amplitude doubles the oscillator's energy.",
+          "right": "$E = \\tfrac{1}{2}kA^2$, so doubling the amplitude gives four times the energy. It is the maximum speed, $A\\omega$, that doubles."
+        },
+        {
+          "tag": "period-depends-on-amplitude",
+          "wrong": "An oscillator given more energy moves faster, so it completes each cycle in less time.",
+          "right": "More energy means a larger amplitude: the object moves faster but also travels further, in exactly the same proportion. The period depends only on the mass and the stiffness."
+        },
+        {
+          "tag": "shm-max-at-wrong-point",
+          "wrong": "The kinetic energy is greatest at the turning points, because that is where the spring pushes hardest.",
+          "right": "At the turning points the object is at rest, so its kinetic energy is zero and the potential energy is at its maximum. The kinetic energy peaks at equilibrium, where the spring exerts no force at all."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A spring with $k = 100\\ \\text{N/m}$ carries a block oscillating with amplitude $0.20\\ \\text{m}$. What is the total mechanical energy, and how much of it is kinetic when the block is at $x = 0.10\\ \\text{m}$?",
+          "a": "$E = \\tfrac{1}{2}kA^2 = 2.0\\ \\text{J}$. At $x = 0.10\\ \\text{m}$, $U_s = \\tfrac{1}{2}kx^2 = 0.50\\ \\text{J}$, so $K = 1.5\\ \\text{J}$."
+        },
+        {
+          "q": "The amplitude of an oscillator is tripled. By what factor does each of these change: the total energy, the maximum speed, the period?",
+          "a": "The energy increases by a factor of 9, the maximum speed by a factor of 3, and the period does not change."
+        },
+        {
+          "q": "During one full cycle of the motion, how many times is the kinetic energy at its maximum?",
+          "a": "Twice: once each time the object passes through equilibrium, moving one way and then the other. The energies vary at twice the frequency of the motion."
+        }
+      ],
+      "tryIt": {
+        "diagram": "bars energy \"released from x = A; now at x/A = {{f}}\"\ninitial U_s 4 K 0\nfinal U_s {{4*f^2}} K {{4-4*f^2}}",
+        "caption": "Slide the block from equilibrium ($x = 0$) out to the turning point ($x = A$). The potential energy grows as the square of the displacement, the kinetic energy makes up the rest, and the total never changes.",
+        "params": [
+          {
+            "name": "f",
+            "label": "Position, as a fraction of the amplitude",
+            "min": 0,
+            "max": 1,
+            "step": 0.05,
+            "default": 0.5,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "3.1",
+        "3.3",
+        "3.4",
+        "7.3"
+      ],
+      "teacherNotes": "Ask where the energy is \"half and half\" before doing any algebra; nearly everyone says the midpoint, and the bar chart at $x = A/2$ settles it. Students also mix up what scales with $A$ and what with $A^2$, so have them fill in a table for doubled amplitude: energy, maximum speed, maximum acceleration, period. In calculus-based responses, differentiating the energy to recover the equation of motion is worth practising, since it is the quickest route to $\\omega$ for systems with rotating parts. Set 7D covers energy alongside pendulums."
+    },
+    {
+      "topic": "7.5",
+      "bigIdea": "A pendulum swinging through small angles is a simple harmonic oscillator because gravity's restoring torque is then proportional to the angular displacement, which gives $T = 2\\pi\\sqrt{L/g}$ for a simple pendulum and $T = 2\\pi\\sqrt{I/(Mgd)}$ for any rigid body swinging about a pivot.",
+      "picture": {
+        "diagram": "scene\nceil 3 -1.2..1.2\npend Q 0,3 2 -25 \"m\" lab=\\theta\ndash 0,3 0,1.35\ntext -0.15,2.1 \"L\"\nf Q.bob 270 0.9\nf Q.bob -25 0.38\ntext -0.6,0.3 \"mg\"\ntext -0.05,0.98 \"mg sin\\theta\"",
+        "caption": "A simple pendulum displaced by an angle $\\theta$. The string's tension acts along the string, so the only force along the bob's arc is the component of gravity $mg\\sin\\theta$, which always points back toward the lowest point."
+      },
+      "explanation": "A **simple pendulum** is a small bob of mass $m$ on a light string of length $L$. Displaced by an angle $\\theta$ from the vertical, the bob is pulled back along its arc by the component of gravity $mg\\sin\\theta$. That force is not proportional to $\\theta$, so the motion is not exactly simple harmonic. For small angles, though, $\\sin\\theta \\approx \\theta$ when $\\theta$ is in radians: at $10^\\circ$, $\\theta = 0.1745\\ \\text{rad}$ and $\\sin\\theta = 0.1736$, a difference of half a percent. In that range the angle obeys $\\frac{d^2\\theta}{dt^2} = -\\frac{g}{L}\\theta$, which is the SHM equation with $\\omega = \\sqrt{g/L}$.\n\nThe period, $T = 2\\pi\\sqrt{L/g}$, depends only on the length and on $g$. The mass cancels because both the restoring force and the inertia are proportional to $m$, and the amplitude does not appear as long as the swing stays small. Timing a pendulum of known length is a standard way to measure $g$.\n\nA **physical pendulum** is any rigid body swinging about a fixed pivot, such as a rod or a hoop on a nail. Gravity acts at the centre of mass, a distance $d$ from the pivot, and its torque about the pivot is $-Mgd\\sin\\theta$. What resists is the body's rotational inertia $I$ about the pivot, and the result is $T = 2\\pi\\sqrt{I/(Mgd)}$. Total mass still cancels, since $I$ is proportional to $M$, but the way the mass is spread out matters. Setting $I = mL^2$ and $d = L$ recovers the simple pendulum.\n\nA warning about symbols: $\\omega$ here is the constant angular frequency of the oscillation, not the pendulum's angular velocity $\\frac{d\\theta}{dt}$, which changes throughout the swing.",
+      "equations": [
+        {
+          "latex": "T_p = 2\\pi\\sqrt{\\frac{L}{g}}",
+          "meaning": "The period of a simple pendulum swinging through small angles depends only on its length and the gravitational field strength.",
+          "variables": [
+            {
+              "symbol": "T_p",
+              "name": "period of the simple pendulum",
+              "unit": "s"
+            },
+            {
+              "symbol": "L",
+              "name": "length from the pivot to the centre of the bob",
+              "unit": "m"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength (free-fall acceleration)",
+              "unit": "m/s^2"
+            }
+          ],
+          "useWhen": "A small bob swings on a light string or rod through small angles (roughly 15° or less).",
+          "notWhen": "The swinging object's size is not small compared with the length (use the physical pendulum), or the angle is large (the period is then longer than this)."
+        },
+        {
+          "latex": "T = 2\\pi\\sqrt{\\frac{I}{Mgd}}",
+          "meaning": "The period of a rigid body swinging about a pivot depends on its rotational inertia about the pivot and on how far its centre of mass is from the pivot.",
+          "variables": [
+            {
+              "symbol": "T",
+              "name": "period of the physical pendulum",
+              "unit": "s"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the pivot axis",
+              "unit": "kg·m^2"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass of the body",
+              "unit": "kg"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "d",
+              "name": "distance from the pivot to the centre of mass",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "An extended object (rod, hoop, disc, plate) swings through small angles about a fixed horizontal axis.",
+          "notWhen": "Do not use the rotational inertia about the centre of mass; shift it to the pivot with the parallel-axis theorem, $I = I_{\\text{cm}} + Md^2$."
+        },
+        {
+          "latex": "\\frac{\\mathrm{d}^2\\theta}{\\mathrm{d}t^2} = -\\frac{g}{L}\\,\\theta",
+          "meaning": "The small-angle equation of motion of a simple pendulum: the SHM equation for the angle, with the angular frequency squared equal to g/L.",
+          "variables": [
+            {
+              "symbol": "\\theta",
+              "name": "angular displacement from the vertical",
+              "unit": "rad"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s^2"
+            },
+            {
+              "symbol": "L",
+              "name": "length of the pendulum",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Showing that a pendulum's motion is simple harmonic, or writing $\\theta(t) = \\theta_{\\text{max}}\\cos(\\omega t + \\phi)$ with $\\omega = \\sqrt{g/L}$.",
+          "notWhen": "The angle is large enough that $\\sin\\theta$ and $\\theta$ differ noticeably; the exact equation has $\\sin\\theta$ in place of $\\theta$."
+        }
+      ],
+      "derivation": "**Simple pendulum.** Take torques about the pivot, with $\\theta$ measured from the vertical. The tension acts through the pivot, so it exerts no torque. Gravity acts on the bob with lever arm $L\\sin\\theta$, and its torque tends to reduce $\\theta$: $\\tau = -mgL\\sin\\theta$. The bob is a point mass at distance $L$, so $I = mL^2$. Newton's second law in rotational form, $\\tau = I\\,\\frac{d^2\\theta}{dt^2}$, gives\n\n$$mL^2\\,\\frac{d^2\\theta}{dt^2} = -mgL\\sin\\theta \\quad\\Longrightarrow\\quad \\frac{d^2\\theta}{dt^2} = -\\frac{g}{L}\\sin\\theta.$$\n\nFor small angles $\\sin\\theta \\approx \\theta$, so $\\frac{d^2\\theta}{dt^2} = -\\frac{g}{L}\\theta$. Comparing with the SHM equation, $\\omega^2 = g/L$ and\n\n$$T = \\frac{2\\pi}{\\omega} = 2\\pi\\sqrt{\\frac{L}{g}}.$$\n\n**Physical pendulum.** For a rigid body of mass $M$, gravity acts at the centre of mass, a distance $d$ from the pivot, so $\\tau = -Mgd\\sin\\theta$. With rotational inertia $I$ about the pivot and the same small-angle step,\n\n$$I\\,\\frac{d^2\\theta}{dt^2} = -Mgd\\,\\theta \\quad\\Longrightarrow\\quad \\omega = \\sqrt{\\frac{Mgd}{I}}, \\qquad T = 2\\pi\\sqrt{\\frac{I}{Mgd}}.$$\n\n**Example: a hoop on a nail.** A thin hoop of radius $R$ has $I_{\\text{cm}} = MR^2$. Hung from a point on its rim, $d = R$, and the parallel-axis theorem gives $I = MR^2 + MR^2 = 2MR^2$. Then $T = 2\\pi\\sqrt{\\dfrac{2MR^2}{MgR}} = 2\\pi\\sqrt{\\dfrac{2R}{g}}$, the period of a simple pendulum as long as the hoop's diameter.",
+      "workedExamples": [
+        {
+          "title": "Length of a pendulum with a two-second period",
+          "prompt": "A clockmaker wants a simple pendulum that takes exactly $2.0\\ \\text{s}$ for each complete swing, where $g = 9.8\\ \\text{m/s}^2$. How long must the pendulum be?",
+          "steps": [
+            "For small swings, $T = 2\\pi\\sqrt{L/g}$. The unknown is $L$, so square both sides: $T^2 = \\dfrac{4\\pi^2 L}{g}$.",
+            "Solve for the length: $L = \\dfrac{gT^2}{4\\pi^2}$.",
+            "$L = \\dfrac{(9.8\\ \\text{m/s}^2)(2.0\\ \\text{s})^2}{4\\pi^2} = \\dfrac{39.2\\ \\text{m}}{39.5} = 0.99\\ \\text{m}$."
+          ],
+          "answer": "$L = 0.99\\ \\text{m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "T": {
+                "value": 2,
+                "unit": "s"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "g*T^2/(4*pi^2)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Where to drill a metre stick for the fastest swing",
+          "prompt": "A uniform metre stick ($L = 1.00\\ \\text{m}$, $I_{\\text{cm}} = \\tfrac{1}{12}ML^2$) is hung from a frictionless pin through a hole a distance $d$ from its centre and swings through small angles, with $g = 9.8\\ \\text{m/s}^2$. Find the value of $d$ that gives the shortest period, and calculate that period.\n\n```dg\nscene\nhinge 0,2.2\nrod 0,2.83 0,-0.17\ndot 0,1.33 \"cm\"\ndim 0,2.2 0,1.33 \"d\" off=-30\n```",
+          "steps": [
+            "The stick is a physical pendulum. By the parallel-axis theorem its rotational inertia about the pin is $I = \\tfrac{1}{12}ML^2 + Md^2$, so $T = 2\\pi\\sqrt{\\dfrac{I}{Mgd}} = 2\\pi\\sqrt{\\dfrac{L^2/12 + d^2}{gd}}$. The mass cancels.",
+            "Two effects compete. A small $d$ means a weak gravitational torque, $Mgd\\,\\theta$; a large $d$ means a large $Md^2$. The period is shortest where $f(d) = \\dfrac{L^2/12 + d^2}{d} = \\dfrac{L^2}{12d} + d$ is smallest.",
+            "Set the derivative to zero: $\\dfrac{df}{dd} = -\\dfrac{L^2}{12d^2} + 1 = 0$, so $d = \\dfrac{L}{\\sqrt{12}} = 0.289\\ \\text{m}$ from the centre. The second derivative, $L^2/(6d^3)$, is positive, so this is a minimum.",
+            "There $f = 2d$, so $T_{\\min} = 2\\pi\\sqrt{\\dfrac{2d}{g}} = 2\\pi\\sqrt{\\dfrac{2(0.289\\ \\text{m})}{9.8\\ \\text{m/s}^2}} = 1.53\\ \\text{s}$.",
+            "Check: hung from one end ($d = 0.50\\ \\text{m}$) the same formula gives $1.64\\ \\text{s}$, longer, as it must be."
+          ],
+          "answer": "$d = L/\\sqrt{12} = 0.289\\ \\text{m}$ from the centre, giving $T_{\\min} = 1.53\\ \\text{s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "L": {
+                "value": 1,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "2*pi*sqrt(2*L/(sqrt(12)*g))",
+            "unit": "s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "pendulum-period-depends-on-mass",
+          "wrong": "A heavier bob swings more slowly because it is harder to move.",
+          "right": "It is harder to move, but gravity also pulls on it harder, and the two cancel exactly. The period of a simple pendulum is $2\\pi\\sqrt{L/g}$ for any bob."
+        },
+        {
+          "tag": "period-depends-on-amplitude",
+          "wrong": "Releasing the pendulum from a slightly larger angle makes each swing take noticeably longer.",
+          "right": "For small angles the restoring torque is proportional to the angle, so a larger swing is covered proportionally faster and the period is the same. Only at large angles does the period lengthen."
+        },
+        {
+          "tag": "rotational-inertia-mass-only",
+          "wrong": "For a swinging rod or disc I can use $T = 2\\pi\\sqrt{L/g}$ with $L$ equal to the distance from the pivot to the centre of mass.",
+          "right": "That treats all the mass as if it sat at the centre of mass. The period depends on the rotational inertia about the pivot, $T = 2\\pi\\sqrt{I/(Mgd)}$, so a hoop and a disc of the same radius hung from their rims have different periods."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A simple pendulum is taken to the Moon, where the gravitational field is about one sixth as strong. What happens to its period?",
+          "a": "It increases by a factor of $\\sqrt{6} \\approx 2.4$, since $T = 2\\pi\\sqrt{L/g}$ and $g$ is six times smaller."
+        },
+        {
+          "q": "To double the period of a simple pendulum, how must its length change?",
+          "a": "The length must be four times as great, because the period grows with the square root of the length."
+        },
+        {
+          "q": "Why must the rotational inertia in the physical pendulum formula be taken about the pivot rather than about the centre of mass?",
+          "a": "Newton's second law for rotation relates the torque about an axis to the rotational inertia about that same axis, and the body turns about the pivot."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nceil 3 -1.5..1.5\nground -1.5..1.5 y=0.2\npend Q 0,3 {{L}} 15 lab=\\theta\ndash 0,3 0,{{3-L}}\ntext 0,3.5 \"L = {{L}} m,  T = {{round(100*2*pi*sqrt(L/9.8))/100}} s\"",
+        "caption": "A simple pendulum on Earth ($g = 9.8\\ \\text{m/s}^2$). Change its length and watch the period: four times the length gives twice the period.",
+        "params": [
+          {
+            "name": "L",
+            "label": "Length",
+            "min": 0.5,
+            "max": 2.5,
+            "step": 0.05,
+            "default": 1,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "5.4",
+        "5.6",
+        "7.1",
+        "7.2"
+      ],
+      "teacherNotes": "Ask students to name what provides the restoring effect and what provides the inertia, for the simple pendulum and then for a swinging rod; it makes the two formulas one idea. The most common error on the physical pendulum is using $I_{\\text{cm}}$ instead of the rotational inertia about the pivot, followed by forgetting that $d$ is the distance to the centre of mass and not the length of the object. On derivations, look for an explicit statement of the small-angle approximation: it earns a point and students often skip it. Set 7D practises both kinds of pendulum."
+    }
+  ]
+}

@@ -120,6 +120,22 @@ export const cloneAssignmentBody = z.object({
       (v) => v == null || v === "" || !Number.isNaN(new Date(v).getTime()),
       "must be a valid date",
     ),
+  /**
+   * How many problems of a published course set to copy (its first `count`; never more than it has).
+   * Omitted: the default 5. Ignored for any other source, which is copied whole.
+   */
+  count: z.number().int().min(3).max(100).optional(),
+  /**
+   * The exact problems of a published course set to copy, as positions in the set (0 is its first
+   * problem), in the order the copy should have them. The teacher chose them in the assign dialog.
+   * Wins over `count`; ignored for any other source.
+   */
+  pick: z.array(z.number().int().min(0).max(199)).min(1).max(100).optional(),
+  /**
+   * Create the copy archived: the class has it but students do not see it until the teacher assigns
+   * it ("Edit problems first" in the assign dialog).
+   */
+  hidden: z.boolean().optional(),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────
@@ -196,9 +212,12 @@ export const courseBody = z.object({
   /** Optional: settings every assignment in the class starts with (see src/lib/assignment-defaults.ts). */
   assignmentDefaults: assignmentDefaultsSchema.optional(),
 });
-export const courseAssignmentDefaultsBody = z.object({
-  assignmentDefaults: assignmentDefaultsSchema.nullable(),
-});
+// Either the class's settings (replaced whole, or cleared with null), or only the number of problems
+// the teacher last chose in the assign dialog (remembered beside the settings, which it leaves alone).
+export const courseAssignmentDefaultsBody = z.union([
+  z.strictObject({ assignmentDefaults: assignmentDefaultsSchema.nullable() }),
+  z.strictObject({ problemsPerSet: z.number().int().min(3).max(10) }),
+]);
 // PATCH /api/courses/{id}: the owner edits a class. Only what is sent changes.
 export const updateCourseBody = z
   .object({
@@ -223,6 +242,12 @@ export const coursePlanBody = z.object({
     .nullable()
     .optional(),
   daysOff: z.array(z.unknown()).max(200).nullable().optional(),
+  /**
+   * With a plan: also take the skipped sets away from the class, by archiving the class's copies of
+   * them (hidden from students, work kept). Sent when a teacher skips a set; not when a class starts
+   * a course part-way through, where sets it already did stay.
+   */
+  unassignSkipped: z.boolean().optional(),
 });
 
 // ─── POST /api/courses/{id}/due-dates ──────────────────────────────────────
@@ -343,11 +368,13 @@ const chatHistory = z
   )
   .max(200);
 
-// POST /api/ai/generate (teacher/create sends numbers for count; the others are free text)
+// POST /api/ai/generate (teacher/create sends numbers for count; the others are free text).
+// AI_GENERATE_MAX is also the editor field's maximum.
+export const AI_GENERATE_MAX = 20;
 export const aiGenerateBody = z.object({
   topic: z.string().min(1).max(2000),
   userId: z.string().min(1).max(256),
-  count: z.number().int().min(1).max(50).default(3),
+  count: z.number().int().min(1).max(AI_GENERATE_MAX).default(3),
   difficulty: z.string().max(64).default("Medium"),
   questionType: z.string().max(64).optional(),
   context: z.string().max(20000).nullish(),
@@ -391,6 +418,9 @@ export const tutorBody = z.object({
   mode: z.string().max(32).optional(),
   chatHistory: chatHistory.optional(),
   assignmentContext: z.string().max(100000).nullish(),
+  // Optional: the assignment the student has open. The route reads its AP course from Firestore
+  // (never from the client) to send only that course's diagram reference.
+  assignmentId: z.string().max(256).nullish(),
 });
 
 // ─── POST /api/teacher/raise ───────────────────────────────────────────────
@@ -441,7 +471,7 @@ export const contentGenerateBody = z.object({
   /** Which AP course the topic is in; topic ids repeat between courses. Default AP Physics 1. */
   apCourse: apCourseId.optional(),
   apTopic: apTopicId,
-  count: z.number().int().min(1).max(5),
+  count: z.number().int().min(1).max(10),
   difficulty: z.enum(["easy", "medium", "hard"]).optional(),
 });
 export const contentReviewBody = z.object({

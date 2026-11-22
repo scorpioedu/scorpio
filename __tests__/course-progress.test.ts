@@ -4,9 +4,12 @@ import path from "path";
 import { CURRICULA, getCurriculum } from "../src/data/curricula";
 import {
   curriculumProfile,
+  prefixProfile,
   setProfile,
   setsTargeting,
+  shownProfile,
   typeSummary,
+  type SetProfile,
 } from "../src/data/curricula/profiles";
 import { misconceptionTag, misconceptionsForCourse } from "../src/data/ap";
 import {
@@ -39,9 +42,9 @@ describe("set profiles", () => {
       const own = new Set(misconceptionsForCourse(curriculum.apCourse).map((t) => t.id));
       for (const set of curriculum.sets.filter((s) => s.draftIds.length)) {
         const p = setProfile(id, set.key)!;
-        expect([id, set.key, p.problems]).toEqual([id, set.key, 5]);
-        expect(p.minutes).toBeGreaterThanOrEqual(5);
-        expect(p.minutes).toBeLessThanOrEqual(30);
+        expect([id, set.key, p.problems]).toEqual([id, set.key, set.draftIds.length]);
+        expect(p.minutes).toBeGreaterThanOrEqual(p.problems);
+        expect(p.minutes).toBeLessThanOrEqual(p.problems * 6);
         for (const m of p.misconceptions)
           expect([set.key, m.tag, own.has(m.tag)]).toEqual([set.key, m.tag, true]);
       }
@@ -59,7 +62,7 @@ describe("set profiles", () => {
       expect(p.misconceptions.length).toBeGreaterThan(0);
       for (const m of p.misconceptions) expect(misconceptionTag(m.tag)).toBeTruthy();
     }
-    expect(typeSummary(setProfile(ID, "4A")!)).toBe("2 multiple choice, 3 numeric");
+    expect(typeSummary(setProfile(ID, "4A")!)).toMatch(/^\d+ multiple choice, \d+ numeric$/);
     expect(setProfile(ID, "zz")).toBeUndefined();
     expect(curriculumProfile("nope")).toEqual({});
   });
@@ -70,6 +73,114 @@ describe("set profiles", () => {
     );
     expect(tool.problemMinutes({ type: "numeric", difficulty: "hard" })).toBe(4.5);
     expect(tool.problemMinutes({ type: "essay", difficulty: "odd" })).toBe(4);
+  });
+
+  test("every profile lists its problems one by one, and they add up to the set's figures", () => {
+    for (const { id } of CURRICULA)
+      for (const [key, p] of Object.entries(curriculumProfile(id))) {
+        const where = `${id} ${key}`;
+        expect([where, p.each.length]).toEqual([where, p.problems]);
+        // The tool's summary and the app's sum of a prefix are the same arithmetic.
+        const { each: problems, ...whole } = p;
+        expect([where, tool.summarise(problems)]).toEqual([where, whole]);
+        const sliced = { ...p, each: [...problems, problems[0]] };
+        expect([where, prefixProfile(sliced, p.problems)]).toEqual([where, p]);
+        expect(prefixProfile(p, 99)).toBe(p);
+      }
+  });
+
+  // A made-up pool of 10: two quick multiple-choice problems, then numeric ones that get harder.
+  const each: SetProfile["each"] = [
+    { minutes: 1.5, difficulty: "easy", type: "multiple-choice", tags: ["a"] },
+    { minutes: 1.5, difficulty: "easy", type: "multiple-choice", tags: ["a", "b"] },
+    { minutes: 2, difficulty: "easy", type: "numeric", tags: [] },
+    { minutes: 3, difficulty: "medium", type: "numeric", tags: ["b"] },
+    { minutes: 3, difficulty: "medium", type: "numeric", tags: ["a"] },
+    { minutes: 3, difficulty: "medium", type: "numeric", tags: [] },
+    { minutes: 4.5, difficulty: "hard", type: "numeric", tags: ["c"] },
+    { minutes: 4.5, difficulty: "hard", type: "numeric", tags: ["c"] },
+    { minutes: 3, difficulty: "hard", type: "multiple-choice", tags: ["c"] },
+    { minutes: 4.5, difficulty: "hard", type: "numeric", tags: ["a"] },
+  ];
+  const pool: SetProfile = { ...tool.summarise(each), each };
+
+  test("minutes, difficulty, types and misconceptions are those of the first n problems", () => {
+    expect(prefixProfile(pool, 3)).toMatchObject({
+      problems: 3,
+      minutes: 5,
+      difficulty: { easy: 3, medium: 0, hard: 0 },
+      types: { "multiple-choice": 2, numeric: 1 },
+      misconceptions: [
+        { tag: "a", problems: 2 },
+        { tag: "b", problems: 1 },
+      ],
+    });
+    expect(prefixProfile(pool, 5)).toMatchObject({
+      problems: 5,
+      minutes: 11,
+      difficulty: { easy: 3, medium: 2, hard: 0 },
+      types: { "multiple-choice": 2, numeric: 3 },
+    });
+    expect(typeSummary(prefixProfile(pool, 5))).toBe("2 multiple choice, 3 numeric");
+    expect(prefixProfile(pool, 8)).toMatchObject({ problems: 8, minutes: 23 });
+    expect(prefixProfile(pool, 8).misconceptions[0]).toEqual({ tag: "a", problems: 3 });
+    // Minutes only ever grow with the number of problems.
+    const minutes = pool.each.map((_, i) => prefixProfile(pool, i + 1).minutes);
+    expect(minutes).toEqual([...minutes].sort((a, b) => a - b));
+    expect(prefixProfile(pool, 10).minutes).toBe(31);
+    expect(prefixProfile(pool, 0).problems).toBe(0);
+  });
+
+  test("a set that is not assigned is shown as it is assigned by default; a copy by its own size", () => {
+    // A pool of five reads "5 problems"; a larger one names the default as part of it.
+    const whole = setProfile(ID, "4A")!;
+    const pool = whole.each.length;
+    const p = prefixProfile(whole, 5);
+    const count = pool > 5 ? `5 of ${pool} problems` : "5 problems";
+    expect(shownProfile(ID, "4A")).toEqual({ ...p, pool, count });
+    expect(shownProfile(ID, "4A", 5)).toMatchObject({ problems: 5, minutes: p.minutes });
+    expect(shownProfile(ID, "4A", null)).toMatchObject({ count });
+    const three = shownProfile(ID, "4A", 3)!;
+    expect(three).toMatchObject({ problems: 3, pool, count: "3 problems" });
+    expect(three.minutes).toBeLessThan(p.minutes);
+    expect(three.difficulty.easy + three.difficulty.medium + three.difficulty.hard).toBe(3);
+    // A copy the teacher added a question to: its own count, the pool's figures.
+    expect(shownProfile(ID, "4A", 6)).toMatchObject({ problems: 6, count: "6 problems" });
+    expect(shownProfile(ID, "4A", 1)!.count).toBe("1 problem");
+    expect(shownProfile(ID, "zz")).toBeUndefined();
+  });
+
+  test("with a pool larger than five, the default assignment is named as part of it", () => {
+    jest.isolateModules(() => {
+      jest.doMock("../src/data/curricula/profiles/ap-physics-1.json", () => ({
+        __esModule: true,
+        default: { "4A": pool },
+      }));
+      const profiles =
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require("../src/data/curricula/profiles") as typeof import("../src/data/curricula/profiles");
+      expect(profiles.shownProfile(ID, "4A")).toMatchObject({
+        problems: 5,
+        pool: 10,
+        minutes: 11,
+        count: "5 of 10 problems",
+        types: { "multiple-choice": 2, numeric: 3 },
+      });
+      expect(profiles.shownProfile(ID, "4A", 8)).toMatchObject({
+        problems: 8,
+        minutes: 23,
+        count: "8 problems",
+      });
+      expect(profiles.shownProfile(ID, "4A", 10)).toMatchObject({
+        minutes: 31,
+        count: "10 problems",
+      });
+      // Tag "c" is only on problems 7 to 9: a class with the usual five has none of them.
+      expect(profiles.setsTargeting(ID, "c")).toEqual([]);
+      expect(profiles.setsTargeting(ID, "c", { "4A": 8 })).toEqual([{ key: "4A", problems: 2 }]);
+      expect(profiles.setsTargeting(ID, "a")).toEqual([{ key: "4A", problems: 3 }]);
+    });
+    jest.dontMock("../src/data/curricula/profiles/ap-physics-1.json");
   });
 
   test("sets that target a tag come most problems first", () => {

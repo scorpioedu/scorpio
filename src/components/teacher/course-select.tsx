@@ -45,7 +45,7 @@ export function CourseSelect({
           <CircleOff aria-hidden className="text-muted-foreground" /> No course
         </SelectItem>
         {CURRICULA.map((c) => (
-          <SelectItem key={c.id} value={c.id}>
+          <SelectItem key={c.id} value={c.id} disabled={!hasContent(c) && c.id !== value}>
             <CourseIcon curriculumId={c.id} />
             {c.name}
             <span className="text-xs text-muted-foreground">

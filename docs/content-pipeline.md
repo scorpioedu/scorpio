@@ -4,7 +4,7 @@ Sprint 2 (23–29 Nov 2026). See [launch-plan.md](launch-plan.md) for why: a tea
 
 ## Misconceptions from grading
 
-**Tag list:** `functions/src/misconceptions.ts` holds the conceptual tags of every AP course, each mapped to the units where it usually shows up: 37 for AP Physics 1 (mechanics and fluids), 66 for AP Physics 2 (thermodynamics, electric force/field/potential, circuits, magnetism and induction, geometric optics, waves and physical optics, modern physics) plus four mechanics ideas that carry over, and for AP Physics C: Mechanics the mechanics tags again plus three that need calculus. It also holds the procedural slips the numeric checker sets (sign, power of ten, unit missing/wrong/conversion, sig figs, algebra) and `other`, which belong to every course. The wording is our own and follows the standard physics education research findings. The web app re-exports the list from `src/data/ap`.
+**Tag list:** `functions/src/misconceptions.ts` holds the conceptual tags of every AP course, each mapped to the units where it usually shows up: 61 for AP Physics 1 (mechanics and fluids; two of them, vectors added as numbers and angles not in radians, are procedural), 77 for AP Physics 2 (thermodynamics, electric force/field/potential, circuits, magnetism and induction, geometric optics, waves and physical optics, modern physics) plus 13 ideas it shares with Physics 1, for AP Physics C: Mechanics the mechanics tags again plus two that need calculus, and for AP Physics C: Electricity and Magnetism Physics 2's electricity and magnetism tags plus 14 of its own. 36 of them were added on 21 Nov 2026 from what the guide and problem authors asked for; where an existing tag already meant the same thing, its units or description were widened instead. It also holds the procedural slips the numeric checker sets (sign, power of ten, unit missing/wrong/conversion, sig figs, algebra) and `other`, which belong to every course. The wording is our own and follows the standard physics education research findings. The web app re-exports the list from `src/data/ap`.
 
 Unit numbers repeat between courses, so a tag's units are read per course: `misconceptionUnits(tag, course)` (`[]` any unit, `null` not a tag of that course), `misconceptionsForUnit(unit, course)`, `misconceptionsForCourse(course)`. AP Physics 1 is the default everywhere and its lists are unchanged. See "More than one course" in [courses.md](courses.md).
 
@@ -36,16 +36,79 @@ Where tags come from:
 
 ## Content pipeline: `/admin/content` (admin claim only)
 
-1. **Draft.** Pick a unit (the picker lists every course's units), topic and count (1–5). `POST /api/admin/content/generate { apCourse?, apTopic, count }` asks Gemini for problems of that course in our format (the prompt names the course; AP Physics C: Mechanics is told to use calculus and to write mathematics as plain text; AP Physics 2 is told to give constants and how to key Celsius answers): numeric (value + unit key) or 4-option multiple choice, with a worked solution and tagged distractors. The model does not set tolerance; the default 3% applies unless the reviewer changes it.
+1. **Draft.** Pick a unit (the picker lists every course's units), topic and count (1–10; a set's pool holds 5 to 10 problems). `POST /api/admin/content/generate { apCourse?, apTopic, count }` asks Gemini for problems of that course in our format (the prompt names the course; AP Physics C: Mechanics is told to use calculus and to write mathematics as plain text; AP Physics 2 is told to give constants and how to key Celsius answers): numeric (value + unit key) or 4-option multiple choice, with a worked solution and tagged distractors. The model does not set tolerance; the default 3% applies unless the reviewer changes it.
 2. **Validate.** `validateDraftProblem(problem, topic, course)` rejects drafts whose key is unreadable, isn't one of the options, or has the wrong number of options. Distractors with unknown tags, or that the grader would mark correct, are dropped, with a warning; a tag from another unit or another course, and LaTeX in the text or an option (students see the text as written), are flagged. A distractor written as `{ option }` is read like `{ answer }`.
 3. **Independent check.** A second call solves each problem without seeing the key. Its answer is graded against the key by the real grader, and a disagreement shows as an amber warning.
 4. **Human review.** A person solves the problem, fixes the key, options, distractors and solution if needed, adds a note, and approves. Approval re-runs the checks on the edited problem. Drafts live in the server-only `content_drafts` collection.
-   An approval records who checked it: `reviewKind` is `human` (the review screen) or `ai` (`reviewer: "ai"` on `PATCH /api/admin/content`). AI-reviewed drafts show an amber "AI-reviewed: needs your check" badge, and **publish refuses them outside the local emulator**. A person re-approves each one to make it publishable; reopening clears the mark.
-5. **Publish.** Approved problems from one unit of one course become a global Waypoints assignment (its `apCourse` comes from the course definition; drafts written for another course are refused): auto-graded, AP-tagged, and with the key and distractors in `assignment_keys`. The drafts are then marked published and frozen.
+   An approval records who checked it: `reviewKind` is `human` (the review screen) or `ai` (`reviewer: "ai"` on `PATCH /api/admin/content`); `verified` and `owner-accepted` are set by tools and are shown under those names on the Sets tab, not as a person's approval (see "Answer-key verifier" below and `tools/content-drafts.cjs import --accept-ai-review`). AI-reviewed drafts show an amber "AI-reviewed: needs your check" badge, and **publish refuses them outside the local emulator**. A person re-approves each one to make it publishable; reopening clears the mark.
+5. **Publish.** Approved problems from one unit of one course become a global Waypoints assignment (its `apCourse` comes from the course definition; drafts written for another course are refused): auto-graded, AP-tagged, and with the key and distractors in `assignment_keys`. The drafts are then marked published and frozen. Each draft's worked solution goes to the server-only `assignment_solutions/{assignmentId}` (`{ solutions: { [questionId]: string }, teacherId }`), never to the assignment. A course set that is already published can only be added to: drafts appended to its `draftIds` become questions at the end, after the same checks (see "Admin: publish by set" in [courses.md](courses.md)).
 
 AI calls are billed to `CONTENT_ORG_ID` when set. Otherwise they are uncapped, because the route is admin-only (the same rule as the research route).
 
 **Sets in teaching order.** The sets of each course live in `src/data/curricula/<id>.json`; the **Sets** tab publishes one in a click and teachers get them as a roadmap. See [courses.md](courses.md).
+
+## Answer-key verifier: `tools/verify-content.cjs`
+
+The single independent solve (step 3) missed 7 of the 31 wrong keys of the 17 Nov run and its result goes stale when a draft is edited. The verifier replaces "an AI looked at it" with checks that can be re-run: the answer is **recomputed** from a machine-checkable form of the problem, and at least two solvers who never saw the key must agree with it. A draft that passes everything is marked `reviewKind: "verified"` and can be published without a person re-solving it, for as long as it is not edited.
+
+**The spec** (`problem.spec`, optional; `src/lib/content/spec.ts`). Like the solution, it never reaches students.
+
+```json
+{
+  "givens": { "m": { "value": 0.50, "unit": "kg" }, "vi": { "value": 2.0, "unit": "m/s" }, "vf": { "value": -1.5, "unit": "m/s" } },
+  "expr": "m * (vf - vi)",
+  "unit": "kg*m/s"
+}
+```
+
+- `givens`: every quantity the answer uses, with its unit as written in the text (`""` for a pure number). Units are the grader's (`functions/src/units.ts`), plus Celsius: `"°C"` is a reading on the scale (20 °C is 293.15 K), `"C°"` a difference, and `°C` inside a larger unit (`J/(kg·°C)`) a difference.
+- `expr`: `+ - * / ^`, parentheses, unary minus, numbers such as `3e8`, and `sqrt abs exp ln log sin cos tan asin acos atan atan2 min max round`. No implied multiplication (`2*R`, not `2R`). Every value carries its dimensions: adding metres to seconds, taking the sine of a length, or a result that is not of the stated `unit` is an error, not a number.
+- **Angles are in radians.** A given in degrees is written `{ "value": 30, "unit": "deg" }` and converted like any unit, so `sin(theta)` is right; a literal angle is `sin(30*deg)`; inverse functions return radians, and `"unit": "deg"` gives the result in degrees.
+- Constants (CODATA values, SI): `g` 9.8 m/s², `G`, `k` (Coulomb), `c`, `e` (elementary charge; Euler's number is `exp(1)`), `eps0`, `mu0`, `h`, `R`, `kB`, `NA`, `sigma`, `me`, `mp`, `atm`, `pi`, `deg`. A given with the same name replaces the constant, so a problem that says "use g = 10 m/s²" lists `g`.
+- Optional fields: `steps` (named intermediate results, `{ "W": "F*d", ... }`, usable in `expr` in any order); `alt` (other routes to the same answer, which must agree with `expr` within 1%: this is what catches data that contradict each other); `extraneous` (numbers in the text that the answer deliberately does not use). A given may be marked `"symbol": "M"` (the text gives only a letter; the value is arbitrary and the answer must not depend on it) or `"assumed": true` (a standard value the text does not state).
+
+**The checks** (`src/lib/content/verify.ts`, one function each; the names are the keys of `verification.checks`):
+
+| Check | Passes when |
+|---|---|
+| `recompute` | The spec's value is within 0.5% of the numeric key, not more than one unit off in the key's last written digit, and of the same kind of unit. A key with few digits may be further off if it is the answer correctly rounded and within two thirds of the grading tolerance (2% at the default 3%). |
+| `spec-matches-text` | Every given is a number in the text (as written, in any notation, or the same amount in another unit: 0.15 m for "15 cm"), and every number in the text is a given, is written in the expression, or is listed as `extraneous`. Zero and labels ("Disk 2") are ignored. |
+| `solution-consistent` | The key's number appears in the worked solution. Needs no spec, so it runs on every numeric problem today. |
+| `grader-round-trip` | The real grader gives the key full credit against itself and gives no distractor any; multiple choice has exactly 4 different options with the key among them; `validateDraftProblem` has no errors. |
+| `mc-quantity` | Multiple choice with a spec: the recomputed value is the keyed option and fits no other option. |
+| `blind-solves` | At least 2 solvers agree with the key, judged by the real grader, and they outnumber those who disagree. |
+| `circuit-consistent` | Only for a problem with a spec whose text holds a ```dg circuit diagram (otherwise not applicable, never a failure). Every value drawn on an element is one of the spec's givens, same amount and same kind of unit (4 kΩ matches 4000 Ω, not 4 Ω). When the spec names the keyed quantity (`spec.circuit: { quantity: "current" \| "voltage" \| "power" \| "resistance" \| "time-constant", element?, at?: "steady" \| "t0", switches? }`), the circuit solver's value for the drawing agrees with the key by the same rule as `recompute`. |
+| `near-duplicate` | No other problem of the same set is the same calculation (same spec shape) in at least 60% the same words, or 85% the same words whatever the specs. |
+| `not-stale` | A stored verification was made for the problem as it is now. |
+
+A numeric problem **needs a spec**. Multiple choice without one (conceptual questions, options that are not quantities) rests on the blind solves alone and is recorded with `checks.basis.detail = "solver-agreement-only"`, so those can be counted. Verdicts: `verified` (everything passed), `failed` (a check contradicts the problem), `incomplete` (nothing is wrong but a spec or blind solves are missing).
+
+**Running it.** It reads and writes only the files under `content/`.
+
+```bash
+node tools/verify-content.cjs --all                      # every course; exits 1 if any draft fails
+node tools/verify-content.cjs --course ap-physics-2      # or --set ap-physics-2:9A, or --id <draftId>
+node tools/verify-content.cjs --all --report json        # everything, with each check's detail
+node tools/verify-content.cjs --all --strict             # also exit 1 while evidence is missing
+node tools/verify-content.cjs --all --write              # stamp what passed; unstamp what no longer does
+
+# Blind solves: give a solver the sheet and nothing else, then record the answers
+node tools/verify-content.cjs solve-sheet --solver solver-a --set ap-physics-2:9A --out sheet.json
+node tools/verify-content.cjs record-solve --solver solver-a --file answers.json   # [{ "id", "answer" }]
+
+node tools/verify-content.cjs apply-specs --file specs.json   # { "<draftId>": <spec> }
+```
+
+A sheet holds the questions only, and each solver sees a problem's options in a different order; a letter in the answers file is read against that solver's sheet and stored as the option's text. The tool cannot make a solve blind: that is up to whoever runs the solver. Answers are stored on the draft (`solves`) with the hash of the text they were given for and stop counting when the problem changes.
+
+`--write` puts the record on the draft, beside `problem`: `verification = { textHash, checks, solvers, verifiedAt }`. `textHash` covers the text, options, key and spec. **Publish accepts `verified` only while that hash matches the stored problem** (and the record's checks all passed, with two agreeing solvers); an edit through the review screen leaves the mark but changes the hash, and the draft is refused until it is verified again or a person approves it. `owner-accepted` and `human` publish as before, `ai` does not, and the emulator publishes anything. `tools/content-drafts.cjs` carries the record through export and import.
+
+**Regression corpus** (`tests/fixtures/verifier-corpus.json`: draft ids and pass/fail only). The 33 problems whose review notes record a wrong key (the 31 of the 17 Nov run and one from each AP Physics 1 file) are checked twice, as corrected and as the model first wrote them (`original`, with `original.spec` where the question itself was changed), together with 48 other problems across the three courses as controls. `node tools/verify-content.cjs corpus` fails when the file no longer matches the content; `--write` rewrites it.
+
+- **29 of the 33 are caught by recomputation**: 27 numeric (`recompute`) and 2 multiple choice whose options are numbers (`mc-quantity`). Four of them were impossible or contradictory questions rather than slips, and are caught as such: a total internal reflection (`asin` of more than 1), a bead that never arrives (square root of a negative), and two that only an `alt` route shows (the data gave two different answers).
+- **4 cannot be caught without solvers**: multiple choice whose options are sentences or formulas. Only the blind solves stand between such a key and a class.
+- Without any spec, `solution-consistent` alone fails 13 of the 27 numeric ones.
+- All 33 pass as corrected, and all 48 controls pass. No blind solves have been recorded yet, so no draft is `verified`: 77 of 440 have a spec, 194 numeric problems still need one, and every problem needs its two solves.
 
 ### First run (24 Nov 2026, emulators, live Gemini)
 10 problems for Unit 4 (4.1 ×3, 4.2 ×3, 4.3 ×2, 4.4 ×2) were generated, reviewed and published. Claude (AI) did the review, solving every problem by hand; **a person still needs to check them before they go to a real class.**

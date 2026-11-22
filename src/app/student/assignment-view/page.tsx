@@ -56,6 +56,15 @@ import {
 } from "@/components/calculator/scientific-calculator";
 import { RaiseHelpPanel } from "@/components/student/raise-help-panel";
 import { errorMessage } from "@/lib/error-utils";
+import type { SolutionsResponse } from "@/app/api/assignments/[id]/solutions/types";
+import { SolutionBlock, solutionsNotice } from "./solution-block";
+import {
+  GuideLink,
+  guideUnitOf,
+  misconceptionGuideHref,
+  topicGuideHref,
+  useUnitGuides,
+} from "./guide-links";
 
 interface Question {
   id: string;
@@ -64,6 +73,8 @@ interface Question {
   options?: string[];
   correctAnswer?: string;
   points?: number;
+  /** The AP topic the question practises ("4.2"), on course sets. */
+  apTopic?: string;
 }
 
 /** One answer inside a stored submission; graded fields are present once a teacher or the AI has graded it. */
@@ -101,6 +112,8 @@ interface Assignment {
   type?: string;
   teacherId?: string;
   courseId?: string;
+  /** The course the assignment is a set of; its guides are linked from the questions. */
+  curriculumId?: string;
 }
 
 interface ChatMessage {
@@ -300,6 +313,7 @@ function AssignmentDetailContent() {
             type: data.type || "standard",
             teacherId: data.teacherId || studentTeacherId,
             courseId: data.courseId || studentCourseId,
+            curriculumId: typeof data.curriculumId === "string" ? data.curriculumId : undefined,
           };
 
           setAssignment(assignmentData);
@@ -363,6 +377,35 @@ function AssignmentDetailContent() {
     }
     fetchAssignment();
   }, [id, user, profile]);
+
+  // Correct answers and worked solutions. The server decides what this student may see (graded,
+  // and past the due date); a failure leaves the page as it is without them.
+  const [solutions, setSolutions] = useState<SolutionsResponse | null>(null);
+  const assignmentId = assignment?.id;
+  useEffect(() => {
+    if (!assignmentId || !user) return;
+    let active = true;
+    authenticatedFetch(`/api/assignments/${encodeURIComponent(assignmentId)}/solutions`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: SolutionsResponse | null) => {
+        if (active && data && typeof data.solutions === "object") setSolutions(data);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [assignmentId, user]);
+
+  // Guides are loaded only for graded work whose answers carry a misconception tag.
+  const isGraded = !!existingSubmission?.graded;
+  const taggedUnits = isGraded
+    ? (assignment?.questions ?? []).flatMap((q) => {
+        const tags = existingSubmission?.answers?.find((a) => a.questionId === q.id)?.misconceptions;
+        const unit = guideUnitOf(q.apTopic);
+        return unit !== null && Array.isArray(tags) && tags.length ? [unit] : [];
+      })
+    : [];
+  const unitGuides = useUnitGuides(assignment?.curriculumId, taggedUnits);
 
   // Timer: one interval for as long as the timer is active (H-002). Expiry is handled in the next effect.
   useEffect(() => {
@@ -512,6 +555,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           mode: "tutor",
           chatHistory: historyForAi,
           assignmentContext: fullContext,
+          // Lets the server pick the diagram kinds of this assignment's course.
+          assignmentId: assignment?.id,
         }),
       });
 
@@ -1048,10 +1093,32 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     </Badge>
                   )}
                 </div>
+                {solutionsNotice(solutions) && (
+                  <p className="mt-3 text-xs text-muted-foreground">{solutionsNotice(solutions)}</p>
+                )}
               </section>
 
               <div className="space-y-4">
-                {assignment.questions.map((question, index) => (
+                {assignment.questions.map((question, index) => {
+                  const gradedAnswer = isGraded
+                    ? existingSubmission?.answers?.find((a) => a.questionId === question.id)
+                    : undefined;
+                  // Following a link while the page watches for tab switches would count against
+                  // the student, so those assignments get the guide link once they are handed in.
+                  const watched =
+                    !submitted && (assignment.lockdownMode || assignment.enableTabDetection);
+                  const guideHref = watched
+                    ? null
+                    : topicGuideHref(assignment.curriculumId, question.apTopic);
+                  const mistakeHref = gradedAnswer
+                    ? misconceptionGuideHref(
+                        assignment.curriculumId,
+                        question.apTopic,
+                        gradedAnswer.misconceptions,
+                        unitGuides.get(guideUnitOf(question.apTopic) ?? -1),
+                      )
+                    : null;
+                  return (
                   <Card
                     key={question.id}
                     className="overflow-hidden gap-0 border-border py-0 shadow-none"
@@ -1081,6 +1148,11 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                               <LineChart className="size-3.5" />
                               Graph
                             </Button>
+                          )}
+                          {guideHref && (
+                            <GuideLink href={guideHref} newTab={!submitted}>
+                              Study guide
+                            </GuideLink>
                           )}
                           <Badge variant="outline">{question.points || 10} pts</Badge>
                         </div>
@@ -1180,29 +1252,23 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                             </div>
                           )}
 
-                          {/* Correct Reference Section */}
-                          {(question.correctAnswer ||
-                            (existingSubmission.answers?.find((a) => a.questionId === question.id)
-                              ?.score as number) < (question.points || 10)) && (
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <CheckCircle className="h-4 w-4 text-emerald-600" />
-                                <p className="text-xs font-medium text-muted-foreground">
-                                  Correct answer and explanation
-                                </p>
-                              </div>
-                              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground bg-muted/20 p-4 rounded-lg border">
-                                <MarkdownRenderer>
-                                  {question.correctAnswer || "No explanation provided."}
-                                </MarkdownRenderer>
-                              </div>
-                            </div>
+                          {mistakeHref && (
+                            <GuideLink href={mistakeHref}>Why this is a common mistake</GuideLink>
                           )}
+
+                          <SolutionBlock
+                            correctAnswer={question.correctAnswer}
+                            score={gradedAnswer?.score}
+                            points={question.points || 10}
+                            solution={solutions?.solutions[question.id]}
+                            pending={solutionsNotice(solutions)}
+                          />
                         </div>
                       )}
                     </CardContent>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
 
               {!submitted && assignment.requireWorkSubmission && (

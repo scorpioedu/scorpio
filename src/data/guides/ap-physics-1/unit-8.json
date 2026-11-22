@@ -1,0 +1,849 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 8,
+  "guides": [
+    {
+      "topic": "8.1",
+      "bigIdea": "Density is the mass packed into each unit of volume, a property of the material rather than of how much of it you have, and a fluid is any substance, liquid or gas, that flows to take the shape of its container.",
+      "picture": {
+        "diagram": "plot x=V[m^3] y=m[kg] xr=0,0.0045 yr=0,12\nseg 0,0 0.004,10.8\nseg 0,0 0.004,4 dash=1\npt 0.004,10.8\npt 0.004,4\nnote 0.0016,10.2 \"aluminium: 2700 kg/m^3\"\nnote 0.0031,0.9 \"water: 1000 kg/m^3\"\nxt 0 0.001 0.002 0.003 0.004\nyt 0 4 8 10.8",
+        "caption": "Every sample of one material lies on the same straight line through the origin of a mass–volume graph, and the slope of the line is the density. Four litres ($0.004\\ \\text{m}^3$) of water has a mass of $4\\ \\text{kg}$; the same volume of aluminium has $10.8\\ \\text{kg}$."
+      },
+      "explanation": "Matter is made of atoms and molecules, and how strongly they hold on to one another decides how the material behaves. In a solid the particles are locked in place, so a solid keeps its shape. In a liquid they are still packed closely but can slide past one another. In a gas they are far apart and barely interact. Liquids and gases cannot hold a shape, so they flow, and anything that flows is called a **fluid**. Because the particles of a liquid are already touching, squeezing a liquid hardly changes its volume; a gas, with its empty space, compresses easily.\n\nTo compare materials we need a measure that does not depend on the size of the sample. That measure is **density**, the mass in each unit of volume: $\\rho = m/V$, in $\\text{kg/m}^3$. Water has a density of $1000\\ \\text{kg/m}^3$, aluminium $2700\\ \\text{kg/m}^3$ and air only about $1.2\\ \\text{kg/m}^3$. Density belongs to the material, not the object. Saw an aluminium bar in half and each piece has half the mass and half the volume, so the ratio is unchanged.\n\nTake care with units. Laboratory measurements often come in grams and cubic centimetres (a millilitre is exactly one cubic centimetre). Since $1\\ \\text{g} = 10^{-3}\\ \\text{kg}$ and $1\\ \\text{cm}^3 = (10^{-2}\\ \\text{m})^3 = 10^{-6}\\ \\text{m}^3$, a density of $1\\ \\text{g/cm}^3$ is $1000\\ \\text{kg/m}^3$, not 100.\n\nFor the rest of this unit we use a simplified model, the **ideal fluid**. It is incompressible, which means its density is the same everywhere and does not change, and it has no viscosity, which means no internal friction resists its flow. Water in pipes and tanks fits the model well. So does air when it moves slowly and is not squeezed much. Honey (very viscous) and air being squeezed in a pump do not.",
+      "equations": [
+        {
+          "latex": "\\rho = \\frac{m}{V}",
+          "meaning": "Density is mass divided by the volume that mass takes up.",
+          "variables": [
+            {
+              "symbol": "\\rho",
+              "name": "density",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "V",
+              "name": "volume",
+              "unit": "m³"
+            }
+          ],
+          "useWhen": "You know the mass and volume of a sample, or you want to identify a material or compare two materials.",
+          "notWhen": "Do not mix unit systems: convert grams and $\\text{cm}^3$ (or mL) to kg and $\\text{m}^3$ first, or convert the result using $1\\ \\text{g/cm}^3 = 1000\\ \\text{kg/m}^3$."
+        },
+        {
+          "latex": "m = \\rho V",
+          "meaning": "The mass of a sample is its density multiplied by its volume.",
+          "variables": [
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "density",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "V",
+              "name": "volume",
+              "unit": "m³"
+            }
+          ],
+          "useWhen": "You know what a uniform object or a body of fluid is made of and how much space it fills, and need its mass (and from that its weight, $mg$).",
+          "notWhen": "For a gas that is being compressed or heated the density changes, so one fixed value will not do."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Identifying a metal by the water it displaces",
+          "prompt": "A small metal cylinder has a mass of $67.5\\ \\text{g}$. When it is lowered into a measuring cylinder of water, the water level rises from $40.0\\ \\text{mL}$ to $65.0\\ \\text{mL}$. What is the density of the metal, in $\\text{kg/m}^3$?",
+          "steps": [
+            "Density is mass divided by volume, so we need the cylinder's volume. A submerged object pushes aside its own volume of water, so the volume is the rise in the water level: $V = 65.0 - 40.0 = 25.0\\ \\text{mL}$.",
+            "A millilitre is one cubic centimetre, so $V = 25.0\\ \\text{cm}^3$.",
+            "Divide: $\\rho = \\dfrac{m}{V} = \\dfrac{67.5\\ \\text{g}}{25.0\\ \\text{cm}^3} = 2.70\\ \\text{g/cm}^3$.",
+            "Convert. Each $\\text{g/cm}^3$ is $1000\\ \\text{kg/m}^3$, so $\\rho = 2.70 \\times 10^3\\ \\text{kg/m}^3$. A table of densities shows that this is aluminium."
+          ],
+          "answer": "$\\rho = 2.70 \\times 10^3\\ \\text{kg/m}^3$, the density of aluminium",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 67.5,
+                "unit": "g"
+              },
+              "V_i": {
+                "value": 40,
+                "unit": "mL"
+              },
+              "V_f": {
+                "value": 65,
+                "unit": "mL"
+              }
+            },
+            "expr": "m/(V_f - V_i)",
+            "unit": "kg/m^3"
+          }
+        },
+        {
+          "title": "The mass of the air in a classroom",
+          "prompt": "A classroom is $8.0\\ \\text{m}$ long, $6.0\\ \\text{m}$ wide and $2.5\\ \\text{m}$ high. The air in it has a density of $1.2\\ \\text{kg/m}^3$. Determine the mass of the air in the room. A student claims that a room with the same floor but twice the height would contain air of twice the density, \"because there is twice as much air\". Evaluate the claim.",
+          "steps": [
+            "The air fills the room, so its volume is the room's volume: $V = (8.0\\ \\text{m})(6.0\\ \\text{m})(2.5\\ \\text{m}) = 120\\ \\text{m}^3$.",
+            "Rearranging $\\rho = m/V$ gives $m = \\rho V = (1.2\\ \\text{kg/m}^3)(120\\ \\text{m}^3) = 144\\ \\text{kg}$, which is $1.4 \\times 10^2\\ \\text{kg}$ to two significant figures.",
+            "The claim is incorrect. The taller room holds twice the volume of the same air, so it holds twice the mass. Density is the ratio of the two, and doubling both leaves it at $1.2\\ \\text{kg/m}^3$. Density describes the substance, not the amount of it."
+          ],
+          "answer": "$m = 1.4 \\times 10^2\\ \\text{kg}$ (about 140 kg); the claim is wrong, because doubling the volume doubles the mass and leaves the density unchanged",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "L": {
+                "value": 8,
+                "unit": "m"
+              },
+              "W": {
+                "value": 6,
+                "unit": "m"
+              },
+              "H": {
+                "value": 2.5,
+                "unit": "m"
+              },
+              "rho": {
+                "value": 1.2,
+                "unit": "kg/m^3"
+              }
+            },
+            "expr": "rho*L*W*H",
+            "unit": "kg"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "density-mass-confusion",
+          "wrong": "A big block of a material is denser than a small piece of it, because it has more mass.",
+          "right": "The big block has more mass and, in the same proportion, more volume. Density is the ratio, so every piece of a uniform material has the same density, whatever its size or shape."
+        },
+        {
+          "tag": "density-mass-confusion",
+          "wrong": "The denser of two objects is always the heavier one.",
+          "right": "Density compares masses for equal volumes. A steel bolt is far denser than a foam mattress, yet the mattress has more mass because it is so much bigger. To compare masses you need $\\rho V$, not $\\rho$ alone."
+        },
+        {
+          "tag": "unit-conversion",
+          "wrong": "There are 100 centimetres in a metre, so $1\\ \\text{g/cm}^3$ is $100\\ \\text{kg/m}^3$.",
+          "right": "Volume is length cubed, so a cubic metre holds $100^3 = 10^6$ cubic centimetres. That gives $10^6\\ \\text{g} = 1000\\ \\text{kg}$ in each cubic metre: $1\\ \\text{g/cm}^3 = 1000\\ \\text{kg/m}^3$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A plank of density $800\\ \\text{kg/m}^3$ is sawn into a long piece and a short piece. How do the densities of the two pieces compare?",
+          "a": "They are equal, both $800\\ \\text{kg/m}^3$. The long piece has more mass and more volume in the same ratio."
+        },
+        {
+          "q": "Which has more mass: one litre of water or one litre of cooking oil of density $900\\ \\text{kg/m}^3$? By how much?",
+          "a": "The water. One litre is $10^{-3}\\ \\text{m}^3$, so the water has $(1000)(10^{-3}) = 1.0\\ \\text{kg}$ and the oil $(900)(10^{-3}) = 0.90\\ \\text{kg}$: a difference of $0.10\\ \\text{kg}$."
+        },
+        {
+          "q": "Why is it reasonable to treat water as incompressible, but not the air being squeezed in a bicycle pump?",
+          "a": "The molecules of a liquid are already in contact, so pressing on water barely changes its volume or its density. The molecules of a gas are far apart, so a pump easily forces the same mass into a smaller volume, and the density rises."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..6\nblock A 3,0 w={{(1000000/rho)^(1/3)/5}} h={{(1000000/rho)^(1/3)/5}} \"1 kg\"\ntext 3,3.5 \"density: {{rho}} kg/m^3\"\ntext 3,3.05 \"cube side: {{round((1000000/rho)^(1/3)*10)/10}} cm\"",
+        "caption": "Each cube has a mass of exactly $1\\ \\text{kg}$. Raise the density and the same mass fits into a smaller cube: water ($1000\\ \\text{kg/m}^3$) needs a $10\\ \\text{cm}$ cube, lead ($11\\,300\\ \\text{kg/m}^3$) one less than half as wide.",
+        "params": [
+          {
+            "name": "rho",
+            "label": "Density",
+            "min": 500,
+            "max": 20000,
+            "step": 100,
+            "default": 1000,
+            "unit": "kg/m³"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.6"
+      ],
+      "teacherNotes": "Ask students to predict what happens to the density when a block is cut in half before they calculate anything; a good share will say it halves. The unit conversion is the other regular casualty: have them derive $1\\ \\text{g/cm}^3 = 1000\\ \\text{kg/m}^3$ once by cubing the length conversion rather than memorising it. The ideal-fluid assumptions (incompressible, no viscosity) are worth naming now, because Topic 8.4 depends on both. Set 8A practises density with pressure."
+    },
+    {
+      "topic": "8.2",
+      "bigIdea": "Pressure is force per unit area, and in a fluid at rest it pushes equally in every direction and grows with depth, because each layer has to hold up the weight of all the fluid above it.",
+      "picture": {
+        "diagram": "scene\nwall 0 0..3.6 side=r\nwall 5 0..3.6\nground 0..5\ndash 0,3.2 5,3.2\ntext 1.2,3.45 \"water surface\"\nf 3.5,2.2 right 0.5 \"9.8 kPa\"\nf 3,1.2 right 1 \"19.6 kPa\"\nf 2.5,0.2 right 1.5 \"29.4 kPa\"\ndim 0.6,3.2 0.6,2.2 \"1 m\"\ndim 1.2,3.2 1.2,1.2 \"2 m\"\ndim 1.8,3.2 1.8,0.2 \"3 m\"",
+        "caption": "In water the gauge pressure rises by $9.8\\ \\text{kPa}$ for every metre of depth. The water pushes on each square metre of the tank wall three times as hard at $3\\ \\text{m}$ as at $1\\ \\text{m}$, and it would push just as hard on a surface facing any other way at the same depth."
+      },
+      "explanation": "Push a thumbtack into a board and the same force acts on your thumb and on the board, yet only the board is pierced. The difference is the area the force is spread over. **Pressure** is the force pressing perpendicular to a surface divided by the area it acts on, $P = F_\\perp/A$, measured in pascals: $1\\ \\text{Pa} = 1\\ \\text{N/m}^2$. A fluid presses on a surface because its particles strike it constantly. Pressure itself has no direction; the force it produces is perpendicular to the surface.\n\nIn a fluid at rest, pressure increases with depth. Each layer supports the weight of everything above it. For a fluid of constant density, $P = P_0 + \\rho g h$, where $h$ is the vertical distance below a point where the pressure is $P_0$. Usually that point is the open surface, where $P_0$ is atmospheric pressure, about $1.0 \\times 10^5\\ \\text{Pa}$.\n\nNotice what is missing from the equation: the shape of the container and the amount of fluid. The pressure $2\\ \\text{m}$ down a narrow pipe is the same as $2\\ \\text{m}$ down in a lake. All points at the same depth in one connected fluid at rest are at the same pressure.\n\nTwo pressures are in common use. **Absolute pressure** is the total, $P$. **Gauge pressure** is the amount above atmospheric, $P - P_{\\text{atm}}$, which is just $\\rho g h$ below an open surface; a tyre gauge reads gauge pressure. When a fluid pushes on one side of a hatch and the atmosphere on the other, the net force is the pressure difference times the area.",
+      "equations": [
+        {
+          "latex": "P = \\frac{F_{\\perp}}{A}",
+          "meaning": "Pressure is the force pressing perpendicular to a surface, divided by the area it is spread over.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "F_{\\perp}",
+              "name": "force perpendicular to the surface",
+              "unit": "N"
+            },
+            {
+              "symbol": "A",
+              "name": "area the force acts on",
+              "unit": "m²"
+            }
+          ],
+          "useWhen": "You know a force and the area it acts on, or you know a pressure and want the force on a surface ($F = PA$).",
+          "notWhen": "Do not leave an area in $\\text{cm}^2$: $1\\ \\text{cm}^2 = 10^{-4}\\ \\text{m}^2$. For the net force on a wall with fluid on both sides, use the pressure difference."
+        },
+        {
+          "latex": "P = P_0 + \\rho g h",
+          "meaning": "The absolute pressure at a depth is the pressure at the reference level above it plus the pressure added by the fluid in between.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "absolute pressure at the depth",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "P_0",
+              "name": "pressure at the reference level, usually atmospheric at an open surface",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "density of the fluid",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "h",
+              "name": "vertical depth below the reference level",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A fluid of constant density is at rest and you know the vertical depth below a level of known pressure.",
+          "notWhen": "Not for a flowing fluid whose speed changes (Topic 8.4). And $h$ is vertical depth, not distance along a sloping pipe or the width of the container."
+        },
+        {
+          "latex": "P_{\\text{gauge}} = P - P_{\\text{atm}} = \\rho g h",
+          "meaning": "Gauge pressure is how far the pressure is above atmospheric; below an open surface it is the part caused by the fluid alone.",
+          "variables": [
+            {
+              "symbol": "P_{\\text{gauge}}",
+              "name": "gauge pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "P",
+              "name": "absolute pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "P_{\\text{atm}}",
+              "name": "atmospheric pressure",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "density of the fluid",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "h",
+              "name": "depth below the open surface",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A question asks for gauge pressure, or the atmosphere pushes on the other side of the surface so that only the difference matters.",
+          "notWhen": "The last step, $\\rho g h$, holds only when the surface is open to the atmosphere. Read the question for which pressure it wants."
+        }
+      ],
+      "derivation": "Picture a vertical column of the fluid, of cross-sectional area $A$, reaching from the surface down to depth $h$. It is at rest, so the forces on it balance. The air above pushes down with force $P_0 A$. Gravity pulls down on the column, whose mass is density times volume, $\\rho A h$, so its weight is $\\rho A h g$. The fluid underneath pushes up with force $PA$, where $P$ is the pressure at depth $h$.\n\nBalance up against down:\n\n$$PA = P_0 A + \\rho A h g$$\n\nDivide every term by $A$:\n\n$$P = P_0 + \\rho g h$$\n\nThe area cancels, which is why the width and shape of the container do not matter.",
+      "workedExamples": [
+        {
+          "title": "Pressure under a narrow heel",
+          "prompt": "A $55\\ \\text{kg}$ person balances for a moment with all of their weight on one shoe heel, which touches the floor over an area of $1.0\\ \\text{cm}^2$. What pressure does the heel exert on the floor? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "The force pressing on the floor is the person's weight: $F = mg = (55\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 539\\ \\text{N}$. It acts straight down, perpendicular to the floor.",
+            "Put the area in square metres. One centimetre is $10^{-2}\\ \\text{m}$, so one square centimetre is $(10^{-2}\\ \\text{m})^2 = 10^{-4}\\ \\text{m}^2$, and $A = 1.0 \\times 10^{-4}\\ \\text{m}^2$.",
+            "Divide force by area: $P = \\dfrac{F}{A} = \\dfrac{539\\ \\text{N}}{1.0 \\times 10^{-4}\\ \\text{m}^2} = 5.4 \\times 10^6\\ \\text{Pa}$.",
+            "That is more than fifty times atmospheric pressure, which is why narrow heels dent soft floors. On flat soles of total area $300\\ \\text{cm}^2$ the same weight gives only $1.8 \\times 10^4\\ \\text{Pa}$."
+          ],
+          "answer": "$P = 5.4 \\times 10^6\\ \\text{Pa}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 55,
+                "unit": "kg"
+              },
+              "A": {
+                "value": 1,
+                "unit": "cm^2"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g/A",
+            "unit": "Pa"
+          }
+        },
+        {
+          "title": "Oil and water in a U-tube",
+          "prompt": "An open U-tube holds water ($1000\\ \\text{kg/m}^3$). Oil ($800\\ \\text{kg/m}^3$), which does not mix with water, is poured into the left arm to form a $0.20\\ \\text{m}$ column resting on the water. At rest, how high does the right arm's water surface stand above the oil–water boundary, and which surface is higher?",
+          "steps": [
+            "Compare the arms at the level of the oil–water boundary. Below it both arms hold one connected body of water at rest, so the pressure at that level is the same in both.",
+            "Left arm: atmospheric pressure plus the oil column, $P = P_{\\text{atm}} + \\rho_{\\text{oil}}\\,g\\,(0.20\\ \\text{m})$.",
+            "Right arm: atmospheric pressure plus a water column of height $h$, $P = P_{\\text{atm}} + \\rho_{\\text{water}}\\,g\\,h$.",
+            "Equate them; $P_{\\text{atm}}$ and $g$ cancel: $h = \\dfrac{\\rho_{\\text{oil}}}{\\rho_{\\text{water}}}(0.20\\ \\text{m}) = \\dfrac{800}{1000}(0.20\\ \\text{m}) = 0.16\\ \\text{m}$.",
+            "The oil surface stands $0.20 - 0.16 = 0.04\\ \\text{m}$ higher than the water surface. The less dense liquid needs a taller column for the same pressure."
+          ],
+          "answer": "The water surface is $0.16\\ \\text{m}$ above the boundary; the oil surface is higher, by $0.04\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "rho_oil": {
+                "value": 800,
+                "unit": "kg/m^3"
+              },
+              "rho_water": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              },
+              "h_oil": {
+                "value": 0.2,
+                "unit": "m"
+              }
+            },
+            "expr": "rho_oil*h_oil/rho_water",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "pressure-force-confusion",
+          "wrong": "A wide tank holds more water than a narrow one filled to the same depth, so the pressure at its bottom is greater.",
+          "right": "Pressure at the bottom depends on the depth, not on how much water there is. The wide tank's water does push on its bottom with a larger force, but over a larger area, and force divided by area comes out the same."
+        },
+        {
+          "tag": "pressure-force-confusion",
+          "wrong": "The pressure in a liquid pushes downward only, because it comes from weight.",
+          "right": "The weight of the fluid above is the cause, but at any point the fluid pushes equally in all directions, always perpendicular to whatever surface it touches: sideways on a dam, upward on the hull of a boat."
+        },
+        {
+          "tag": "gauge-absolute-pressure-confusion",
+          "wrong": "Ten metres down in a lake the pressure on a diver is $\\rho g h = 98\\ \\text{kPa}$.",
+          "right": "That is the gauge pressure, the part caused by the water. The atmosphere presses on the lake's surface too, so the absolute pressure is $101 + 98 = 199\\ \\text{kPa}$, about twice atmospheric."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A thin vase, a wide bowl and a bucket are filled with water to the same depth. Rank the pressures at their bottoms.",
+          "a": "They are equal. The depth, the liquid and the pressure at the surface are the same in all three; the shape does not matter."
+        },
+        {
+          "q": "At what depth in fresh water ($1000\\ \\text{kg/m}^3$) is the gauge pressure equal to one atmosphere, $1.01 \\times 10^5\\ \\text{Pa}$?",
+          "a": "Set $\\rho g h = 1.01 \\times 10^5\\ \\text{Pa}$: $h = \\dfrac{1.01 \\times 10^5}{(1000)(9.8)} \\approx 10\\ \\text{m}$. The absolute pressure there is two atmospheres."
+        },
+        {
+          "q": "The gauge pressure in a car tyre is $2.2 \\times 10^5\\ \\text{Pa}$, and atmospheric pressure is $1.0 \\times 10^5\\ \\text{Pa}$. What is the absolute pressure of the air in the tyre?",
+          "a": "$3.2 \\times 10^5\\ \\text{Pa}$. Absolute pressure is gauge pressure plus atmospheric pressure."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=h[m] y=P[kPa] xr=-0.8,10.5 yr=0,275\nseg 0,101 10,{{101+rho*0.098}}\npt {{h}},{{101+rho*h*0.0098}}\nnote 4.2,262 \"absolute: {{round(101+rho*h*0.0098)}} kPa\"\nnote 4.2,240 \"gauge: {{round(rho*h*0.0098)}} kPa\"\nxt 0 2 4 6 8 10\nyt 0 50 101 150 200 250",
+        "caption": "Absolute pressure against depth in an open tank. The line starts at atmospheric pressure, $101\\ \\text{kPa}$, and its slope is $\\rho g$. Slide the depth to move along the line; change the liquid's density to make the line steeper or shallower.",
+        "params": [
+          {
+            "name": "h",
+            "label": "Depth",
+            "min": 0,
+            "max": 10,
+            "step": 0.5,
+            "default": 4,
+            "unit": "m"
+          },
+          {
+            "name": "rho",
+            "label": "Density of the liquid",
+            "min": 600,
+            "max": 1400,
+            "step": 100,
+            "default": 1000,
+            "unit": "kg/m³"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.4",
+        "2.6",
+        "8.1"
+      ],
+      "teacherNotes": "Show three differently shaped containers filled to the same depth and ask for a ranking of the pressure at the bottom before any equation appears; \"the widest, it has the most water\" is the answer to draw out and then test against $\\rho g h$. Insist that students say whether a number is a gauge or an absolute pressure every time: dropping or double-counting $P_{\\text{atm}}$ is the most common lost point. For forces on windows and hatches, have them state what is on each side first. Sets 8A and 8B cover pressure with depth and pressure forces."
+    },
+    {
+      "topic": "8.3",
+      "bigIdea": "A fluid pushes up on any object in it with a buoyant force equal to the weight of the fluid the object displaces, and Newton's laws then decide whether the object floats, sinks or accelerates.",
+      "picture": {
+        "diagram": "scene\nwall 0 0..3.9 side=r\nwall 6 0..3.9\nground 0..6\ndash 0,3.5 6,3.5\ntext 1.1,3.75 \"water surface\"\nblock A 3,1.5 w=1.4 h=1 \"block\"\nf A.t+0,0.6 down 0.6 \"F_{top}\"\nf A.b+0,-1.2 up 1.2 \"F_{bottom}\"\nf A.l+-0.9,0 right 0.9\nf A.r+0.9,0 left 0.9",
+        "caption": "Water pushes on every face of a submerged block. The sideways pushes are equal and cancel. The bottom face is deeper than the top face, so the push up on it is larger than the push down on the top. What is left over is the buoyant force, and it points up."
+      },
+      "explanation": "Hold a beach ball under water and you feel the water pushing it up. That push is the **buoyant force**, and it comes from the way pressure grows with depth. The bottom of a submerged object is deeper than its top, so the fluid presses up on the bottom harder than it presses down on the top. The net result is an upward force equal to the weight of the fluid pushed aside: $F_B = \\rho_{\\text{f}} V_{\\text{disp}}\\, g$. This is Archimedes' principle.\n\nRead the equation carefully. The density is the *fluid's*, and the volume is the part of the object below the surface. The object's own mass and material do not appear. Depth does not appear either: once an object is fully submerged, taking it deeper raises the pressure on its top and its bottom by the same amount, so the difference stays the same.\n\nTreat the buoyant force like any other force. Draw a free-body diagram with the buoyant force up, the weight down and any tension or normal force, and apply $\\Sigma F = ma$. For an object released fully submerged, the net upward force is $F_B - mg = (\\rho_{\\text{f}} - \\rho_{\\text{obj}})Vg$. An object denser than the fluid sinks; a less dense one accelerates upward.\n\nAn object that rises to the surface floats with just enough of its volume submerged for the displaced fluid to weigh what it weighs: $\\rho_{\\text{f}} V_{\\text{sub}}\\, g = \\rho_{\\text{obj}} V_{\\text{obj}}\\, g$. The fraction of a floating object below the surface is therefore the ratio of the densities, $\\rho_{\\text{obj}}/\\rho_{\\text{f}}$. Ice, at $917\\ \\text{kg/m}^3$, floats in fresh water about 92% submerged.",
+      "equations": [
+        {
+          "latex": "F_B = \\rho_{\\text{f}}\\, V_{\\text{disp}}\\, g",
+          "meaning": "The buoyant force equals the weight of the fluid that the object displaces.",
+          "variables": [
+            {
+              "symbol": "F_B",
+              "name": "buoyant force, directed upward",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\rho_{\\text{f}}",
+              "name": "density of the fluid",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "V_{\\text{disp}}",
+              "name": "volume of fluid displaced: the part of the object below the surface",
+              "unit": "m³"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "An object is partly or wholly in a fluid. If it is fully submerged, the displaced volume is the object's whole volume.",
+          "notWhen": "Do not use the object's density here, or its whole volume when it floats partly out of the fluid."
+        },
+        {
+          "latex": "F_B - mg = ma",
+          "meaning": "Newton's second law for an object in a fluid when the buoyant force and gravity are the only forces, with up taken as positive.",
+          "variables": [
+            {
+              "symbol": "F_B",
+              "name": "buoyant force",
+              "unit": "N"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "a",
+              "name": "acceleration of the object, positive upward",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "An object is released in a fluid and drag is ignored. Set $a = 0$ for an object floating at rest.",
+          "notWhen": "If a string, a hand or the bottom of the container also pushes or pulls, add that force to the left side before solving."
+        },
+        {
+          "latex": "\\frac{V_{\\text{sub}}}{V_{\\text{obj}}} = \\frac{\\rho_{\\text{obj}}}{\\rho_{\\text{f}}}",
+          "meaning": "The fraction of a freely floating object that is below the surface equals the ratio of its density to the fluid's.",
+          "variables": [
+            {
+              "symbol": "V_{\\text{sub}}",
+              "name": "volume of the object below the surface",
+              "unit": "m³"
+            },
+            {
+              "symbol": "V_{\\text{obj}}",
+              "name": "whole volume of the object",
+              "unit": "m³"
+            },
+            {
+              "symbol": "\\rho_{\\text{obj}}",
+              "name": "density of the object (its average density, if hollow)",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "\\rho_{\\text{f}}",
+              "name": "density of the fluid",
+              "unit": "kg/m³"
+            }
+          ],
+          "useWhen": "An object floats at rest with nothing else pushing or pulling on it.",
+          "notWhen": "Not for an object that is held under, tied down, carrying a load or resting on the bottom, and not if the object is denser than the fluid (it sinks)."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Tension in a string holding a submerged block",
+          "prompt": "An aluminium block of mass $0.54\\ \\text{kg}$ and density $2700\\ \\text{kg/m}^3$ hangs at rest from a string. It is completely under water (density $1000\\ \\text{kg/m}^3$) and does not touch the container. What is the tension in the string? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Draw the forces on the block: its weight $F_g$ down, the buoyant force $F_B$ up and the tension $T$ up. The block is at rest, so they balance: $T + F_B = F_g$.\n\n```dg\nfbd box \"block\" eq\nf up T 1.7\nf up F_B 1\nf down F_g 2.7\n```",
+            "Weight: $F_g = mg = (0.54\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 5.29\\ \\text{N}$.",
+            "The buoyant force needs the block's volume. From $\\rho = m/V$: $V = \\dfrac{m}{\\rho_{\\text{Al}}} = \\dfrac{0.54\\ \\text{kg}}{2700\\ \\text{kg/m}^3} = 2.0 \\times 10^{-4}\\ \\text{m}^3$. The block is fully submerged, so it displaces this volume of water.",
+            "Buoyant force, using the density of the water: $F_B = \\rho_{\\text{water}} V g = (1000)(2.0 \\times 10^{-4})(9.8) = 1.96\\ \\text{N}$.",
+            "Solve for the tension: $T = F_g - F_B = 5.29 - 1.96 = 3.3\\ \\text{N}$. The water carries part of the weight, which is why objects seem lighter under water."
+          ],
+          "answer": "$T = 3.3\\ \\text{N}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.54,
+                "unit": "kg"
+              },
+              "rho_al": {
+                "value": 2700,
+                "unit": "kg/m^3"
+              },
+              "rho_w": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g - rho_w*(m/rho_al)*g",
+            "unit": "N"
+          }
+        },
+        {
+          "title": "How much can a floating block carry?",
+          "prompt": "A rectangular wooden block measures $0.60\\ \\text{m}$ by $0.40\\ \\text{m}$ by $0.10\\ \\text{m}$ and has density $600\\ \\text{kg/m}^3$. It floats, largest face up, in fresh water of density $1000\\ \\text{kg/m}^3$. (a) Determine the fraction of the block that is under water. (b) Determine the largest mass that can be placed on top of the block before its top face is level with the water surface.",
+          "steps": [
+            "(a) The block floats at rest, so the buoyant force equals its weight: $\\rho_{\\text{water}} V_{\\text{sub}}\\, g = \\rho_{\\text{wood}} V g$. Cancelling $g$ and rearranging, $\\dfrac{V_{\\text{sub}}}{V} = \\dfrac{600}{1000} = 0.60$.",
+            "(b) A load makes the block sink lower and displace more water. The most it can displace is its whole volume: $V = (0.60\\ \\text{m})(0.40\\ \\text{m})(0.10\\ \\text{m}) = 0.024\\ \\text{m}^3$.",
+            "With the top face level with the surface the forces balance: $\\rho_{\\text{water}} V g = (m_{\\text{block}} + m_{\\text{load}})\\,g$. The $g$ cancels, so the mass of displaced water equals the total mass floating.",
+            "Mass of displaced water: $(1000\\ \\text{kg/m}^3)(0.024\\ \\text{m}^3) = 24\\ \\text{kg}$. Mass of the block: $(600\\ \\text{kg/m}^3)(0.024\\ \\text{m}^3) = 14.4\\ \\text{kg}$.",
+            "$m_{\\text{load}} = 24 - 14.4 = 9.6\\ \\text{kg}$."
+          ],
+          "answer": "(a) $0.60$ of the block (60%) is under water; (b) the largest load is $9.6\\ \\text{kg}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "L": {
+                "value": 0.6,
+                "unit": "m"
+              },
+              "W": {
+                "value": 0.4,
+                "unit": "m"
+              },
+              "H": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "rho_wood": {
+                "value": 600,
+                "unit": "kg/m^3"
+              },
+              "rho_water": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              }
+            },
+            "expr": "(rho_water - rho_wood)*L*W*H",
+            "unit": "kg"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "buoyancy-depends-on-object-weight",
+          "wrong": "A steel ball and a plastic ball of the same size are both held under water. The steel ball gets the smaller buoyant force, which is why it sinks.",
+          "right": "They displace the same volume of water, so the buoyant forces are equal. The steel ball sinks because its weight is larger than that force; the plastic ball's weight is smaller, so it rises."
+        },
+        {
+          "tag": "buoyancy-depends-on-object-weight",
+          "wrong": "The deeper a submerged object goes, the greater the buoyant force, because the pressure is greater down there.",
+          "right": "The pressure is greater, but on the top and the bottom of the object alike. The buoyant force is the difference between those pushes, which is the same at any depth once the object is fully under."
+        },
+        {
+          "tag": "density-mass-confusion",
+          "wrong": "Heavy objects sink and light objects float.",
+          "right": "What matters is density compared with the fluid's, not weight. A pebble sinks and a cargo ship floats, because the ship's hull encloses so much air that its average density is below that of water. A sinking object still feels a buoyant force, just one smaller than its weight."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A boat sails from a river into the sea, where the water is denser. Does the buoyant force on it change? Does it float higher or lower?",
+          "a": "The buoyant force is unchanged: it still equals the boat's weight. Because sea water is denser, a smaller displaced volume has that weight, so the boat floats higher."
+        },
+        {
+          "q": "A ball whose density is half that of water is held under water and released. Ignoring drag, what is its acceleration just after release?",
+          "a": "$9.8\\ \\text{m/s}^2$ upward. The displaced water has twice the ball's mass, so $F_B = 2mg$. The net force is $2mg - mg = mg$ upward, giving $a = g$."
+        },
+        {
+          "q": "A metal cube hangs from a string, fully under water, first $1\\ \\text{m}$ deep and then $5\\ \\text{m}$ deep. Compare the tension in the string at the two depths.",
+          "a": "The same. The pressure on the cube is greater at $5 \text{m}$, but the buoyant force depends only on the displaced volume, which has not changed, so the forces balance as before."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nwall 0 0..3.2 side=r\nwall 6 0..3.2\nground 0..6\ndash 0,2 6,2\ntext 0.95,2.25 \"water surface\"\nblock A 3,{{2-rho/1000}} w=1.6 h=1 \"{{rho}} kg/m^3\"\ntext 3,3.7 \"{{rho/10}}% of the block is under water\"",
+        "caption": "A block floats in water of density $1000\\ \\text{kg/m}^3$. Raise the block's density and it settles lower: the fraction under water is the block's density divided by the water's. At $1000\\ \\text{kg/m}^3$ it is just submerged.",
+        "params": [
+          {
+            "name": "rho",
+            "label": "Density of the block",
+            "min": 100,
+            "max": 1000,
+            "step": 50,
+            "default": 600,
+            "unit": "kg/m³"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.4",
+        "2.5",
+        "8.1",
+        "8.2"
+      ],
+      "teacherNotes": "Before any calculation, ask: \"Two balls of the same size, one steel and one cork, are held under water. Which has the larger buoyant force?\" Most classes split, and the discussion fixes the idea that $F_B$ belongs to the displaced fluid. Then require a free-body diagram on every problem; students who skip it tend to set $F_B = mg$ automatically, which is true only for free floating. The depth question (same buoyant force at $1\\ \\text{m}$ and $5\\ \\text{m}$) is worth asking twice. Sets 8B and 8C practise floating, tethered and accelerating objects."
+    },
+    {
+      "topic": "8.4",
+      "bigIdea": "In a steadily flowing ideal fluid the same volume passes every point each second, so the fluid speeds up where its channel narrows, and conservation of energy, written as Bernoulli's equation, links its pressure, speed and height along the flow.",
+      "picture": {
+        "diagram": "scene\nrod 0,2.5 3,2.5\nrod 3,2.5 4,2\nrod 4,2 7.5,2\nrod 0,0.5 3,0.5\nrod 3,0.5 4,1\nrod 4,1 7.5,1\nf 0.8,1.5 right 0.75 \"v_1 = 1.5 m/s\"\nf 5,1.5 right 1.5 \"v_2 = 3.0 m/s\"\ntext 1.5,3 \"area 2A\"\ntext 5.7,2.5 \"area A\"\ntext 1.5,0 \"higher pressure\"\ntext 5.7,0.5 \"lower pressure\"",
+        "caption": "Water flows from a wide pipe into one of half the cross-sectional area. To carry the same volume each second it must move twice as fast, $3.0\\ \\text{m/s}$ instead of $1.5\\ \\text{m/s}$, and its pressure is lower in the narrow section."
+      },
+      "explanation": "Picture a pipe full of an ideal fluid in steady flow. The fluid cannot be compressed and none leaks out, so the same volume must pass every point each second. Fluid moving at speed $v$ through a cross-section of area $A$ sweeps out a volume $Av$ each second, the volume flow rate. Setting it equal at two places gives the **continuity equation**, $A_1 v_1 = A_2 v_2$. Halve the area and the speed doubles, as when you partly cover the end of a hose.\n\nSpeeding up takes a net force. As fluid enters a narrower section, the fluid behind must push it forward harder than the fluid ahead pushes back, so the pressure must be higher in the wide part than in the narrow part. The work done by these pressure forces changes the fluid's kinetic and gravitational potential energy, and for each cubic metre of fluid the result is **Bernoulli's equation**: $P + \\rho g y + \\tfrac{1}{2}\\rho v^2$ has the same value at every point along the flow. The term $\\tfrac{1}{2}\\rho v^2$ is kinetic energy per unit volume and $\\rho g y$ is gravitational potential energy per unit volume.\n\nThe chart keeps the accounts for water in a level pipe that narrows to a quarter of its area. The speed rises from $2\\ \\text{m/s}$ to $8\\ \\text{m/s}$, so $\\tfrac{1}{2}\\rho v^2$ rises from $2\\ \\text{kPa}$ to $32\\ \\text{kPa}$. The height is unchanged, so the pressure must fall by the same $30\\ \\text{kPa}$, here from $40\\ \\text{kPa}$ to $10\\ \\text{kPa}$. At one height, faster-moving fluid has lower pressure.\n\n```dg\nbars energy unit=kPa \"Wide section (initial) and narrow section (final)\"\ninitial P 40 ½ρv^2 2 ρgy 0\nfinal P 10 ½ρv^2 32 ρgy 0\n```\n\nIf nothing moves, Bernoulli's equation reduces to $P = P_0 + \\rho g h$ from Topic 8.2. For a large open tank with a small hole a height $\\Delta y$ below the surface, the equation gives **Torricelli's theorem**: the water leaves at $v = \\sqrt{2g\\,\\Delta y}$, as fast as if it had fallen freely from the surface.",
+      "equations": [
+        {
+          "latex": "A_1 v_1 = A_2 v_2",
+          "meaning": "For an incompressible fluid in steady flow, the volume passing each second (area times speed) is the same at every cross-section.",
+          "variables": [
+            {
+              "symbol": "A_1,\\ A_2",
+              "name": "cross-sectional areas at two places",
+              "unit": "m²"
+            },
+            {
+              "symbol": "v_1,\\ v_2",
+              "name": "flow speeds at those places",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "A pipe, hose or channel changes width, or you need the volume flow rate $Av$ in $\\text{m}^3/\\text{s}$.",
+          "notWhen": "Not if fluid enters or leaves between the two places, or for a gas being compressed. With diameters or radii, remember that area goes as the square: $A = \\pi r^2$."
+        },
+        {
+          "latex": "P_1 + \\rho g y_1 + \\tfrac{1}{2}\\rho v_1^2 = P_2 + \\rho g y_2 + \\tfrac{1}{2}\\rho v_2^2",
+          "meaning": "Along the flow of an ideal fluid, the sum of pressure, gravitational potential energy per unit volume and kinetic energy per unit volume stays constant.",
+          "variables": [
+            {
+              "symbol": "P_1,\\ P_2",
+              "name": "pressures at two points along the flow",
+              "unit": "Pa"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "density of the fluid",
+              "unit": "kg/m³"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "y_1,\\ y_2",
+              "name": "heights of the two points above a chosen level",
+              "unit": "m"
+            },
+            {
+              "symbol": "v_1,\\ v_2",
+              "name": "flow speeds at the two points",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "Steady flow of a liquid with negligible viscosity, comparing two points on the same flow. Usually paired with the continuity equation to get the second speed.",
+          "notWhen": "Not when viscosity or turbulence removes mechanical energy, or when a pump adds it between the points. Use the same kind of pressure (absolute or gauge) on both sides."
+        },
+        {
+          "latex": "v = \\sqrt{2g\\,\\Delta y}",
+          "meaning": "Liquid leaves a small opening in a large open container at the speed of an object that has fallen freely from the level of the surface.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "speed of the liquid leaving the opening",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "g",
+              "name": "gravitational field strength",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "\\Delta y",
+              "name": "vertical distance from the liquid's surface down to the opening",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The container is open to the atmosphere, the liquid emerges into the atmosphere, and the opening is small compared with the surface.",
+          "notWhen": "Not if the container is sealed and pressurised, or if the opening is so large that the surface drops quickly; go back to Bernoulli's equation."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Pressure at the top of a siphon",
+          "prompt": "A hose of uniform cross-section siphons water (density $1000\\ \\text{kg/m}^3$) out of a large open tank. The hose rises to a highest point $0.40\\ \\text{m}$ above the tank's water surface, then runs down to an open end $0.60\\ \\text{m}$ below that surface, where the water flows out. Atmospheric pressure is $1.01 \\times 10^5\\ \\text{Pa}$. What is the absolute pressure of the water at the hose's highest point? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Between the tank's surface (point 1) and the open end (point 3), both at atmospheric pressure, Bernoulli's equation gives Torricelli's result: $v = \\sqrt{2g(0.60\\ \\text{m})} = 3.43\\ \\text{m/s}$.",
+            "The hose has one cross-section, so by continuity the water also moves at $3.43\\ \\text{m/s}$ at the top (point 2).",
+            "Write Bernoulli's equation between points 1 and 2, measuring heights from the tank's surface, so $y_1 = 0$ and $y_2 = 0.40\\ \\text{m}$: $P_{\\text{atm}} = P_2 + \\rho g y_2 + \\tfrac{1}{2}\\rho v^2$.",
+            "Work out each term. Height: $\\rho g y_2 = (1000)(9.8)(0.40) = 3920\\ \\text{Pa}$. Speed: $\\tfrac{1}{2}\\rho v^2 = (500)(3.43)^2 = 5880\\ \\text{Pa}$.",
+            "$P_2 = 1.01 \\times 10^5 - 3920 - 5880 = 9.12 \\times 10^4\\ \\text{Pa}$, below atmospheric. Since it cannot fall below zero, a siphon's hump has a height limit."
+          ],
+          "answer": "$P_2 = 9.12 \\times 10^4\\ \\text{Pa}$, below atmospheric pressure",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "P_atm": {
+                "value": 101000,
+                "unit": "Pa"
+              },
+              "rho": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              },
+              "y2": {
+                "value": 0.4,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.6,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "P_atm - rho*g*y2 - 0.5*rho*(2*g*d)",
+            "unit": "Pa"
+          }
+        },
+        {
+          "title": "Measuring a flow with a Venturi meter",
+          "prompt": "Water (density $1000\\ \\text{kg/m}^3$) flows steadily through a horizontal pipe of cross-sectional area $20\\ \\text{cm}^2$ that narrows to a throat of area $5.0\\ \\text{cm}^2$, as shown. Gauges show that the pressure in the throat is $7.5\\ \\text{kPa}$ lower than in the wide pipe. Derive the speed in the wide pipe in terms of the pressure difference and the areas, and determine it and the volume flow rate.\n\n```dg\nscene\nsurf 0,2 2,2\nsurf 2,2 3,1.5\nsurf 3,1.5 4,1.5\nsurf 4,1.5 5,2\nsurf 5,2 7,2\nsurf 7,0 5,0\nsurf 5,0 4,0.5\nsurf 4,0.5 3,0.5\nsurf 3,0.5 2,0\nsurf 2,0 0,0\nf 0.4,1 right 0.6 \"v_1\"\nf 3.1,1 right 1.6 \"v_2\"\n```",
+          "steps": [
+            "Continuity links the two speeds: $A_1v_1 = A_2v_2$, so $v_2 = v_1\\dfrac{A_1}{A_2} = 4v_1$ here.",
+            "The pipe is horizontal, so the height terms in Bernoulli's equation cancel: $P_1 + \\tfrac{1}{2}\\rho v_1^2 = P_2 + \\tfrac{1}{2}\\rho v_2^2$, which gives $P_1 - P_2 = \\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2) = \\tfrac{1}{2}\\rho v_1^2\\left[\\left(\\dfrac{A_1}{A_2}\\right)^2 - 1\\right]$.",
+            "Solve: $v_1 = \\sqrt{\\dfrac{2\\,\\Delta P}{\\rho\\left[(A_1/A_2)^2 - 1\\right]}} = \\sqrt{\\dfrac{2(7500\\ \\text{Pa})}{(1000\\ \\text{kg/m}^3)(16 - 1)}} = 1.0\\ \\text{m/s}$, so $v_2 = 4.0\\ \\text{m/s}$ in the throat.",
+            "Volume flow rate: $A_1v_1 = (20 \\times 10^{-4}\\ \\text{m}^2)(1.0\\ \\text{m/s}) = 2.0 \\times 10^{-3}\\ \\text{m}^3/\\text{s}$, two litres each second."
+          ],
+          "answer": "$v_1 = 1.0\\ \\text{m/s}$ in the wide pipe ($4.0\\ \\text{m/s}$ in the throat); the flow rate is $2.0 \\times 10^{-3}\\ \\text{m}^3/\\text{s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "dP": {
+                "value": 7500,
+                "unit": "Pa"
+              },
+              "rho": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              },
+              "A1": {
+                "value": 20,
+                "unit": "cm^2"
+              },
+              "A2": {
+                "value": 5,
+                "unit": "cm^2"
+              }
+            },
+            "expr": "sqrt(2*dP/(rho*((A1/A2)^2 - 1)))",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "faster-fluid-higher-pressure",
+          "wrong": "Where a pipe narrows the water is squeezed, so its pressure is higher in the narrow section.",
+          "right": "The water is incompressible, so it is not squeezed; it speeds up instead, and the volume passing each second stays the same. Speeding up needs a net forward force, so the pressure behind, in the wide section, must be the higher one."
+        },
+        {
+          "tag": "flow-rate-speed-confusion",
+          "wrong": "Water leaves a bigger hole faster, and leaves faster from a tank that holds more water.",
+          "right": "The exit speed is $\\sqrt{2g\\,\\Delta y}$: it depends only on how far the hole is below the surface. A bigger hole lets out more water each second, at the same speed."
+        },
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "The water gains kinetic energy in the narrow section from nowhere; it just has to go faster to fit through.",
+          "right": "The higher pressure behind does more work pushing the water forward than the lower pressure ahead takes away, and that net work is the gain in kinetic energy. Bernoulli's equation is this energy account."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Water moves through a hose at $2.0\\ \\text{m/s}$. You want it to leave a nozzle at $8.0\\ \\text{m/s}$. How must the nozzle's diameter compare with the hose's?",
+          "a": "Half as wide. $Av$ must stay the same, so the speed rises fourfold only if the area falls to a quarter, and area depends on the square of the diameter."
+        },
+        {
+          "q": "Water flows through a level pipe at $2\\ \\text{m/s}$ in a wide section and $4\\ \\text{m/s}$ in a narrow section. In which section is the pressure greater, and by how much?",
+          "a": "In the wide section. With no change in height, $P_1 - P_2 = \\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2) = (500)(16 - 4) = 6000\\ \\text{Pa}$."
+        },
+        {
+          "q": "An open tank has two small holes in its side, one $0.20\\ \\text{m}$ below the water surface and one $0.80\\ \\text{m}$ below it. Compare the speeds at which water leaves the two holes.",
+          "a": "Water leaves the lower hole twice as fast. The speed is $\\sqrt{2g\\,\\Delta y}$, and four times the depth gives $\\sqrt{4} = 2$ times the speed."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nrod 0,2.5 3,2.5\nrod 3,2.5 4,{{1.5+1/n}}\nrod 4,{{1.5+1/n}} 7.5,{{1.5+1/n}}\nrod 0,0.5 3,0.5\nrod 3,0.5 4,{{1.5-1/n}}\nrod 4,{{1.5-1/n}} 7.5,{{1.5-1/n}}\nf 0.8,1.5 right 0.5\nf 4.6,1.5 right {{0.5*n}}\ntext 1.5,3 \"area A\"\ntext 5.7,3 \"area A ÷ {{n}}\"\ntext 1.5,0.1 \"v_1 = 1 m/s\"\ntext 5.7,0.1 \"v_2 = {{n}} m/s\"\ntext 3.75,-0.6 \"P_1 - P_2 = {{0.5*(n*n-1)}} kPa\"",
+        "caption": "Water enters at $1\\ \\text{m/s}$. Make the second section narrower: the speed there rises in step, and the pressure drop $\\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2)$ grows much faster, because it depends on the speed squared.",
+        "params": [
+          {
+            "name": "n",
+            "label": "Wide area ÷ narrow area",
+            "min": 1,
+            "max": 4,
+            "step": 0.5,
+            "default": 2,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.5",
+        "3.1",
+        "3.3",
+        "3.4",
+        "8.1",
+        "8.2"
+      ],
+      "teacherNotes": "Nearly every student predicts higher pressure in the constriction (\"it's squeezed\"). Ask instead which way the net force on a parcel of water must point as it speeds up into the narrow section; the answer forces the pressure to be higher behind it. Have students mark two points and list $P$, $v$ and $y$ at each before writing Bernoulli's equation, and say which terms cancel and why, since that justification is part of a complete answer. In this course flows are ideal; viscosity and turbulence are named only as limits of the model. Set 8D covers continuity, Bernoulli and Torricelli."
+    }
+  ]
+}

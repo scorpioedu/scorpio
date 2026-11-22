@@ -1,0 +1,997 @@
+{
+  "curriculumId": "ap-physics-1",
+  "unit": 3,
+  "guides": [
+    {
+      "topic": "3.1",
+      "bigIdea": "Kinetic energy is the energy an object has because it is moving: it grows with the object's mass and with the square of its speed, it has no direction, and it is never negative.",
+      "picture": {
+        "diagram": "plot x=v[m/s] y=K[J] xr=0,6.5 yr=0,40\nfn v^2 0..6\npt 2,4\npt 4,16\npt 6,36\nxt 0 2 4 6\nyt 0 4 16 36",
+        "caption": "Kinetic energy of a $2\\ \\text{kg}$ cart against its speed. The graph is a curve, not a straight line: at $2$, $4$ and $6\\ \\text{m/s}$ the cart has $4$, $16$ and $36\\ \\text{J}$. Doubling the speed gives four times the energy; tripling it gives nine times."
+      },
+      "explanation": "A moving object can do things a resting one cannot: knock over a pin, dent a car door, compress a spring. The energy it has because of its motion is called kinetic energy, $K = \\tfrac{1}{2}mv^2$, where $m$ is the mass and $v$ is the speed. Energy is measured in joules, and $1\\ \\text{J} = 1\\ \\text{kg·m}^2/\\text{s}^2$. A $2.0\\ \\text{kg}$ cart rolling at $3.0\\ \\text{m/s}$ has $K = \\tfrac{1}{2}(2.0)(3.0)^2 = 9.0\\ \\text{J}$.\n\nMass and speed do not count equally, because the speed is squared. Double the mass and the kinetic energy doubles. Double the speed and it becomes four times as large. This is why a car travelling at $30\\ \\text{m/s}$ is so much harder to stop than one at $15\\ \\text{m/s}$: it has four times the kinetic energy to get rid of, not twice. It is also why speeding up from $10$ to $20\\ \\text{m/s}$ takes more energy than speeding up from rest to $10\\ \\text{m/s}$, even though the speed rises by the same amount.\n\nKinetic energy is a scalar: an amount, with no direction. A ball moving left at $5\\ \\text{m/s}$ has exactly the same kinetic energy as the same ball moving right at $5\\ \\text{m/s}$, and since $m$ is positive and $v^2$ cannot be negative, $K$ is never negative. The kinetic energy of a system is the plain sum of its objects' kinetic energies, so two carts rolling toward each other do not cancel.\n\n\"Translational\" means the energy of the object moving from place to place as a whole. A spinning object has rotational kinetic energy as well, which comes later in the course. One more caution: speed is measured relative to an observer, so kinetic energy is too. A suitcase on a moving train has zero kinetic energy for a passenger and plenty for someone standing on the platform.",
+      "equations": [
+        {
+          "latex": "K = \\tfrac{1}{2}mv^2",
+          "meaning": "An object's translational kinetic energy is half its mass times the square of its speed.",
+          "variables": [
+            {
+              "symbol": "K",
+              "name": "kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v",
+              "name": "speed",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You know, or want, the mass and speed of one object at one instant.",
+          "notWhen": "Do not use the velocity's sign: square the speed. On its own it does not include the energy of spinning."
+        },
+        {
+          "latex": "\\Delta K = \\tfrac{1}{2}mv_f^2 - \\tfrac{1}{2}mv_i^2",
+          "meaning": "The change in kinetic energy is the final kinetic energy minus the initial kinetic energy.",
+          "variables": [
+            {
+              "symbol": "\\Delta K",
+              "name": "change in kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_f",
+              "name": "final speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "v_i",
+              "name": "initial speed",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "An object speeds up or slows down and you want the energy it gained or lost.",
+          "notWhen": "Do not square the change in speed: $\\tfrac{1}{2}m(v_f - v_i)^2$ is not the change in kinetic energy."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Kinetic energy of a hockey puck",
+          "prompt": "A $0.16\\ \\text{kg}$ hockey puck slides across the ice at $30\\ \\text{m/s}$. What is its kinetic energy?",
+          "steps": [
+            "List what is known: $m = 0.16\\ \\text{kg}$ and $v = 30\\ \\text{m/s}$. The direction the puck is sliding does not matter, because kinetic energy has no direction.",
+            "Square the speed first, since only the speed is squared: $v^2 = (30\\ \\text{m/s})^2 = 900\\ \\text{m}^2/\\text{s}^2$.",
+            "Multiply by half the mass: $K = \\tfrac{1}{2}(0.16\\ \\text{kg})(900\\ \\text{m}^2/\\text{s}^2) = 72\\ \\text{kg·m}^2/\\text{s}^2 = 72\\ \\text{J}$.",
+            "Check the scaling. At half the speed, $15\\ \\text{m/s}$, the puck would have $\\tfrac{1}{2}(0.16)(225) = 18\\ \\text{J}$, one quarter as much, as the square predicts."
+          ],
+          "answer": "$K = 72\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 0.16,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 30,
+                "unit": "m/s"
+              }
+            },
+            "expr": "0.5*m*v^2",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Speeding up a car",
+          "prompt": "A $1200\\ \\text{kg}$ car speeds up from $10\\ \\text{m/s}$ to $20\\ \\text{m/s}$. Determine the change in the car's kinetic energy, and compare it with the change when the same car speeds up from rest to $10\\ \\text{m/s}$.",
+          "steps": [
+            "Initial kinetic energy: $K_i = \\tfrac{1}{2}(1200\\ \\text{kg})(10\\ \\text{m/s})^2 = 6.0 \\times 10^4\\ \\text{J}$.",
+            "Final kinetic energy: $K_f = \\tfrac{1}{2}(1200\\ \\text{kg})(20\\ \\text{m/s})^2 = 2.4 \\times 10^5\\ \\text{J}$.",
+            "Change: $\\Delta K = K_f - K_i = 2.4 \\times 10^5\\ \\text{J} - 6.0 \\times 10^4\\ \\text{J} = 1.8 \\times 10^5\\ \\text{J}$.",
+            "From rest to $10\\ \\text{m/s}$ the change is $6.0 \\times 10^4\\ \\text{J} - 0 = 6.0 \\times 10^4\\ \\text{J}$. The second $10\\ \\text{m/s}$ of speed costs three times as much energy as the first, because $K$ depends on $v^2$: the car goes from one unit of kinetic energy to four, a gain of three."
+          ],
+          "answer": "$\\Delta K = 1.8 \\times 10^5\\ \\text{J}$, three times the $6.0 \\times 10^4\\ \\text{J}$ gained from rest to $10\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 1200,
+                "unit": "kg"
+              },
+              "v_i": {
+                "value": 10,
+                "unit": "m/s"
+              },
+              "v_f": {
+                "value": 20,
+                "unit": "m/s"
+              }
+            },
+            "expr": "0.5*m*(v_f^2 - v_i^2)",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "energy-scaled-linearly",
+          "wrong": "Twice the speed means twice the kinetic energy.",
+          "right": "Kinetic energy depends on $v^2$, not on $v$. Twice the speed is four times the energy; three times the speed is nine times. Only doubling the mass doubles it."
+        },
+        {
+          "tag": "energy-given-direction",
+          "wrong": "A cart moving in the negative direction has negative kinetic energy, so two carts heading toward each other can have zero kinetic energy between them.",
+          "right": "Kinetic energy has no direction and is never negative: the speed is squared. Two $1\\ \\text{kg}$ carts each moving at $2\\ \\text{m/s}$ have $2\\ \\text{J}$ each and $4\\ \\text{J}$ together, whichever way they move."
+        },
+        {
+          "tag": "energy-force-confusion",
+          "wrong": "A moving ball carries a force with it, and that force of motion is its kinetic energy.",
+          "right": "Energy and force are different quantities with different units (joules and newtons). A moving ball has kinetic energy; it exerts a force only while it is interacting with something, and nothing has to push it for it to keep its energy."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A truck has four times the mass of a car, and the two have the same kinetic energy. How do their speeds compare?",
+          "a": "The car is moving twice as fast. With equal $K$, four times the mass needs one quarter of the $v^2$, which is half the speed."
+        },
+        {
+          "q": "Two $1\\ \\text{kg}$ carts roll toward each other, each at $2\\ \\text{m/s}$. What is the total kinetic energy of the pair?",
+          "a": "$4\\ \\text{J}$. Each has $\\tfrac{1}{2}(1)(2)^2 = 2\\ \\text{J}$, and kinetic energies add as plain numbers; opposite directions do not cancel."
+        },
+        {
+          "q": "A ball thrown straight up passes a window on the way up and passes it again on the way down at the same speed. Compare its kinetic energy at the two moments.",
+          "a": "It is the same. The mass and the speed are the same, and the direction of motion does not enter kinetic energy."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=v[m/s] y=K[J] xr=0,6.5 yr=0,100\nfn {{0.5*m}}*v^2 0..6\npt 3,{{4.5*m}}\npt 6,{{18*m}}\nxt 0 3 6\nnote 2.2,93 \"m = {{m}} kg\"\nnote 2.2,83 \"at 3 m/s: K = {{4.5*m}} J\"\nnote 2.2,73 \"at 6 m/s: K = {{18*m}} J\"",
+        "caption": "Change the mass. The whole curve scales in step with the mass, but at any mass the energy at $6\\ \\text{m/s}$ is four times the energy at $3\\ \\text{m/s}$.",
+        "params": [
+          {
+            "name": "m",
+            "label": "Mass",
+            "min": 0.5,
+            "max": 5,
+            "step": 0.5,
+            "default": 2,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "1.2"
+      ],
+      "teacherNotes": "Students readily accept that faster means more energy; what they resist is the square. Ask \"how many times more?\" rather than \"which has more?\", and have them predict stopping distances at double the speed before any calculation. Watch for $\\tfrac{1}{2}m(\\Delta v)^2$ when a speed changes, and for negative kinetic energies carried over from signed velocities. Set 3A opens with kinetic energy before moving to work."
+    },
+    {
+      "topic": "3.2",
+      "bigIdea": "Work is energy transferred to or from an object by a force acting while the object moves, and only the part of the force along the displacement counts.",
+      "picture": {
+        "diagram": "scene\nground 0..8\nblock A 2,0 \"20 kg\"\nf A.r 37 1.6 \"F = 50 N\"\ndash A.r A.r+1.7,0\nang A.r 0 37 \"37°\"\nf 1.5,-0.75 right 2.5 \"d = 5.0 m\"\ntext 5.3,2.5 \"along the motion: 50 N × cos 37° = 40 N\"\ntext 5.3,2.05 \"W = (40 N)(5.0 m) = 200 J\"",
+        "caption": "A $50\\ \\text{N}$ pull at $37^\\circ$ above the horizontal drags a crate $5.0\\ \\text{m}$ along the floor. Only the $40\\ \\text{N}$ part of the pull that lies along the displacement does work: $W = (40\\ \\text{N})(5.0\\ \\text{m}) = 200\\ \\text{J}$."
+      },
+      "explanation": "In physics, work is the energy a force transfers to an object while the object moves. For a constant force, $W = Fd\\cos\\theta$, where $d$ is the size of the displacement and $\\theta$ is the angle between the force and the displacement. The factor $F\\cos\\theta$ is the part of the force that lies along the motion, written $F_{\\parallel}$, so the same statement is $W = F_{\\parallel}d$. The unit is the joule: $1\\ \\text{J} = 1\\ \\text{N·m}$.\n\nWork is a scalar with a sign, and the sign says which way the energy goes. A force with a part along the motion ($\\theta < 90^\\circ$) does positive work and adds energy. A force with a part against the motion ($\\theta > 90^\\circ$), such as kinetic friction on a sliding crate, does negative work and removes energy. A force perpendicular to the motion ($\\theta = 90^\\circ$) does no work at all, like the normal force on a crate sliding along a level floor. And with no displacement there is no work, however large the force.\n\nAdd up the work done by every force on an object and you get the change in its kinetic energy: $W_{\\text{net}} = \\Delta K$. This is the work–energy theorem. Positive net work speeds the object up, negative net work slows it down, and zero net work leaves its speed unchanged.\n\nWhen the force changes as the object moves, $Fd$ no longer works, because there is no single $F$. Instead, draw a graph of $F_{\\parallel}$ against position: the work is the area between the graph and the position axis, counted negative where the graph is below the axis. For a constant force that area is a rectangle, $F_{\\parallel}d$, as before.",
+      "equations": [
+        {
+          "latex": "W = Fd\\cos\\theta = F_{\\parallel}d",
+          "meaning": "The work done by a constant force is the part of the force along the displacement, times the displacement.",
+          "variables": [
+            {
+              "symbol": "W",
+              "name": "work done by the force",
+              "unit": "J"
+            },
+            {
+              "symbol": "F",
+              "name": "size of the force",
+              "unit": "N"
+            },
+            {
+              "symbol": "d",
+              "name": "size of the displacement",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the force and the displacement",
+              "unit": "°"
+            },
+            {
+              "symbol": "F_{\\parallel}",
+              "name": "part of the force along the displacement (negative if against it)",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "One force stays constant in size and direction while the object moves along a straight line.",
+          "notWhen": "Not for a force that changes along the way (use the area under the graph). And $\\theta$ is measured from the displacement, not automatically from the horizontal."
+        },
+        {
+          "latex": "W_{\\text{net}} = \\Delta K = \\tfrac{1}{2}mv_f^2 - \\tfrac{1}{2}mv_i^2",
+          "meaning": "The total work done on an object by all the forces on it equals the change in its kinetic energy.",
+          "variables": [
+            {
+              "symbol": "W_{\\text{net}}",
+              "name": "sum of the work done by every force on the object",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\Delta K",
+              "name": "change in kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_f,\\ v_i",
+              "name": "final and initial speeds",
+              "unit": "m/s"
+            }
+          ],
+          "useWhen": "You know the forces and the distance and want a speed, or know the speeds and want a force or a distance.",
+          "notWhen": "Do not use the work of just one force unless the others do no work. It says nothing about how long the motion takes."
+        },
+        {
+          "latex": "W = \\text{area under the graph of } F_{\\parallel} \\text{ against } x",
+          "meaning": "For a force that varies with position, the work is the area between the force–position graph and the position axis.",
+          "variables": [
+            {
+              "symbol": "W",
+              "name": "work done by the force",
+              "unit": "J"
+            },
+            {
+              "symbol": "F_{\\parallel}",
+              "name": "part of the force along the motion",
+              "unit": "N"
+            },
+            {
+              "symbol": "x",
+              "name": "position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The force changes as the object moves and you have, or can sketch, its graph against position.",
+          "notWhen": "Not for a graph of force against time: that area is impulse, not work. Area below the axis counts as negative work."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Gravity's work on a ramp",
+          "prompt": "A $5.0\\ \\text{kg}$ box slides $3.0\\ \\text{m}$ down a straight ramp that is inclined at $25^\\circ$ to the horizontal. How much work does the gravitational force do on the box? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Find the angle between the force and the displacement. Gravity points straight down; the displacement points down the slope, $25^\\circ$ below the horizontal. The angle between them is $\\theta = 90^\\circ - 25^\\circ = 65^\\circ$, not $25^\\circ$.",
+            "The force is the weight: $F = mg = (5.0\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 49\\ \\text{N}$. Its part along the motion is $F\\cos\\theta = (49\\ \\text{N})\\cos 65^\\circ = 20.7\\ \\text{N}$; the part pressing into the ramp does no work.",
+            "Multiply by the displacement: $W = (20.7\\ \\text{N})(3.0\\ \\text{m}) = 62\\ \\text{J}$. Check: the box drops $(3.0\\ \\text{m})\\sin 25^\\circ = 1.27\\ \\text{m}$, and $mg$ times that drop is also $62\\ \\text{J}$.",
+            "The work is positive, so gravity transfers energy to the box. The normal force is perpendicular to the ramp and does zero work."
+          ],
+          "answer": "$W = 62\\ \\text{J}$, positive: gravity adds energy to the box",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 5,
+                "unit": "kg"
+              },
+              "d": {
+                "value": 3,
+                "unit": "m"
+              },
+              "theta": {
+                "value": 25,
+                "unit": "deg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g*d*sin(theta)",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Work from a force–position graph",
+          "prompt": "A $0.40\\ \\text{kg}$ glider moves at $3.0\\ \\text{m/s}$ along a level, frictionless air track and reaches a magnetic bumper at $x = 0$. From there the bumper pushes back on it, against its motion. As the graph shows, the force (positive in the direction of motion) grows steadily from zero at $x = 0$ to $-4.0\\ \\text{N}$ at $x = 0.20\\ \\text{m}$.\n\n```dg\nplot x=x[m] y=F[N] xr=0,0.25 yr=-5,1\nseg 0,0 0.2,-4\nxt 0 0.05 0.1 0.15 0.2\nyt -4 -2 0\n```\n\nDetermine the work done on the glider by the bumper between $x = 0$ and $x = 0.20\\ \\text{m}$, and the glider's speed at $x = 0.20\\ \\text{m}$.",
+          "steps": [
+            "The force is not constant, so the work is the area between the force–position graph and the axis. Here that area is a triangle below the axis, so the work is negative.",
+            "$W = -\\tfrac{1}{2}(0.20\\ \\text{m})(4.0\\ \\text{N}) = -0.40\\ \\text{J}$.",
+            "No other force does work (gravity and the normal force are perpendicular to the motion), so this is the net work. The starting kinetic energy is $\\tfrac{1}{2}(0.40\\ \\text{kg})(3.0\\ \\text{m/s})^2 = 1.8\\ \\text{J}$, and $K_f = 1.8\\ \\text{J} - 0.40\\ \\text{J} = 1.4\\ \\text{J}$.",
+            "$v_f = \\sqrt{\\dfrac{2(1.4\\ \\text{J})}{0.40\\ \\text{kg}}} = 2.6\\ \\text{m/s}$. Slower, but still moving."
+          ],
+          "answer": "$W = -0.40\\ \\text{J}$ and $v_f = 2.6\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "F": {
+                "value": 4,
+                "unit": "N"
+              },
+              "x": {
+                "value": 0.2,
+                "unit": "m"
+              },
+              "m": {
+                "value": 0.4,
+                "unit": "kg"
+              },
+              "v_0": {
+                "value": 3,
+                "unit": "m/s"
+              }
+            },
+            "expr": "sqrt(v_0^2 - 2*(0.5*F*x)/m)",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "work-sign",
+          "wrong": "Every force on a moving object does work, so the normal force does work on a crate sliding across a level floor.",
+          "right": "Only the part of a force along the displacement does work. The normal force here is perpendicular to the motion ($\\cos 90^\\circ = 0$), so it does none."
+        },
+        {
+          "tag": "work-sign",
+          "wrong": "Work is always positive. The crate still moves forward, so friction does positive work on it.",
+          "right": "Kinetic friction on the crate points opposite to its displacement, so $\\theta = 180^\\circ$ and the work is negative: friction takes energy away from the crate."
+        },
+        {
+          "tag": "energy-force-confusion",
+          "wrong": "Holding a heavy bag still for a minute is a lot of work, because it takes a large force for a long time.",
+          "right": "The bag does not move, so no work is done on it. You tire because your muscles use up chemical energy inside your body, not because energy is transferred to the bag."
+        },
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "For a force that changes, the work is the final (or the largest) force times the distance.",
+          "right": "The work is the area under the force–position graph. A force that rises steadily from $0$ to $6\\ \\text{N}$ over $2\\ \\text{m}$ does $\\tfrac{1}{2}(2)(6) = 6\\ \\text{J}$ of work, not $12\\ \\text{J}$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A satellite moves in a circular orbit at constant speed. How much work does gravity do on it during one orbit?",
+          "a": "Zero. Gravity always points toward the planet, perpendicular to the satellite's motion, which fits the constant speed."
+        },
+        {
+          "q": "You lower a $10\\ \\text{N}$ book $1\\ \\text{m}$ at constant speed. How much work does gravity do on the book? How much does your hand do?",
+          "a": "Gravity does $+10\\ \\text{J}$ (force and displacement both downward). Your hand pushes up with $10\\ \\text{N}$ while the book moves down, so it does $-10\\ \\text{J}$. The net work is zero."
+        },
+        {
+          "q": "Starting from rest, a cart is pushed by the same net force over $2\\ \\text{m}$ in one trial and over $4\\ \\text{m}$ in another. How do its final speeds compare?",
+          "a": "Twice the distance means twice the work and twice the kinetic energy, so the speed is $\\sqrt{2}$ times as large, not twice."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..8\nblock A 3.5,0 \"crate\"\nf A.t {{theta}} 1.8 \"F = 50 N\"\nf 3,-0.8 right 2 \"d = 4 m\"\ntext 4,3.6 \"along the motion: {{round(50*cos(theta*pi/180))}} N\"\ntext 4,3.15 \"W = {{round(200*cos(theta*pi/180))}} J\"",
+        "caption": "A $50\\ \\text{N}$ force acts on a crate that moves $4\\ \\text{m}$ to the right. Turn the force: the work is largest at $0^\\circ$, zero at $90^\\circ$ and negative once the force leans back against the motion.",
+        "params": [
+          {
+            "name": "theta",
+            "label": "Angle between force and displacement",
+            "min": 0,
+            "max": 180,
+            "step": 15,
+            "default": 30,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.5",
+        "2.2",
+        "2.5",
+        "3.1"
+      ],
+      "teacherNotes": "Everyday \"work\" (effort, tiredness) is the main obstacle, so start with cases of zero work: carrying a bag at constant height, pushing on a wall, the normal force. Ask for the sign of the work done by each force on a free-body diagram before any numbers. On graphs, students often read off a height instead of an area, or use the area under a force–time graph. Set 3A mixes constant forces, angled forces and a force that changes with position."
+    },
+    {
+      "topic": "3.3",
+      "bigIdea": "Potential energy is energy stored in a system because of the positions of its interacting parts, and only changes in it, never its absolute value, affect what happens.",
+      "picture": {
+        "diagram": "plot x=x[m] y=U_s[J] xr=-0.35,0.35 yr=0,11\nfn 100*x^2 -0.3..0.3\npt -0.2,4\npt 0.1,1\npt 0.2,4\nnote -0.33,10.3 \"compressed\"\nnote 0.13,10.3 \"stretched\"\nxt -0.3 -0.2 -0.1 0 0.1 0.2 0.3\nyt 0 1 4 9",
+        "caption": "Elastic potential energy of a spring with $k = 200\\ \\text{N/m}$ against its change in length. Stretching and compressing by the same amount store the same energy, and doubling the stretch from $0.1\\ \\text{m}$ to $0.2\\ \\text{m}$ raises the energy from $1\\ \\text{J}$ to $4\\ \\text{J}$."
+      },
+      "explanation": "Lift a ball and let go, and it speeds up. Compress a spring behind a block and release it, and the block shoots away. In both cases energy was stored and then came back as kinetic energy. That stored energy is potential energy, $U$. It belongs to a system of interacting objects, not to one object: the ball and the Earth together, or the block and the spring together. Only some forces can store energy this way. Gravity and ideal springs can, because the work they do depends only on where the object starts and ends, not on the path. Friction cannot: energy that goes into friction does not come back.\n\nNear the Earth's surface, raising an object of mass $m$ by a height $\\Delta y$ increases the gravitational potential energy of the object–Earth system by $\\Delta U_g = mg\\,\\Delta y$. To give $U_g$ a value you must pick a height to call zero, and the choice is yours: the floor, a tabletop, the lowest point of the motion. Below that level $U_g$ is negative, which is fine. Different choices change every value of $U_g$ by the same amount, so the change between two positions, which is all that matters, is the same. Just keep one zero for the whole problem.\n\nAn ideal spring stores elastic potential energy $U_s = \\tfrac{1}{2}k(\\Delta x)^2$, where $k$ is the spring constant and $\\Delta x$ is how far the spring is stretched or compressed from its relaxed length. Here the zero is not a choice: it is the relaxed spring. Because $\\Delta x$ is squared, stretching and compressing by the same amount store the same energy, $U_s$ is never negative, and doubling $\\Delta x$ quadruples the energy.\n\nFor objects far apart, such as a satellite and a planet, $g$ is not constant and $mg\\,\\Delta y$ fails. The general form is $U_G = -\\dfrac{Gm_1m_2}{r}$, with zero when the objects are infinitely far apart. It is negative at every finite distance and rises toward zero as $r$ grows, so separating the objects takes energy.",
+      "equations": [
+        {
+          "latex": "\\Delta U_g = mg\\,\\Delta y",
+          "meaning": "Near the Earth's surface, the gravitational potential energy of an object–Earth system changes by the object's weight times its change in height.",
+          "variables": [
+            {
+              "symbol": "\\Delta U_g",
+              "name": "change in gravitational potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "g",
+              "name": "acceleration of free fall, 9.8 near the Earth's surface",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "\\Delta y",
+              "name": "change in height (positive upward)",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Heights change by amounts that are tiny compared with the size of the planet, so g is constant.",
+          "notWhen": "Not for satellites or anything whose distance from the planet's centre changes noticeably. Do not mix two different zero levels in one problem."
+        },
+        {
+          "latex": "U_s = \\tfrac{1}{2}k(\\Delta x)^2",
+          "meaning": "An ideal spring stores energy equal to half its spring constant times the square of its stretch or compression.",
+          "variables": [
+            {
+              "symbol": "U_s",
+              "name": "elastic potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "spring constant",
+              "unit": "N/m"
+            },
+            {
+              "symbol": "\\Delta x",
+              "name": "stretch or compression from the relaxed length",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "A spring that obeys Hooke's law is stretched or compressed.",
+          "notWhen": "Do not use the spring's total length for $\\Delta x$, and do not use the force $k\\,\\Delta x$ in place of the energy."
+        },
+        {
+          "latex": "U_G = -\\frac{Gm_1m_2}{r}",
+          "meaning": "The gravitational potential energy of two masses is negative, and closer to zero the farther apart they are.",
+          "variables": [
+            {
+              "symbol": "U_G",
+              "name": "gravitational potential energy of the pair",
+              "unit": "J"
+            },
+            {
+              "symbol": "G",
+              "name": "universal gravitational constant, 6.67 × 10⁻¹¹",
+              "unit": "N·m²/kg²"
+            },
+            {
+              "symbol": "m_1,\\ m_2",
+              "name": "the two masses",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between their centres",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Orbits, and any motion where the distance from a planet's centre changes by a large fraction.",
+          "notWhen": "It is not needed for everyday heights. The zero is at infinite separation, not at the planet's surface."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Energy stored in a pogo-stick spring",
+          "prompt": "The spring in a pogo stick has a spring constant of $1600\\ \\text{N/m}$. When the rider lands, the spring is compressed $0.15\\ \\text{m}$ from its relaxed length. How much elastic potential energy is stored in the spring?",
+          "steps": [
+            "List what is known: $k = 1600\\ \\text{N/m}$ and $\\Delta x = 0.15\\ \\text{m}$, measured from the relaxed length.",
+            "Square the compression: $(\\Delta x)^2 = (0.15\\ \\text{m})^2 = 0.0225\\ \\text{m}^2$.",
+            "Substitute: $U_s = \\tfrac{1}{2}k(\\Delta x)^2 = \\tfrac{1}{2}(1600\\ \\text{N/m})(0.0225\\ \\text{m}^2) = 18\\ \\text{N·m} = 18\\ \\text{J}$.",
+            "Check the scaling. Compressed twice as far, $0.30\\ \\text{m}$, the spring would store $\\tfrac{1}{2}(1600)(0.090) = 72\\ \\text{J}$: four times as much, not twice."
+          ],
+          "answer": "$U_s = 18\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 1600,
+                "unit": "N/m"
+              },
+              "x": {
+                "value": 0.15,
+                "unit": "m"
+              }
+            },
+            "expr": "0.5*k*x^2",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "A falling flowerpot and two choices of zero",
+          "prompt": "A $3.0\\ \\text{kg}$ flowerpot falls from a balcony $12\\ \\text{m}$ above the street and lands on an awning $4.0\\ \\text{m}$ above the street. Determine the change in the gravitational potential energy of the pot–Earth system, and show that the result does not depend on where the zero of potential energy is placed. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Zero at the street. Initially $U_i = mgy_i = (3.0\\ \\text{kg})(9.8\\ \\text{m/s}^2)(12\\ \\text{m}) = 352.8\\ \\text{J}$. Finally $U_f = (3.0\\ \\text{kg})(9.8\\ \\text{m/s}^2)(4.0\\ \\text{m}) = 117.6\\ \\text{J}$. So $\\Delta U_g = 117.6\\ \\text{J} - 352.8\\ \\text{J} = -235.2\\ \\text{J}$.",
+            "Zero at the balcony. Now $y_i = 0$, so $U_i = 0$. The awning is $8.0\\ \\text{m}$ below the balcony, so $y_f = -8.0\\ \\text{m}$ and $U_f = (3.0\\ \\text{kg})(9.8\\ \\text{m/s}^2)(-8.0\\ \\text{m}) = -235.2\\ \\text{J}$. So $\\Delta U_g = -235.2\\ \\text{J} - 0 = -235.2\\ \\text{J}$.",
+            "The two choices give different values of $U_i$ and $U_f$ but the same change, because $\\Delta U_g = mg\\,\\Delta y$ and the change in height, $\\Delta y = -8.0\\ \\text{m}$, is the same wherever $y = 0$ is placed.",
+            "To two significant figures, $\\Delta U_g = -2.4 \\times 10^2\\ \\text{J}$. The negative sign means the pot–Earth system has lost potential energy; ignoring air resistance, it has become the pot's kinetic energy."
+          ],
+          "answer": "$\\Delta U_g = -2.4 \\times 10^2\\ \\text{J}$, with either choice of zero",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 3,
+                "unit": "kg"
+              },
+              "y_i": {
+                "value": 12,
+                "unit": "m"
+              },
+              "y_f": {
+                "value": 4,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g*(y_f - y_i)",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "potential-energy-reference",
+          "wrong": "Gravitational potential energy has to be measured from the ground, so it can never be negative.",
+          "right": "The zero level is a free choice, and anything below it has negative $U_g$. Only changes in $U_g$ have physical meaning, and they come out the same for every choice, as long as one zero is kept throughout a problem."
+        },
+        {
+          "tag": "potential-energy-of-one-object",
+          "wrong": "The ball has potential energy, in the same way that it has mass.",
+          "right": "Potential energy is stored in an interaction, so it belongs to a system: the ball and the Earth together. A single object on its own, with nothing to interact with, has no potential energy."
+        },
+        {
+          "tag": "energy-given-direction",
+          "wrong": "A compressed spring has negative potential energy, because its change in length is negative.",
+          "right": "$\\Delta x$ is squared, so $U_s$ is positive whether the spring is stretched or compressed. Either way, energy had to be put in to deform it, and it can be given back."
+        },
+        {
+          "tag": "energy-force-confusion",
+          "wrong": "Stretch a spring twice as far and it stores twice the energy, since the spring pulls back twice as hard.",
+          "right": "The force, $k\\,\\Delta x$, doubles, but the energy, $\\tfrac{1}{2}k(\\Delta x)^2$, becomes four times as large. Force and stored energy are different quantities."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $60\\ \\text{kg}$ diver stands on a platform $10\\ \\text{m}$ above the water. Taking the platform as zero, what is the gravitational potential energy of the diver–Earth system when the diver reaches the water?",
+          "a": "$U_g = (60)(9.8)(-10) = -5880\\ \\text{J}$, about $-5.9 \\times 10^3\\ \\text{J}$. It is negative because the water is below the chosen zero."
+        },
+        {
+          "q": "A spring stores $0.50\\ \\text{J}$ when it is stretched $2\\ \\text{cm}$. How much does it store when it is stretched $6\\ \\text{cm}$?",
+          "a": "$4.5\\ \\text{J}$. Three times the stretch gives $3^2 = 9$ times the energy."
+        },
+        {
+          "q": "Why is there no such thing as \"friction potential energy\"?",
+          "a": "Potential energy only makes sense for a force whose work depends on the start and end points alone, so that the energy can be recovered. The work done by friction depends on the path taken, and the energy it removes spreads out as thermal energy instead of being stored."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 0..7\nblock T 4.8,0 w=2 h=1 \"table\"\nball B 4.8,1.25 r=.25\ndim 3.5,0 3.5,1 \"1.0 m\"\ndash 0.3,{{y0}} 6.7,{{y0}}\ntext 1.1,{{y0+0.18}} \"U_g = 0 here\"\ntext 3.2,3.7 \"0.5 kg ball on the table: U_g = {{round(49*(1-y0))/10}} J\"\ntext 3.2,3.3 \"ball on the floor: U_g = {{round(49*(0-y0))/10}} J\"\ntext 3.2,2.9 \"change if it falls: -4.9 J\"",
+        "caption": "A $0.5\\ \\text{kg}$ ball sits on a table $1.0\\ \\text{m}$ high. Move the level you call zero: both potential energies change, but the change when the ball falls to the floor is $-4.9\\ \\text{J}$ every time.",
+        "params": [
+          {
+            "name": "y0",
+            "label": "Height of the zero level",
+            "min": 0,
+            "max": 2,
+            "step": 0.25,
+            "default": 0,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.1",
+        "2.6",
+        "2.8",
+        "3.2"
+      ],
+      "teacherNotes": "Insist on the phrase \"of the ball–Earth system\" from the start; it pays off in the next topic, when students must decide whether gravity appears as potential energy or as work. Have two groups solve the same problem with different zero levels and compare the changes. For springs, ask what happens to the energy when the stretch doubles, and check that $\\Delta x$ is measured from the relaxed length. Set 3B covers both kinds and the choice of zero."
+    },
+    {
+      "topic": "3.4",
+      "bigIdea": "Energy is never created or destroyed: a system's total energy changes only by the work done on it from outside, and inside the system energy simply moves between kinetic, potential and thermal forms.",
+      "picture": {
+        "diagram": "bars energy unit=J \"A block slides down a rough ramp\"\ninitial U_g 50\nfinal K 30 E_th 20",
+        "caption": "An energy bar chart for the system of block, ramp and Earth. The $50\\ \\text{J}$ of gravitational potential energy at the top becomes $30\\ \\text{J}$ of kinetic energy and $20\\ \\text{J}$ of thermal energy at the bottom. The bars change; their total does not."
+      },
+      "explanation": "Start every energy problem by choosing a system and listing the energy it holds: the kinetic energy $K$ of each moving object, a potential energy $U$ for each interaction inside the system (gravitational if the Earth is in the system, elastic if a spring is), and thermal energy $E_{\\text{th}}$, the energy of warmed-up surfaces. The total, $E$, can change in only one way: a force from outside the system does work on it. In symbols, $E_i + W_{\\text{ext}} = E_f$. If nothing outside does work, the total stays constant.\n\nThe sum $K + U$ is called mechanical energy. If there is no friction or air resistance, no energy becomes thermal, and mechanical energy by itself is conserved: $K_i + U_i = K_f + U_f$. A skateboarder rolling down a smooth ramp trades gravitational potential energy for kinetic energy joule for joule. Only the heights of the start and end points matter, not the shape of the path between them.\n\nKinetic friction turns mechanical energy into thermal energy: $\\Delta E_{\\text{th}} = f_k d$, where $d$ is the distance slid. The energy has not vanished. Put both rubbing surfaces in the system and the total is still constant; it just has a new thermal bar. It does not turn back into motion on its own, which is why friction feels like a loss.\n\nBe careful not to count an interaction twice. If the Earth is in your system, gravity appears as $U_g$; if it is not, gravity is an outside force and appears as work. Never both. An energy bar chart keeps the accounts: the bars before, plus any outside work, must match the bars after.",
+      "equations": [
+        {
+          "latex": "K_i + U_i = K_f + U_f",
+          "meaning": "With no friction and no outside work, the kinetic plus potential energy of a system is the same at any two moments.",
+          "variables": [
+            {
+              "symbol": "K_i,\\ K_f",
+              "name": "total kinetic energy at the start and at the end",
+              "unit": "J"
+            },
+            {
+              "symbol": "U_i,\\ U_f",
+              "name": "total potential energy (gravitational plus elastic) at the start and at the end",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Only gravity and springs do work: smooth ramps and tracks, pendulums, falling objects with negligible air resistance.",
+          "notWhen": "Not when friction or air resistance matters, or when something outside the system pushes or pulls on it through a distance."
+        },
+        {
+          "latex": "E_i + W_{\\text{ext}} = E_f",
+          "meaning": "A system's total energy at the end is its total energy at the start plus the work done on it by outside forces.",
+          "variables": [
+            {
+              "symbol": "E_i,\\ E_f",
+              "name": "total energy of the system (kinetic, potential and thermal) at the start and at the end",
+              "unit": "J"
+            },
+            {
+              "symbol": "W_{\\text{ext}}",
+              "name": "work done on the system by forces from outside it (negative if energy leaves)",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Always. It is the general statement; choose the system first, then decide what counts as outside work.",
+          "notWhen": "Do not count a force as outside work if its interaction is already included as potential energy in the system."
+        },
+        {
+          "latex": "\\Delta E_{\\text{th}} = f_k d",
+          "meaning": "Kinetic friction converts mechanical energy into thermal energy equal to the friction force times the distance slid.",
+          "variables": [
+            {
+              "symbol": "\\Delta E_{\\text{th}}",
+              "name": "increase in thermal energy of the two surfaces",
+              "unit": "J"
+            },
+            {
+              "symbol": "f_k",
+              "name": "size of the kinetic friction force",
+              "unit": "N"
+            },
+            {
+              "symbol": "d",
+              "name": "distance one surface slides over the other",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "An object slides along a rough surface and both surfaces are in the system.",
+          "notWhen": "Not for static friction with no slipping, which produces no thermal energy."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "A roller coaster between two hills",
+          "prompt": "A $500\\ \\text{kg}$ roller-coaster car starts from rest at the top of a hill $30\\ \\text{m}$ above the ground and coasts along a track with negligible friction. How fast is it moving when it passes over the top of the next hill, $12\\ \\text{m}$ above the ground? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Choose the system: the car and the Earth. The track's normal force is always perpendicular to the car's motion, so it does no work, and friction is negligible. Mechanical energy is conserved.",
+            "Take the ground as the zero of $U_g$. At the start the car is at rest: $K_i = 0$ and $U_i = mg(30\\ \\text{m})$. On the second hill: $K_f = \\tfrac{1}{2}mv^2$ and $U_f = mg(12\\ \\text{m})$.",
+            "Write $K_i + U_i = K_f + U_f$: $\\;mg(30\\ \\text{m}) = \\tfrac{1}{2}mv^2 + mg(12\\ \\text{m})$. The mass is in every term, so it cancels: $\\tfrac{1}{2}v^2 = g(30\\ \\text{m} - 12\\ \\text{m}) = (9.8\\ \\text{m/s}^2)(18\\ \\text{m}) = 176.4\\ \\text{m}^2/\\text{s}^2$.",
+            "Solve: $v = \\sqrt{2(176.4\\ \\text{m}^2/\\text{s}^2)} = 18.8\\ \\text{m/s}$, or $19\\ \\text{m/s}$ to two significant figures.",
+            "Notice what did not matter: the car's mass, and the shape of the track between the two hills. Only the $18\\ \\text{m}$ drop in height sets the speed."
+          ],
+          "answer": "$v = 19\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "h_i": {
+                "value": 30,
+                "unit": "m"
+              },
+              "h_f": {
+                "value": 12,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "sqrt(2*g*(h_i - h_f))",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "A rough patch, then a spring",
+          "prompt": "A $2.0\\ \\text{kg}$ block slides at $5.0\\ \\text{m/s}$ across a level floor. It crosses a rough patch $1.5\\ \\text{m}$ long, where the kinetic friction force on it is $6.0\\ \\text{N}$, and then, on a frictionless section, runs into a spring of spring constant $800\\ \\text{N/m}$. Determine the maximum compression of the spring, and draw an energy bar chart for the process.",
+          "steps": [
+            "System: the block, the spring and the floor. The floor is level, so gravitational potential energy does not change. No outside force does work on this system, so its total energy is constant; friction acts inside it, converting kinetic energy to thermal energy.",
+            "Initial energy: all kinetic. $K_i = \\tfrac{1}{2}(2.0\\ \\text{kg})(5.0\\ \\text{m/s})^2 = 25\\ \\text{J}$.",
+            "Thermal energy produced on the rough patch: $\\Delta E_{\\text{th}} = f_k d = (6.0\\ \\text{N})(1.5\\ \\text{m}) = 9.0\\ \\text{J}$.",
+            "At maximum compression the block is momentarily at rest, so $K_f = 0$ and the remaining energy is stored in the spring: $25\\ \\text{J} = U_s + 9.0\\ \\text{J}$, so $U_s = 16\\ \\text{J}$.",
+            "Use $U_s = \\tfrac{1}{2}k(\\Delta x)^2$: $(\\Delta x)^2 = \\dfrac{2(16\\ \\text{J})}{800\\ \\text{N/m}} = 0.040\\ \\text{m}^2$, so $\\Delta x = 0.20\\ \\text{m}$.",
+            "The bar chart shows the same accounts: one bar before, two after, equal totals.\n\n```dg\nbars energy unit=J\ninitial K 25\nfinal U_s 16 E_th 9\n```"
+          ],
+          "answer": "$\\Delta x = 0.20\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 5,
+                "unit": "m/s"
+              },
+              "d": {
+                "value": 1.5,
+                "unit": "m"
+              },
+              "f": {
+                "value": 6,
+                "unit": "N"
+              },
+              "k": {
+                "value": 800,
+                "unit": "N/m"
+              }
+            },
+            "expr": "sqrt(2*(0.5*m*v^2 - f*d)/k)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "energy-not-conserved",
+          "wrong": "Friction uses up energy. When a sliding box stops, its kinetic energy is simply gone.",
+          "right": "The kinetic energy has become thermal energy: the box and the floor are slightly warmer. Mechanical energy decreased, but the total energy of box plus floor is unchanged."
+        },
+        {
+          "tag": "system-boundary",
+          "wrong": "For a falling ball I include $U_g$ and also add the work done by gravity.",
+          "right": "That counts gravity twice. With the Earth in the system, gravity is accounted for by $U_g$ and does no outside work. With the ball alone as the system there is no $U_g$, and gravity does work $mgh$ on the ball."
+        },
+        {
+          "tag": "heavier-falls-faster",
+          "wrong": "A heavier sled starts with more potential energy, so it is moving faster at the bottom of a frictionless hill.",
+          "right": "It does have more energy, but it also has more mass to speed up. In $mgh = \\tfrac{1}{2}mv^2$ the mass cancels, so every sled arrives at $v = \\sqrt{2gh}$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A ball is thrown straight up at $14\\ \\text{m/s}$. Ignoring air resistance, how high does it rise above the point of release?",
+          "a": "$10\\ \\text{m}$. All the kinetic energy becomes gravitational potential energy: $\\tfrac{1}{2}mv^2 = mgh$, so $h = v^2/(2g) = 196/19.6 = 10\\ \\text{m}$."
+        },
+        {
+          "q": "A box with $40\\ \\text{J}$ of kinetic energy slides across a level rough floor and stops. Where is the energy now, and how much of it?",
+          "a": "All $40\\ \\text{J}$ is thermal energy of the box and the floor, which are slightly warmer than before."
+        },
+        {
+          "q": "A pendulum bob is released from rest. Halfway through its swing the string catches on a peg, so the bob swings in a tighter arc. Ignoring air resistance, how high does the bob rise on the far side?",
+          "a": "To the same height it was released from. The string's pull is always perpendicular to the bob's motion and does no work, so mechanical energy is conserved, and the bob stops rising when all of it is gravitational potential energy again."
+        }
+      ],
+      "tryIt": {
+        "diagram": "bars energy unit=J \"height {{y}} m, speed {{round(10*sqrt(19.6*(5-y)))/10}} m/s\"\ninitial U_g 98\nfinal K {{98-19.6*y}} U_g {{19.6*y}}",
+        "caption": "A $2\\ \\text{kg}$ ball is dropped from rest $5\\ \\text{m}$ above the ground (the zero level), where the ball–Earth system has $98\\ \\text{J}$ of potential energy. Choose a height on the way down: the two final bars always add up to $98\\ \\text{J}$.",
+        "params": [
+          {
+            "name": "y",
+            "label": "Height above the ground",
+            "min": 0,
+            "max": 5,
+            "step": 0.5,
+            "default": 2,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.1",
+        "2.7",
+        "3.1",
+        "3.2",
+        "3.3"
+      ],
+      "teacherNotes": "Make \"what is the system?\" the first line of every solution, then a bar chart, then the equation; students who skip the first two are the ones who double-count gravity or lose the thermal bar. A good discussion task is to analyse one sliding-block problem twice, with the Earth and the surface inside the system and then outside it, and check that the final speed agrees. Sets 3C and 3D include multi-step problems with friction and springs alongside single energy transfers."
+    },
+    {
+      "topic": "3.5",
+      "bigIdea": "Power is the rate at which energy is transferred or converted, so doing the same work in less time takes more power.",
+      "picture": {
+        "diagram": "plot x=t[s] y=E[J] xr=0,7 yr=0,700\nseg 0,0 2,600\nseg 0,0 6,600 dash=1\nhl 600\nnote 2.8,540 \"300 W\"\nnote 4.2,330 \"100 W\"\nxt 0 2 4 6\nyt 0 200 400 600",
+        "caption": "Two motors each deliver $600\\ \\text{J}$. One takes $2\\ \\text{s}$ and the other $6\\ \\text{s}$. The energy is the same; the power, which is the slope of each line, is $300\\ \\text{W}$ for the first and $100\\ \\text{W}$ for the second."
+      },
+      "explanation": "Two students of the same mass climb the same staircase, one walking and one sprinting. Each gains the same gravitational potential energy, so each does the same work against gravity. What differs is how quickly. Power measures that: $P_{\\text{avg}} = \\dfrac{\\Delta E}{\\Delta t}$, the energy transferred or converted divided by the time it takes. When the energy is transferred by a force doing work, this is $W/\\Delta t$. The unit is the watt, $1\\ \\text{W} = 1\\ \\text{J/s}$. A $60\\ \\text{W}$ lamp converts $60\\ \\text{J}$ of electrical energy every second.\n\nThat formula gives the average power over a time interval. Power at one instant comes from the force and the velocity. In a short time $\\Delta t$ an object moving at speed $v$ travels $v\\,\\Delta t$, so a force with a part $F_{\\parallel}$ along the motion does work $F_{\\parallel}v\\,\\Delta t$. Divide by $\\Delta t$ and the instantaneous power is $P = F_{\\parallel}v = Fv\\cos\\theta$, where $\\theta$ is the angle between the force and the velocity. A force perpendicular to the velocity delivers no power, and a force opposite to the velocity delivers negative power: it removes energy. Because of the factor $v$, a constant force delivers more and more power as the object speeds up.\n\nPower and energy are easy to mix up, so keep the units straight. Energy is an amount, in joules; power is a rate, in joules per second. Rearranged, $\\Delta E = P\\,\\Delta t$: a $1000\\ \\text{W}$ heater running for one hour transfers $(1000\\ \\text{W})(3600\\ \\text{s}) = 3.6 \\times 10^6\\ \\text{J}$. That amount is called a kilowatt-hour, and despite the \"watt\" in its name it is a unit of energy. On a graph of energy against time, power is the slope.",
+      "equations": [
+        {
+          "latex": "P_{\\text{avg}} = \\frac{\\Delta E}{\\Delta t} = \\frac{W}{\\Delta t}",
+          "meaning": "Average power is the energy transferred or converted (for example, the work done) divided by the time taken.",
+          "variables": [
+            {
+              "symbol": "P_{\\text{avg}}",
+              "name": "average power",
+              "unit": "W"
+            },
+            {
+              "symbol": "\\Delta E",
+              "name": "energy transferred or converted",
+              "unit": "J"
+            },
+            {
+              "symbol": "W",
+              "name": "work done",
+              "unit": "J"
+            },
+            {
+              "symbol": "\\Delta t",
+              "name": "time interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You know an amount of energy or work and how long the transfer took.",
+          "notWhen": "It does not give the power at one instant if the rate is changing during the interval."
+        },
+        {
+          "latex": "P = F_{\\parallel}v = Fv\\cos\\theta",
+          "meaning": "The power delivered by a force at one instant is the part of the force along the velocity, times the speed.",
+          "variables": [
+            {
+              "symbol": "P",
+              "name": "instantaneous power delivered by the force",
+              "unit": "W"
+            },
+            {
+              "symbol": "F",
+              "name": "size of the force",
+              "unit": "N"
+            },
+            {
+              "symbol": "F_{\\parallel}",
+              "name": "part of the force along the velocity (negative if against it)",
+              "unit": "N"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the object",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the force and the velocity",
+              "unit": "°"
+            }
+          ],
+          "useWhen": "You know the force and the speed at one instant, or an object moves at constant speed against a steady force.",
+          "notWhen": "With a changing speed it gives the power only at that instant, not the average over the trip."
+        }
+      ],
+      "workedExamples": [
+        {
+          "title": "Running up the stairs",
+          "prompt": "A $60\\ \\text{kg}$ student runs up a flight of stairs, rising $4.0\\ \\text{m}$ in $4.9\\ \\text{s}$. She reaches the top moving at the same speed she started with. What is her average power output against gravity? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Find the energy that changed. Her speed is the same at the top and the bottom, so her kinetic energy is unchanged. The gravitational potential energy of the student–Earth system rises by $\\Delta U_g = mg\\,\\Delta y = (60\\ \\text{kg})(9.8\\ \\text{m/s}^2)(4.0\\ \\text{m}) = 2352\\ \\text{J}$.",
+            "Divide by the time: $P_{\\text{avg}} = \\dfrac{\\Delta E}{\\Delta t} = \\dfrac{2352\\ \\text{J}}{4.9\\ \\text{s}} = 480\\ \\text{J/s}$.",
+            "A joule per second is a watt, so $P_{\\text{avg}} = 480\\ \\text{W}$, or $4.8 \\times 10^2\\ \\text{W}$ to two significant figures. Only the vertical rise matters; the horizontal length of the staircase does not enter.",
+            "Compare: walking up in $9.8\\ \\text{s}$ would take the same $2352\\ \\text{J}$ but only half the power, $240\\ \\text{W}$."
+          ],
+          "answer": "$P_{\\text{avg}} = 4.8 \\times 10^2\\ \\text{W}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 60,
+                "unit": "kg"
+              },
+              "h": {
+                "value": 4,
+                "unit": "m"
+              },
+              "t": {
+                "value": 4.9,
+                "unit": "s"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g*h/t",
+            "unit": "W"
+          }
+        },
+        {
+          "title": "A cyclist at constant speed",
+          "prompt": "A cyclist rides along a level road at a constant $8.0\\ \\text{m/s}$. Air resistance and rolling friction together exert a backward force of $30\\ \\text{N}$ on the bicycle and rider. Determine the power needed to keep the bicycle moving at this speed, and the energy this takes over $5.0\\ \\text{min}$. Explain why the kinetic energy does not increase even though energy is supplied the whole time.",
+          "steps": [
+            "The velocity is constant, so the net force is zero. The forward driving force on the bicycle must therefore equal the backward force: $F = 30\\ \\text{N}$.",
+            "The driving force is along the velocity ($\\theta = 0$), so $P = Fv = (30\\ \\text{N})(8.0\\ \\text{m/s}) = 240\\ \\text{W}$, which is $2.4 \\times 10^2\\ \\text{W}$.",
+            "Energy is power times time. With $\\Delta t = 5.0\\ \\text{min} = 300\\ \\text{s}$: $\\Delta E = P\\,\\Delta t = (240\\ \\text{W})(300\\ \\text{s}) = 7.2 \\times 10^4\\ \\text{J}$.",
+            "The resistive forces point opposite to the velocity, so they deliver $P = (30\\ \\text{N})(8.0\\ \\text{m/s})\\cos 180^\\circ = -240\\ \\text{W}$. Energy is removed exactly as fast as it is supplied, so the net work is zero and the kinetic energy stays constant. The energy supplied ends up as thermal energy of the air, the tyres and the road."
+          ],
+          "answer": "$P = 2.4 \\times 10^2\\ \\text{W}$, and $7.2 \\times 10^4\\ \\text{J}$ over $5.0\\ \\text{min}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "F": {
+                "value": 30,
+                "unit": "N"
+              },
+              "v": {
+                "value": 8,
+                "unit": "m/s"
+              }
+            },
+            "expr": "F*v",
+            "unit": "W"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "power-energy-confusion",
+          "wrong": "A more powerful motor does more work.",
+          "right": "A more powerful motor does work faster. Lifting the same load through the same height takes the same work whatever the motor; the more powerful one just finishes sooner."
+        },
+        {
+          "tag": "power-energy-confusion",
+          "wrong": "A kilowatt-hour is a unit of power, since it has \"watt\" in it.",
+          "right": "A kilowatt is a unit of power; a kilowatt-hour is power multiplied by time, which is energy: $3.6 \\times 10^6\\ \\text{J}$. An electricity bill charges for energy used, not for power."
+        },
+        {
+          "tag": "energy-force-confusion",
+          "wrong": "The larger the force, the larger the power.",
+          "right": "Power depends on force and speed together: $P = Fv\\cos\\theta$. A huge force on something that is not moving, or a force perpendicular to the motion, delivers zero power."
+        },
+        {
+          "wrong": "A constant force delivers constant power.",
+          "right": "Only if the speed is constant too. For an object speeding up under a constant force, $P = Fv$ grows as $v$ grows: each second the object covers more distance, so the force does more work in that second."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $1500\\ \\text{W}$ kettle runs for $2.0\\ \\text{min}$. How much energy does it convert?",
+          "a": "$\\Delta E = P\\,\\Delta t = (1500\\ \\text{W})(120\\ \\text{s}) = 1.8 \\times 10^5\\ \\text{J}$."
+        },
+        {
+          "q": "Crane A lifts a load to a rooftop in $10\\ \\text{s}$. Crane B lifts an identical load to the same rooftop in $20\\ \\text{s}$. Compare the work done and the power of the two cranes.",
+          "a": "They do the same work, because the load and the height are the same. Crane A does it in half the time, so its power is twice crane B's."
+        },
+        {
+          "q": "A car's engine must overcome a drag force that becomes four times as large when the car's speed doubles. By what factor does the power needed to hold a constant speed increase?",
+          "a": "By a factor of $8$. Power is force times speed: four times the force at twice the speed gives $4 \\times 2 = 8$ times the power."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=E[J] xr=0,11 yr=0,800\nseg 0,0 {{t}},600\nhl 600\npt {{t}},600\nxt 0 1 2 3 4 5 6 7 8 9 10\nyt 0 200 400 600\nnote 5.5,760 \"P = {{round(600/t)}} W\"\nnote 5.5,690 \"energy = 600 J\"",
+        "caption": "A motor delivers $600\\ \\text{J}$. Change how long it takes: the energy stays the same, while the power, the slope of the line, falls as the time grows.",
+        "params": [
+          {
+            "name": "t",
+            "label": "Time taken",
+            "min": 1,
+            "max": 10,
+            "step": 0.5,
+            "default": 3,
+            "unit": "s"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "3.2",
+        "3.4"
+      ],
+      "teacherNotes": "Ask students to say \"joules per second\" in place of \"watts\" for the first few problems; it keeps power from collapsing into energy. A stair-climb lab (time, height, mass) makes average power concrete and usually surprises them with how large a few hundred watts feels. For $P = Fv$, constant-speed situations come first; then ask how the power of a constant force changes as an object speeds up. Set 3D ends with power."
+    }
+  ]
+}

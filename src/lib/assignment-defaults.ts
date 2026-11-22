@@ -16,6 +16,19 @@ export interface AssignmentDefaults {
 
 export const MAX_TIME_LIMIT_MINUTES = 600;
 
+/**
+ * Stored beside the settings but not one of them: the number of problems the teacher last chose in
+ * the assign dialog, so the dialog opens on it next time. Nothing else reads it.
+ */
+export const PROBLEMS_PER_SET = "problemsPerSet";
+
+/** The class's remembered "Problems per set" (3 to 10), or null when there is none. */
+export function parseProblemsPerSet(value: unknown): number | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const n = (value as Record<string, unknown>)[PROBLEMS_PER_SET];
+  return typeof n === "number" && Number.isInteger(n) && n >= 3 && n <= 10 ? n : null;
+}
+
 /** What the assignment editor starts with when a class has no saved defaults. */
 export const BASE_ASSIGNMENT_DEFAULTS: AssignmentDefaults = {
   timeLimit: null,
@@ -34,6 +47,9 @@ export const BASE_ASSIGNMENT_DEFAULTS: AssignmentDefaults = {
 export function parseAssignmentDefaults(value: unknown): AssignmentDefaults | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const v = value as Record<string, unknown>;
+  // A class that only has a remembered "Problems per set" has no settings of its own.
+  const keys = Object.keys(v);
+  if (keys.length === 1 && keys[0] === PROBLEMS_PER_SET) return null;
   const flag = (key: keyof AssignmentDefaults) =>
     typeof v[key] === "boolean" ? (v[key] as boolean) : (BASE_ASSIGNMENT_DEFAULTS[key] as boolean);
   const minutes = v.timeLimit;

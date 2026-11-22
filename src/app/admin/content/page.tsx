@@ -27,7 +27,7 @@ import {
 } from "@/data/ap";
 import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
 import type { DraftProblem } from "@/lib/content/problem-format";
-import type { DraftStatus } from "@/lib/content/drafts";
+import type { DraftStatus, ReviewKind } from "@/lib/content/drafts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -61,7 +61,7 @@ interface Draft {
   edited: boolean;
   createdAt: string | null;
   reviewNote?: string | null;
-  reviewKind?: "human" | "ai" | null;
+  reviewKind?: ReviewKind | null;
   assignmentId?: string | null;
 }
 
@@ -165,6 +165,12 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
               {draft.status}
             </Badge>
             {draft.edited && <Badge variant="secondary">edited</Badge>}
+            {draft.reviewKind === "verified" && draft.status === "approved" && (
+              <Badge variant="outline">Verified by machine</Badge>
+            )}
+            {draft.reviewKind === "owner-accepted" && draft.status === "approved" && (
+              <Badge variant="outline">Owner-accepted</Badge>
+            )}
             {draft.reviewKind === "ai" && draft.status === "approved" && (
               <Badge
                 variant="outline"
@@ -657,10 +663,10 @@ export default function ContentReviewPage() {
               id="gen-count"
               type="number"
               min={1}
-              max={5}
+              max={10}
               className="w-20"
               value={count}
-              onChange={(e) => setCount(Math.max(1, Math.min(5, Number(e.target.value) || 1)))}
+              onChange={(e) => setCount(Math.max(1, Math.min(10, Number(e.target.value) || 1)))}
             />
           </div>
           <Button onClick={generate} disabled={generating}>

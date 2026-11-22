@@ -1,9 +1,14 @@
 import physics1 from "../src/data/curricula/ap-physics-1.json";
+import firstFive from "../tests/fixtures/set-first-five.json";
+import { CONTENT_FILES } from "../src/data/curricula/content-files";
 import { courseContent, testWithContent } from "../tests/helpers/course-content";
 
 const units46 = courseContent("content/ap-physics-1/units-4-6.json");
 import {
   CURRICULA,
+  DEFAULT_SET_SIZE,
+  MAX_SET_POOL,
+  MIN_SET_SIZE,
   compareSetKeys,
   curriculumSet,
   curriculumUnits,
@@ -17,14 +22,26 @@ import {
   deriveRoadmap,
   draftState,
   nextUnit,
+  setReadyToAppend,
   setReadyToPublish,
 } from "../src/lib/curriculum-roadmap";
 import { groupByUnit, OTHER_GROUP_LABEL } from "../src/lib/student-grouping";
-import { planAssignments, runAssignments, cloneSetToClass } from "../src/lib/assign-sets";
+import {
+  cappedSets,
+  cloneSetToClass,
+  planAssignments,
+  restoresArchived,
+  runAssignments,
+  setSizeOptions,
+  sizeChoice,
+  sizeFor,
+} from "../src/lib/assign-sets";
 import { apUnitLabel } from "../src/data/ap";
 import { toDateInput, parseDateInput } from "../src/lib/first-run";
 import {
+  cloneAssignmentBody,
   contentPublishBody,
+  courseAssignmentDefaultsBody,
   courseBody,
   courseCurriculumBody,
 } from "../src/lib/schemas/api-bodies";
@@ -43,7 +60,7 @@ describe("curriculum definitions", () => {
         ["A", "B", "C", "D"].map((l) => `${u}${l}`),
       );
       expect(ap.sets.map((s) => s.key)).toEqual(keys);
-      expect(ap.sets.every((s) => s.draftIds.length === 5)).toBe(true);
+      expect(ap.sets.every((s) => s.draftIds.length >= 5 && s.draftIds.length <= 10)).toBe(true);
       const mid = ap.sets.filter((s) => s.unit >= 4 && s.unit <= 6);
       expect(mid.map((s) => displayTitle(s))).toEqual(units46.sets.map((s) => s.title));
       mid.forEach((s, i) => {
@@ -84,6 +101,152 @@ describe("curriculum definitions", () => {
     expect(run([{ ...d, draftIds: ["x", "x"] }])).toMatch(/repeated draftIds/);
     expect(run([{ ...a, key: "4a" }])).toMatch(/key must be/);
     expect(run([{ ...a, draftIds: [] }])).toBe(""); // a planned set has no problems yet
+  });
+
+  test("a set has no problems (planned) or a pool of 5 to 10", () => {
+    const base = physics1 as Curriculum;
+    const a = base.sets.find((s) => s.key === "4A")!;
+    const run = (n: number) =>
+      validateCurriculum({
+        ...base,
+        sets: [{ ...a, draftIds: Array.from({ length: n }, (_, i) => `pool-${i}`) }],
+      }).join("\n");
+    for (const n of [0, 5, 6, 9, 10]) expect([n, run(n)]).toEqual([n, ""]);
+    for (const n of [1, 4, 11, 20])
+      expect([n, run(n)]).toEqual([n, `4A: ${n} problems; a set has none (planned) or 5 to 10`]);
+    expect([MIN_SET_SIZE, DEFAULT_SET_SIZE, MAX_SET_POOL]).toEqual([3, 5, 10]);
+  });
+
+  // Order is the selection rule: a class gets a set's first n problems, so the first five of a set
+  // may never change once written. The fixture holds ids only (no problem text, no keys).
+  test("the first five problems of every written set are the ones recorded", () => {
+    const now = Object.fromEntries(
+      CURRICULA.map((c) => [
+        c.id,
+        Object.fromEntries(
+          c.sets.filter((s) => s.draftIds.length).map((s) => [s.key, s.draftIds.slice(0, 5)]),
+        ),
+      ]),
+    );
+    expect(now).toEqual(firstFive);
+  });
+
+  testWithContent(
+    "every assignment of the usual size or larger covers all of its set's topics",
+    () => {
+      for (const c of CURRICULA) {
+        const topicOf = new Map<string, string>(
+          (CONTENT_FILES[c.id] ?? []).flatMap((file) =>
+            courseContent(file).drafts.map((d) => [d.id, d.apTopic] as [string, string]),
+          ),
+        );
+        for (const s of c.sets.filter((x) => x.draftIds.length)) {
+          const topics = s.draftIds.map((id) => topicOf.get(id));
+          // Every prefix a class can get from the default size up, however long the pool grows.
+          for (let n = Math.max(DEFAULT_SET_SIZE, s.topics.length); n <= s.draftIds.length; n++)
+            expect([
+              c.id,
+              s.key,
+              n,
+              s.topics.filter((t) => !topics.slice(0, n).includes(t)),
+            ]).toEqual([c.id, s.key, n, []]);
+        }
+      }
+    },
+  );
+});
+
+describe("how many problems a set's copy gets", () => {
+  const set = (key: string, poolSize?: number) => ({
+    sourceId: `w${key}`,
+    key,
+    title: key,
+    poolSize,
+  });
+
+  test("setSizeOptions: 3 up to the pool, starting at 5", () => {
+    expect(setSizeOptions(5)).toEqual({ min: 3, max: 5, default: 5 });
+    expect(setSizeOptions(10)).toEqual({ min: 3, max: 10, default: 5 });
+    expect(setSizeOptions(7)).toEqual({ min: 3, max: 7, default: 5 });
+    expect(setSizeOptions(4)).toEqual({ min: 3, max: 4, default: 4 });
+    expect(setSizeOptions(2)).toEqual({ min: 2, max: 2, default: 2 });
+    expect(setSizeOptions(0)).toEqual({ min: 0, max: 0, default: 0 });
+  });
+
+  test("the choice is not offered while every set has five problems", () => {
+    expect(sizeChoice([set("4A", 5), set("4B", 5)])).toMatchObject({ offered: false, initial: 5 });
+    expect(sizeChoice([set("4A")])).toMatchObject({ offered: false });
+    expect(sizeChoice([])).toMatchObject({ offered: false });
+    // A remembered number does not bring the control back.
+    expect(sizeChoice([set("4A", 5)], 8)).toMatchObject({ offered: false, initial: 5 });
+  });
+
+  test("it is offered once a set has more, from 3 to the largest pool, starting at 5", () => {
+    expect(sizeChoice([set("4A", 10)])).toEqual({ offered: true, min: 3, max: 10, initial: 5 });
+    expect(sizeChoice([set("4A", 5), set("4B", 8)])).toEqual({
+      offered: true,
+      min: 3,
+      max: 8,
+      initial: 5,
+    });
+  });
+
+  test("it opens on the class's last choice, kept inside what the sets allow", () => {
+    expect(sizeChoice([set("4A", 10)], 8).initial).toBe(8);
+    expect(sizeChoice([set("4A", 10)], 3).initial).toBe(3);
+    expect(sizeChoice([set("4A", 7)], 10).initial).toBe(7);
+    expect(sizeChoice([set("4A", 10)], null).initial).toBe(5);
+    expect(sizeChoice([set("4A", 10)], 4.5).initial).toBe(5);
+  });
+
+  test("each set is capped at its own pool", () => {
+    const sets = [set("4A", 10), set("4B", 5), set("4C", 7), set("4D")];
+    expect(cappedSets(sets, 8).map((s) => s.key)).toEqual(["4B", "4C", "4D"]);
+    expect(cappedSets(sets, 5)).toEqual([]);
+    expect(sets.map((s) => sizeFor(s, 8))).toEqual([8, 5, 7, 5]);
+    expect(sets.map((s) => sizeFor(s, undefined))).toEqual([5, 5, 5, 5]);
+    expect(sizeFor(set("4A", 10), 3)).toBe(3);
+  });
+
+  test("an archived copy is restored unless the teacher chose another size than it has", () => {
+    const due = new Date("2027-01-12T23:59:00");
+    const item = (count?: number, poolSize = 10) => ({ ...set("4A", poolSize), due, count });
+    expect(restoresArchived(item(), undefined)).toBe(false);
+    // No choice offered (or "assign now"): restored whatever its size, as before.
+    expect(restoresArchived(item(), { questionCount: 5 })).toBe(true);
+    expect(restoresArchived(item(), { questionCount: 7 })).toBe(true);
+    expect(restoresArchived(item(), {})).toBe(true);
+    // A choice: only a copy of that size comes back.
+    expect(restoresArchived(item(8), { questionCount: 8 })).toBe(true);
+    expect(restoresArchived(item(8), { questionCount: 5 })).toBe(false);
+    expect(restoresArchived(item(5), { questionCount: 8 })).toBe(false);
+    expect(restoresArchived(item(8), {})).toBe(false);
+    // The choice is capped at the set's own pool before comparing.
+    expect(restoresArchived(item(8, 5), { questionCount: 5 })).toBe(true);
+    // Problems chosen by hand always make a new copy: the archived one may hold others.
+    expect(restoresArchived({ ...item(8), pick: [0, 1, 2] }, { questionCount: 3 })).toBe(false);
+  });
+
+  test("the clone request carries the count only when one was chosen", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    const fetcher = async (_url: string, init: RequestInit) => {
+      bodies.push(JSON.parse(String(init.body)));
+      return new Response(JSON.stringify({ id: "copy" }));
+    };
+    const due = new Date("2027-01-12T23:59:00");
+    await cloneSetToClass(fetcher, "c1", { ...set("4A", 10), due });
+    await cloneSetToClass(fetcher, "c1", { ...set("4A", 10), due, count: 8 });
+    expect("count" in bodies[0]).toBe(false);
+    expect(bodies[1]).toMatchObject({ sourceId: "w4A", courseId: "c1", count: 8 });
+    // The teacher's own choice of problems, and a copy kept hidden to edit first.
+    await cloneSetToClass(
+      fetcher,
+      "c1",
+      { ...set("4A", 10), due, count: 8, pick: [0, 2, 7] },
+      true,
+    );
+    expect(bodies[2]).toMatchObject({ count: 8, pick: [0, 2, 7], hidden: true });
+    expect("pick" in bodies[1] || "hidden" in bodies[1]).toBe(false);
   });
 });
 
@@ -141,6 +304,18 @@ describe("roadmap state", () => {
     expect(draftState({ status: "approved", reviewKind: "ai" })).toBe("ai-reviewed");
     expect(draftState({ status: "approved", reviewKind: "human" })).toBe("human-approved");
     expect(draftState({ status: "approved" })).toBe("human-approved");
+    // A machine's mark and the owner's acceptance are not a person's approval and are not called one.
+    expect(draftState({ status: "approved", reviewKind: "verified" })).toBe("verified");
+    expect(draftState({ status: "approved", reviewKind: "owner-accepted" })).toBe("owner-accepted");
+    expect(draftState({ status: "published", reviewKind: "verified" })).toBe("published");
+    expect(setReadyToPublish(["verified", "owner-accepted", "human-approved"])).toBe(true);
+    expect(setReadyToPublish(["verified", "rejected"])).toBe(false);
+    // Adding to a published set: everything after the published problems is approved.
+    expect(setReadyToAppend(["published", "published", "verified", "human-approved"])).toBe(true);
+    expect(setReadyToAppend(["published", "published"])).toBe(false);
+    expect(setReadyToAppend(["published", "draft"])).toBe(false);
+    expect(setReadyToAppend(["published", "missing", "verified"])).toBe(false);
+    expect(setReadyToAppend(["verified", "verified"])).toBe(false);
     expect(draftState({ status: "published", reviewKind: "ai" })).toBe("published");
     expect(setReadyToPublish(["human-approved", "ai-reviewed"])).toBe(true);
     expect(setReadyToPublish(["human-approved", "draft"])).toBe(false);
@@ -263,6 +438,32 @@ describe("request bodies", () => {
     expect(ok({ curriculumId: "ap-physics-1", setKey: "4A", draftIds: ["a"] })).toBe(false);
     expect(ok({ draftIds: ["a"] })).toBe(false);
     expect(ok({})).toBe(false);
+  });
+  test("clone takes an optional whole count from 3 to 100", () => {
+    const ok = (count: unknown) => cloneAssignmentBody.safeParse({ sourceId: "a", count }).success;
+    expect(cloneAssignmentBody.safeParse({ sourceId: "a" }).success).toBe(true);
+    for (const n of [3, 5, 10, 100]) expect([n, ok(n)]).toEqual([n, true]);
+    for (const n of [2, 0, -3, 101, 5.5, "5", null]) expect([n, ok(n)]).toEqual([n, false]);
+  });
+  test("class defaults: the settings, or only the remembered number of problems (3 to 10)", () => {
+    const ok = (b: unknown) => courseAssignmentDefaultsBody.safeParse(b).success;
+    const settings = {
+      timeLimit: null,
+      gradingType: "ai",
+      allowCalculator: false,
+      allowAIHelp: false,
+      requireWorkSubmission: false,
+      enableTabDetection: true,
+      lockdownMode: false,
+    };
+    expect(ok({ assignmentDefaults: settings })).toBe(true);
+    expect(ok({ assignmentDefaults: null })).toBe(true);
+    for (const n of [3, 5, 10]) expect([n, ok({ problemsPerSet: n })]).toEqual([n, true]);
+    for (const n of [2, 11, 4.5, "5", null])
+      expect([n, ok({ problemsPerSet: n })]).toEqual([n, false]);
+    expect(ok({})).toBe(false);
+    expect(ok({ assignmentDefaults: settings, problemsPerSet: 5 })).toBe(false);
+    expect(ok({ assignmentDefaults: { ...settings, problemsPerSet: 5 } })).toBe(true); // extra key dropped
   });
   test("class and follow bodies", () => {
     expect(

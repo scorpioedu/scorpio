@@ -175,6 +175,9 @@ function AssignmentHub() {
   const [status, setStatus] = useState<"loading" | "ready" | "missing">("loading");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
+  /** Opened from "Edit problems first": the copy is hidden until the teacher assigns it here. */
+  const reviewing = searchParams?.get("review") === "1";
+  const [assigningNow, setAssigningNow] = useState(false);
   const [confirmRegrade, setConfirmRegrade] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -388,7 +391,9 @@ function AssignmentHub() {
               <Badge variant="outline">Set {assignment.curriculumSetKey}</Badge>
             )}
             {assignment.archived && (
-              <Badge variant="outline">Archived · hidden from students</Badge>
+              <Badge variant="outline">
+                {reviewing ? "Not assigned yet" : "Archived"} · hidden from students
+              </Badge>
             )}
             <DueDateChip
               due={assignment.dueDate}
@@ -436,6 +441,42 @@ function AssignmentHub() {
           />
         </div>
       </header>
+
+      {/* A copy the class has but students cannot see: one made with "Edit problems first" in the
+          assign dialog (?review=1), or any archived assignment. */}
+      {assignment.archived && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+          <p className="min-w-0 flex-1">
+            <span className="font-medium">
+              {reviewing ? "Not assigned yet." : "Archived."} Students cannot see this
+              {className ? ` in ${className}` : ""}.
+            </span>{" "}
+            <span className="text-muted-foreground">
+              {reviewing
+                ? "Change the problems, answers or settings, save, then assign it."
+                : "Assign it to bring it back with the work students handed in."}
+            </span>
+          </p>
+          <Button
+            disabled={dirty || saving || assigningNow}
+            title={dirty ? "Save or discard your changes first" : undefined}
+            onClick={async () => {
+              setAssigningNow(true);
+              try {
+                await updateAssignment(assignment.id, { archived: false });
+                setAssignment((cur) => (cur ? { ...cur, archived: false } : cur));
+                toast.success(className ? `Assigned to ${className}.` : "Students can see it now.");
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Could not assign it.");
+              } finally {
+                setAssigningNow(false);
+              }
+            }}
+          >
+            {assigningNow ? "Assigning…" : className ? `Assign to ${className}` : "Restore"}
+          </Button>
+        </div>
+      )}
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
         <TabsList>

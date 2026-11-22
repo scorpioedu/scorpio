@@ -101,7 +101,20 @@ export function toEditorQuestion(question: RawQuestion, keepId = false): Questio
   };
 }
 
-/** A generated or imported question, with a new id. */
+/** "Number of Questions" in Generate with AI. `max` matches the API (AI_GENERATE_MAX in api-bodies.ts). */
+export const AI_COUNT = { min: 1, max: 20, fallback: 3 } as const;
+
+/** The count to ask for from whatever is in the box: an empty or unreadable box means the default. */
+export function clampAiCount(raw: string | number): number {
+  const n = typeof raw === "number" ? raw : Number.parseInt(raw, 10);
+  if (!Number.isFinite(n)) return AI_COUNT.fallback;
+  return Math.min(AI_COUNT.max, Math.max(AI_COUNT.min, Math.trunc(n)));
+}
+
+/**
+ * A generated or imported question, with a new id. Only these fields are kept: the answer-check
+ * verdict that comes with a generated question goes to answer-checks.ts, never onto the question.
+ */
 export function fromGenerated(q: RawQuestion): Question {
   return {
     id: crypto.randomUUID(),

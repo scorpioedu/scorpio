@@ -6,20 +6,27 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { getCurriculum, type Curriculum } from "@/data/curricula";
+import { DEFAULT_SET_SIZE, getCurriculum, type Curriculum } from "@/data/curricula";
 import {
   cloneSetToClass,
   planAssignments,
+  restoresArchived,
   runAssignments,
   type AssignableSet,
   type PlannedAssignment,
 } from "@/lib/assign-sets";
 import type { ClassAssignment, RoadmapSet, RoadmapUnit } from "@/lib/curriculum-roadmap";
-import { isDefaultPlan, toggleSkipped, type CurriculumPlan } from "@/lib/curriculum-plan";
+import {
+  isDefaultPlan,
+  toggleSkipped,
+  withSkipped,
+  type CurriculumPlan,
+} from "@/lib/curriculum-plan";
 import type { SchoolDayTest } from "@/lib/school-calendar";
 import { loadClassAssignments } from "@/lib/curriculum-client";
 import { dueParam, updateAssignment } from "@/lib/assignment-actions";
 import { apiError, undoToast } from "@/lib/undo-toast";
+import { PROBLEMS_PER_SET, parseProblemsPerSet } from "@/lib/assignment-defaults";
 import { shortDate, type CourseData } from "./use-course-data";
 
 /** What the assign dialog is open for. */
@@ -98,6 +105,10 @@ export function useSetActions({
         sourceId: s.published!.id,
         key: s.set.key,
         title: (published ?? []).find((p) => p.id === s.published!.id)?.title ?? s.set.title,
+        poolSize: s.published!.questionCount,
+        ...(s.archivedId && typeof s.archivedCount === "number"
+          ? { archivedCount: s.archivedCount }
+          : {}),
       })),
     [published],
   );
@@ -109,28 +120,40 @@ export function useSetActions({
     setError("");
     // Fresh read, so a set assigned elsewhere (or in another tab) is not copied twice.
     let todo = planned;
-    let archived = new Map<string, string>();
+    let archived = new Map<string, { id: string; questionCount?: number }>();
     try {
       const fresh = (await loadClassAssignments(user.uid, selected.id)).filter(ofCourse);
       const have = new Set(fresh.filter((a) => !a.archived).map((a) => String(a.curriculumSetKey)));
       archived = new Map(
-        fresh.filter((a) => a.archived && a.id).map((a) => [String(a.curriculumSetKey), a.id!]),
+        fresh
+          .filter((a) => a.archived && a.id)
+          .map((a) => [String(a.curriculumSetKey), { id: a.id!, questionCount: a.questionCount }]),
       );
       if (planned.some((p) => have.has(p.key)))
-        todo = planAssignments(target.sets, have, startDate, spacing, isSchoolDay);
+        todo = planAssignments(target.sets, have, startDate, spacing, isSchoolDay).map(
+          // The re-plan keeps the number of problems, and the problems, the teacher chose.
+          (p): PlannedAssignment => {
+            const chosen = planned.find((x) => x.key === p.key);
+            return {
+              ...p,
+              ...(planned[0]?.count === undefined ? {} : { count: planned[0].count }),
+              ...(chosen?.pick ? { pick: chosen.pick } : {}),
+            };
+          },
+        );
     } catch {
       /* keep the plan the teacher confirmed */
     }
     try {
-      // An archived copy of a set is restored (with its students' work) instead of copied again.
-      await runAssignments(todo, (item) =>
-        archived.has(item.key)
-          ? updateAssignment(archived.get(item.key)!, {
-              archived: false,
-              dueDate: dueParam(item.due),
-            })
-          : cloneSetToClass(authenticatedFetch, selected.id, item),
-      );
+      // An archived copy of a set is restored (with its students' work) instead of copied again,
+      // unless the teacher chose another number of problems than it has (see restoresArchived).
+      await runAssignments(todo, (item) => {
+        const copy = archived.get(item.key);
+        return copy && restoresArchived(item, copy)
+          ? updateAssignment(copy.id, { archived: false, dueDate: dueParam(item.due) })
+          : cloneSetToClass(authenticatedFetch, selected.id, item);
+      });
+      void rememberCount(todo[0]?.count);
       toast.success(
         todo.length ? `${target.label} assigned to ${selected.name}.` : "Nothing new to assign.",
       );
@@ -143,6 +166,65 @@ export function useSetActions({
     } finally {
       await data.refreshClass();
       setBusy(null);
+    }
+  }
+
+  /**
+   * "Edit problems first": make the class's copy of one set without showing it to students (it is
+   * created archived), and open it in the editor. The teacher assigns it from there, or leaves it:
+   * an abandoned copy stays archived, and assigning the set again offers to restore it.
+   */
+  async function editFirst(planned: PlannedAssignment[]): Promise<string | null> {
+    const item = planned[0];
+    if (!selected || !user || !item) return null;
+    setBusy("assign");
+    setError("");
+    try {
+      const fresh = (await loadClassAssignments(user.uid, selected.id)).filter(ofCourse);
+      if (fresh.some((a) => !a.archived && a.curriculumSetKey === item.key)) {
+        toast.info(`${item.key} is already assigned to ${selected.name}.`);
+        closeAssign();
+        await data.refreshClass();
+        return null;
+      }
+      // A hidden copy made earlier (or an archived one of this size) is opened again, not copied twice.
+      const kept = fresh.find((a) => a.archived && a.id && a.curriculumSetKey === item.key);
+      const id =
+        kept?.id && restoresArchived(item, kept)
+          ? kept.id
+          : await cloneSetToClass(authenticatedFetch, selected.id, item, true);
+      void rememberCount(item.count);
+      closeAssign();
+      return id;
+    } catch (e) {
+      closeAssign();
+      setError(message(e, "Could not open this set for editing."));
+      return null;
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /**
+   * Remember the number of problems chosen in the dialog as the class's own, so the dialog opens on it
+   * next time. Nothing else uses it, and a failure only means the dialog opens on the usual five.
+   */
+  async function rememberCount(count: number | undefined) {
+    if (!selected || count === undefined) return;
+    if (count === (parseProblemsPerSet(selected.assignmentDefaults) ?? DEFAULT_SET_SIZE)) return;
+    try {
+      const res = await authenticatedFetch(
+        `/api/courses/${encodeURIComponent(selected.id)}/assignment-defaults`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ [PROBLEMS_PER_SET]: count }),
+        },
+      );
+      if (!res.ok) return;
+      data.patchClass(selected.id, { assignmentDefaults: (await res.json()).assignmentDefaults });
+    } catch {
+      /* not worth a message */
     }
   }
 
@@ -191,43 +273,67 @@ export function useSetActions({
     }
   }
 
-  async function savePlan(next: CurriculumPlan | null) {
-    if (!selected) return null;
+  /**
+   * Save the class's plan. With `unassign`, the class's copies of the skipped sets are archived in the
+   * same request (students stop seeing them, their work is kept); their ids come back in `archived`.
+   */
+  async function writePlan(next: CurriculumPlan | null, unassign = false) {
+    if (!selected) return { plan: null, archived: [] as string[] };
     const res = await authenticatedFetch(`/api/courses/${encodeURIComponent(selected.id)}/plan`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan: next }),
+      body: JSON.stringify({ plan: next, ...(unassign ? { unassignSkipped: true } : {}) }),
     });
     if (!res.ok) throw new Error(await apiError(res, "Could not save the change."));
-    const stored = ((await res.json()).plan ?? null) as CurriculumPlan | null;
+    const body = await res.json();
+    const stored = (body.plan ?? null) as CurriculumPlan | null;
     data.patchClass(selected.id, { curriculumPlan: stored });
-    return stored;
+    return {
+      plan: stored,
+      archived: Array.isArray(body.archived) ? (body.archived as string[]) : [],
+    };
   }
+
+  const savePlan = async (next: CurriculumPlan | null) => (await writePlan(next)).plan;
 
   /** A plan that changes nothing is stored as "no plan". */
   const toStore = (p: CurriculumPlan) => (isDefaultPlan(curriculumId, p) ? null : p);
 
-  /** Save a change to the class's plan and offer to undo it. */
-  async function changePlan(next: CurriculumPlan, done: string) {
-    if (!follows || !plan) return;
+  /**
+   * Skip a set, or bring a skipped one back. Skipping a set the class has takes it away from the
+   * class: its copy is archived with the students' work, and Undo puts both back. Bringing a set back
+   * only returns it to the plan; an archived copy is restored when the set is assigned again.
+   */
+  async function toggleSkip(s: RoadmapSet) {
+    if (!follows || !plan || !selected) return;
     const previous = plan;
+    const key = s.set.key;
     try {
-      await savePlan(toStore(next));
-      undoToast(done, () => savePlan(toStore(previous)));
+      if (s.skipped) {
+        await writePlan(toStore(toggleSkipped(plan, key)));
+        undoToast(`${key} is back in the plan`, async () => {
+          await writePlan(toStore(previous));
+        });
+        return;
+      }
+      const { archived } = await writePlan(toStore(withSkipped(plan, key)), true);
+      if (archived.length) await data.refreshClass();
+      undoToast(
+        archived.length
+          ? `${key} skipped and taken away from ${selected.name}. Students no longer see it; their work is kept.`
+          : `${key} skipped for ${selected.name}`,
+        async () => {
+          await writePlan(toStore(previous));
+          for (const id of archived) await updateAssignment(id, { archived: false });
+          if (archived.length) await data.refreshClass();
+        },
+        archived.length ? `${key} is assigned again` : undefined,
+      );
     } catch (e) {
       toast.error(message(e, "Could not save the change."));
+      await data.refreshClass();
     }
   }
-
-  const toggleSkip = (s: RoadmapSet) =>
-    plan && selected
-      ? changePlan(
-          toggleSkipped(plan, s.set.key),
-          s.skipped
-            ? `${s.set.key} is back in the plan`
-            : `${s.set.key} skipped for ${selected.name}`,
-        )
-      : undefined;
 
   async function changeDue(s: RoadmapSet, due: Date | null) {
     if (!s.assignmentId) return;
@@ -267,6 +373,7 @@ export function useSetActions({
     setError,
     toAssignable,
     assign,
+    editFirst,
     savePlan,
     rowActions,
   };

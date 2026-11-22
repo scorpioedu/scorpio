@@ -116,6 +116,7 @@ const FIRST: Record<string, number> = {
   "ap-physics-1": 0, // sky
   "ap-physics-2": 3, // amber
   "ap-physics-c-mech": 2, // emerald
+  "ap-physics-c-em": 1, // violet
 };
 
 /** The colour of one unit of a course. A unit keeps its colour when a class reorders its units. */
