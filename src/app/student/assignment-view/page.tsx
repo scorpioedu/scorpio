@@ -555,6 +555,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           mode: "tutor",
           chatHistory: historyForAi,
           assignmentContext: fullContext,
+          // Lets the server pick the diagram kinds of this assignment's course.
+          assignmentId: assignment?.id,
         }),
       });
 

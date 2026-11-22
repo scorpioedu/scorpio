@@ -7,13 +7,13 @@
 import { useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
-import { apTopicLabel, misconceptionTag, type ApCourseId } from "@/data/ap";
+import { apCourseName, apTopic, apTopicLabel, misconceptionTag, type ApCourseId } from "@/data/ap";
 import { misconceptionAnchor } from "@/lib/guides";
 import type { TopicGuide as TopicGuideData, WorkedExample } from "@/lib/guides/schema";
 import { defaultValues, fillTemplate, formatValue, type TryItParam } from "@/lib/guides/try-it";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Diagram } from "@/components/diagram";
+import { Diagram, DiagramExport } from "@/components/diagram";
 import { LazyMarkdownRenderer } from "@/components/lazy-markdown-renderer";
 
 export interface PracticeLink {
@@ -256,7 +256,16 @@ export function TryIt({ tryIt }: { tryIt: NonNullable<TopicGuideData["tryIt"]> }
   );
 }
 
-export function TopicGuide({
+/** Guide diagrams can be copied or saved as images (the picture also as a share card). */
+export function TopicGuide(props: TopicGuideProps) {
+  return (
+    <DiagramExport>
+      <TopicGuideBody {...props} />
+    </DiagramExport>
+  );
+}
+
+function TopicGuideBody({
   guide,
   course,
   teacher = false,
@@ -281,7 +290,15 @@ export function TopicGuide({
 
       {guide.picture && (
         <div>
-          <Diagram source={guide.picture.diagram} />
+          <Diagram
+            source={guide.picture.diagram}
+            exportable
+            share={{
+              title: apTopic(guide.topic, course)?.title ?? `Topic ${guide.topic}`,
+              course: apCourseName(course),
+              topic: guide.topic,
+            }}
+          />
           <Md className="text-muted-foreground">{guide.picture.caption}</Md>
         </div>
       )}

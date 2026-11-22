@@ -201,3 +201,167 @@ describe("graph values only the picture gives", () => {
     expect(attachDiagram(base, VT).warnings.join(" ")).not.toMatch(/Only the graph/);
   });
 });
+
+// Every kind's student-visible numbers go through the same two checks. The renderer reports what
+// it drew, so a value it computes and prints (an image distance, a wavelength) is covered too.
+describe("answer-leak and invented-number checks on the newer kinds", () => {
+  const problem = (text: string, correctAnswer: string): DraftProblem => ({
+    ...base,
+    text,
+    correctAnswer,
+    solution: "",
+  });
+  const leaked = (d: ReturnType<typeof attachDiagram>) =>
+    !d.attached && /showed the answer/.test(d.warnings.join(" "));
+  const invented = (d: ReturnType<typeof attachDiagram>) =>
+    d.warnings.find((w) => /numbers the problem never states/.test(w));
+
+  describe("circuit", () => {
+    const p = problem(
+      "A 12 V battery is connected in series with a 4 Ω resistor R_1 and an unknown resistor R_2. The current is 1.0 A. What is the resistance of R_2?",
+      "8 Ω",
+    );
+    it("leaves out a circuit that prints the unknown resistance", () => {
+      const d = attachDiagram(
+        p,
+        `circuit\nbattery a c 12V\nresistor a b 4Ω R_1\nresistor b c 8Ω R_2`,
+      );
+      expect(leaked(d)).toBe(true);
+      expect(d.warnings[0]).toContain("(8)");
+    });
+    it("attaches the same circuit with the unknown left unvalued, with nothing to flag", () => {
+      const d = attachDiagram(p, `circuit\nbattery a c 12V\nresistor a b 4Ω R_1\nresistor b c R_2`);
+      expect(d.attached).toBe(true);
+      expect(d.warnings).toEqual([]); // R_1 and R_2 are names: their subscripts are not numbers
+    });
+    it("flags an element value the text never gives", () => {
+      const d = attachDiagram(p, `circuit\nbattery a c 12V\nresistor a b 6Ω R_1\nresistor b c R_2`);
+      expect(d.attached).toBe(true);
+      expect(invented(d)).toContain("never states: 6.");
+    });
+  });
+
+  describe("bars and motion: values read against a numbered axis", () => {
+    const energy = problem(
+      "A 4 J block slides down a rough ramp and friction removes 1 J. How much kinetic energy does it have at the bottom?",
+      "3 J",
+    );
+    it("a bar chart with an axis gives the missing bar's height away", () => {
+      expect(
+        leaked(attachDiagram(energy, `bars energy unit=J\ninitial U_g 4\nwork W_f -1\nfinal K 3`)),
+      ).toBe(true);
+    });
+    it("without an axis the heights are relative and nothing can be read off", () => {
+      const d = attachDiagram(energy, `bars energy\ninitial U_g 4\nwork W_f -1\nfinal K 3`);
+      expect(d.attached).toBe(true);
+      expect(d.warnings).toEqual([]);
+    });
+    it("an unknown bar keeps the answer off a numbered chart", () => {
+      const d = attachDiagram(energy, `bars energy unit=J\ninitial U_g 4\nwork W_f -1\nfinal K ?`);
+      expect(d.attached).toBe(true);
+      expect(invented(d)).toBeUndefined(); // axis numbers are scale, not claims
+    });
+    const car = problem(
+      "A car starts from rest and accelerates at 2 m/s^2. How far has it gone after 4 s?",
+      "16 m",
+    );
+    it("a motion map with a numbered axis shows where the last dot is", () => {
+      expect(
+        leaked(attachDiagram(car, `motion dt=1 axis unit=m\nobj "car" x0=0 v0=0 a=2 n=4`)),
+      ).toBe(true);
+      const d = attachDiagram(car, `motion dt=1 v num\nobj "car" x0=0 v0=0 a=2 n=4`);
+      expect(d.attached).toBe(true);
+      expect(invented(d)).toBeUndefined(); // dot numbers 0–4 are scale
+    });
+  });
+
+  describe("ray", () => {
+    const lens = problem(
+      "An object 4 cm tall stands 30 cm from a converging lens of focal length 10 cm. How far from the lens is the image?",
+      "15 cm",
+    );
+    it("a diagram that prints the computed image distance is left out", () => {
+      expect(leaked(attachDiagram(lens, `ray lens f=10 unit=cm num=all\nobj 30 h=4`))).toBe(true);
+      // a virtual image's distance is printed as −15: still the answer to "how far"
+      const magnifier = problem(
+        "An object stands 6 cm from a converging lens of focal length 10 cm. How far from the lens is the image?",
+        "15 cm",
+      );
+      expect(leaked(attachDiagram(magnifier, `ray lens f=10 unit=cm num=all\nobj 6`))).toBe(true);
+    });
+    it("the given numbers, or none, are fine: 2F is a name, not a number", () => {
+      for (const src of [
+        `ray lens f=10 unit=cm num\nobj 30 h=4`,
+        `ray lens f=10 unit=cm setup\nobj 30 h=4`,
+      ]) {
+        const d = attachDiagram(lens, src);
+        expect(d.attached).toBe(true);
+        expect(d.warnings).toEqual([]);
+      }
+    });
+    it("a refraction diagram with num=all prints the refracted angle", () => {
+      const p = problem(
+        "Light in air strikes glass of index 1.5 at 40° from the normal. Find the angle of refraction.",
+        "25.4°",
+      );
+      expect(leaked(attachDiagram(p, `ray refract n1=1 n2=1.5 in=40 num=all`))).toBe(true);
+      expect(attachDiagram(p, `ray refract n1=1 n2=1.5 in=40 num`).warnings).toEqual([]);
+    });
+  });
+
+  describe("pv", () => {
+    const gas = problem(
+      "A gas at 6 kPa and 2 L expands at constant temperature to 4 L. What is its final pressure?",
+      "3 kPa",
+    );
+    it("numbered axes let the final state be read off", () => {
+      expect(
+        leaked(
+          attachDiagram(gas, `pv num P=kPa V=L\nstate A V=2 P=6\nstate B V=4\nisothermal A B`),
+        ),
+      ).toBe(true);
+    });
+    it("without numbers the same diagram is attached clean", () => {
+      const d = attachDiagram(gas, `pv P=kPa V=L\nstate A V=2 P=6\nstate B V=4\nisothermal A B`);
+      expect(d.attached).toBe(true);
+      expect(d.warnings).toEqual([]);
+    });
+  });
+
+  describe("levels and wave: computed values the renderer prints", () => {
+    const atom = problem(
+      "An atom has levels at -13.6 eV (n = 1), -3.4 eV (n = 2) and -1.51 eV (n = 3). What wavelength is emitted in the n = 3 to n = 2 transition?",
+      "656 nm",
+    );
+    const H = `levels\nlevel -13.6 "n=1"\nlevel -3.4 "n=2"\nlevel -1.51 "n=3"\n`;
+    it("a printed wavelength is the answer", () => {
+      expect(leaked(attachDiagram(atom, H + `trans 3 2 show=lambda`))).toBe(true);
+      const d = attachDiagram(atom, H + `trans 3 2`);
+      expect(d.attached).toBe(true);
+      expect(d.warnings).toEqual([]);
+    });
+    it("reads a frequency printed in scientific notation", () => {
+      // ΔE = 1.89 eV -> f = 4.57×10^14 Hz, however the key writes it
+      for (const key of ["4.57e14 Hz", "4.57 × 10^14 Hz"])
+        expect(leaked(attachDiagram(problem(atom.text, key), H + `trans 3 2 show=f`))).toBe(true);
+    });
+    it("fringe positions are claims; order numbers are only a scale", () => {
+      const slits = problem(
+        "Light of wavelength 600 nm passes through two slits 0.2 mm apart and falls on a screen 1.5 m away. How far apart are the bright fringes?",
+        "4.5 mm",
+      );
+      expect(leaked(attachDiagram(slits, `wave double lambda=600nm d=0.2mm L=1.5m num=all`))).toBe(
+        true,
+      );
+      const d = attachDiagram(slits, `wave double orders=3 lambda=600nm d=0.2mm L=1.5m num`);
+      expect(d.attached).toBe(true);
+      expect(d.warnings).toEqual([]);
+    });
+  });
+
+  it("still reads plots, free-body diagrams and scenes from their source, as before", () => {
+    const p = problem("A 2 kg block hangs at rest from a rope. What is the tension?", "19.6 N");
+    expect(leaked(attachDiagram(p, `fbd dot "m"\nf up "T = 19.6 N" 1\nf down F_g 1`))).toBe(true);
+    expect(attachDiagram(p, `fbd dot "m"\nf up T 1\nf down F_g 1`).warnings).toEqual([]);
+  });
+});

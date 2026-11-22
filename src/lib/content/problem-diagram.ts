@@ -31,8 +31,10 @@ function numbers(s: string): Set<string> {
 }
 
 /**
- * Text a student reads off the picture: quoted labels, fbd force labels and lab= values, plus tick
- * labels when `ticks` (a graph's scale numbers are not claims, but a tick can still give away a key).
+ * Text a student reads off a plot, a free-body diagram or a scene, read from the source: quoted
+ * labels, fbd force labels and lab= values, plus tick labels when `ticks` (a graph's scale numbers
+ * are not claims, but a tick can still give away a key). Every other kind reports what it drew
+ * (see shownNumbers).
  */
 function visibleText(src: string, ticks = true): string {
   const parts: string[] = [];
@@ -46,6 +48,43 @@ function visibleText(src: string, ticks = true): string {
     if (f && !/^-?[\d.]+$/.test(f[1]) && !/,/.test(f[1])) parts.push(f[1]);
   }
   return parts.join(" ");
+}
+
+/** The kinds whose visible text is still read from the source by visibleText(). */
+const READ_FROM_SOURCE = new Set(["plot", "fbd", "scene"]);
+
+/**
+ * Numbers in the text a renderer reports it drew. Labels come as drawn: a real minus sign,
+ * subscripts as R_{1} (names, not numbers), powers of ten as 9.67×10^{14}, focal marks as 2F.
+ */
+function drawnNumbers(texts: string[]): Set<string> {
+  const out = new Set<string>();
+  for (const raw of texts) {
+    let t = raw.replace(/−/g, "-");
+    // scientific notation: both the full value and the mantissa a text might state
+    t = t.replace(/(-?\d+(?:\.\d+)?)×10\^\{(-?\d+)\}/g, (_m, a: string, b: string) => {
+      out.add(String(Number(`${a}e${b}`)));
+      return a;
+    });
+    t = t.replace(/[_^]\{[^}]*\}/g, " ").replace(/\b2F\b/g, " ");
+    for (const n of numbers(t)) out.add(n);
+  }
+  return out;
+}
+
+/**
+ * The numbers a student can read on the picture. `claims` are the ones the picture asserts (a
+ * resistor's value, a printed wavelength, a bar's height against a numbered axis); `all` adds
+ * tick labels the author chose on a plot, which are not claims but can give a key away. The
+ * numbers a renderer puts on a regular scale itself (axis numbers, dot numbers, fringe orders:
+ * Result.scale) are in neither: every small whole number would look like a leak.
+ */
+function shownNumbers(r: Result, src: string): { all: Set<string>; claims: Set<string> } {
+  const kind = src.trim().split(/\s/)[0];
+  if (READ_FROM_SOURCE.has(kind))
+    return { all: numbers(visibleText(src)), claims: numbers(visibleText(src, false)) };
+  const claims = drawnNumbers(r.visible);
+  return { all: claims, claims };
 }
 
 /** Facts a reviewer can check against the key: areas, end values and peaks of each line on a plot. */
@@ -123,12 +162,16 @@ export function attachDiagram(problem: DraftProblem, raw: unknown): DiagramOutco
     };
 
   // The picture must not give the answer away: a number from the key that the stem never states.
-  const shown = numbers(visibleText(src)),
+  const shown = shownNumbers(r, src),
     stem = numbers(text);
+  const flip = (n: string) => String(-Number(n));
   const keyNumbers = [...numbers(problem.correctAnswer)].filter(
     (n) => !["0", "1", "2"].includes(n),
   );
-  const leaked = keyNumbers.filter((n) => shown.has(n) && !stem.has(n));
+  // a key of 15 is given away by a label reading −15 too (an image distance, a work done on the gas)
+  const leaked = keyNumbers.filter(
+    (n) => (shown.all.has(n) || shown.all.has(flip(n))) && !stem.has(n) && !stem.has(flip(n)),
+  );
   if (leaked.length)
     return {
       text,
@@ -143,8 +186,8 @@ export function attachDiagram(problem: DraftProblem, raw: unknown): DiagramOutco
         ? `Diagram may be wrong (line ${w.line}): ${w.msg}`
         : `Diagram (line ${w.line}): ${w.msg}`,
     );
-  const invented = [...numbers(visibleText(src, false))].filter(
-    (n) => !stem.has(n) && !["0", "1"].includes(n),
+  const invented = [...shown.claims].filter(
+    (n) => !stem.has(n) && !stem.has(flip(n)) && !["0", "1"].includes(n),
   );
   if (invented.length)
     warnings.push(

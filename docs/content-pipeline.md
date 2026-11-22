@@ -77,6 +77,7 @@ The single independent solve (step 3) missed 7 of the 31 wrong keys of the 17 No
 | `grader-round-trip` | The real grader gives the key full credit against itself and gives no distractor any; multiple choice has exactly 4 different options with the key among them; `validateDraftProblem` has no errors. |
 | `mc-quantity` | Multiple choice with a spec: the recomputed value is the keyed option and fits no other option. |
 | `blind-solves` | At least 2 solvers agree with the key, judged by the real grader, and they outnumber those who disagree. |
+| `circuit-consistent` | Only for a problem with a spec whose text holds a ```dg circuit diagram (otherwise not applicable, never a failure). Every value drawn on an element is one of the spec's givens, same amount and same kind of unit (4 kΩ matches 4000 Ω, not 4 Ω). When the spec names the keyed quantity (`spec.circuit: { quantity: "current" \| "voltage" \| "power" \| "resistance" \| "time-constant", element?, at?: "steady" \| "t0", switches? }`), the circuit solver's value for the drawing agrees with the key by the same rule as `recompute`. |
 | `near-duplicate` | No other problem of the same set is the same calculation (same spec shape) in at least 60% the same words, or 85% the same words whatever the specs. |
 | `not-stale` | A stored verification was made for the problem as it is now. |
 

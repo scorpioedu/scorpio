@@ -33,7 +33,7 @@ export function renderMotion(
   doc: Doc,
   errs: DgError[],
   warns: DgError[] = [],
-): { svg: string; alt: string } {
+): { svg: string; alt: string; scale?: string[]; read?: string[] } {
   const h = doc.head;
   const flag = (...names: string[]) => names.some((n) => h.args.includes(n) || n in h.kv);
   const vertical = flag("vertical", "vert");
@@ -202,6 +202,7 @@ export function renderMotion(
   const ext: P[] = [];
   const mark = (p: P, w = 0, hh = 0) => ext.push([p[0] - w, p[1] - hh], [p[0] + w, p[1] + hh]);
   let body = "";
+  const scale: string[] = []; // dot numbers and axis numbers: not claims about the motion
   const label = (p: P, s: string, anchor: "start" | "middle" | "end", extra = "") => {
     const w = textWidth(s);
     const cx = anchor === "middle" ? p[0] : anchor === "start" ? p[0] + w / 2 : p[0] - w / 2;
@@ -235,6 +236,7 @@ export function renderMotion(
         // on the way back the numbers sit on the far side of the row
         const off = d.pass % 2 ? 12 : -12;
         const q = T(along(d.x), y + d.pass * 13 + off);
+        scale.push(s);
         label(
           q,
           s,
@@ -244,10 +246,18 @@ export function renderMotion(
       }
       if (showV) {
         const len = Math.abs(d.v) * c * k;
-        if (len >= 3) {
-          const sgn = Math.sign(d.v);
+        // Where dots crowd (the last steps before a stop) the arrow stops short of the next dot
+        // rather than running into it; with no room at all it is left out.
+        const next = o.dots[i + 1];
+        const sgn = Math.sign(d.v);
+        const room =
+          next && next.pass === d.pass && Math.sign(next.x - d.x) === sgn
+            ? Math.abs(next.x - d.x) * k - 13
+            : Infinity;
+        const drawn = Math.min(Math.max(len, 9), room);
+        if (len >= 3 && drawn >= 6) {
           const s0 = T(along(d.x) + sgn * 6.5, y + d.pass * 13),
-            s1 = T(along(d.x) + sgn * (6.5 + Math.max(len, 9)), y + d.pass * 13);
+            s1 = T(along(d.x) + sgn * (6.5 + drawn), y + d.pass * 13);
           body += arrow(s0, s1, ACCENT, 1.75, 7);
           mark(s1, 4, 4);
           if (!labelledV && len > 14) {
@@ -328,6 +338,7 @@ export function renderMotion(
     for (let v = Math.ceil(lo / step - 1e-9) * step; v <= hi + 1e-9; v += step) {
       const s = along(v);
       body += line(T(s, yA), T(s, yA + 4), ` stroke-width="1"`);
+      scale.push(fmt(v));
       label(
         T(s, yA + (vertical ? 8 : 14)),
         fmt(v),
@@ -366,7 +377,9 @@ export function renderMotion(
     body += text([(x0 + x1) / 2, y0 - 6], h.text, "middle", ` stroke="none"`);
     y0 -= 20;
   }
-  return { svg: wrap(x1 - x0, y1 - y0, body, alt, x0, y0), alt };
+  // against a numbered axis every dot's position can be read off
+  const read = showAxis && span > 0 ? objs.flatMap((o) => o.dots.map((d) => fmt(d.x))) : [];
+  return { svg: wrap(x1 - x0, y1 - y0, body, alt, x0, y0), alt, scale, read };
 }
 
 function niceStep(span: number): number {

@@ -172,4 +172,22 @@ describe("motion: errors and warnings", () => {
     expect(isSafeSvg(r.svg)).toBe(true);
     expect(r.svg).not.toMatch(/<script|<img/);
   });
+
+  it("stops a velocity arrow short of the next dot where the dots crowd before a stop", () => {
+    // v0 = 6, a = −1, dt = 1: dots at 0, 5.5, 10, 13.5, 16, 17.5, 18 — the last gaps are small
+    for (const src of [
+      `motion dt=1 v\nobj "cart" x0=0 v0=6 a=-1 n=6`,
+      `motion dt=0.5 v\nobj "ball" x0=0 v0=10 a=-10 n=5`,
+      `motion dt=1 v vertical\nobj "ball" x0=0 v0=20 a=-10 n=4`,
+      SLOWING,
+    ]) {
+      const svg = render(src).svg;
+      const d = dots(svg);
+      const heads = tips(svg, "var\\(--dg-accent");
+      expect(heads.length).toBeGreaterThan(1);
+      // no arrowhead tip comes within a dot's radius (4.5) plus a clear pixel of any dot
+      for (const t of heads)
+        for (const p of d) expect(Math.hypot(t[0] - p[0], t[1] - p[1])).toBeGreaterThan(5.5);
+    }
+  });
 });

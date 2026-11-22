@@ -89,7 +89,9 @@ describe("TopicGuide", () => {
     expect(out).toContain("Show the derivation");
     expect(out).not.toContain("Mass times velocity.");
     expect(out.match(/Show answer/g)).toHaveLength(3);
-    expect(out.match(/aria-expanded="false"/g)).toHaveLength(4);
+    // four reveal buttons, plus the closed image menu on each diagram
+    const menus = out.match(/aria-haspopup="menu"/g)?.length ?? 0;
+    expect(out.match(/aria-expanded="false"/g)).toHaveLength(4 + menus);
     expect(out).not.toContain('aria-expanded="true"');
   });
 

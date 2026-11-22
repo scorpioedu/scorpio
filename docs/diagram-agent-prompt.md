@@ -54,9 +54,45 @@ Syntax is in the header comment of each file and, compactly, in `prompt.ts`.
 
 **Reference text.** `prompt.ts` now builds the reference per kind. `diagramReference(course)` returns only the kinds a course uses (mechanics: plot, fbd, scene, bars, motion; AP Physics 2 and C: E&M: plot, fbd, scene, circuit, field); `DIAGRAM_REFERENCE` is still every kind. The problem generator asks for its course's kinds. The tutor and the Try AI page have no course at the call site and still send the full reference, which is now about 3,700 characters instead of 1,700: measure the cost before switching `RAISE_DIAGRAMS` on more widely, or pass a course through.
 
-**Not done.** `src/lib/content/problem-diagram.ts` reads "what a student can see" from quoted labels and fbd labels only. A circuit's values (`4Ω`), a bar chart's heights and a motion map's numbers are visible too, so its answer-leak and invented-number checks do not yet cover the new kinds. The generator's instruction on when to add a diagram does not mention circuits or fields either.
+**Not done.** The generator's instruction on when to add a diagram does not mention circuits or fields. (The answer-leak check now covers every kind: see the second batch below.)
 
-**Gallery.** `node tools/diagram-gallery.cjs` renders about 45 curated sources (every case above, plus two of each older kind) into `diagram-gallery.html` in the repo root, each on a light and a dark panel with its source, alt text, warnings, render time and size. The file is ignored by git. Review it by eye after any renderer change.
+**Gallery.** `node tools/diagram-gallery.cjs` renders about 90 curated sources (every case above and the second batch below, plus two of each older kind) into `diagram-gallery.html` in the repo root, each on a light and a dark panel with its source, alt text, warnings, render time and size. The file is ignored by git. Review it by eye after any renderer change.
+
+## Second batch (Nov 2026): `ray`, `wave`, `pv`, `levels`, `rigid`, and image export
+
+Same rule as the first batch: the author states the physics, the renderer computes the picture, and the numbers it computed are returned on the render result so an answer key can be checked against the drawing. None of these has been tried against a live model yet.
+
+| Kind | File | What the author writes | What is computed | On the result |
+| --- | --- | --- | --- | --- |
+| `ray` | `ray.ts` | `ray lens f=10` / `ray mirror f=10` / `ray mirror plane`, then `obj 30 h=4`; or `ray refract n1=1 n2=1.5 in=40` | the principal rays with dashed virtual extensions, the image (dashed when virtual), F / 2F / C marks; Snell's law and total internal reflection | `result.ray`: `di`, `hi`, `m`, `real`, `upright`, `atInfinity`; or `theta2`, `critical`, `tir` |
+| `wave` | `wave.ts` | `wave string n=3` (`free`), `wave pipe n=2` (`closed`), `wave travel`, `wave pulses` + `pulse` lines, `wave double`, `wave single` | node and antinode positions, the summed pulse, the intensity curve, fringe spacing | `result.wave`: `nodes`, `antinodes`, `wavelengthOverL`; `sum`, `max`, `min`, `at(x)`; `spacing`, `missing`, `intensity(u)` |
+| `pv` | `pv.ts` | `state A V=1 P=4`, then `isothermal A B` (also `isobaric`, `isochoric`, `adiabatic … gamma=`, `line`), `shade cycle`, `isotherms 3` | each curve, a state's missing V or P, the work of each process | `result.pv`: `states`, `processes[].work` (and `workJ` when both units are known), `cycle`, `netWork` |
+| `levels` | `levels.ts` | `level -13.6 "n=1"`, `trans 3 2 show=E,lambda` | spacing to scale, arrow direction, photon energy, wavelength, frequency | `result.levels`: `transitions[].dE`, `wavelengthNm`, `frequencyHz`, `type` |
+| `rigid` | `rigid.ts` | `rigid rod L=4 eq`, `pivot 0`, `f 2 down F_g 2`, `dim 0 2 "L/2"`; or `rigid disc r=1` | each force's torque about the pivot, the net torque and net force | `result.rigid`: `forces[].torque`, `netTorque`, `netForce`, `balanced` |
+
+Shared drawing helpers for these five are in `kit.ts` (a canvas that tracks the view box and keeps labels off each other, dimension marks, number formatting), kept apart from `svg.ts` so the older kinds' output cannot change by accident.
+
+**Numbers on the picture.** By default these kinds print no numbers at all. `num` on the first line prints the numbers the author gave (an object distance, a string's length); `num=all` also prints computed ones (an image distance, a wavelength, fringe positions). `levels` prints energies unless `noE`, and a photon value only with `show=`. `ray … setup` draws the object and the element with no rays and no image, for a question that asks where the image is.
+
+**ray.** Thin-lens and paraxial-mirror model, `1/d_o + 1/d_i = 1/f`. The two axes have separate scales, so the construction stays exact while the picture stays a sensible shape. An object at the focal point is not an error: the rays are drawn leaving parallel and the alt text says the image is at infinity. An image more than about three times further away than the object or 2f is left off the picture with a `readability` warning. Off a plane mirror the ray that would come straight back is replaced by a second slanted ray. In `ray refract` the denser medium is shaded; `up` puts the incident medium below the boundary (glass to air).
+
+**wave.** A string with a `free` end and a pipe with a `closed` end only have odd harmonics; an even `n` is an error that says why and offers the two neighbours. The pipe's curve is the displacement of the air (antinode at an open end). In `wave pulses` the top row shows the pulses as they would be alone and the bottom row their sum, on a faint unit grid; pulses that do not overlap raise a `readability` warning. `wave double da=4` multiplies by the single-slit envelope and leaves the missing orders unlabelled.
+
+**pv.** Work is work done by the gas, the integral of P dV: positive in an expansion, positive net for a clockwise cycle. A state may leave off V or P when an isothermal, adiabatic, isobaric or isochoric process from a known state fixes it. When both are stated and disagree with the process by more than 2% it is a `physics` warning (the curve is still drawn through both states). The axes start at zero unless the states sit far from it.
+
+**levels.** To scale by default; levels closer than 15 px raise a `readability` warning that suggests `schematic`, which spaces the levels equally and prints "not to scale" under the diagram (the alt text says which). A level is named in `trans` by its label, by the part of its label after "=" (`3` for "n=3"), or by its place from the bottom. Wavelength and frequency need energies in eV, keV, MeV or J.
+
+**rigid.** Torque is counter-clockwise positive, in size × distance. `eq` (or the render option `equilibrium`, as for `fbd`) declares equilibrium: the torques about the pivot must cancel to 2%, and with no pivot the forces must cancel too (a pivot supplies whatever force is missing). Sizes left at 1 throughout make no claim and are not checked. Supports are drawn only; their forces are `f` lines.
+
+**Polish to the first batch.** Circuits are drawn 1.3 times larger with labels kept at the usual text size, and an element's labels move to its other side rather than onto a symbol, a wire or another label. Field arrowheads are 10 px; equipotentials stop before they come within 11 px of each other near a point charge (still equal steps: the range is capped, and the alt text says so); a regional uniform field is named at the top of its region. A motion map's velocity arrow stops short of the next dot where the dots crowd before a stop.
+
+**What a student can read.** Every render result now has `visible` (every label drawn, plus values that can be read off a numbered scale, such as a bar's height or a PV state) and `scale` (the numbers of a regular scale: axis ticks, dot numbers, fringe orders). `src/lib/content/problem-diagram.ts` uses `visible` for its answer-leak and invented-number checks on every kind except `plot`, `fbd` and `scene`, which are still read from their source as before.
+
+**Reference text by course.** `rigid` is in the mechanics courses' reference; `ray`, `wave`, `pv` and `levels` are in AP Physics 2 only (waves left AP Physics 1 in the 2024 framework; C: E&M has none of the four). Sizes in characters: AP Physics 1 and C: Mechanics about 2,800; C: E&M about 3,050; AP Physics 2 about 4,750; every kind about 5,900. The student tutor route can now find the course from an assignment id (see the route), but the assignment page does not send one yet, so the tutor still sends every kind.
+
+**Circuit solver and the verifier.** `circuit-consistent` in `src/lib/content/verify.ts` checks a ```dg circuit diagram against the problem's spec: see docs/content-pipeline.md.
+
+**Image export.** `<Diagram exportable>` (off by default; on inside `<DiagramExport>`, which the course guides use) adds a menu with Copy image, Download PNG and Download SVG. `src/lib/diagram/export.ts` builds the exported SVG: the theme's colours written in, a solid background, a "scorpio" wordmark in the corner. `src/lib/diagram/share-card.ts` composes a 1200 × 630 card from a guide topic and its picture. The PNG is made in the browser on a canvas at twice the size.
 
 ## What a real model did (Gemini 3.8 Flash, the production model, 17 Nov 2026)
 

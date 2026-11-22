@@ -401,6 +401,9 @@ export const tutorBody = z.object({
   mode: z.string().max(32).optional(),
   chatHistory: chatHistory.optional(),
   assignmentContext: z.string().max(100000).nullish(),
+  // Optional: the assignment the student has open. The route reads its AP course from Firestore
+  // (never from the client) to send only that course's diagram reference.
+  assignmentId: z.string().max(256).nullish(),
 });
 
 // ─── POST /api/teacher/raise ───────────────────────────────────────────────

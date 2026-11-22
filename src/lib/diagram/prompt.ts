@@ -1,7 +1,19 @@
 // What a model needs to write a diagram. The reference is the same text on every call, so it can be
 // prompt-cached. Keep it in step with the renderers in this folder.
 
-export type DiagramKind = "plot" | "fbd" | "scene" | "bars" | "motion" | "circuit" | "field";
+export type DiagramKind =
+  | "plot"
+  | "fbd"
+  | "scene"
+  | "bars"
+  | "motion"
+  | "circuit"
+  | "field"
+  | "ray"
+  | "wave"
+  | "pv"
+  | "levels"
+  | "rigid";
 
 /** Every kind, in the order the reference lists them. */
 export const DIAGRAM_KINDS: readonly DiagramKind[] = [
@@ -12,6 +24,11 @@ export const DIAGRAM_KINDS: readonly DiagramKind[] = [
   "motion",
   "circuit",
   "field",
+  "ray",
+  "wave",
+  "pv",
+  "levels",
+  "rigid",
 ];
 
 const HEAD =
@@ -62,15 +79,40 @@ uniform E right  uniform B in (x=0..3 y=0..2)   a direction, or in/out of the pa
 wire 0,0 out "I"            long straight wire seen end-on, current out or in
 equi  gauss circle 0,0 1.5 "S"  gauss rect -1,-1 1,1 "S"  pt 1,1 "P"
 test 1,1 + "q" (v=right)    test charge with its force arrow; v= for the magnetic force`,
+  ray: String.raw`ray lens f=10 (unit=cm)     thin lens, f<0 diverging; or ray mirror f=10 (f<0 convex), ray mirror plane
+obj 30 h=4                  object distance and height; the rays and the image are computed
+                            on the first line: setup draws neither (for a question), num prints the given numbers
+ray refract n1=1 n2=1.5 in=40 (reflect up m1="air" m2="glass")   Snell's law at a flat boundary, angle from the normal; up = light starts below`,
+  wave: String.raw`wave string n=3             standing wave, both ends fixed; wave string free n=3 has one free end
+wave pipe n=2               open at both ends; wave pipe closed n=3 has one closed end (free / closed: odd n only)
+wave travel lambda=2 A=0.5 unit=m (v=right num)   a sinusoid with λ and A marked
+wave pulses                 superposition at one instant; the sum is computed. Then one line per pulse:
+pulse 3 h=1 w=2 (rect v=right)   centre, height (negative = trough), width
+wave double (orders=2 da=4) two-slit intensity pattern (da = slit separation ÷ width); wave single for one slit`,
+  pv: String.raw`pv (num P=kPa V=L)          pressure–volume diagram; num numbers the axes
+state A V=1 P=4             a state; write state B V=4 and the process that reaches B computes its P
+isothermal A B (shade)      also isobaric, isochoric, adiabatic A B gamma=1.4, line; shade = the work under it
+shade cycle  isotherms 3    fill a closed cycle's net work; background isotherms`,
+  levels: String.raw`levels (unit=eV schematic)  energy levels, to scale; schematic spaces them equally
+level -13.6 "n=1"           energy, name
+trans 3 2 (show=lambda)     arrow between levels, by name or counted from the bottom; down = emission. show=E, lambda or f prints the computed photon value`,
+  rigid: String.raw`rigid rod L=4 (tilt=30 eq unit=m)   forces on an extended body, for torque; or rigid disc r=1
+pivot 0  support 1 3        the axis (a position 0..L, or left center right); props under the rod
+f 2 down F_g 2              position, direction, label, relative size. On a disc a position is a rim angle, and cw ccw are directions
+dim 0 2 "L/2"               distance mark. eq: torques about the pivot must balance (forces too, with no pivot)`,
 };
 
-/** Mechanics courses draw motion and energy; E&M courses draw circuits and fields. */
-const MECHANICS: DiagramKind[] = ["plot", "fbd", "scene", "bars", "motion"];
+/**
+ * Mechanics courses draw motion, energy and rotation; E&M courses draw circuits and fields.
+ * AP Physics 2 also covers optics, waves, thermodynamics and modern physics, so it alone gets
+ * ray, wave, pv and levels (waves left AP Physics 1 in the 2024 course framework).
+ */
+const MECHANICS: DiagramKind[] = ["plot", "fbd", "scene", "bars", "motion", "rigid"];
 const ELECTRICITY: DiagramKind[] = ["plot", "fbd", "scene", "circuit", "field"];
 const COURSE_KINDS: Record<string, DiagramKind[]> = {
   "physics-1": MECHANICS,
   "physics-c-mech": MECHANICS,
-  "physics-2": ELECTRICITY,
+  "physics-2": [...ELECTRICITY, "ray", "wave", "pv", "levels"],
   "physics-c-em": ELECTRICITY,
 };
 
