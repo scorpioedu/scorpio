@@ -1189,7 +1189,7 @@
       "topic": "15.7",
       "bigIdea": "In every nuclear reaction the number of nucleons and the total charge stay the same, while the total mass drops slightly and the missing mass is released as energy, $E = \\Delta m\\,c^2$.",
       "picture": {
-        "diagram": "plot x=A y=BE/A[MeV] xr=-50,270 yr=0,10\nseg 2,1.11 4,7.07 7,5.61 12,7.68 16,7.98 56,8.79 84,8.72 120,8.50 208,7.87 238,7.57\npt 4,7.07\nnote 34,6.2 \"He-4\"\npt 56,8.79 \"Fe-56\"\npt 238,7.57 \"U-238\"\nxt 4 56 120 238\nyt 2 4 6 8",
+        "diagram": "plot x=A y=BE/A[MeV] xr=-50,270 yr=0,10\nseg 2,1.11 4,7.07 7,5.61 12,7.68 16,7.98 56,8.79 84,8.72 120,8.50 208,7.87 238,7.57\npt 4,7.07\nnote 34,6.2 \"He-4: 7.07\"\npt 56,8.79 \"Fe-56: 8.79\"\npt 238,7.57 \"U-238: 7.57\"\nxt 4 56 120 238\nyt 2 4 6 8",
         "caption": "Binding energy per nucleon against nucleon number $A$ for several nuclei. The curve rises steeply for light nuclei, peaks near iron-56 at about $8.8\\ \\text{MeV}$ and slopes gently down to $7.6\\ \\text{MeV}$ for uranium. Reactions that move nuclei toward the peak release energy: fusion from the left, fission from the right."
       },
       "explanation": "A nucleus is written $^{A}_{Z}\\text{X}$: $Z$ is the number of protons (the atomic number, which fixes the element), and $A$ is the number of **nucleons**, protons plus neutrons. In any nuclear reaction or decay, two counts are the same before and after: the total number of nucleons (the sum of the $A$ values) and the total charge (the sum of the $Z$ values). Those two rules are enough to find a missing product. A neutron is $^{1}_{0}\\text{n}$ and an electron counts as $A = 0$, $Z = -1$.\n\nMass is *not* one of the conserved counts. Einstein's $E = mc^2$ says mass is a form of energy, and nuclear reactions convert a measurable amount of it. A helium-4 nucleus has less mass than two protons and two neutrons weighed separately. The difference, the **mass defect** $\\Delta m$, corresponds to the **binding energy** $\\Delta m\\,c^2$: the energy released when the nucleus was assembled, and the energy you would have to supply to pull it apart. With masses in atomic mass units the conversion is quick: $1\\ \\text{u}$ of mass is $931.5\\ \\text{MeV}$ of energy.\n\nDividing a nucleus's binding energy by $A$ gives the binding energy per nucleon, a measure of how tightly it is held together. The curve in the picture peaks near iron. **Fusion** joins light nuclei into a heavier one, and **fission** splits a very heavy nucleus into two medium-sized ones; both move toward the peak. The products are more tightly bound, so they have less total mass than what you started with, and the difference is released.\n\nThat energy appears as kinetic energy of the products and as photons. A single fission releases about $200\\ \\text{MeV}$, tens of millions of times more than the few eV of a chemical reaction, yet the mass that disappears is only about a tenth of a percent of the total.",
@@ -1468,12 +1468,20 @@
           "style": "stepped",
           "spec": {
             "givens": {
+              "R_0": {
+                "value": 1200,
+                "unit": ""
+              },
+              "R": {
+                "value": 150,
+                "unit": ""
+              },
               "t": {
                 "value": 15,
                 "unit": "h"
               }
             },
-            "expr": "t/3",
+            "expr": "t*ln(2)/ln(R_0/R)",
             "unit": "h"
           }
         },

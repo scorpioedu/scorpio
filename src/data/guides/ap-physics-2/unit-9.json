@@ -89,7 +89,7 @@
       "workedExamples": [
         {
           "title": "A typical speed for oxygen molecules",
-          "prompt": "The air in a room is at $22\\ \\text{°C}$. One oxygen molecule has a mass of $5.31 \\times 10^{-26}\\ \\text{kg}$. What is the root-mean-square speed of the oxygen molecules?",
+          "prompt": "The air in a room is at $22\\ \\text{°C}$. One oxygen molecule has a mass of $5.31 \\times 10^{-26}\\ \\text{kg}$. Boltzmann's constant is $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$. What is the root-mean-square speed of the oxygen molecules?",
           "steps": [
             "Kinetic theory needs the absolute temperature: $T = 22 + 273 = 295\\ \\text{K}$.",
             "Start from the average kinetic energy of one molecule: $K_{\\text{avg}} = \\tfrac{3}{2}k_B T = \\tfrac{3}{2}(1.38 \\times 10^{-23}\\ \\text{J/K})(295\\ \\text{K}) = 6.11 \\times 10^{-21}\\ \\text{J}$.",

@@ -941,7 +941,7 @@
                 "unit": "s"
               }
             },
-            "expr": "F0*tau/m*(1 - 2.718281828^(-t/tau))",
+            "expr": "F0*tau/m*(1 - exp(-t/tau))",
             "unit": "m/s"
           }
         }
@@ -1797,7 +1797,7 @@
                 "unit": "m/s^2"
               }
             },
-            "expr": "m*g/b*(1 - 2.718281828^(-b*t/m))",
+            "expr": "m*g/b*(1 - exp(-b*t/m))",
             "unit": "m/s"
           }
         },

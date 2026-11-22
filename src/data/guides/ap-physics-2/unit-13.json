@@ -479,7 +479,7 @@
       "Apply Snell's law: $\\sin\\theta_2 = \\frac{n_1 \\sin\\theta_1}{n_2} = \\frac{(1.00)\\sin 55^\\circ}{1.33} = \\frac{0.819}{1.33} = 0.616$.",
       "Take the inverse sine: $\\theta_2 = \\sin^{-1}(0.616) = 38.0^\\circ$. This is less than $55^\\circ$, as predicted."
      ],
-     "answer": "$\\sin\\theta_2 = 0.616$, so $\\theta_2 = 38.0^\\circ$ from the normal",
+     "answer": "$\\sin\\theta_2 = 0.616$, so $\\theta_2 = 38.0°$ from the normal",
      "style": "stepped",
      "spec": {
       "givens": {
@@ -496,8 +496,8 @@
         "unit": ""
        }
       },
-      "expr": "n1*sin(pi/2 - a)/n2",
-      "unit": ""
+      "expr": "asin(n1*sin(pi/2 - a)/n2)",
+      "unit": "°"
      }
     },
     {
@@ -509,7 +509,7 @@
       "At $45^\\circ$, less than $\\theta_c$: the ray refracts into the water. $\\sin\\theta_2 = \\frac{1.52 \\sin 45^\\circ}{1.33} = 0.808$, so $\\theta_2 = 53.9^\\circ$. It bends away from the normal, as it must on entering a lower index, and a weaker ray reflects back into the glass.",
       "At $70^\\circ$, greater than $\\theta_c$: Snell's law would need $\\sin\\theta_2 = \\frac{1.52 \\sin 70^\\circ}{1.33} = 1.07$, which is impossible. No light enters the water. The ray is totally internally reflected at $70^\\circ$ to the normal."
      ],
-     "answer": "$\\sin\\theta_c = 0.875$, so $\\theta_c = 61.0^\\circ$; at $45^\\circ$ the ray refracts into the water at $53.9^\\circ$ (with a weak reflection), and at $70^\\circ$ it is totally internally reflected",
+     "answer": "$\\sin\\theta_c = 0.875$, so $\\theta_c = 61.0°$; at $45^\\circ$ the ray refracts into the water at $53.9^\\circ$ (with a weak reflection), and at $70^\\circ$ it is totally internally reflected",
      "style": "ap",
      "spec": {
       "givens": {
@@ -522,8 +522,8 @@
         "unit": ""
        }
       },
-      "expr": "n2/n1",
-      "unit": ""
+      "expr": "asin(n2/n1)",
+      "unit": "°"
      }
     }
    ],

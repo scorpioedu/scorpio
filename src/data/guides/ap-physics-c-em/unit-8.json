@@ -366,13 +366,9 @@
               "t": {
                 "value": 30,
                 "unit": "min"
-              },
-              "euler": {
-                "value": 2.718281828,
-                "unit": ""
               }
             },
-            "expr": "q0*(1 - euler^(-t/tau))",
+            "expr": "q0*(1 - exp(-t/tau))",
             "unit": "nC"
           }
         }

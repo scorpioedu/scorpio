@@ -711,10 +711,6 @@
           "style": "stepped",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I": {
                 "value": 8,
                 "unit": "A"
@@ -740,10 +736,6 @@
           "style": "ap",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I1": {
                 "value": 80,
                 "unit": "A"
@@ -755,10 +747,6 @@
               "lam": {
                 "value": 5,
                 "unit": "g/m"
-              },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
               }
             },
             "expr": "2*pi*d*lam*g/(mu0*I1)",
@@ -956,10 +944,6 @@
           "style": "stepped",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I": {
                 "value": 6,
                 "unit": "A"
@@ -986,10 +970,6 @@
           "style": "ap",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "alpha": {
                 "value": 2000000,
                 "unit": "A/m^3"

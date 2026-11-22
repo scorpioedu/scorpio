@@ -66,7 +66,7 @@
       "workedExamples": [
         {
           "title": "Force between two charged spheres",
-          "prompt": "Two small spheres carry charges of $+2.0\\ \\mu\\text{C}$ and $+5.0\\ \\mu\\text{C}$. Their centres are $0.15\\ \\text{m}$ apart. What is the electric force on each sphere?",
+          "prompt": "Two small spheres carry charges of $+2.0\\ \\mu\\text{C}$ and $+5.0\\ \\mu\\text{C}$. Their centres are $0.15\\ \\text{m}$ apart. What is the electric force on each sphere? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Convert to SI units: $q_1 = 2.0 \\times 10^{-6}\\ \\text{C}$ and $q_2 = 5.0 \\times 10^{-6}\\ \\text{C}$. The distance is already in metres.",
             "Write Coulomb's law for the size of the force: $F_E = k\\,\\dfrac{|q_1 q_2|}{r^2}$.",
@@ -101,7 +101,7 @@
         },
         {
           "title": "Three charges on a line",
-          "prompt": "Three point charges are fixed on the x-axis. Charge A, $+3.0\\ \\mu\\text{C}$, is at $x = 0$. Charge B, $+2.0\\ \\mu\\text{C}$, is at $x = 0.20\\ \\text{m}$. Charge C, $-4.0\\ \\mu\\text{C}$, is at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric force on charge B.",
+          "prompt": "Three point charges are fixed on the x-axis. Charge A, $+3.0\\ \\mu\\text{C}$, is at $x = 0$. Charge B, $+2.0\\ \\mu\\text{C}$, is at $x = 0.20\\ \\text{m}$. Charge C, $-4.0\\ \\mu\\text{C}$, is at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric force on charge B. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Two forces act on B, one from A and one from C. Find each as if the other charge were absent, then add them as vectors along the x-axis.",
             "A and B are both positive, so A repels B: the force on B points away from A, in the $+x$ direction. Its size is $F_{AB} = \\dfrac{(8.99 \\times 10^9)(3.0 \\times 10^{-6})(2.0 \\times 10^{-6})}{(0.20)^2} = 1.35\\ \\text{N}$.",
@@ -405,7 +405,7 @@
       "workedExamples": [
         {
           "title": "Field of a point charge, then a force",
-          "prompt": "A small sphere carries a charge of $+6.0\\ \\text{nC}$. Point P is $0.30\\ \\text{m}$ from the sphere. (a) What is the electric field at P? (b) A dust grain with a charge of $-2.0\\ \\text{nC}$ is placed at P. What force does it feel?",
+          "prompt": "A small sphere carries a charge of $+6.0\\ \\text{nC}$. Point P is $0.30\\ \\text{m}$ from the sphere. (a) What is the electric field at P? (b) A dust grain with a charge of $-2.0\\ \\text{nC}$ is placed at P. What force does it feel? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "The source is a point charge, so $E = k\\,\\dfrac{|q|}{r^2}$, with $q = 6.0 \\times 10^{-9}\\ \\text{C}$.",
             "Substitute: $E = \\dfrac{(8.99 \\times 10^9)(6.0 \\times 10^{-9})}{(0.30)^2} = \\dfrac{53.9}{0.090} = 6.0 \\times 10^2\\ \\text{N/C}$.",
@@ -436,7 +436,7 @@
         },
         {
           "title": "Field between two opposite charges",
-          "prompt": "A $+2.0\\ \\text{nC}$ point charge is fixed at $x = 0$ and a $-8.0\\ \\text{nC}$ point charge is fixed at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric field at the point $x = 0.20\\ \\text{m}$ on the x-axis. Then state whether the field can be zero anywhere between the two charges, and justify your answer.",
+          "prompt": "A $+2.0\\ \\text{nC}$ point charge is fixed at $x = 0$ and a $-8.0\\ \\text{nC}$ point charge is fixed at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric field at the point $x = 0.20\\ \\text{m}$ on the x-axis. Then state whether the field can be zero anywhere between the two charges, and justify your answer. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Each charge makes its own field at the point. Find the two fields separately, then add them as vectors.",
             "The point is $0.20\\ \\text{m}$ from the positive charge: $E_1 = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-9})}{(0.20)^2} = 450\\ \\text{N/C}$. A positive source's field points away from it, so $E_1$ is in the $+x$ direction.",
@@ -599,7 +599,7 @@
       "workedExamples": [
         {
           "title": "Energy of a hydrogen atom",
-          "prompt": "In a hydrogen atom the electron and the proton are, on average, $5.3 \\times 10^{-11}\\ \\text{m}$ apart. Each has a charge of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$. What is the electric potential energy of the electron–proton system?",
+          "prompt": "In a hydrogen atom the electron and the proton are, on average, $5.3 \\times 10^{-11}\\ \\text{m}$ apart. Each has a charge of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$. What is the electric potential energy of the electron–proton system? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Write the charges with their signs: the proton is $q_1 = +1.60 \\times 10^{-19}\\ \\text{C}$ and the electron is $q_2 = -1.60 \\times 10^{-19}\\ \\text{C}$.",
             "Use the potential energy of two point charges, with the signs kept: $U_E = k\\,\\dfrac{q_1 q_2}{r}$.",
@@ -629,7 +629,7 @@
         },
         {
           "title": "Work to push two charges together",
-          "prompt": "A $+2.0\\ \\mu\\text{C}$ point charge is fixed in place. A second point charge of $+3.0\\ \\mu\\text{C}$ is moved slowly from a point $0.50\\ \\text{m}$ from the fixed charge to a point $0.20\\ \\text{m}$ from it. Determine the work done by the agent moving the charge, and explain the meaning of its sign.",
+          "prompt": "A $+2.0\\ \\mu\\text{C}$ point charge is fixed in place. A second point charge of $+3.0\\ \\mu\\text{C}$ is moved slowly from a point $0.50\\ \\text{m}$ from the fixed charge to a point $0.20\\ \\text{m}$ from it. Determine the work done by the agent moving the charge, and explain the meaning of its sign. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "The charge is moved slowly, so no kinetic energy is gained and the agent's work equals the change in the system's potential energy: $W_{\\text{ext}} = U_{E,f} - U_{E,i}$.",
             "Initial energy, at $0.50\\ \\text{m}$: $U_{E,i} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{0.50} = 0.108\\ \\text{J}$.",
@@ -819,7 +819,7 @@
       "workedExamples": [
         {
           "title": "Potential from two charges",
-          "prompt": "A $+6.0\\ \\text{nC}$ point charge and a $-4.0\\ \\text{nC}$ point charge are fixed in place. Point P is $0.30\\ \\text{m}$ from the positive charge and $0.40\\ \\text{m}$ from the negative charge. What is the electric potential at P?",
+          "prompt": "A $+6.0\\ \\text{nC}$ point charge and a $-4.0\\ \\text{nC}$ point charge are fixed in place. Point P is $0.30\\ \\text{m}$ from the positive charge and $0.40\\ \\text{m}$ from the negative charge. What is the electric potential at P? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Potential is a scalar, so find each charge's potential at P and add them as signed numbers. No directions or components are needed.",
             "From the positive charge: $V_1 = \\dfrac{(8.99 \\times 10^9)(+6.0 \\times 10^{-9})}{0.30} = +180\\ \\text{V}$.",
@@ -1070,7 +1070,7 @@
       "workedExamples": [
         {
           "title": "Charge and energy of a parallel-plate capacitor",
-          "prompt": "A parallel-plate capacitor has plates of area $0.020\\ \\text{m}^2$ separated by $0.50\\ \\text{mm}$ of air. It is connected to a $9.0\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored.",
+          "prompt": "A parallel-plate capacitor has plates of area $0.020\\ \\text{m}^2$ separated by $0.50\\ \\text{mm}$ of air. It is connected to a $9.0\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
           "steps": [
             "Convert the separation: $d = 0.50\\ \\text{mm} = 5.0 \\times 10^{-4}\\ \\text{m}$. For air, $\\kappa = 1$.",
             "Capacitance from the geometry: $C = \\kappa\\varepsilon_0\\dfrac{A}{d} = \\dfrac{(1)(8.85 \\times 10^{-12})(0.020)}{5.0 \\times 10^{-4}} = 3.5 \\times 10^{-10}\\ \\text{F}$, or $0.35\\ \\text{nF}$.",
@@ -1310,7 +1310,7 @@
         },
         {
           "title": "Closest approach to a charged sphere",
-          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) is far from a small fixed sphere that carries a charge of $+5.0\\ \\text{nC}$. The proton is moving directly toward the sphere at $2.0 \\times 10^5\\ \\text{m/s}$. Determine how close the proton gets to the centre of the sphere.",
+          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) is far from a small fixed sphere that carries a charge of $+5.0\\ \\text{nC}$. The proton is moving directly toward the sphere at $2.0 \\times 10^5\\ \\text{m/s}$. Determine how close the proton gets to the centre of the sphere. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "The sphere is fixed and only the electric force acts on the proton, so the system's energy is conserved. Both charges are positive, so the proton is repelled and slows down. At its closest point it is momentarily at rest.",
             "Initial state: the proton is far away, so $U_{E,i} = 0$, and $K_i = \\tfrac{1}{2}mv^2 = \\tfrac{1}{2}(1.67 \\times 10^{-27})(2.0 \\times 10^5)^2 = 3.34 \\times 10^{-17}\\ \\text{J}$. Final state: $K_f = 0$ and $U_{E,f} = \\dfrac{kqQ}{r}$. All of the kinetic energy has become potential energy.\n\n```dg\nbars energy\ninitial K 4 U_E 0\nfinal K 0 U_E 4\n```",
