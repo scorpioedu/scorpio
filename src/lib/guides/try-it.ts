@@ -25,6 +25,11 @@ const FUNCTIONS: Record<string, (...a: number[]) => number> = {
 
 const TOKEN = /\s*(\d*\.?\d+(?:e-?\d+)?|[A-Za-z_]\w*|[-+*/^(),])/y;
 
+/** A name a try-it expression may use without it being a slider: its functions and pi. */
+function isTryItName(name: string): boolean {
+  return Object.prototype.hasOwnProperty.call(FUNCTIONS, name) || name === "pi";
+}
+
 /**
  * Names an expression reads, leaving out what the language itself provides. By default that is
  * this file's functions and pi (a try-it placeholder); a caller checking another language passes
@@ -32,7 +37,7 @@ const TOKEN = /\s*(\d*\.?\d+(?:e-?\d+)?|[A-Za-z_]\w*|[-+*/^(),])/y;
  */
 export function expressionNames(
   expr: string,
-  builtIn: (name: string) => boolean = (n) => n in FUNCTIONS || n === "pi",
+  builtIn: (name: string) => boolean = isTryItName,
 ): string[] {
   const names = expr.match(/[A-Za-z_]\w*/g) ?? [];
   return [...new Set(names.filter((n) => !builtIn(n)))];
