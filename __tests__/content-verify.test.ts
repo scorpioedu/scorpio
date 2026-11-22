@@ -3,6 +3,8 @@ import type { DraftProblem } from "../src/lib/content/problem-format";
 import type { ProblemSpec } from "../src/lib/content/spec";
 import {
   checkBlindSolves,
+  checkCircuitConsistent,
+  circuitDiagrams,
   checkGraderRoundTrip,
   checkMcQuantity,
   checkNearDuplicate,
@@ -1120,5 +1122,233 @@ describe("blind solve sheets", () => {
     expect(
       resolveSolverAnswer({ id: "d1", apTopic: "4.3", problem: cart }, "s", null as never),
     ).toBeUndefined();
+  });
+});
+
+// A 12 V battery, R_1 = 2 Ω in series with R_2 = 6 Ω parallel to R_3 = 3 Ω. By hand:
+// R_23 = 6·3/(6+3) = 2 Ω, R_eq = 2 + 2 = 4 Ω, I = 12/4 = 3 A, V_23 = 3·2 = 6 V,
+// I_2 = 6/6 = 1 A, I_3 = 6/3 = 2 A, P_1 = 3²·2 = 18 W.
+const ladderDiagram = [
+  "```dg",
+  "circuit",
+  'battery a c 12V "ε"',
+  "resistor a b 2Ω R_1",
+  "resistor b c 6Ω R_2",
+  "resistor b c 3Ω R_3",
+  "```",
+].join("\n");
+const ladderSpec: ProblemSpec = {
+  givens: {
+    E: { value: 12, unit: "V" },
+    R1: { value: 2, unit: "ohm" },
+    R2: { value: 6, unit: "ohm" },
+    R3: { value: 3, unit: "ohm" },
+  },
+  expr: "E/(R1 + R2*R3/(R2 + R3)) * R3/(R2 + R3)",
+  unit: "A",
+  circuit: { quantity: "current", element: "R_2" },
+};
+const ladder: DraftProblem = {
+  text: `A 12 V battery is connected to a 2 Ω resistor in series with a 6 Ω resistor and a 3 Ω resistor in parallel. Find the current in the 6 Ω resistor.\n\n${ladderDiagram}`,
+  type: "numeric",
+  correctAnswer: "1.0 A",
+  solution: "R_eq = 4 Ω, I = 3 A, V across the pair = 6 V, so I_2 = 6/6 = 1.0 A.",
+  distractors: [],
+  difficulty: "medium",
+  points: 10,
+  apTopic: "11.5",
+  spec: ladderSpec,
+};
+const ladderWith = (
+  circuit: ProblemSpec["circuit"],
+  key: string,
+  extra: Partial<DraftProblem> = {},
+): DraftProblem => ({ ...ladder, correctAnswer: key, ...extra, spec: { ...ladderSpec, circuit } });
+
+describe("circuit-consistent", () => {
+  test("finds circuit diagrams only", () => {
+    expect(circuitDiagrams(ladder.text)).toHaveLength(1);
+    expect(circuitDiagrams("```dg\nfbd box\nf down F_g 1\n```")).toEqual([]);
+    expect(circuitDiagrams(cart.text)).toEqual([]);
+  });
+
+  test("not applicable without a circuit diagram or without a spec: passes, never fails", () => {
+    expect(checkCircuitConsistent(cart)).toEqual({
+      pass: true,
+      detail: "not applicable: no circuit diagram",
+    });
+    expect(checkCircuitConsistent({ ...ladder, spec: undefined })).toEqual({
+      pass: true,
+      detail: "not applicable: no spec",
+    });
+    // and it is only recorded where it applies
+    expect(deterministicChecks({ problem: cart })).not.toHaveProperty("circuit-consistent");
+    expect(deterministicChecks({ problem: { ...ladder, spec: undefined } })).not.toHaveProperty(
+      "circuit-consistent",
+    );
+    expect(deterministicChecks({ problem: ladder })["circuit-consistent"]).toMatchObject({
+      pass: true,
+    });
+  });
+
+  test("the solver's current agrees with the key", () => {
+    expect(checkCircuitConsistent(ladder)).toEqual({
+      pass: true,
+      detail: "the drawing gives a current through R_2 of 1 A",
+    });
+  });
+
+  test("without spec.circuit only the drawn values are compared", () => {
+    const r = checkCircuitConsistent(ladderWith(undefined, "99 A"));
+    expect(r.pass).toBe(true);
+    expect(r.detail).toMatch(/no spec\.circuit/);
+  });
+
+  test("a wrong key fails with both values", () => {
+    // 3 A is the battery's current, not R_2's
+    const r = checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_2" }, "3.0 A"));
+    expect(r.pass).toBe(false);
+    expect(r.missing).toBeUndefined();
+    expect(r.detail).toMatch(/current through R_2 of 1 A; the key "3.0 A" is 200% away/);
+  });
+
+  test("every solver quantity, hand-checked", () => {
+    const ok = (c: ProblemSpec["circuit"], key: string) =>
+      expect(checkCircuitConsistent(ladderWith(c, key))).toMatchObject({ pass: true });
+    ok({ quantity: "current", element: "R_3" }, "2.0 A");
+    ok({ quantity: "current" }, "3.0 A"); // no element: the single battery
+    ok({ quantity: "current", element: "R2" }, "1.0 A"); // R2 finds R_2
+    ok({ quantity: "voltage", element: "R_2" }, "6.0 V");
+    ok({ quantity: "voltage", element: "R_1" }, "6.0 V");
+    ok({ quantity: "power", element: "R_1" }, "18 W");
+    ok({ quantity: "power" }, "36 W"); // the battery delivers 12 V × 3 A
+    ok({ quantity: "resistance" }, "4.0 Ω");
+    ok({ quantity: "resistance" }, "4.0 ohms");
+  });
+
+  test("sizes are compared: the direction an element was written in does not matter", () => {
+    const flipped = ladder.text.replace("resistor b c 6Ω R_2", "resistor c b 6Ω R_2");
+    expect(checkCircuitConsistent({ ...ladder, text: flipped }).pass).toBe(true);
+  });
+
+  test("the key may be in another unit of the same kind, but not another kind", () => {
+    expect(
+      checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_2" }, "1000 mA")).pass,
+    ).toBe(true);
+    const r = checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_2" }, "1.0 V"));
+    expect(r.pass).toBe(false);
+    expect(r.detail).toMatch(/another kind of quantity/);
+  });
+
+  test("a drawn value that is not a given fails", () => {
+    const text = ladder.text.replace("6Ω R_2", "8Ω R_2");
+    const r = checkCircuitConsistent({
+      ...ladder,
+      text,
+      spec: { ...ladderSpec, circuit: undefined },
+    });
+    expect(r.pass).toBe(false);
+    expect(r.detail).toMatch(/the diagram shows R_2 = 8 Ω, which is not a given/);
+  });
+
+  test("unit prefixes: 4 kΩ is 4000 Ω, not 4 Ω", () => {
+    // 9 V, 4 kΩ, 5 μF: τ = RC = 4000 × 5e-6 = 0.020 s; I(t0) = 9/4000 = 2.25 mA; V_C(steady) = 9 V
+    const rc = (r: ProblemSpec["givens"][string], circuit: ProblemSpec["circuit"], key: string) =>
+      checkCircuitConsistent({
+        ...ladder,
+        text: "A 9 V battery charges a 5 μF capacitor through a 4 kΩ resistor.\n\n```dg\ncircuit\nbattery a c 9V\nswitch a s closed S\nresistor s b 4kΩ R\ncapacitor b c 5μF C\n```",
+        correctAnswer: key,
+        spec: {
+          givens: { E: { value: 9, unit: "V" }, R: r, C: { value: 5, unit: "uF" } },
+          expr: "R*C",
+          unit: "s",
+          circuit,
+        },
+      });
+    expect(rc({ value: 4000, unit: "ohm" }, { quantity: "time-constant" }, "0.020 s").pass).toBe(
+      true,
+    );
+    expect(rc({ value: 4, unit: "kΩ" }, { quantity: "time-constant" }, "20 ms").pass).toBe(true);
+    const wrong = rc({ value: 4, unit: "ohm" }, { quantity: "time-constant" }, "0.020 s");
+    expect(wrong.pass).toBe(false);
+    expect(wrong.detail).toMatch(/R = 4 kΩ, which is not a given/);
+    // the instant after the switch closes the capacitor is a wire; long after, it is open
+    const R = { value: 4, unit: "kΩ" };
+    expect(rc(R, { quantity: "current", element: "R", at: "t0" }, "2.25 mA").pass).toBe(true);
+    expect(rc(R, { quantity: "current", element: "R" }, "0 A").pass).toBe(true);
+    expect(rc(R, { quantity: "voltage", element: "C" }, "9.0 V").pass).toBe(true);
+    expect(rc(R, { quantity: "current", element: "R" }, "2.25 mA").pass).toBe(false);
+  });
+
+  test("switches can be taken as closed when the drawing shows them open", () => {
+    const text =
+      "A 9 V battery, an open switch and a 3 Ω resistor.\n\n```dg\ncircuit\nbattery a c 9V\nswitch a b open S\nresistor b c 3Ω R\n```";
+    const spec: ProblemSpec = {
+      givens: { E: { value: 9, unit: "V" }, R: { value: 3, unit: "ohm" } },
+      expr: "E/R",
+      unit: "A",
+    };
+    const run = (circuit: ProblemSpec["circuit"]) =>
+      checkCircuitConsistent({
+        ...ladder,
+        text,
+        correctAnswer: "3.0 A",
+        spec: { ...spec, circuit },
+      });
+    expect(run({ quantity: "current", element: "R", switches: "closed" }).pass).toBe(true);
+    expect(run({ quantity: "current", element: "R" }).pass).toBe(false); // open as drawn: no current
+  });
+
+  test("a given the drawing leaves out is noted, not failed", () => {
+    const text = ladder.text.replace("3Ω R_3", "R_3");
+    const r = checkCircuitConsistent({
+      ...ladder,
+      text,
+      spec: { ...ladderSpec, circuit: undefined },
+    });
+    expect(r.pass).toBe(true);
+    expect(r.detail).toMatch(/not drawn: R3 = 3 ohm/);
+  });
+
+  test("an unknown element, an unreadable diagram and a quantity the circuit lacks all fail", () => {
+    expect(
+      checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_9" }, "1.0 A")).detail,
+    ).toMatch(/names "R_9", which is not in the drawing \(it has ε, R_1, R_2, R_3\)/);
+    expect(
+      checkCircuitConsistent(ladderWith({ quantity: "time-constant" }, "1.0 s")).detail,
+    ).toMatch(/exactly one capacitor or one inductor/);
+    const broken = { ...ladder, text: ladder.text.replace("resistor a b 2Ω R_1", "resistor a") };
+    const r = checkCircuitConsistent(broken);
+    expect(r.pass).toBe(false);
+    expect(r.detail).toMatch(/cannot be read: line 3/);
+  });
+
+  test("multiple choice: the keyed option is compared", () => {
+    const mc: Partial<DraftProblem> = {
+      type: "multiple-choice",
+      options: ["1.0 A", "2.0 A", "3.0 A", "0.50 A"],
+    };
+    expect(
+      checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_2" }, "1.0 A", mc)).pass,
+    ).toBe(true);
+    expect(
+      checkCircuitConsistent(ladderWith({ quantity: "current", element: "R_2" }, "2.0 A", mc)).pass,
+    ).toBe(false);
+  });
+
+  test("a malformed spec.circuit is a shape error, and the field is part of the content hash", () => {
+    const bad = ladderWith({ quantity: "charge" } as never, "1.0 A");
+    expect(checkCircuitConsistent(bad).detail).toMatch(/circuit\.quantity must be one of/);
+    expect(contentHash(ladder)).not.toBe(
+      contentHash(ladderWith({ quantity: "current", element: "R_3" }, "1.0 A")),
+    );
+  });
+
+  test("a wrong drawing makes the verdict failed", () => {
+    const r = verifyProblem(
+      { id: "c1", apTopic: "11.5", problem: ladderWith(ladderSpec.circuit, "3.0 A") },
+      [],
+    );
+    expect(r.failed).toContain("circuit-consistent");
   });
 });

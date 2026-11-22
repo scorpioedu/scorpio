@@ -64,6 +64,46 @@ export interface ProblemSpec {
   alt?: string[];
   /** Numbers in the problem text that the answer deliberately does not use. */
   extraneous?: number[];
+  /**
+   * For a problem whose text holds a ```dg circuit diagram: what the key is, as a quantity the
+   * circuit solver (src/lib/diagram/circuit-solve.ts) computes from the drawing. verify.ts
+   * (`circuit-consistent`) then requires the solver's value to agree with the key, so the picture,
+   * the spec and the key cannot drift apart. Leave it out when the key is something else.
+   */
+  circuit?: SpecCircuit;
+}
+
+/** The solver quantities a key can be checked against. */
+export const SPEC_CIRCUIT_QUANTITIES = [
+  "current",
+  "voltage",
+  "power",
+  "resistance",
+  "time-constant",
+] as const;
+
+export interface SpecCircuit {
+  /**
+   * "current" (A) through `element`; "voltage" (V) across it (a battery's terminal voltage);
+   * "power" (W) it dissipates or delivers; "resistance" (Ω): the equivalent resistance outside
+   * the single battery; "time-constant" (s): R·C or L/R of a circuit with one capacitor or one
+   * inductor. Sizes are compared, not signs: a key is a magnitude.
+   */
+  quantity: (typeof SPEC_CIRCUIT_QUANTITIES)[number];
+  /**
+   * The element, by the label drawn on it ("R_2", "ε"; "R2" also finds R_2) or, unlabelled, its
+   * type letter and number in the order written (R1, C1, V1 for a battery). Needed for current,
+   * voltage and power unless the circuit has exactly one battery, which is then meant. Not used
+   * for resistance or time-constant.
+   */
+  element?: string;
+  /**
+   * "steady" (default): long after switching, capacitors open and inductors plain wire.
+   * "t0": just after switching with nothing stored, capacitors plain wire and inductors open.
+   */
+  at?: "steady" | "t0";
+  /** Use every switch as "closed" or "open" instead of as drawn (the state the question asks about). */
+  switches?: "closed" | "open";
 }
 
 export type SpecResult = { ok: true; value: number; unit: string } | { ok: false; error: string };
@@ -462,5 +502,20 @@ export function specShapeErrors(raw: unknown): string[] {
     !(Array.isArray(s.extraneous) && s.extraneous.every((n) => typeof n === "number"))
   )
     errors.push("extraneous must be a list of numbers");
+  if (s.circuit !== undefined) {
+    const c = s.circuit as Record<string, unknown> | null;
+    if (!c || typeof c !== "object" || Array.isArray(c))
+      errors.push("circuit must be an object like { quantity, element }");
+    else {
+      if (!(SPEC_CIRCUIT_QUANTITIES as readonly unknown[]).includes(c.quantity))
+        errors.push(`circuit.quantity must be one of ${SPEC_CIRCUIT_QUANTITIES.join(", ")}`);
+      if (c.element !== undefined && (typeof c.element !== "string" || !c.element.trim()))
+        errors.push("circuit.element must be the name of an element");
+      if (c.at !== undefined && c.at !== "steady" && c.at !== "t0")
+        errors.push('circuit.at must be "steady" or "t0"');
+      if (c.switches !== undefined && c.switches !== "closed" && c.switches !== "open")
+        errors.push('circuit.switches must be "closed" or "open"');
+    }
+  }
   return errors;
 }

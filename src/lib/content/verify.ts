@@ -10,6 +10,8 @@
 //   grader-round-trip    the real grader gives the key full credit and every distractor none
 //   mc-quantity          the spec picks the keyed option and no other (multiple choice with a spec)
 //   blind-solves         at least two solvers who never saw the key agree with it
+//   circuit-consistent   a ```dg circuit drawing shows the spec's givens, and the circuit solver
+//                        gives the key when the spec says which quantity it is (spec.circuit)
 //   near-duplicate       no other problem of the set is the same calculation in the same words
 //   not-stale            a stored verification was made for the text as it is now
 //   basis                not a check: what the verdict rests on ("spec" or "solver-agreement-only")
@@ -34,6 +36,12 @@ import {
   type Unit,
 } from "../../../functions/src/units";
 import {
+  parseCircuit,
+  solveCircuit,
+  type Circuit,
+  type CircuitElement,
+} from "../diagram/circuit-solve";
+import {
   answerAgrees,
   validateDraftProblem,
   type DraftProblem,
@@ -47,6 +55,7 @@ import {
   specShape,
   specShapeErrors,
   type ProblemSpec,
+  type SpecCircuit,
   type SpecResult,
 } from "./spec";
 
@@ -574,6 +583,195 @@ export function checkMcQuantity(problem: DraftProblem): CheckOutcome {
   return pass(`spec gives ${computed}`);
 }
 
+/** The source of every ```dg block in a text whose first line is `circuit`. */
+export function circuitDiagrams(text: string): string[] {
+  const out: string[] = [];
+  for (const m of (text ?? "").matchAll(/```dg[^\n]*\n([\s\S]*?)```/g)) {
+    const first = m[1].split(/\r?\n/).find((l) => l.trim() && !l.trim().startsWith("#"));
+    if (first && /^circuit(\s|$)/.test(first.trim())) out.push(m[1]);
+  }
+  return out;
+}
+
+/** The unit each kind of drawn value is in (circuit-solve.ts keeps the values in SI). */
+const CIRCUIT_VALUE_UNIT: Partial<Record<CircuitElement["type"], string>> = {
+  battery: "V",
+  resistor: "ohm",
+  bulb: "ohm",
+  capacitor: "F",
+  inductor: "H",
+};
+
+/** Every value a circuit drawing shows, in SI: one per element, and a battery's internal resistance. */
+function drawnCircuitValues(circuit: Circuit): { what: string; si: number; unit: Unit }[] {
+  const out: { what: string; si: number; unit: Unit }[] = [];
+  for (const el of circuit.elements) {
+    const unit = parseUnit(CIRCUIT_VALUE_UNIT[el.type] ?? "");
+    if (el.value !== undefined && unit)
+      out.push({ what: `${el.id} = ${el.valueText ?? el.value}`, si: el.value, unit });
+    const ohm = parseUnit("ohm");
+    if (el.r !== undefined && ohm)
+      out.push({ what: `${el.id} r = ${el.rText ?? el.r}`, si: el.r, unit: ohm });
+  }
+  return out;
+}
+
+/** The element a spec names: by id as written, else ignoring _ { } and spaces ("R2" finds R_2). */
+function findCircuitElement(circuit: Circuit, name: string): CircuitElement | undefined {
+  const bare = (s: string) => s.replace(/[_{}\s\\]/g, "");
+  return (
+    circuit.elements.find((e) => e.id === name) ??
+    circuit.elements.find((e) => bare(e.id) === bare(name)) ??
+    circuit.elements.find((e) => e.labels.some((l) => bare(l) === bare(name)))
+  );
+}
+
+/** What the solver gives for the quantity a spec names: its size in SI, or why there is none. */
+function solvedCircuitQuantity(
+  circuit: Circuit,
+  want: SpecCircuit,
+): { value: number; unit: string; what: string } | { error: string } {
+  const solution = solveCircuit(circuit, {
+    ...(want.at ? { at: want.at } : {}),
+    ...(want.switches ? { switches: want.switches } : {}),
+  });
+  if (!solution.ok) return { error: `The circuit cannot be solved: ${solution.errors.join("; ")}` };
+  const when = solution.at === "t0" ? " just after switching" : "";
+  if (want.quantity === "resistance") {
+    if (solution.req === undefined)
+      return { error: "Equivalent resistance needs a circuit with exactly one battery" };
+    return { value: solution.req, unit: "ohm", what: "equivalent resistance" };
+  }
+  if (want.quantity === "time-constant") {
+    if (solution.tau === undefined)
+      return {
+        error: "A time constant needs a circuit with exactly one capacitor or one inductor",
+      };
+    return { value: solution.tau, unit: "s", what: "time constant" };
+  }
+  let id = want.element !== undefined ? findCircuitElement(circuit, want.element)?.id : undefined;
+  if (want.element !== undefined && id === undefined)
+    return {
+      error: `spec.circuit names "${want.element}", which is not in the drawing (it has ${circuit.elements.map((e) => e.id).join(", ")})`,
+    };
+  id ??= solution.source?.id;
+  if (id === undefined)
+    return {
+      error: `spec.circuit needs an element for ${want.quantity}: the drawing has no single battery`,
+    };
+  const el = solution.elements[id];
+  if (want.quantity === "current")
+    return { value: Math.abs(el.current), unit: "A", what: `current through ${id}${when}` };
+  if (want.quantity === "voltage")
+    return { value: Math.abs(el.voltage), unit: "V", what: `voltage across ${id}${when}` };
+  return { value: Math.abs(el.power), unit: "W", what: `power of ${id}${when}` };
+}
+
+/**
+ * circuit-consistent: for a problem with a spec whose text holds a ```dg circuit diagram.
+ *
+ * 1. Every value drawn on an element (and a battery's internal resistance) is one of the spec's
+ *    givens: the same amount in the same kind of unit, so "4 kΩ" matches a given of 4000 Ω or
+ *    4 kΩ but not 4 Ω. A drawn value with no such given fails: the picture and the text would
+ *    state different circuits. Symbolic givens have no value to draw, so they match nothing.
+ *    The other direction is not a failure: a given the drawing does not show (an element drawn
+ *    with its label only, a value the text changes later) is listed in the detail.
+ * 2. When the spec says which solver quantity the key is (spec.circuit), the circuit solver's
+ *    value for the drawing must match the key by the rule `recompute` uses. Sizes are compared: a
+ *    key is a magnitude, whichever way the element was written.
+ *
+ * No circuit diagram, or no spec: "not applicable", which passes. With several circuit diagrams in
+ * one text, step 1 covers them all and step 2 uses the first.
+ */
+export function checkCircuitConsistent(problem: DraftProblem): CheckOutcome {
+  const sources = circuitDiagrams(problem.text);
+  if (!sources.length) return pass("not applicable: no circuit diagram");
+  const spec = problem.spec;
+  if (!spec) return pass("not applicable: no spec");
+  const shape = specShapeErrors(spec);
+  if (shape.length) return fail(shape.join("; "));
+
+  const circuits: Circuit[] = [];
+  for (const src of sources) {
+    const parsed = parseCircuit(src);
+    if (!parsed.circuit)
+      return fail(
+        `The circuit diagram cannot be read: ${parsed.errors.map((e) => `line ${e.line}: ${e.msg}`).join("; ")}`,
+      );
+    circuits.push(parsed.circuit);
+  }
+
+  const givens = Object.entries(spec.givens)
+    .filter(([, g]) => g.symbol === undefined)
+    .map(([name, g]) => ({ name, given: g, unit: parseSpecUnit(g.unit) }));
+  const isGiven = (si: number, unit: Unit) =>
+    givens.some(
+      (g) => g.unit && sameDims(g.unit.dims, unit.dims) && near(toSI(g.given.value, g.unit), si),
+    );
+  const drawn = circuits.flatMap(drawnCircuitValues);
+  const problems = drawn
+    .filter((d) => !isGiven(d.si, d.unit))
+    .map((d) => `the diagram shows ${d.what}, which is not a given of the spec`);
+  // Resistances, capacitances and inductances the drawing leaves out (never a failure). A voltage
+  // may be a reading rather than a source, so voltages are not listed.
+  const kinds = ["ohm", "F", "H"].map((u) => parseUnit(u)).filter((u): u is Unit => !!u);
+  const notDrawn = givens
+    .filter(
+      (g) =>
+        g.unit &&
+        kinds.some((k) => sameDims(k.dims, g.unit!.dims)) &&
+        !drawn.some(
+          (d) => sameDims(d.unit.dims, g.unit!.dims) && near(toSI(g.given.value, g.unit!), d.si),
+        ),
+    )
+    .map((g) => `${g.name} = ${g.given.value} ${g.given.unit}`);
+  const notes: string[] = [];
+  if (notDrawn.length) notes.push(`not drawn: ${notDrawn.join(", ")}`);
+
+  if (spec.circuit) {
+    const solved = solvedCircuitQuantity(circuits[0], spec.circuit);
+    if ("error" in solved) problems.push(solved.error);
+    else if (!Number.isFinite(solved.value))
+      problems.push(`The ${solved.what} is not determined by the circuit as drawn`);
+    else {
+      let key: ParsedQuantity | undefined;
+      if (problem.type === "numeric") key = parseNumericKey(problem.correctAnswer);
+      else {
+        const options = optionQuantities(problem);
+        const index = problem.options?.indexOf(problem.correctAnswer) ?? -1;
+        key = options && index >= 0 ? options[index] : undefined;
+      }
+      if (!key)
+        problems.push(
+          `The key "${problem.correctAnswer}" is not a quantity, so the ${solved.what} cannot be compared with it`,
+        );
+      else {
+        const size: ParsedQuantity = { ...key, value: Math.abs(key.value) };
+        const value = inUnitOf(solved, size);
+        if ("error" in value)
+          problems.push(
+            `The ${solved.what} is in ${solved.unit === "ohm" ? "Ω" : solved.unit}, but the key "${problem.correctAnswer}" is another kind of quantity`,
+          );
+        else {
+          const tolerance =
+            typeof problem.tolerance === "number" && problem.tolerance >= 0
+              ? problem.tolerance
+              : DEFAULT_TOLERANCE_PERCENT;
+          const match = matchesWritten(value.value, size, tolerance);
+          const computed = `${show(value.value)}${key.unitText ? " " + key.unitText : ""}`;
+          if (!match.ok)
+            problems.push(
+              `The circuit as drawn gives a ${solved.what} of ${computed}; the key "${problem.correctAnswer}" ${match.why}`,
+            );
+          else notes.unshift(`the drawing gives a ${solved.what} of ${computed}`);
+        }
+      }
+    }
+  } else notes.unshift("drawn values are givens; no spec.circuit, so the key was not solved for");
+  if (problems.length) return fail(problems.join("; "));
+  return pass(notes.join("; ") || undefined);
+}
+
 /**
  * blind-solves: at least SOLVERS_NEEDED solvers who were not shown the key agree with it, judged by
  * the real grader, and they outnumber those who disagree. Multiple-choice answers are option text
@@ -702,6 +900,9 @@ export function deterministicChecks(
     draft.apTopic ?? problem.apTopic,
     course,
   );
+  // Only where there is something to compare, so other problems' records keep the checks they had.
+  if (problem.spec && circuitDiagrams(problem.text).length)
+    checks["circuit-consistent"] = checkCircuitConsistent(problem);
   checks["near-duplicate"] = checkNearDuplicate(draft, context.siblings ?? []);
   return checks;
 }
