@@ -6,10 +6,11 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { getCurriculum, type Curriculum } from "@/data/curricula";
+import { DEFAULT_SET_SIZE, getCurriculum, type Curriculum } from "@/data/curricula";
 import {
   cloneSetToClass,
   planAssignments,
+  restoresArchived,
   runAssignments,
   type AssignableSet,
   type PlannedAssignment,
@@ -20,6 +21,7 @@ import type { SchoolDayTest } from "@/lib/school-calendar";
 import { loadClassAssignments } from "@/lib/curriculum-client";
 import { dueParam, updateAssignment } from "@/lib/assignment-actions";
 import { apiError, undoToast } from "@/lib/undo-toast";
+import { PROBLEMS_PER_SET, parseProblemsPerSet } from "@/lib/assignment-defaults";
 import { shortDate, type CourseData } from "./use-course-data";
 
 /** What the assign dialog is open for. */
@@ -98,6 +100,7 @@ export function useSetActions({
         sourceId: s.published!.id,
         key: s.set.key,
         title: (published ?? []).find((p) => p.id === s.published!.id)?.title ?? s.set.title,
+        poolSize: s.published!.questionCount,
       })),
     [published],
   );
@@ -109,28 +112,34 @@ export function useSetActions({
     setError("");
     // Fresh read, so a set assigned elsewhere (or in another tab) is not copied twice.
     let todo = planned;
-    let archived = new Map<string, string>();
+    let archived = new Map<string, { id: string; questionCount?: number }>();
     try {
       const fresh = (await loadClassAssignments(user.uid, selected.id)).filter(ofCourse);
       const have = new Set(fresh.filter((a) => !a.archived).map((a) => String(a.curriculumSetKey)));
       archived = new Map(
-        fresh.filter((a) => a.archived && a.id).map((a) => [String(a.curriculumSetKey), a.id!]),
+        fresh
+          .filter((a) => a.archived && a.id)
+          .map((a) => [String(a.curriculumSetKey), { id: a.id!, questionCount: a.questionCount }]),
       );
       if (planned.some((p) => have.has(p.key)))
-        todo = planAssignments(target.sets, have, startDate, spacing, isSchoolDay);
+        todo = planAssignments(target.sets, have, startDate, spacing, isSchoolDay).map(
+          // The re-plan keeps the number of problems the teacher chose.
+          (p): PlannedAssignment =>
+            planned[0]?.count === undefined ? p : { ...p, count: planned[0].count },
+        );
     } catch {
       /* keep the plan the teacher confirmed */
     }
     try {
-      // An archived copy of a set is restored (with its students' work) instead of copied again.
-      await runAssignments(todo, (item) =>
-        archived.has(item.key)
-          ? updateAssignment(archived.get(item.key)!, {
-              archived: false,
-              dueDate: dueParam(item.due),
-            })
-          : cloneSetToClass(authenticatedFetch, selected.id, item),
-      );
+      // An archived copy of a set is restored (with its students' work) instead of copied again,
+      // unless the teacher chose another number of problems than it has (see restoresArchived).
+      await runAssignments(todo, (item) => {
+        const copy = archived.get(item.key);
+        return copy && restoresArchived(item, copy)
+          ? updateAssignment(copy.id, { archived: false, dueDate: dueParam(item.due) })
+          : cloneSetToClass(authenticatedFetch, selected.id, item);
+      });
+      void rememberCount(todo[0]?.count);
       toast.success(
         todo.length ? `${target.label} assigned to ${selected.name}.` : "Nothing new to assign.",
       );
@@ -143,6 +152,29 @@ export function useSetActions({
     } finally {
       await data.refreshClass();
       setBusy(null);
+    }
+  }
+
+  /**
+   * Remember the number of problems chosen in the dialog as the class's own, so the dialog opens on it
+   * next time. Nothing else uses it, and a failure only means the dialog opens on the usual five.
+   */
+  async function rememberCount(count: number | undefined) {
+    if (!selected || count === undefined) return;
+    if (count === (parseProblemsPerSet(selected.assignmentDefaults) ?? DEFAULT_SET_SIZE)) return;
+    try {
+      const res = await authenticatedFetch(
+        `/api/courses/${encodeURIComponent(selected.id)}/assignment-defaults`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ [PROBLEMS_PER_SET]: count }),
+        },
+      );
+      if (!res.ok) return;
+      data.patchClass(selected.id, { assignmentDefaults: (await res.json()).assignmentDefaults });
+    } catch {
+      /* not worth a message */
     }
   }
 

@@ -210,6 +210,234 @@ describeWithContent("publish by course set", () => {
   });
 });
 
+// Adding problems to a published set. The drafts here are made up (no content files needed): only
+// the set's ids come from the definition.
+describe("publish appends to a published set", () => {
+  const ids = set4A.draftIds;
+  const problem = (n: number) => ({
+    text: `A ${n}.0 kg cart moves at 3.0 m/s. Find the magnitude of its momentum.`,
+    type: "numeric",
+    correctAnswer: `${3 * n}.0 kg*m/s`,
+    solution: `p = mv = (${n}.0 kg)(3.0 m/s) = ${3 * n}.0 kg*m/s.`,
+    distractors: [{ answer: `${n}.0 kg*m/s`, misconception: "momentum-not-vector" }],
+    difficulty: "easy",
+    points: 10,
+  });
+  /** The set as it was published with its first `n` drafts; the rest are approved and waiting. */
+  function seed(n: number, reviewKind: string | null = "human") {
+    ids.forEach((id, i) =>
+      mockDocs.set(`content_drafts/${id}`, {
+        apUnit: 4,
+        apTopic: set4A.topics[0],
+        problem: problem(i + 1),
+        ...(i < n
+          ? { status: "published", assignmentId: "w4A" }
+          : { status: "approved", reviewKind }),
+      }),
+    );
+    mockDocs.set("assignments/w4A", {
+      visibility: "global",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "4A",
+      apCourse: "physics-1",
+      apUnit: 4,
+      apTopics: [set4A.topics[0]],
+      contentDraftIds: ids.slice(0, n),
+      totalPoints: n * 10,
+      questions: ids.slice(0, n).map((_, i) => ({
+        id: `old${i + 1}`,
+        text: problem(i + 1).text,
+        type: "numeric",
+        points: 10,
+      })),
+    });
+    mockDocs.set("assignment_keys/w4A", {
+      answers: Object.fromEntries(ids.slice(0, n).map((_, i) => [`old${i + 1}`, "x"])),
+    });
+    // A class already has its own copy: a separate document.
+    mockDocs.set("assignments/classCopy", {
+      visibility: "private",
+      teacherId: "t1",
+      curriculumId: "ap-physics-1",
+      curriculumSetKey: "4A",
+      forkedFrom: "w4A",
+    });
+  }
+  const run = () =>
+    publish(post("/api/admin/content/publish", { curriculumId: "ap-physics-1", setKey: "4A" }));
+  const written = (path: string) => mockWrites.filter((w) => w.path === path);
+
+  test("new drafts become questions at the end; what was there is untouched", async () => {
+    seed(3);
+    const res = await run();
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ id: "w4A", appended: 2 });
+    // The published assignment is updated in place, never re-created.
+    expect(mockWrites.filter((w) => w.op === "set" && w.path.startsWith("assignments/"))).toEqual(
+      [],
+    );
+    const [update] = written("assignments/w4A");
+    const data = update.data as Data & { questions: { id: string; text: string }[] };
+    expect(update.op).toBe("batch.update");
+    expect(data.questions.slice(0, 3)).toEqual(
+      (mockDocs.get("assignments/w4A")!.questions as unknown[]).slice(0, 3),
+    );
+    expect(data.questions.map((q) => q.text)).toEqual(ids.map((_, i) => problem(i + 1).text));
+    expect(data.contentDraftIds).toEqual(ids);
+    expect(data.totalPoints).toBe(50);
+    expect(JSON.stringify(data)).not.toMatch(/correctAnswer|solution|misconception/);
+    // Keys and solutions are merged in: only the new questions' entries are written (the old
+    // questions also get the solutions they never had, matched to their drafts).
+    const added = data.questions.slice(3).map((q) => q.id);
+    const [key] = written("assignment_keys/w4A");
+    expect(Object.keys((key.data as Data).answers as Data).sort()).toEqual([...added].sort());
+    expect(Object.keys((key.data as Data).distractors as Data).sort()).toEqual([...added].sort());
+    expect((key.data as Data).rubric).toBeUndefined();
+    const [solutions] = written("assignment_solutions/w4A");
+    expect(solutions.data).toEqual({
+      solutions: Object.fromEntries(
+        ["old1", "old2", "old3", ...added].map((id, i) => [id, problem(i + 1).solution]),
+      ),
+      teacherId: "admin1",
+    });
+    // Only the two new drafts are marked published; no class copy is written to.
+    expect(
+      mockWrites.filter((w) => w.path.startsWith("content_drafts/")).map((w) => [w.path, w.data]),
+    ).toEqual(
+      ids
+        .slice(3)
+        .map((id) => [`content_drafts/${id}`, { status: "published", assignmentId: "w4A" }]),
+    );
+    expect(written("assignments/classCopy")).toEqual([]);
+  });
+
+  test("an old question edited since publishing gets no solution; the rest do", async () => {
+    seed(3);
+    const a = mockDocs.get("assignments/w4A")!;
+    const questions = a.questions as Data[];
+    mockDocs.set("assignments/w4A", {
+      ...a,
+      questions: [{ ...questions[0], text: "Rewritten by hand" }, ...questions.slice(1)],
+    });
+    expect((await run()).status).toBe(200);
+    const solutions = (written("assignment_solutions/w4A")[0].data as { solutions: Data })
+      .solutions;
+    expect("old1" in solutions).toBe(false);
+    expect("old2" in solutions).toBe(true);
+  });
+
+  test("nothing new to add: already published", async () => {
+    seed(5);
+    const res = await run();
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/already published/);
+    expect(mockWrites).toEqual([]);
+  });
+
+  test("refused when the published drafts were reordered, replaced or removed in the definition", async () => {
+    for (const have of [
+      [ids[1], ids[0], ids[2]],
+      [ids[0], "someOtherDraft", ids[2]],
+      [...ids, "aSixthThatIsGone"],
+      ["x1", "x2", "x3", "x4", "x5", "x6"],
+    ]) {
+      seed(3);
+      mockDocs.set("assignments/w4A", {
+        ...mockDocs.get("assignments/w4A")!,
+        contentDraftIds: have,
+      });
+      const res = await run();
+      expect([have, res.status]).toEqual([have, 409]);
+      expect((await res.json()).error).toMatch(/changed, removed or reordered/);
+    }
+    expect(mockWrites).toEqual([]);
+  });
+
+  test("refused when the published set's questions no longer match what it was published with", async () => {
+    seed(3);
+    const a = mockDocs.get("assignments/w4A")!;
+    mockDocs.set("assignments/w4A", { ...a, questions: (a.questions as unknown[]).slice(0, 2) });
+    const res = await run();
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/no longer has the problems/);
+    expect(mockWrites).toEqual([]);
+  });
+
+  test("the new drafts pass the same gate as a first publish", async () => {
+    // Not approved.
+    seed(3);
+    mockDocs.set(`content_drafts/${ids[4]}`, {
+      ...mockDocs.get(`content_drafts/${ids[4]}`)!,
+      status: "draft",
+    });
+    let res = await run();
+    expect(res.status).toBe(409);
+    expect(await res.json()).toMatchObject({ ids: [ids[4]] });
+    // Missing.
+    seed(3);
+    mockDocs.delete(`content_drafts/${ids[3]}`);
+    expect((await run()).status).toBe(409);
+    // Only AI-reviewed, or verified with no current record.
+    seed(3, "ai");
+    res = await run();
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/checked by AI/);
+    seed(3, "verified");
+    res = await run();
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/verified/);
+    // Written for another course, or another unit.
+    seed(3);
+    mockDocs.set(`content_drafts/${ids[3]}`, {
+      ...mockDocs.get(`content_drafts/${ids[3]}`)!,
+      course: "physics-c-mech",
+    });
+    expect((await run()).status).toBe(400);
+    seed(3);
+    for (const id of ids.slice(3))
+      mockDocs.set(`content_drafts/${id}`, {
+        ...mockDocs.get(`content_drafts/${id}`)!,
+        apUnit: 5,
+        apTopic: "5.1",
+      });
+    res = await run();
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/another unit/);
+    // No longer passes validation.
+    seed(3);
+    mockDocs.set(`content_drafts/${ids[3]}`, {
+      ...mockDocs.get(`content_drafts/${ids[3]}`)!,
+      problem: { ...problem(4), correctAnswer: "" },
+    });
+    expect((await run()).status).toBe(422);
+    expect(mockWrites).toEqual([]);
+    // The emulator may add AI-reviewed drafts, as it may publish them.
+    seed(3, "ai");
+    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
+    expect((await run()).status).toBe(200);
+  });
+
+  test("a first publish writes the worked solutions beside the key, never on the assignment", async () => {
+    seed(0);
+    mockDocs.delete("assignments/w4A");
+    mockDocs.delete("assignment_keys/w4A");
+    const res = await run();
+    expect(res.status).toBe(200);
+    const { id } = await res.json();
+    const a = written(`assignments/${id}`)[0].data as Data & { questions: { id: string }[] };
+    expect(a.contentDraftIds).toEqual(ids);
+    expect(JSON.stringify(a)).not.toContain("p = mv");
+    expect(written(`assignment_solutions/${id}`)[0]).toEqual({
+      op: "set",
+      path: `assignment_solutions/${id}`,
+      data: {
+        solutions: Object.fromEntries(a.questions.map((q, i) => [q.id, problem(i + 1).solution])),
+        teacherId: "admin1",
+      },
+    });
+  });
+});
+
 describeWithContent("GET /api/admin/content/sets", () => {
   const get = (q: string) => setsStatus(new NextRequest(`${url}/api/admin/content/sets${q}`));
 

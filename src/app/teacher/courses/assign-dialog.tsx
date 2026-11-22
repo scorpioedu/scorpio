@@ -3,7 +3,15 @@
 // "Assign unit": shows exactly which sets will be copied into the class and when each is due,
 // before anything is created.
 import { useMemo, useState } from "react";
-import { planAssignments, type AssignableSet, type PlannedAssignment } from "@/lib/assign-sets";
+import {
+  cappedSets,
+  planAssignments,
+  sizeChoice,
+  type AssignableSet,
+  type PlannedAssignment,
+  type SizeChoice,
+} from "@/lib/assign-sets";
+import { DEFAULT_SET_SIZE } from "@/data/curricula";
 import { parseDateInput } from "@/lib/first-run";
 import type { SchoolDayTest } from "@/lib/school-calendar";
 import { Button } from "@/components/ui/button";
@@ -17,15 +25,71 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { SpacingSelect } from "@/components/teacher/spacing-select";
 import { shortDate } from "./use-course-data";
 
 export { SpacingSelect };
 
+/**
+ * "Problems per set": how many of each set's problems the class gets (its first n). Not shown while
+ * no set being assigned has more than five, so there is nothing to choose.
+ */
+export function ProblemsPerSetField({
+  choice,
+  sets,
+  value,
+  onChange,
+  disabled,
+}: {
+  choice: SizeChoice;
+  sets: AssignableSet[];
+  value: number;
+  onChange: (n: number) => void;
+  disabled?: boolean;
+}) {
+  if (!choice.offered) return null;
+  const capped = cappedSets(sets, value);
+  const pool = capped[0]?.poolSize ?? DEFAULT_SET_SIZE;
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="assign-count">Problems per set</Label>
+      <Select value={String(value)} onValueChange={(v) => onChange(Number(v))} disabled={disabled}>
+        <SelectTrigger id="assign-count" className="w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {Array.from({ length: choice.max - choice.min + 1 }, (_, i) => choice.min + i).map(
+            (n) => (
+              <SelectItem key={n} value={String(n)}>
+                {n === DEFAULT_SET_SIZE ? `First ${n} (usual)` : `First ${n}`}
+              </SelectItem>
+            ),
+          )}
+        </SelectContent>
+      </Select>
+      {capped.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {capped.length === 1
+            ? `${capped[0].key} has ${pool} problems, so it gets all ${pool}.`
+            : `${capped.map((s) => s.key).join(", ")} have fewer than ${value}, so they get all they have.`}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function AssignDialog({
   unitLabel,
   className,
   sets,
+  problemsPerSet,
   start,
   spacing,
   isSchoolDay,
@@ -39,6 +103,8 @@ export function AssignDialog({
   className: string;
   /** Published, unassigned, not skipped; in roadmap order. */
   sets: AssignableSet[];
+  /** The number of problems this class was last given per set; the control opens on it. */
+  problemsPerSet?: number | null;
   start: string;
   spacing: string;
   isSchoolDay: SchoolDayTest;
@@ -49,12 +115,18 @@ export function AssignDialog({
   onClose: () => void;
 }) {
   const [none] = useState(() => new Set<string>());
+  const choice = sizeChoice(sets, problemsPerSet);
+  const [count, setCount] = useState(choice.initial);
   const startDate = parseDateInput(start);
   const plan = useMemo(
-    () => (startDate ? planAssignments(sets, none, startDate, Number(spacing), isSchoolDay) : []),
+    () =>
+      (startDate ? planAssignments(sets, none, startDate, Number(spacing), isSchoolDay) : []).map(
+        // Without the control nothing is chosen, and the copy gets the usual five.
+        (p): PlannedAssignment => (choice.offered ? { ...p, count } : p),
+      ),
     // startDate is derived from `start`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sets, none, start, spacing, isSchoolDay],
+    [sets, none, start, spacing, isSchoolDay, choice.offered, count],
   );
 
   return (
@@ -83,6 +155,13 @@ export function AssignDialog({
               <SpacingSelect id="assign-spacing" value={spacing} onChange={onSpacing} />
             </div>
           )}
+          <ProblemsPerSetField
+            choice={choice}
+            sets={sets}
+            value={count}
+            onChange={setCount}
+            disabled={busy}
+          />
         </div>
         {startDate ? (
           <ul className="divide-y divide-border rounded-xl border border-border text-sm">

@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CURRICULA, displayTitle } from "@/data/curricula";
 import { CONTENT_FILES } from "@/data/curricula/content-files";
-import { setReadyToPublish, type DraftState } from "@/lib/curriculum-roadmap";
+import { setReadyToAppend, setReadyToPublish, type DraftState } from "@/lib/curriculum-roadmap";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -30,6 +30,8 @@ interface SetStatus {
 const LABEL: Record<DraftState, string> = {
   draft: "Draft",
   "ai-reviewed": "AI-reviewed",
+  verified: "Verified",
+  "owner-accepted": "Owner-accepted",
   "human-approved": "Human-approved",
   published: "Published",
   rejected: "Rejected",
@@ -87,7 +89,11 @@ export function SetsPanel() {
       });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Publish failed");
-      toast.success(`Set ${key} published to Waypoints`);
+      toast.success(
+        typeof body.appended === "number"
+          ? `${body.appended} new problem${body.appended === 1 ? "" : "s"} added to set ${key}`
+          : `Set ${key} published to Waypoints`,
+      );
       await load();
     } catch (e) {
       setErrors((cur) => ({ ...cur, [key]: e instanceof Error ? e.message : "Publish failed" }));
@@ -144,7 +150,10 @@ export function SetsPanel() {
           <CardDescription>
             A set can be published once every problem in it is approved. AI-reviewed problems still
             need a person&apos;s approval first: outside the local emulator the server refuses them
-            and says so.
+            and says so. Verified problems were recomputed and solved blind by the verifier, not
+            checked by a person; one edited since is refused until it is verified again. Problems
+            added to the end of a published set can be added to it; classes that already have the
+            set keep their copy.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-0">
@@ -194,6 +203,9 @@ export function SetsPanel() {
                 s?.drafts ?? def.draftIds.map((id) => ({ id, state: "missing" as const }));
               const published = !!s?.assignmentId;
               const ready = !published && setReadyToPublish(drafts.map((d) => d.state));
+              // The definition lists problems after the ones this set was published with.
+              const added = published ? drafts.filter((d) => d.state !== "published").length : 0;
+              const canAdd = published && setReadyToAppend(drafts.map((d) => d.state));
               return (
                 <li key={def.key} className="space-y-2 px-5 py-3 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -201,7 +213,20 @@ export function SetsPanel() {
                       {displayTitle(def, curriculum.name)}
                     </p>
                     {published ? (
-                      <Badge variant="secondary">Published</Badge>
+                      <span className="flex flex-wrap items-center gap-2">
+                        <Badge variant="secondary">Published</Badge>
+                        {added > 0 && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => publish(def.key)}
+                            disabled={!canAdd || busy !== null}
+                          >
+                            {busy === def.key && <Loader2 className="animate-spin" />}
+                            Add {added} new problem{added === 1 ? "" : "s"}
+                          </Button>
+                        )}
+                      </span>
                     ) : (
                       <Button
                         size="sm"
@@ -224,7 +249,10 @@ export function SetsPanel() {
                       <Badge
                         key={d.id}
                         variant={
-                          d.state === "human-approved" || d.state === "published"
+                          d.state === "human-approved" ||
+                          d.state === "owner-accepted" ||
+                          d.state === "verified" ||
+                          d.state === "published"
                             ? "secondary"
                             : "outline"
                         }

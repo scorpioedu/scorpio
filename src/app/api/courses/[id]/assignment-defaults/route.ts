@@ -4,12 +4,21 @@ import { adminDb, adminFieldWithValue } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
 import { parseJsonBody } from "@/lib/api-schema";
 import { courseAssignmentDefaultsBody } from "@/lib/schemas/api-bodies";
-import { parseAssignmentDefaults } from "@/lib/assignment-defaults";
+import {
+  PROBLEMS_PER_SET,
+  parseAssignmentDefaults,
+  parseProblemsPerSet,
+} from "@/lib/assignment-defaults";
 
 /**
  * PATCH /api/courses/{id}/assignment-defaults { assignmentDefaults: {...} | null } -> { id, assignmentDefaults }
  * The class's owner sets the settings every new assignment in the class starts with, or clears them
  * (null). Assignments that already exist are not changed.
+ * PATCH /api/courses/{id}/assignment-defaults { problemsPerSet } -> { id, assignmentDefaults, problemsPerSet }
+ * (`assignmentDefaults` in a response is what is now stored: the settings, plus `problemsPerSet` when remembered.)
+ * Remembers the number of problems the teacher last chose in the assign dialog. It is stored inside
+ * `assignmentDefaults` but is not a setting: changing it leaves the settings alone, and saving or
+ * clearing the settings keeps it.
  * Clients cannot write `assignmentDefaults` themselves (firestore.rules), so this route is the only way.
  */
 export const PATCH = withAuthorizedRequest(
@@ -27,11 +36,30 @@ export const PATCH = withAuthorizedRequest(
       const course = (await ref.get()).data();
       if (!course || course.teacherId !== caller.uid)
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
+      if ("problemsPerSet" in parsed.data) {
+        const problemsPerSet = parsed.data.problemsPerSet;
+        await ref.set(
+          { assignmentDefaults: { [PROBLEMS_PER_SET]: problemsPerSet } },
+          { merge: true },
+        );
+        return NextResponse.json({
+          id,
+          assignmentDefaults: {
+            ...parseAssignmentDefaults(course.assignmentDefaults),
+            [PROBLEMS_PER_SET]: problemsPerSet,
+          },
+          problemsPerSet,
+        });
+      }
       const assignmentDefaults = parseAssignmentDefaults(parsed.data.assignmentDefaults);
-      await ref.update({
-        assignmentDefaults: assignmentDefaults ?? adminFieldWithValue.delete(),
-      });
-      return NextResponse.json({ id, assignmentDefaults });
+      const problemsPerSet = parseProblemsPerSet(course.assignmentDefaults);
+      const remembered = problemsPerSet === null ? {} : { [PROBLEMS_PER_SET]: problemsPerSet };
+      const stored =
+        assignmentDefaults || problemsPerSet !== null
+          ? { ...assignmentDefaults, ...remembered }
+          : null;
+      await ref.update({ assignmentDefaults: stored ?? adminFieldWithValue.delete() });
+      return NextResponse.json({ id, assignmentDefaults: stored });
     } catch (error) {
       return errorResponse(error, "courses/assignment-defaults", requestId);
     }
