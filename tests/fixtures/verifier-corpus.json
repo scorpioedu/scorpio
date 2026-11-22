@@ -7,8 +7,8 @@
     "notCaughtDeterministically": 3,
     "withoutSpec": 4,
     "fixedPassing": 33,
-    "controls": 571,
-    "controlsPassing": 571
+    "controls": 727,
+    "controlsPassing": 727
   },
   "wrongKeys": [
     {
@@ -724,6 +724,18 @@
   ],
   "controls": [
     {
+      "id": "03RH4iS8WNRiAEdap5aN",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "03sqiulU8V6D3eq03V28",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -784,6 +796,18 @@
       }
     },
     {
+      "id": "0CXJqtoSHTDKajUYE9AZ",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "0E35wT5KFiKAPqVFwRo9",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -808,8 +832,32 @@
       }
     },
     {
+      "id": "0oZOpjCgOMR8DxbP11kc",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "0PCxIHEu6ozLQ1liHA6R",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "0w4rkZGl9r5SJ6id5EPe",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -846,6 +894,30 @@
     {
       "id": "1aApXTSOHchkBPWRGOnW",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "1d5p0ccrLrF4uzYSHuVk",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "1eLBepEfE0v0BvoFkgbo",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -928,6 +1000,18 @@
       }
     },
     {
+      "id": "1S7KOUonWeAcjcThmaXm",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "1tIsGfix4oGWC0C4P00K",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -957,6 +1041,18 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "2aMsMUYsj1mMnxVRooya",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -1204,11 +1300,35 @@
       }
     },
     {
+      "id": "3Qn69OeYuo5FBglbFiRM",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "3vrlfCxbqMpz3bIKVdEg",
       "course": "ap-physics-c-mech",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "3Xn9fs9rfeaAjRqhrJxk",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -1254,6 +1374,18 @@
     {
       "id": "4Fyg8VAyt93gEaSc0oWG",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "4IJ5C56zNm8mCrGcajvW",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -1314,6 +1446,18 @@
     {
       "id": "4Yutfi73RkNXGD6v991A",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "4YXfWnNHJVVcLmHdrVBm",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -1398,6 +1542,18 @@
     {
       "id": "5rfjEKqGWDXCAYIGqIGw",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "5WFTqUZ5bIgTWagd6hDR",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -1709,7 +1865,43 @@
       }
     },
     {
+      "id": "8lYCRmKu5o3Xt26fRjuD",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "8m3BrnoK0WbSaZ2g5ObD",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "8o93AXhLsHIPW4mnnCuI",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "8pk1Ppr9zo4h7nuUWqjd",
       "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
@@ -1747,6 +1939,18 @@
     {
       "id": "8vlNxiOdLP7JG89O2lm0",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "8zT0fteUHwzdlqVKUUoi",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -1889,11 +2093,35 @@
       }
     },
     {
+      "id": "9rVEwp9sqI9NTxsAGxIV",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "9TrtBJtW19YHmwyyatgZ",
       "course": "ap-physics-2",
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "9ttxqgDXxSAUzGCP96Mp",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -1927,6 +2155,18 @@
     {
       "id": "aAz58HstwQPsfsasttSM",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "AdemqZMDG04ZLVt5zNBb",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -1997,8 +2237,68 @@
       }
     },
     {
+      "id": "AGh0CamhB4wH9zpUuNIU",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "AgHDPdv1gvEF5h1ZaZVi",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "AKrWUz8a0IsOPXZBRn71",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "aLirquB53WSHEafmBLRc",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "AlZRHrRPQZ5DcM5XSodS",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "amBPivF4ln9Z3XSBpC6E",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2142,6 +2442,18 @@
       }
     },
     {
+      "id": "BaEfyGJEwK60hXPZWRnS",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "BBqafgSIGSZv8MHZfqvJ",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -2178,8 +2490,32 @@
       }
     },
     {
+      "id": "bf9wpcUsnB51pQx0FmVt",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "bgoax55epFA8Xo8EF6fa",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "bHGnC6jTsV4gJfdv8kgk",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2219,6 +2555,30 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "BjyXpjHXcKpZf7og4hPH",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "blUcy1T90zpmGkafxUfl",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -2370,6 +2730,30 @@
       }
     },
     {
+      "id": "BzagS8kEras5thgvpyCU",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "c0mPfxbdBt1bXxwclTEn",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "C1C75I5SCKtC4DsPoRZC",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -2490,6 +2874,18 @@
       }
     },
     {
+      "id": "cdSEQXmaM4ZrXFkkheHy",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "CFMlSv6WXLqK0KsNMmX2",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -2550,6 +2946,30 @@
       }
     },
     {
+      "id": "CnKM02T6Hzz911k2DmwV",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "CNWWepDZzFPclkCF7sFM",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "CnXshzptTBYkUarK9L2q",
       "course": "ap-physics-c-em",
       "type": "multiple-choice",
@@ -2564,6 +2984,18 @@
     {
       "id": "cNZ9aaYnZtqkCuKUtjO3",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "CNZjj0C3DGL2pGYQqTD1",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2610,8 +3042,44 @@
       }
     },
     {
+      "id": "CQNKLKb6YNHSWhNTm9rx",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "D4iHWyZ5JjgAFKlwLVBb",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "d7Qhrvj6HJftCmIvPDfo",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "DAhexjEHT0SKb6OjmZHJ",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2663,6 +3131,18 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "dm5a5vKwN5SrNYpAyFwj",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -2742,8 +3222,45 @@
       }
     },
     {
+      "id": "drG5uF5fwmMv7K4Y6UU8",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "DRYh6EmqXhzz3Ynq07jA",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "dS57aZMhaFtCdBYB5E2I",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "DsJYFWkcV61Eny72sa5g",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2828,6 +3345,18 @@
     {
       "id": "E92kfA5V25pMWP7yJWGe",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "eASTuINrHaUGxGS029mQ",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2982,8 +3511,32 @@
       }
     },
     {
+      "id": "eLpASKpbzEcEfkhwiCSa",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "EMW2Li2hqVxfTqQJgQjy",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "EN3guXhQ7yCybj0LDNun",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -2999,6 +3552,18 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ErBDqyhx5vohYFVSckbr",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -3035,6 +3600,18 @@
       "type": "numeric",
       "checks": {
         "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ESlczJR16c32LehWk7yK",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -3150,6 +3727,18 @@
       }
     },
     {
+      "id": "F4V6a3j8T0IIKYXRCG4R",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "f6ompVSjil90cUFghs2I",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -3162,8 +3751,56 @@
       }
     },
     {
+      "id": "f6wB3T4HktcHsCLCeowr",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "F6yqeNRPGY26ALP3ZnDk",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "FbRuNqDgAzAFAbXZvlPx",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "Fc67bWERtcDi8CIWYKcl",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "fCGSuCrRu3sJXPB2RxOv",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -3210,6 +3847,30 @@
       }
     },
     {
+      "id": "fJP3kV71T3L2QN5jUNfb",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "fJv1KCCKfU83BN2Vo6mP",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "FKRX8537wlxxoTrTjK9C",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -3242,6 +3903,19 @@
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "fnx7S6ORw991BENXaRS9",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
         "near-duplicate": "pass"
       }
     },
@@ -3392,6 +4066,18 @@
     {
       "id": "G4irqnMELcaqk5xB0At9",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "G4TCkltk2yT72eZSmamT",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -3570,6 +4256,18 @@
       }
     },
     {
+      "id": "grn01YRDBE5w2X1aZVHq",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "gS6SiNQ3yweqw8hB2Qpy",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -3690,6 +4388,18 @@
       }
     },
     {
+      "id": "HBwaMMw3jbc4JPBV4CRd",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "HDq1JwUEaqa09l6Bv0eY",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -3750,6 +4460,18 @@
       }
     },
     {
+      "id": "hiQgZfpAChx5oFvfqfqr",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "HjBkzcYE82iSts8wBzQt",
       "course": "ap-physics-c-em",
       "type": "multiple-choice",
@@ -3798,6 +4520,18 @@
       }
     },
     {
+      "id": "HnvJB1z9MfHhMXZdYYyT",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "hOOp9DVwRGiLHEfAaMyc",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -3824,6 +4558,18 @@
     {
       "id": "hqSR3BItjCVvPT4HZepE",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "HRtJk2BK4w4Je7Ve2oul",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -3863,6 +4609,18 @@
       "type": "numeric",
       "checks": {
         "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "HWA6l5B2GWEvtXAQEzwv",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -3911,6 +4669,18 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "I7h8BRGUY8bRaxDC797D",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -4075,8 +4845,44 @@
       }
     },
     {
+      "id": "IPgNZonoN2gLbGnz2dAZ",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "IqWi06yyXEBarqF4sLJL",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "IrKcBB9E5o46lGxS67Fn",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ItV5TRgOWCfnQCN62wQe",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4183,8 +4989,56 @@
       }
     },
     {
+      "id": "JAg7hf7MYqA5t6ziNS3p",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "Jb1v1zvt2iMZuzzEveVL",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "JCGSBdlQQa01aLyIK1IX",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "jEbFbcc9XvC3QC4POrVZ",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "jEjhx5ZFT0NjYR20t8JD",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4231,6 +5085,42 @@
       }
     },
     {
+      "id": "jJoMO19GiE1J3ZOJFDXc",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "JLdh9rkHP64pCy0WZgDS",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "jLEq5kBlqhCZhBmN1oHB",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "joXogrz2YUYuUiYfDlZj",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -4252,6 +5142,18 @@
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
         "circuit-consistent": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "JtNqrxlgkp3wNFBJHwGa",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
         "near-duplicate": "pass"
       }
     },
@@ -4282,6 +5184,18 @@
     {
       "id": "k2Lw0tewfONETY2kFNve",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "K5RMm8xyPkaOsErmFChP",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4400,6 +5314,30 @@
       }
     },
     {
+      "id": "kOij3ASc3ln5kuY6Xe5d",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "KowBjxXLd4vYWO7EtY4I",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "KQjtRD7uB5773oqIDrNp",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -4426,6 +5364,18 @@
     {
       "id": "krhRLhMRzza2Y2PRQAM8",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "Ku7EczlegVpH6B1g3tqa",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4486,6 +5436,18 @@
     {
       "id": "l3HnOKtOGhS9KDUACAHM",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "lbFrn7j2wLbt59pm0V91",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4581,6 +5543,18 @@
       }
     },
     {
+      "id": "Lhu6i3PQMliPgGQ2gzwL",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "liWrVbLKBD5DP8ksMWaB",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -4607,6 +5581,18 @@
     {
       "id": "lLOJN28JoYjBPWwV7Y2K",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "LMtrfTECZiVpjsCXvUAp",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4677,8 +5663,44 @@
       }
     },
     {
+      "id": "LTkkWFgP24tV0iWtBnb8",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "lujUpwe3aSnrxWddsbej",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "LVnJ6geCsstsLkI0kmyo",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "LWxklk5PcVR6IJMZ3uZX",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4773,6 +5795,18 @@
       }
     },
     {
+      "id": "maHWvrYdRWAugOq44rDo",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "mbMj2F0HvnKdhq0tix2V",
       "course": "ap-physics-c-mech",
       "type": "multiple-choice",
@@ -4811,6 +5845,18 @@
     {
       "id": "Mg9OGOFbvZ5ucc7ntQRF",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "mGaOEHrp7cFCCi0Z30Se",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4870,6 +5916,18 @@
       }
     },
     {
+      "id": "MngL7MefHZIEjucMRVex",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "MouwE0t0BRQuHsyZy0fu",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -4884,6 +5942,42 @@
     {
       "id": "mPirB3zHSvqeu0nmEqk3",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "Msk9IzfJdY2YPlb4AyGR",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "mskGxuNNyA0VeL4OSgG6",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "MWHFZbDRBxyOpXX6lyHd",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -4930,6 +6024,18 @@
       }
     },
     {
+      "id": "N3vuulCa4tcTwY11RGYe",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "N6GOjorIiwWBFvImkOOX",
       "course": "ap-physics-2",
       "type": "numeric",
@@ -4950,6 +6056,19 @@
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "NDVAjKaRbfL8sSuNEtH3",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
         "near-duplicate": "pass"
       }
     },
@@ -5015,6 +6134,18 @@
       }
     },
     {
+      "id": "nGkm2sakp6lUzNmcjuom",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "niEgCPqiMVk0qJ9cnlgt",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -5039,6 +6170,30 @@
       }
     },
     {
+      "id": "NKNCZBCyN3Hn5PujUTTb",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "NpHFItoomgD1SNr2o8rr",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "NRcHJlaxRDsC3L596n9A",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -5053,6 +6208,18 @@
     {
       "id": "nrqR0Vmu4zTho7MkOnoh",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "NUZbstLaOZ6YQs86IJ36",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -5152,6 +6319,30 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "NyFEmw6vBJZvBbTlohMr",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "NYwMNQYNtaApLTfsqxJI",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -5291,6 +6482,18 @@
       }
     },
     {
+      "id": "OjrachkAvhLAtfeLTlNd",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "OKHhUedrMle6M3qQixx8",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -5329,6 +6532,18 @@
     {
       "id": "oUAvP5SAFrAzq63DkPnx",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "oUMjEQPXJne63JwrCtK0",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -5411,6 +6626,18 @@
       }
     },
     {
+      "id": "P6w4IeVVmRHEqPwTepkK",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "pcqtn8OoSLajkwtBXmNb",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -5461,6 +6688,18 @@
     {
       "id": "PHMH9yXUAe2D3nAcAApo",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "PiGyFBr0ZPJcuDpzJrck",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -5628,6 +6867,18 @@
       }
     },
     {
+      "id": "Q7ihbZSBYXNtIlkAmogY",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "qBCG9B0WuhrBcJQCPoby",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -5652,8 +6903,32 @@
       }
     },
     {
+      "id": "qblohWCiOE3d2crmajn6",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "QCkhTCAGTdX84pRGoK4B",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "qDcjRumHEthvVRjBqAag",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -5784,6 +7059,18 @@
       }
     },
     {
+      "id": "qtdRFnjLm9USIfHhBaUB",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "qxqVgySNt46rihqUDwNG",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -5796,8 +7083,32 @@
       }
     },
     {
+      "id": "qyANNZgwbzEKGYEbhMi7",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "qYbLNgxYAQ6czFEqYjRm",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "r35EhESea6qZDhUeDGB1",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -5856,6 +7167,30 @@
       }
     },
     {
+      "id": "RE3DjmWhtmuuFqUC21dn",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "re6mkUYfxNfqVZD8LGgf",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "riWkGwBAIQnk3elRbS9v",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -5876,6 +7211,19 @@
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "RNUfdtbYMVd069laaCff",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
         "near-duplicate": "pass"
       }
     },
@@ -5904,6 +7252,30 @@
       }
     },
     {
+      "id": "RrSXcAJCjVAA71hQ1Bk4",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "RSD3Aux3qI9IC0AZ1ot4",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "RVvwkUcSANsHwdSzOzdr",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -5918,6 +7290,18 @@
     {
       "id": "ryFbqIpsZYA6pETbBrju",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "RyQ3zCs5YWPkbry6AR4n",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6037,8 +7421,32 @@
       }
     },
     {
+      "id": "shCjgbRqw69seUpPaAQy",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "shQFziohvnXiQc5a2XG9",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "shrT5LrRWJw9piU67wne",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6097,6 +7505,18 @@
       }
     },
     {
+      "id": "SqNyowzXxnlqDTqKLhcY",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "ss1bgNryX534wcbuHkfy",
       "course": "ap-physics-c-mech",
       "type": "multiple-choice",
@@ -6123,6 +7543,18 @@
     {
       "id": "SysedISkEhAXQx1fT8aJ",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "T0Ft9HtSGAL7l1UyD7tA",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6193,8 +7625,32 @@
       }
     },
     {
+      "id": "TCqVSFZZNtvEiJEp9fWl",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "td5jNWVF9U9skhGU2qQa",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "TdpxCc7QwK4RqJld3Nqr",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6214,6 +7670,30 @@
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
         "circuit-consistent": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "TgTlarMInIxJkctHwJOT",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ticFwPWKViq8RhcJVq3y",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
         "near-duplicate": "pass"
       }
     },
@@ -6242,6 +7722,18 @@
       }
     },
     {
+      "id": "tRukhFYXp4zHHIfOMNha",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "Tt69aP5iFY2yLV6kXpZR",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -6256,6 +7748,30 @@
     {
       "id": "TXCy8qtf99hYSYhhXmBX",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "txEi7gCFbG4KLsAdAQVD",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "TYPfeiduFwUsIn5v2jBt",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6314,6 +7830,42 @@
       }
     },
     {
+      "id": "U5t2MooNMRNPbzcUhd8z",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "U94FBkzR2AdB1OBpimkh",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "UDJAWXv1FS5v7hEmuwqy",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "uDzAJDSvAbzCrl6JoX9I",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -6338,8 +7890,33 @@
       }
     },
     {
+      "id": "ugIpGeevKR0Z9Z9BEPsR",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "uIGtv2tHFjLEz7TAzpVx",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ulbajkykIKEFLOyrk87g",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6364,6 +7941,18 @@
     {
       "id": "uNKqvYSL3NkuwZJmH0Ie",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "uNP0qvQhhKviRstJ65VD",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6400,6 +7989,18 @@
     {
       "id": "UpDywde87E29a2qyiZQI",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "upWvJMOWX9ZIlKrV2tMR",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6530,6 +8131,18 @@
       }
     },
     {
+      "id": "vFmLthMZFwPgHeekXGXz",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "VFR2QmngTDSkzmDI6ZUW",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -6544,6 +8157,18 @@
     {
       "id": "VHLeIF9W2BsSgP5i9Zs3",
       "course": "ap-physics-1",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "viJ1aRKCzbBvQ4FDJhrv",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6580,6 +8205,18 @@
     {
       "id": "vowehVZLGqyksS10m5ny",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "VpJQhArhyECxJIotm4P1",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6662,8 +8299,44 @@
       }
     },
     {
+      "id": "vWCEsKBRb1LNVCjYI2zz",
+      "course": "ap-physics-2",
+      "type": "multiple-choice",
+      "checks": {
+        "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "VYQdvyTI0KZaXbaMJE0g",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "w1jBQxXFj2mQi78ztLS1",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "w2LJD2YjyPAvSyCvfgOf",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -6715,6 +8388,30 @@
       "type": "multiple-choice",
       "checks": {
         "mc-quantity": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "wff0p7ZtoqaIbSwgIxUi",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "wGavZDamMcg4W9Gkg3OI",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
         "spec-matches-text": "pass",
         "solution-consistent": "pass",
         "grader-round-trip": "pass",
@@ -6879,6 +8576,18 @@
       }
     },
     {
+      "id": "wXOcvGLw9dQJ6QXc6OTk",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "wXsdFJN6RURuumsDZdDd",
       "course": "ap-physics-c-em",
       "type": "numeric",
@@ -6978,6 +8687,18 @@
     {
       "id": "XBhAsOFl5j6g3XzyO3of",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "XbuoSPW8cRrZZXP0rkpG",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -7145,6 +8866,18 @@
       }
     },
     {
+      "id": "ycaKKpxH6goJtcFoxnKm",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "YCbhyeEwoiUznyZSY0nE",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -7193,6 +8926,42 @@
       }
     },
     {
+      "id": "yE6cfYlluChXL3oDJjSF",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "YE8cm3lZQzlqDpjpzwMv",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "yOIcdydaGDwg1tzmKToK",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "yOpOnqB0A2rJTppAb4G0",
       "course": "ap-physics-c-mech",
       "type": "numeric",
@@ -7205,8 +8974,32 @@
       }
     },
     {
+      "id": "yPh7NiF8Gidn3Ouz0wL4",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "ypQCjYry92EuVoN21c6K",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ypxHNhUICU6oCxSyDxJ4",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -7301,6 +9094,43 @@
       }
     },
     {
+      "id": "YX2tw6E30Op6AvhH9IY0",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "circuit-consistent": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "yXagsMRT9sY2PeXS553F",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "YXnqCnFtNTSt0fU6Kw3G",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "yxrRCuu6ms9v8Yb3JYjw",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -7351,6 +9181,30 @@
     {
       "id": "ZAURFDadt9H5tbzAEx5Z",
       "course": "ap-physics-c-em",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ZBJLXb6P79qQXx9Puvbj",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ZbvRyETvMy8cWWX1DaIy",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",
@@ -7421,6 +9275,18 @@
       }
     },
     {
+      "id": "ZhfNfkCQngr5VFFUctYO",
+      "course": "ap-physics-2",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
       "id": "zHRWvg7w30cQq7d1ONG0",
       "course": "ap-physics-1",
       "type": "numeric",
@@ -7459,6 +9325,18 @@
     {
       "id": "ZkmMbjma6zStpZ9DGEMe",
       "course": "ap-physics-c-mech",
+      "type": "numeric",
+      "checks": {
+        "recompute": "pass",
+        "spec-matches-text": "pass",
+        "solution-consistent": "pass",
+        "grader-round-trip": "pass",
+        "near-duplicate": "pass"
+      }
+    },
+    {
+      "id": "ZLv57DV14zELXS0CMPa4",
+      "course": "ap-physics-2",
       "type": "numeric",
       "checks": {
         "recompute": "pass",

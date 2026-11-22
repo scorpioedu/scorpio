@@ -1,0 +1,1323 @@
+{
+  "curriculumId": "ap-physics-c-em",
+  "unit": 8,
+  "guides": [
+    {
+      "topic": "8.1",
+      "bigIdea": "Charge comes in two kinds, and two point charges push or pull each other along the line joining them with a force proportional to the product of the charges and inversely proportional to the square of the distance between them.",
+      "picture": {
+        "diagram": "scene\nball A 1.5,1 r=.3 \"+q_1\"\nball B 5.5,1 r=.3 \"-q_2\"\nf A.r right 1.2 \"F_{2 on 1}\"\nf B.l left 1.2 \"F_{1 on 2}\"\ndim 1.5,0.3 5.5,0.3 \"r\"",
+        "caption": "Two unlike point charges a distance $r$ apart attract. The two forces lie along the line joining the charges and are equal in size, even when the charges are not: they are a third-law pair."
+      },
+      "explanation": "Electric charge is a property of matter, like mass, except that it comes in two kinds, called positive and negative. Like charges repel and unlike charges attract. Charge is measured in coulombs and always comes in whole multiples of the elementary charge $e = 1.60 \\times 10^{-19}\\ \\text{C}$: a proton carries $+e$ and an electron $-e$. Laboratory charges are usually nanocoulombs or microcoulombs.\n\nCoulomb's law gives the size of the force between two point charges, meaning objects that are small compared with the distance between them: $F_E = k\\,|q_1 q_2|/r^2$, where $k = 1/(4\\pi\\varepsilon_0) = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$. The force acts along the line joining the charges. It is an inverse-square law: double the separation and the force drops to a quarter. Find the size from the magnitudes of the charges, then get the direction from \"like repel, unlike attract\" rather than from a sign in the formula.\n\nWith more than two charges, each pair interacts as though the others were absent, and the net force on one charge is the vector sum of the forces from all the others. On a line that means signed addition; in a plane it means adding components.\n\nCoulomb's law as written holds in a vacuum, and very nearly in air. Inside an insulating material the constant $\\varepsilon_0$ is replaced by the material's permittivity $\\varepsilon = \\kappa\\varepsilon_0$, with $\\kappa > 1$, so the same charges exert a force $\\kappa$ times weaker.",
+      "equations": [
+        {
+          "latex": "|\\vec{F}_E| = \\frac{1}{4\\pi\\varepsilon_0}\\frac{|q_1 q_2|}{r^2} = k\\,\\frac{|q_1 q_2|}{r^2}",
+          "meaning": "The electric force between two point charges is proportional to the product of the charges and falls off as the square of their separation.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_E",
+              "name": "electric force on either charge",
+              "unit": "N"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the two charges",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the charges (centre to centre)",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space, $8.85 \\times 10^{-12}$",
+              "unit": "C²/(N·m²)"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant, $1/(4\\pi\\varepsilon_0) = 8.99 \\times 10^{9}$",
+              "unit": "N·m²/C²"
+            }
+          ],
+          "useWhen": "Two point charges, or two uniformly charged spheres, with r measured between centres.",
+          "notWhen": "Not for a charged rod, ring or plate close up: spread-out charge needs an integral (topic 8.4). And it gives a size only; find the direction from attract or repel."
+        },
+        {
+          "latex": "\\vec{F}_{\\text{net}} = \\vec{F}_1 + \\vec{F}_2 + \\dots",
+          "meaning": "The net electric force on a charge is the vector sum of the forces that each of the other charges exerts on it.",
+          "variables": [
+            {
+              "symbol": "\\vec{F}_{\\text{net}}",
+              "name": "net electric force on the chosen charge",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\vec{F}_1,\\ \\vec{F}_2",
+              "name": "forces on it from each other charge, found one pair at a time",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Three or more charges: work out each pair's force with Coulomb's law, then add as vectors.",
+          "notWhen": "Do not add magnitudes unless every force points the same way. In a plane, add x- and y-components separately."
+        },
+        {
+          "latex": "\\varepsilon = \\kappa\\,\\varepsilon_0",
+          "meaning": "A material's permittivity is the permittivity of free space multiplied by the material's dielectric constant.",
+          "variables": [
+            {
+              "symbol": "\\varepsilon",
+              "name": "permittivity of the material",
+              "unit": "C²/(N·m²)"
+            },
+            {
+              "symbol": "\\kappa",
+              "name": "dielectric constant of the material (1 for vacuum, about 1.0006 for air)",
+              "unit": ""
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "The charges sit inside an insulating material such as oil or water: use $\\varepsilon$ in place of $\\varepsilon_0$.",
+          "notWhen": "Not needed in air or vacuum, where the difference is far below the precision of the data."
+        }
+      ],
+      "derivation": "**How fast does the force from a neutral pair of charges fall off?** A pair of opposite charges, $+q$ and $-q$ a small distance $d$ apart, has no net charge, yet it still pushes on a distant charge $Q$. Put $Q$ on the line through the pair, a distance $x$ from its centre, with $+q$ the nearer of the two. Write $f(s) = kQq/s^2$ for the size of the force from one charge at distance $s$. The net force on $Q$, directed away from the pair, is\n\n$$\nF = f\\!\\left(x - \\tfrac{d}{2}\\right) - f\\!\\left(x + \\tfrac{d}{2}\\right)\n$$\n\nWhen $x \\gg d$ this is the same function evaluated at two points a small step $d$ apart, so the difference is the slope of $f$ multiplied by the step: $F \\approx -d\\,\\dfrac{df}{dx}$. Differentiating $f$,\n\n$$\n\\frac{df}{dx} = -\\frac{2kQq}{x^3} \\quad\\Longrightarrow\\quad F \\approx \\frac{2kQq\\,d}{x^3}\n$$\n\nThe two inverse-square forces almost cancel, and what is left falls off as $1/x^3$. That is why neutral objects built from separated charges affect each other only at close range.",
+      "workedExamples": [
+        {
+          "title": "Three charges on a line",
+          "prompt": "Three point charges are fixed on the x-axis: $q_1 = +4.0\\ \\mu\\text{C}$ at $x = 0$, $q_2 = -2.0\\ \\mu\\text{C}$ at $x = 0.30\\ \\text{m}$ and $q_3 = +3.0\\ \\mu\\text{C}$ at $x = 0.50\\ \\text{m}$. What is the net electric force on $q_3$? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Treat one pair at a time. $q_1$ and $q_3$ are both positive, so $q_1$ repels $q_3$: that force points in the $+x$ direction. $q_2$ is negative, so it attracts $q_3$: that force points in the $-x$ direction, back toward $q_2$.",
+            "Size of the force from $q_1$, a distance $0.50\\ \\text{m}$ away: $F_{13} = \\dfrac{(8.99 \\times 10^9)(4.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{(0.50)^2} = 0.43\\ \\text{N}$.",
+            "Size of the force from $q_2$, a distance $0.50 - 0.30 = 0.20\\ \\text{m}$ away: $F_{23} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{(0.20)^2} = 1.35\\ \\text{N}$.",
+            "Add with signs: $F_{\\text{net}} = +0.43 - 1.35 = -0.92\\ \\text{N}$. The smaller charge wins because it is much closer."
+          ],
+          "answer": "$F_{\\text{net}} = -0.92\\ \\text{N}$: $0.92\\ \\text{N}$ in the $-x$ direction",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "q1": {
+                "value": 4,
+                "unit": "μC"
+              },
+              "q2": {
+                "value": 2,
+                "unit": "μC"
+              },
+              "q3": {
+                "value": 3,
+                "unit": "μC"
+              },
+              "x2": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "x3": {
+                "value": 0.5,
+                "unit": "m"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "k*q1*q3/x3^2 - k*q2*q3/(x3 - x2)^2",
+            "unit": "N"
+          }
+        },
+        {
+          "title": "Two hanging charged spheres",
+          "prompt": "Two identical small spheres, each of mass $2.0\\ \\text{g}$, hang from the same point on insulating threads $0.50\\ \\text{m}$ long. They are given equal charges and come to rest with each thread at $10°$ to the vertical. Determine the magnitude of the charge on each sphere. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$ and $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Three forces act on either sphere: its weight $mg$ downward, the electric force $F_E$ horizontally away from the other sphere, and the thread's tension $T$ along the thread.\n\n```dg\nfbd dot\nf 100 T 1.02\nf down F_g 1\nf right F_E 0.18\n```",
+            "The sphere is in equilibrium. Vertically, $T\\cos\\theta = mg$; horizontally, $T\\sin\\theta = F_E$. Dividing, $F_E = mg\\tan\\theta = (2.0 \\times 10^{-3}\\ \\text{kg})(9.8\\ \\text{m/s}^2)\\tan 10° = 3.46 \\times 10^{-3}\\ \\text{N}$.",
+            "Each sphere is displaced $L\\sin\\theta$ sideways, so the separation is $r = 2L\\sin\\theta = 2(0.50\\ \\text{m})\\sin 10° = 0.174\\ \\text{m}$.",
+            "The charges are equal, so Coulomb's law reads $F_E = kq^2/r^2$ and $q = r\\sqrt{F_E/k} = (0.174)\\sqrt{\\dfrac{3.46 \\times 10^{-3}}{8.99 \\times 10^{9}}} = 1.1 \\times 10^{-7}\\ \\text{C}$.",
+            "The spheres repel, so the charges have the same sign; the data cannot say which."
+          ],
+          "answer": "$|q| = 1.1 \\times 10^{-7}\\ \\text{C}$ on each sphere",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 2,
+                "unit": "g"
+              },
+              "L": {
+                "value": 0.5,
+                "unit": "m"
+              },
+              "theta": {
+                "value": 10,
+                "unit": "deg"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "2*L*sin(theta)*sqrt(m*g*tan(theta)/k)",
+            "unit": "C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "third-law-unequal-forces",
+          "wrong": "A $+6\\ \\mu\\text{C}$ charge pushes on a $+1\\ \\mu\\text{C}$ charge harder than the small charge pushes back.",
+          "right": "Coulomb's law has the product $q_1 q_2$ in it, so it gives one number for the pair. The two forces are a third-law pair: equal in size, opposite in direction."
+        },
+        {
+          "tag": "inverse-square-misapplied",
+          "wrong": "Doubling the distance between two charges halves the force.",
+          "right": "The force goes as $1/r^2$: twice the distance gives a quarter of the force, and three times the distance gives a ninth."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "Put the signed charges into Coulomb's law; a negative answer means the force points in the $-x$ direction.",
+          "right": "A negative product only says the charges are unlike, so the force is attractive. Which way that is along the axis depends on where the other charge sits."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Two point charges repel each other with a force of $0.50\\ \\text{N}$. Both charges are doubled and the distance between them is halved. What is the new force?",
+          "a": "$8.0\\ \\text{N}$. Doubling both charges multiplies the force by 4, and halving the distance multiplies it by 4 again."
+        },
+        {
+          "q": "Could a dust grain carry a net charge of $2.4 \\times 10^{-19}\\ \\text{C}$?",
+          "a": "No. That is $1.5e$, and charge comes only in whole multiples of $e = 1.60 \\times 10^{-19}\\ \\text{C}$."
+        },
+        {
+          "q": "A positive charge sits exactly midway between two equal positive charges. What is the net force on it? What happens if it is nudged a little toward one of them?",
+          "a": "Zero: the two repulsions are equal and opposite. Nudged toward one charge, the nearer repulsion becomes the larger and pushes it back."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[m] y=F[N] xr=-0.03,0.55 yr=0,6\nfn 0.0539/(r*r) 0.095..0.55\npt {{r}},{{0.0539/r^2}}\nvl {{r}}\nyt 0 2 4\nnote 0.38,5.3 \"r = {{r}} m\"\nnote 0.38,4.6 \"F = {{round(5.39/r^2)/100}} N\"",
+        "caption": "The force between a $2.0\\ \\mu\\text{C}$ and a $3.0\\ \\mu\\text{C}$ charge. Slide the separation: going from $0.10\\ \\text{m}$ to $0.20\\ \\text{m}$ cuts the force to a quarter, not a half.",
+        "params": [
+          {
+            "name": "r",
+            "label": "Separation",
+            "min": 0.1,
+            "max": 0.5,
+            "step": 0.05,
+            "default": 0.2,
+            "unit": "m"
+          }
+        ]
+      },
+      "teacherNotes": "Ask students to state the direction of each force in words before they calculate anything; most wrong answers on multi-charge problems come from signs carried through Coulomb's law rather than from the arithmetic. The third-law question (which charge feels the larger force?) is worth asking cold. Set 8A mixes scaling questions with vector sums; students who are slow there usually need component practice from mechanics, not more electrostatics."
+    },
+    {
+      "topic": "8.2",
+      "bigIdea": "Charge is never created or destroyed, only moved from place to place, so charging an object by friction, contact or induction always means transferring charge, and the total stays the same.",
+      "picture": {
+        "diagram": "scene\ntext 2.2,3.4 \"1. Rod near, sphere grounded\"\nball S 2.8,1.9 r=.7\nrod 0.2,2.5 1.6,2.1\ntext 0.8,2.75 \"− − − −\"\ntext 2.4,1.9 \"+ +\"\nrope S.b 2.8,0.5\nground 2.3..3.3 y=0.5\nf 3.1,1.05 down .45 \"e^-\"\ntext 7.6,3.4 \"2. Wire removed, then rod\"\nball T 7.6,1.9 r=.7\ntext 7.6,1.9 \"+  +  +\"",
+        "caption": "Charging by induction. A negative rod held near a grounded metal sphere drives some of the sphere's electrons down the wire to the ground. Take the wire away first, then the rod, and the sphere is left positive. The rod never touched it and lost no charge."
+      },
+      "explanation": "The net charge of an isolated system never changes. Ordinary matter holds enormous, equal amounts of positive and negative charge, and \"charging\" an object means tipping that balance slightly by moving charge, never by making it. In solids the charges that move are electrons; the positive nuclei stay where they are. An object is positive because it has lost electrons, and something else has gained exactly those electrons.\n\nHow charge moves depends on the material. In a conductor, such as a metal, some electrons are free to roam through the whole object. In an insulator, electrons are held to their atoms. Rubbing two different insulators together (friction) transfers electrons from one to the other, leaving them with equal and opposite charges. Touching a charged conductor to another conductor (contact) lets the charge spread over both; two identical spheres end up with equal shares of the total.\n\nInduction charges a conductor without touching it. A charged rod held nearby pulls or pushes the conductor's free electrons, so one side becomes negative and the other positive: the conductor is polarised but still neutral. Connect it to ground, a reservoir so large it can supply or accept electrons freely, and electrons flow on or off. Break the ground connection, then remove the rod, and the conductor keeps a net charge opposite in sign to the rod's.",
+      "equations": [
+        {
+          "latex": "q_{1i} + q_{2i} = q_{1f} + q_{2f}",
+          "meaning": "Whatever two objects in an isolated system do to each other, their total charge afterwards equals their total charge before.",
+          "variables": [
+            {
+              "symbol": "q_{1i},\\ q_{2i}",
+              "name": "charges before, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "q_{1f},\\ q_{2f}",
+              "name": "charges after, with signs",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Objects rub, touch or exchange charge and nothing else carries charge in or out.",
+          "notWhen": "Not when one of them is grounded: the Earth is then part of the system and takes or supplies charge."
+        },
+        {
+          "latex": "q_f = \\frac{q_1 + q_2}{2}",
+          "meaning": "Two identical conducting spheres that touch share their total charge equally.",
+          "variables": [
+            {
+              "symbol": "q_f",
+              "name": "charge on each sphere after they touch",
+              "unit": "C"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "charges on the spheres before, with signs",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Identical conducting spheres brought into contact and then separated.",
+          "notWhen": "Not for spheres of different sizes (the larger takes more) or for insulators, where charge does not spread."
+        },
+        {
+          "latex": "q = \\pm Ne",
+          "meaning": "An object's net charge is a whole number of elementary charges: positive if it is short of electrons, negative if it has extra.",
+          "variables": [
+            {
+              "symbol": "q",
+              "name": "net charge of the object",
+              "unit": "C"
+            },
+            {
+              "symbol": "N",
+              "name": "number of missing or excess electrons",
+              "unit": ""
+            },
+            {
+              "symbol": "e",
+              "name": "elementary charge, $1.60 \\times 10^{-19}$",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Converting between a charge and the number of electrons transferred.",
+          "notWhen": "N counts only the imbalance, not all the electrons in the object."
+        },
+        {
+          "latex": "\\Delta q = \\int_{t_1}^{t_2} \\frac{dq}{dt}\\,dt",
+          "meaning": "When charge arrives or leaves at a changing rate, the total transferred is the integral of that rate over time.",
+          "variables": [
+            {
+              "symbol": "q",
+              "name": "charge on the object",
+              "unit": "C"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            },
+            {
+              "symbol": "t_1,\\ t_2",
+              "name": "start and end of the interval",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The rate of charge transfer is given as a function of time.",
+          "notWhen": "If the rate is constant, multiplying rate by time is enough."
+        }
+      ],
+      "derivation": "**Where does a charged sphere's charge go?** A charged sphere on an insulating stand slowly loses its charge to the air. A simple model says the leak rate is proportional to the charge still on the sphere:\n\n$$\n\\frac{dq}{dt} = -\\frac{q}{\\tau}\n$$\n\nwhere the time constant $\\tau$ depends on the air. Separate the variables and integrate from the starting charge $q_0$ at $t = 0$:\n\n$$\n\\int_{q_0}^{q}\\frac{dq'}{q'} = -\\int_0^t \\frac{dt'}{\\tau} \\quad\\Longrightarrow\\quad \\ln\\frac{q}{q_0} = -\\frac{t}{\\tau} \\quad\\Longrightarrow\\quad q(t) = q_0\\,e^{-t/\\tau}\n$$\n\nThe charge has not vanished. Conservation requires that what the sphere has lost, the surroundings have gained:\n\n$$\nq_{\\text{air}}(t) = q_0 - q(t) = q_0\\left(1 - e^{-t/\\tau}\\right)\n$$\n\nso $q + q_{\\text{air}} = q_0$ at every instant.",
+      "workedExamples": [
+        {
+          "title": "Three spheres touched in turn",
+          "prompt": "Three identical metal spheres sit on insulating stands. Sphere A carries $+12\\ \\text{nC}$, sphere B carries $-4.0\\ \\text{nC}$ and sphere C carries $0\\ \\text{nC}$. A is touched to B and separated. Then B is touched to C and separated. What is the final charge on C?",
+          "steps": [
+            "A and B are identical conductors, so when they touch they share their total charge equally. The total is $+12 + (-4.0) = +8.0\\ \\text{nC}$, so each leaves with $+4.0\\ \\text{nC}$.",
+            "Now B, carrying $+4.0\\ \\text{nC}$, touches the neutral sphere C. Their total is $+4.0\\ \\text{nC}$, shared equally: $+2.0\\ \\text{nC}$ each.",
+            "Check conservation over all three. Before: $+12 - 4.0 + 0 = +8.0\\ \\text{nC}$. After: $+4.0 + 2.0 + 2.0 = +8.0\\ \\text{nC}$.",
+            "What moved? Electrons: in the second touch C lost electrons to B, which is why C ended up positive."
+          ],
+          "answer": "$q_C = +2.0\\ \\text{nC}$ (with $+4.0\\ \\text{nC}$ on A and $+2.0\\ \\text{nC}$ on B)",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "qA": {
+                "value": 12,
+                "unit": "nC"
+              },
+              "qB": {
+                "value": -4,
+                "unit": "nC"
+              },
+              "qC": {
+                "value": 0,
+                "unit": "nC"
+              }
+            },
+            "expr": "((qA + qB)/2 + qC)/2",
+            "unit": "nC"
+          }
+        },
+        {
+          "title": "A sphere leaking charge",
+          "prompt": "A metal sphere on an insulating stand is given a charge of $+40\\ \\text{nC}$. It leaks charge to the air at a rate proportional to its remaining charge, with time constant $12\\ \\text{min}$. Determine how much charge has been transferred between the sphere and the air after $30\\ \\text{min}$, and state which way electrons moved.",
+          "steps": [
+            "With $dq/dt = -q/\\tau$, the charge remaining is $q(t) = q_0 e^{-t/\\tau}$ (derived above).",
+            "After $30\\ \\text{min}$: $q = (40\\ \\text{nC})\\,e^{-30/12} = (40\\ \\text{nC})(0.0821) = 3.3\\ \\text{nC}$.",
+            "Charge is conserved, so the amount transferred is $q_0 - q = 40 - 3.3 = 36.7\\ \\text{nC}$, which rounds to $37\\ \\text{nC}$.",
+            "The sphere is positive: it is short of electrons. It becomes less positive by gaining electrons, so electrons moved from the air onto the sphere, about $\\dfrac{36.7 \\times 10^{-9}\\ \\text{C}}{1.60 \\times 10^{-19}\\ \\text{C}} = 2.3 \\times 10^{11}$ of them. The air is left with $+37\\ \\text{nC}$."
+          ],
+          "answer": "About $37\\ \\text{nC}$ is transferred: electrons move from the air onto the sphere, leaving $3.3\\ \\text{nC}$ on it",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "q0": {
+                "value": 40,
+                "unit": "nC"
+              },
+              "tau": {
+                "value": 12,
+                "unit": "min"
+              },
+              "t": {
+                "value": 30,
+                "unit": "min"
+              },
+              "euler": {
+                "value": 2.718281828,
+                "unit": ""
+              }
+            },
+            "expr": "q0*(1 - euler^(-t/tau))",
+            "unit": "nC"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "charging-moves-positive-charge",
+          "wrong": "A metal sphere becomes positive when positive charges flow onto it.",
+          "right": "In a solid only electrons move. The sphere becomes positive because electrons leave it; its protons are fixed in the nuclei."
+        },
+        {
+          "tag": "charging-moves-positive-charge",
+          "wrong": "Rubbing a balloon on hair creates charge on the balloon.",
+          "right": "Rubbing moves electrons from the hair to the balloon. The balloon's negative charge is matched by an equal positive charge left on the hair; the total is still zero."
+        },
+        {
+          "tag": "neutral-means-no-charge",
+          "wrong": "A neutral object has no charge in it, so a charged rod cannot pull on it.",
+          "right": "A neutral object has equal amounts of both kinds of charge. A nearby rod shifts them apart, and the nearer, unlike charge is attracted more strongly than the farther, like charge is repelled."
+        },
+        {
+          "wrong": "In charging by induction, the sphere ends up with the same sign of charge as the rod.",
+          "right": "The rod drives charge of its own sign away to ground, so the sphere is left with the opposite sign. Same-sign charging needs contact."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A glass rod rubbed with silk becomes positive. What charge does the silk have, and what moved?",
+          "a": "The silk has an equal negative charge. Electrons moved from the glass to the silk."
+        },
+        {
+          "q": "A positively charged rod is held near a grounded metal sphere. Which way do electrons flow in the ground wire, and what sign of charge does the sphere keep once the wire and then the rod are removed?",
+          "a": "Electrons flow up from the ground onto the sphere, attracted by the rod. The sphere is left negative, opposite to the rod."
+        },
+        {
+          "q": "Why does a charged comb pick up small pieces of neutral paper?",
+          "a": "The comb polarises the paper: charge unlike the comb's shifts slightly toward it and like charge shifts away. The unlike charge is nearer, so its attraction is larger than the repulsion."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\ntext 1,3.3 \"Before\"\nball A 2.5,2.6 r=.45\nball B 5.5,2.6 r=.45\ntext 2.5,1.85 \"{{qA}} nC\"\ntext 5.5,1.85 \"-2 nC\"\ntext 8,2.6 \"total: {{qA-2}} nC\"\ntext 1,1.1 \"After touching\"\nball C 2.5,0.4 r=.45\nball D 5.5,0.4 r=.45\ntext 2.5,-0.35 \"{{(qA-2)/2}} nC\"\ntext 5.5,-0.35 \"{{(qA-2)/2}} nC\"\ntext 8,0.4 \"total: {{qA-2}} nC\"",
+        "caption": "Two identical metal spheres touch and separate. One starts with $-2\\ \\text{nC}$; change the other's charge. They always leave with equal charges, and the total never changes.",
+        "params": [
+          {
+            "name": "qA",
+            "label": "Charge on the left sphere",
+            "min": -10,
+            "max": 10,
+            "step": 2,
+            "default": 6,
+            "unit": "nC"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.1"
+      ],
+      "teacherNotes": "Have students narrate induction as a sequence of electron movements, including the order of the last two steps (ground off, then rod away); reversing them leaves the sphere neutral, and that is the usual exam trap. Insist on \"electrons moved from … to …\" in every explanation, never \"positive charge flowed\". Set 8A has contact-sharing and electron-counting questions; the leaking-charge model here is a first taste of the exponential that returns with RC circuits in Unit 11."
+    },
+    {
+      "topic": "8.3",
+      "bigIdea": "An electric field is the electric force per unit positive charge at each point in space, set up by source charges whether or not anything is there to feel it, and the fields of several sources add as vectors.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 -1 \"-q\"\ntest 0,1.5 + \"q_0\"\ntest -2.6,-1.6 - \"-q_0\"",
+        "caption": "Field lines of a positive and a negative charge of equal size. A positive test charge feels a force along the field line through it; a negative one feels a force the opposite way. The force is larger where the lines are closer together."
+      },
+      "explanation": "The field idea splits Coulomb's law into two steps: source charges fill the space around them with an electric field, and the field at a point acts on whatever charge is put there. The field is defined by the force on a small positive test charge $q_0$, per unit charge: $\\vec{E} = \\vec{F}_E/q_0$, in newtons per coulomb. Because the force is proportional to $q_0$, the ratio does not depend on the test charge. The field belongs to the sources and is there even when the point is empty.\n\nFor a single point charge $q$, the field at distance $r$ has magnitude $k|q|/r^2$ and points directly away from a positive charge and directly toward a negative one. Once the field at a point is known, the force on any charge $q$ placed there is $\\vec{F}_E = q\\vec{E}$: along the field for a positive charge, opposite to it for a negative charge. In a uniform field that force is constant, so the charge has constant acceleration $q\\vec{E}/m$ and moves like a projectile.\n\nFields obey superposition. The net field at a point is the vector sum of the fields each source would produce there alone: find each one's magnitude and direction, resolve into components, and add.\n\nField lines picture all this at once. The field at any point is tangent to the line through it, and the lines are closer together where the field is stronger. Lines start on positive charges and end on negative charges, in numbers proportional to the charge, and they never cross.",
+      "equations": [
+        {
+          "latex": "\\vec{E} = \\frac{\\vec{F}_E}{q_0}",
+          "meaning": "The electric field at a point is the electric force a small positive test charge would feel there, divided by that charge.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field at the point",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{F}_E",
+              "name": "electric force on the test charge",
+              "unit": "N"
+            },
+            {
+              "symbol": "q_0",
+              "name": "test charge",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Defining or measuring a field, or finding the force on a charge from a known field.",
+          "notWhen": "The field does not depend on the test charge: doubling the test charge doubles the force and leaves the field unchanged."
+        },
+        {
+          "latex": "|\\vec{E}| = \\frac{1}{4\\pi\\varepsilon_0}\\frac{|q|}{r^2}",
+          "meaning": "A point charge's field falls off as the square of the distance from it; it points away from a positive charge and toward a negative one.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field of the point charge",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "q",
+              "name": "source charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the source charge to the point",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space, $8.85 \\times 10^{-12}$",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "The source is a point charge, or you are outside a spherically symmetric charge.",
+          "notWhen": "Not close to a rod, ring or sheet of charge (topic 8.4). It gives the magnitude; the direction comes from the sign of the source."
+        },
+        {
+          "latex": "\\vec{E}_{\\text{net}} = \\vec{E}_1 + \\vec{E}_2 + \\dots",
+          "meaning": "The net field at a point is the vector sum of the fields of the individual sources.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}_{\\text{net}}",
+              "name": "net electric field at the point",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{E}_1,\\ \\vec{E}_2",
+              "name": "fields of the separate sources at that same point",
+              "unit": "N/C"
+            }
+          ],
+          "useWhen": "Two or more source charges.",
+          "notWhen": "Never add magnitudes unless the fields are parallel. Add components."
+        },
+        {
+          "latex": "\\vec{a} = \\frac{q\\vec{E}}{m}",
+          "meaning": "A charge in an electric field accelerates along the field if it is positive and against it if it is negative.",
+          "variables": [
+            {
+              "symbol": "\\vec{a}",
+              "name": "acceleration of the charge",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "q",
+              "name": "the charge placed in the field, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field at its position",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the charged particle",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "The electric force is the only significant force, as for electrons and ions.",
+          "notWhen": "The acceleration is constant only where the field is uniform."
+        }
+      ],
+      "derivation": "**The path of a charge crossing a uniform field.** A particle of charge $q$ and mass $m$ enters a uniform field $E$, directed along $+y$, moving at speed $v_0$ along $+x$. The only force is $qE$ along $y$, so\n\n$$\na_x = 0, \\qquad a_y = \\frac{qE}{m}\n$$\n\nIntegrate once for the velocity and again for the position, starting at the origin with $v_y = 0$:\n\n$$\nv_y = \\int_0^t a_y\\,dt' = \\frac{qE}{m}\\,t, \\qquad y = \\int_0^t v_y\\,dt' = \\frac{qE}{2m}\\,t^2, \\qquad x = v_0 t\n$$\n\nEliminate the time with $t = x/v_0$:\n\n$$\ny = \\frac{qE}{2mv_0^2}\\,x^2\n$$\n\nThe path is a parabola, a projectile's with $g$ replaced by $qE/m$. A negative charge bends against the field.",
+      "workedExamples": [
+        {
+          "title": "Field beside a pair of opposite charges",
+          "prompt": "A $+5.0\\ \\text{nC}$ charge is fixed at $(0,\\ 0.30\\ \\text{m})$ and a $-5.0\\ \\text{nC}$ charge at $(0,\\ -0.30\\ \\text{m})$. Find the electric field at point P, at $(0.40\\ \\text{m},\\ 0)$. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "P is the same distance from both charges: $r = \\sqrt{(0.40)^2 + (0.30)^2} = 0.50\\ \\text{m}$. So the two fields at P have the same magnitude: $E_1 = E_2 = \\dfrac{(8.99 \\times 10^9)(5.0 \\times 10^{-9})}{(0.50)^2} = 180\\ \\text{N/C}$.",
+            "Directions. The field of the positive charge points away from it: from $(0,\\ 0.30)$ toward P, which is to the right and down. The field of the negative charge points toward it: from P toward $(0,\\ -0.30)$, which is to the left and down.",
+            "The x-components are equal and opposite, so they cancel. Each y-component is downward with size $E_1 \\times \\dfrac{0.30}{0.50} = 180 \\times 0.60 = 108\\ \\text{N/C}$.",
+            "Add the two: $E_{\\text{net}} = 2 \\times 108 = 216\\ \\text{N/C}$, which is $2.2 \\times 10^2\\ \\text{N/C}$ to two significant figures, in the $-y$ direction."
+          ],
+          "answer": "$E_{\\text{net}} = 2.2 \\times 10^2\\ \\text{N/C}$ in the $-y$ direction",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "q": {
+                "value": 5,
+                "unit": "nC"
+              },
+              "a": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "x": {
+                "value": 0.4,
+                "unit": "m"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "2*k*q/(a^2 + x^2)*a/sqrt(a^2 + x^2)",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "An electron crossing a uniform field",
+          "prompt": "An electron moving horizontally at $3.0 \\times 10^6\\ \\text{m/s}$ enters a region $0.040\\ \\text{m}$ long in which there is a uniform electric field of $200\\ \\text{N/C}$ directed vertically downward. Determine the electron's vertical displacement as it leaves the region. (Electron: mass $9.11 \\times 10^{-31}\\ \\text{kg}$, charge $-1.60 \\times 10^{-19}\\ \\text{C}$.)",
+          "steps": [
+            "The electron is negative, so the force on it is opposite to the field: upward. Its size is $eE$, giving an upward acceleration $a = \\dfrac{eE}{m} = \\dfrac{(1.60 \\times 10^{-19})(200)}{9.11 \\times 10^{-31}} = 3.5 \\times 10^{13}\\ \\text{m/s}^2$. Gravity is negligible beside this.",
+            "There is no horizontal force, so the horizontal velocity is constant and the time in the field is $t = \\dfrac{0.040\\ \\text{m}}{3.0 \\times 10^6\\ \\text{m/s}} = 1.33 \\times 10^{-8}\\ \\text{s}$.",
+            "The electron starts with no vertical velocity, so $y = \\tfrac{1}{2}at^2 = \\tfrac{1}{2}(3.5 \\times 10^{13})(1.33 \\times 10^{-8})^2 = 3.1 \\times 10^{-3}\\ \\text{m}$."
+          ],
+          "answer": "$3.1 \\times 10^{-3}\\ \\text{m}$ (about $3.1\\ \\text{mm}$) upward, opposite to the field",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "E": {
+                "value": 200,
+                "unit": "N/C"
+              },
+              "L": {
+                "value": 0.04,
+                "unit": "m"
+              },
+              "v": {
+                "value": 3000000,
+                "unit": "m/s"
+              },
+              "e": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "me": {
+                "value": 9.11e-31,
+                "unit": "kg"
+              }
+            },
+            "expr": "e*E/me*(L/v)^2/2",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "field-force-confusion",
+          "wrong": "A bigger test charge feels a bigger force, so the field at that point is bigger.",
+          "right": "The force is bigger, but the field is force per unit charge, $F_E/q_0$, and that ratio is unchanged. The field is set by the source charges alone."
+        },
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "A charge is always pushed in the direction of the electric field.",
+          "right": "Only a positive charge is. $\\vec{F}_E = q\\vec{E}$, so for a negative charge the force is opposite to the field: an electron accelerates against the field lines."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "Two charges each produce $180\\ \\text{N/C}$ at P, so the field there is $360\\ \\text{N/C}$.",
+          "right": "Fields are vectors. Only if the two fields point the same way do the magnitudes add. In the worked example they are at an angle, and the sum is $216\\ \\text{N/C}$."
+        },
+        {
+          "wrong": "A field line shows the path a charge released on it will follow.",
+          "right": "A field line shows the direction of the force, and so of the acceleration, at each point. The velocity need not be along the force, so on a curved line the charge drifts off it."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The electric field at point P is $400\\ \\text{N/C}$, directed north. What force acts on a $-5.0\\ \\text{nC}$ charge placed at P?",
+          "a": "$F_E = |q|E = (5.0 \\times 10^{-9}\\ \\text{C})(400\\ \\text{N/C}) = 2.0 \\times 10^{-6}\\ \\text{N}$, directed south because the charge is negative."
+        },
+        {
+          "q": "Where is the field zero for two equal positive charges? Is there such a point on the line between a positive charge and an equal negative charge?",
+          "a": "For two equal positive charges, at the midpoint, where the fields are equal and opposite. Between unlike charges both fields point from positive to negative, so they add and never cancel."
+        },
+        {
+          "q": "Why can two electric field lines never cross?",
+          "a": "At a crossing the field would have two directions at once. The net field at any point is a single vector, the sum of all the sources' fields, so it has one direction."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1 \"+q\"\ncharge 1.5,0 -1 \"-q\"\ntest {{x}},1.4 + \"q_0\"",
+        "caption": "Slide a positive test charge across the top of the picture. The force on it is always tangent to the field line through it, and it is largest where the lines crowd together near a charge.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Position of the test charge",
+            "min": -3,
+            "max": 3,
+            "step": 0.5,
+            "default": -2.5,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.1"
+      ],
+      "teacherNotes": "Keep asking \"the field of what, at where, acting on what?\" Students blur the source charge with the charge that feels the force, and that shows up as test charges appearing in field formulas. For superposition problems require a sketch with each source's field arrow at the point before any numbers. Set 8B is all point-charge fields; the null-point and symmetry questions there are good for discussion."
+    },
+    {
+      "topic": "8.4",
+      "bigIdea": "The field of a continuous distribution of charge is found by cutting it into point-like pieces $dq$, writing each piece's field with Coulomb's law, and integrating the components that symmetry does not cancel.",
+      "picture": {
+        "diagram": "scene\nrod 0,0 6,0\ndot 1.5,0 \"dq\"\ndot 4.5,0 \"dq\"\ndot 3,2.5\ntext 3.3,2.35 \"P\"\ndash 1.5,0 3,2.5\ndash 4.5,0 3,2.5\ndash 3,0 3,2.5\nf 3,2.5 59 1 \"dE_1\"\nf 3,2.5 121 1 \"dE_2\"\nf 3,2.5 up 1.71 \"dE_{net}\"\ndim 0,0 6,0 \"L\" off=-14\ntext 3.2,1.2 \"y\"\ntext 2.1,1.5 \"r\"",
+        "caption": "A uniformly charged rod, and a point P on its perpendicular bisector. Two matching pieces $dq$, one each side of the centre, produce fields at P whose sideways components cancel and whose components along the bisector add. Only that component needs to be integrated."
+      },
+      "explanation": "On real charged objects, such as rods, rings and plates, the sum over point charges becomes an integral. Describe the charge by a density: linear $\\lambda$ (charge per length), surface $\\sigma$ (charge per area) or volume $\\rho$ (charge per volume). A small piece of the object then carries $dq = \\lambda\\,d\\ell$, $\\sigma\\,dA$ or $\\rho\\,dV$, and it is small enough to count as a point charge.\n\nEvery problem follows the same steps. Draw one piece $dq$ and the field $dE = k\\,dq/r^2$ it produces at the point P, where $r$ is the distance from that piece to P. Resolve $dE$ into components: the pieces' fields point in different directions, and only components add. Look for symmetry: if each piece has a mirror-image partner, their sideways components cancel in pairs. Then write $dq$, $r$ and the angle in terms of a single variable and integrate. As a check, far away any object of total charge $Q$ must look like a point charge, so the result should become $kQ/r^2$.\n\nA ring of radius $R$ and charge $Q$ is the easiest case. For a point on its axis, a distance $x$ from the centre, every piece is the same distance $\\sqrt{x^2 + R^2}$ away and its field makes the same angle with the axis, so nothing varies inside the integral and $E_x = kQx/(x^2 + R^2)^{3/2}$.",
+      "equations": [
+        {
+          "latex": "\\vec{E} = \\frac{1}{4\\pi\\varepsilon_0}\\int \\frac{dq}{r^2}\\,\\hat{r}",
+          "meaning": "The field of a charged object is the vector sum, as an integral, of the point-charge fields of all its pieces.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field at the point P",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "q",
+              "name": "charge; dq is the charge of one small piece",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from that piece to P (it usually changes from piece to piece)",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\hat{r}",
+              "name": "unit vector from the piece toward P",
+              "unit": ""
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Charge spread along a line, ring or arc, or over a surface, when you are not far enough away to treat it as a point.",
+          "notWhen": "In practice integrate one component at a time, after using symmetry. Never integrate the magnitudes dE when the pieces' fields point in different directions."
+        },
+        {
+          "latex": "dq = \\lambda\\,d\\ell = \\sigma\\,dA = \\rho\\,dV",
+          "meaning": "The charge of a small piece is the charge density multiplied by the piece's length, area or volume.",
+          "variables": [
+            {
+              "symbol": "q",
+              "name": "charge; dq is the charge of the piece",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "linear charge density",
+              "unit": "C/m"
+            },
+            {
+              "symbol": "\\ell",
+              "name": "length along the object; $d\\ell$ is the piece's length",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\sigma",
+              "name": "surface charge density",
+              "unit": "C/m²"
+            },
+            {
+              "symbol": "A",
+              "name": "area; dA is the piece's area",
+              "unit": "m²"
+            },
+            {
+              "symbol": "\\rho",
+              "name": "volume charge density",
+              "unit": "C/m³"
+            },
+            {
+              "symbol": "V",
+              "name": "volume; dV is the piece's volume",
+              "unit": "m³"
+            }
+          ],
+          "useWhen": "Turning the sum over charge into an integral over position. For a uniform rod, $\\lambda = Q/L$.",
+          "notWhen": "If the density is not uniform it stays inside the integral as a function of position."
+        },
+        {
+          "latex": "E_x = \\frac{1}{4\\pi\\varepsilon_0}\\frac{Qx}{(x^2 + R^2)^{3/2}}",
+          "meaning": "On the axis of a uniformly charged ring the field points along the axis; it is zero at the centre, peaks, and then falls off like a point charge's.",
+          "variables": [
+            {
+              "symbol": "E_x",
+              "name": "field component along the ring's axis",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "Q",
+              "name": "total charge on the ring",
+              "unit": "C"
+            },
+            {
+              "symbol": "x",
+              "name": "distance from the ring's centre along its axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "R",
+              "name": "radius of the ring",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Points on the axis of a thin ring of charge.",
+          "notWhen": "Not for points off the axis, where the symmetry that cancels the sideways components is gone."
+        }
+      ],
+      "derivation": "**Field on the perpendicular bisector of a uniform rod.** A rod of length $L$ along the x-axis, centred on the origin, carries charge $Q$ uniformly, so $\\lambda = Q/L$. P is a distance $y$ up the bisector, as in the picture. The piece $dq = \\lambda\\,dx$ at position $x$ is a distance $r = \\sqrt{x^2 + y^2}$ from P and produces a field of size $dE = k\\lambda\\,dx/r^2$. The x-components cancel in pairs, so keep only $dE_y = dE\\cos\\theta$, where $\\theta$ is the angle between $r$ and the bisector and $\\cos\\theta = y/r$:\n\n$$\nE = \\int_{-L/2}^{L/2} \\frac{k\\lambda\\,y\\,dx}{(x^2 + y^2)^{3/2}}\n$$\n\nSubstitute $x = y\\tan\\theta$, so that $dx = y\\sec^2\\theta\\,d\\theta$ and $(x^2 + y^2)^{3/2} = y^3\\sec^3\\theta$:\n\n$$\nE = \\frac{k\\lambda}{y}\\int_{-\\theta_0}^{\\theta_0}\\cos\\theta\\,d\\theta = \\frac{2k\\lambda}{y}\\sin\\theta_0, \\qquad \\sin\\theta_0 = \\frac{L/2}{\\sqrt{y^2 + L^2/4}}\n$$\n\nwhere $\\theta_0$ is the angle to the rod's end. With $\\lambda = Q/L$,\n\n$$\nE = \\frac{kQ}{y\\sqrt{y^2 + L^2/4}}\n$$\n\nFar away ($y \\gg L$) this becomes $kQ/y^2$, a point charge. Close to a long rod ($y \\ll L$) it becomes $2k\\lambda/y$, which falls off only as $1/y$.",
+      "workedExamples": [
+        {
+          "title": "Field beyond the end of a rod",
+          "prompt": "A thin rod of length $0.20\\ \\text{m}$ lies along the x-axis from $x = 0$ to $x = 0.20\\ \\text{m}$ and carries $+6.0\\ \\text{nC}$ spread uniformly along it. Find the electric field at the point P on the axis, $0.10\\ \\text{m}$ beyond the rod's right-hand end. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "The linear charge density is $\\lambda = Q/L$, and a piece of length $dx$ at position $x$ carries $dq = \\lambda\\,dx$.",
+            "P is at $x = L + d$ with $d = 0.10\\ \\text{m}$, so the piece at $x$ is a distance $L + d - x$ from P. Its field at P is $dE = \\dfrac{k\\lambda\\,dx}{(L + d - x)^2}$, pointing in the $+x$ direction, away from the positive rod.",
+            "Every piece's field points the same way, so integrate directly: $E = \\displaystyle\\int_0^L \\frac{k\\lambda\\,dx}{(L + d - x)^2} = k\\lambda\\left[\\frac{1}{L + d - x}\\right]_0^L = k\\lambda\\left(\\frac{1}{d} - \\frac{1}{L + d}\\right)$.",
+            "Combine the fractions and use $\\lambda L = Q$: $E = \\dfrac{kQ}{d(L + d)}$.",
+            "Numbers: $E = \\dfrac{(8.99 \\times 10^9)(6.0 \\times 10^{-9})}{(0.10)(0.30)} = 1.8 \\times 10^3\\ \\text{N/C}$."
+          ],
+          "answer": "$E = 1.8 \\times 10^3\\ \\text{N/C}$ in the $+x$ direction, away from the rod",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "Q": {
+                "value": 6,
+                "unit": "nC"
+              },
+              "L": {
+                "value": 0.2,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "k*Q/(d*(L + d))",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "Field at the centre of a semicircle",
+          "prompt": "A thin insulating rod is bent into a semicircle of radius $0.15\\ \\text{m}$ and carries a charge of $+4.0\\ \\text{nC}$ spread uniformly along it. Derive an expression for the electric field at the centre of curvature and evaluate its magnitude. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "The arc has length $\\pi R$, so $\\lambda = Q/(\\pi R)$. Label a piece by its angle $\\phi$ from the arc's line of symmetry; it has length $R\\,d\\phi$ and charge $dq = \\lambda R\\,d\\phi$.",
+            "Every piece is the same distance $R$ from the centre, so $dE = \\dfrac{k\\,dq}{R^2} = \\dfrac{k\\lambda\\,d\\phi}{R}$, directed away from the piece.",
+            "Pieces at $+\\phi$ and $-\\phi$ have equal and opposite components perpendicular to the line of symmetry. Only the component along it survives: $dE\\cos\\phi$.",
+            "$E = \\displaystyle\\int_{-\\pi/2}^{\\pi/2} \\frac{k\\lambda}{R}\\cos\\phi\\,d\\phi = \\frac{2k\\lambda}{R} = \\frac{2kQ}{\\pi R^2}$.",
+            "$E = \\dfrac{2(8.99 \\times 10^9)(4.0 \\times 10^{-9})}{\\pi(0.15)^2} = 1.0 \\times 10^3\\ \\text{N/C}$, directed along the line of symmetry, away from the middle of the arc."
+          ],
+          "answer": "$E = \\dfrac{2kQ}{\\pi R^2} = 1.0 \\times 10^3\\ \\text{N/C}$, pointing away from the midpoint of the arc",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "Q": {
+                "value": 4,
+                "unit": "nC"
+              },
+              "R": {
+                "value": 0.15,
+                "unit": "m"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "2*k*Q/(pi*R^2)",
+            "unit": "N/C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "distribution-as-point-charge",
+          "wrong": "The field of a charged rod is $kQ/r^2$.",
+          "right": "That holds only far from the rod. Close up, different pieces are at different distances and in different directions, so the field must be built by integration."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "To get the total field, integrate $dE = k\\,dq/r^2$ over the object.",
+          "right": "That adds magnitudes of vectors pointing in different directions. Resolve $dE$ first and integrate the component symmetry leaves, such as $dE\\cos\\theta$."
+        },
+        {
+          "wrong": "The distance $r$ is a constant, so $1/r^2$ can come outside the integral.",
+          "right": "Only when every piece is the same distance from P, as at the centre of an arc or on the axis of a ring. Along a straight rod $r$ changes and must be written in terms of the integration variable."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A ring carries charge $Q$ uniformly. What is the electric field at its centre, and why is it not $kQ/R^2$?",
+          "a": "Zero. Every piece has a partner directly opposite whose field at the centre is equal and opposite. $kQ/R^2$ would be the sum of magnitudes, not vectors."
+        },
+        {
+          "q": "For a point on the axis of a ring, a distance $x$ from its centre, each piece's field has size $k\\,dq/(x^2 + R^2)$. Why does the total come out as $kQx/(x^2 + R^2)^{3/2}$?",
+          "a": "Components perpendicular to the axis cancel around the ring. The axial component carries $\\cos\\theta = x/\\sqrt{x^2 + R^2}$, the same for every piece, so the integral is just $\\int dq = Q$ times constants."
+        },
+        {
+          "q": "A uniformly charged rod is replaced by one twice as long carrying the same total charge. Does the field very far away on the bisector change?",
+          "a": "No. Far away both look like a point charge $Q$ and give $kQ/y^2$. Close in, the fields differ."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=E[kN/C] xr=-0.16,1 yr=0,4.6\nfn 0.0899*x/(x^2+{{R}}^2)^1.5 0..1\npt {{R/sqrt(2)}},{{0.0346/R^2}}\nxt 0 0.25 0.5 0.75 1\nyt 0 1 2 3 4\nnote 0.62,4 \"R = {{R}} m\"\nnote 0.62,3.5 \"peak at x = {{R/sqrt(2)}} m\"",
+        "caption": "Field along the axis of a ring carrying $10\\ \\text{nC}$. It is zero at the centre and largest at $x = R/\\sqrt{2}$. Shrink the ring and the peak moves in and grows; far away the curves all approach the same point-charge field.",
+        "params": [
+          {
+            "name": "R",
+            "label": "Radius of the ring",
+            "min": 0.1,
+            "max": 0.3,
+            "step": 0.05,
+            "default": 0.15,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.1",
+        "8.3"
+      ],
+      "teacherNotes": "Grade the set-up, not the integral: a labelled sketch with $dq$, $r$, the angle and the component being kept is where the physics is, and it is what free-response scoring rewards. The two standard failures are integrating magnitudes and pulling a varying $r$ outside the integral. Always ask for the far-field limit as a check. Set 8C covers lines, rings and arcs; students need the substitution $x = y\\tan\\theta$ or a table integral for the bisector case."
+    },
+    {
+      "topic": "8.5",
+      "bigIdea": "Electric flux measures how much electric field passes through a surface: the component of the field perpendicular to the surface, multiplied by the area and added up over the whole surface.",
+      "picture": {
+        "diagram": "scene\nf 0.3,0.4 right 5.4\nf 0.3,1.2 right 5.4\nf 0.3,2 right 5.4\nf 0.3,2.8 right 5.4 \"E\"\nrod 3.771,0.681 2.229,2.519\nf 3,1.6 40 1.4 \"A\"\nang 3,1.6 0 40 \"θ\"\ntext 4.55,0.75 \"surface\"",
+        "caption": "A flat surface seen edge-on in a uniform field. The area vector $\\vec{A}$ is perpendicular to the surface, and $\\theta$ is the angle between $\\vec{A}$ and the field. The flux is $EA\\cos\\theta$: tilting the surface lets fewer field lines through it."
+      },
+      "explanation": "For a flat surface of area $A$ in a uniform field, the flux depends on three things: the field's strength, the area, and how the surface is tilted. The tilt is described by the area vector $\\vec{A}$, whose magnitude is the area and whose direction is perpendicular to the surface. Then $\\Phi_E = \\vec{E}\\cdot\\vec{A} = EA\\cos\\theta$, where $\\theta$ is the angle between the field and the perpendicular, not between the field and the surface itself. Face-on to the field ($\\theta = 0$) the flux is $EA$; edge-on ($\\theta = 90°$) the field skims past and the flux is zero. In the field-line picture, flux counts the lines that pass through.\n\nFlux is a scalar, but it has a sign: positive when the field goes through in the direction of $\\vec{A}$, negative when it goes through the other way. For an open surface you choose which perpendicular to call $\\vec{A}$. For a closed surface, such as a box or a sphere, the convention is fixed: $d\\vec{A}$ points outward, so field leaving the enclosed volume counts as positive flux and field entering counts as negative.\n\nWhen the field changes from place to place, or the surface is curved, cut the surface into patches $d\\vec{A}$ small enough to be flat with a uniform field across each. Each patch contributes $d\\Phi_E = \\vec{E}\\cdot d\\vec{A}$, and the total is the surface integral $\\Phi_E = \\int\\vec{E}\\cdot d\\vec{A}$. Choosing strips or rings along which $E$ and the angle are constant turns the surface integral into an ordinary one.",
+      "equations": [
+        {
+          "latex": "\\Phi_E = \\vec{E}\\cdot\\vec{A} = EA\\cos\\theta",
+          "meaning": "The flux of a uniform field through a flat surface is the field's component along the surface's perpendicular, multiplied by the area.",
+          "variables": [
+            {
+              "symbol": "\\Phi_E",
+              "name": "electric flux through the surface",
+              "unit": "N·m²/C"
+            },
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field (uniform over the surface)",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{A}",
+              "name": "area vector: magnitude is the area, direction is perpendicular to the surface",
+              "unit": "m²"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between the field and the area vector",
+              "unit": "° or rad"
+            }
+          ],
+          "useWhen": "A flat surface in a field that is the same at every point of it.",
+          "notWhen": "Do not use the angle between the field and the surface: if that angle is given, $\\theta$ is $90°$ minus it. Not valid when the field varies across the surface."
+        },
+        {
+          "latex": "\\Phi_E = \\int \\vec{E}\\cdot d\\vec{A}",
+          "meaning": "In general, flux is the sum over all small patches of the surface of the perpendicular field component multiplied by the patch's area.",
+          "variables": [
+            {
+              "symbol": "\\Phi_E",
+              "name": "electric flux through the surface",
+              "unit": "N·m²/C"
+            },
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field at the patch",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{A}",
+              "name": "area; $d\\vec{A}$ is a small patch's area vector, outward for a closed surface",
+              "unit": "m²"
+            }
+          ],
+          "useWhen": "The field's size or direction changes over the surface, or the surface is curved.",
+          "notWhen": "No need to integrate when the field is uniform and the surface flat; the product above is the same thing."
+        }
+      ],
+      "derivation": "**Flux of a point charge through a disc.** A point charge $q$ sits on the axis of a flat disc of radius $R$, a distance $z$ from its centre. The field is neither uniform over the disc nor perpendicular to it, so cut the disc into rings of radius $s$ and width $ds$, each of area $dA = 2\\pi s\\,ds$. Every point of one ring is a distance $\\sqrt{s^2 + z^2}$ from the charge, so the field there has size $kq/(s^2 + z^2)$ and makes an angle $\\theta$ with the disc's perpendicular, with $\\cos\\theta = z/\\sqrt{s^2 + z^2}$. Then\n\n$$\n\\Phi_E = \\int E\\cos\\theta\\,dA = \\int_0^R \\frac{kq}{s^2 + z^2}\\cdot\\frac{z}{\\sqrt{s^2 + z^2}}\\;2\\pi s\\,ds\n$$\n\nLet $u = s^2 + z^2$, so $du = 2s\\,ds$:\n\n$$\n\\Phi_E = \\pi kqz\\int_{z^2}^{z^2 + R^2} u^{-3/2}\\,du = 2\\pi kq\\left(1 - \\frac{z}{\\sqrt{z^2 + R^2}}\\right) = \\frac{q}{2\\varepsilon_0}\\left(1 - \\frac{z}{\\sqrt{z^2 + R^2}}\\right)\n$$\n\nusing $k = 1/(4\\pi\\varepsilon_0)$. For a very large disc ($R \\to \\infty$) the flux tends to $q/(2\\varepsilon_0)$ whatever the distance $z$: half of the charge's field lines pass through an infinite plane to one side of it. All of them together carry $q/\\varepsilon_0$, which is Gauss's law (topic 8.6).",
+      "workedExamples": [
+        {
+          "title": "Flux through a tilted sheet",
+          "prompt": "A flat rectangular sheet measuring $0.20\\ \\text{m}$ by $0.30\\ \\text{m}$ is placed in a uniform electric field of $450\\ \\text{N/C}$. The field makes an angle of $25°$ with the plane of the sheet. What is the magnitude of the electric flux through the sheet?",
+          "steps": [
+            "Find the area: $A = (0.20\\ \\text{m})(0.30\\ \\text{m}) = 0.060\\ \\text{m}^2$.",
+            "Find the right angle. The formula needs the angle between the field and the perpendicular to the sheet. The field is $25°$ from the sheet's plane, so it is $90° - 25° = 65°$ from the perpendicular.",
+            "$\\Phi_E = EA\\cos\\theta = (450\\ \\text{N/C})(0.060\\ \\text{m}^2)\\cos 65° = (27)(0.423) = 11\\ \\text{N·m}^2/\\text{C}$."
+          ],
+          "answer": "$\\Phi_E = 11\\ \\text{N·m}^2/\\text{C}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "E": {
+                "value": 450,
+                "unit": "N/C"
+              },
+              "a": {
+                "value": 0.2,
+                "unit": "m"
+              },
+              "b": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "alpha": {
+                "value": 25,
+                "unit": "deg"
+              }
+            },
+            "expr": "E*a*b*sin(alpha)",
+            "unit": "N·m^2/C"
+          }
+        },
+        {
+          "title": "Flux of a field that varies across the surface",
+          "prompt": "In a region of space the electric field points in the $+z$ direction and its magnitude grows with $x$: $E = cx$, where $c = 800\\ \\text{N/(C·m)}$. A flat rectangular surface lies in the xy-plane, covering $0 \\le x \\le 0.30\\ \\text{m}$ and $0 \\le y \\le 0.20\\ \\text{m}$, with its area vector in the $+z$ direction. Calculate the electric flux through the surface.",
+          "steps": [
+            "The field is perpendicular to the surface everywhere, so $\\cos\\theta = 1$, but its magnitude is not the same everywhere, so $EA$ cannot be used directly.",
+            "$E$ depends only on $x$. Cut the surface into strips parallel to the y-axis, each of width $dx$ and length $b = 0.20\\ \\text{m}$. Across one strip the field is constant, so $d\\Phi_E = E\\,dA = (cx)(b\\,dx)$.",
+            "Integrate over the strips, with $a = 0.30\\ \\text{m}$: $\\Phi_E = \\displaystyle\\int_0^a cbx\\,dx = \\tfrac{1}{2}cba^2$.",
+            "$\\Phi_E = \\tfrac{1}{2}(800)(0.20)(0.30)^2 = 7.2\\ \\text{N·m}^2/\\text{C}$.",
+            "Check: the field rises linearly from 0 to $240\\ \\text{N/C}$, so its average over the surface is $120\\ \\text{N/C}$, and $(120)(0.060) = 7.2\\ \\text{N·m}^2/\\text{C}$."
+          ],
+          "answer": "$\\Phi_E = \\tfrac{1}{2}cba^2 = 7.2\\ \\text{N·m}^2/\\text{C}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "c": {
+                "value": 800,
+                "unit": "N/(C·m)"
+              },
+              "a": {
+                "value": 0.3,
+                "unit": "m"
+              },
+              "b": {
+                "value": 0.2,
+                "unit": "m"
+              }
+            },
+            "expr": "c*b*a^2/2",
+            "unit": "N·m^2/C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "flux-field-confusion",
+          "wrong": "The flux through a surface is zero, so the electric field at the surface is zero.",
+          "right": "Flux can be zero with a strong field present: the field may run parallel to the surface, or as much may go in through a closed surface as comes out."
+        },
+        {
+          "tag": "flux-field-confusion",
+          "wrong": "Flux is just another word for how strong the field is.",
+          "right": "Field is a vector at a point, in $\\text{N/C}$. Flux is a scalar that belongs to a whole surface, in $\\text{N·m}^2/\\text{C}$. The same field gives different fluxes through surfaces of different area or tilt."
+        },
+        {
+          "wrong": "In $EA\\cos\\theta$, $\\theta$ is the angle between the field and the surface.",
+          "right": "$\\theta$ is measured from the perpendicular to the surface. A field lying in the surface has $\\theta = 90°$ and gives zero flux, not the maximum."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The dashed box is a closed surface in a uniform field. What is the net flux through it?\n\n```dg\nfield xr=-3..3 yr=-2..2\nuniform E right \"E\"\ngauss rect -1,-1 1,1 \"S\"\n```",
+          "a": "Zero. With outward area vectors, the left face has flux $-EA$ (field entering), the right face $+EA$ (field leaving), and the other faces are parallel to the field. Every line that goes in comes out."
+        },
+        {
+          "q": "A flat loop of area $0.50\\ \\text{m}^2$ sits in a uniform field of $200\\ \\text{N/C}$. What is the largest flux it can have, and at what angle between the field and the loop's perpendicular is the flux half of that?",
+          "a": "The largest is $EA = 100\\ \\text{N·m}^2/\\text{C}$, with the loop face-on. Half needs $\\cos\\theta = 0.5$, so $\\theta = 60°$."
+        },
+        {
+          "q": "For a closed surface, what does negative net flux tell you about the field lines?",
+          "a": "More lines enter the surface than leave it. Lines end inside, which (topic 8.6) means there is net negative charge in there."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nf 0.3,0.4 right 5.4\nf 0.3,1.2 right 5.4\nf 0.3,2 right 5.4\nf 0.3,2.8 right 5.4 \"E\"\nrod {{3+1.2*sin(th*pi/180)}},{{1.6-1.2*cos(th*pi/180)}} {{3-1.2*sin(th*pi/180)}},{{1.6+1.2*cos(th*pi/180)}}\nf 3,1.6 {{th}} 1.4 \"A\"\ntext 3,3.5 \"θ = {{th}}°, flux = {{round(100*cos(th*pi/180))/100}} EA\"",
+        "caption": "Turn the surface in a uniform field. The flux is $EA\\cos\\theta$: largest face-on, zero edge-on at $90°$, and negative once the area vector points against the field.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Angle between field and area vector",
+            "min": 0,
+            "max": 180,
+            "step": 15,
+            "default": 40,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3"
+      ],
+      "teacherNotes": "Two things go wrong: the angle (students use the angle to the surface) and the sign convention for closed surfaces. Have students draw the area vector on every flux sketch, and for a closed box label each face's flux as in, out or zero before adding. Ask \"can the flux be zero where the field is not?\" early; the confusion between flux and field is the main obstacle to Gauss's law. Set 8D opens with flux questions of this kind."
+    },
+    {
+      "topic": "8.6",
+      "bigIdea": "The net electric flux through any closed surface equals the charge enclosed divided by $\\varepsilon_0$, and when the charge is arranged symmetrically that one statement gives the field directly.",
+      "picture": {
+        "diagram": "field xr=-4.5..4.5 yr=-3.4..3.4\ncharge -1.2,0 +2 \"+2q\"\ncharge 1.8,0 -1 \"-q\"\ngauss circle -1.2,0 1.1 \"S_1\"\ngauss circle 1.8,0 0.9 \"S_2\"\ngauss rect -2.9,-2.3 3.3,2.3 \"S_3\"\ngauss circle -3.75,2.75 0.5 \"S_4\"",
+        "caption": "Four closed surfaces around charges $+2q$ and $-q$. $S_1$ encloses $+2q$: every line crosses it outward, flux $+2q/\\varepsilon_0$. $S_2$ encloses $-q$: lines cross inward, flux $-q/\\varepsilon_0$. $S_3$ encloses both: net flux $+q/\\varepsilon_0$. $S_4$ encloses nothing: any line that enters it leaves again, so its net flux is zero."
+      },
+      "explanation": "Gauss's law says that the net flux through any closed surface depends only on the charge inside it: $\\oint\\vec{E}\\cdot d\\vec{A} = q_{\\text{enc}}/\\varepsilon_0$. The surface, called a Gaussian surface, is imaginary and can be any shape. Charges outside still contribute to the field on the surface, but each of their lines goes in one side and out the other, adding no net flux.\n\nThe law is always true, but it hands you the field only when symmetry lets you take $E$ out of the integral. You need a surface on which the field is either perpendicular with the same magnitude all over, so the flux is $E$ times the area, or parallel to it, so the flux is zero. Three shapes of charge allow this. Spherical symmetry: use a concentric sphere, of area $4\\pi r^2$. Cylindrical symmetry (a long line or cylinder of charge): use a coaxial cylinder; the curved side has area $2\\pi rL$ and the flat ends carry no flux. Planar symmetry (a large sheet): use a small cylinder straddling the sheet; flux leaves through its two end caps only.\n\nTo find a field, argue from symmetry which way the field points and what it can depend on. Choose the Gaussian surface through the point of interest and write the flux as $E$ times an area. Find the enclosed charge, integrating the density if it is not uniform, and solve for $E$.",
+      "equations": [
+        {
+          "latex": "\\oint \\vec{E}\\cdot d\\vec{A} = \\frac{q_{\\text{enc}}}{\\varepsilon_0}",
+          "meaning": "The net outward electric flux through a closed surface equals the net charge inside it divided by the permittivity of free space.",
+          "variables": [
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field on the surface, from all charges, inside and outside",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\vec{A}",
+              "name": "area; $d\\vec{A}$ is an outward patch of the closed surface",
+              "unit": "m²"
+            },
+            {
+              "symbol": "q_{\\text{enc}}",
+              "name": "net charge enclosed by the surface",
+              "unit": "C"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space, $8.85 \\times 10^{-12}$",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Always true. Useful for finding flux from charge (or charge from flux) for any closed surface, and for finding the field when there is spherical, cylindrical or planar symmetry.",
+          "notWhen": "It cannot give the field for an unsymmetric arrangement such as a short rod or two point charges; integrate instead (topic 8.4)."
+        },
+        {
+          "latex": "E = \\frac{1}{4\\pi\\varepsilon_0}\\frac{Q}{r^2}",
+          "meaning": "Outside any spherically symmetric charge, the field is the same as that of a point charge at the centre.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "magnitude of the field, directed radially",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "Q",
+              "name": "total charge of the sphere or shell",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the centre, with r at least the object's radius",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Outside a uniformly charged sphere or spherical shell.",
+          "notWhen": "Not inside the charge, where only part of it is enclosed. Inside a uniformly charged shell the field is zero."
+        },
+        {
+          "latex": "E = \\frac{\\lambda}{2\\pi\\varepsilon_0 r}",
+          "meaning": "The field of a long straight line of charge points radially away from the line and falls off as one over the distance.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "magnitude of the field",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\lambda",
+              "name": "linear charge density",
+              "unit": "C/m"
+            },
+            {
+              "symbol": "r",
+              "name": "perpendicular distance from the line",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Close to a long, straight, uniformly charged wire or rod, far from its ends.",
+          "notWhen": "Not near the ends, or at distances comparable with the rod's length, where the cylindrical symmetry fails."
+        },
+        {
+          "latex": "E = \\frac{\\sigma}{2\\varepsilon_0}",
+          "meaning": "The field of a large uniform sheet of charge is perpendicular to the sheet and the same at every distance.",
+          "variables": [
+            {
+              "symbol": "E",
+              "name": "magnitude of the field on either side",
+              "unit": "N/C"
+            },
+            {
+              "symbol": "\\sigma",
+              "name": "surface charge density",
+              "unit": "C/m²"
+            },
+            {
+              "symbol": "\\varepsilon_0",
+              "name": "permittivity of free space",
+              "unit": "C²/(N·m²)"
+            }
+          ],
+          "useWhen": "Close to a large, flat, uniformly charged insulating sheet, far from its edges.",
+          "notWhen": "Not at distances comparable with the sheet's size, where it starts to look like a point charge."
+        }
+      ],
+      "derivation": "**Field of a uniformly charged solid sphere.** An insulating sphere of radius $R$ carries charge $Q$ spread uniformly through its volume, with density $\\rho = Q/\\left(\\tfrac{4}{3}\\pi R^3\\right)$. By symmetry the field is radial and its magnitude depends only on $r$, so on a concentric Gaussian sphere of radius $r$ the flux is $E(4\\pi r^2)$.\n\nOutside ($r > R$) the surface encloses all of the charge:\n\n$$\nE(4\\pi r^2) = \\frac{Q}{\\varepsilon_0} \\quad\\Longrightarrow\\quad E = \\frac{1}{4\\pi\\varepsilon_0}\\frac{Q}{r^2}\n$$\n\nInside ($r < R$) it encloses only the charge closer to the centre than $r$. Add up thin shells of radius $r'$ and volume $4\\pi r'^2\\,dr'$:\n\n$$\nq_{\\text{enc}} = \\int_0^r \\rho\\,4\\pi r'^2\\,dr' = \\rho\\,\\tfrac{4}{3}\\pi r^3 = Q\\,\\frac{r^3}{R^3}\n$$\n\n$$\nE(4\\pi r^2) = \\frac{Q r^3}{\\varepsilon_0 R^3} \\quad\\Longrightarrow\\quad E = \\frac{1}{4\\pi\\varepsilon_0}\\frac{Qr}{R^3}\n$$\n\nThe field grows in proportion to $r$ from zero at the centre, meets the outside result at $r = R$, and then falls off as $1/r^2$:\n\n```dg\nplot x=r y=E xr=-0.2,4 yr=0,1.3\nseg 0,0 1,1\nfn 1/(r*r) 1..4\nvl 1\nxt 0 1:R 2:2R 3:3R\nyt 1:kQ/R^2\nnote 2.8,1.2 \"r < R: E = kQr/R^3\"\nnote 2.8,1 \"r > R: E = kQ/r^2\"\n```",
+      "workedExamples": [
+        {
+          "title": "Field of a long charged rod",
+          "prompt": "A long, straight, thin rod carries a uniform charge of $+30\\ \\text{nC}$ on each metre of its length. Use Gauss's law to find the electric field $4.0\\ \\text{cm}$ from the rod, far from its ends. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)$.",
+          "steps": [
+            "Symmetry: the rod looks the same rotated about its axis or slid along it, so the field points straight out from the rod and depends only on the distance $r$ from it.",
+            "Choose a Gaussian cylinder of radius $r$ and length $L$, coaxial with the rod. On the curved side the field is perpendicular to the surface with the same size everywhere. The flat ends are parallel to the field and carry no flux.",
+            "Flux: $\\oint\\vec{E}\\cdot d\\vec{A} = E(2\\pi rL)$. Enclosed charge: the length $L$ of rod inside the cylinder, $q_{\\text{enc}} = \\lambda L$.",
+            "Gauss's law: $E(2\\pi rL) = \\lambda L/\\varepsilon_0$, so $E = \\dfrac{\\lambda}{2\\pi\\varepsilon_0 r}$. The arbitrary length $L$ cancels.",
+            "$E = \\dfrac{30 \\times 10^{-9}}{2\\pi(8.85 \\times 10^{-12})(0.040)} = 1.3 \\times 10^4\\ \\text{N/C}$, directed away from the rod."
+          ],
+          "answer": "$E = 1.3 \\times 10^4\\ \\text{N/C}$, radially away from the rod",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "lambda": {
+                "value": 30,
+                "unit": "nC/m"
+              },
+              "r": {
+                "value": 4,
+                "unit": "cm"
+              },
+              "eps0": {
+                "value": 8.85e-12,
+                "unit": "C^2/(N·m^2)"
+              }
+            },
+            "expr": "lambda/(2*pi*eps0*r)",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "A sphere whose charge density is not uniform",
+          "prompt": "An insulating sphere of radius $0.10\\ \\text{m}$ has a volume charge density that increases with distance $r$ from its centre: $\\rho = \\beta r$, with $\\beta = 2.0\\ \\mu\\text{C/m}^4$. Derive an expression for the electric field inside the sphere and evaluate it at $r = 0.060\\ \\text{m}$. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)$.",
+          "steps": [
+            "The density depends only on $r$, so the field is radial and depends only on $r$. Through a concentric Gaussian sphere of radius $r < 0.10\\ \\text{m}$ the flux is $E(4\\pi r^2)$.",
+            "The density is not uniform, so the enclosed charge must be integrated over thin shells of volume $4\\pi r'^2\\,dr'$: $q_{\\text{enc}} = \\displaystyle\\int_0^r (\\beta r')\\,4\\pi r'^2\\,dr' = \\pi\\beta r^4$.",
+            "Gauss's law: $E(4\\pi r^2) = \\dfrac{\\pi\\beta r^4}{\\varepsilon_0}$, so $E = \\dfrac{\\beta r^2}{4\\varepsilon_0}$, directed radially outward.",
+            "At $r = 0.060\\ \\text{m}$: $E = \\dfrac{(2.0 \\times 10^{-6})(0.060)^2}{4(8.85 \\times 10^{-12})} = 2.0 \\times 10^2\\ \\text{N/C}$."
+          ],
+          "answer": "$E = \\dfrac{\\beta r^2}{4\\varepsilon_0} = 2.0 \\times 10^2\\ \\text{N/C}$, radially outward",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "beta": {
+                "value": 2,
+                "unit": "μC/m^4"
+              },
+              "r": {
+                "value": 0.06,
+                "unit": "m"
+              },
+              "eps0": {
+                "value": 8.85e-12,
+                "unit": "C^2/(N·m^2)"
+              }
+            },
+            "expr": "beta*r^2/(4*eps0)",
+            "unit": "N/C"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "gauss-law-without-symmetry",
+          "wrong": "Gauss's law gives the field of any charge distribution: divide $q_{\\text{enc}}/\\varepsilon_0$ by the area of a surface around it.",
+          "right": "That gives $E$ only if the field has the same magnitude all over the surface and is perpendicular to it, which needs spherical, cylindrical or planar symmetry. Around a short rod the law still gives the correct flux, but not the field."
+        },
+        {
+          "tag": "enclosed-charge-or-current-wrong",
+          "wrong": "Inside a uniformly charged sphere, at radius $r$, use the sphere's whole charge $Q$ in Gauss's law.",
+          "right": "Only the charge inside the Gaussian surface counts: $Qr^3/R^3$ for a uniform sphere. The charge farther out than $r$ contributes no net field there."
+        },
+        {
+          "tag": "flux-field-confusion",
+          "wrong": "A Gaussian surface encloses no net charge, so the electric field is zero everywhere on it.",
+          "right": "Zero enclosed charge means zero net flux, not zero field. Surface $S_4$ in the picture has field all over it; the flux entering equals the flux leaving."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A $+3.0\\ \\text{nC}$ point charge sits inside a cube, away from its centre. What is the net flux through the cube? Can Gauss's law give the field at a point on one face?",
+          "a": "$\\Phi_E = q_{\\text{enc}}/\\varepsilon_0 = (3.0 \\times 10^{-9})/(8.85 \\times 10^{-12}) \\approx 340\\ \\text{N·m}^2/\\text{C}$, wherever the charge is inside. It cannot give the field: $E$ is not constant over the faces, so it cannot be taken out of the integral."
+        },
+        {
+          "q": "A thin spherical shell of radius $R$ carries charge $Q$ uniformly. What is the field at a point inside the shell?",
+          "a": "Zero. A concentric Gaussian sphere with $r < R$ encloses no charge, and by symmetry $E$ is the same all over it, so $E(4\\pi r^2) = 0$."
+        },
+        {
+          "q": "Why does the field of a large charged sheet not weaken as you move away from it?",
+          "a": "Its field lines leave perpendicular to the sheet and stay parallel, so they never spread out."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4.2..4.6 yr=-3.8..3.8 \"charge enclosed = +{{2-round(min(1,max(0,r-1.5)))}}q\"\ncharge 0,0 +2 \"+2q\"\ncharge 2,0 -1 \"-q\"\ngauss circle 0,0 {{r}} \"S\"",
+        "caption": "Grow the Gaussian surface around $+2q$. While it encloses only $+2q$ the net flux is $2q/\\varepsilon_0$. Once it also takes in $-q$, some lines turn back and end inside, and the net flux drops to $q/\\varepsilon_0$: count lines out minus lines in.",
+        "params": [
+          {
+            "name": "r",
+            "label": "Radius of the Gaussian surface",
+            "min": 0.5,
+            "max": 3.5,
+            "step": 1,
+            "default": 1.5,
+            "unit": ""
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "8.4",
+        "8.5"
+      ],
+      "teacherNotes": "Require a sentence of symmetry argument before any Gauss's-law calculation: which way the field points, what it can depend on, and why the chosen surface makes the flux $E$ times an area. Students who skip it apply the law where it cannot give the field. The second habit to build is writing $q_{\\text{enc}}$ as its own line, by integration when the density varies. Set 8D has spheres, cylinders and sheets; the inside-the-sphere cases separate students who understand \"enclosed\" from those who do not."
+    }
+  ]
+}

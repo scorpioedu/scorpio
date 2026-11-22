@@ -55,9 +55,9 @@ describe("committed guides", () => {
     expect(out.log).toHaveBeenCalledWith(
       expect.stringMatching(/^ok {3}src\/data\/guides\/ap-physics-1\/unit-4\.json/),
     );
-    expect(out.log).toHaveBeenCalledWith(expect.stringContaining("AP Physics 2: 0 of 7 units"));
+    expect(out.log).toHaveBeenCalledWith(expect.stringMatching(/AP Physics 1: \d of 8 units/));
     expect(tool.main(["--course", "ap-physics-1", "--unit", "4"], out)).toBe(0);
-    expect(tool.main(["--course", "ap-physics-2", "--unit", "9"], out)).toBe(1);
+    expect(tool.main(["--course", "ap-physics-1", "--unit", "99"], out)).toBe(1);
     expect(tool.main([], out)).toBe(1);
     expect(tool.main(["--all", "--unit", "4"], out)).toBe(1);
   });

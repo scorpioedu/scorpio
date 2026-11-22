@@ -46,82 +46,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "charging-moves-positive-charge"
-        ]
+        "tags": ["charging-moves-positive-charge"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied",
-          "unit-conversion"
-        ]
+        "tags": ["inverse-square-misapplied", "unit-conversion"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "third-law-unequal-forces"
-        ]
+        "tags": ["third-law-unequal-forces"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       }
     ]
   },
@@ -164,86 +143,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "field-direction-ignores-sign",
-          "vector-scalar-superposition"
-        ]
+        "tags": ["field-direction-ignores-sign", "vector-scalar-superposition"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "field-force-confusion"
-        ]
+        "tags": ["field-force-confusion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "field-direction-ignores-sign",
-          "inverse-square-misapplied"
-        ]
+        "tags": ["field-direction-ignores-sign", "inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "field-direction-ignores-sign",
-          "vector-scalar-superposition"
-        ]
+        "tags": ["field-direction-ignores-sign", "vector-scalar-superposition"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "algebra-error",
-          "inverse-square-misapplied"
-        ]
+        "tags": ["algebra-error", "inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "algebra-error",
-          "inverse-square-misapplied"
-        ]
+        "tags": ["algebra-error", "inverse-square-misapplied"]
       }
     ]
   },
@@ -286,84 +240,61 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "distribution-as-point-charge",
-          "inverse-square-misapplied"
-        ]
+        "tags": ["distribution-as-point-charge", "inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge",
-          "gauss-law-without-symmetry"
-        ]
+        "tags": ["distribution-as-point-charge", "gauss-law-without-symmetry"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "distribution-as-point-charge",
-          "field-direction-ignores-sign"
-        ]
+        "tags": ["distribution-as-point-charge", "field-direction-ignores-sign"]
       }
     ]
   },
@@ -406,82 +337,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "flux-field-confusion"
-        ]
+        "tags": ["flux-field-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "gauss-law-without-symmetry"
-        ]
+        "tags": ["gauss-law-without-symmetry"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "flux-field-confusion"
-        ]
+        "tags": ["flux-field-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "gauss-law-without-symmetry",
-          "sign-error"
-        ]
+        "tags": ["gauss-law-without-symmetry", "sign-error"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "gauss-law-without-symmetry"
-        ]
+        "tags": ["gauss-law-without-symmetry"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       }
     ]
   },
@@ -524,83 +434,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "energy-not-conserved",
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["energy-not-conserved", "potential-energy-potential-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied",
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["inverse-square-misapplied", "potential-energy-potential-confusion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       }
     ]
   },
@@ -639,82 +527,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "field-potential-zero-together"
-        ]
+        "tags": ["field-potential-zero-together"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "inverse-square-misapplied",
-          "vector-scalar-superposition"
-        ]
+        "tags": ["inverse-square-misapplied", "vector-scalar-superposition"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "field-potential-zero-together"
-        ]
+        "tags": ["field-potential-zero-together"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       }
     ]
   },
@@ -753,82 +620,61 @@
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "field-potential-zero-together",
-          "potential-gradient-sign"
-        ]
+        "tags": ["field-potential-zero-together", "potential-gradient-sign"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "potential-gradient-sign"
-        ]
+        "tags": ["potential-gradient-sign"]
       }
     ]
   },
@@ -871,82 +717,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["potential-energy-potential-confusion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "energy-not-conserved"
-        ]
+        "tags": ["energy-not-conserved"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["potential-energy-potential-confusion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["potential-energy-potential-confusion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["potential-energy-potential-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inverse-square-misapplied"
-        ]
+        "tags": ["inverse-square-misapplied"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "field-direction-ignores-sign",
-          "potential-energy-potential-confusion"
-        ]
+        "tags": ["field-direction-ignores-sign", "potential-energy-potential-confusion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "field-direction-ignores-sign"
-        ]
+        "tags": ["field-direction-ignores-sign"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "energy-not-conserved"
-        ]
+        "tags": ["energy-not-conserved"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "distribution-as-point-charge"
-        ]
+        "tags": ["distribution-as-point-charge"]
       }
     ]
   },
@@ -981,82 +806,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "conductor-interior-field",
-          "sign-error"
-        ]
+        "tags": ["conductor-interior-field", "sign-error"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       }
     ]
   },
@@ -1103,81 +907,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "charging-moves-positive-charge"
-        ]
+        "tags": ["charging-moves-positive-charge"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "conductor-interior-field"
-        ]
+        "tags": ["conductor-interior-field"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "algebra-error"
-        ]
+        "tags": ["algebra-error"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "charging-moves-positive-charge"
-        ]
+        "tags": ["charging-moves-positive-charge"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "energy-not-conserved"
-        ]
+        "tags": ["energy-not-conserved"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       }
     ]
   },
@@ -1216,82 +1000,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "capacitor-wrong-quantity-fixed"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "algebra-error"
-        ]
+        "tags": ["algebra-error"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "capacitance-depends-on-charge"
-        ]
+        "tags": ["capacitance-depends-on-charge"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "algebra-error",
-          "power-of-ten"
-        ]
+        "tags": ["algebra-error", "power-of-ten"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       }
     ]
   },
@@ -1326,84 +1089,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "dielectric-misapplied"
-        ]
+        "tags": ["dielectric-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "capacitor-wrong-quantity-fixed",
-          "dielectric-misapplied"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed", "dielectric-misapplied"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "capacitor-wrong-quantity-fixed"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "dielectric-misapplied"
-        ]
+        "tags": ["dielectric-misapplied"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "dielectric-misapplied"
-        ]
+        "tags": ["dielectric-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "capacitor-wrong-quantity-fixed",
-          "dielectric-misapplied"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed", "dielectric-misapplied"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "capacitor-wrong-quantity-fixed",
-          "dielectric-misapplied"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed", "dielectric-misapplied"]
       }
     ]
   },
@@ -1458,82 +1198,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "derivative-integral-confusion"
-        ]
+        "tags": ["derivative-integral-confusion"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "voltage-current-confusion"
-        ]
+        "tags": ["voltage-current-confusion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "current-used-up",
-          "field-direction-ignores-sign"
-        ]
+        "tags": ["current-used-up", "field-direction-ignores-sign"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "algebra-error"
-        ]
+        "tags": ["algebra-error"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "field-direction-ignores-sign"
-        ]
+        "tags": ["field-direction-ignores-sign"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "series-parallel-confusion"
-        ]
+        "tags": ["series-parallel-confusion"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "derivative-integral-confusion"
-        ]
+        "tags": ["derivative-integral-confusion"]
       }
     ]
   },
@@ -1584,82 +1303,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "algebra-error"
-        ]
+        "tags": ["algebra-error"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "power-energy-confusion"
-        ]
+        "tags": ["power-energy-confusion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "battery-constant-current",
-          "resistance-brightness-rule"
-        ]
+        "tags": ["battery-constant-current", "resistance-brightness-rule"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "terminal-voltage-equals-emf"
-        ]
+        "tags": ["terminal-voltage-equals-emf"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "series-parallel-confusion"
-        ]
+        "tags": ["series-parallel-confusion"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "algebra-error"
-        ]
+        "tags": ["algebra-error"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "resistance-brightness-rule"
-        ]
+        "tags": ["resistance-brightness-rule"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-energy-confusion"
-        ]
+        "tags": ["power-energy-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "battery-constant-current"
-        ]
+        "tags": ["battery-constant-current"]
       }
     ]
   },
@@ -1706,83 +1404,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "series-parallel-confusion"
-        ]
+        "tags": ["series-parallel-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "loop-rule-sign",
-          "terminal-voltage-equals-emf"
-        ]
+        "tags": ["loop-rule-sign", "terminal-voltage-equals-emf"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "current-used-up",
-          "junction-rule-ignored"
-        ]
+        "tags": ["current-used-up", "junction-rule-ignored"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "loop-rule-sign"
-        ]
+        "tags": ["loop-rule-sign"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "battery-constant-current"
-        ]
+        "tags": ["battery-constant-current"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "terminal-voltage-equals-emf"
-        ]
+        "tags": ["terminal-voltage-equals-emf"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "junction-rule-ignored"
-        ]
+        "tags": ["junction-rule-ignored"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "junction-rule-ignored"
-        ]
+        "tags": ["junction-rule-ignored"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "battery-constant-current"
-        ]
+        "tags": ["battery-constant-current"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "battery-constant-current"
-        ]
+        "tags": ["battery-constant-current"]
       }
     ]
   },
@@ -1829,85 +1505,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "series-parallel-confusion",
-          "time-constant-misread"
-        ]
+        "tags": ["series-parallel-confusion", "time-constant-misread"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "rc-linear-change"
-        ]
+        "tags": ["rc-linear-change"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "capacitor-steady-current",
-          "rc-linear-change"
-        ]
+        "tags": ["capacitor-steady-current", "rc-linear-change"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "time-constant-misread"
-        ]
+        "tags": ["time-constant-misread"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "series-parallel-confusion"
-        ]
+        "tags": ["series-parallel-confusion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "rc-linear-change"
-        ]
+        "tags": ["rc-linear-change"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "rc-linear-change"
-        ]
+        "tags": ["rc-linear-change"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "capacitor-wrong-quantity-fixed",
-          "time-constant-misread"
-        ]
+        "tags": ["capacitor-wrong-quantity-fixed", "time-constant-misread"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "rc-linear-change"
-        ]
+        "tags": ["rc-linear-change"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "capacitor-steady-current",
-          "junction-rule-ignored"
-        ]
+        "tags": ["capacitor-steady-current", "junction-rule-ignored"]
       }
     ]
   },
@@ -1946,81 +1598,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-poles-as-charges"
-        ]
+        "tags": ["magnetic-poles-as-charges"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-poles-as-charges"
-        ]
+        "tags": ["magnetic-poles-as-charges"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-poles-as-charges"
-        ]
+        "tags": ["magnetic-poles-as-charges"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       }
     ]
   },
@@ -2071,82 +1703,61 @@
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "field-direction-ignores-sign"
-        ]
+        "tags": ["field-direction-ignores-sign"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-force-does-work"
-        ]
+        "tags": ["magnetic-force-does-work"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "field-direction-ignores-sign",
-          "magnetic-force-along-field"
-        ]
+        "tags": ["field-direction-ignores-sign", "magnetic-force-along-field"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-poles-as-charges"
-        ]
+        "tags": ["magnetic-poles-as-charges"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-force-along-field"
-        ]
+        "tags": ["magnetic-force-along-field"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "sign-error"
-        ]
+        "tags": ["sign-error"]
       }
     ]
   },
@@ -2197,82 +1808,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "ampere-law-without-symmetry"
-        ]
+        "tags": ["ampere-law-without-symmetry"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "wire-field-not-circular"
-        ]
+        "tags": ["wire-field-not-circular"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "ampere-law-without-symmetry"
-        ]
+        "tags": ["ampere-law-without-symmetry"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "third-law-unequal-forces",
-          "wire-field-not-circular"
-        ]
+        "tags": ["third-law-unequal-forces", "wire-field-not-circular"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "vector-scalar-superposition"
-        ]
+        "tags": ["vector-scalar-superposition"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "wire-field-not-circular"
-        ]
+        "tags": ["wire-field-not-circular"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-force-along-field"
-        ]
+        "tags": ["magnetic-force-along-field"]
       }
     ]
   },
@@ -2307,81 +1897,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "enclosed-charge-or-current-wrong"
-        ]
+        "tags": ["enclosed-charge-or-current-wrong"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "power-of-ten"
-        ]
+        "tags": ["power-of-ten"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "ampere-law-without-symmetry"
-        ]
+        "tags": ["ampere-law-without-symmetry"]
       }
     ]
   },
@@ -2416,82 +1986,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "emf-from-flux-not-rate",
-          "unit-conversion"
-        ]
+        "tags": ["emf-from-flux-not-rate", "unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       }
     ]
   },
@@ -2542,81 +2091,61 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "lenz-opposes-field"
-        ]
+        "tags": ["lenz-opposes-field"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "energy-not-conserved"
-        ]
+        "tags": ["energy-not-conserved"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "induction-needs-change"
-        ]
+        "tags": ["induction-needs-change"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "magnetic-force-along-field"
-        ]
+        "tags": ["magnetic-force-along-field"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["emf-from-flux-not-rate"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "flux-ignores-orientation"
-        ]
+        "tags": ["flux-ignores-orientation"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       }
     ]
   },
@@ -2667,85 +2196,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "inductor-limits-swapped",
-          "time-constant-misread"
-        ]
+        "tags": ["inductor-limits-swapped", "time-constant-misread"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inductor-limits-swapped"
-        ]
+        "tags": ["inductor-limits-swapped"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "emf-from-flux-not-rate",
-          "inductor-opposes-current"
-        ]
+        "tags": ["emf-from-flux-not-rate", "inductor-opposes-current"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "time-constant-misread"
-        ]
+        "tags": ["time-constant-misread"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "time-constant-misread"
-        ]
+        "tags": ["time-constant-misread"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "derivative-integral-confusion",
-          "emf-from-flux-not-rate"
-        ]
+        "tags": ["derivative-integral-confusion", "emf-from-flux-not-rate"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inductor-opposes-current",
-          "sign-error"
-        ]
+        "tags": ["inductor-opposes-current", "sign-error"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "time-constant-misread"
-        ]
+        "tags": ["time-constant-misread"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "time-constant-misread"
-        ]
+        "tags": ["time-constant-misread"]
       }
     ]
   },
@@ -2780,81 +2285,61 @@
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "unit-conversion"
-        ]
+        "tags": ["unit-conversion"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 3,
         "difficulty": "medium",
         "type": "numeric",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 3,
         "difficulty": "hard",
         "type": "multiple-choice",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 1.5,
         "difficulty": "easy",
         "type": "multiple-choice",
-        "tags": [
-          "inductor-opposes-current"
-        ]
+        "tags": ["inductor-opposes-current"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
-        "tags": [
-          "inductor-opposes-current"
-        ]
+        "tags": ["inductor-opposes-current"]
       },
       {
         "minutes": 4.5,
         "difficulty": "hard",
         "type": "numeric",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       },
       {
         "minutes": 2,
         "difficulty": "easy",
         "type": "numeric",
-        "tags": [
-          "lc-charge-current-in-phase"
-        ]
+        "tags": ["lc-charge-current-in-phase"]
       }
     ]
   }
