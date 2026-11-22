@@ -1,19 +1,17 @@
 "use client";
 
-// A unit's guide for students: every topic of the unit with its guide, one at a time. A link to
-// #topic-4-1 opens that topic. "Practise this" points at the student's own class's assignment for
-// a set that covers the topic, when the class has one.
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+// A unit's guide for students, as a full-screen reader (GuideReader): the unit's topics in a
+// sidebar, one topic at a time. A link to #topic-4-1 opens that topic. "Practise this" points at
+// the student's own class's assignment for a set that covers the topic, when the class has one.
+import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { apTopic, apUnit } from "@/data/ap";
+import { apTopic } from "@/data/ap";
 import { getCurriculum } from "@/data/curricula";
 import { db } from "@/lib/firebase";
 import { hasUnitGuide, studentGuideHref } from "@/lib/guides";
 import { useAuth } from "@/contexts/auth-context";
 import type { PracticeLink } from "@/components/guide/topic-guide";
-import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
+import { GuideReader } from "@/components/guide/guide-reader";
 import { useUnitGuide } from "@/components/guide/use-unit-guide";
 
 /** The student's class's assignments that are sets of this course: set key -> assignment id. */
@@ -65,10 +63,8 @@ export default function StudentUnitGuideClient({
 }) {
   const curriculum = getCurriculum(curriculumId)!;
   const course = curriculum.apCourse;
-  const info = apUnit(unit, course);
   const { guide, failed } = useUnitGuide(curriculumId, unit);
   const classSets = useClassSets(curriculumId);
-  const topics = useMemo(() => (info?.topics ?? []).map((t) => t.id), [info]);
 
   const practiceFor = (topicId: string): PracticeLink[] =>
     curriculum.sets
@@ -85,44 +81,15 @@ export default function StudentUnitGuideClient({
   };
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/student"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" aria-hidden /> Dashboard
-      </Link>
-      <header className="space-y-1.5 border-b border-border pb-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {curriculum.name} · Unit {unit}
-        </p>
-        <h1 className="break-words text-3xl font-semibold tracking-tight">
-          {info?.title ?? `Unit ${unit}`}
-        </h1>
-        {info?.summary && (
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{info.summary}</p>
-        )}
-      </header>
-      {failed ? (
-        <p role="alert" className="text-sm text-muted-foreground">
-          This guide could not be loaded. Reload the page to try again.
-        </p>
-      ) : (
-        <>
-          {!guide && (
-            <p role="status" className="text-sm text-muted-foreground">
-              Loading the guide…
-            </p>
-          )}
-          <UnitGuideTopics
-            course={course}
-            topics={topics}
-            guide={guide}
-            practiceFor={practiceFor}
-            prerequisiteHref={prerequisiteHref}
-          />
-        </>
-      )}
-    </div>
+    <GuideReader
+      curriculumId={curriculumId}
+      courseName={curriculum.name}
+      course={course}
+      unit={unit}
+      guide={guide}
+      failed={failed}
+      practiceFor={practiceFor}
+      prerequisiteHref={prerequisiteHref}
+    />
   );
 }

@@ -90,3 +90,30 @@ export function groupByUnit<T extends GroupableAssignment>(
     });
   return groups;
 }
+
+/**
+ * The student's to-do order: due date first (no due date last), then the course's order (the
+ * class's `order` of set keys, else `curriculumSequence`), then title. `direction` -1 puts the
+ * latest due first, for work already handed in.
+ */
+export function sortByDueThenCourse<T extends GroupableAssignment>(
+  items: T[],
+  order?: readonly string[],
+  direction: 1 | -1 = 1,
+): T[] {
+  const position = new Map((order ?? []).map((key, i) => [key, i]));
+  const seq = (a: T) =>
+    position.get(a.curriculumSetKey as string) ??
+    (typeof a.curriculumSequence === "number"
+      ? order?.length
+        ? order.length + a.curriculumSequence
+        : a.curriculumSequence
+      : Number.MAX_SAFE_INTEGER);
+  const due = (a: T) => {
+    const t = time(a.dueDate);
+    return t === Number.MAX_SAFE_INTEGER ? t : direction * t;
+  };
+  return [...items].sort(
+    (a, b) => due(a) - due(b) || seq(a) - seq(b) || a.title.localeCompare(b.title),
+  );
+}

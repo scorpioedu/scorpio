@@ -8,6 +8,7 @@ export const STUDENT_SECTIONS = {
   study: {
     label: "Study",
     tabs: [
+      { href: "/student/lessons", label: "Lessons" },
       { href: "/student/notebook", label: "Notebook" },
       { href: "/student/vault", label: "Formula vault" },
       { href: "/student/resources", label: "Resources" },

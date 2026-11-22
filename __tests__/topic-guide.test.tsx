@@ -19,7 +19,8 @@ jest.mock("next/link", () => ({
 
 import { Reveal, TopicGuide, TryIt, WorkedExampleCard } from "@/components/guide/topic-guide";
 import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
-import { StudentCourseRoadmap } from "@/components/dashboard/student-course-roadmap";
+import { GuideReader } from "@/components/guide/guide-reader";
+import { StudentGuideGrid } from "@/components/dashboard/student-course-roadmap";
 import { buildStudentRoadmap } from "@/lib/student-roadmap";
 import unit4 from "@/data/guides/ap-physics-1/unit-4.json";
 import type { UnitGuide } from "@/lib/guides/schema";
@@ -284,7 +285,7 @@ describe("UnitGuideTopics", () => {
   });
 });
 
-describe("StudentCourseRoadmap", () => {
+describe("StudentGuideGrid", () => {
   const roadmap = buildStudentRoadmap(
     "ap-physics-1",
     null,
@@ -294,18 +295,53 @@ describe("StudentCourseRoadmap", () => {
     ],
     [],
   )!;
+  const units = roadmap.units.map((u) => ({ unit: u.unit, state: u.state }));
 
-  test("a unit's heading links to its guide only when the unit has one", () => {
+  test("each unit card links to its guide only when the unit has one", () => {
     expect(roadmap.curriculumId).toBe("ap-physics-1");
-    const out = html(<StudentCourseRoadmap roadmap={roadmap} />);
+    const out = html(<StudentGuideGrid curriculumId="ap-physics-1" units={units} />);
     expect(out).toContain('<a href="/student/courses/ap-physics-1/4"');
-    expect(out).toContain("Unit 4: Linear momentum");
+    expect(out).toContain("Linear momentum");
+    expect(out).toContain("You&#x27;re here");
     // One link per unit shown that has a guide, and none for a unit without one.
-    const shown = [...out.matchAll(/Unit (\d+):/g)].map((m) => Number(m[1]));
-    const withGuide = [...new Set(shown)].filter((u) => hasUnitGuide("ap-physics-1", u));
+    const withGuide = units.filter((u) => hasUnitGuide("ap-physics-1", u.unit));
     expect(out.match(/\/student\/courses\//g)).toHaveLength(withGuide.length);
-    expect(
-      html(<StudentCourseRoadmap roadmap={{ ...roadmap, curriculumId: "no-such-course" }} />),
-    ).not.toContain("/student/courses/");
+    expect(html(<StudentGuideGrid curriculumId="no-such-course" units={units} />)).not.toContain(
+      "/student/courses/",
+    );
+  });
+});
+
+describe("GuideReader", () => {
+  const props = {
+    curriculumId: "ap-physics-1",
+    courseName: "AP Physics 1",
+    course: "physics-1" as const,
+    unit: 4,
+  };
+  const unitGuide = unit4 as unknown as UnitGuide;
+
+  test("with no topic in the address it shows the unit's first topic, one at a time", () => {
+    const out = html(<GuideReader {...props} guide={unitGuide} />);
+    expect(out).toContain("Unit 4 · Topic 4.1");
+    expect(out).toContain("Topic 1 of");
+    // The sidebar lists every topic; only the first is current.
+    expect(out.match(/aria-current="page"/g)?.length).toBe(1); // (the test's Link drops the unit's)
+    expect(out).toContain('href="#topic-4-1" aria-current="page"');
+    expect(out).toContain('href="#topic-4-2"');
+  });
+
+  test("Previous goes to the end of the unit before, Next to the next topic", () => {
+    const out = html(<GuideReader {...props} guide={unitGuide} />);
+    expect(out).toMatch(/href="\/student\/courses\/ap-physics-1\/3#topic-3-\d+"/);
+    expect(out).toContain("4.2 Change in momentum and impulse");
+    expect(out).toContain("0 of 4 read");
+    expect(out).toContain('href="/student/lessons"');
+  });
+
+  test("loading, and a topic without a guide", () => {
+    expect(html(<GuideReader {...props} guide={null} />)).toContain("Loading the lesson");
+    const empty = { ...unitGuide, guides: [] } as UnitGuide;
+    expect(html(<GuideReader {...props} guide={empty} />)).toContain("coming soon");
   });
 });
