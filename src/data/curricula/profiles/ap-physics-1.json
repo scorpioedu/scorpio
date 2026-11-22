@@ -872,25 +872,25 @@
     ]
   },
   "4A": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 4
+        "problems": 7
       },
       {
         "tag": "momentum-not-vector",
-        "problems": 4
+        "problems": 6
       }
     ],
     "each": [
@@ -936,33 +936,77 @@
         "tags": [
           "momentum-not-vector"
         ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
       }
     ]
   },
   "4B": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "impulse-force-confusion",
-        "problems": 3
+        "problems": 5
       },
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 2
+        "problems": 4
       },
       {
         "tag": "momentum-not-vector",
-        "problems": 2
+        "problems": 4
+      },
+      {
+        "tag": "system-boundary",
+        "problems": 1
       },
       {
         "tag": "third-law-unequal-forces",
@@ -1012,37 +1056,79 @@
           "impulse-force-confusion",
           "momentum-kinetic-energy-confusion"
         ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "impulse-force-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "impulse-force-confusion",
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion",
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "system-boundary"
+        ]
       }
     ]
   },
   "4C": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 27,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
+        "tag": "momentum-kinetic-energy-confusion",
+        "problems": 5
+      },
+      {
         "tag": "system-boundary",
+        "problems": 3
+      },
+      {
+        "tag": "momentum-not-vector",
         "problems": 2
       },
       {
         "tag": "third-law-unequal-forces",
         "problems": 2
-      },
-      {
-        "tag": "momentum-kinetic-energy-confusion",
-        "problems": 1
-      },
-      {
-        "tag": "momentum-not-vector",
-        "problems": 1
       }
     ],
     "each": [
@@ -1084,29 +1170,70 @@
           "system-boundary",
           "third-law-unequal-forces"
         ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion",
+          "system-boundary"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
       }
     ]
   },
   "4D": {
-    "problems": 5,
-    "minutes": 13,
+    "problems": 10,
+    "minutes": 28,
     "difficulty": {
-      "easy": 0,
-      "medium": 5,
-      "hard": 0
+      "easy": 2,
+      "medium": 6,
+      "hard": 2
     },
     "types": {
-      "multiple-choice": 2,
-      "numeric": 3
+      "multiple-choice": 4,
+      "numeric": 6
     },
     "misconceptions": [
       {
         "tag": "momentum-kinetic-energy-confusion",
-        "problems": 3
+        "problems": 8
       },
       {
         "tag": "momentum-not-vector",
-        "problems": 2
+        "problems": 3
       },
       {
         "tag": "third-law-unequal-forces",
@@ -1151,6 +1278,47 @@
         "minutes": 2,
         "difficulty": "medium",
         "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion",
+          "momentum-not-vector"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "momentum-kinetic-energy-confusion"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
         "tags": [
           "momentum-kinetic-energy-confusion"
         ]

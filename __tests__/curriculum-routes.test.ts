@@ -271,7 +271,7 @@ describe("publish appends to a published set", () => {
     seed(3);
     const res = await run();
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ id: "w4A", appended: 2 });
+    expect(await res.json()).toEqual({ id: "w4A", appended: set4A.draftIds.length - 3 });
     // The published assignment is updated in place, never re-created.
     expect(mockWrites.filter((w) => w.op === "set" && w.path.startsWith("assignments/"))).toEqual(
       [],
@@ -284,7 +284,7 @@ describe("publish appends to a published set", () => {
     );
     expect(data.questions.map((q) => q.text)).toEqual(ids.map((_, i) => problem(i + 1).text));
     expect(data.contentDraftIds).toEqual(ids);
-    expect(data.totalPoints).toBe(50);
+    expect(data.totalPoints).toBe(ids.length * 10);
     expect(JSON.stringify(data)).not.toMatch(/correctAnswer|solution|misconception/);
     // Keys and solutions are merged in: only the new questions' entries are written (the old
     // questions also get the solutions they never had, matched to their drafts).
@@ -327,7 +327,7 @@ describe("publish appends to a published set", () => {
   });
 
   test("nothing new to add: already published", async () => {
-    seed(5);
+    seed(set4A.draftIds.length);
     const res = await run();
     expect(res.status).toBe(409);
     expect((await res.json()).error).toMatch(/already published/);
@@ -460,7 +460,13 @@ describeWithContent("GET /api/admin/content/sets", () => {
       body.sets
         .find((x: { key: string }) => x.key === "4A")
         .drafts.map((d: { state: string }) => d.state),
-    ).toEqual(["ai-reviewed", "human-approved", "draft", "missing", "ai-reviewed"]);
+    ).toEqual([
+      "ai-reviewed",
+      "human-approved",
+      "draft",
+      "missing",
+      ...set4A.draftIds.slice(4).map(() => "ai-reviewed"),
+    ]);
     expect(body.sets.find((x: { key: string }) => x.key === "4A").assignmentId).toBeNull();
     expect(body.sets.find((x: { key: string }) => x.key === "4B").assignmentId).toBe("w4B");
     expect(

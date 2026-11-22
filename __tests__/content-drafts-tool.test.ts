@@ -21,7 +21,7 @@ describeWithContent("content-drafts tool", () => {
 
   test("import writes approved, unpublished, unassigned drafts and keeps the AI-review mark", () => {
     const now = new Date("2026-12-01T00:00:00Z");
-    const doc = toImportDoc({ ...file.drafts[0], status: "published" }, now);
+    const doc = toImportDoc({ ...file.drafts[0], status: "published", reviewKind: "ai" }, now);
     expect(doc).toMatchObject({
       status: "approved",
       assignmentId: null,
@@ -94,15 +94,16 @@ describe("verified drafts through export and import", () => {
 });
 
 describeWithContent("Units 4–6 content file", () => {
-  test("60 AI-reviewed problems in 12 sets of 5, one AP unit per set, every draft in exactly one set", () => {
-    expect(file.drafts).toHaveLength(60);
+  test("12 sets of 5 to 10 problems, one AP unit per set, every draft in exactly one set", () => {
     expect(file.sets).toHaveLength(12);
     const ids = file.sets.flatMap((s) => s.draftIds);
-    expect(new Set(ids).size).toBe(60);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(file.drafts).toHaveLength(ids.length);
     expect(new Set(ids)).toEqual(new Set(file.drafts.map((d) => d.id)));
     const unit = Object.fromEntries(file.drafts.map((d) => [d.id, d.apUnit]));
     for (const s of file.sets) {
-      expect(s.draftIds).toHaveLength(5);
+      expect(s.draftIds.length).toBeGreaterThanOrEqual(5);
+      expect(s.draftIds.length).toBeLessThanOrEqual(10);
       expect(new Set(s.draftIds.map((id: string) => unit[id])).size).toBe(1);
     }
     // "verified" once tools/verify-content.cjs --write has stamped a draft.
