@@ -151,7 +151,10 @@ export function validateDraftProblem(
     else spec = r.spec as ProblemSpec;
   }
   // Problem text and options reach students as written; LaTeX commands would show as backslashes.
-  if ([text, ...(options ?? [])].some((t) => /\\[a-zA-Z]+/.test(t)))
+  // A ```dg diagram block is left out: \theta, \omega, \vec{F} there are the diagram's own label
+  // markup (the diagram renderer reports any it cannot draw).
+  const prose = text.replace(/```dg[\s\S]*?```/g, " ");
+  if ([prose, ...(options ?? [])].some((t) => /\\[a-zA-Z]+/.test(t)))
     warnings.push("The text or an option contains LaTeX; write the mathematics as plain text");
   if (errors.length || !type) return { errors, warnings };
 

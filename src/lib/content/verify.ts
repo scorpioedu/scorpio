@@ -265,6 +265,25 @@ export function textNumbers(
   return out;
 }
 
+/**
+ * The numbers in a text's ```dg diagram blocks, read the way the diagram reads them. There a comma
+ * separates coordinates ("seg 0,12 6,0", "pt 100,140") and ".." a range ("fn ... 0..1.6"), where
+ * textNumbers, reading prose, takes "100,140" for one number with a thousands separator and "2..4"
+ * for 2 and .4. Outside quoted labels both become "; ", which keeps the numbers apart without
+ * making them look like a spaced thousand or a number with a unit.
+ */
+export function diagramNumbers(text: string): TextNumber[] {
+  const blocks = (text ?? "").match(/```dg[\s\S]*?```/g) ?? [];
+  return blocks.flatMap((block) =>
+    textNumbers(
+      block
+        .split(/("[^"\n]*")/)
+        .map((part, i) => (i % 2 ? part : part.replace(/\s*(?:,|\.\.)\s*/g, "; ")))
+        .join(""),
+    ),
+  );
+}
+
 /** Is the text number this quantity? Either the same number as written, or the same amount in another unit. */
 export function sameQuantity(n: TextNumber, value: number, unit: Unit | undefined): boolean {
   if (near(Math.abs(n.value), Math.abs(value))) return true;
@@ -401,7 +420,10 @@ export function checkSpecMatchesText(problem: DraftProblem): CheckOutcome {
   if (!spec) return missing("No spec");
   const shape = specShapeErrors(spec);
   if (shape.length) return fail(shape.join("; "));
-  const numbers = textNumbers(problem.text);
+  // A given may be read off a diagram, so its numbers count too, as the diagram reads them. The
+  // prose reading of the whole text stays in as well: an earlier verifier read diagram coordinates
+  // that way, and some verified specs list its readings ("100,140" as 100140) as extraneous.
+  const numbers = [...textNumbers(problem.text), ...diagramNumbers(problem.text)];
   const problems: string[] = [];
   const givens = Object.entries(spec.givens).map(([name, given]) => ({
     name,
