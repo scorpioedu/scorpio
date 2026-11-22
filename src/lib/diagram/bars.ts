@@ -160,10 +160,14 @@ export function renderBars(
 
   // ---- layout ----
   const vals = all.map((b) => b.v ?? 0);
-  const hi = Math.max(1, ...vals),
+  // Values well below 1 (0.2 J, 0.05 kg·m/s) would be slivers on a 0..1 axis: scale to the data,
+  // with a grid step that gives the largest bar at least four steps (so it fills MAX_H).
+  const most = Math.max(0, ...vals.map(Math.abs));
+  const small = most > 0 && most < 1 ? smallStep(most) : undefined;
+  const hi = Math.max(small ?? 1, ...vals),
     lo = Math.min(0, ...vals);
-  const u = Math.min(28, MAX_H / Math.max(hi, -lo)); // px per unit
-  const step = niceStep(Math.max(hi, -lo));
+  const u = Math.min(28 / (small ?? 1), MAX_H / Math.max(hi, -lo)); // px per unit
+  const step = small ?? niceStep(Math.max(hi, -lo));
   const top = Math.ceil(hi / step - 1e-9) * step,
     bot = Math.floor(lo / step + 1e-9) * step;
   const y = (v: number) => (top - v) * u;
@@ -266,4 +270,13 @@ function niceStep(max: number): number {
   const p = 10 ** Math.floor(Math.log10(raw));
   const m = raw / p;
   return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
+}
+
+/** For a chart whose largest value is below 1: the largest 1, 2 or 5 × 10^n that fits four times. */
+function smallStep(max: number): number {
+  let p = 10 ** Math.floor(Math.log10(max));
+  for (;;) {
+    for (const m of [5, 2, 1]) if (max / (m * p) >= 4 - 1e-9) return +(m * p).toPrecision(6);
+    p /= 10;
+  }
 }

@@ -14,7 +14,7 @@ import { renderPv, type PvModel } from "./pv";
 import { renderRay, type RayModel } from "./ray";
 import { renderRigid, type RigidModel } from "./rigid";
 import { renderScene } from "./scene";
-import { unsupportedLabelMarkup } from "./svg";
+import { unsupportedLabelMarkup, VEC_LIFT } from "./svg";
 import { renderWave, type WaveModel } from "./wave";
 
 export type { LevelsModel, PvModel, RayModel, RigidModel, WaveModel };
@@ -163,6 +163,15 @@ export function render(src: string, opts: RenderOptions = {}): Result {
 export function svgTexts(svg: string): string[] {
   return [...svg.matchAll(/<text\b[^>]*>(.*?)<\/text>/g)].map((m) =>
     m[1]
+      // a vector arrow (svg.ts label) reads as U+20D7; a sub/superscript after it drops by its lift
+      .replace(
+        /<tspan class="vec"[^>]*>→<\/tspan>(?:<tspan dy="(-?[\d.]+)em" font-size="75%">)?/g,
+        (_m, dy) =>
+          "\u20d7" +
+          (dy === undefined
+            ? ""
+            : `<tspan dy="${Number(dy) - VEC_LIFT / 0.75}em" font-size="75%">`),
+      )
       .replace(/<tspan dy="(-?[\d.]+)em" font-size="75%">(.*?)<\/tspan>/g, (_m, dy, body) =>
         Number(dy) > 0 ? `_{${body}}` : `^{${body}}`,
       )

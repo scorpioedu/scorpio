@@ -77,6 +77,7 @@ charge 0,0 +2 "+2q"         point charge: x,y then signed relative size
 plates 0,1 0,-1 w=4         centres of the + plate and the − plate
 uniform E right  uniform B in (x=0..3 y=0..2)   a direction, or in/out of the page (crosses/dots)
 wire 0,0 out "I"            long straight wire seen end-on, current out or in
+ampere circle 0,0 1 "C"     Amperian loop; ampere rect like gauss rect
 equi  gauss circle 0,0 1.5 "S"  gauss rect -1,-1 1,1 "S"  pt 1,1 "P"
 test 1,1 + "q" (v=right)    test charge with its force arrow; v= for the magnetic force`,
   ray: String.raw`ray lens f=10 (unit=cm)     thin lens, f<0 diverging; or ray mirror f=10 (f<0 convex), ray mirror plane
@@ -103,12 +104,13 @@ dim 0 2 "L/2"               distance mark. eq: torques about the pivot must bala
 };
 
 /**
- * Mechanics courses draw motion, energy and rotation; E&M courses draw circuits and fields.
+ * Mechanics courses draw motion, energy and rotation; E&M courses draw circuits and fields, and
+ * energy bar charts for energy accounting (a charge moving through a potential, a capacitor).
  * AP Physics 2 also covers optics, waves, thermodynamics and modern physics, so it alone gets
  * ray, wave, pv and levels (waves left AP Physics 1 in the 2024 course framework).
  */
 const MECHANICS: DiagramKind[] = ["plot", "fbd", "scene", "bars", "motion", "rigid"];
-const ELECTRICITY: DiagramKind[] = ["plot", "fbd", "scene", "circuit", "field"];
+const ELECTRICITY: DiagramKind[] = ["plot", "fbd", "scene", "bars", "circuit", "field"];
 const COURSE_KINDS: Record<string, DiagramKind[]> = {
   "physics-1": MECHANICS,
   "physics-c-mech": MECHANICS,

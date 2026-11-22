@@ -496,7 +496,12 @@ function refraction(doc: Doc, errs: DgError[]): Out {
     -v * side * LEN * Math.cos(rad(a)),
   ];
   const ray = (from: P, to: P, extra = "") => {
-    cv.line(from, to, RAY + extra);
+    // a width in `extra` replaces RAY's own: a repeated attribute is invalid XML
+    cv.line(
+      from,
+      to,
+      (/stroke-width=/.test(extra) ? RAY.replace(/ stroke-width="[^"]*"/, "") : RAY) + extra,
+    );
     cv.reserveLine(from, to, 5);
     cv.add(
       chevron(
