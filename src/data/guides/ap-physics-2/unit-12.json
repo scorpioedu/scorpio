@@ -344,6 +344,7 @@
           "right": "The right-hand rule gives the force on a positive charge. The force on a negative charge is opposite, so the two particles curve in opposite senses."
         },
         {
+          "tag": "magnetic-poles-as-charges",
           "wrong": "A charge sitting at rest between the poles of a strong magnet feels a strong magnetic force.",
           "right": "With $v = 0$ the force $|q|vB\\sin\\theta$ is zero, however strong the field. Magnetic forces act only on moving charge."
         }
@@ -585,6 +586,7 @@
           "right": "The forces are a third-law pair and are equal in size. Each is proportional to $I_1 I_2$, the product of both currents."
         },
         {
+          "tag": "wire-field-not-circular",
           "wrong": "Parallel currents in the same direction repel, just as like charges do.",
           "right": "They attract; opposite currents repel. Currents are not charges, and the rule comes from the right-hand rules, not from like-repels-like."
         }
@@ -802,6 +804,7 @@
           "right": "Only when the field goes straight through the loop's face. In general $\\Phi_B = BA\\cos\\theta$, and a loop edge-on to the field has no flux through it at all."
         },
         {
+          "tag": "induction-needs-change",
           "wrong": "Moving a loop through a magnetic field always induces a current in it.",
           "right": "Not if the flux through the loop stays the same. A loop sliding around entirely inside a uniform field has a constant flux and no induced current."
         }

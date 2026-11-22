@@ -94,64 +94,69 @@
       "derivation": "**Current in terms of drift speed.** Take a wire of cross-sectional area $A$ that holds $n$ carriers per unit volume, each of charge $e$, all drifting along the wire at speed $v_d$.\n\nIn a short time $dt$ each carrier advances a distance $v_d\\,dt$. So the carriers that cross a chosen cross-section during $dt$ are exactly those that start within a distance $v_d\\,dt$ behind it: the ones in a slab of volume $A\\,v_d\\,dt$.\n\nThat slab holds $n\\,A\\,v_d\\,dt$ carriers, so the charge that crosses is\n\n$$dq = n e A v_d\\,dt.$$\n\nDivide by $dt$ to get the current:\n\n$$I = \\frac{dq}{dt} = n e A v_d.$$\n\nDividing by the area gives the current density, $J = I/A = n e v_d$, which no longer depends on the size of the wire: it describes the flow at a point.",
       "workedExamples": [
         {
-          "title": "Drift speed in a silver wire",
-          "prompt": "A silver wire of cross-sectional area $2.0\\ \\text{mm}^2$ carries a steady current of $3.0\\ \\text{A}$. Silver has $5.86 \\times 10^{28}$ conduction electrons per cubic metre. Using $e = 1.60 \\times 10^{-19}\\ \\text{C}$, find the drift speed of the electrons.",
+          "title": "How dense is a proton beam?",
+          "prompt": "A proton beam of radius $1.0\\ \\text{mm}$ carries a current of $1.5\\ \\text{mA}$, and its protons all move at $2.0 \\times 10^{7}\\ \\text{m/s}$. Using $e = 1.60 \\times 10^{-19}\\ \\text{C}$, find the number of protons per cubic metre in the beam.",
           "steps": [
-            "The current is set by the carriers and their drift: $I = n e A v_d$. Everything except $v_d$ is known, so $v_d = \\dfrac{I}{n e A}$.",
-            "Convert the area to SI units: $A = 2.0\\ \\text{mm}^2 = 2.0 \\times 10^{-6}\\ \\text{m}^2$.",
-            "Work out the denominator: $n e A = (5.86 \\times 10^{28}\\ \\text{m}^{-3})(1.60 \\times 10^{-19}\\ \\text{C})(2.0 \\times 10^{-6}\\ \\text{m}^2) = 1.88 \\times 10^{4}\\ \\text{C/m}$.",
-            "Divide: $v_d = \\dfrac{3.0\\ \\text{A}}{1.88 \\times 10^{4}\\ \\text{C/m}} = 1.6 \\times 10^{-4}\\ \\text{m/s}$.",
-            "That is about a sixth of a millimetre each second: an electron takes well over an hour to drift one metre."
+            "A beam is a current like any other: $I = neAv$, with the protons' speed in place of a drift speed, so $n = \\dfrac{I}{eAv}$.",
+            "$A = \\pi(1.0 \\times 10^{-3}\\ \\text{m})^2 = 3.14 \\times 10^{-6}\\ \\text{m}^2$, so $n = \\dfrac{1.5 \\times 10^{-3}}{(1.60 \\times 10^{-19})(3.14 \\times 10^{-6})(2.0 \\times 10^{7})} = 1.5 \\times 10^{14}\\ \\text{m}^{-3}$.",
+            "A metal has about $10^{29}$ carriers per cubic metre. The beam is far more dilute, but its protons are fast; a wire's electrons are slow but enormously many."
           ],
-          "answer": "$v_d = 1.6 \\times 10^{-4}\\ \\text{m/s}$",
+          "answer": "$n = 1.5 \\times 10^{14}\\ \\text{m}^{-3}$",
           "style": "stepped",
           "spec": {
             "givens": {
               "I": {
-                "value": 3,
-                "unit": "A"
-              },
-              "n": {
-                "value": 5.86e+28,
-                "unit": "m^-3"
+                "value": 1.5,
+                "unit": "mA"
               },
               "q_e": {
                 "value": 1.6e-19,
                 "unit": "C"
               },
-              "A": {
-                "value": 2,
-                "unit": "mm^2"
+              "r": {
+                "value": 1,
+                "unit": "mm"
+              },
+              "v": {
+                "value": 20000000,
+                "unit": "m/s"
               }
             },
-            "expr": "I/(n*q_e*A)",
-            "unit": "m/s"
+            "expr": "I/(q_e*pi*r^2*v)",
+            "unit": "m^-3"
           }
         },
         {
-          "title": "Current from a non-uniform current density",
-          "prompt": "A cylindrical conductor of radius $a = 1.0\\ \\text{mm}$ carries a current whose density is greatest on the axis and falls to zero at the surface: $J(r) = J_0\\left(1 - r^2/a^2\\right)$, where $r$ is the distance from the axis and $J_0 = 4.0 \\times 10^{6}\\ \\text{A/m}^2$. Derive an expression for the total current in the conductor and calculate its value.",
+          "title": "Current density that falls with depth",
+          "prompt": "A copper bar $2.0\\ \\text{cm}$ wide and $1.0\\ \\text{mm}$ thick carries a rapidly alternating current that crowds toward its top face: at one instant $J = J_0e^{-y/\\delta}$, where $y$ is the depth below that face, $J_0 = 5.0 \\times 10^{6}\\ \\text{A/m}^2$ and $\\delta = 0.50\\ \\text{mm}$. Derive an expression for the current at that instant and evaluate it.",
           "steps": [
-            "The current density is not uniform, so use $I = \\int J\\,dA$ with area elements on which $J$ is constant: thin rings of radius $r$ and width $dr$, each of area $dA = 2\\pi r\\,dr$.",
-            "$I = \\displaystyle\\int_0^a J_0\\left(1 - \\frac{r^2}{a^2}\\right) 2\\pi r\\,dr = 2\\pi J_0 \\int_0^a \\left(r - \\frac{r^3}{a^2}\\right) dr$.",
-            "$I = 2\\pi J_0\\left[\\dfrac{r^2}{2} - \\dfrac{r^4}{4a^2}\\right]_0^a = 2\\pi J_0\\left(\\dfrac{a^2}{2} - \\dfrac{a^2}{4}\\right) = \\dfrac{\\pi J_0 a^2}{2}$.",
-            "Substituting: $I = \\tfrac{1}{2}\\pi(4.0 \\times 10^{6}\\ \\text{A/m}^2)(1.0 \\times 10^{-3}\\ \\text{m})^2 = 6.3\\ \\text{A}$.",
-            "Check: this is half of $J_0 \\pi a^2$, the current if the density were $J_0$ everywhere. That is reasonable, because $J$ is smaller than $J_0$ everywhere off the axis."
+            "$J$ varies only with depth, so use strips across the full width $w$, of thickness $dy$ and area $dA = w\\,dy$.",
+            "$I = \\displaystyle\\int_0^{t} J_0e^{-y/\\delta}\\,w\\,dy = J_0w\\delta\\left(1 - e^{-t/\\delta}\\right)$, where $t$ is the thickness.",
+            "$I = (5.0 \\times 10^{6})(0.020)(5.0 \\times 10^{-4})(1 - e^{-2.0}) = (50\\ \\text{A})(0.865) = 43\\ \\text{A}$.",
+            "Check: $J_0$ everywhere would give $J_0wt = 100\\ \\text{A}$; $J$ falls to $0.14\\,J_0$ at the bottom face, so $43\\ \\text{A}$ is reasonable."
           ],
-          "answer": "$I = \\tfrac{1}{2}\\pi J_0 a^2 = 6.3\\ \\text{A}$",
+          "answer": "$I = J_0w\\delta\\left(1 - e^{-t/\\delta}\\right) = 43\\ \\text{A}$",
           "style": "ap",
           "spec": {
             "givens": {
               "J_0": {
-                "value": 4000000,
+                "value": 5000000,
                 "unit": "A/m^2"
               },
-              "a": {
+              "w": {
+                "value": 2,
+                "unit": "cm"
+              },
+              "delta": {
+                "value": 0.5,
+                "unit": "mm"
+              },
+              "t": {
                 "value": 1,
                 "unit": "mm"
               }
             },
-            "expr": "pi*J_0*a^2/2",
+            "expr": "J_0*w*delta*(1 - exp(-t/delta))",
             "unit": "A"
           }
         }
@@ -174,8 +179,8 @@
       ],
       "checkYourself": [
         {
-          "q": "The charge that has passed a point in a wire is $q(t) = (2.0\\ \\text{C/s}^2)\\,t^2$. What is the current at $t = 3.0\\ \\text{s}$?",
-          "a": "$I = dq/dt = (4.0\\ \\text{C/s}^2)\\,t$, which is $12\\ \\text{A}$ at $t = 3.0\\ \\text{s}$."
+          "q": "The charge that has passed a point in a wire is $q(t) = Q_0\\left(1 - e^{-t/\\tau}\\right)$. When is the current largest, and how large is it then?",
+          "a": "At $t = 0$: $I = dq/dt = (Q_0/\\tau)e^{-t/\\tau}$ starts at $Q_0/\\tau$ and then decays."
         },
         {
           "q": "Two copper wires carry the same current. Wire B has twice the diameter of wire A. How do the drift speeds compare?",
@@ -327,14 +332,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "current-used-up",
           "wrong": "The bulb uses up current, so less current returns to the battery than left it.",
           "right": "The current is the same on both sides of the bulb, because charge is conserved. What the bulb takes is energy: each coulomb leaves at a lower potential than it arrived with."
         },
         {
+          "tag": "battery-constant-current",
           "wrong": "A battery pushes out the same current whatever is connected to it.",
           "right": "An ideal battery fixes the potential difference between its terminals, not the current. The current is whatever the rest of the circuit allows: more through a small resistance, none through an open switch."
         },
         {
+          "tag": "voltage-current-confusion",
           "wrong": "No current flows through an open switch, so there is no potential difference across it.",
           "right": "With no current there is no potential difference across the loads, so each side of the switch is at the potential of one battery terminal. The whole emf appears across the gap."
         }
@@ -707,10 +715,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "power-energy-confusion",
           "wrong": "A 100 W bulb always uses more energy than a 60 W bulb.",
           "right": "Power is the rate of energy transfer, not an amount of energy. Energy is power multiplied by time: a $60\\ \\text{W}$ bulb left on for two hours transfers more energy than a $100\\ \\text{W}$ bulb on for one."
         },
         {
+          "tag": "resistance-brightness-rule",
           "wrong": "$P = I^2R$ says more resistance means more power and $P = \\Delta V^2/R$ says it means less, so one of them must be wrong.",
           "right": "Both are right; they answer different questions. At a fixed current (series), more resistance dissipates more. At a fixed potential difference (parallel, or straight across a supply), more resistance draws less current and dissipates less."
         },
@@ -902,14 +912,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "series-parallel-confusion",
           "wrong": "Adding another resistor in parallel increases the total resistance, because there is now more resistance in the circuit.",
           "right": "A new parallel branch is an extra path for charge. The equivalent resistance goes down, below the smallest branch, and the battery supplies more current."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "Current takes the path of least resistance, so in a parallel pair it all goes through the smaller resistor.",
           "right": "Every branch with a potential difference across it carries current. The current divides in inverse proportion to resistance: a $3\\ \\Omega$ branch carries twice the current of a $6\\ \\Omega$ branch beside it, not all of it."
         },
         {
+          "tag": "terminal-voltage-equals-emf",
           "wrong": "The potential difference across a battery's terminals is always its emf.",
           "right": "Only when no current flows. A real battery has internal resistance, and while it supplies a current $I$ its terminal potential difference is $\\varepsilon - Ir$. The larger the current, the lower it is."
         }
@@ -1058,47 +1071,48 @@
           }
         },
         {
-          "title": "Charging a car battery",
-          "prompt": "A charger with emf $14.4\\ \\text{V}$ and internal resistance $0.10\\ \\Omega$ is connected to a car battery of emf $12.0\\ \\text{V}$ and internal resistance $0.020\\ \\Omega$, positive terminal to positive terminal, as shown. Determine the charging current and the potential difference across the car battery's terminals.\n\n```dg\ncircuit\nbattery a b 14.4V \"charger\" r=0.10Ω\nbattery a b 12.0V \"car battery\" r=0.020Ω\n```",
+          "title": "Finding a battery's emf and internal resistance",
+          "prompt": "A battery of unknown emf $\\varepsilon$ and internal resistance $r$ is connected to a single resistor $R$, as shown. With $R = 2.0\\ \\Omega$ the potential difference across the battery's terminals is $5.0\\ \\text{V}$; with $R = 8.0\\ \\Omega$ it is $8.0\\ \\text{V}$. Determine $\\varepsilon$ and $r$.\n\n```dg\ncircuit\nbattery a b \"ε, r\"\nresistor a b R\n```",
           "steps": [
-            "This is one loop with the emfs opposed. The larger emf wins, so the current $I$ leaves the charger's positive terminal and enters the car battery's.",
-            "Walk round with the current from the charger's negative terminal: $+14.4\\ \\text{V} - I(0.10\\ \\Omega) - I(0.020\\ \\Omega) - 12.0\\ \\text{V} = 0$.",
-            "$I = \\dfrac{14.4\\ \\text{V} - 12.0\\ \\text{V}}{0.10\\ \\Omega + 0.020\\ \\Omega} = \\dfrac{2.4\\ \\text{V}}{0.12\\ \\Omega} = 20\\ \\text{A}$.",
-            "Go through the car battery from its negative terminal to its positive. The emf gives $+12.0\\ \\text{V}$. The current runs the other way through the internal resistance, so the potential rises again, by $Ir = (20\\ \\text{A})(0.020\\ \\Omega) = 0.40\\ \\text{V}$. In total, $12.4\\ \\text{V}$.",
-            "Check from the charger's side: $14.4\\ \\text{V} - (20\\ \\text{A})(0.10\\ \\Omega) = 12.4\\ \\text{V}$."
+            "The terminal potential difference is the potential difference across the resistor, so the currents are $I_1 = (5.0\\ \\text{V})/(2.0\\ \\Omega) = 2.5\\ \\text{A}$ and $I_2 = (8.0\\ \\text{V})/(8.0\\ \\Omega) = 1.0\\ \\text{A}$.",
+            "Walk through the battery from its negative terminal with the current: up by $\\varepsilon$, then down by $Ir$ across the internal resistance. So the terminal potential difference is $\\varepsilon - Ir$, giving $\\varepsilon - (2.5\\ \\text{A})r = 5.0\\ \\text{V}$ and $\\varepsilon - (1.0\\ \\text{A})r = 8.0\\ \\text{V}$.",
+            "Subtract: $(1.5\\ \\text{A})r = 3.0\\ \\text{V}$, so $r = 2.0\\ \\Omega$. Then $\\varepsilon = 8.0\\ \\text{V} + (1.0\\ \\text{A})(2.0\\ \\Omega) = 10\\ \\text{V}$.",
+            "Check with the first load: $10\\ \\text{V} - (2.5\\ \\text{A})(2.0\\ \\Omega) = 5.0\\ \\text{V}$. The larger current loses more inside the battery, which is why the terminal potential difference sags under a heavier load."
           ],
-          "answer": "$I = 20\\ \\text{A}$; the car battery's terminal potential difference is $12.4\\ \\text{V}$, above its emf",
+          "answer": "$\\varepsilon = 10\\ \\text{V}$ and $r = 2.0\\ \\Omega$",
           "style": "ap",
           "spec": {
             "givens": {
-              "emf_ch": {
-                "value": 14.4,
+              "V_1": {
+                "value": 5,
                 "unit": "V"
               },
-              "r_ch": {
-                "value": 0.1,
+              "R_1": {
+                "value": 2,
                 "unit": "Ω"
               },
-              "emf_car": {
-                "value": 12,
+              "V_2": {
+                "value": 8,
                 "unit": "V"
               },
-              "r_car": {
-                "value": 0.02,
+              "R_2": {
+                "value": 8,
                 "unit": "Ω"
               }
             },
-            "expr": "emf_car + (emf_ch - emf_car)/(r_ch + r_car)*r_car",
+            "expr": "V_2 + V_2/R_2*(V_2 - V_1)/(V_1/R_1 - V_2/R_2)",
             "unit": "V"
           }
         }
       ],
       "misconceptions": [
         {
+          "tag": "loop-rule-sign",
           "wrong": "A battery always contributes $+\\varepsilon$ to a loop equation.",
           "right": "The sign depends on the way you cross it: $+\\varepsilon$ from negative terminal to positive, $-\\varepsilon$ from positive to negative, whatever the direction of the current."
         },
         {
+          "tag": "loop-rule-sign",
           "wrong": "A resistor always contributes $-IR$ to a loop equation.",
           "right": "Only when you cross it along its current arrow. Current flows from high potential to low, so walking against the arrow you go up in potential: $+IR$."
         },
@@ -1258,27 +1272,22 @@
           }
         },
         {
-          "title": "Two batteries, two loops",
-          "prompt": "In the circuit shown, $\\varepsilon_1 = 12\\ \\text{V}$, $\\varepsilon_2 = 6.0\\ \\text{V}$, $R_1 = 2.0\\ \\Omega$, $R_2 = 2.0\\ \\Omega$ and $R_3 = 4.0\\ \\Omega$, and the batteries are ideal. Using the current directions shown, determine the current in each resistor.\n\n```dg\ncircuit\nbattery a d 12V \"ε_1\"\nresistor a b 2.0Ω R_1 i=I_1\nresistor b d 4.0Ω R_3 i=I_3\nresistor b c 2.0Ω R_2 i=I_2\nbattery c d 6.0V \"ε_2\"\nnode b \"B\"\n```",
+          "title": "A bridge that will not simplify",
+          "prompt": "In the bridge circuit shown, an ideal $12\\ \\text{V}$ battery is connected between junctions A and D. $R_1 = 2.0\\ \\Omega$ runs from A to B and $R_3 = 4.0\\ \\Omega$ from B to D; $R_2 = 4.0\\ \\Omega$ runs from A to C and $R_4 = 2.0\\ \\Omega$ from C to D; and $R_5 = 4.0\\ \\Omega$ joins B to C. Using the current directions shown, determine the current in $R_5$.\n\n```dg\ncircuit\nbattery p q 12V \"ε\"\nwire p a\nresistor a b 2.0Ω R_1 i=I_1\nresistor a c 4.0Ω R_2 i=I_2\nresistor b d 4.0Ω R_3\nresistor c d 2.0Ω R_4\nresistor b c 4.0Ω R_5 i=I_5\nwire d q\nnode a \"A\"\nnode b \"B\"\nnode c \"C\"\nnode d \"D\"\nat p 0,4 q 0,0 a 3,4 b 1.5,2 c 4.5,2 d 3,0\n```",
           "steps": [
-            "There are three unknown currents, so three equations are needed. Series and parallel rules will not reduce this circuit, because two branches contain batteries.",
-            "Junction rule at B: $I_1 = I_2 + I_3$.",
-            "Left loop, clockwise from the bottom-left corner: up through $\\varepsilon_1$, through $R_1$ with $I_1$, down through $R_3$ with $I_3$. So $12 - 2.0\\,I_1 - 4.0\\,I_3 = 0$ (in volts, ohms and amperes).",
-            "Right loop, clockwise from B: through $R_2$ with $I_2$, down through $\\varepsilon_2$ from positive to negative, then up through $R_3$ against $I_3$. So $-2.0\\,I_2 - 6.0 + 4.0\\,I_3 = 0$, which gives $I_2 = 2.0\\,I_3 - 3.0$.",
-            "Replace $I_1$ in the left-loop equation: $12 - 2.0\\,(I_2 + I_3) - 4.0\\,I_3 = 0$. Now put in $I_2 = 2.0\\,I_3 - 3.0$: $12 - 4.0\\,I_3 + 6.0 - 6.0\\,I_3 = 0$, so $I_3 = 1.8\\ \\text{A}$.",
-            "Then $I_2 = 2.0(1.8) - 3.0 = 0.60\\ \\text{A}$ and $I_1 = 0.60 + 1.8 = 2.4\\ \\text{A}$. All are positive, so the arrows are correct; $I_2$ enters the positive terminal of $\\varepsilon_2$, so that battery is being charged.",
-            "Check with the outer loop, which was not used: $12 - 2.0(2.4) - 2.0(0.60) - 6.0 = 0$."
+            "No resistors are in series or in parallel, so the circuit cannot be reduced. Take three unknowns: $I_1$, $I_2$ and $I_5$.",
+            "Junction rule at B and at C: $R_3$ carries $I_1 - I_5$ and $R_4$ carries $I_2 + I_5$, both toward D.",
+            "Loop A–B–D through the battery: $12 - 2.0\\,I_1 - 4.0\\,(I_1 - I_5) = 0$, so $I_1 = 2.0 + \\tfrac{2}{3}I_5$. Loop A–C–D: $12 - 4.0\\,I_2 - 2.0\\,(I_2 + I_5) = 0$, so $I_2 = 2.0 - \\tfrac{1}{3}I_5$ (in volts, ohms and amperes).",
+            "Loop A–B–C–A, which has no battery: down through $R_1$ with $I_1$, across $R_5$ with $I_5$, then back up through $R_2$ against $I_2$. So $-2.0\\,I_1 - 4.0\\,I_5 + 4.0\\,I_2 = 0$.",
+            "Substitute: $-4.0 - \\tfrac{4}{3}I_5 - 4.0\\,I_5 + 8.0 - \\tfrac{4}{3}I_5 = 0$, so $\\tfrac{20}{3}I_5 = 4.0$ and $I_5 = 0.60\\ \\text{A}$. It is positive, so it flows from B to C as drawn. Then $I_1 = 2.4\\ \\text{A}$ and $I_2 = 1.8\\ \\text{A}$.",
+            "Check with a loop that was not used, A–B–C–D through the battery: $12 - 2.0(2.4) - 4.0(0.60) - 2.0(1.8 + 0.60) = 0$."
           ],
-          "answer": "$I_1 = 2.4\\ \\text{A}$, $I_2 = 0.60\\ \\text{A}$ and $I_3 = 1.8\\ \\text{A}$, each in the direction drawn",
+          "answer": "$I_5 = 0.60\\ \\text{A}$, from B to C",
           "style": "ap",
           "spec": {
             "givens": {
-              "emf_1": {
+              "emf": {
                 "value": 12,
-                "unit": "V"
-              },
-              "emf_2": {
-                "value": 6,
                 "unit": "V"
               },
               "R_1": {
@@ -1286,25 +1295,35 @@
                 "unit": "Ω"
               },
               "R_2": {
-                "value": 2,
+                "value": 4,
                 "unit": "Ω"
               },
               "R_3": {
                 "value": 4,
                 "unit": "Ω"
+              },
+              "R_4": {
+                "value": 2,
+                "unit": "Ω"
+              },
+              "R_5": {
+                "value": 4,
+                "unit": "Ω"
               }
             },
-            "expr": "(emf_1/R_1 + emf_2/R_2)/(1/R_1 + 1/R_2 + 1/R_3)/R_3",
+            "expr": "emf*((1/R_2 + 1/R_4 + 1/R_5)/R_1 + 1/(R_5*R_2) - (1/R_1 + 1/R_3 + 1/R_5)/R_2 - 1/(R_5*R_1))/((1/R_1 + 1/R_3 + 1/R_5)*(1/R_2 + 1/R_4 + 1/R_5) - 1/R_5^2)/R_5",
             "unit": "A"
           }
         }
       ],
       "misconceptions": [
         {
+          "tag": "current-used-up",
           "wrong": "Some current is used up in each resistor, so less current leaves a parallel section than entered it.",
           "right": "Charge is conserved at every junction. The currents that divide at one junction recombine at the next, and the current returning to the battery equals the current that left."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "At a junction the current splits equally between the branches.",
           "right": "Only if the branches have equal resistance. Parallel branches share a potential difference, so the branch with less resistance carries more current."
         },
@@ -1348,7 +1367,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "Insist on one labelled arrow per branch before any equation is written; students who label a current for each resistor end up with more unknowns than equations. Ask how many junction equations are independent, and have them verify with a loop that was not used, as in the second example. A negative current should be read out as a direction, not corrected. Set 11C has multi-loop circuits that need both rules."
+      "teacherNotes": "Insist on one labelled arrow per branch before any equation is written; students who label a current for each resistor end up with more unknowns than equations. Ask how many junction equations are independent, and have them verify with a loop that was not used, as in the second example. A negative current should be read out as a direction, not corrected. Set 11C has a two-battery, three-branch circuit that needs both rules, alongside junction-rule questions."
     },
     {
       "topic": "11.8",
@@ -1515,7 +1534,7 @@
                 "unit": "s"
               }
             },
-            "expr": "emf*(1 - 2.718281828^(-t/(R_1*C_1)))",
+            "expr": "emf*(1 - exp(-t/(R_1*C_1)))",
             "unit": "V"
           }
         },
@@ -1555,7 +1574,7 @@
                 "unit": "V"
               }
             },
-            "expr": "R_1*(C_1 + C_2)*1000000*((V_0/V_1)^0.000001 - 1)",
+            "expr": "R_1*(C_1 + C_2)*ln(V_0/V_1)",
             "unit": "s"
           }
         }
@@ -1612,7 +1631,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since free-response questions ask for exactly that. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises all of these."
+      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since it is a standard question. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises the two limits, the time constant and combining capacitors."
     }
   ]
 }

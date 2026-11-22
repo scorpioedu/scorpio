@@ -117,16 +117,16 @@
       "derivation": "Fix $q_1$ at the origin and let $q_2$ move along a line through it. The radial component of the force on $q_2$ is $F_r = kq_1q_2/s^2$ at separation $s$ (positive, meaning outward, for like charges). The change in potential energy is minus the work this force does as $q_2$ comes in from infinity to separation $r$:\n\n$$U(r) - U(\\infty) = -\\int_{\\infty}^{r} \\frac{kq_1q_2}{s^2}\\,ds = -kq_1q_2\\left[-\\frac{1}{s}\\right]_{\\infty}^{r} = \\frac{kq_1q_2}{r}$$\n\nChoosing $U(\\infty) = 0$ leaves $U = kq_1q_2/r$. Integrating $1/s^2$ is what turns an inverse-square force into a $1/r$ energy. Differentiating goes back the other way: $F_r = -dU/dr = kq_1q_2/r^2$. Any sideways step is perpendicular to the force and takes no work, so the result holds for every path.",
       "workedExamples": [
         {
-          "title": "Three charges on a line",
-          "prompt": "Three point charges are fixed on the $x$-axis: $q_1 = +2.0\\ \\text{nC}$ at the origin, $q_2 = -3.0\\ \\text{nC}$ at $x = 0.10\\ \\text{m}$ and $q_3 = +4.0\\ \\text{nC}$ at $x = 0.30\\ \\text{m}$. Taking $U = 0$ when the charges are very far apart, what is the electric potential energy of the system? Use $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "title": "Bringing in a third charge",
+          "prompt": "Two charges of $+5.0\\ \\text{nC}$ each are fixed on the $x$-axis at $x = -0.040\\ \\text{m}$ and $x = +0.040\\ \\text{m}$. An external agent slowly brings a third charge, $-2.0\\ \\text{nC}$, from very far away to the point P on the $y$-axis at $y = 0.030\\ \\text{m}$, and leaves it at rest there. How much work does the agent do? Use $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
-            "Three charges make three pairs: 1 and 2, 1 and 3, 2 and 3. The energy is one $kq_aq_b/r$ term for each pair.",
-            "Find the separations from the positions: $r_{12} = 0.10\\ \\text{m}$, $r_{13} = 0.30\\ \\text{m}$ and $r_{23} = 0.30 - 0.10 = 0.20\\ \\text{m}$.",
-            "Work out each term, keeping the signs. $U_{12} = \\dfrac{(8.99 \\times 10^{9})(+2.0 \\times 10^{-9})(-3.0 \\times 10^{-9})}{0.10} = -5.39 \\times 10^{-7}\\ \\text{J}$. In the same way $U_{13} = +2.40 \\times 10^{-7}\\ \\text{J}$ and $U_{23} = -5.39 \\times 10^{-7}\\ \\text{J}$.",
-            "Add them as signed numbers: $U = (-5.39 + 2.40 - 5.39) \\times 10^{-7}\\ \\text{J} = -8.4 \\times 10^{-7}\\ \\text{J}$.",
-            "Read the sign. The total is negative, so the arrangement is bound overall: an outside agent would have to supply $8.4 \\times 10^{-7}\\ \\text{J}$ to pull all three charges far apart."
+            "The charge starts and ends at rest, so the agent's work equals the change in the system's potential energy: $W_{\\text{ext}} = \\Delta U$.",
+            "The fixed pair keeps its separation, so only the two new pairs change $U$.",
+            "P is $r = \\sqrt{(0.040)^2 + (0.030)^2} = 0.050\\ \\text{m}$ from each fixed charge. Each new pair contributes $\\dfrac{(8.99 \\times 10^{9})(+5.0 \\times 10^{-9})(-2.0 \\times 10^{-9})}{0.050} = -1.80 \\times 10^{-6}\\ \\text{J}$.",
+            "$W_{\\text{ext}} = 2(-1.80 \\times 10^{-6}\\ \\text{J}) = -3.6 \\times 10^{-6}\\ \\text{J}$. It is negative because the fixed charges attract the incoming one, so the agent holds it back.",
+            "Check: adding the fixed pair's own $\\dfrac{k(5.0 \\times 10^{-9})^2}{0.080} = +2.81 \\times 10^{-6}\\ \\text{J}$ gives the finished system $U = -7.9 \\times 10^{-7}\\ \\text{J}$, the sum of all three pair terms."
           ],
-          "answer": "$U = -8.4 \\times 10^{-7}\\ \\text{J}$",
+          "answer": "$W_{\\text{ext}} = -3.6 \\times 10^{-6}\\ \\text{J}$",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -134,28 +134,24 @@
                 "value": 8990000000,
                 "unit": "N m^2/C^2"
               },
-              "q_1": {
-                "value": 2,
-                "unit": "nC"
-              },
-              "q_2": {
-                "value": -3,
+              "q": {
+                "value": 5,
                 "unit": "nC"
               },
               "q_3": {
-                "value": 4,
+                "value": -2,
                 "unit": "nC"
               },
-              "x_2": {
-                "value": 0.1,
+              "a": {
+                "value": 0.04,
                 "unit": "m"
               },
-              "x_3": {
-                "value": 0.3,
+              "b": {
+                "value": 0.03,
                 "unit": "m"
               }
             },
-            "expr": "k*(q_1*q_2/x_2 + q_1*q_3/x_3 + q_2*q_3/(x_3 - x_2))",
+            "expr": "2*k*q*q_3/sqrt(a^2 + b^2)",
             "unit": "J"
           }
         },
@@ -479,8 +475,8 @@
           "a": "$E \\approx \\Delta V/\\Delta s$: about $5000\\ \\text{V/m}$ where they are $2.0\\ \\text{mm}$ apart and $1250\\ \\text{V/m}$ where they are $8.0\\ \\text{mm}$ apart. Closer lines mean a stronger field, here four times stronger."
         },
         {
-          "q": "Along the $x$-axis the potential is $V = 30x^2 - 12x$, in volts with $x$ in metres. Find $E_x$ at $x = 0.50\\ \\text{m}$, and the point where the field is zero.",
-          "a": "$E_x = -dV/dx = -(60x - 12)$. At $x = 0.50\\ \\text{m}$ this is $-18\\ \\text{V/m}$, pointing in the $-x$ direction. It is zero at $x = 0.20\\ \\text{m}$, where $V$ has its minimum."
+          "q": "A graph of $V$ against $x$ has a minimum at $x = 0.20\\ \\text{m}$. What is $E_x$ there, and which way does the field point just to the right of it?",
+          "a": "Zero, since $E_x = -dV/dx$ and the graph is flat there. Just to the right $V$ rises, so $E_x < 0$: the field points in the $-x$ direction, back toward the minimum."
         }
       ],
       "tryIt": {
@@ -662,26 +658,26 @@
           }
         },
         {
-          "title": "Closest approach to a nucleus",
-          "prompt": "An alpha particle (mass $6.64 \\times 10^{-27}\\ \\text{kg}$, charge $+2e$) is fired from far away at $1.5 \\times 10^{7}\\ \\text{m/s}$ directly toward a gold nucleus (charge $+79e$), which stays at rest. Derive an expression for the distance of closest approach, and calculate it. Use $e = 1.60 \\times 10^{-19}\\ \\text{C}$ and $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "title": "Two protons fired at each other",
+          "prompt": "Two protons, each of mass $1.67 \\times 10^{-27}\\ \\text{kg}$ and charge $+e$, are fired straight at each other from far apart, each with speed $1.0 \\times 10^{6}\\ \\text{m/s}$. Derive an expression for their smallest separation, and calculate it. Use $e = 1.60 \\times 10^{-19}\\ \\text{C}$ and $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
-            "The only force on the alpha particle is the electric repulsion of the nucleus, which is conservative, so the alpha particle's kinetic energy plus the pair's potential energy is constant.",
-            "Far away the potential energy is zero, so the total energy is $\\tfrac{1}{2}mv^2$.",
-            "The approach is head-on, so at the closest point the alpha particle is momentarily at rest: $K = 0$ and $U = \\dfrac{k(2e)(79e)}{r_{\\min}}$.",
-            "Set the two totals equal: $\\tfrac{1}{2}mv^2 = \\dfrac{158\\,ke^2}{r_{\\min}}$, so $r_{\\min} = \\dfrac{316\\,ke^2}{mv^2}$.",
-            "Numbers: $mv^2 = (6.64 \\times 10^{-27})(1.5 \\times 10^{7})^2 = 1.49 \\times 10^{-12}\\ \\text{J}$ and $316\\,ke^2 = 316(8.99 \\times 10^{9})(1.60 \\times 10^{-19})^2 = 7.27 \\times 10^{-26}\\ \\text{J·m}$, giving $r_{\\min} = 4.9 \\times 10^{-14}\\ \\text{m}$.",
-            "That is several times the radius of a gold nucleus (about $7 \\times 10^{-15}\\ \\text{m}$), so the alpha particle turns back without touching it."
+            "The only forces are the protons' electric forces on each other, which are internal and conservative. So the pair's momentum and its total energy, kinetic plus potential, are both conserved.",
+            "The momenta are equal and opposite, so the total is zero and stays zero. At closest approach the separation stops shrinking, so the protons share one velocity, and with zero total momentum that velocity is zero: both are momentarily at rest.",
+            "Far apart: $U = 0$ and $K = 2 \\times \\tfrac{1}{2}mv^2 = mv^2$. At closest approach: $K = 0$ and $U = \\dfrac{ke^2}{r_{\\min}}$.",
+            "Set the totals equal: $mv^2 = \\dfrac{ke^2}{r_{\\min}}$, so $r_{\\min} = \\dfrac{ke^2}{mv^2}$.",
+            "Numbers: $ke^2 = (8.99 \\times 10^{9})(1.60 \\times 10^{-19})^2 = 2.30 \\times 10^{-28}\\ \\text{J·m}$ and $mv^2 = (1.67 \\times 10^{-27})(1.0 \\times 10^{6})^2 = 1.67 \\times 10^{-15}\\ \\text{J}$, giving $r_{\\min} = 1.4 \\times 10^{-13}\\ \\text{m}$.",
+            "Compare one proton held fixed and the other fired at it with the same speed: only half as much kinetic energy is available, so the protons stop twice as far apart."
           ],
-          "answer": "$r_{\\min} = \\dfrac{316\\,ke^2}{mv^2} = 4.9 \\times 10^{-14}\\ \\text{m}$",
+          "answer": "$r_{\\min} = \\dfrac{ke^2}{mv^2} = 1.4 \\times 10^{-13}\\ \\text{m}$",
           "style": "ap",
           "spec": {
             "givens": {
               "m": {
-                "value": 6.64e-27,
+                "value": 1.67e-27,
                 "unit": "kg"
               },
               "v": {
-                "value": 15000000,
+                "value": 1000000,
                 "unit": "m/s"
               },
               "e": {
@@ -691,17 +687,9 @@
               "k": {
                 "value": 8990000000,
                 "unit": "N m^2/C^2"
-              },
-              "Z_1": {
-                "value": 2,
-                "unit": ""
-              },
-              "Z_2": {
-                "value": 79,
-                "unit": ""
               }
             },
-            "expr": "k*Z_1*Z_2*e^2/(0.5*m*v^2)",
+            "expr": "k*e^2/(m*v^2)",
             "unit": "m"
           }
         }

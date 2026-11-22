@@ -311,45 +311,34 @@
           }
         },
         {
-          "title": "Oil floating on water",
-          "prompt": "An open tank holds a layer of oil of density $800\\ \\text{kg/m}^3$ that is $0.50\\ \\text{m}$ deep, floating on water of density $1000\\ \\text{kg/m}^3$ that is $1.2\\ \\text{m}$ deep. Atmospheric pressure is $1.01 \\times 10^5\\ \\text{Pa}$. Determine the absolute pressure and the gauge pressure at the bottom of the tank. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "Oil and water in a U-tube",
+          "prompt": "An open U-tube holds water ($1000\\ \\text{kg/m}^3$). Oil ($800\\ \\text{kg/m}^3$), which does not mix with water, is poured into the left arm to form a $0.20\\ \\text{m}$ column resting on the water. At rest, how high does the right arm's water surface stand above the oil–water boundary, and which surface is higher?",
           "steps": [
-            "Pressure builds up layer by layer. Start at the open surface, where the pressure is atmospheric, and add $\\rho g h$ for each layer, using that layer's own density and depth.",
-            "At the boundary between the oil and the water: $P_1 = P_{\\text{atm}} + \\rho_{\\text{oil}}\\,g\\,h_{\\text{oil}} = 1.01 \\times 10^5 + (800)(9.8)(0.50) = 1.01 \\times 10^5 + 3920 = 104\\,920\\ \\text{Pa}$.",
-            "This is the pressure pressing on the top of the water, so it plays the part of $P_0$ for the water layer: $P_{\\text{bottom}} = P_1 + \\rho_{\\text{water}}\\,g\\,h_{\\text{water}} = 104\\,920 + (1000)(9.8)(1.2) = 104\\,920 + 11\\,760 = 116\\,680\\ \\text{Pa}$, or $1.17 \\times 10^5\\ \\text{Pa}$.",
-            "Gauge pressure is the amount above atmospheric, which is the contribution of the two liquids alone: $3920 + 11\\,760 = 15\\,680\\ \\text{Pa} \\approx 1.57 \\times 10^4\\ \\text{Pa}$. The width of the tank was never needed."
+            "Compare the arms at the level of the oil–water boundary. Below it both arms hold one connected body of water at rest, so the pressure at that level is the same in both.",
+            "Left arm: atmospheric pressure plus the oil column, $P = P_{\\text{atm}} + \\rho_{\\text{oil}}\\,g\\,(0.20\\ \\text{m})$.",
+            "Right arm: atmospheric pressure plus a water column of height $h$, $P = P_{\\text{atm}} + \\rho_{\\text{water}}\\,g\\,h$.",
+            "Equate them; $P_{\\text{atm}}$ and $g$ cancel: $h = \\dfrac{\\rho_{\\text{oil}}}{\\rho_{\\text{water}}}(0.20\\ \\text{m}) = \\dfrac{800}{1000}(0.20\\ \\text{m}) = 0.16\\ \\text{m}$.",
+            "The oil surface stands $0.20 - 0.16 = 0.04\\ \\text{m}$ higher than the water surface. The less dense liquid needs a taller column for the same pressure."
           ],
-          "answer": "Absolute pressure $1.17 \\times 10^5\\ \\text{Pa}$; gauge pressure $1.57 \\times 10^4\\ \\text{Pa}$",
+          "answer": "The water surface is $0.16\\ \\text{m}$ above the boundary; the oil surface is higher, by $0.04\\ \\text{m}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "P_atm": {
-                "value": 101000,
-                "unit": "Pa"
-              },
               "rho_oil": {
                 "value": 800,
                 "unit": "kg/m^3"
-              },
-              "h_oil": {
-                "value": 0.5,
-                "unit": "m"
               },
               "rho_water": {
                 "value": 1000,
                 "unit": "kg/m^3"
               },
-              "h_water": {
-                "value": 1.2,
+              "h_oil": {
+                "value": 0.2,
                 "unit": "m"
-              },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
               }
             },
-            "expr": "P_atm + rho_oil*g*h_oil + rho_water*g*h_water",
-            "unit": "Pa"
+            "expr": "rho_oil*h_oil/rho_water",
+            "unit": "m"
           }
         }
       ],
@@ -727,80 +716,76 @@
       ],
       "workedExamples": [
         {
-          "title": "Water climbing to an upstairs tap",
-          "prompt": "Water (density $1000\\ \\text{kg/m}^3$) enters a house through a pipe of cross-sectional area $6.0\\ \\text{cm}^2$ at a speed of $1.0\\ \\text{m/s}$ and an absolute pressure of $3.00 \\times 10^5\\ \\text{Pa}$. The pipe rises $5.0\\ \\text{m}$ to an upstairs bathroom, where its cross-sectional area is $2.0\\ \\text{cm}^2$. What is the absolute pressure of the flowing water upstairs? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "Pressure at the top of a siphon",
+          "prompt": "A hose of uniform cross-section siphons water (density $1000\\ \\text{kg/m}^3$) out of a large open tank. The hose rises to a highest point $0.40\\ \\text{m}$ above the tank's water surface, then runs down to an open end $0.60\\ \\text{m}$ below that surface, where the water flows out. Atmospheric pressure is $1.01 \\times 10^5\\ \\text{Pa}$. What is the absolute pressure of the water at the hose's highest point? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Find the speed upstairs from the continuity equation: $v_2 = v_1\\dfrac{A_1}{A_2} = (1.0\\ \\text{m/s})\\dfrac{6.0\\ \\text{cm}^2}{2.0\\ \\text{cm}^2} = 3.0\\ \\text{m/s}$.",
-            "Write Bernoulli's equation with point 1 where the water enters and point 2 upstairs. Measure heights from point 1, so $y_1 = 0$ and $y_2 = 5.0\\ \\text{m}$: $P_1 + \\tfrac{1}{2}\\rho v_1^2 = P_2 + \\rho g y_2 + \\tfrac{1}{2}\\rho v_2^2$.",
-            "Solve for the unknown pressure: $P_2 = P_1 - \\rho g y_2 - \\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2)$.",
-            "Work out each term. Height: $\\rho g y_2 = (1000)(9.8)(5.0) = 4.9 \\times 10^4\\ \\text{Pa}$. Speed: $\\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2) = (500)(9.0 - 1.0) = 4.0 \\times 10^3\\ \\text{Pa}$.",
-            "$P_2 = 3.00 \\times 10^5 - 0.49 \\times 10^5 - 0.04 \\times 10^5 = 2.47 \\times 10^5\\ \\text{Pa}$. Most of the drop comes from the climb, the rest from the gain in speed."
+            "Between the tank's surface (point 1) and the open end (point 3), both at atmospheric pressure, Bernoulli's equation gives Torricelli's result: $v = \\sqrt{2g(0.60\\ \\text{m})} = 3.43\\ \\text{m/s}$.",
+            "The hose has one cross-section, so by continuity the water also moves at $3.43\\ \\text{m/s}$ at the top (point 2).",
+            "Write Bernoulli's equation between points 1 and 2, measuring heights from the tank's surface, so $y_1 = 0$ and $y_2 = 0.40\\ \\text{m}$: $P_{\\text{atm}} = P_2 + \\rho g y_2 + \\tfrac{1}{2}\\rho v^2$.",
+            "Work out each term. Height: $\\rho g y_2 = (1000)(9.8)(0.40) = 3920\\ \\text{Pa}$. Speed: $\\tfrac{1}{2}\\rho v^2 = (500)(3.43)^2 = 5880\\ \\text{Pa}$.",
+            "$P_2 = 1.01 \\times 10^5 - 3920 - 5880 = 9.12 \\times 10^4\\ \\text{Pa}$, below atmospheric. Since it cannot fall below zero, a siphon's hump has a height limit."
           ],
-          "answer": "$P_2 = 2.47 \\times 10^5\\ \\text{Pa}$",
+          "answer": "$P_2 = 9.12 \\times 10^4\\ \\text{Pa}$, below atmospheric pressure",
           "style": "stepped",
           "spec": {
             "givens": {
+              "P_atm": {
+                "value": 101000,
+                "unit": "Pa"
+              },
+              "rho": {
+                "value": 1000,
+                "unit": "kg/m^3"
+              },
+              "y2": {
+                "value": 0.4,
+                "unit": "m"
+              },
+              "d": {
+                "value": 0.6,
+                "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "P_atm - rho*g*y2 - 0.5*rho*(2*g*d)",
+            "unit": "Pa"
+          }
+        },
+        {
+          "title": "Measuring a flow with a Venturi meter",
+          "prompt": "Water (density $1000\\ \\text{kg/m}^3$) flows steadily through a horizontal pipe of cross-sectional area $20\\ \\text{cm}^2$ that narrows to a throat of area $5.0\\ \\text{cm}^2$, as shown. Gauges show that the pressure in the throat is $7.5\\ \\text{kPa}$ lower than in the wide pipe. Derive the speed in the wide pipe in terms of the pressure difference and the areas, and determine it and the volume flow rate.\n\n```dg\nscene\nsurf 0,2 2,2\nsurf 2,2 3,1.5\nsurf 3,1.5 4,1.5\nsurf 4,1.5 5,2\nsurf 5,2 7,2\nsurf 7,0 5,0\nsurf 5,0 4,0.5\nsurf 4,0.5 3,0.5\nsurf 3,0.5 2,0\nsurf 2,0 0,0\nf 0.4,1 right 0.6 \"v_1\"\nf 3.1,1 right 1.6 \"v_2\"\n```",
+          "steps": [
+            "Continuity links the two speeds: $A_1v_1 = A_2v_2$, so $v_2 = v_1\\dfrac{A_1}{A_2} = 4v_1$ here.",
+            "The pipe is horizontal, so the height terms in Bernoulli's equation cancel: $P_1 + \\tfrac{1}{2}\\rho v_1^2 = P_2 + \\tfrac{1}{2}\\rho v_2^2$, which gives $P_1 - P_2 = \\tfrac{1}{2}\\rho\\,(v_2^2 - v_1^2) = \\tfrac{1}{2}\\rho v_1^2\\left[\\left(\\dfrac{A_1}{A_2}\\right)^2 - 1\\right]$.",
+            "Solve: $v_1 = \\sqrt{\\dfrac{2\\,\\Delta P}{\\rho\\left[(A_1/A_2)^2 - 1\\right]}} = \\sqrt{\\dfrac{2(7500\\ \\text{Pa})}{(1000\\ \\text{kg/m}^3)(16 - 1)}} = 1.0\\ \\text{m/s}$, so $v_2 = 4.0\\ \\text{m/s}$ in the throat.",
+            "Volume flow rate: $A_1v_1 = (20 \\times 10^{-4}\\ \\text{m}^2)(1.0\\ \\text{m/s}) = 2.0 \\times 10^{-3}\\ \\text{m}^3/\\text{s}$, two litres each second."
+          ],
+          "answer": "$v_1 = 1.0\\ \\text{m/s}$ in the wide pipe ($4.0\\ \\text{m/s}$ in the throat); the flow rate is $2.0 \\times 10^{-3}\\ \\text{m}^3/\\text{s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "dP": {
+                "value": 7500,
+                "unit": "Pa"
+              },
               "rho": {
                 "value": 1000,
                 "unit": "kg/m^3"
               },
               "A1": {
-                "value": 6,
+                "value": 20,
                 "unit": "cm^2"
-              },
-              "v1": {
-                "value": 1,
-                "unit": "m/s"
-              },
-              "P1": {
-                "value": 300000,
-                "unit": "Pa"
-              },
-              "h": {
-                "value": 5,
-                "unit": "m"
               },
               "A2": {
-                "value": 2,
+                "value": 5,
                 "unit": "cm^2"
-              },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
               }
             },
-            "expr": "P1 - rho*g*h - 0.5*rho*((v1*A1/A2)^2 - v1^2)",
-            "unit": "Pa"
-          }
-        },
-        {
-          "title": "Where does the jet land?",
-          "prompt": "A large open tank of water stands on a platform. A small hole in its side is $0.45\\ \\text{m}$ below the water surface and $0.80\\ \\text{m}$ above the floor, as shown. Derive the speed at which water leaves the hole, and determine how far from the hole, measured horizontally, the water strikes the floor. Use $g = 9.8\\ \\text{m/s}^2$.\n\n```dg\nscene\nwall 0 0..2.7 side=r\nwall 2 1..2.7\nwall 2 0..0.8\nground 0..2\nground -1.6..6.2 y=-1.6\ndash 0,2.3 2,2.3\ntext 1,3 \"water surface\"\ndim -0.5,0.9 -0.5,2.3 \"0.45 m\"\ndim 2.5,0.9 2.5,-1.6 \"0.80 m\"\nf 2.05,0.9 right 0.8 \"v\"\ndim 5.75,-2.3 2,-2.3 \"x\"\n```",
-          "steps": [
-            "Apply Bernoulli's equation between point 1 on the water surface and point 2 just outside the hole. Both are open to the air, so $P_1 = P_2 = P_{\\text{atm}}$. The tank is large and the hole small, so by continuity the surface barely moves: $v_1 \\approx 0$. Measure heights from the hole: $y_2 = 0$ and $y_1 = 0.45\\ \\text{m}$.",
-            "$P_{\\text{atm}} + \\rho g y_1 = P_{\\text{atm}} + \\tfrac{1}{2}\\rho v^2$, so $v = \\sqrt{2 g y_1} = \\sqrt{2(9.8\\ \\text{m/s}^2)(0.45\\ \\text{m})} = \\sqrt{8.82\\ \\text{m}^2/\\text{s}^2} = 2.97\\ \\text{m/s}$, about $3.0\\ \\text{m/s}$.",
-            "The water leaves horizontally and is then a projectile. Vertically it starts from rest and falls $0.80\\ \\text{m}$: $\\Delta y = \\tfrac{1}{2} g t^2$, so $t = \\sqrt{\\dfrac{2(0.80\\ \\text{m})}{9.8\\ \\text{m/s}^2}} = 0.404\\ \\text{s}$.",
-            "Horizontally its velocity stays constant: $x = v t = (2.97\\ \\text{m/s})(0.404\\ \\text{s}) = 1.2\\ \\text{m}$."
-          ],
-          "answer": "The water leaves at $3.0\\ \\text{m/s}$ and lands $1.2\\ \\text{m}$ from the hole",
-          "style": "ap",
-          "spec": {
-            "givens": {
-              "h": {
-                "value": 0.45,
-                "unit": "m"
-              },
-              "H": {
-                "value": 0.8,
-                "unit": "m"
-              },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
-              }
-            },
-            "expr": "sqrt(2*g*h)*sqrt(2*H/g)",
-            "unit": "m"
+            "expr": "sqrt(2*dP/(rho*((A1/A2)^2 - 1)))",
+            "unit": "m/s"
           }
         }
       ],
@@ -823,8 +808,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A pipe narrows so that its diameter is half of what it was. By what factor does the speed of the water change?",
-          "a": "It quadruples. Area depends on the square of the diameter, so the area falls to a quarter, and $Av$ must stay the same."
+          "q": "Water moves through a hose at $2.0\\ \\text{m/s}$. You want it to leave a nozzle at $8.0\\ \\text{m/s}$. How must the nozzle's diameter compare with the hose's?",
+          "a": "Half as wide. $Av$ must stay the same, so the speed rises fourfold only if the area falls to a quarter, and area depends on the square of the diameter."
         },
         {
           "q": "Water flows through a level pipe at $2\\ \\text{m/s}$ in a wide section and $4\\ \\text{m/s}$ in a narrow section. In which section is the pressure greater, and by how much?",
@@ -858,7 +843,7 @@
         "8.1",
         "8.2"
       ],
-      "teacherNotes": "Nearly every student predicts higher pressure in the constriction (\"it's squeezed\"). Ask instead which way the net force on a parcel of water must point as it speeds up into the narrow section; the answer forces the pressure to be higher behind it. Have students mark two points and list $P$, $v$ and $y$ at each before writing Bernoulli's equation, and say which terms cancel and why, since free-response credit often rests on that justification. In this course flows are ideal; viscosity and turbulence are named only as limits of the model. Set 8D covers continuity, Bernoulli and Torricelli."
+      "teacherNotes": "Nearly every student predicts higher pressure in the constriction (\"it's squeezed\"). Ask instead which way the net force on a parcel of water must point as it speeds up into the narrow section; the answer forces the pressure to be higher behind it. Have students mark two points and list $P$, $v$ and $y$ at each before writing Bernoulli's equation, and say which terms cancel and why, since that justification is part of a complete answer. In this course flows are ideal; viscosity and turbulence are named only as limits of the model. Set 8D covers continuity, Bernoulli and Torricelli."
     }
   ]
 }

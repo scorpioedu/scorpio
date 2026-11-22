@@ -65,16 +65,16 @@
       ],
       "workedExamples": [
         {
-          "title": "Force between two charged spheres",
-          "prompt": "Two small spheres carry charges of $+2.0\\ \\mu\\text{C}$ and $+5.0\\ \\mu\\text{C}$. Their centres are $0.15\\ \\text{m}$ apart. What is the electric force on each sphere?",
+          "title": "How much charge on a rubbed balloon?",
+          "prompt": "Two identical balloons are rubbed on hair, so each carries the same negative charge. Hung side by side, they repel each other with a force of $0.020\\ \\text{N}$ when their centres are $0.25\\ \\text{m}$ apart. Treating them as point charges, what is the size of the charge on each balloon? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
-            "Convert to SI units: $q_1 = 2.0 \\times 10^{-6}\\ \\text{C}$ and $q_2 = 5.0 \\times 10^{-6}\\ \\text{C}$. The distance is already in metres.",
-            "Write Coulomb's law for the size of the force: $F_E = k\\,\\dfrac{|q_1 q_2|}{r^2}$.",
-            "Substitute: $F_E = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(5.0 \\times 10^{-6})}{(0.15)^2} = \\dfrac{0.0899}{0.0225} = 4.0\\ \\text{N}$.",
-            "Find the direction from the signs. Both charges are positive, so they repel: each sphere is pushed directly away from the other.",
-            "Check with Newton's third law: the two forces are equal in size, $4.0\\ \\text{N}$ each, and opposite in direction."
+            "Coulomb's law gives the size of the force: $F_E = k\\,\\dfrac{|q_1 q_2|}{r^2}$. The two charges are equal, so $|q_1 q_2| = q^2$.",
+            "Rearrange for the charge: $q^2 = \\dfrac{F_E r^2}{k}$, so $q = r\\sqrt{\\dfrac{F_E}{k}}$.",
+            "Substitute: $q = (0.25\\ \\text{m})\\sqrt{\\dfrac{0.020\\ \\text{N}}{8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2}} = (0.25)(1.49 \\times 10^{-6})\\ \\text{C} = 3.7 \\times 10^{-7}\\ \\text{C}$.",
+            "Each balloon carries $-3.7 \\times 10^{-7}\\ \\text{C}$, about $0.37\\ \\mu\\text{C}$. The force is repulsive, as it must be for two charges of the same sign.",
+            "Check the size: everyday static charges are well under a microcoulomb, yet at these distances they give forces large enough to push light balloons apart."
           ],
-          "answer": "$F_E = 4.0\\ \\text{N}$ on each sphere, directed away from the other sphere",
+          "answer": "$|q| = 3.7 \\times 10^{-7}\\ \\text{C}$ on each balloon (the charges are negative)",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -82,26 +82,22 @@
                 "value": 8990000000,
                 "unit": "N·m^2/C^2"
               },
-              "q1": {
-                "value": 2,
-                "unit": "μC"
-              },
-              "q2": {
-                "value": 5,
-                "unit": "μC"
+              "F": {
+                "value": 0.02,
+                "unit": "N"
               },
               "r": {
-                "value": 0.15,
+                "value": 0.25,
                 "unit": "m"
               }
             },
-            "expr": "k*q1*q2/r^2",
-            "unit": "N"
+            "expr": "r*sqrt(F/k)",
+            "unit": "C"
           }
         },
         {
           "title": "Three charges on a line",
-          "prompt": "Three point charges are fixed on the x-axis. Charge A, $+3.0\\ \\mu\\text{C}$, is at $x = 0$. Charge B, $+2.0\\ \\mu\\text{C}$, is at $x = 0.20\\ \\text{m}$. Charge C, $-4.0\\ \\mu\\text{C}$, is at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric force on charge B.",
+          "prompt": "Three point charges are fixed on the x-axis. Charge A, $+3.0\\ \\mu\\text{C}$, is at $x = 0$. Charge B, $+2.0\\ \\mu\\text{C}$, is at $x = 0.20\\ \\text{m}$. Charge C, $-4.0\\ \\mu\\text{C}$, is at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric force on charge B. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Two forces act on B, one from A and one from C. Find each as if the other charge were absent, then add them as vectors along the x-axis.",
             "A and B are both positive, so A repels B: the force on B points away from A, in the $+x$ direction. Its size is $F_{AB} = \\dfrac{(8.99 \\times 10^9)(3.0 \\times 10^{-6})(2.0 \\times 10^{-6})}{(0.20)^2} = 1.35\\ \\text{N}$.",
@@ -166,8 +162,8 @@
       ],
       "checkYourself": [
         {
-          "q": "Two charges repel with a force of $0.36\\ \\text{N}$. What is the force if the distance between them is tripled?",
-          "a": "$0.040\\ \\text{N}$. Three times the distance means $1/3^2 = 1/9$ of the force."
+          "q": "Two charges repel with a force of $0.36\\ \\text{N}$. What is the force if the distance between them is halved?",
+          "a": "$1.44\\ \\text{N}$. Half the distance means $1/(1/2)^2 = 4$ times the force."
         },
         {
           "q": "A balloon has a net charge of $-3.2 \\times 10^{-9}\\ \\text{C}$. How many extra electrons does it hold?",
@@ -269,15 +265,15 @@
           }
         },
         {
-          "title": "Charging a sphere by induction",
-          "prompt": "A neutral metal sphere sits on an insulating stand. A student brings a negatively charged rod close to the sphere without touching it, briefly touches the far side of the sphere with a grounded wire, removes the wire, and then takes the rod away. Determine the sign of the sphere's final charge, and justify your answer in terms of the motion of electrons.",
+          "title": "Two touching spheres and a charged rod",
+          "prompt": "Two neutral metal spheres, A and B, sit on insulating stands and touch each other. A positively charged rod is brought close to sphere A without touching it. While the rod is held there, the spheres are pulled apart; then the rod is taken away. Determine the sign of the final charge on each sphere and compare the sizes of the two charges. Justify your answer in terms of the motion of electrons.",
           "steps": [
-            "With the rod near, the sphere polarizes: the negative rod repels the sphere's free electrons, so they crowd onto the far side and leave the near side positive. The net charge is still zero.",
-            "The grounded wire lets the repelled electrons get even farther from the rod. Some flow off the sphere, through the wire, to ground. The sphere now has fewer electrons than protons.",
-            "Removing the wire traps the sphere in that state: the electrons that left cannot return. This must happen before the rod is removed, or the electrons would simply flow back through the wire.",
-            "When the rod is taken away, the remaining charge spreads evenly over the sphere's surface. The sphere is missing electrons, so its net charge is positive, opposite to the rod's. The rod never touched the sphere and keeps all of its charge; the electrons that left went to ground, so charge is conserved."
+            "While the spheres touch, they act as one conductor. The positive rod attracts free electrons, so some move across the contact onto sphere A, nearest the rod, leaving sphere B short of electrons. The pair is still neutral.",
+            "Pulling the spheres apart with the rod still near traps this arrangement: the extra electrons on A cannot return to B. If the rod were removed first, the electrons would spread back and both spheres would end neutral.",
+            "When the rod is taken away, each sphere's charge spreads over its own surface. Sphere A is negative and sphere B is positive.",
+            "The rod touched neither sphere, and no electrons left the pair. The pair started neutral, so by conservation of charge the electrons A gained are exactly those B lost: the charges are equal in size."
           ],
-          "answer": "The sphere is left with a net positive charge, opposite in sign to the rod, because electrons left it through the ground wire",
+          "answer": "Sphere A, nearer the rod, ends negative and sphere B ends positive, with charges of equal size, because electrons moved from B to A while the spheres touched",
           "style": "ap"
         }
       ],
@@ -405,7 +401,7 @@
       "workedExamples": [
         {
           "title": "Field of a point charge, then a force",
-          "prompt": "A small sphere carries a charge of $+6.0\\ \\text{nC}$. Point P is $0.30\\ \\text{m}$ from the sphere. (a) What is the electric field at P? (b) A dust grain with a charge of $-2.0\\ \\text{nC}$ is placed at P. What force does it feel?",
+          "prompt": "A small sphere carries a charge of $+6.0\\ \\text{nC}$. Point P is $0.30\\ \\text{m}$ from the sphere. (a) What is the electric field at P? (b) A dust grain with a charge of $-2.0\\ \\text{nC}$ is placed at P. What force does it feel? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "The source is a point charge, so $E = k\\,\\dfrac{|q|}{r^2}$, with $q = 6.0 \\times 10^{-9}\\ \\text{C}$.",
             "Substitute: $E = \\dfrac{(8.99 \\times 10^9)(6.0 \\times 10^{-9})}{(0.30)^2} = \\dfrac{53.9}{0.090} = 6.0 \\times 10^2\\ \\text{N/C}$.",
@@ -435,16 +431,15 @@
           }
         },
         {
-          "title": "Field between two opposite charges",
-          "prompt": "A $+2.0\\ \\text{nC}$ point charge is fixed at $x = 0$ and a $-8.0\\ \\text{nC}$ point charge is fixed at $x = 0.60\\ \\text{m}$. Determine the magnitude and direction of the net electric field at the point $x = 0.20\\ \\text{m}$ on the x-axis. Then state whether the field can be zero anywhere between the two charges, and justify your answer.",
+          "title": "Field above two equal charges",
+          "prompt": "Two $+3.0\\ \\text{nC}$ point charges are fixed on the x-axis at $x = -0.30\\ \\text{m}$ and $x = +0.30\\ \\text{m}$. Point P is on the y-axis at $y = 0.40\\ \\text{m}$. Determine the magnitude and direction of the net electric field at P. Then state the direction of the net field at P if the charge at $x = +0.30\\ \\text{m}$ were negative instead, and justify your answer. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
-            "Each charge makes its own field at the point. Find the two fields separately, then add them as vectors.",
-            "The point is $0.20\\ \\text{m}$ from the positive charge: $E_1 = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-9})}{(0.20)^2} = 450\\ \\text{N/C}$. A positive source's field points away from it, so $E_1$ is in the $+x$ direction.",
-            "The point is $0.60 - 0.20 = 0.40\\ \\text{m}$ from the negative charge: $E_2 = \\dfrac{(8.99 \\times 10^9)(8.0 \\times 10^{-9})}{(0.40)^2} = 450\\ \\text{N/C}$. A negative source's field points toward it, which is also the $+x$ direction.",
-            "The two fields point the same way, so their sizes add: $E_{\\text{net}} = 450 + 450 = 9.0 \\times 10^2\\ \\text{N/C}$ in the $+x$ direction.",
-            "Anywhere between the charges, the positive charge's field points away from it ($+x$) and the negative charge's field points toward it ($+x$ again). Two fields in the same direction cannot cancel, so the field is not zero at any point between them."
+            "Each charge is $r = \\sqrt{0.30^2 + 0.40^2} = 0.50\\ \\text{m}$ from P, so each makes a field of the same size: $E = \\dfrac{(8.99 \\times 10^9)(3.0 \\times 10^{-9})}{(0.50)^2} = 108\\ \\text{N/C}$, pointing away from its charge.",
+            "Split each field into components. The x-components are $\\pm(108)(0.30/0.50)$, equal and opposite, so they cancel. The y-components are both $(108)(0.40/0.50) = 86.3\\ \\text{N/C}$ upward.",
+            "Add the components that survive: $E_{\\text{net}} = 2(86.3\\ \\text{N/C}) = 1.7 \\times 10^2\\ \\text{N/C}$ in the $+y$ direction. This is less than twice $108\\ \\text{N/C}$, because the fields were not parallel.",
+            "If the right-hand charge were negative, its field at P would point toward it, down and to the right. Then the y-components cancel and the x-components add, so the net field points in the $+x$ direction, from the positive charge's side toward the negative charge's side."
           ],
-          "answer": "$E_{\\text{net}} = 9.0 \\times 10^2\\ \\text{N/C}$ in the $+x$ direction; the field is not zero anywhere between opposite charges",
+          "answer": "$E_{\\text{net}} = 1.7 \\times 10^2\\ \\text{N/C}$ in the $+y$ direction; with the right-hand charge negative, the net field would point in the $+x$ direction",
           "style": "ap",
           "spec": {
             "givens": {
@@ -452,24 +447,20 @@
                 "value": 8990000000,
                 "unit": "N·m^2/C^2"
               },
-              "q1": {
-                "value": 2,
+              "q": {
+                "value": 3,
                 "unit": "nC"
               },
-              "q2": {
-                "value": 8,
-                "unit": "nC"
-              },
-              "x": {
-                "value": 0.2,
+              "a": {
+                "value": 0.3,
                 "unit": "m"
               },
-              "d": {
-                "value": 0.6,
+              "y": {
+                "value": 0.4,
                 "unit": "m"
               }
             },
-            "expr": "k*q1/x^2 + k*q2/(d - x)^2",
+            "expr": "2*k*q*y/((a^2 + y^2)*sqrt(a^2 + y^2))",
             "unit": "N/C"
           }
         }
@@ -599,7 +590,7 @@
       "workedExamples": [
         {
           "title": "Energy of a hydrogen atom",
-          "prompt": "In a hydrogen atom the electron and the proton are, on average, $5.3 \\times 10^{-11}\\ \\text{m}$ apart. Each has a charge of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$. What is the electric potential energy of the electron–proton system?",
+          "prompt": "In a hydrogen atom the electron and the proton are, on average, $5.3 \\times 10^{-11}\\ \\text{m}$ apart. Each has a charge of size $e = 1.60 \\times 10^{-19}\\ \\text{C}$. What is the electric potential energy of the electron–proton system? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Write the charges with their signs: the proton is $q_1 = +1.60 \\times 10^{-19}\\ \\text{C}$ and the electron is $q_2 = -1.60 \\times 10^{-19}\\ \\text{C}$.",
             "Use the potential energy of two point charges, with the signs kept: $U_E = k\\,\\dfrac{q_1 q_2}{r}$.",
@@ -629,7 +620,7 @@
         },
         {
           "title": "Work to push two charges together",
-          "prompt": "A $+2.0\\ \\mu\\text{C}$ point charge is fixed in place. A second point charge of $+3.0\\ \\mu\\text{C}$ is moved slowly from a point $0.50\\ \\text{m}$ from the fixed charge to a point $0.20\\ \\text{m}$ from it. Determine the work done by the agent moving the charge, and explain the meaning of its sign.",
+          "prompt": "A $+2.0\\ \\mu\\text{C}$ point charge is fixed in place. A second point charge of $+3.0\\ \\mu\\text{C}$ is moved slowly from a point $0.50\\ \\text{m}$ from the fixed charge to a point $0.20\\ \\text{m}$ from it. Determine the work done by the agent moving the charge, and explain the meaning of its sign. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "The charge is moved slowly, so no kinetic energy is gained and the agent's work equals the change in the system's potential energy: $W_{\\text{ext}} = U_{E,f} - U_{E,i}$.",
             "Initial energy, at $0.50\\ \\text{m}$: $U_{E,i} = \\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-6})(3.0 \\times 10^{-6})}{0.50} = 0.108\\ \\text{J}$.",
@@ -819,7 +810,7 @@
       "workedExamples": [
         {
           "title": "Potential from two charges",
-          "prompt": "A $+6.0\\ \\text{nC}$ point charge and a $-4.0\\ \\text{nC}$ point charge are fixed in place. Point P is $0.30\\ \\text{m}$ from the positive charge and $0.40\\ \\text{m}$ from the negative charge. What is the electric potential at P?",
+          "prompt": "A $+6.0\\ \\text{nC}$ point charge and a $-4.0\\ \\text{nC}$ point charge are fixed in place. Point P is $0.30\\ \\text{m}$ from the positive charge and $0.40\\ \\text{m}$ from the negative charge. What is the electric potential at P? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
             "Potential is a scalar, so find each charge's potential at P and add them as signed numbers. No directions or components are needed.",
             "From the positive charge: $V_1 = \\dfrac{(8.99 \\times 10^9)(+6.0 \\times 10^{-9})}{0.30} = +180\\ \\text{V}$.",
@@ -1069,16 +1060,15 @@
       ],
       "workedExamples": [
         {
-          "title": "Charge and energy of a parallel-plate capacitor",
-          "prompt": "A parallel-plate capacitor has plates of area $0.020\\ \\text{m}^2$ separated by $0.50\\ \\text{mm}$ of air. It is connected to a $9.0\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored.",
+          "title": "Designing a foil capacitor",
+          "prompt": "A capacitor is to be made from two strips of aluminium foil separated by a plastic film $0.020\\ \\text{mm}$ thick, with dielectric constant $\\kappa = 2.3$. It must have a capacitance of $0.50\\ \\mu\\text{F}$. What area must each strip have, and how much energy will the capacitor store when it is connected to a $9.0\\ \\text{V}$ battery? Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
           "steps": [
-            "Convert the separation: $d = 0.50\\ \\text{mm} = 5.0 \\times 10^{-4}\\ \\text{m}$. For air, $\\kappa = 1$.",
-            "Capacitance from the geometry: $C = \\kappa\\varepsilon_0\\dfrac{A}{d} = \\dfrac{(1)(8.85 \\times 10^{-12})(0.020)}{5.0 \\times 10^{-4}} = 3.5 \\times 10^{-10}\\ \\text{F}$, or $0.35\\ \\text{nF}$.",
-            "The battery fixes the potential difference at $9.0\\ \\text{V}$, so $Q = C\\,\\Delta V = (3.54 \\times 10^{-10}\\ \\text{F})(9.0\\ \\text{V}) = 3.2 \\times 10^{-9}\\ \\text{C} = 3.2\\ \\text{nC}$. One plate holds $+3.2\\ \\text{nC}$ and the other $-3.2\\ \\text{nC}$.",
-            "Energy stored: $U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}(3.19 \\times 10^{-9}\\ \\text{C})(9.0\\ \\text{V}) = 1.4 \\times 10^{-8}\\ \\text{J}$.",
-            "Check the size. A capacitance well under a microfarad and a charge of a few nanocoulombs are typical for plates the size of your hand; a farad is a very large capacitance."
+            "Convert to SI units: $C = 0.50\\ \\mu\\text{F} = 5.0 \\times 10^{-7}\\ \\text{F}$ and $d = 0.020\\ \\text{mm} = 2.0 \\times 10^{-5}\\ \\text{m}$.",
+            "Solve $C = \\kappa\\varepsilon_0\\dfrac{A}{d}$ for the area: $A = \\dfrac{Cd}{\\kappa\\varepsilon_0} = \\dfrac{(5.0 \\times 10^{-7})(2.0 \\times 10^{-5})}{(2.3)(8.85 \\times 10^{-12})} = 0.49\\ \\text{m}^2$.",
+            "That is a sheet about $70\\ \\text{cm}$ on a side, which is why real capacitors roll long foil strips into a small cylinder. The film helps twice: being thin keeps $d$ small, and $\\kappa = 2.3$ cuts the area needed by a factor of $2.3$.",
+            "On the battery: $Q = C\\,\\Delta V = (5.0 \\times 10^{-7}\\ \\text{F})(9.0\\ \\text{V}) = 4.5\\ \\mu\\text{C}$, and $U_C = \\tfrac{1}{2}Q\\,\\Delta V = \\tfrac{1}{2}(4.5 \\times 10^{-6}\\ \\text{C})(9.0\\ \\text{V}) = 2.0 \\times 10^{-5}\\ \\text{J}$."
           ],
-          "answer": "$C = 0.35\\ \\text{nF}$, $Q = 3.2\\ \\text{nC}$ on each plate (one positive, one negative), $U_C = 1.4 \\times 10^{-8}\\ \\text{J}$",
+          "answer": "$A = 0.49\\ \\text{m}^2$ for each strip; $U_C = 2.0 \\times 10^{-5}\\ \\text{J}$ at $9.0\\ \\text{V}$",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -1086,21 +1076,21 @@
                 "value": 8.85e-12,
                 "unit": "F/m"
               },
-              "A": {
-                "value": 0.02,
-                "unit": "m^2"
+              "C": {
+                "value": 0.5,
+                "unit": "μF"
               },
               "d": {
-                "value": 0.5,
+                "value": 0.02,
                 "unit": "mm"
               },
-              "V": {
-                "value": 9,
-                "unit": "V"
+              "kappa": {
+                "value": 2.3,
+                "unit": ""
               }
             },
-            "expr": "eps0*A/d*V",
-            "unit": "nC"
+            "expr": "C*d/(kappa*eps0)",
+            "unit": "m^2"
           }
         },
         {
@@ -1278,22 +1268,67 @@
       ],
       "workedExamples": [
         {
-          "title": "An electron accelerated through 120 V",
-          "prompt": "An electron (mass $9.11 \\times 10^{-31}\\ \\text{kg}$, charge $-1.60 \\times 10^{-19}\\ \\text{C}$) is released from rest at a negative plate and travels to a positive plate whose potential is $120\\ \\text{V}$ higher. How fast is it moving when it arrives?",
+          "title": "A proton that runs out of energy",
+          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) passes through a small hole in plate A at $1.2 \\times 10^5\\ \\text{m/s}$, heading straight toward plate B, $0.030\\ \\text{m}$ away. Plate B is at a potential $100\\ \\text{V}$ higher than plate A, and the field between the plates is uniform. Does the proton reach plate B? If not, how far from plate A does it stop?",
           "steps": [
-            "Only the electric force does work, so energy is conserved: $K_i + U_{E,i} = K_f + U_{E,f}$, with $K_i = 0$.",
-            "Find the change in potential energy: $\\Delta U_E = q\\,\\Delta V = (-1.60 \\times 10^{-19}\\ \\text{C})(+120\\ \\text{V}) = -1.92 \\times 10^{-17}\\ \\text{J}$. It is negative: the electron is moving the way the force pushes it.",
-            "The kinetic energy gained is the potential energy lost: $K_f = 1.92 \\times 10^{-17}\\ \\text{J}$, which is $120\\ \\text{eV}$.",
-            "Solve $\\tfrac{1}{2}mv^2 = K_f$ for the speed: $v = \\sqrt{\\dfrac{2K_f}{m}} = \\sqrt{\\dfrac{2(1.92 \\times 10^{-17})}{9.11 \\times 10^{-31}}} = \\sqrt{4.22 \\times 10^{13}} = 6.5 \\times 10^6\\ \\text{m/s}$.",
-            "Check: that is about 2% of the speed of light, fast but slow enough for $\\tfrac{1}{2}mv^2$ to hold."
+            "The proton's kinetic energy at the hole: $K_i = \\tfrac{1}{2}(1.67 \\times 10^{-27}\\ \\text{kg})(1.2 \\times 10^5\\ \\text{m/s})^2 = 1.20 \\times 10^{-17}\\ \\text{J}$, which is $75\\ \\text{eV}$.",
+            "Moving toward higher potential, a positive charge gains potential energy: reaching B would need $\\Delta U_E = q\\,\\Delta V = e(100\\ \\text{V}) = 100\\ \\text{eV}$. It has only $75\\ \\text{eV}$, so it stops short and is pushed back.",
+            "In a uniform field the potential rises steadily with distance, so the proton stops where it has climbed $75\\ \\text{V}$ of the $100\\ \\text{V}$: $x = \\dfrac{75.2\\ \\text{V}}{100\\ \\text{V}}(0.030\\ \\text{m}) = 2.3 \\times 10^{-2}\\ \\text{m}$ from plate A.",
+            "Check with energy conservation: there $K = 0$ and $\\Delta U_E = +75\\ \\text{eV}$, so $K + U_E$ is unchanged. The proton then returns through the hole at its original speed."
           ],
-          "answer": "$v = 6.5 \\times 10^6\\ \\text{m/s}$",
+          "answer": "No; it stops $2.3 \\times 10^{-2}\\ \\text{m}$ from plate A and is pushed back",
           "style": "stepped",
           "spec": {
             "givens": {
+              "m": {
+                "value": 1.67e-27,
+                "unit": "kg"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "v": {
+                "value": 120000,
+                "unit": "m/s"
+              },
               "dV": {
-                "value": 120,
+                "value": 100,
                 "unit": "V"
+              },
+              "D": {
+                "value": 0.03,
+                "unit": "m"
+              }
+            },
+            "expr": "D*0.5*m*v^2/(q*dV)",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "Escaping from a charged sphere",
+          "prompt": "A small metal sphere of radius $0.020\\ \\text{m}$ carries a charge of $+1.0\\ \\text{nC}$. An electron (mass $9.11 \\times 10^{-31}\\ \\text{kg}$, charge $-1.60 \\times 10^{-19}\\ \\text{C}$) leaves the surface of the sphere, moving straight outward. Determine the smallest speed with which it must leave for it to get very far away. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Only the electric force acts, so the energy of the electron-sphere system is conserved. Outside the sphere its charge acts as if it were at the centre, so the electron starts at $r = 0.020\\ \\text{m}$ from a point charge.",
+            "The charges attract, so the potential energy is negative at the surface: $U_{E,i} = \\dfrac{kqQ}{r} = \\dfrac{(8.99 \\times 10^9)(-1.60 \\times 10^{-19})(1.0 \\times 10^{-9})}{0.020} = -7.19 \\times 10^{-17}\\ \\text{J}$. Far away, $U_{E,f} = 0$. With the smallest launch speed the electron just arrives there with $K_f = 0$.\n\n```dg\nbars energy\ninitial K 4 U_E -4\nfinal K 0 U_E 0\n```",
+            "Conservation gives $\\tfrac{1}{2}mv^2 + U_{E,i} = 0$, so $v = \\sqrt{\\dfrac{2|U_{E,i}|}{m}} = \\sqrt{\\dfrac{2(7.19 \\times 10^{-17})}{9.11 \\times 10^{-31}}} = 1.3 \\times 10^7\\ \\text{m/s}$.",
+            "Any slower and the electron stops at some distance and falls back. The speed is about 4% of the speed of light, still small enough for $\\tfrac{1}{2}mv^2$."
+          ],
+          "answer": "$v = 1.3 \\times 10^7\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              },
+              "Q": {
+                "value": 1,
+                "unit": "nC"
+              },
+              "r": {
+                "value": 0.02,
+                "unit": "m"
               },
               "m": {
                 "value": 9.11e-31,
@@ -1304,47 +1339,8 @@
                 "unit": "C"
               }
             },
-            "expr": "sqrt(2*q*dV/m)",
+            "expr": "sqrt(2*k*q*Q/(m*r))",
             "unit": "m/s"
-          }
-        },
-        {
-          "title": "Closest approach to a charged sphere",
-          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) is far from a small fixed sphere that carries a charge of $+5.0\\ \\text{nC}$. The proton is moving directly toward the sphere at $2.0 \\times 10^5\\ \\text{m/s}$. Determine how close the proton gets to the centre of the sphere.",
-          "steps": [
-            "The sphere is fixed and only the electric force acts on the proton, so the system's energy is conserved. Both charges are positive, so the proton is repelled and slows down. At its closest point it is momentarily at rest.",
-            "Initial state: the proton is far away, so $U_{E,i} = 0$, and $K_i = \\tfrac{1}{2}mv^2 = \\tfrac{1}{2}(1.67 \\times 10^{-27})(2.0 \\times 10^5)^2 = 3.34 \\times 10^{-17}\\ \\text{J}$. Final state: $K_f = 0$ and $U_{E,f} = \\dfrac{kqQ}{r}$. All of the kinetic energy has become potential energy.\n\n```dg\nbars energy\ninitial K 4 U_E 0\nfinal K 0 U_E 4\n```",
-            "Conservation gives $\\tfrac{1}{2}mv^2 = \\dfrac{kqQ}{r}$, so $r = \\dfrac{kqQ}{\\tfrac{1}{2}mv^2}$.",
-            "Substitute: $r = \\dfrac{(8.99 \\times 10^9)(1.60 \\times 10^{-19})(5.0 \\times 10^{-9})}{3.34 \\times 10^{-17}} = \\dfrac{7.19 \\times 10^{-18}}{3.34 \\times 10^{-17}} = 0.22\\ \\text{m}$.",
-            "After stopping there the proton is pushed back out, and far away it has its original speed again, because the potential energy returns to zero."
-          ],
-          "answer": "$r = 0.22\\ \\text{m}$ from the centre of the sphere",
-          "style": "ap",
-          "spec": {
-            "givens": {
-              "k": {
-                "value": 8990000000,
-                "unit": "N·m^2/C^2"
-              },
-              "Q": {
-                "value": 5,
-                "unit": "nC"
-              },
-              "v": {
-                "value": 200000,
-                "unit": "m/s"
-              },
-              "m": {
-                "value": 1.67e-27,
-                "unit": "kg"
-              },
-              "q": {
-                "value": 1.6e-19,
-                "unit": "C"
-              }
-            },
-            "expr": "k*q*Q/(0.5*m*v^2)",
-            "unit": "m"
           }
         }
       ],

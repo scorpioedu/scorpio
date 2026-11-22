@@ -458,34 +458,34 @@
       ],
       "workedExamples": [
         {
-          "title": "Where is the glider at a given time?",
-          "prompt": "An air-track glider attached to a spring oscillates with amplitude $0.12\\ \\text{m}$ and frequency $0.50\\ \\text{Hz}$. It is released from rest at $x = +0.12\\ \\text{m}$ at $t = 0$. Where is the glider at $t = 0.70\\ \\text{s}$?",
+          "title": "When does the mass reach a given height?",
+          "prompt": "A mass hanging from a vertical spring bobs up and down with amplitude $0.050\\ \\text{m}$ and period $0.80\\ \\text{s}$. At $t = 0$ it is released from rest at its lowest point, $y = -0.050\\ \\text{m}$ (up positive, equilibrium at $y = 0$). At what time does it first reach $y = +0.025\\ \\text{m}$?",
           "steps": [
-            "The glider starts at its positive turning point, so its position is $x = A\\cos(2\\pi f t)$.",
-            "Find the angle first: $2\\pi f t = 2\\pi(0.50\\ \\text{Hz})(0.70\\ \\text{s}) = 2.20\\ \\text{rad}$. Hertz times seconds leaves a pure number, as an angle in radians should be.",
-            "In radian mode, $\\cos(2.20) = -0.588$.",
-            "Multiply by the amplitude: $x = (0.12\\ \\text{m})(-0.588) = -0.071\\ \\text{m}$.",
-            "Check against the cycle. The period is $T = 1/f = 2.0\\ \\text{s}$, so the glider reaches equilibrium at $0.50\\ \\text{s}$ and the far turning point at $1.0\\ \\text{s}$. At $0.70\\ \\text{s}$ it should be on the negative side, still heading away from equilibrium, and it is."
+            "The mass starts at its negative turning point, so its position is $y = -A\\cos(2\\pi t/T)$.",
+            "Set $y = +0.025\\ \\text{m}$: $\\cos(2\\pi t/T) = -\\dfrac{0.025\\ \\text{m}}{0.050\\ \\text{m}} = -0.50$.",
+            "In radian mode, the first angle whose cosine is $-0.50$ is $\\cos^{-1}(-0.50) = 2.09\\ \\text{rad}$.",
+            "Solve for the time: $t = \\dfrac{T}{2\\pi}(2.09\\ \\text{rad}) = \\dfrac{0.80\\ \\text{s}}{2\\pi}(2.09) = 0.27\\ \\text{s}$, one third of a period.",
+            "Check against the cycle. The mass passes equilibrium at $T/4 = 0.20\\ \\text{s}$ and reaches the top at $T/2 = 0.40\\ \\text{s}$. Halfway up from equilibrium should come between those, and $0.27\\ \\text{s}$ does."
           ],
-          "answer": "$x = -0.071\\ \\text{m}$: about $7\\ \\text{cm}$ on the far side of equilibrium, moving toward $x = -A$",
+          "answer": "$t = 0.27\\ \\text{s}$ (one third of a period), on the way up",
           "style": "stepped",
           "spec": {
             "givens": {
               "A": {
-                "value": 0.12,
+                "value": 0.05,
                 "unit": "m"
               },
-              "f": {
-                "value": 0.5,
-                "unit": "Hz"
-              },
-              "t": {
-                "value": 0.7,
+              "T": {
+                "value": 0.8,
                 "unit": "s"
+              },
+              "y": {
+                "value": 0.025,
+                "unit": "m"
               }
             },
-            "expr": "A*cos(2*pi*f*t)",
-            "unit": "m"
+            "expr": "T*acos(-y/A)/(2*pi)",
+            "unit": "s"
           }
         },
         {
@@ -579,7 +579,7 @@
         "7.1",
         "7.2"
       ],
-      "teacherNotes": "Have students annotate one cycle of a position–time graph with the sign and relative size of $x$, $v$ and $a$ at each quarter period before they meet any formula; pointing at a spot and asking \\\"faster or slower here? which way is the force?\\\" exposes most errors. The usual mistakes are zero acceleration at the turning points, amplitude read as trough-to-peak, and a calculator left in degree mode. The AP Physics 1 equation sheet gives $x = A\\cos(2\\pi f t)$ and $x = A\\sin(2\\pi f t)$; the maximum speed and acceleration can also be reached through energy and Newton's second law. Sets 7B and 7C use graphs and equations of motion."
+      "teacherNotes": "Have students annotate one cycle of a position–time graph with the sign and relative size of $x$, $v$ and $a$ at each quarter period before they meet any formula; pointing at a spot and asking \\\"faster or slower here? which way is the force?\\\" exposes most errors. The usual mistakes are zero acceleration at the turning points, amplitude read as trough-to-peak, and a calculator left in degree mode. Students should be able to use both $x = A\\cos(2\\pi f t)$ and $x = A\\sin(2\\pi f t)$; the maximum speed and acceleration can also be reached through energy and Newton's second law. Sets 7B and 7C use graphs and equations of motion."
     },
     {
       "topic": "7.4",
@@ -682,38 +682,33 @@
       ],
       "workedExamples": [
         {
-          "title": "Speed partway through the motion",
-          "prompt": "A $0.20\\ \\text{kg}$ block on a level, frictionless surface oscillates on a spring of spring constant $40\\ \\text{N/m}$ with an amplitude of $0.15\\ \\text{m}$. How fast is the block moving when it is $0.090\\ \\text{m}$ from equilibrium?",
+          "title": "Speed partway through a swing",
+          "prompt": "A child on a swing is released from rest $0.80\\ \\text{m}$ above the bottom of the arc. Ignore air resistance. How fast is the child moving when $0.30\\ \\text{m}$ above the bottom of the arc? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "The acceleration is not constant, so use energy. With no friction, the block–spring system's total mechanical energy is the same everywhere.",
-            "Find the total from the turning point, where the energy is all potential: $E = \\tfrac{1}{2}kA^2 = \\tfrac{1}{2}(40\\ \\text{N/m})(0.15\\ \\text{m})^2 = 0.45\\ \\text{J}$.",
-            "Find the potential energy at the position asked about: $U_s = \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}(40\\ \\text{N/m})(0.090\\ \\text{m})^2 = 0.162\\ \\text{J}$.",
-            "The rest is kinetic: $K = E - U_s = 0.45 - 0.162 = 0.288\\ \\text{J}$.",
-            "Solve $K = \\tfrac{1}{2}mv^2$ for the speed: $v = \\sqrt{\\dfrac{2K}{m}} = \\sqrt{\\dfrac{2(0.288\\ \\text{J})}{0.20\\ \\text{kg}}} = \\sqrt{2.88\\ \\text{m}^2/\\text{s}^2} = 1.7\\ \\text{m/s}$.",
-            "Check: the maximum speed, from $\\tfrac{1}{2}mv_{\\text{max}}^2 = 0.45\\ \\text{J}$, is $2.1\\ \\text{m/s}$. Away from equilibrium the block should be slower than that, and it is."
+            "The acceleration is not constant, so use energy. The rope's pull is perpendicular to the motion and does no work, so the swing–Earth system's mechanical energy is constant.",
+            "Measured from the bottom, the energy at release is all potential: $E = mg(0.80\\ \\text{m})$.",
+            "At $0.30\\ \\text{m}$ the potential energy is $mg(0.30\\ \\text{m})$, and the rest is kinetic: $\\tfrac{1}{2}mv^2 = mg(0.80 - 0.30)\\ \\text{m} = mg(0.50\\ \\text{m})$.",
+            "The mass cancels: $v = \\sqrt{2g\\,\\Delta h} = \\sqrt{2(9.8\\ \\text{m/s}^2)(0.50\\ \\text{m})} = 3.1\\ \\text{m/s}$.",
+            "Check: the maximum speed, at the bottom, is $\\sqrt{2(9.8)(0.80)} = 4.0\\ \\text{m/s}$. Partway up the child is slower, as expected."
           ],
-          "answer": "$v = 1.7\\ \\text{m/s}$, on either side of equilibrium and in either direction",
+          "answer": "$v = 3.1\\ \\text{m/s}$, whichever way the swing is moving",
           "style": "stepped",
           "spec": {
             "givens": {
-              "m": {
-                "value": 0.2,
-                "unit": "kg"
-              },
-              "k": {
-                "value": 40,
-                "unit": "N/m"
-              },
-              "A": {
-                "value": 0.15,
+              "h_1": {
+                "value": 0.8,
                 "unit": "m"
               },
-              "x": {
-                "value": 0.09,
+              "h_2": {
+                "value": 0.3,
                 "unit": "m"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
               }
             },
-            "expr": "sqrt(k*(A^2 - x^2)/m)",
+            "expr": "sqrt(2*g*(h_1 - h_2))",
             "unit": "m/s"
           }
         },
@@ -781,8 +776,8 @@
           "a": "Zero at the turning points, $2.0\\ \\text{J}$ at equilibrium, and $1.5\\ \\text{J}$ at half the amplitude, where the potential energy is a quarter of the total, $0.5\\ \\text{J}$."
         },
         {
-          "q": "A pendulum bob is released from rest at a point $0.20\\ \\text{m}$ higher than the bottom of its swing. How fast is it moving at the bottom, and does the answer depend on the bob's mass?",
-          "a": "Gravitational potential energy becomes kinetic energy: $mgh = \\tfrac{1}{2}mv^2$, so $v = \\sqrt{2gh} = \\sqrt{2(9.8\\ \\text{m/s}^2)(0.20\\ \\text{m})} = 2.0\\ \\text{m/s}$. The mass cancels, so it does not matter."
+          "q": "A pendulum bob passes through the bottom of its swing at $1.4\\ \\text{m/s}$. How high above the bottom does it rise, and does the answer depend on the bob's mass?",
+          "a": "Kinetic energy becomes gravitational potential energy: $\\tfrac{1}{2}mv^2 = mgh$, so $h = v^2/2g = (1.4\\ \\text{m/s})^2/(2 \\times 9.8\\ \\text{m/s}^2) = 0.10\\ \\text{m}$. The mass cancels, so it does not matter."
         }
       ],
       "tryIt": {

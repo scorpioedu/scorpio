@@ -60,29 +60,33 @@
       ],
       "workedExamples": [
         {
-          "title": "Charge delivered by a charger",
-          "prompt": "A phone charger supplies a steady current of $2.0\\ \\text{A}$ for $45\\ \\text{min}$. How much charge passes through the charging cable in that time?",
+          "title": "How long a torch battery lasts",
+          "prompt": "A torch battery is rated to supply a current of $2500\\ \\text{mA}$ for $1.0\\ \\text{h}$; it is labelled \\\"2500 mAh\\\". The torch's LED draws a steady current of $0.15\\ \\text{A}$. How much charge can the battery deliver, and for how long will it run the torch?",
           "steps": [
-            "Identify what is asked. Current is charge per time, so the charge is the current multiplied by the time: $\\Delta q = I\\,\\Delta t$.",
-            "Put the time in seconds, because an ampere is a coulomb per second: $\\Delta t = 45\\ \\text{min} \\times 60\\ \\text{s/min} = 2700\\ \\text{s}$.",
-            "Multiply: $\\Delta q = (2.0\\ \\text{A})(2700\\ \\text{s}) = 5400\\ \\text{C}$.",
-            "Check the size. A coulomb is a large amount of charge, but $2.0\\ \\text{C}$ passing every second for most of an hour does add up to thousands of coulombs, so the answer is reasonable. To two significant figures it is $5.4 \\times 10^{3}\\ \\text{C}$."
+            "A current multiplied by a time is a charge, so the rating is a charge in disguise. In SI units: $\\Delta q = I\\,\\Delta t = (2.5\\ \\text{A})(3600\\ \\text{s}) = 9.0 \\times 10^3\\ \\text{C}$.",
+            "The same charge flows through the torch at its own current, so $\\Delta t = \\dfrac{\\Delta q}{I} = \\dfrac{9.0 \\times 10^3\\ \\text{C}}{0.15\\ \\text{A}} = 6.0 \\times 10^4\\ \\text{s}$.",
+            "Convert to hours: $\\dfrac{6.0 \\times 10^4\\ \\text{s}}{3600\\ \\text{s/h}} = 17\\ \\text{h}$.",
+            "Check the size: the torch draws $0.15\\ \\text{A}$, about one-seventeenth of $2.5\\ \\text{A}$, so the battery should last about seventeen times as long as one hour. It does."
           ],
-          "answer": "$\\Delta q = 5.4 \\times 10^{3}\\ \\text{C}$",
+          "answer": "$\\Delta q = 9.0 \\times 10^3\\ \\text{C}$; the torch runs for about $17\\ \\text{h}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "I": {
-                "value": 2,
-                "unit": "A"
+              "I_r": {
+                "value": 2500,
+                "unit": "mA"
               },
-              "t": {
-                "value": 45,
-                "unit": "min"
+              "t_r": {
+                "value": 1,
+                "unit": "h"
+              },
+              "I": {
+                "value": 0.15,
+                "unit": "A"
               }
             },
-            "expr": "I*t",
-            "unit": "C"
+            "expr": "I_r*t_r/I",
+            "unit": "h"
           }
         },
         {
@@ -134,8 +138,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A current of $0.30\\ \\text{A}$ flows for $2.0\\ \\text{min}$. How much charge passes a point in the wire?",
-          "a": "$\\Delta q = I\\,\\Delta t = (0.30\\ \\text{A})(120\\ \\text{s}) = 36\\ \\text{C}$."
+          "q": "The current in a wire is $0.30\\ \\text{A}$. How long does it take for $36\\ \\text{C}$ of charge to pass a point in the wire?",
+          "a": "$\\Delta t = \\dfrac{\\Delta q}{I} = \\dfrac{36\\ \\text{C}}{0.30\\ \\text{A}} = 120\\ \\text{s}$, which is $2.0\\ \\text{min}$."
         },
         {
           "q": "The current in a copper wire is directed east. Which way are the electrons in the wire drifting, and which end of the wire is at the higher potential?",
@@ -615,6 +619,7 @@
           "right": "The current leaving the bulb equals the current entering. The light comes from the energy each coulomb loses as it drops through the potential difference across the bulb."
         },
         {
+          "tag": "rated-power-fixed",
           "wrong": "A bulb marked $60\\ \\text{W}$ dissipates $60\\ \\text{W}$ in any circuit.",
           "right": "The rating is the power at the potential difference the bulb was designed for. Give it a smaller potential difference and it dissipates less power and glows more dimly."
         }
@@ -903,21 +908,20 @@
       ],
       "workedExamples": [
         {
-          "title": "Two batteries in one loop",
-          "prompt": "In the single loop shown, a $12\\ \\text{V}$ battery and a $3.0\\ \\text{V}$ battery oppose each other, in series with resistors $R_1 = 2.0\\ \\Omega$ and $R_2 = 4.0\\ \\Omega$. The batteries are ideal. What is the current in the loop?\n\n```dg\ncircuit\nbattery a d 12V \"ε_1\"\nresistor a b 2Ω R_1\nbattery b c 3V \"ε_2\"\nresistor c d 4Ω R_2\n```",
+          "title": "Mapping the potential around a loop",
+          "prompt": "In the single loop shown, a $9.0\\ \\text{V}$ battery and a $3.0\\ \\text{V}$ battery both push current the same way around the loop, in series with resistors $R_1 = 2.0\\ \\Omega$ and $R_2 = 4.0\\ \\Omega$. The batteries are ideal, and the negative terminal of the $9.0\\ \\text{V}$ battery is taken as zero potential. What is the potential at the point between the $3.0\\ \\text{V}$ battery and $R_2$?\n\n```dg\ncircuit\nbattery a d 9V \"ε_1\"\nresistor a b 2Ω R_1\nbattery c b 3V \"ε_2\"\nresistor c d 4Ω R_2\nground d\n```",
           "steps": [
-            "Guess a current direction. The $12\\ \\text{V}$ battery is the stronger, so take the current $I$ to be clockwise, out of its positive terminal and through $R_1$ first.",
-            "Walk clockwise from the negative terminal of the $12\\ \\text{V}$ battery. Through that battery, from negative to positive: $+12\\ \\text{V}$. Across $R_1$ with the current: $-I(2.0\\ \\Omega)$.",
-            "The walk enters the $3.0\\ \\text{V}$ battery at its positive terminal and leaves at its negative terminal, which is a drop: $-3.0\\ \\text{V}$. Across $R_2$ with the current: $-I(4.0\\ \\Omega)$.",
-            "Set the sum to zero: $12 - 2.0I - 3.0 - 4.0I = 0$, so $9.0 = 6.0I$ and $I = 1.5\\ \\text{A}$.",
-            "The answer is positive, so the guessed direction is right. The smaller battery is being driven backward: charge loses potential in it, so it is taking in energy, not supplying it."
+            "Both batteries drive the current clockwise: out of the $9.0\\ \\text{V}$ battery's positive terminal and through $R_1$ first. The loop rule gives $+9.0 - 2.0I + 3.0 - 4.0I = 0$, so $I = 12.0/6.0 = 2.0\\ \\text{A}$.",
+            "Walk clockwise from the zero point, keeping a running total. Through the $9.0\\ \\text{V}$ battery from negative to positive: $0 + 9.0 = 9.0\\ \\text{V}$. Across $R_1$ with the current: $9.0 - (2.0\\ \\text{A})(2.0\\ \\Omega) = 5.0\\ \\text{V}$.",
+            "Through the $3.0\\ \\text{V}$ battery from negative to positive: $5.0 + 3.0 = 8.0\\ \\text{V}$. That is the point asked about.",
+            "Check by walking the other way, from the zero point back through $R_2$ against the current: a rise of $(2.0\\ \\text{A})(4.0\\ \\Omega) = 8.0\\ \\text{V}$. The potential at a point does not depend on the path."
           ],
-          "answer": "$I = 1.5\\ \\text{A}$, clockwise",
+          "answer": "$V = 8.0\\ \\text{V}$",
           "style": "stepped",
           "spec": {
             "givens": {
               "E_1": {
-                "value": 12,
+                "value": 9,
                 "unit": "V"
               },
               "E_2": {
@@ -933,38 +937,38 @@
                 "unit": "Ω"
               }
             },
-            "expr": "(E_1 - E_2)/(R_1 + R_2)",
-            "unit": "A"
+            "expr": "(E_1 + E_2)*R_2/(R_1 + R_2)",
+            "unit": "V"
           }
         },
         {
-          "title": "The potential difference across a bulb",
-          "prompt": "A $9.0\\ \\text{V}$ ideal battery, a $150\\ \\Omega$ resistor and a small bulb are connected in a single loop. An ammeter in the loop reads $0.040\\ \\text{A}$. Determine the potential difference across the bulb, and explain why the method does not require the bulb to be ohmic.",
+          "title": "Choosing a resistor for an LED",
+          "prompt": "An LED is lit by an ideal $5.0\\ \\text{V}$ battery with a resistor in series. Whenever the LED is lit, the potential difference across it is $2.0\\ \\text{V}$, almost regardless of the current. What resistance gives a current of $20\\ \\text{mA}$? Explain why the loop rule applies to the LED but Ohm's law does not.",
           "steps": [
-            "The same current, $0.040\\ \\text{A}$, passes through every element of a single loop. The potential difference across the resistor is $\\Delta V_R = IR = (0.040\\ \\text{A})(150\\ \\Omega) = 6.0\\ \\text{V}$.",
-            "Apply the loop rule, walking in the direction of the current from the battery's negative terminal: $+9.0\\ \\text{V} - 6.0\\ \\text{V} - \\Delta V_{\\text{bulb}} = 0$.",
-            "So $\\Delta V_{\\text{bulb}} = 9.0\\ \\text{V} - 6.0\\ \\text{V} = 3.0\\ \\text{V}$.",
-            "The loop rule is a statement about energy, and it holds for any elements at all. Ohm's law was used only for the resistor. Nothing was assumed about how the bulb's potential difference depends on its current, so the result is valid whether or not the bulb is ohmic."
+            "In a single loop the same current passes through every element. Walk the loop in the direction of the current from the battery's negative terminal: $+5.0\\ \\text{V} - \\Delta V_R - 2.0\\ \\text{V} = 0$, so $\\Delta V_R = 3.0\\ \\text{V}$.",
+            "Ohm's law for the resistor: $R = \\dfrac{\\Delta V_R}{I} = \\dfrac{3.0\\ \\text{V}}{0.020\\ \\text{A}} = 150\\ \\Omega$.",
+            "The LED is not ohmic: its potential difference stays near $2.0\\ \\text{V}$ while its current changes a lot. The loop rule is conservation of energy and holds for any element; Ohm's law was used only for the resistor.",
+            "Without the resistor the LED would need all $5.0\\ \\text{V}$, and its current would rise far above $20\\ \\text{mA}$."
           ],
-          "answer": "$\\Delta V_{\\text{bulb}} = 3.0\\ \\text{V}$",
+          "answer": "$R = 150\\ Ω$",
           "style": "ap",
           "spec": {
             "givens": {
               "emf": {
-                "value": 9,
+                "value": 5,
                 "unit": "V"
               },
-              "R": {
-                "value": 150,
-                "unit": "Ω"
+              "V_LED": {
+                "value": 2,
+                "unit": "V"
               },
               "I": {
-                "value": 0.04,
-                "unit": "A"
+                "value": 20,
+                "unit": "mA"
               }
             },
-            "expr": "emf - I*R",
-            "unit": "V"
+            "expr": "(emf - V_LED)/I",
+            "unit": "Ω"
           }
         }
       ],
@@ -1159,10 +1163,12 @@
           "right": "The current that leaves the second junction equals the current that entered the first. The resistors take energy from the charge, not charge from the circuit."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "Current always splits equally at a junction.",
           "right": "It splits equally only between identical branches. Otherwise the branch with less resistance carries more current, since all the branches have the same potential difference."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "All of the current takes the path of least resistance.",
           "right": "Most of it does, not all. Any branch with a potential difference across it and a finite resistance carries some current."
         }
@@ -1298,29 +1304,28 @@
       ],
       "workedExamples": [
         {
-          "title": "The time constant of a camera flash circuit",
-          "prompt": "An uncharged $150\\ \\mu\\text{F}$ capacitor is charged by a $12\\ \\text{V}$ battery through a $20\\ \\text{k}\\Omega$ resistor. What is the time constant of the circuit, and roughly what is the potential difference across the capacitor one time constant after charging begins?",
+          "title": "Setting a delay with an RC circuit",
+          "prompt": "A delay circuit charges an uncharged $220\\ \\mu\\text{F}$ capacitor from a $9.0\\ \\text{V}$ battery through a resistor. A sensor switches on a light one time constant after charging begins, when the capacitor reaches 63% of $9.0\\ \\text{V}$. What resistance gives a delay of $5.0\\ \\text{s}$? If the sensor switched at 86% instead, about how long would the delay be?",
           "steps": [
-            "The time constant is $\\tau = RC$. Put both quantities in base units: $R = 20\\ \\text{k}\\Omega = 2.0 \\times 10^{4}\\ \\Omega$ and $C = 150\\ \\mu\\text{F} = 1.5 \\times 10^{-4}\\ \\text{F}$.",
-            "$\\tau = (2.0 \\times 10^{4}\\ \\Omega)(1.5 \\times 10^{-4}\\ \\text{F}) = 3.0\\ \\text{s}$, since an ohm times a farad is a second.",
-            "The final potential difference equals the emf, $12\\ \\text{V}$. After one time constant a charging capacitor has reached about 63% of its final value.",
-            "$0.63 \\times 12\\ \\text{V} \\approx 7.6\\ \\text{V}$. The rise is not steady: charging is fast at first and then slows down."
+            "The delay is one time constant: $\\tau = RC = 5.0\\ \\text{s}$, so $R = \\dfrac{\\tau}{C} = \\dfrac{5.0\\ \\text{s}}{2.2 \\times 10^{-4}\\ \\text{F}} = 2.3 \\times 10^4\\ \\Omega = 23\\ \\text{k}\\Omega$.",
+            "The switching level, $0.63 \\times 9.0\\ \\text{V} \\approx 5.7\\ \\text{V}$, does not depend on $R$ or $C$; only the time to reach it does. A larger resistor gives a longer delay.",
+            "A charging capacitor reaches about 86% after two time constants, so the delay becomes about $10\\ \\text{s}$: charging slows as it goes."
           ],
-          "answer": "$\\tau = 3.0\\ \\text{s}$; the capacitor is at about $7.6\\ \\text{V}$ after one time constant.",
+          "answer": "$R = 23$ kΩ; with the 86% setting the delay is about $10\\ \\text{s}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "R": {
-                "value": 20,
-                "unit": "kΩ"
+              "tau": {
+                "value": 5,
+                "unit": "s"
               },
               "C": {
-                "value": 150,
+                "value": 220,
                 "unit": "μF"
               }
             },
-            "expr": "R*C",
-            "unit": "s"
+            "expr": "tau/C",
+            "unit": "kΩ"
           }
         },
         {
@@ -1419,7 +1424,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "A bulb in series with a large capacitor makes the whole story visible: bright, dimming, dark, and bright again in the other sense when the capacitor is discharged through it. Ask for the current at $t = 0$ and after a long time before any graph is drawn; students who can replace the capacitor by a wire and then by an open switch can handle most exam questions. Expect straight-line graphs and \"half charged at half time\", and expect the full emf to be put across a capacitor that sits in parallel with only part of the circuit."
+      "teacherNotes": "A bulb in series with a large capacitor makes the whole story visible: bright, dimming, dark, and bright again in the other sense when the capacitor is discharged through it. Ask for the current at $t = 0$ and after a long time before any graph is drawn; students who can replace the capacitor by a wire and then by an open switch can handle most RC questions. Expect straight-line graphs and \"half charged at half time\", and expect the full emf to be put across a capacitor that sits in parallel with only part of the circuit."
     }
   ]
 }

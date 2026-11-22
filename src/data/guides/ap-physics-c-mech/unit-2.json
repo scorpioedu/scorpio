@@ -132,33 +132,33 @@
           }
         },
         {
-          "title": "A rod that is denser at one end",
-          "prompt": "A thin rod of length $L = 0.80\\ \\text{m}$ lies along the $x$-axis with one end at $x = 0$. Its linear mass density is $\\lambda(x) = a + bx$, where $a = 0.50\\ \\text{kg/m}$ and $b = 1.5\\ \\text{kg/m}^2$. Derive an expression for the position of the rod's centre of mass and calculate its value.",
+          "title": "A tapered plate cut from uniform sheet",
+          "prompt": "A flat fin is cut from uniform sheet metal in the shape of a trapezoid. It lies along the $x$-axis from $x = 0$ to $x = L = 0.60\\ \\text{m}$; its width grows steadily from $w_1 = 0.10\\ \\text{m}$ at $x = 0$ to $w_2 = 0.30\\ \\text{m}$ at $x = L$. Derive an expression for the $x$-coordinate of the fin's centre of mass and calculate its value.",
           "steps": [
-            "A slice of the rod of width $dx$ at position $x$ has mass $dm = \\lambda\\,dx = (a + bx)\\,dx$.",
-            "Total mass: $M = \\displaystyle\\int_0^L (a + bx)\\,dx = aL + \\tfrac{1}{2}bL^2 = (0.50)(0.80) + \\tfrac{1}{2}(1.5)(0.80)^2 = 0.40 + 0.48 = 0.88\\ \\text{kg}$.",
-            "Numerator: $\\displaystyle\\int_0^L x\\,dm = \\int_0^L (ax + bx^2)\\,dx = \\tfrac{1}{2}aL^2 + \\tfrac{1}{3}bL^3 = 0.160 + 0.256 = 0.416\\ \\text{kg·m}$.",
-            "$x_{\\text{cm}} = \\dfrac{\\tfrac{1}{2}aL^2 + \\tfrac{1}{3}bL^3}{aL + \\tfrac{1}{2}bL^2} = \\dfrac{0.416\\ \\text{kg·m}}{0.88\\ \\text{kg}} = 0.47\\ \\text{m}$.",
-            "This is past the midpoint ($0.40\\ \\text{m}$) because the rod is denser at its far end, but short of $\\tfrac{2}{3}L = 0.53\\ \\text{m}$, the result for a rod whose density starts from zero. Both checks make sense."
+            "The width at position $x$ is $w(x) = w_1 + (w_2 - w_1)x/L$. A strip of thickness $dx$ there has area $w\\,dx$, so with mass per unit area $\\sigma$ its mass is $dm = \\sigma\\,w(x)\\,dx$.",
+            "Total mass: $M = \\sigma\\displaystyle\\int_0^L w\\,dx = \\sigma\\big[w_1L + \\tfrac{1}{2}(w_2 - w_1)L\\big] = \\tfrac{1}{2}\\sigma L(w_1 + w_2)$.",
+            "Numerator: $\\displaystyle\\int_0^L x\\,dm = \\sigma\\big[\\tfrac{1}{2}w_1L^2 + \\tfrac{1}{3}(w_2 - w_1)L^2\\big] = \\tfrac{1}{6}\\sigma L^2(w_1 + 2w_2)$.",
+            "Dividing, $\\sigma$ cancels: $x_{\\text{cm}} = \\dfrac{L(w_1 + 2w_2)}{3(w_1 + w_2)} = \\dfrac{(0.60)(0.10 + 0.60)}{3(0.40)}\\ \\text{m} = 0.35\\ \\text{m}$.",
+            "Checks: with $w_1 = w_2$ the formula gives $L/2$, the middle of a uniform rectangle; with $w_1 = 0$ (a triangle) it gives $\\tfrac{2}{3}L$, like the rod in the derivation. Our $0.35\\ \\text{m}$ lies between the two."
           ],
-          "answer": "$x_{\\text{cm}} = \\dfrac{\\tfrac{1}{2}aL^2 + \\tfrac{1}{3}bL^3}{aL + \\tfrac{1}{2}bL^2} = 0.47\\ \\text{m}$ from the lighter end",
+          "answer": "$x_{\\text{cm}} = \\dfrac{L(w_1 + 2w_2)}{3(w_1 + w_2)} = 0.35\\ \\text{m}$ from the narrow end",
           "style": "ap",
           "spec": {
             "givens": {
               "L": {
-                "value": 0.8,
+                "value": 0.6,
                 "unit": "m"
               },
-              "a": {
-                "value": 0.5,
-                "unit": "kg/m"
+              "w1": {
+                "value": 0.1,
+                "unit": "m"
               },
-              "b": {
-                "value": 1.5,
-                "unit": "kg/m^2"
+              "w2": {
+                "value": 0.3,
+                "unit": "m"
               }
             },
-            "expr": "(a*L^2/2 + b*L^3/3)/(a*L + b*L^2/2)",
+            "expr": "L*(w1 + 2*w2)/(3*(w1 + w2))",
             "unit": "m"
           }
         }
@@ -397,7 +397,7 @@
         "1.1",
         "2.1"
       ],
-      "teacherNotes": "Ask for the agent of every arrow (\"what object exerts this force?\"); it removes \"force of motion\" and $ma$ arrows faster than any rule. AP scoring penalises extra forces and components drawn as if they were forces on the diagram, so have students draw components beside the diagram or dashed. The wall example is worth doing live because the normal force is horizontal and unrelated to $mg$."
+      "teacherNotes": "Ask for the agent of every arrow (\"what object exerts this force?\"); it removes \"force of motion\" and $ma$ arrows faster than any rule. Extra forces, and components drawn on the diagram as if they were forces, make a free-body diagram wrong, so have students draw components beside the diagram or dashed. The wall example is worth doing live because the normal force is horizontal and unrelated to $mg$."
     },
     {
       "topic": "2.3",
@@ -941,7 +941,7 @@
                 "unit": "s"
               }
             },
-            "expr": "F0*tau/m*(1 - 2.718281828^(-t/tau))",
+            "expr": "F0*tau/m*(1 - exp(-t/tau))",
             "unit": "m/s"
           }
         }
@@ -1797,7 +1797,7 @@
                 "unit": "m/s^2"
               }
             },
-            "expr": "m*g/b*(1 - 2.718281828^(-b*t/m))",
+            "expr": "m*g/b*(1 - exp(-b*t/m))",
             "unit": "m/s"
           }
         },
@@ -1878,7 +1878,7 @@
         "1.2",
         "2.5"
       ],
-      "teacherNotes": "Before any algebra, have students sketch the force diagram at three moments (release, part-way, terminal) and predict the shapes of the $a$-$t$ and $v$-$t$ graphs; the differential equation then confirms what they already expect. In the derivation the usual slips are the sign from integrating $1/(v_T - v)$ and the limits of integration. AP free-response questions often ask only for the differential equation and a sketch, so make sure students can write $m\\,dv/dt = mg - bv$ straight from a free-body diagram."
+      "teacherNotes": "Before any algebra, have students sketch the force diagram at three moments (release, part-way, terminal) and predict the shapes of the $a$-$t$ and $v$-$t$ graphs; the differential equation then confirms what they already expect. In the derivation the usual slips are the sign from integrating $1/(v_T - v)$ and the limits of integration. Questions often ask only for the differential equation and a sketch, so make sure students can write $m\\,dv/dt = mg - bv$ straight from a free-body diagram."
     },
     {
       "topic": "2.10",

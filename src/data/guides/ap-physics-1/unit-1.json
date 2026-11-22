@@ -599,8 +599,8 @@
           "a": "On a position–time graph: at rest (zero slope, so zero velocity). On a velocity–time graph: constant velocity (zero slope, so zero acceleration). The object is at rest only if that line lies on the time axis."
         },
         {
-          "q": "A stone is dropped from rest. How fast is it moving after $3.0\\ \\text{s}$, and how far has it fallen? Ignore air resistance.",
-          "a": "$v = gt = (9.8\\ \\text{m/s}^2)(3.0\\ \\text{s}) = 29\\ \\text{m/s}$, downward. It has fallen $\\tfrac{1}{2}gt^2 = \\tfrac{1}{2}(9.8)(3.0)^2 = 44\\ \\text{m}$."
+          "q": "A stone is dropped from rest. How long does it take to reach a speed of $19.6\\ \\text{m/s}$, and how far has it fallen by then? Ignore air resistance.",
+          "a": "$t = v/g = (19.6\\ \\text{m/s})/(9.8\\ \\text{m/s}^2) = 2.0\\ \\text{s}$. It has fallen $\\tfrac{1}{2}gt^2 = \\tfrac{1}{2}(9.8)(2.0)^2 = 19.6\\ \\text{m}$."
         },
         {
           "q": "A velocity–time graph is a straight line from $+6\\ \\text{m/s}$ at $t = 0$ to $-6\\ \\text{m/s}$ at $t = 4\\ \\text{s}$. What are the acceleration and the displacement over the $4\\ \\text{s}$?",
@@ -976,32 +976,36 @@
           }
         },
         {
-          "title": "A kick from level ground",
-          "prompt": "A soccer ball is kicked from level ground at $24\\ \\text{m/s}$, at $30^\\circ$ above the horizontal. Determine how long the ball is in the air and how far away it lands, and describe its velocity and acceleration at the highest point. Ignore air resistance and use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "A throw from a rooftop",
+          "prompt": "A student on the flat roof of a building throws a ball at $12.0\\ \\text{m/s}$, at $30^\\circ$ above the horizontal, from a point $15.0\\ \\text{m}$ above the level ground. Determine how long the ball is in the air, how far from the base of the building it lands, and its velocity just before it lands. Ignore air resistance and use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Find the components of the launch velocity: $v_x = (24\\ \\text{m/s})\\cos 30^\\circ = 20.8\\ \\text{m/s}$ and $v_{0y} = (24\\ \\text{m/s})\\sin 30^\\circ = 12\\ \\text{m/s}$.",
-            "The time in the air comes from the vertical motion. The ball lands when its height is back to zero: $0 = v_{0y}t - \\tfrac{1}{2}gt^2$. This is true at $t = 0$ (the kick) and at $t = \\dfrac{2v_{0y}}{g} = \\dfrac{2(12\\ \\text{m/s})}{9.8\\ \\text{m/s}^2} = 2.45\\ \\text{s}$ (keeping an extra figure for the next step).",
-            "The horizontal distance covered in that time, at constant $v_x$: $\\Delta x = v_x t = (20.8\\ \\text{m/s})(2.45\\ \\text{s}) = 51\\ \\text{m}$.",
-            "At the highest point the vertical velocity is zero, so the velocity is $20.8\\ \\text{m/s}$, horizontal: the ball is moving, not stopped. The acceleration there is what it is everywhere on the path: $9.8\\ \\text{m/s}^2$ downward."
+            "Find the components of the launch velocity: $v_x = (12.0\\ \\text{m/s})\\cos 30^\\circ = 10.4\\ \\text{m/s}$ and $v_{0y} = (12.0\\ \\text{m/s})\\sin 30^\\circ = 6.0\\ \\text{m/s}$. Up is positive; the ground is $y = 0$.",
+            "The time in the air comes from the vertical motion alone. The ball lands when $y = 0$: $0 = 15.0\\ \\text{m} + (6.0\\ \\text{m/s})t - (4.9\\ \\text{m/s}^2)t^2$. The quadratic formula gives the positive root $t = \\dfrac{6.0 + \\sqrt{6.0^2 + 4(4.9)(15.0)}}{9.8}\\ \\text{s} = 2.47\\ \\text{s}$.",
+            "The horizontal distance in that same time, at constant $v_x$: $\\Delta x = v_x t = (10.39\\ \\text{m/s})(2.466\\ \\text{s}) = 25.6\\ \\text{m}$.",
+            "Just before landing the horizontal component is still $10.4\\ \\text{m/s}$, and the vertical component is $v_y = 6.0\\ \\text{m/s} - (9.8\\ \\text{m/s}^2)(2.466\\ \\text{s}) = -18.2\\ \\text{m/s}$. Rebuild the vector: $v = \\sqrt{10.4^2 + 18.2^2}\\ \\text{m/s} = 20.9\\ \\text{m/s}$, at $\\tan^{-1}(18.2/10.4) = 60^\\circ$ below the horizontal."
           ],
-          "answer": "In the air for about $2.4\\ \\text{s}$; lands $51\\ \\text{m}$ away; at the top the velocity is $21\\ \\text{m/s}$ horizontally and the acceleration is $9.8\\ \\text{m/s}^2$ downward",
+          "answer": "In the air for about $2.5\\ \\text{s}$; lands $25.6\\ \\text{m}$ from the base of the building; just before landing it moves at $21\\ \\text{m/s}$, $60^\\circ$ below the horizontal",
           "style": "ap",
           "spec": {
             "givens": {
               "v": {
-                "value": 24,
+                "value": 12,
                 "unit": "m/s"
               },
               "theta": {
                 "value": 30,
                 "unit": "deg"
               },
+              "h": {
+                "value": 15,
+                "unit": "m"
+              },
               "g": {
                 "value": 9.8,
                 "unit": "m/s^2"
               }
             },
-            "expr": "v*cos(theta)*(2*v*sin(theta)/g)",
+            "expr": "v*cos(theta)*(v*sin(theta)+sqrt((v*sin(theta))^2+2*g*h))/g",
             "unit": "m"
           }
         }

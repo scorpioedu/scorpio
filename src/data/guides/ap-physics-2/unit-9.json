@@ -88,15 +88,15 @@
       ],
       "workedExamples": [
         {
-          "title": "A typical speed for oxygen molecules",
-          "prompt": "The air in a room is at $22\\ \\text{°C}$. One oxygen molecule has a mass of $5.31 \\times 10^{-26}\\ \\text{kg}$. What is the root-mean-square speed of the oxygen molecules?",
+          "title": "A temperature from a molecular speed",
+          "prompt": "High in the atmosphere, the oxygen molecules have a root-mean-square speed of $1.10 \\times 10^3\\ \\text{m/s}$. One oxygen molecule has a mass of $5.31 \\times 10^{-26}\\ \\text{kg}$. Boltzmann's constant is $k_B = 1.38 \\times 10^{-23}\\ \\text{J/K}$. What is the temperature of the gas there?",
           "steps": [
-            "Kinetic theory needs the absolute temperature: $T = 22 + 273 = 295\\ \\text{K}$.",
-            "Start from the average kinetic energy of one molecule: $K_{\\text{avg}} = \\tfrac{3}{2}k_B T = \\tfrac{3}{2}(1.38 \\times 10^{-23}\\ \\text{J/K})(295\\ \\text{K}) = 6.11 \\times 10^{-21}\\ \\text{J}$.",
-            "The root-mean-square speed is the speed that has this kinetic energy: $\\tfrac{1}{2}m v_{\\text{rms}}^2 = K_{\\text{avg}}$, so $v_{\\text{rms}} = \\sqrt{2K_{\\text{avg}}/m}$, which is the same as $\\sqrt{3k_B T/m}$.",
-            "Put in the numbers: $v_{\\text{rms}} = \\sqrt{\\dfrac{2(6.11 \\times 10^{-21}\\ \\text{J})}{5.31 \\times 10^{-26}\\ \\text{kg}}} = \\sqrt{2.30 \\times 10^{5}\\ \\text{m}^2/\\text{s}^2} = 4.8 \\times 10^2\\ \\text{m/s}$."
+            "The root-mean-square speed fixes the average kinetic energy of one molecule: $K_{\\text{avg}} = \\tfrac{1}{2}m v_{\\text{rms}}^2 = \\tfrac{1}{2}(5.31 \\times 10^{-26}\\ \\text{kg})(1.10 \\times 10^3\\ \\text{m/s})^2 = 3.21 \\times 10^{-20}\\ \\text{J}$.",
+            "Temperature is a measure of that average: $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$, so $T = \\dfrac{2K_{\\text{avg}}}{3k_B}$, which is the same as $T = \\dfrac{m v_{\\text{rms}}^2}{3k_B}$.",
+            "Put in the numbers: $T = \\dfrac{2(3.21 \\times 10^{-20}\\ \\text{J})}{3(1.38 \\times 10^{-23}\\ \\text{J/K})} = 1.55 \\times 10^3\\ \\text{K}$.",
+            "The answer is in kelvin because $k_B$ is in joules per kelvin: about $1280\\ \\text{°C}$."
           ],
-          "answer": "$v_{\\text{rms}} = 4.8 \\times 10^2\\ \\text{m/s}$",
+          "answer": "$T = 1.55 \\times 10^3\\ \\text{K}$",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -104,43 +104,47 @@
                 "value": 1.38e-23,
                 "unit": "J/K"
               },
-              "T": {
-                "value": 22,
-                "unit": "°C"
+              "v": {
+                "value": 1100,
+                "unit": "m/s"
               },
               "m": {
                 "value": 5.31e-26,
                 "unit": "kg"
               }
             },
-            "expr": "sqrt(3*kB*T/m)",
-            "unit": "m/s"
+            "expr": "m*v^2/(3*kB)",
+            "unit": "K"
           }
         },
         {
-          "title": "Helium and neon at the same temperature",
-          "prompt": "One container holds helium gas and another holds neon gas. Both are at the same temperature. The molar mass of helium is $4.00\\ \\text{g/mol}$ and that of neon is $20.2\\ \\text{g/mol}$. Compare the average kinetic energies of the atoms in the two containers, and determine the ratio of the root-mean-square speed of the helium atoms to that of the neon atoms.",
+          "title": "Matching a lighter gas's speed",
+          "prompt": "Helium in a balloon is at $293\\ \\text{K}$. The molar mass of helium is $4.00\\ \\text{g/mol}$ and that of nitrogen is $28.0\\ \\text{g/mol}$. To what temperature would a sample of nitrogen have to be heated for its molecules to have the same root-mean-square speed as the helium atoms? At that temperature, how does the average kinetic energy of a nitrogen molecule compare with that of a helium atom?",
           "steps": [
-            "The average kinetic energy per atom is $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$. It depends only on the temperature, which is the same for both gases, so the helium atoms and the neon atoms have the same average kinetic energy.",
-            "Equal kinetic energies with unequal masses means unequal speeds: $\\tfrac{1}{2}m_{\\text{He}}v_{\\text{He}}^2 = \\tfrac{1}{2}m_{\\text{Ne}}v_{\\text{Ne}}^2$, where each $v$ is the root-mean-square speed.",
-            "Rearranging, $\\dfrac{v_{\\text{He}}}{v_{\\text{Ne}}} = \\sqrt{\\dfrac{m_{\\text{Ne}}}{m_{\\text{He}}}} = \\sqrt{\\dfrac{20.2\\ \\text{g/mol}}{4.00\\ \\text{g/mol}}} = \\sqrt{5.05} = 2.2$. Only the ratio of the atoms' masses is needed, and that equals the ratio of the molar masses.",
-            "The lighter helium atoms move faster, by a factor of the square root of the mass ratio, not by the mass ratio itself."
+            "The average kinetic energy per particle is $K_{\\text{avg}} = \\tfrac{3}{2}k_B T$, and $\\tfrac{1}{2}m v_{\\text{rms}}^2 = K_{\\text{avg}}$ gives $v_{\\text{rms}} = \\sqrt{3k_B T/m}$. Two gases have equal root-mean-square speeds only when $T/m$ is the same for both.",
+            "So the temperature must rise in proportion to the particle mass: $T_{\\text{N}_2} = T_{\\text{He}}\\,\\dfrac{m_{\\text{N}_2}}{m_{\\text{He}}} = (293\\ \\text{K})\\,\\dfrac{28.0\\ \\text{g/mol}}{4.00\\ \\text{g/mol}} = 2.05 \\times 10^3\\ \\text{K}$. The ratio of the particle masses equals the ratio of the molar masses.",
+            "At that temperature each nitrogen molecule has $7$ times the average kinetic energy of a helium atom: equal speeds with seven times the mass.",
+            "Speed alone is not a measure of temperature; the average kinetic energy per particle is."
           ],
-          "answer": "The average kinetic energies are equal; the helium atoms' root-mean-square speed is $2.2$ times that of the neon atoms",
+          "answer": "$T = 2.05 \\times 10^3\\ \\text{K}$; the nitrogen molecules then have $7$ times the average kinetic energy of the helium atoms",
           "style": "ap",
           "spec": {
             "givens": {
-              "m_Ne": {
-                "value": 20.2,
+              "T": {
+                "value": 293,
+                "unit": "K"
+              },
+              "M_N2": {
+                "value": 28,
                 "unit": "g/mol"
               },
-              "m_He": {
+              "M_He": {
                 "value": 4,
                 "unit": "g/mol"
               }
             },
-            "expr": "sqrt(m_Ne/m_He)",
-            "unit": ""
+            "expr": "T*M_N2/M_He",
+            "unit": "K"
           }
         }
       ],
@@ -190,7 +194,7 @@
           }
         ]
       },
-      "teacherNotes": "Ask students to explain pressure in a sentence that uses the words \"collisions\" and \"momentum\" before any formula appears; the link back to impulse from mechanics is what the free-response questions reward. The two errors to listen for are \"all the molecules go at the same speed\" and \"heavier molecules have more energy at the same temperature\". A quick diagnostic is to ask which is faster in room air, nitrogen or oxygen, and which has more kinetic energy on average. Set 9A practises this topic."
+      "teacherNotes": "Ask students to explain pressure in a sentence that uses the words \"collisions\" and \"momentum\" before any formula appears; the link back to impulse from mechanics is the heart of the explanation. The two errors to listen for are \"all the molecules go at the same speed\" and \"heavier molecules have more energy at the same temperature\". A quick diagnostic is to ask which is faster in room air, nitrogen or oxygen, and which has more kinetic energy on average. Set 9A practises this topic."
     },
     {
       "topic": "9.2",
@@ -495,15 +499,15 @@
           }
         },
         {
-          "title": "Which spoon is colder?",
-          "prompt": "A steel spoon and a wooden spoon have been lying in the same kitchen drawer since yesterday. A student picks them up and finds that the steel spoon feels colder. The student concludes that the steel spoon is at a lower temperature than the wooden spoon. Is the student's conclusion correct? Justify your answer in terms of energy transfer.",
+          "title": "Why a vacuum flask keeps soup hot",
+          "prompt": "A vacuum flask has a double glass wall with the air pumped out of the gap between the walls, silvered surfaces facing the gap, and a tight plastic stopper. Hot soup poured into it is still hot hours later. For each of conduction, convection and radiation, explain which feature of the flask reduces that transfer of energy.",
           "steps": [
-            "Both spoons have been in the same drawer for many hours. Any difference in temperature would have driven a transfer of energy until it disappeared, so both are in thermal equilibrium with the room, at the same temperature. The conclusion is wrong.",
-            "The student's hand is warmer than either spoon, so energy passes from the hand to whichever spoon it touches, by conduction.",
-            "Steel is a good thermal conductor: it carries the energy away from the skin quickly, so the skin cools quickly. Wood is a poor conductor: the wood under the fingers soon warms up, and the transfer slows.",
-            "Skin senses how fast it is losing energy, not the temperature of the object. The steel spoon feels colder because it takes energy from the hand at a greater rate."
+            "The soup is warmer than its surroundings, so energy leaves it by every route open to it. The flask cannot stop the transfer, only slow each route.",
+            "Conduction passes energy from particle to particle. The gap holds almost no particles, so almost nothing conducts across it; what is left is the thin glass at the neck and the plastic stopper, both poor conductors.",
+            "Convection needs a fluid that can flow. There is no air in the gap to circulate, and the stopper keeps warm air and vapour from rising out of the top.",
+            "Radiation needs no medium, so it does cross the vacuum. The silvered surfaces emit little infrared and reflect most of what reaches them back toward the soup."
           ],
-          "answer": "No. Both spoons are at room temperature; the steel one feels colder because it conducts energy away from the hand faster",
+          "answer": "The vacuum stops conduction and convection across the gap, the stopper stops convection out of the top, and the silvering reduces radiation; the soup still cools, only slowly",
           "style": "ap"
         }
       ],
@@ -556,7 +560,7 @@
       "prerequisites": [
         "9.1"
       ],
-      "teacherNotes": "Listen for \"heat\" used as a noun for something an object has; rephrasing it as \"energy transferred because of a temperature difference\" every time is tedious but it works. The spoon question (or a metal and a wooden bench) is the best way to surface the belief that conductors are colder: have students predict the readings of a thermometer on each before explaining. Students also tend to say that the transfer stops at equilibrium because the energies are equal; ask about a small object in a large bath. Set 9B practises this topic."
+      "teacherNotes": "Listen for \"heat\" used as a noun for something an object has; rephrasing it as \"energy transferred because of a temperature difference\" every time is tedious but it works. A touch question with a metal and a wooden object side by side (the bench in Set 9B) is the best way to surface the belief that conductors are colder: have students predict the readings of a thermometer on each before explaining. Students also tend to say that the transfer stops at equilibrium because the energies are equal; ask about a small object in a large bath. Set 9B practises this topic."
     },
     {
       "topic": "9.4",
@@ -565,7 +569,7 @@
         "diagram": "pv num P=kPa V=L\nstate A V=2 P=150\nstate B V=6\nisobaric A B shade \"expansion\"",
         "caption": "A gas expands at a constant pressure of $150\\ \\text{kPa}$ from $2\\ \\text{L}$ to $6\\ \\text{L}$. The shaded area under the path, $(150\\ \\text{kPa})(4\\ \\text{L}) = 600\\ \\text{J}$, is the work the gas does on the piston. The work done on the gas is therefore $W = -600\\ \\text{J}$."
       },
-      "explanation": "The internal energy $U$ of an ideal gas is the total kinetic energy of its particles, so it depends only on the amount of gas and its temperature; for a monatomic ideal gas $U = \\tfrac{3}{2}nRT$. There are two ways to change it: heating, $Q$, and work, $W$, which is energy transferred by a force that moves a boundary such as a piston. The first law of thermodynamics says $\\Delta U = Q + W$. In this course $Q$ is positive when energy enters the gas by heating, and $W$ is the work done on the gas, positive when the gas is compressed.\n\nAt constant pressure the work done on the gas is $W = -P\\,\\Delta V$. In a compression $\\Delta V$ is negative, so $W$ is positive and energy goes into the gas. In an expansion the gas does work on its surroundings, so $W$ is negative. On a PV diagram the size of the work is the area under the path, even when the pressure changes.\n\nFour processes have names. Isochoric (constant volume): $W = 0$, so $\\Delta U = Q$. Isobaric (constant pressure): $W = -P\\,\\Delta V$. Isothermal (constant temperature): $\\Delta U = 0$, so $Q = -W$; any energy that enters by heating leaves as work. Adiabatic (no heating, because the gas is insulated or changes too quickly): $Q = 0$, so $\\Delta U = W$; compressing the gas warms it.\n\nBecause $U$ depends only on the state of the gas, $\\Delta U$ between two states is the same along every path, while $Q$ and $W$ depend on the path. In a cycle the gas returns to its starting state, so $\\Delta U = 0$, and the net work is the area the cycle encloses; in a clockwise cycle the gas does net work on its surroundings.",
+      "explanation": "The internal energy $U$ of an ideal gas is the total kinetic energy of its particles, so it depends only on the amount of gas and its temperature; for a monatomic ideal gas $U = \\tfrac{3}{2}nRT$. There are two ways to change it: heating, $Q$, and work, $W$, energy transferred by a force that moves a boundary such as a piston. The first law of thermodynamics says $\\Delta U = Q + W$. Here $Q$ is positive when energy enters the gas by heating, and $W$ is the work done on the gas, positive in a compression. Some problems instead use the work done by the gas, $W_{\\text{by}} = -W$, and write $\\Delta U = Q - W_{\\text{by}}$: the words \"by the gas\", or a minus sign before the work in the first law, mark that convention.\n\nAt constant pressure the work done on the gas is $W = -P\\,\\Delta V$. In a compression $\\Delta V$ is negative, so $W$ is positive and energy goes into the gas. In an expansion the gas does work on its surroundings, so $W$ is negative. On a PV diagram the size of the work is the area under the path, even when the pressure changes.\n\nFour processes have names. Isochoric (constant volume): $W = 0$, so $\\Delta U = Q$. Isobaric (constant pressure): $W = -P\\,\\Delta V$. Isothermal (constant temperature): $\\Delta U = 0$, so $Q = -W$; any energy that enters by heating leaves as work. Adiabatic (no heating): $Q = 0$, so $\\Delta U = W$; compressing the gas warms it.\n\nBecause $U$ depends only on the state of the gas, $\\Delta U$ between two states is the same along every path, while $Q$ and $W$ depend on the path. In a cycle the gas returns to its starting state, so $\\Delta U = 0$, and the net work is the area the cycle encloses; in a clockwise cycle the gas does net work on its surroundings.",
       "equations": [
         {
           "latex": "\\Delta U = Q + W",
@@ -644,50 +648,49 @@
       ],
       "workedExamples": [
         {
-          "title": "Compressing a gas while it cools",
-          "prompt": "Helium in a cylinder is held at a constant pressure of $250\\ \\text{kPa}$ by a piston. The gas is cooled, and its volume falls from $6.0\\ \\text{L}$ to $4.0\\ \\text{L}$ while $1250\\ \\text{J}$ of energy leaves the gas by heating. What is the change in the internal energy of the gas?",
+          "title": "Heating a gas at constant pressure",
+          "prompt": "A cylinder closed by a freely sliding piston holds $0.150\\ \\text{mol}$ of helium, a monatomic ideal gas, at constant pressure. The gas is warmed from $20\\ \\text{°C}$ to $80\\ \\text{°C}$. How much energy must enter the gas by heating? Use $R = 8.31\\ \\text{J/(mol·K)}$.",
           "steps": [
-            "Signs first. Energy leaves by heating, so $Q = -1250\\ \\text{J}$. The gas is compressed, so $W$ will be positive.",
-            "Find the change in volume in SI units: $\\Delta V = 4.0\\ \\text{L} - 6.0\\ \\text{L} = -2.0\\ \\text{L} = -2.0 \\times 10^{-3}\\ \\text{m}^3$.",
-            "The pressure is constant, so $W = -P\\,\\Delta V = -(2.5 \\times 10^5\\ \\text{Pa})(-2.0 \\times 10^{-3}\\ \\text{m}^3) = +500\\ \\text{J}$.",
-            "Apply the first law: $\\Delta U = Q + W = -1250\\ \\text{J} + 500\\ \\text{J} = -750\\ \\text{J}$.",
-            "Check: helium is monatomic, so $\\Delta U$ should also equal $\\tfrac{3}{2}\\Delta(PV) = \\tfrac{3}{2}(250\\ \\text{kPa})(-2.0\\ \\text{L}) = -750\\ \\text{J}$. It does."
+            "A temperature change is the same in kelvins as in degrees Celsius: $\\Delta T = 60\\ \\text{K}$. For a monatomic ideal gas $U = \\tfrac{3}{2}nRT$, so $\\Delta U = \\tfrac{3}{2}(0.150\\ \\text{mol})(8.31\\ \\text{J/(mol·K)})(60\\ \\text{K}) = +112\\ \\text{J}$.",
+            "At constant pressure $W = -P\\,\\Delta V$, and the ideal gas law turns $P\\,\\Delta V$ into $nR\\,\\Delta T$: $W = -(0.150)(8.31)(60)\\ \\text{J} = -74.8\\ \\text{J}$, negative because the gas pushes the piston out.",
+            "First law: $Q = \\Delta U - W = 112\\ \\text{J} - (-74.8\\ \\text{J}) = +187\\ \\text{J}$.",
+            "Check: a rigid container would need only $112\\ \\text{J}$; the extra $74.8\\ \\text{J}$ leaves as work on the piston."
           ],
-          "answer": "$\\Delta U = -750\\ \\text{J}$: the internal energy falls",
+          "answer": "$Q = +187\\ \\text{J}$: that much energy must enter the gas by heating",
           "style": "stepped",
           "spec": {
             "givens": {
-              "Q": {
-                "value": -1250,
-                "unit": "J"
+              "n": {
+                "value": 0.15,
+                "unit": "mol"
               },
-              "P": {
-                "value": 250,
-                "unit": "kPa"
+              "R": {
+                "value": 8.31,
+                "unit": "J/(mol·K)"
               },
-              "V_i": {
-                "value": 6,
-                "unit": "L"
+              "T_i": {
+                "value": 20,
+                "unit": "°C"
               },
-              "V_f": {
-                "value": 4,
-                "unit": "L"
+              "T_f": {
+                "value": 80,
+                "unit": "°C"
               }
             },
-            "expr": "Q - P*(V_f - V_i)",
+            "expr": "2.5*n*R*(T_f - T_i)",
             "unit": "J"
           }
         },
         {
-          "title": "Net work in a cycle",
-          "prompt": "A fixed amount of gas is taken around the cycle A to B to C to D and back to A shown on the PV diagram. Determine the net work done by the gas in one cycle, and the net energy transferred to the gas by heating in one cycle.\n\n```dg\npv num P=kPa V=L\nstate A V=1 P=400\nstate B V=4 P=400\nstate C V=4 P=100\nstate D V=1 P=100\nisobaric A B\nisochoric B C\nisobaric C D\nisochoric D A\nshade cycle\n```",
+          "title": "A cycle run the other way",
+          "prompt": "A fixed amount of gas is taken around the triangular cycle A to B to C and back to A shown on the PV diagram. Determine the net work done on the gas in one cycle and the net energy transferred to the gas by heating. Is the gas acting as a heat engine?\n\n```dg\npv num P=kPa V=L\nstate A V=1 P=100\nstate B V=3 P=100\nstate C V=1 P=400\nisobaric A B\nline B C\nisochoric C A\nshade cycle\n```",
           "steps": [
-            "From A to B the gas expands at $400\\ \\text{kPa}$, so it does work on its surroundings: $(400\\ \\text{kPa})(3\\ \\text{L}) = 1200\\ \\text{J}$, using $1\\ \\text{kPa} \\times 1\\ \\text{L} = 1\\ \\text{J}$.",
-            "From B to C and from D to A the volume does not change, so no work is done. From C to D the gas is compressed at $100\\ \\text{kPa}$, so work is done on it: $(100\\ \\text{kPa})(3\\ \\text{L}) = 300\\ \\text{J}$.",
-            "The net work done by the gas is $1200\\ \\text{J} - 300\\ \\text{J} = 900\\ \\text{J}$, the area of the rectangle the cycle encloses. In the sign convention of the first law, the work done on the gas is $W = -900\\ \\text{J}$.",
-            "The gas ends in the state it started in, so $\\Delta U = 0$. The first law then gives $Q = -W = +900\\ \\text{J}$: a net $900\\ \\text{J}$ enters the gas by heating and the same amount leaves as work."
+            "From A to B the gas expands by $2\\ \\text{L}$ at $100\\ \\text{kPa}$, doing $200\\ \\text{J}$ of work on its surroundings ($1\\ \\text{kPa} \\times 1\\ \\text{L} = 1\\ \\text{J}$): $W_{AB} = -200\\ \\text{J}$.",
+            "From B to C the gas is compressed; the work done on it is the trapezoid under the line: $W_{BC} = \\tfrac{1}{2}(100 + 400)\\ \\text{kPa} \\times 2\\ \\text{L} = +500\\ \\text{J}$. From C to A, $W_{CA} = 0$.",
+            "Net work done on the gas: $W = -200\\ \\text{J} + 500\\ \\text{J} = +300\\ \\text{J}$, the triangle's area, positive because the counterclockwise cycle compresses at higher pressures than it expands.",
+            "The gas returns to A, so $\\Delta U = 0$ and $Q = -W = -300\\ \\text{J}$: a net $300\\ \\text{J}$ leaves by heating. Work goes in and heating comes out, the reverse of an engine, as in a refrigerator."
           ],
-          "answer": "The gas does $900\\ \\text{J}$ of net work in each cycle, and a net $900\\ \\text{J}$ enters it by heating",
+          "answer": "The net work done on the gas is $+300\\ \\text{J}$ per cycle and a net $300\\ \\text{J}$ leaves it by heating, so it is not a heat engine",
           "style": "ap",
           "spec": {
             "givens": {
@@ -700,7 +703,7 @@
                 "unit": "kPa"
               },
               "V_hi": {
-                "value": 4,
+                "value": 3,
                 "unit": "L"
               },
               "V_lo": {
@@ -708,7 +711,7 @@
                 "unit": "L"
               }
             },
-            "expr": "(P_hi - P_lo)*(V_hi - V_lo)",
+            "expr": "(P_hi - P_lo)*(V_hi - V_lo)/2",
             "unit": "J"
           }
         }
@@ -844,46 +847,38 @@
       ],
       "workedExamples": [
         {
-          "title": "Hot copper into cool water",
-          "prompt": "A $0.250\\ \\text{kg}$ block of copper at $95.0\\ \\text{°C}$ is lowered into $0.300\\ \\text{kg}$ of water at $18.0\\ \\text{°C}$ in an insulated cup. The specific heat of copper is $385\\ \\text{J/(kg·°C)}$ and that of water is $4186\\ \\text{J/(kg·°C)}$. What is the final temperature of the copper and the water?",
+          "title": "Mixing hot and cold water",
+          "prompt": "A sink holds $10.0\\ \\text{kg}$ of water at $14.0\\ \\text{°C}$. What mass of hot water at $70.0\\ \\text{°C}$ must be added to bring the mixture to $38.0\\ \\text{°C}$? Ignore any energy exchanged with the sink and the air.",
           "steps": [
-            "The cup is insulated, so the copper and the water exchange energy only with each other: $Q_{\\text{copper}} + Q_{\\text{water}} = 0$. They finish at the same temperature, $T_f$.",
-            "Write each $Q$ as $mc\\,\\Delta T$ with $\\Delta T$ as final minus initial: $m_c c_c (T_f - 95.0\\ \\text{°C}) + m_w c_w (T_f - 18.0\\ \\text{°C}) = 0$.",
-            "Work out each $mc$: for the copper, $(0.250\\ \\text{kg})(385\\ \\text{J/(kg·°C)}) = 96.25\\ \\text{J/°C}$; for the water, $(0.300\\ \\text{kg})(4186\\ \\text{J/(kg·°C)}) = 1255.8\\ \\text{J/°C}$. The water needs about thirteen times as much energy per degree.",
-            "Solve for the final temperature: $T_f = \\dfrac{(96.25)(95.0) + (1255.8)(18.0)}{96.25 + 1255.8}\\ \\text{°C} = \\dfrac{31\\,748}{1352.05}\\ \\text{°C} = 23.5\\ \\text{°C}$.",
-            "Check: the copper loses $(96.25)(71.5) \\approx 6.9 \\times 10^3\\ \\text{J}$ and the water gains $(1255.8)(5.5) \\approx 6.9 \\times 10^3\\ \\text{J}$. The final temperature is far below the midpoint, $56.5\\ \\text{°C}$, because the water is so much harder to warm."
+            "Only the two portions of water exchange energy, so $Q_{\\text{hot}} + Q_{\\text{cold}} = 0$, and both finish at $T_f = 38.0\\ \\text{°C}$.",
+            "Write each $Q$ as $mc\\,\\Delta T$ with $\\Delta T$ as final minus initial: $m_h c\\,(38.0 - 70.0)\\ \\text{°C} + (10.0\\ \\text{kg})\\,c\\,(38.0 - 14.0)\\ \\text{°C} = 0$.",
+            "Both portions are water, so the specific heat $c$ is the same in both terms and cancels: $-32.0\\,m_h + (10.0\\ \\text{kg})(24.0) = 0$.",
+            "Solve: $m_h = \\dfrac{(10.0\\ \\text{kg})(24.0)}{32.0} = 7.50\\ \\text{kg}$.",
+            "Check with $c = 4186\\ \\text{J/(kg·°C)}$: the cold water gains $(10.0)(4186)(24.0) \\approx 1.00 \\times 10^6\\ \\text{J}$ and the hot water loses $(7.50)(4186)(32.0) \\approx 1.00 \\times 10^6\\ \\text{J}$. Less hot water is needed than cold because the hot water starts further from $38.0\\ \\text{°C}$."
           ],
-          "answer": "$T_f = 23.5\\ \\text{°C}$",
+          "answer": "$m_{\\text{hot}} = 7.50\\ \\text{kg}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "m_Cu": {
-                "value": 0.25,
+              "m_c": {
+                "value": 10,
                 "unit": "kg"
               },
-              "c_Cu": {
-                "value": 385,
-                "unit": "J/(kg·°C)"
-              },
-              "T_Cu": {
-                "value": 95,
+              "T_c": {
+                "value": 14,
                 "unit": "°C"
               },
-              "m_w": {
-                "value": 0.3,
-                "unit": "kg"
+              "T_h": {
+                "value": 70,
+                "unit": "°C"
               },
-              "c_w": {
-                "value": 4186,
-                "unit": "J/(kg·°C)"
-              },
-              "T_w": {
-                "value": 18,
+              "T_f": {
+                "value": 38,
                 "unit": "°C"
               }
             },
-            "expr": "(m_Cu*c_Cu*T_Cu + m_w*c_w*T_w)/(m_Cu*c_Cu + m_w*c_w)",
-            "unit": "°C"
+            "expr": "m_c*(T_f - T_c)/(T_h - T_f)",
+            "unit": "kg"
           }
         },
         {
@@ -1062,33 +1057,37 @@
       ],
       "workedExamples": [
         {
-          "title": "Entropy change when heat flows",
-          "prompt": "A large block of metal at $500\\ \\text{K}$ is connected by a copper rod to a lake at $300\\ \\text{K}$, and $3000\\ \\text{J}$ of energy is conducted along the rod from the block to the lake. Both are large enough that their temperatures do not change noticeably. What is the total change in entropy of the block and the lake?",
+          "title": "Entropy change as ice melts",
+          "prompt": "A $0.200\\ \\text{kg}$ ice cube at $273\\ \\text{K}$ melts on a table in a room at $298\\ \\text{K}$. Melting ice takes in $3.34 \\times 10^5\\ \\text{J}$ for each kilogram, and the ice stays at $273\\ \\text{K}$ until it has all melted. The room's temperature does not change. What is the total change in entropy of the ice and the room?",
           "steps": [
-            "Treat each one separately, using $\\Delta S = Q/T$ with $Q$ positive for energy entering.",
-            "The block loses energy, so for it $Q = -3000\\ \\text{J}$: $\\Delta S_{\\text{block}} = \\dfrac{-3000\\ \\text{J}}{500\\ \\text{K}} = -6.0\\ \\text{J/K}$.",
-            "The lake gains the same energy, so for it $Q = +3000\\ \\text{J}$: $\\Delta S_{\\text{lake}} = \\dfrac{+3000\\ \\text{J}}{300\\ \\text{K}} = +10.0\\ \\text{J/K}$.",
-            "Add them: $\\Delta S_{\\text{total}} = -6.0\\ \\text{J/K} + 10.0\\ \\text{J/K} = +4.0\\ \\text{J/K}$.",
-            "The total is positive, as the second law requires. The block's entropy fell, but the lake's rose by more, because the same energy counts for more entropy at a lower temperature."
+            "The energy needed to melt the ice: $Q = (0.200\\ \\text{kg})(3.34 \\times 10^5\\ \\text{J/kg}) = 6.68 \\times 10^4\\ \\text{J}$. It enters the ice and leaves the room.",
+            "The ice stays at one temperature while it melts, so $\\Delta S_{\\text{ice}} = \\dfrac{+6.68 \\times 10^4\\ \\text{J}}{273\\ \\text{K}} = +244.7\\ \\text{J/K}$.",
+            "The room gives up that energy at $298\\ \\text{K}$: $\\Delta S_{\\text{room}} = \\dfrac{-6.68 \\times 10^4\\ \\text{J}}{298\\ \\text{K}} = -224.2\\ \\text{J/K}$.",
+            "Add them: $\\Delta S_{\\text{total}} = 244.7\\ \\text{J/K} - 224.2\\ \\text{J/K} = +20.5\\ \\text{J/K}$.",
+            "The total is positive, as the second law requires: the room's entropy fell by less than the ice's rose, because the energy left at a higher temperature."
           ],
-          "answer": "$\\Delta S_{\\text{total}} = +4.0\\ \\text{J/K}$",
+          "answer": "$\\Delta S_{\\text{total}} = +20.5\\ \\text{J/K}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "Q": {
-                "value": 3000,
-                "unit": "J"
+              "m": {
+                "value": 0.2,
+                "unit": "kg"
               },
-              "T_H": {
-                "value": 500,
-                "unit": "K"
+              "L": {
+                "value": 334000.0,
+                "unit": "J/kg"
               },
               "T_C": {
-                "value": 300,
+                "value": 273,
+                "unit": "K"
+              },
+              "T_H": {
+                "value": 298,
                 "unit": "K"
               }
             },
-            "expr": "Q/T_C - Q/T_H",
+            "expr": "m*L/T_C - m*L/T_H",
             "unit": "J/K"
           }
         },
@@ -1151,8 +1150,8 @@
           "a": "The hot reservoir changes by $-100/400 = -0.25\\ \\text{J/K}$ and the cold one by $+100/200 = +0.50\\ \\text{J/K}$, so the total is $+0.25\\ \\text{J/K}$."
         },
         {
-          "q": "An inventor claims an engine that runs between reservoirs at $600\\ \\text{K}$ and $300\\ \\text{K}$ with an efficiency of 60%. Should you believe the claim?",
-          "a": "No. The most the second law allows is $1 - 300/600 = 50\\%$. An engine at 60% would make the total entropy decrease."
+          "q": "An engine maker claims an engine that takes in energy from combustion gases at $800\\ \\text{K}$, exhausts to the air at $300\\ \\text{K}$, and turns 70% of the energy it takes in into work. Should you believe the claim?",
+          "a": "No. The most the second law allows is $1 - 300/800 = 62.5\\%$. An engine at 70% would make the total entropy decrease."
         }
       ],
       "tryIt": {
@@ -1174,7 +1173,7 @@
         "9.3",
         "9.4"
       ],
-      "teacherNotes": "Students readily learn \"entropy always increases\" and then apply it to a single object. Give them a process in which one object's entropy clearly falls (freezing water, a refrigerator's contents) and ask them to find where the larger increase is. The AP Physics 2 exam treats entropy mainly qualitatively; the calculations with $\\Delta S = Q/T$ and the efficiency limit here are for making the argument concrete and go a little beyond what the exam asks for. For engines, have students draw the energy-flow picture and check $Q_H = W + Q_C$ before computing any efficiency, always with kelvin temperatures. Set 9D practises this topic."
+      "teacherNotes": "Students readily learn \"entropy always increases\" and then apply it to a single object. Give them a process in which one object's entropy clearly falls (freezing water, a refrigerator's contents) and ask them to find where the larger increase is. For engines, have students draw the energy-flow picture and check $Q_H = W + Q_C$ before computing any efficiency, always with kelvin temperatures. Set 9D practises this topic."
     }
   ]
 }

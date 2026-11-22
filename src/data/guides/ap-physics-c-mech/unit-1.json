@@ -152,45 +152,33 @@
           }
         },
         {
-          "title": "A displacement in three dimensions",
-          "prompt": "A survey drone hovers at position $\\vec{r}_1 = (20\\hat{i} + 4.0\\hat{j} + 10\\hat{k})\\ \\text{m}$ relative to its launch pad, then flies to $\\vec{r}_2 = (8.0\\hat{i} + 20\\hat{j} + 25\\hat{k})\\ \\text{m}$. Determine the drone's displacement and its magnitude. Then explain whether the magnitude of the displacement equals the change in the drone's distance from the pad.",
+          "title": "Speed and climb angle of a three-dimensional velocity",
+          "prompt": "A light aircraft climbs with velocity $\\vec{v} = (60\\hat{i} + 80\\hat{j} + 15\\hat{k})\\ \\text{m/s}$, where $\\hat{i}$ points east, $\\hat{j}$ points north and $\\hat{k}$ points straight up. Determine the aircraft's speed, its speed over the ground, and the angle its path makes above the horizontal. Then explain why the speed is not $60 + 80 + 15 = 155\\ \\text{m/s}$.",
           "steps": [
-            "Displacement is final position minus initial position, component by component: $\\Delta\\vec{r} = \\vec{r}_2 - \\vec{r}_1 = \\big[(8.0 - 20)\\hat{i} + (20 - 4.0)\\hat{j} + (25 - 10)\\hat{k}\\big]\\ \\text{m} = (-12\\hat{i} + 16\\hat{j} + 15\\hat{k})\\ \\text{m}$.",
-            "Magnitude: $|\\Delta\\vec{r}| = \\sqrt{(-12)^2 + 16^2 + 15^2}\\ \\text{m} = \\sqrt{625}\\ \\text{m} = 25\\ \\text{m}$.",
-            "Distances from the pad are the magnitudes of the position vectors: $r_1 = \\sqrt{20^2 + 4.0^2 + 10^2}\\ \\text{m} = 22.7\\ \\text{m}$ and $r_2 = \\sqrt{8.0^2 + 20^2 + 25^2}\\ \\text{m} = 33.0\\ \\text{m}$, a change of $10.3\\ \\text{m}$.",
-            "The two are not equal. The drone moved $25\\ \\text{m}$ but ended only $10.3\\ \\text{m}$ farther from the pad, because much of its motion was sideways relative to the pad rather than directly away from it. In general $|\\vec{r}_2 - \\vec{r}_1|$ is not $|\\vec{r}_2| - |\\vec{r}_1|$: subtract the vectors first, then take the magnitude."
+            "Speed over the ground is the magnitude of the horizontal part of $\\vec{v}$, the shadow of the vector on the ground: $v_h = \\sqrt{v_x^2 + v_y^2} = \\sqrt{60^2 + 80^2}\\ \\text{m/s} = 100\\ \\text{m/s}$.",
+            "The speed is the magnitude of the whole vector: $|\\vec{v}| = \\sqrt{60^2 + 80^2 + 15^2}\\ \\text{m/s} = \\sqrt{10\\,225}\\ \\text{m/s} = 101\\ \\text{m/s}$. The small, perpendicular vertical component adds only $1\\ \\text{m/s}$.",
+            "The vertical component and the horizontal part form a right triangle, so the climb angle is $\\theta = \\tan^{-1}(v_z/v_h) = \\tan^{-1}(15/100) = 8.5^\\circ$.",
+            "Adding the components gives $155\\ \\text{m/s}$, which would be right only if all three pointed the same way. They are mutually perpendicular, so they combine by the Pythagorean theorem."
           ],
-          "answer": "$\\Delta\\vec{r} = (-12\\hat{i} + 16\\hat{j} + 15\\hat{k})\\ \\text{m}$, with magnitude $25\\ \\text{m}$; this is not the $10.3\\ \\text{m}$ change in distance from the pad",
+          "answer": "Speed $101\\ \\text{m/s}$, ground speed $100\\ \\text{m/s}$, climbing at 8.5° above the horizontal; the perpendicular components combine by Pythagoras, not by addition",
           "style": "ap",
           "spec": {
             "givens": {
-              "x1": {
-                "value": 20,
-                "unit": "m"
+              "vx": {
+                "value": 60,
+                "unit": "m/s"
               },
-              "y1": {
-                "value": 4,
-                "unit": "m"
+              "vy": {
+                "value": 80,
+                "unit": "m/s"
               },
-              "z1": {
-                "value": 10,
-                "unit": "m"
-              },
-              "x2": {
-                "value": 8,
-                "unit": "m"
-              },
-              "y2": {
-                "value": 20,
-                "unit": "m"
-              },
-              "z2": {
-                "value": 25,
-                "unit": "m"
+              "vz": {
+                "value": 15,
+                "unit": "m/s"
               }
             },
-            "expr": "sqrt((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2)",
-            "unit": "m"
+            "expr": "atan(vz / sqrt(vx^2 + vy^2))",
+            "unit": "°"
           }
         }
       ],
@@ -469,7 +457,7 @@
       "prerequisites": [
         "1.1"
       ],
-      "teacherNotes": "Ask for the units of every coefficient: a student who can say why the $1.2$ in $v = 6.0t - 1.2t^2$ is in $\\text{m/s}^3$ rarely differentiates when they should integrate. On free-response questions the lost point is usually the initial condition, so have students write $v(0)$ and $x(0)$ down before they integrate. Set 1A works the chain in both directions."
+      "teacherNotes": "Ask for the units of every coefficient: a student who can say why the $1.2$ in $v = 6.0t - 1.2t^2$ is in $\\text{m/s}^3$ rarely differentiates when they should integrate. The usual slip is the initial condition, so have students write $v(0)$ and $x(0)$ down before they integrate. Set 1A works the chain in both directions."
     },
     {
       "topic": "1.3",
@@ -1126,8 +1114,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A stone is thrown horizontally at $12\\ \\text{m/s}$ from the top of a $20\\ \\text{m}$ cliff. How long is it in the air, and how far from the foot of the cliff does it land? Use $g = 9.8\\ \\text{m/s}^2$.",
-          "a": "$t = \\sqrt{2h/g} = \\sqrt{2(20)/9.8} = 2.0\\ \\text{s}$. Then $x = (12\\ \\text{m/s})(2.0\\ \\text{s}) = 24\\ \\text{m}$."
+          "q": "A marble rolls off a $1.25\\ \\text{m}$ high bench and lands $2.0\\ \\text{m}$ from the foot of the bench. How fast was it rolling as it left the edge? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "a": "The fall sets the time: $t = \\sqrt{2h/g} = \\sqrt{2(1.25)/9.8} = 0.505\\ \\text{s}$. The horizontal speed is constant, so $v_0 = x/t = (2.0\\ \\text{m})/(0.505\\ \\text{s}) = 4.0\\ \\text{m/s}$."
         },
         {
           "q": "A particle has $\\vec{r}(t) = 3t\\,\\hat{i} + (4t - t^2)\\hat{j}$ (metres, seconds). Find its velocity and speed at $t = 2\\ \\text{s}$, and its acceleration.",
@@ -1158,7 +1146,7 @@
         "1.2",
         "1.3"
       ],
-      "teacherNotes": "Have students write two columns, $x$ and $y$, with the knowns in each and time bridging them, before they touch an equation; it stops horizontal quantities leaking into vertical equations. Ask what the acceleration is at the top of the arc and which way it points on the way up: both questions expose students who think acceleration follows velocity. The range formula is a derived special case, and on free-response questions students are expected to start from the component equations. Set 1D adds vector functions of time that must be differentiated or integrated component by component."
+      "teacherNotes": "Have students write two columns, $x$ and $y$, with the knowns in each and time bridging them, before they touch an equation; it stops horizontal quantities leaking into vertical equations. Ask what the acceleration is at the top of the arc and which way it points on the way up: both questions expose students who think acceleration follows velocity. The range formula is a derived special case, and students should be able to start from the component equations. Set 1D adds vector functions of time that must be differentiated or integrated component by component."
     }
   ]
 }

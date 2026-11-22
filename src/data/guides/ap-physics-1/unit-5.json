@@ -595,8 +595,8 @@
           "a": "The hinges are the axis. Putting the handle far from them gives your push a long lever arm, so a small force produces enough torque to swing the door."
         },
         {
-          "q": "You pull with $40\\ \\text{N}$ on the end of a $0.50\\ \\text{m}$ wrench. What torque do you apply if you pull at right angles to the wrench? If you pull at $30^\\circ$ to the wrench?",
-          "a": "At right angles, $\\tau = (0.50\\ \\text{m})(40\\ \\text{N}) = 20\\ \\text{N·m}$. At $30^\\circ$, $\\tau = (0.50)(40)\\sin 30^\\circ = 10\\ \\text{N·m}$."
+          "q": "A bolt needs a torque of $20\\ \\text{N·m}$ to loosen it, and your wrench is $0.50\\ \\text{m}$ long. How hard must you pull on its end if you pull at right angles to the wrench? If you pull at $30^\\circ$ to the wrench?",
+          "a": "At right angles, $F = \\tau/r = (20\\ \\text{N·m})/(0.50\\ \\text{m}) = 40\\ \\text{N}$. At $30^\\circ$ only $\\sin 30^\\circ = 0.5$ of the pull turns the wrench, so you need $F = 20/(0.50 \\sin 30^\\circ) = 80\\ \\text{N}$."
         },
         {
           "q": "A force's line of action passes exactly through the axis. What torque does it exert about that axis?",
@@ -722,28 +722,28 @@
           }
         },
         {
-          "title": "A rod swung about its end",
-          "prompt": "A thin uniform rod has mass $1.2\\ \\text{kg}$ and length $0.90\\ \\text{m}$. About an axis through its centre, perpendicular to the rod, its rotational inertia is $I_{\\text{cm}} = \\tfrac{1}{12}ML^2$. Determine its rotational inertia about a parallel axis through one end, and explain why this value is larger.",
+          "title": "A disc hung from its edge",
+          "prompt": "A uniform disc of mass $2.0\\ \\text{kg}$ and radius $0.15\\ \\text{m}$ hangs from a nail through a small hole at its edge, and can swing in its own plane about the nail. About an axis through its centre, perpendicular to the disc, its rotational inertia is $I_{\\text{cm}} = \\tfrac{1}{2}MR^2$. Determine its rotational inertia about the nail, and explain why this value is larger.",
           "steps": [
-            "About the centre: $I_{\\text{cm}} = \\tfrac{1}{12}(1.2\\ \\text{kg})(0.90\\ \\text{m})^2 = 0.081\\ \\text{kg·m}^2$.",
-            "The rod is uniform, so its centre of mass is at its middle. An axis through one end is parallel to the central axis and a distance $d = L/2 = 0.45\\ \\text{m}$ from it, so the parallel-axis theorem applies.",
-            "$I_{\\text{end}} = I_{\\text{cm}} + Md^2 = 0.081 + (1.2\\ \\text{kg})(0.45\\ \\text{m})^2 = 0.081 + 0.243 = 0.324\\ \\text{kg·m}^2$, which is $0.32\\ \\text{kg·m}^2$ to two significant figures.",
-            "This is four times $I_{\\text{cm}}$, with the mass unchanged. About the end, most of the rod lies farther from the axis than it did about the centre (up to $0.90\\ \\text{m}$ away, not $0.45\\ \\text{m}$), and each piece counts in proportion to the square of its distance."
+            "About the centre: $I_{\\text{cm}} = \\tfrac{1}{2}(2.0\\ \\text{kg})(0.15\\ \\text{m})^2 = 0.0225\\ \\text{kg·m}^2$.",
+            "The disc is uniform, so its centre of mass is at its centre. The nail's axis is parallel to the central axis and a distance $d = R = 0.15\\ \\text{m}$ from it, so the parallel-axis theorem applies.",
+            "$I_{\\text{nail}} = I_{\\text{cm}} + Md^2 = 0.0225 + (2.0\\ \\text{kg})(0.15\\ \\text{m})^2 = 0.0225 + 0.045 = 0.0675\\ \\text{kg·m}^2$, which is $0.068\\ \\text{kg·m}^2$ to two significant figures.",
+            "This is three times $I_{\\text{cm}}$, with the mass unchanged. About the nail, most of the disc lies farther from the axis than it did about the centre (up to $0.30\\ \\text{m}$ away, not $0.15\\ \\text{m}$), and each piece counts in proportion to the square of its distance."
           ],
-          "answer": "$I_{\\text{end}} = 0.32\\ \\text{kg·m}^2$, four times the value about the centre ($0.081\\ \\text{kg·m}^2$), because more of the mass is far from the axis",
+          "answer": "$I_{\\text{nail}} = 0.068\\ \\text{kg·m}^2$, three times the value about the centre ($0.0225\\ \\text{kg·m}^2$), because more of the mass is far from the axis",
           "style": "ap",
           "spec": {
             "givens": {
               "M": {
-                "value": 1.2,
+                "value": 2,
                 "unit": "kg"
               },
-              "L": {
-                "value": 0.9,
+              "R": {
+                "value": 0.15,
                 "unit": "m"
               }
             },
-            "expr": "M*L^2/12 + M*(L/2)^2",
+            "expr": "M*R^2/2 + M*R^2",
             "unit": "kg·m^2"
           }
         }
@@ -1087,38 +1087,42 @@
           }
         },
         {
-          "title": "Two blocks over a pulley with mass",
-          "prompt": "Block 1, of mass $3.0\\ \\text{kg}$, and block 2, of mass $1.0\\ \\text{kg}$, hang from the ends of a light string that passes over a pulley. The pulley is a uniform disc of mass $4.0\\ \\text{kg}$ and radius $R$, with rotational inertia $\\tfrac{1}{2}MR^2$, on a frictionless axle. The string does not slip. The blocks are released from rest. Determine the acceleration of the blocks and the tension in each side of the string. Use $g = 9.8\\ \\text{m/s}^2$.\n\n```dg\nscene\nceil 4.2 2..4\nrod 3,4.2 3,3.4\npulley P 3,3.4 r=.5\nblock A 2.5,0.3 \"3.0 kg\"\nblock B 3.5,1.4 \"1.0 kg\"\nrope A.t P.l\nrope P.r B.t\ntext 4.1,3.4 \"4.0 kg\"\n```",
+          "title": "A block pulled up a ramp over a pulley with mass",
+          "prompt": "Block 1, of mass $4.0\\ \\text{kg}$, sits on a frictionless ramp inclined at $30^\\circ$. A light string runs over a pulley at the top of the ramp to block 2, of mass $3.0\\ \\text{kg}$, which hangs freely. The pulley is a uniform $2.0\\ \\text{kg}$ disc of radius $R$ ($I = \\tfrac{1}{2}MR^2$) on a frictionless axle. The string does not slip, and the blocks start from rest. Determine the acceleration and both tensions. Use $g = 9.8\\ \\text{m/s}^2$.\n\n```dg\nscene\nincline R 0,0 30 5\nblock A on=R t=.55 \"4.0 kg\"\npulley P 4.6,2.85 r=.35\nrope A.r P.t\nrope P.r 4.95,1.2\nblock B 4.95,0.8 \"3.0 kg\"\ntext 4.6,3.5 \"2.0 kg\"\n```",
           "steps": [
-            "Block 1 is heavier, so it moves down, block 2 moves up and the pulley turns toward block 1. Take those as positive. The blocks share one acceleration $a$, and the pulley has $\\alpha = a/R$.",
-            "Block 1 (down positive): $m_1 g - T_1 = m_1 a$. Block 2 (up positive): $T_2 - m_2 g = m_2 a$.",
-            "Pulley: the two tensions act at the rim and turn it opposite ways, so $(T_1 - T_2)R = I\\alpha = \\tfrac{1}{2}MR^2 \\cdot \\dfrac{a}{R}$, which simplifies to $T_1 - T_2 = \\tfrac{1}{2}Ma$. The radius has cancelled.",
-            "Add the three equations. The tensions cancel, leaving $(m_1 - m_2)g = \\left(m_1 + m_2 + \\tfrac{1}{2}M\\right)a$, so $a = \\dfrac{(3.0 - 1.0)(9.8)}{3.0 + 1.0 + 2.0} = \\dfrac{19.6}{6.0} = 3.3\\ \\text{m/s}^2$.",
-            "Tensions, using $a = 3.27\\ \\text{m/s}^2$: $T_1 = m_1(g - a) = (3.0)(9.8 - 3.27) = 20\\ \\text{N}$ and $T_2 = m_2(g + a) = (1.0)(9.8 + 3.27) = 13\\ \\text{N}$.",
-            "Check: $T_1 - T_2 \\approx 6.5\\ \\text{N}$, and $\\tfrac{1}{2}Ma = (2.0)(3.27) \\approx 6.5\\ \\text{N}$, as required. A massless pulley would have given $19.6/4.0 = 4.9\\ \\text{m/s}^2$ and equal tensions."
+            "Block 2's weight ($29.4\\ \\text{N}$) beats gravity's pull along the slope on block 1 ($19.6\\ \\text{N}$), so block 2 descends and block 1 moves up. Take those as positive. Both blocks have acceleration $a$; the pulley has $\\alpha = a/R$.",
+            "Block 1 (up the slope positive): $T_1 - m_1 g\\sin 30^\\circ = m_1 a$. Block 2 (down positive): $m_2 g - T_2 = m_2 a$.",
+            "Pulley: the two tensions act at the rim and turn it opposite ways, so $(T_2 - T_1)R = \\tfrac{1}{2}MR^2 \\cdot \\dfrac{a}{R}$, which simplifies to $T_2 - T_1 = \\tfrac{1}{2}Ma$.",
+            "Add the three equations. The tensions cancel, leaving $m_2 g - m_1 g\\sin 30^\\circ = \\left(m_1 + m_2 + \\tfrac{1}{2}M\\right)a$, so $a = \\dfrac{29.4 - 19.6}{4.0 + 3.0 + 1.0} = \\dfrac{9.8}{8.0} = 1.2\\ \\text{m/s}^2$.",
+            "Tensions, using $a = 1.225\\ \\text{m/s}^2$: $T_1 = m_1(g\\sin 30^\\circ + a) = (4.0)(4.9 + 1.225) = 24.5\\ \\text{N}$ and $T_2 = m_2(g - a) = (3.0)(9.8 - 1.225) = 25.7\\ \\text{N}$.",
+            "Check: $T_2 - T_1 \\approx 1.2\\ \\text{N}$, and $\\tfrac{1}{2}Ma = (1.0)(1.225) \\approx 1.2\\ \\text{N}$, as required. A massless pulley would give $1.4\\ \\text{m/s}^2$."
           ],
-          "answer": "$a = 3.3\\ \\text{m/s}^2$; $T_1 \\approx 20\\ \\text{N}$ on the heavier block's side and $T_2 \\approx 13\\ \\text{N}$ on the lighter block's side",
+          "answer": "$a = 1.2\\ \\text{m/s}^2$; $T_1 \\approx 24.5\\ \\text{N}$ on the ramp side and $T_2 \\approx 25.7\\ \\text{N}$ on the hanging side",
           "style": "ap",
           "spec": {
             "givens": {
               "m1": {
-                "value": 3,
+                "value": 4,
                 "unit": "kg"
               },
               "m2": {
-                "value": 1,
+                "value": 3,
                 "unit": "kg"
               },
               "M": {
-                "value": 4,
+                "value": 2,
                 "unit": "kg"
+              },
+              "theta": {
+                "value": 30,
+                "unit": "deg"
               },
               "g": {
                 "value": 9.8,
                 "unit": "m/s^2"
               }
             },
-            "expr": "(m1 - m2)*g/(m1 + m2 + 0.5*M)",
+            "expr": "(m2*g - m1*g*sin(theta))/(m1 + m2 + 0.5*M)",
             "unit": "m/s^2"
           }
         }

@@ -7,7 +7,7 @@
       "bigIdea": "A rotating rigid object has kinetic energy because every piece of it is moving, and that energy, $\\tfrac{1}{2}I\\omega^2$, adds to any kinetic energy the object has from moving as a whole.",
       "picture": {
         "diagram": "bars energy unit=J \"block and pulley\"\ninitial U_g 5.88\nfinal K_{block} 3.92 K_{rot} 1.96",
-        "caption": "A $2\\ \\text{kg}$ block falls $0.30\\ \\text{m}$ while its string turns a pulley. The block–pulley–Earth system loses $5.88\\ \\text{J}$ of gravitational potential energy: $3.92\\ \\text{J}$ becomes kinetic energy of the block and $1.96\\ \\text{J}$ becomes rotational kinetic energy of the pulley. (The second worked example gets these numbers.)"
+        "caption": "A $2\\ \\text{kg}$ block falls $0.30\\ \\text{m}$ while its string turns a pulley. The block–pulley–Earth system loses $5.88\\ \\text{J}$ of gravitational potential energy: $3.92\\ \\text{J}$ becomes kinetic energy of the block and $1.96\\ \\text{J}$ becomes rotational kinetic energy of the pulley."
       },
       "explanation": "A wheel spinning on a fixed axle is not going anywhere, yet it clearly has energy: try stopping it with your hand. The energy is kinetic, because every piece of the wheel is moving in a circle. A piece of mass $m$ at distance $r$ from the axis has speed $v = r\\omega$, so its kinetic energy is $\\tfrac{1}{2}mv^2 = \\tfrac{1}{2}mr^2\\omega^2$. Every piece of a rigid object shares the same $\\omega$, so adding the pieces gives $K_{\\text{rot}} = \\tfrac{1}{2}\\left(\\sum mr^2\\right)\\omega^2 = \\tfrac{1}{2}I\\omega^2$, where $I$ is the rotational inertia about that axis.\n\nThe formula has the same shape as $\\tfrac{1}{2}mv^2$, with rotational inertia in the place of mass and angular speed in the place of speed. Doubling $\\omega$ quadruples the energy. And because $I$ depends on where the mass is, two objects of equal mass spinning at the same rate can store different amounts. A hoop, with all of its mass at the rim, has $I = MR^2$ and holds twice the energy of a solid disc of the same mass and radius, for which $I = \\tfrac{1}{2}MR^2$. Put $\\omega$ in $\\text{rad/s}$ and the answer comes out in joules.\n\nRotational kinetic energy is not a new kind of energy. It is a scalar, measured in joules, and it takes its place in conservation of energy beside every other form. An object that travels and spins at once, such as a rolling ball, has both kinds: $K = \\tfrac{1}{2}Mv_{\\text{cm}}^2 + \\tfrac{1}{2}I_{\\text{cm}}\\omega^2$. This is why a falling block that has to turn a pulley arrives more slowly than one in free fall: the potential energy it loses is shared between its own motion and the pulley's spin, as the bar chart shows.",
       "equations": [
@@ -123,28 +123,24 @@
           }
         },
         {
-          "title": "A falling block that turns a pulley",
-          "prompt": "A $2.0\\ \\text{kg}$ block hangs from a light string wrapped around a pulley. The pulley is a solid disc of mass $2.0\\ \\text{kg}$ and radius $0.10\\ \\text{m}$ on a frictionless axle, and the string does not slip on it. The block is released from rest. Determine the block's speed after it has fallen $0.30\\ \\text{m}$. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "A rod that swings down from horizontal",
+          "prompt": "A uniform rod of mass $1.5\\ \\text{kg}$ and length $0.90\\ \\text{m}$ is pivoted at one end on a frictionless axle. About that end its rotational inertia is $\\tfrac{1}{3}ML^2$. The rod is held horizontal and released from rest. Determine its angular speed as it swings through the vertical, and the speed of its free end at that moment. Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "System: block, pulley and Earth. The axle is frictionless and the string only passes energy from the block to the pulley, so mechanical energy is conserved. The gravitational potential energy lost equals the kinetic energy gained by the block and by the pulley: $mgh = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}I\\omega^2$, with $I = \\tfrac{1}{2}MR^2$ for the disc.",
-            "The string does not slip, so the pulley's rim moves at the block's speed: $\\omega = v/R$. Then $\\tfrac{1}{2}I\\omega^2 = \\tfrac{1}{2}\\left(\\tfrac{1}{2}MR^2\\right)\\dfrac{v^2}{R^2} = \\tfrac{1}{4}Mv^2$. The radius cancels.",
-            "So $mgh = \\tfrac{1}{2}mv^2 + \\tfrac{1}{4}Mv^2$, and $v = \\sqrt{\\dfrac{mgh}{\\tfrac{1}{2}m + \\tfrac{1}{4}M}} = \\sqrt{\\dfrac{(2.0)(9.8)(0.30)}{1.0 + 0.50}}\\ \\text{m/s} = \\sqrt{3.92}\\ \\text{m/s} = 2.0\\ \\text{m/s}$.",
-            "Check with the energies: the system loses $mgh = 5.88\\ \\text{J}$; the block gains $\\tfrac{1}{2}mv^2 = 3.92\\ \\text{J}$ and the pulley gains $\\tfrac{1}{4}Mv^2 = 1.96\\ \\text{J}$. In free fall the block would have reached $\\sqrt{2gh} = 2.4\\ \\text{m/s}$."
+            "System: rod and Earth. The axle is frictionless and the pivot force does no work (its point of application does not move), so mechanical energy is conserved. The gravitational potential energy lost becomes rotational kinetic energy: $Mg\\,\\Delta h_{\\text{cm}} = \\tfrac{1}{2}I\\omega^2$.",
+            "Only the centre of mass counts for the potential energy. It sits at the middle of the rod, so it drops $L/2 = 0.45\\ \\text{m}$: $\\Delta U = (1.5)(9.8)(0.45) = 6.6\\ \\text{J}$. The rotational inertia is $\\tfrac{1}{3}(1.5\\ \\text{kg})(0.90\\ \\text{m})^2 = 0.405\\ \\text{kg·m}^2$.",
+            "So $\\omega = \\sqrt{\\dfrac{2(6.615\\ \\text{J})}{0.405\\ \\text{kg·m}^2}} = \\sqrt{32.7}\\ \\text{rad/s} = 5.7\\ \\text{rad/s}$. The mass cancels if you keep the symbols: $\\omega = \\sqrt{3g/L}$.",
+            "The free end is $0.90\\ \\text{m}$ from the axle: $v = \\omega L = (5.72\\ \\text{rad/s})(0.90\\ \\text{m}) = 5.1\\ \\text{m/s}$. That beats the $4.2\\ \\text{m/s}$ of a stone dropped $0.90\\ \\text{m}$: the rod is rigid, so its slow inner part passes energy outward to the end."
           ],
-          "answer": "$v = 2.0\\ \\text{m/s}$, slower than the $2.4\\ \\text{m/s}$ of free fall",
+          "answer": "$\\omega = 5.7\\ \\text{rad/s}$; the free end moves at $5.1\\ \\text{m/s}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "m": {
-                "value": 2,
-                "unit": "kg"
-              },
               "M": {
-                "value": 2,
+                "value": 1.5,
                 "unit": "kg"
               },
-              "h": {
-                "value": 0.3,
+              "L": {
+                "value": 0.9,
                 "unit": "m"
               },
               "g": {
@@ -152,8 +148,8 @@
                 "unit": "m/s^2"
               }
             },
-            "expr": "sqrt(m*g*h/(0.5*m + 0.25*M))",
-            "unit": "m/s"
+            "expr": "sqrt(2*M*g*(L/2)/(M*L^2/3))",
+            "unit": "rad/s"
           }
         }
       ],
@@ -347,37 +343,37 @@
           }
         },
         {
-          "title": "Work from a torque–angle graph",
-          "prompt": "A wheel with rotational inertia $0.50\\ \\text{kg·m}^2$ is at rest on a frictionless axle. A torque is then applied that depends on the angle the wheel has turned through, as shown: it is $4.0\\ \\text{N·m}$ for the first $4.0\\ \\text{rad}$, then falls steadily to zero at $6.0\\ \\text{rad}$. Determine the wheel's angular speed once it has turned through $6.0\\ \\text{rad}$.\n\n```dg\nplot x=\\theta[rad] y=\\tau[N·m] xr=-0.8,7 yr=0,5\nseg 0,4 4,4 6,0\nxt 0 2 4 6\nyt 0 2 4\n```",
+          "title": "Work done by a winch motor",
+          "prompt": "A builder's winch has a drum of radius $0.15\\ \\text{m}$. Its rope, wound on the drum, lifts a $20\\ \\text{kg}$ bucket of mortar $3.0\\ \\text{m}$ at constant speed. Ignore friction and the rope's mass. Determine the angle the drum turns through, the torque the motor must exert on it, and the work the motor does. Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "The torque is not constant, so the work is the area under the torque–angle graph: a rectangle and a triangle.",
-            "$W = (4.0\\ \\text{N·m})(4.0\\ \\text{rad}) + \\tfrac{1}{2}(4.0\\ \\text{N·m})(2.0\\ \\text{rad}) = 16 + 4.0 = 20\\ \\text{J}$.",
-            "The axle is frictionless, so this is the net work on the wheel, and it equals the change in rotational kinetic energy: $W = \\tfrac{1}{2}I\\omega_f^2 - \\tfrac{1}{2}I\\omega_i^2$, with $\\omega_i = 0$.",
-            "$\\omega_f = \\sqrt{\\dfrac{2W}{I}} = \\sqrt{\\dfrac{2(20\\ \\text{J})}{0.50\\ \\text{kg·m}^2}} = \\sqrt{80}\\ \\text{rad/s} = 8.9\\ \\text{rad/s}$, in the direction of the torque."
+            "The rope does not slip, so each radian of turn winds up $0.15\\ \\text{m}$ of rope: $\\Delta\\theta = \\dfrac{\\Delta s}{r} = \\dfrac{3.0\\ \\text{m}}{0.15\\ \\text{m}} = 20\\ \\text{rad}$, a little over three turns.",
+            "The bucket moves at constant speed, so the rope's tension equals its weight, $(20\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 196\\ \\text{N}$. The drum also turns at constant speed, so the net torque on it is zero: the motor's torque balances the rope's, $\\tau = (196\\ \\text{N})(0.15\\ \\text{m}) = 29.4\\ \\text{N·m}$.",
+            "The motor's torque acts in the direction of rotation, so its work is positive: $W = \\tau\\,\\Delta\\theta = (29.4\\ \\text{N·m})(20\\ \\text{rad}) = 588\\ \\text{J} \\approx 5.9 \\times 10^2\\ \\text{J}$.",
+            "Check: the bucket gains $mgh = (196\\ \\text{N})(3.0\\ \\text{m}) = 588\\ \\text{J}$ of gravitational potential energy. The rope's torque does $-588\\ \\text{J}$ on the drum, the net work on the drum is zero, and its rotational kinetic energy does not change."
           ],
-          "answer": "$\\omega_f = 8.9\\ \\text{rad/s}$",
+          "answer": "$\\Delta\\theta = 20\\ \\text{rad}$; $\\tau = 29\\ \\text{N·m}$; $W = 5.9 \\times 10^2\\ \\text{J}$, equal to the bucket's gain in potential energy",
           "style": "ap",
           "spec": {
             "givens": {
-              "tau": {
-                "value": 4,
-                "unit": "N·m"
+              "m": {
+                "value": 20,
+                "unit": "kg"
               },
-              "th1": {
-                "value": 4,
-                "unit": "rad"
+              "h": {
+                "value": 3,
+                "unit": "m"
               },
-              "th2": {
-                "value": 6,
-                "unit": "rad"
+              "r": {
+                "value": 0.15,
+                "unit": "m"
               },
-              "I": {
-                "value": 0.5,
-                "unit": "kg·m^2"
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
               }
             },
-            "expr": "sqrt(2*(tau*th1 + 0.5*tau*(th2 - th1))/I)",
-            "unit": "rad/s"
+            "expr": "m*g*r*(h/r)",
+            "unit": "J"
           }
         }
       ],
@@ -740,70 +736,66 @@
       ],
       "workedExamples": [
         {
-          "title": "A child jumps onto a merry-go-round",
-          "prompt": "A playground merry-go-round of rotational inertia $270\\ \\text{kg·m}^2$ and radius $1.5\\ \\text{m}$ is at rest on a frictionless axle. A $30\\ \\text{kg}$ child runs at $4.0\\ \\text{m/s}$ along a line tangent to the rim and jumps on at the edge. What is the angular speed of the merry-go-round with the child on board?",
+          "title": "A ball of putty hits a pivoted rod",
+          "prompt": "A uniform rod of mass $0.80\\ \\text{kg}$ and length $1.2\\ \\text{m}$ lies at rest on a frictionless table, pivoted at its centre. About the pivot its rotational inertia is $\\tfrac{1}{12}ML^2$. A $0.050\\ \\text{kg}$ ball of putty slides across the table at $6.0\\ \\text{m/s}$, perpendicular to the rod, hits one end and sticks. What is the rod's angular speed just afterwards?",
           "steps": [
-            "Choose the system: child plus merry-go-round. The axle is frictionless, so no external torque acts about it while the child lands, and the system's angular momentum about the axle is conserved.",
-            "Before: the merry-go-round is at rest. The child is a moving object whose path passes the axle at a perpendicular distance of $1.5\\ \\text{m}$, so $L_i = rmv = (1.5\\ \\text{m})(30\\ \\text{kg})(4.0\\ \\text{m/s}) = 180\\ \\text{kg·m}^2\\text{/s}$.",
-            "After: child and merry-go-round turn together. The child, at the rim, adds $mr^2 = (30\\ \\text{kg})(1.5\\ \\text{m})^2 = 67.5\\ \\text{kg·m}^2$, so $I_f = 270 + 67.5 = 337.5\\ \\text{kg·m}^2$.",
-            "Set $L_i = L_f$: $180\\ \\text{kg·m}^2\\text{/s} = (337.5\\ \\text{kg·m}^2)\\,\\omega_f$, so $\\omega_f = 0.53\\ \\text{rad/s}$."
+            "Choose the system: putty plus rod. The pivot's force acts at the axis, so it exerts no torque there, and angular momentum about the pivot is conserved.",
+            "Before: only the putty moves, on a path passing the pivot at $0.60\\ \\text{m}$, so $L_i = rmv = (0.60\\ \\text{m})(0.050\\ \\text{kg})(6.0\\ \\text{m/s}) = 0.18\\ \\text{kg·m}^2\\text{/s}$.",
+            "After: the rod has $\\tfrac{1}{12}(0.80\\ \\text{kg})(1.2\\ \\text{m})^2 = 0.096\\ \\text{kg·m}^2$, and the putty at the end adds $mr^2 = (0.050)(0.60)^2 = 0.018\\ \\text{kg·m}^2$, so $I_f = 0.114\\ \\text{kg·m}^2$.",
+            "Set $L_i = L_f$: $0.18\\ \\text{kg·m}^2\\text{/s} = (0.114\\ \\text{kg·m}^2)\\,\\omega_f$, so $\\omega_f = 1.6\\ \\text{rad/s}$."
           ],
-          "answer": "$\\omega_f = 0.53\\ \\text{rad/s}$",
+          "answer": "$\\omega_f = 1.6\\ \\text{rad/s}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "I": {
-                "value": 270,
-                "unit": "kg·m^2"
+              "M": {
+                "value": 0.8,
+                "unit": "kg"
               },
-              "r": {
-                "value": 1.5,
+              "L": {
+                "value": 1.2,
                 "unit": "m"
               },
               "m": {
-                "value": 30,
+                "value": 0.05,
                 "unit": "kg"
               },
               "v": {
-                "value": 4,
+                "value": 6,
                 "unit": "m/s"
               }
             },
-            "expr": "r*m*v/(I + m*r^2)",
+            "expr": "(L/2)*m*v/(M*L^2/12 + m*(L/2)^2)",
             "unit": "rad/s"
           }
         },
         {
-          "title": "Two discs spinning in opposite senses",
-          "prompt": "Disc A, with rotational inertia $0.40\\ \\text{kg·m}^2$, spins counterclockwise at $15\\ \\text{rad/s}$ on a frictionless vertical axle. Disc B, with rotational inertia $0.20\\ \\text{kg·m}^2$, spins clockwise at $6.0\\ \\text{rad/s}$ on the same axle, just above A. Disc B is lowered onto A, and friction between them brings the two to a common angular velocity. Determine that angular velocity, and determine whether the system's kinetic energy is conserved.",
+          "title": "Flipping a spinning wheel on a stool",
+          "prompt": "A student sits at rest on a stool that turns freely about a vertical axle. She holds a bicycle wheel ($I = 0.12\\ \\text{kg·m}^2$) with its axle vertical, spinning counterclockwise (seen from above) at $20\\ \\text{rad/s}$. She turns the wheel upside down, so it spins clockwise at $20\\ \\text{rad/s}$ relative to the ground. Student and stool have rotational inertia $3.0\\ \\text{kg·m}^2$. Determine her angular velocity afterwards, and whether kinetic energy is conserved.",
           "steps": [
-            "System: both discs. The friction between them is internal and the axle is frictionless, so no external torque acts and angular momentum is conserved. Take counterclockwise as positive: $\\omega_A = +15\\ \\text{rad/s}$ and $\\omega_B = -6.0\\ \\text{rad/s}$.",
-            "Before: $L_i = I_A\\omega_A + I_B\\omega_B = (0.40)(+15) + (0.20)(-6.0) = 6.0 - 1.2 = +4.8\\ \\text{kg·m}^2\\text{/s}$.",
-            "After, the discs turn as one object: $L_f = (I_A + I_B)\\,\\omega_f = (0.60\\ \\text{kg·m}^2)\\,\\omega_f$. Setting $L_f = L_i$ gives $\\omega_f = +8.0\\ \\text{rad/s}$, counterclockwise.",
-            "Kinetic energy before: $\\tfrac{1}{2}(0.40)(15)^2 + \\tfrac{1}{2}(0.20)(6.0)^2 = 45 + 3.6 = 48.6\\ \\text{J}$. After: $\\tfrac{1}{2}(0.60)(8.0)^2 = 19.2\\ \\text{J}$. It is not conserved: about $29\\ \\text{J}$ becomes thermal energy as the discs rub."
+            "System: student, stool and wheel. Her torques on the wheel are internal and the axle is frictionless, so angular momentum about the vertical is conserved. Take counterclockwise as positive.",
+            "Before: only the wheel turns. $L_i = (0.12)(+20) = +2.4\\ \\text{kg·m}^2\\text{/s}$.",
+            "After: $L_f = (0.12)(-20) + (3.0\\ \\text{kg·m}^2)\\,\\omega_s$. Setting $L_f = L_i$ gives $(3.0)\\,\\omega_s = 2.4 + 2.4 = 4.8$, so $\\omega_s = +1.6\\ \\text{rad/s}$, counterclockwise, the way the wheel used to turn.",
+            "Kinetic energy before: $\\tfrac{1}{2}(0.12)(20)^2 = 24\\ \\text{J}$. After: $24\\ \\text{J} + \\tfrac{1}{2}(3.0)(1.6)^2 = 27.8\\ \\text{J}$. Not conserved: the extra $3.8\\ \\text{J}$ comes from her muscles."
           ],
-          "answer": "$\\omega_f = +8.0\\ \\text{rad/s}$ (counterclockwise); kinetic energy is not conserved, falling from $48.6\\ \\text{J}$ to $19.2\\ \\text{J}$",
+          "answer": "$\\omega_s = +1.6\\ \\text{rad/s}$ (counterclockwise); kinetic energy is not conserved, rising from $24\\ \\text{J}$ to $27.8\\ \\text{J}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "I_A": {
-                "value": 0.4,
+              "I_w": {
+                "value": 0.12,
                 "unit": "kg·m^2"
               },
-              "w_A": {
-                "value": 15,
+              "w": {
+                "value": 20,
                 "unit": "rad/s"
               },
-              "I_B": {
-                "value": 0.2,
+              "I_s": {
+                "value": 3,
                 "unit": "kg·m^2"
-              },
-              "w_B": {
-                "value": -6,
-                "unit": "rad/s"
               }
             },
-            "expr": "(I_A*w_A + I_B*w_B)/(I_A + I_B)",
+            "expr": "2*I_w*w/I_s",
             "unit": "rad/s"
           }
         }
@@ -832,8 +824,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A student sits on a freely turning stool holding weights at arm's length and turns once per second. She pulls the weights in, which halves the system's rotational inertia. How fast does she turn now?",
-          "a": "Twice per second. With no external torque $I\\omega$ stays the same, so halving $I$ doubles $\\omega$."
+          "q": "A slowly spinning cloud of gas turns once every $50$ days. It contracts until its rotational inertia is one hundredth of what it was. How long does one turn take now?",
+          "a": "Half a day. With no external torque $I\\omega$ stays the same, so $\\omega$ becomes $100$ times larger and the period, which is $2\\pi/\\omega$, becomes $100$ times shorter: $50/100 = 0.5$ days."
         },
         {
           "q": "A ring is dropped onto a spinning turntable, and friction between the two brings them to the same angular speed. Friction exerts a torque on each of them. Why is the system's angular momentum still conserved?",
@@ -991,20 +983,20 @@
           }
         },
         {
-          "title": "A cylinder rolling down a ramp",
-          "prompt": "A solid cylinder is released from rest at the top of a ramp and rolls without slipping to the bottom, which is $0.60\\ \\text{m}$ lower. Determine the speed of its centre at the bottom, and compare it with the speed of a block that slides down a frictionless ramp of the same height. For a solid cylinder, $I = \\tfrac{1}{2}MR^2$. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "A spool unwinding as it falls",
+          "prompt": "A spool (a uniform solid cylinder, $I = \\tfrac{1}{2}MR^2$) hangs from a string wound around it, with the string's free end tied to a support. Released from rest, it falls as the string unwinds without slipping. Determine the speed of the spool's centre after it has fallen $0.80\\ \\text{m}$, and compare it with free fall. Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "System: cylinder, ramp and Earth. The cylinder rolls without slipping, so the friction is static and mechanical energy is conserved: $Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{2}I\\omega^2$.",
-            "Use $I = \\tfrac{1}{2}MR^2$ and $\\omega = v/R$. The rotational term is $\\tfrac{1}{2}\\left(\\tfrac{1}{2}MR^2\\right)\\dfrac{v^2}{R^2} = \\tfrac{1}{4}Mv^2$.",
-            "So $Mgh = \\tfrac{3}{4}Mv^2$, and $v = \\sqrt{\\tfrac{4}{3}gh} = \\sqrt{\\tfrac{4}{3}(9.8\\ \\text{m/s}^2)(0.60\\ \\text{m})} = \\sqrt{7.84}\\ \\text{m/s} = 2.8\\ \\text{m/s}$. Neither the mass nor the radius was needed.",
-            "The sliding block puts all of the energy into translation: $v = \\sqrt{2gh} = \\sqrt{11.76}\\ \\text{m/s} = 3.4\\ \\text{m/s}$. The cylinder is slower because one third of its kinetic energy is rotational."
+            "System: spool and Earth. The string pulls at the unwinding point, which is momentarily at rest (like a rolling wheel's contact point), so the tension does no work and mechanical energy is conserved: $Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{2}I\\omega^2$.",
+            "The string unwinds without slipping, so $\\omega = v/R$. The rotational term is $\\tfrac{1}{2}\\left(\\tfrac{1}{2}MR^2\\right)\\dfrac{v^2}{R^2} = \\tfrac{1}{4}Mv^2$.",
+            "So $Mgh = \\tfrac{3}{4}Mv^2$, and $v = \\sqrt{\\tfrac{4}{3}gh} = \\sqrt{\\tfrac{4}{3}(9.8\\ \\text{m/s}^2)(0.80\\ \\text{m})} = \\sqrt{10.45}\\ \\text{m/s} = 3.2\\ \\text{m/s}$.",
+            "A dropped object puts all of the energy into translation: $v = \\sqrt{2gh} = \\sqrt{15.68}\\ \\text{m/s} = 4.0\\ \\text{m/s}$. The spool is slower because one third of its kinetic energy is rotational."
           ],
-          "answer": "$v = 2.8\\ \\text{m/s}$ for the cylinder, compared with $3.4\\ \\text{m/s}$ for the sliding block",
+          "answer": "$v = 3.2\\ \\text{m/s}$ for the spool, compared with $4.0\\ \\text{m/s}$ in free fall",
           "style": "ap",
           "spec": {
             "givens": {
               "h": {
-                "value": 0.6,
+                "value": 0.8,
                 "unit": "m"
               },
               "g": {

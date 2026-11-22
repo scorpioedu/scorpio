@@ -295,37 +295,33 @@
       "derivation": "A force $\\vec{F}$ acts on a point of a body at distance $r$ from the axis. When the body turns through $d\\theta$ that point moves a distance $ds = r\\,d\\theta$ along its circle. Only the tangential component $F_t$ lies along the displacement, and $F_tr$ is the torque, so\n\n$$dW = F_t\\,ds = F_t\\,r\\,d\\theta = \\tau\\,d\\theta \\quad\\Rightarrow\\quad W = \\int_{\\theta_i}^{\\theta_f}\\tau\\,d\\theta$$\n\nFor the work–energy theorem, start from $\\tau_{\\text{net}} = I\\alpha$ and rewrite $\\alpha$ with the chain rule: $\\alpha = \\dfrac{d\\omega}{dt} = \\dfrac{d\\omega}{d\\theta}\\,\\dfrac{d\\theta}{dt} = \\omega\\,\\dfrac{d\\omega}{d\\theta}$. Then $\\tau_{\\text{net}}\\,d\\theta = I\\omega\\,d\\omega$, and integrating both sides,\n\n$$W_{\\text{net}} = \\int_{\\theta_i}^{\\theta_f}\\tau_{\\text{net}}\\,d\\theta = \\int_{\\omega_i}^{\\omega_f}I\\omega\\,d\\omega = \\tfrac{1}{2}I\\omega_f^2 - \\tfrac{1}{2}I\\omega_i^2$$\n\nPower is the rate of doing work: $P = \\dfrac{dW}{dt} = \\tau\\,\\dfrac{d\\theta}{dt} = \\tau\\omega$.",
       "workedExamples": [
         {
-          "title": "Work done by a torque that fades",
-          "prompt": "A wind-up spring turns a small flywheel of rotational inertia $0.40\\ \\text{kg·m}^2$ that starts at rest. As the spring unwinds, its torque on the flywheel falls off with the angle turned: $\\tau(\\theta) = 6.0 - 2.0\\,\\theta$, with $\\tau$ in N·m and $\\theta$ in rad. What is the flywheel's angular speed after it has turned through $3.0\\ \\text{rad}$? Ignore friction.",
+          "title": "A brake that tightens as the wheel turns",
+          "prompt": "A turbine rotor of rotational inertia $2.5\\ \\text{kg·m}^2$ spins freely at $20\\ \\text{rad/s}$. A brake is then applied whose pads tighten as the rotor turns, so the braking torque grows with the angle turned since the brake was applied: $\\tau(\\theta) = -c\\,\\theta$, with $c = 4.0\\ \\text{N·m/rad}$. Through what angle does the rotor turn before it stops? Ignore other friction.",
           "steps": [
-            "The torque is not constant, so $W = \\tau\\,\\Delta\\theta$ with one value of $\\tau$ will not do. Integrate: $W = \\int_0^{3.0}(6.0 - 2.0\\,\\theta)\\,d\\theta$.",
-            "$W = \\left[6.0\\,\\theta - 1.0\\,\\theta^2\\right]_0^{3.0} = 18 - 9.0 = 9.0\\ \\text{J}$. On a graph this is the triangle under the line: $\\tfrac{1}{2}(3.0\\ \\text{rad})(6.0\\ \\text{N·m}) = 9.0\\ \\text{J}$.",
-            "The spring's torque is the only torque, so this is the net work: $W = \\tfrac{1}{2}I\\omega_f^2 - 0$.",
-            "$\\omega_f = \\sqrt{\\dfrac{2W}{I}} = \\sqrt{\\dfrac{2(9.0\\ \\text{J})}{0.40\\ \\text{kg·m}^2}} = \\sqrt{45}\\ \\text{rad/s} = 6.7\\ \\text{rad/s}$."
+            "The torque is not constant, so the work is an integral. Up to an angle $\\theta_s$: $W = \\int_0^{\\theta_s}(-c\\,\\theta)\\,d\\theta = -\\tfrac{1}{2}c\\,\\theta_s^2$. It is negative because the torque opposes the rotation.",
+            "The brake's torque is the only torque, so this is the net work, and the rotor ends at rest: $W = 0 - \\tfrac{1}{2}I\\omega_0^2 = -\\tfrac{1}{2}(2.5)(20)^2 = -500\\ \\text{J}$.",
+            "Set them equal: $\\tfrac{1}{2}c\\,\\theta_s^2 = \\tfrac{1}{2}I\\omega_0^2$, so $\\theta_s = \\omega_0\\sqrt{I/c} = (20\\ \\text{rad/s})\\sqrt{\\dfrac{2.5\\ \\text{kg·m}^2}{4.0\\ \\text{N·m/rad}}} = 15.8\\ \\text{rad}$.",
+            "That is $15.8/(2\\pi) = 2.5$ revolutions. Doubling the starting speed would double the stopping angle, not quadruple it as a constant brake would, because the torque keeps growing."
           ],
-          "answer": "$\\omega_f = 6.7\\ \\text{rad/s}$",
+          "answer": "$\\theta_s = 15.8\\ \\text{rad}$, about $2.5$ revolutions",
           "style": "stepped",
           "spec": {
             "givens": {
-              "a": {
-                "value": 6,
-                "unit": "N·m"
-              },
-              "b": {
-                "value": 2,
-                "unit": "N·m/rad"
-              },
-              "th": {
-                "value": 3,
-                "unit": "rad"
-              },
               "I": {
-                "value": 0.4,
+                "value": 2.5,
                 "unit": "kg·m^2"
+              },
+              "omega_0": {
+                "value": 20,
+                "unit": "rad/s"
+              },
+              "c": {
+                "value": 4,
+                "unit": "N·m/rad"
               }
             },
-            "expr": "sqrt(2*(a*th - 0.5*b*th^2)/I)",
-            "unit": "rad/s"
+            "expr": "omega_0*sqrt(I/c)",
+            "unit": "rad"
           }
         },
         {
@@ -363,7 +359,7 @@
         {
           "tag": "constant-acceleration-assumed",
           "wrong": "The work done by a torque is always the torque at the start multiplied by the angle turned.",
-          "right": "That works only for a constant torque. When the torque changes with angle the work is $\\int\\tau\\,d\\theta$, the area under the torque–angle graph. In the wind-up example, $6.0\\ \\text{N·m}\\times 3.0\\ \\text{rad} = 18\\ \\text{J}$ is double the true $9.0\\ \\text{J}$."
+          "right": "That works only for a constant torque. When the torque changes with angle the work is $\\int\\tau\\,d\\theta$, the area under the torque–angle graph. For $\\tau = 6.0 - 2.0\\,\\theta$ over $3.0\\ \\text{rad}$, $6.0\\ \\text{N·m}\\times 3.0\\ \\text{rad} = 18\\ \\text{J}$ is double the true $9.0\\ \\text{J}$."
         },
         {
           "tag": "work-sign",
@@ -382,8 +378,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A constant torque of $4.0\\ \\text{N·m}$ turns a wheel through exactly two revolutions. How much work does it do?",
-          "a": "$W = \\tau\\,\\Delta\\theta = (4.0\\ \\text{N·m})(4\\pi\\ \\text{rad}) \\approx 50\\ \\text{J}$. The angle must be in radians, and two revolutions is $4\\pi$ rad."
+          "q": "A constant torque of $4.0\\ \\text{N·m}$ does $100\\ \\text{J}$ of work on a wheel. Through how many revolutions does the wheel turn?",
+          "a": "$\\Delta\\theta = W/\\tau = (100\\ \\text{J})/(4.0\\ \\text{N·m}) = 25\\ \\text{rad}$, which comes out in radians, so it is $25/(2\\pi) = 4.0$ revolutions, not 25."
         },
         {
           "q": "An axle pushes on its wheel with a large force. How much work does that force do as the wheel spins in place?",
@@ -396,7 +392,7 @@
       ],
       "tryIt": {
         "diagram": "plot x=\\theta[rad] y=\\tau[N·m] xr=-0.2,3.5 yr=0,7\nseg 0,6 3,0\nshade 0..{{th}}\nnote 2.5,5.9 \"W = {{round(100*(6*th - th^2))/100}} J\"\nnote 2.5,5.2 \"ω = {{round(100*sqrt(5*(6*th - th^2)))/100}} rad/s\"\nxt 0 1 2 3\nyt 0 2 4 6",
-        "caption": "The wind-up flywheel from the first worked example ($I = 0.40\\ \\text{kg·m}^2$, starting at rest). Drag the angle turned: the shaded area is the work done so far, and it sets the angular speed. Each extra radian adds less work than the one before, because the torque is fading.",
+        "caption": "A flywheel ($I = 0.40\\ \\text{kg·m}^2$, starting at rest) driven by a wind-up spring whose torque fades as $\\tau = 6.0 - 2.0\\,\\theta$. Drag the angle turned: the shaded area is the work done so far, and it sets the angular speed. Each extra radian adds less work than the one before, because the torque is fading.",
         "params": [
           {
             "name": "th",
@@ -876,7 +872,7 @@
         "6.1",
         "6.3"
       ],
-      "teacherNotes": "Make students name the system, name the axis and say why the external torque about it is zero before writing $L_i = L_f$; on free-response questions that sentence earns credit. The most revealing question is to ask for the kinetic energy before and after the skater pulls in: many expect it to be unchanged, and the string-through-a-hole integral shows where the extra comes from. In pivot collisions, ask why linear momentum cannot be used. Set 6C practises this topic."
+      "teacherNotes": "Make students name the system, name the axis and say why the external torque about it is zero before writing $L_i = L_f$; that sentence is the justification a written answer needs. The most revealing question is to ask for the kinetic energy before and after the skater pulls in: many expect it to be unchanged, and the string-through-a-hole integral shows where the extra comes from. In pivot collisions, ask why linear momentum cannot be used. Set 6C practises this topic."
     },
     {
       "topic": "6.5",
@@ -995,52 +991,52 @@
       "derivation": "An object of mass $M$, radius $R$ and $I_{\\text{cm}} = cMR^2$ rolls without slipping down a slope at angle $\\theta$. Take down the slope as positive; static friction $f_s$ acts up the slope at the point of contact.\n\nTranslation, along the slope: $Mg\\sin\\theta - f_s = Ma_{\\text{cm}}$.\n\nRotation about the centre of mass, where only friction has a torque: $f_sR = I_{\\text{cm}}\\alpha = cMR^2\\alpha$.\n\nRolling condition: differentiating $s = R\\phi$ twice with respect to time gives $a_{\\text{cm}} = R\\alpha$. The rotation equation then reads $f_s = cMa_{\\text{cm}}$, and substituting into the first,\n\n$$a_{\\text{cm}} = \\frac{g\\sin\\theta}{1 + c}, \\qquad f_s = \\frac{c}{1 + c}\\,Mg\\sin\\theta$$\n\nRolling without slipping needs $f_s \\le \\mu_sMg\\cos\\theta$, that is $\\tan\\theta \\le \\mu_s(1 + c)/c$.\n\nEnergy agrees. With $\\omega = v/R$, $K = \\tfrac{1}{2}(1 + c)Mv^2$, so a drop $h$ gives $v = \\sqrt{2gh/(1 + c)}$, the speed this acceleration produces.",
       "workedExamples": [
         {
-          "title": "A hoop on a ramp",
-          "prompt": "A thin hoop of mass $0.40\\ \\text{kg}$ is released from rest on a ramp inclined at $20^\\circ$ and rolls down without slipping. Find its acceleration and the friction force on it. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "The steepest ramp a cylinder can roll down",
+          "prompt": "A uniform solid cylinder ($I = \\tfrac{1}{2}MR^2$) is placed on a ramp whose coefficient of static friction with it is $\\mu_s = 0.20$. What is the steepest ramp angle at which it can roll down without slipping, and what is its acceleration at that angle? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Forces: gravity, the normal force, and static friction $f_s$ up the slope at the contact point. Take down the slope as positive.",
-            "Translation: $Mg\\sin\\theta - f_s = Ma$. Rotation about the centre: $f_sR = I\\alpha$, with $I = MR^2$ for a hoop.",
-            "Rolling without slipping means $\\alpha = a/R$, so the rotation equation gives $f_sR = MR^2(a/R)$, or $f_s = Ma$.",
-            "Substitute: $Mg\\sin\\theta - Ma = Ma$, so $a = \\tfrac{1}{2}g\\sin\\theta = \\tfrac{1}{2}(9.8\\ \\text{m/s}^2)\\sin 20^\\circ = 1.7\\ \\text{m/s}^2$. Mass and radius have cancelled.",
-            "$f_s = Ma = (0.40\\ \\text{kg})(1.68\\ \\text{m/s}^2) = 0.67\\ \\text{N}$, up the slope. The ramp can supply it if $\\mu_s \\ge f_s/F_N = 0.67/3.7 = 0.18$, with $F_N = Mg\\cos 20^\\circ = 3.7\\ \\text{N}$."
+            "Forces: gravity, the normal force $F_N = Mg\\cos\\theta$, and static friction $f_s$ up the slope at the contact point. Take down the slope as positive.",
+            "Translation: $Mg\\sin\\theta - f_s = Ma$. Rotation about the centre: $f_sR = \\tfrac{1}{2}MR^2\\alpha$, and rolling without slipping means $\\alpha = a/R$, so $f_s = \\tfrac{1}{2}Ma$.",
+            "Substitute: $Mg\\sin\\theta = \\tfrac{3}{2}Ma$, so $a = \\tfrac{2}{3}g\\sin\\theta$ and $f_s = \\tfrac{1}{3}Mg\\sin\\theta$.",
+            "Static friction can be at most $\\mu_sF_N$: $\\tfrac{1}{3}Mg\\sin\\theta \\le \\mu_sMg\\cos\\theta$, so $\\tan\\theta \\le 3\\mu_s = 0.60$ and $\\theta_{\\max} = 31^\\circ$. Mass and radius have cancelled.",
+            "At that angle $a = \\tfrac{2}{3}(9.8\\ \\text{m/s}^2)\\sin 31^\\circ = 3.4\\ \\text{m/s}^2$. Any steeper and it slips."
           ],
-          "answer": "$a = 1.7\\ \\text{m/s}^2$ down the slope; $f_s = 0.67\\ \\text{N}$ up the slope",
+          "answer": "$\\theta_{\\max} = 31°$, where the cylinder accelerates at $3.4\\ \\text{m/s}^2$ down the slope",
           "style": "stepped",
           "spec": {
             "givens": {
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
-              },
-              "theta": {
-                "value": 20,
-                "unit": "deg"
+              "mu_s": {
+                "value": 0.2,
+                "unit": ""
               }
             },
-            "expr": "g*sin(theta)/2",
-            "unit": "m/s^2"
+            "expr": "atan(3*mu_s)",
+            "unit": "°"
           }
         },
         {
-          "title": "A falling yo-yo",
-          "prompt": "A yo-yo is modelled as a uniform solid disc of mass $0.12\\ \\text{kg}$ and radius $R$ with a light string wrapped around its rim. The free end of the string is held still and the yo-yo is released from rest, unwinding as it falls with the string vertical. Derive its acceleration and the tension in the string, and find its speed after it has fallen $0.50\\ \\text{m}$. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "Pulling a cable drum by its top",
+          "prompt": "A cable drum, modelled as a uniform solid cylinder of mass $6.0\\ \\text{kg}$ and radius $R$, lies on its side on a level floor. A worker pulls horizontally with a force $F = 18\\ \\text{N}$ on a rope wound around the drum and leaving it from the top. The drum rolls without slipping. Derive its acceleration and the friction force from the floor, including its direction.",
           "steps": [
-            "The string plays the part of the ramp: the point where it leaves the rim is momentarily at rest, so the disc rolls down the string with $a = R\\alpha$. Take downward as positive.",
-            "Translation: $Mg - T = Ma$. Rotation about the centre, where only the tension has a torque: $TR = I\\alpha = \\tfrac{1}{2}MR^2(a/R)$, so $T = \\tfrac{1}{2}Ma$.",
-            "Substituting: $Mg - \\tfrac{1}{2}Ma = Ma$, so $a = \\tfrac{2}{3}g = 6.5\\ \\text{m/s}^2$, whatever $M$ and $R$ are.",
-            "$T = \\tfrac{1}{2}Ma = \\tfrac{1}{3}Mg = \\tfrac{1}{3}(0.12\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 0.39\\ \\text{N}$, a third of the weight.",
-            "Speed after $h = 0.50\\ \\text{m}$: the tension acts at a point at rest and does no work, so $Mgh = \\tfrac{1}{2}Mv^2 + \\tfrac{1}{4}Mv^2$ and $v = \\sqrt{4gh/3} = 2.6\\ \\text{m/s}$, the same as $\\sqrt{2ah}$."
+            "Take forward as positive and assume friction $f$ acts forward; a negative answer would mean backward.",
+            "Translation: $F + f = Ma$. Rotation about the centre: the rope pulls at distance $R$ above the centre and friction at $R$ below it, so they twist in opposite senses: $(F - f)R = \\tfrac{1}{2}MR^2\\alpha = \\tfrac{1}{2}MRa$, using $\\alpha = a/R$. So $F - f = \\tfrac{1}{2}Ma$.",
+            "Adding the two equations: $2F = \\tfrac{3}{2}Ma$, so $a = \\dfrac{4F}{3M} = \\dfrac{4(18\\ \\text{N})}{3(6.0\\ \\text{kg})} = 4.0\\ \\text{m/s}^2$, whatever $R$ is.",
+            "Friction: $f = Ma - F = 24 - 18 = +6.0\\ \\text{N}$, so it acts forward: without it the drum would spin too fast for its speed.",
+            "Rolling needs $\\mu_s \\ge f/(Mg) = 6.0/58.8 = 0.10$. Pulling at the top beats pulling at the axle, which would give only $\\tfrac{2}{3}F/M = 2.0\\ \\text{m/s}^2$."
           ],
-          "answer": "$a = 6.5\\ \\text{m/s}^2$ downward (two thirds of $g$); $T = 0.39\\ \\text{N}$; $v = 2.6\\ \\text{m/s}$",
+          "answer": "$a = \\dfrac{4F}{3M} = 4.0\\ \\text{m/s}^2$; friction is $6.0\\ \\text{N}$ forward, in the direction of the pull",
           "style": "ap",
           "spec": {
             "givens": {
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
+              "F": {
+                "value": 18,
+                "unit": "N"
+              },
+              "M": {
+                "value": 6,
+                "unit": "kg"
               }
             },
-            "expr": "2*g/3",
+            "expr": "4*F/(3*M)",
             "unit": "m/s^2"
           }
         }
@@ -1260,16 +1256,16 @@
       "derivation": "Potential energy. The radial component of gravity on the satellite is $F_r = -GMm/r^2$. Taking $U = 0$ at infinity,\n\n$$U(r) = -\\int_\\infty^r F_r\\,dr' = \\int_\\infty^r\\frac{GMm}{r'^2}\\,dr' = -\\frac{GMm}{r}$$\n\nCircular orbit. Newton's second law toward the centre gives $\\dfrac{GMm}{r^2} = \\dfrac{mv^2}{r}$, so $v^2 = \\dfrac{GM}{r}$, $K = \\dfrac{GMm}{2r}$ and $E = K + U = -\\dfrac{GMm}{2r}$.\n\nEscape. To just reach infinity with no speed left over, $E = 0$: $\\tfrac{1}{2}mv_{\\text{esc}}^2 - \\dfrac{GMm}{r} = 0$, so $v_{\\text{esc}} = \\sqrt{2GM/r}$.\n\nEllipse. Angular momentum at the two ends gives $v_a = v_pr_p/r_a$. Put this into conservation of energy, $\\tfrac{1}{2}v_p^2 - \\dfrac{GM}{r_p} = \\tfrac{1}{2}v_a^2 - \\dfrac{GM}{r_a}$:\n\n$$\\tfrac{1}{2}v_p^2\\left(1 - \\frac{r_p^2}{r_a^2}\\right) = GM\\left(\\frac{1}{r_p} - \\frac{1}{r_a}\\right) \\quad\\Rightarrow\\quad v_p^2 = \\frac{2GM\\,r_a}{r_p\\,(r_p + r_a)}$$\n\nThen $E = \\tfrac{1}{2}mv_p^2 - \\dfrac{GMm}{r_p} = -\\dfrac{GMm}{r_p + r_a} = -\\dfrac{GMm}{2a}$, because $r_p + r_a = 2a$.",
       "workedExamples": [
         {
-          "title": "Escape speed from the Moon",
-          "prompt": "The Moon has mass $7.35 \\times 10^{22}\\ \\text{kg}$ and radius $1.74 \\times 10^{6}\\ \\text{m}$. What is the escape speed from its surface? Use $G = 6.67 \\times 10^{-11}\\ \\text{N·m}^2/\\text{kg}^2$.",
+          "title": "How high a probe climbs above the Moon",
+          "prompt": "A probe is launched straight up from the surface of the Moon at $2.0 \\times 10^{3}\\ \\text{m/s}$. The Moon has mass $7.35 \\times 10^{22}\\ \\text{kg}$ and radius $1.74 \\times 10^{6}\\ \\text{m}$ and no atmosphere. How far from the Moon's centre does the probe get before it falls back? Use $G = 6.67 \\times 10^{-11}\\ \\text{N·m}^2/\\text{kg}^2$.",
           "steps": [
-            "Escaping means reaching very large $r$, where $U = 0$, with no kinetic energy left over. So the total energy at launch must be zero: $\\tfrac{1}{2}mv_{\\text{esc}}^2 - \\dfrac{GMm}{R} = 0$.",
-            "The projectile's mass cancels: $v_{\\text{esc}} = \\sqrt{\\dfrac{2GM}{R}}$.",
-            "$\\dfrac{2GM}{R} = \\dfrac{2(6.67\\times10^{-11})(7.35\\times10^{22})}{1.74\\times10^{6}} = 5.635\\times10^{6}\\ \\text{m}^2/\\text{s}^2$.",
-            "$v_{\\text{esc}} = \\sqrt{5.635\\times10^{6}}\\ \\text{m/s} = 2.4\\times10^{3}\\ \\text{m/s}$, about $2.4\\ \\text{km/s}$.",
-            "For comparison, a satellite skimming the surface in a circular orbit would move at $\\sqrt{GM/R} = v_{\\text{esc}}/\\sqrt{2} = 1.7\\times10^{3}\\ \\text{m/s}$."
+            "Gravity weakens with height, so $g$ is not constant and $v^2 = 2gh$ does not apply. Use conservation of energy with $U = -GMm/r$. At the highest point the probe is momentarily at rest: $\\tfrac{1}{2}mv_0^2 - \\dfrac{GMm}{R} = -\\dfrac{GMm}{r_{\\max}}$.",
+            "The probe's mass cancels: $\\dfrac{1}{r_{\\max}} = \\dfrac{1}{R} - \\dfrac{v_0^2}{2GM}$.",
+            "$GM = 4.90\\times10^{12}\\ \\text{m}^3/\\text{s}^2$, so $\\dfrac{1}{R} = 5.75\\times10^{-7}\\ \\text{m}^{-1}$ and $\\dfrac{v_0^2}{2GM} = 4.08\\times10^{-7}\\ \\text{m}^{-1}$. The difference is $1.67\\times10^{-7}\\ \\text{m}^{-1}$.",
+            "$r_{\\max} = 6.0\\times10^{6}\\ \\text{m}$, about $3.4$ lunar radii from the centre, or $4.3\\times10^{6}\\ \\text{m}$ above the surface.",
+            "For comparison, $v_0^2/2g$ with the surface value $g = GM/R^2 = 1.62\\ \\text{m/s}^2$ gives only $1.2\\times10^{6}\\ \\text{m}$. The launch is close to the escape speed, $\\sqrt{2GM/R} = 2.4\\times10^{3}\\ \\text{m/s}$, so the probe climbs far."
           ],
-          "answer": "$v_{\\text{esc}} = 2.4 \\times 10^{3}\\ \\text{m/s}$",
+          "answer": "$r_{\\max} = 6.0 \\times 10^{6}\\ \\text{m}$ from the Moon's centre",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -1284,10 +1280,14 @@
               "R": {
                 "value": 1740000,
                 "unit": "m"
+              },
+              "v_0": {
+                "value": 2000,
+                "unit": "m/s"
               }
             },
-            "expr": "sqrt(2*G*M/R)",
-            "unit": "m/s"
+            "expr": "1/(1/R - v_0^2/(2*G*M))",
+            "unit": "m"
           }
         },
         {
@@ -1354,8 +1354,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A comet's farthest distance from the Sun is 20 times its closest distance. How do its speeds at those two points compare?",
-          "a": "It is 20 times faster at its closest point, from $r_pv_p = r_av_a$."
+          "q": "A comet passes closest to the Sun at $0.50\\ \\text{AU}$, moving 20 times faster than at its farthest point. How far from the Sun is that farthest point?",
+          "a": "From $r_pv_p = r_av_a$, $r_a = r_p(v_p/v_a) = (0.50\\ \\text{AU})(20) = 10\\ \\text{AU}$."
         },
         {
           "q": "A satellite in a circular orbit has kinetic energy $K$. What are its potential energy and its total energy, and how much energy must be added for it to escape?",

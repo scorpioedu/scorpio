@@ -698,33 +698,28 @@
       "derivation": "**A long straight wire.** Lay the wire along the $x$-axis with current $I$ in the $+x$ direction, and find the field at a point P a perpendicular distance $a$ from it. An element $dx$ at position $x$ is a distance $r = \\sqrt{x^2 + a^2}$ from P, and the angle $\\theta$ between the element and the line to P has $\\sin\\theta = a/r$. Every contribution at P points the same way, so the sizes add:\n\n$$\ndB = \\frac{\\mu_0 I}{4\\pi}\\,\\frac{dx\\,\\sin\\theta}{r^2} = \\frac{\\mu_0 I}{4\\pi}\\,\\frac{a\\,dx}{(x^2 + a^2)^{3/2}} .\n$$\n\nIntegrate over the whole wire, using $\\displaystyle\\int \\frac{dx}{(x^2+a^2)^{3/2}} = \\frac{x}{a^2\\sqrt{x^2+a^2}}$, which goes from $-1/a^2$ to $+1/a^2$:\n\n$$\nB = \\frac{\\mu_0 I a}{4\\pi}\\cdot\\frac{2}{a^2} = \\frac{\\mu_0 I}{2\\pi a} .\n$$\n\n**The centre of a loop.** Every element of a circular loop is perpendicular to $\\hat{r}$ and the same distance $R$ from the centre, and all the contributions point along the loop's axis. So\n\n$$\nB = \\frac{\\mu_0 I}{4\\pi R^2}\\oint d\\ell = \\frac{\\mu_0 I}{4\\pi R^2}(2\\pi R) = \\frac{\\mu_0 I}{2R} .\n$$\n\nAn arc of angle $\\phi$ has length $R\\phi$ instead of $2\\pi R$, which gives $B = \\mu_0 I\\phi/(4\\pi R)$.",
       "workedExamples": [
         {
-          "title": "A wire with a semicircular detour",
-          "prompt": "A long wire carrying $8.0\\ \\text{A}$ lies along a straight line, except that at its middle it detours round a semicircle of radius $5.0\\ \\text{cm}$ whose centre C is on that line. The current goes round the semicircle clockwise as seen on the page. Find the magnitude and direction of the magnetic field at C.",
+          "title": "A wire bent through a right angle",
+          "prompt": "A long wire carrying $10\\ \\text{A}$ runs down the y-axis from far away to the origin, turns through a right angle, and runs out along the $+x$-axis. Find the magnitude and direction of the magnetic field at P, on the x-axis at $x = -4.0\\ \\text{cm}$.",
           "steps": [
-            "Add the fields at C of three pieces: two straight sections and the semicircle.",
-            "Every element of the straight sections points directly toward or away from C, so $d\\vec{\\ell}\\times\\hat{r} = 0$: they contribute nothing.",
-            "Every element of the semicircle is perpendicular to $\\hat{r}$ and a distance $R$ from C, so $B = \\dfrac{\\mu_0 I}{4\\pi R^2}\\displaystyle\\int d\\ell = \\dfrac{\\mu_0 I}{4\\pi R^2}(\\pi R) = \\dfrac{\\mu_0 I}{4R}$, half the field of a full loop.",
-            "$B = \\dfrac{(4\\pi\\times10^{-7}\\ \\text{T·m/A})(8.0\\ \\text{A})}{4(0.050\\ \\text{m})} = 5.0\\times10^{-5}\\ \\text{T}$.",
-            "Direction: curl your right fingers clockwise with the current; your thumb points into the page."
+            "P lies on the line of the horizontal leg, so for that leg $d\\vec{\\ell}\\times\\hat{r} = 0$: it contributes nothing.",
+            "The vertical leg is half a long wire, with P level with its end, $a = 4.0\\ \\text{cm}$ away. The derivation's integral now runs from $0$ to $\\infty$: $B = \\dfrac{\\mu_0 Ia}{4\\pi}\\displaystyle\\int_0^\\infty \\frac{dy}{(y^2 + a^2)^{3/2}} = \\dfrac{\\mu_0 I}{4\\pi a}$, half a whole wire's field.",
+            "$B = \\dfrac{(4\\pi\\times10^{-7}\\ \\text{T·m/A})(10\\ \\text{A})}{4\\pi(0.040\\ \\text{m})} = 2.5\\times10^{-5}\\ \\text{T}$.",
+            "Direction: right thumb down the y-axis, along the current. At P, on the wire's left, the fingers point into the page."
           ],
-          "answer": "$B = 5.0 \\times 10^{-5}\\ \\text{T}$, into the page",
+          "answer": "$B = 2.5 \\times 10^{-5}\\ \\text{T}$, into the page",
           "style": "stepped",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I": {
-                "value": 8,
+                "value": 10,
                 "unit": "A"
               },
-              "R": {
-                "value": 5,
+              "a": {
+                "value": 4,
                 "unit": "cm"
               }
             },
-            "expr": "mu0*I/(4*R)",
+            "expr": "mu0*I/(4*pi*a)",
             "unit": "T"
           }
         },
@@ -740,10 +735,6 @@
           "style": "ap",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I1": {
                 "value": 80,
                 "unit": "A"
@@ -755,10 +746,6 @@
               "lam": {
                 "value": 5,
                 "unit": "g/m"
-              },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
               }
             },
             "expr": "2*pi*d*lam*g/(mu0*I1)",
@@ -956,10 +943,6 @@
           "style": "stepped",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
               "I": {
                 "value": 6,
                 "unit": "A"
@@ -974,32 +957,28 @@
           }
         },
         {
-          "title": "A wire with non-uniform current density",
-          "prompt": "A long straight wire of radius $4.0\\ \\text{mm}$ carries a current whose density increases with distance $r$ from the axis as $J = \\alpha r$, where $\\alpha = 2.0\\times10^{6}\\ \\text{A/m}^3$. Derive an expression for the magnetic field inside the wire, and calculate the field $2.0\\ \\text{mm}$ from the axis.",
+          "title": "Inside a thick sheet of current",
+          "prompt": "A large, flat conducting slab $4.0\\ \\text{mm}$ thick carries a uniform current density $J = 2.0\\times10^{6}\\ \\text{A/m}^2$ out of the page. Derive the magnetic field inside the slab, a distance $y$ from its middle plane, and evaluate it at $y = 1.0\\ \\text{mm}$. Also find the field outside.",
           "steps": [
-            "The current is symmetric about the axis, so take a circle of radius $r$, inside the wire, as the Amperian loop: $\\oint \\vec{B}\\cdot d\\vec{\\ell} = B(2\\pi r)$.",
-            "$J$ changes with radius, so the enclosed current must be integrated. A thin ring of radius $r'$ and width $dr'$ has area $2\\pi r'\\,dr'$ and carries $dI = (\\alpha r')(2\\pi r'\\,dr')$. So $I_{\\text{enc}} = \\displaystyle\\int_0^{r} 2\\pi\\alpha r'^2\\,dr' = \\tfrac{2}{3}\\pi\\alpha r^3$.",
-            "Ampère's law: $B(2\\pi r) = \\mu_0\\,\\tfrac{2}{3}\\pi\\alpha r^3$, so $B = \\tfrac{1}{3}\\mu_0\\alpha r^2$.",
-            "At $r = 2.0\\ \\text{mm}$: $B = \\tfrac{1}{3}(4\\pi\\times10^{-7}\\ \\text{T·m/A})(2.0\\times10^{6}\\ \\text{A/m}^3)(2.0\\times10^{-3}\\ \\text{m})^2 = 3.4\\times10^{-6}\\ \\text{T}$."
+            "By symmetry $\\vec{B}$ is parallel to the slab and perpendicular to $\\vec{J}$, opposite on the two sides of the middle plane, and equal in size at $\\pm y$.",
+            "Take a rectangle with sides of length $\\ell$ along $\\vec{B}$ at $\\pm y$: $\\oint \\vec{B}\\cdot d\\vec{\\ell} = 2B\\ell$; the short sides give nothing.",
+            "Inside, $2B\\ell = \\mu_0J(2y\\ell)$, so $B = \\mu_0Jy = (4\\pi\\times10^{-7})(2.0\\times10^{6})(1.0\\times10^{-3}) = 2.5\\times10^{-3}\\ \\text{T}$.",
+            "Outside, the whole thickness $t$ is enclosed: $B = \\tfrac{1}{2}\\mu_0Jt = 5.0\\times10^{-3}\\ \\text{T}$ at every distance."
           ],
-          "answer": "$B = \\tfrac{1}{3}\\mu_0\\alpha r^2$, which is $3.4 \\times 10^{-6}\\ \\text{T}$ at $r = 2.0\\ \\text{mm}$",
+          "answer": "$B = \\mu_0Jy$, which is $2.5 \\times 10^{-3}\\ \\text{T}$ at $1.0\\ \\text{mm}$; outside, $5.0 \\times 10^{-3}\\ \\text{T}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "mu0": {
-                "value": 0.0000012566,
-                "unit": "T·m/A"
-              },
-              "alpha": {
+              "J": {
                 "value": 2000000,
-                "unit": "A/m^3"
+                "unit": "A/m^2"
               },
-              "r": {
-                "value": 2,
+              "y": {
+                "value": 1,
                 "unit": "mm"
               }
             },
-            "expr": "mu0*alpha*r^2/3",
+            "expr": "mu0*J*y",
             "unit": "T"
           }
         }
@@ -1023,8 +1002,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A solenoid $25\\ \\text{cm}$ long has $400$ turns and carries $3.0\\ \\text{A}$. What is the field inside it?",
-          "a": "$n = 400/(0.25\\ \\text{m}) = 1600\\ \\text{m}^{-1}$, so $B = \\mu_0 n I = (4\\pi\\times10^{-7})(1600)(3.0) = 6.0\\times10^{-3}\\ \\text{T}$."
+          "q": "A long solenoid's field is $6.0\\ \\text{mT}$. It is stretched to twice its length, with the same turns and current. What is the field now?",
+          "a": "$3.0\\ \\text{mT}$: $B = \\mu_0 nI$, and $n$ has halved."
         },
         {
           "q": "A closed path surrounds two wires: one carries $5\\ \\text{A}$ out of the page, the other $3\\ \\text{A}$ into it. What is $\\oint \\vec{B}\\cdot d\\vec{\\ell}$ taken counterclockwise round the path?",
@@ -1054,7 +1033,7 @@
         "8.6",
         "12.3"
       ],
-      "teacherNotes": "Run Ampère's law in parallel with Gauss's law: same three steps (argue the symmetry, choose the loop, find what is enclosed), and the same two errors (using it without symmetry, and using the total instead of the enclosed amount). Ask students to say in words why $B$ comes out of the integral before they write $B(2\\pi r)$. Problems with $J(r)$ are the usual free-response version; the ring element $2\\pi r'\\,dr'$ is where most slips happen. Set 12D covers thick wires, coaxial conductors and solenoids."
+      "teacherNotes": "Run Ampère's law in parallel with Gauss's law: same three steps (argue the symmetry, choose the loop, find what is enclosed), and the same two errors (using it without symmetry, and using the total instead of the enclosed amount). Ask students to say in words why $B$ comes out of the integral before they write $B(2\\pi r)$. In problems with $J(r)$ the ring element $2\\pi r'\\,dr'$ is where most slips happen. Set 12D covers thick wires, coaxial conductors and solenoids."
     }
   ]
 }

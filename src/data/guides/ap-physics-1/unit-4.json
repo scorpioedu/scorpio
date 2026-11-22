@@ -88,36 +88,36 @@
       ],
       "workedExamples": [
         {
-          "title": "Momentum of a two-cart system",
-          "prompt": "A $2.0\\ \\text{kg}$ cart moves to the right at $3.0\\ \\text{m/s}$. A $1.0\\ \\text{kg}$ cart moves to the left at $4.0\\ \\text{m/s}$. What is the momentum of the two-cart system?",
+          "title": "Momentum of three skaters",
+          "prompt": "Three skaters are on a frozen pond. A $50\\ \\text{kg}$ skater glides east at $4.0\\ \\text{m/s}$, a $70\\ \\text{kg}$ skater glides west at $2.0\\ \\text{m/s}$, and a $30\\ \\text{kg}$ skater stands still. What is the momentum of the three-skater system?",
           "steps": [
-            "Choose a direction to call positive. Take right as positive, so the velocities are $v_A = +3.0\\ \\text{m/s}$ and $v_B = -4.0\\ \\text{m/s}$.",
-            "Find each cart's momentum: $p_A = (2.0\\ \\text{kg})(+3.0\\ \\text{m/s}) = +6.0\\ \\text{kg·m/s}$ and $p_B = (1.0\\ \\text{kg})(-4.0\\ \\text{m/s}) = -4.0\\ \\text{kg·m/s}$.",
-            "Add them, keeping the signs: $p_{\\text{sys}} = +6.0 + (-4.0) = +2.0\\ \\text{kg·m/s}$.",
-            "Read the sign. Positive means the system's momentum points to the right, even though the faster cart is moving left."
+            "Choose a direction to call positive. Take east as positive, so the velocities are $v_1 = +4.0\\ \\text{m/s}$, $v_2 = -2.0\\ \\text{m/s}$ and $v_3 = 0$.",
+            "Find each skater's momentum: $p_1 = (50\\ \\text{kg})(+4.0\\ \\text{m/s}) = +200\\ \\text{kg·m/s}$, $p_2 = (70\\ \\text{kg})(-2.0\\ \\text{m/s}) = -140\\ \\text{kg·m/s}$ and $p_3 = 0$. The skater at rest is part of the system but adds nothing to its momentum.",
+            "Add them, keeping the signs: $p_{\\text{sys}} = +200 + (-140) + 0 = +60\\ \\text{kg·m/s}$.",
+            "Read the sign. Positive means the system's momentum points east, even though more mass is moving west."
           ],
-          "answer": "$p_{\\text{sys}} = +2.0\\ \\text{kg·m/s}$, to the right",
+          "answer": "$p_{\\text{sys}} = +60\\ \\text{kg·m/s}$, to the east",
           "style": "stepped",
           "spec": {
             "givens": {
-              "m_A": {
-                "value": 2,
+              "m_1": {
+                "value": 50,
                 "unit": "kg"
               },
-              "v_A": {
-                "value": 3,
+              "v_1": {
+                "value": 4,
                 "unit": "m/s"
               },
-              "m_B": {
-                "value": 1,
+              "m_2": {
+                "value": 70,
                 "unit": "kg"
               },
-              "v_B": {
-                "value": -4,
+              "v_2": {
+                "value": -2,
                 "unit": "m/s"
               }
             },
-            "expr": "m_A*v_A + m_B*v_B",
+            "expr": "m_1*v_1 + m_2*v_2",
             "unit": "kg·m/s"
           }
         },
@@ -171,12 +171,12 @@
       ],
       "checkYourself": [
         {
-          "q": "A $1500\\ \\text{kg}$ car drives east at $20\\ \\text{m/s}$ and a $3000\\ \\text{kg}$ truck drives west at $10\\ \\text{m/s}$. What is the total momentum of the two vehicles?",
-          "a": "Zero. With east as positive, the car has $+30\\,000\\ \\text{kg·m/s}$ and the truck has $-30\\,000\\ \\text{kg·m/s}$."
+          "q": "Two identical $0.50\\ \\text{kg}$ balls roll toward each other, one north and one south, each at $6.0\\ \\text{m/s}$. What are the total momentum and the total kinetic energy of the pair?",
+          "a": "The momentum is zero: with north as positive the balls have $+3.0$ and $-3.0\\ \\text{kg·m/s}$. The kinetic energy is not: each has $\\tfrac{1}{2}(0.50)(6.0)^2 = 9.0\\ \\text{J}$, so the pair has $18\\ \\text{J}$. Energy has no direction to cancel."
         },
         {
           "q": "Can a single moving object have zero momentum? Can a system of moving objects?",
-          "a": "One moving object cannot: its mass and its velocity are both non-zero. A system can, when its objects' momenta cancel, like the car and the truck above."
+          "a": "One moving object cannot: its mass and its velocity are both non-zero. A system can, when its objects' momenta cancel, like the two balls above."
         },
         {
           "q": "Ball X hits the floor and stops. An identical ball Y hits at the same speed and bounces back up. Which has the larger change in momentum?",
@@ -305,33 +305,33 @@
       ],
       "workedExamples": [
         {
-          "title": "Average force on a batted ball",
-          "prompt": "A $0.145\\ \\text{kg}$ baseball reaches the bat at $38\\ \\text{m/s}$ and leaves in the opposite direction at $52\\ \\text{m/s}$. The ball and bat are in contact for $0.0015\\ \\text{s}$. What average force does the bat exert on the ball?",
+          "title": "Average force on a car in a crash test",
+          "prompt": "In a crash test, a $1200\\ \\text{kg}$ car hits a rigid barrier at $12\\ \\text{m/s}$ and bounces straight back at $2.0\\ \\text{m/s}$. The collision lasts $0.15\\ \\text{s}$. What average force does the barrier exert on the car?",
           "steps": [
-            "Take the direction the ball leaves as positive. Then $v_i = -38\\ \\text{m/s}$ and $v_f = +52\\ \\text{m/s}$.",
-            "Find the change in momentum: $\\Delta p = m(v_f - v_i) = (0.145\\ \\text{kg})\\big(52 - (-38)\\big)\\ \\text{m/s} = (0.145)(90) = 13.05\\ \\text{kg·m/s}$. Keep the extra digits until the end.",
-            "The impulse on the ball equals this change, so $F_{\\text{avg}}\\,\\Delta t = 13.05\\ \\text{N·s}$.",
-            "Divide by the contact time: $F_{\\text{avg}} = \\dfrac{13.05\\ \\text{N·s}}{0.0015\\ \\text{s}} = 8.7 \\times 10^3\\ \\text{N}$.",
-            "Check: that is thousands of times the ball's weight (about $1.4\\ \\text{N}$), which is why the weight can be ignored during the hit."
+            "Take the direction the car bounces back as positive. Then $v_i = -12\\ \\text{m/s}$ and $v_f = +2.0\\ \\text{m/s}$.",
+            "Find the change in momentum: $\\Delta p = m(v_f - v_i) = (1200\\ \\text{kg})\\big(2.0 - (-12)\\big)\\ \\text{m/s} = (1200)(14) = 16\\,800\\ \\text{kg·m/s}$. The bounce adds to the change: stopping alone would be $14\\,400$.",
+            "The impulse on the car equals this change, so $F_{\\text{avg}}\\,\\Delta t = 16\\,800\\ \\text{N·s}$.",
+            "Divide by the collision time: $F_{\\text{avg}} = \\dfrac{16\\,800\\ \\text{N·s}}{0.15\\ \\text{s}} = 1.1 \\times 10^5\\ \\text{N}$.",
+            "Check: that is about ten times the car's weight (about $1.2 \\times 10^4\\ \\text{N}$). A crumple zone that stretched the collision over a longer time would lower it."
           ],
-          "answer": "$F_{\\text{avg}} = 8.7 \\times 10^3\\ \\text{N}$, in the direction the ball leaves",
+          "answer": "$F_{\\text{avg}} = 1.1 \\times 10^5\\ \\text{N}$, in the direction the car bounces back",
           "style": "stepped",
           "spec": {
             "givens": {
               "m": {
-                "value": 0.145,
+                "value": 1200,
                 "unit": "kg"
               },
               "v_i": {
-                "value": -38,
+                "value": -12,
                 "unit": "m/s"
               },
               "v_f": {
-                "value": 52,
+                "value": 2,
                 "unit": "m/s"
               },
               "dt": {
-                "value": 0.0015,
+                "value": 0.15,
                 "unit": "s"
               }
             },
@@ -340,41 +340,33 @@
           }
         },
         {
-          "title": "Impulse from a force–time graph",
-          "prompt": "A $0.50\\ \\text{kg}$ cart is at rest on a level, low-friction track. A student pushes it with a horizontal force that varies as shown: it rises steadily to $6.0\\ \\text{N}$ over the first $0.10\\ \\text{s}$, stays at $6.0\\ \\text{N}$ for $0.20\\ \\text{s}$, then falls steadily to zero over the last $0.10\\ \\text{s}$. Determine the cart's speed when the push ends.\n\n```dg\nplot x=t[s] y=F[N] xr=0,0.45 yr=0,7\nseg 0,0 0.1,6 0.3,6 0.4,0\nxt 0 0.1 0.2 0.3 0.4\nyt 0 2 4 6\n```",
+          "title": "Peak force from a force–time graph",
+          "prompt": "A $0.43\\ \\text{kg}$ soccer ball sits at rest and is kicked. The force of the foot on the ball rises steadily from zero to a peak $F_{\\text{max}}$ and falls steadily back to zero, as shown, over a total contact time of $8.0\\ \\text{ms}$. The ball leaves the foot at $25\\ \\text{m/s}$. Determine the peak force and the average force on the ball during the kick. Ignore other forces during the contact.\n\n```dg\nplot x=t[ms] y=F xr=0,9 yr=0,1.3\nseg 0,0 4,1 8,0\npt 4,1 \"F_max\"\nxt 0 2 4 6 8\n```",
           "steps": [
-            "The force is not constant, so the impulse is the area under the force–time graph. Split the area into a triangle, a rectangle and a second triangle.",
-            "$J = \\tfrac{1}{2}(0.10\\ \\text{s})(6.0\\ \\text{N}) + (0.20\\ \\text{s})(6.0\\ \\text{N}) + \\tfrac{1}{2}(0.10\\ \\text{s})(6.0\\ \\text{N}) = 0.30 + 1.2 + 0.30 = 1.8\\ \\text{N·s}$.",
-            "The track is level and low-friction, so the push is the net force and its impulse equals the cart's change in momentum: $J = m v_f - m v_i$, with $v_i = 0$.",
-            "$v_f = \\dfrac{J}{m} = \\dfrac{1.8\\ \\text{N·s}}{0.50\\ \\text{kg}} = 3.6\\ \\text{m/s}$, in the direction of the push."
+            "Start from the motion: the ball goes from rest to $25\\ \\text{m/s}$, so its change in momentum is $\\Delta p = (0.43\\ \\text{kg})(25\\ \\text{m/s}) = 10.75\\ \\text{kg·m/s}$. The kick is the only force that matters, so its impulse is $J = 10.75\\ \\text{N·s}$.",
+            "The impulse is the area under the force–time graph, here one triangle: $J = \\tfrac{1}{2}(8.0 \\times 10^{-3}\\ \\text{s})F_{\\text{max}}$.",
+            "Solve for the peak: $F_{\\text{max}} = \\dfrac{2(10.75\\ \\text{N·s})}{8.0 \\times 10^{-3}\\ \\text{s}} = 2.7 \\times 10^3\\ \\text{N}$.",
+            "The average force is the steady force giving the same area in the same time: $F_{\\text{avg}} = J/\\Delta t = 1.3 \\times 10^3\\ \\text{N}$, half the peak, as it must be for a triangle."
           ],
-          "answer": "$v_f = 3.6\\ \\text{m/s}$",
+          "answer": "$F_{\\text{max}} = 2.7 \\times 10^3\\ \\text{N}$; $F_{\\text{avg}} = 1.3 \\times 10^3\\ \\text{N}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "F": {
-                "value": 6,
-                "unit": "N"
-              },
-              "t1": {
-                "value": 0.1,
-                "unit": "s"
-              },
-              "t2": {
-                "value": 0.2,
-                "unit": "s"
-              },
-              "t3": {
-                "value": 0.1,
-                "unit": "s"
-              },
               "m": {
-                "value": 0.5,
+                "value": 0.43,
                 "unit": "kg"
+              },
+              "v": {
+                "value": 25,
+                "unit": "m/s"
+              },
+              "dt": {
+                "value": 0.008,
+                "unit": "s"
               }
             },
-            "expr": "(0.5*F*t1 + F*t2 + 0.5*F*t3)/m",
-            "unit": "m/s"
+            "expr": "2*m*v/dt",
+            "unit": "N"
           }
         }
       ],
@@ -542,37 +534,33 @@
           }
         },
         {
-          "title": "A collision where the carts bounce apart",
-          "prompt": "Cart 1 ($0.50\\ \\text{kg}$) moves to the right at $2.0\\ \\text{m/s}$ on a level, low-friction track and hits cart 2 ($1.5\\ \\text{kg}$), which is at rest. Afterwards cart 1 moves to the left at $0.40\\ \\text{m/s}$. Determine cart 2's velocity after the collision, and show that the centre of mass has the same velocity before and after.",
+          "title": "A sandbag dropped into a rolling cart",
+          "prompt": "A $40\\ \\text{kg}$ cart rolls to the right at $3.0\\ \\text{m/s}$ across a level floor with negligible friction. A $10\\ \\text{kg}$ sandbag is dropped straight down into it from just above and stays in the cart. Determine the cart's velocity afterwards, explain why vertical momentum is not conserved here while horizontal momentum is, and show that the horizontal velocity of the centre of mass is unchanged.",
           "steps": [
-            "System: the two carts. The track is level and low-friction, so the net external force is zero and momentum is conserved. Take right as positive.",
-            "Before: $p_i = (0.50\\ \\text{kg})(+2.0\\ \\text{m/s}) + 0 = +1.0\\ \\text{kg·m/s}$.",
-            "After: $p_f = (0.50\\ \\text{kg})(-0.40\\ \\text{m/s}) + (1.5\\ \\text{kg})\\,v_{2f} = -0.20\\ \\text{kg·m/s} + (1.5\\ \\text{kg})\\,v_{2f}$.",
-            "Setting $p_f = p_i$ gives $(1.5\\ \\text{kg})\\,v_{2f} = 1.0 + 0.20 = 1.2\\ \\text{kg·m/s}$, so $v_{2f} = +0.80\\ \\text{m/s}$.",
-            "Centre of mass: before, $v_{\\text{cm}} = (1.0\\ \\text{kg·m/s})/(2.0\\ \\text{kg}) = 0.50\\ \\text{m/s}$. After, $v_{\\text{cm}} = (-0.20 + 1.2)/2.0 = 0.50\\ \\text{m/s}$, unchanged, as it must be for an isolated system."
+            "System: the cart and the sandbag. Horizontally there is no external force (no friction), so horizontal momentum is conserved. Vertically the floor pushes up hard to stop the bag's fall: an external force, so vertical momentum is not conserved. Take right as positive.",
+            "Before: the bag falls straight down, so it has no horizontal momentum. $p_{x,i} = (40\\ \\text{kg})(+3.0\\ \\text{m/s}) + 0 = +120\\ \\text{kg·m/s}$.",
+            "After: the cart and bag move together, so $p_{x,f} = (40\\ \\text{kg} + 10\\ \\text{kg})\\,v_f = (50\\ \\text{kg})\\,v_f$.",
+            "Setting $p_{x,f} = p_{x,i}$ gives $v_f = (120\\ \\text{kg·m/s})/(50\\ \\text{kg}) = +2.4\\ \\text{m/s}$. The cart slows, because the same momentum is now shared by more mass.",
+            "Centre of mass: before, $v_{\\text{cm},x} = (120\\ \\text{kg·m/s})/(50\\ \\text{kg}) = 2.4\\ \\text{m/s}$. After, the whole system moves at $2.4\\ \\text{m/s}$, unchanged, as it must be with no horizontal external force."
           ],
-          "answer": "$v_{2f} = +0.80\\ \\text{m/s}$, to the right; $v_{\\text{cm}}$ stays at $0.50\\ \\text{m/s}$",
+          "answer": "$v_f = +2.4\\ \\text{m/s}$, to the right; $v_{\\text{cm},x}$ stays at $2.4\\ \\text{m/s}$",
           "style": "ap",
           "spec": {
             "givens": {
               "m_1": {
-                "value": 0.5,
+                "value": 40,
                 "unit": "kg"
               },
-              "v_1i": {
-                "value": 2,
-                "unit": "m/s"
-              },
-              "v_1f": {
-                "value": -0.4,
+              "v_1": {
+                "value": 3,
                 "unit": "m/s"
               },
               "m_2": {
-                "value": 1.5,
+                "value": 10,
                 "unit": "kg"
               }
             },
-            "expr": "(m_1*v_1i - m_1*v_1f)/m_2",
+            "expr": "m_1*v_1/(m_1 + m_2)",
             "unit": "m/s"
           }
         }
@@ -629,7 +617,7 @@
         "4.1",
         "4.2"
       ],
-      "teacherNotes": "Make students name the system and say why it is isolated before they write an equation; free-response scoring usually rewards exactly that sentence. A useful contrast is to analyse the same collision twice, once with both carts as the system (momentum conserved) and once with a single cart (its momentum changes by the other cart's impulse). Set 4C includes pushes apart and centre-of-mass questions."
+      "teacherNotes": "Make students name the system and say why it is isolated before they write an equation; that sentence is the justification a written answer needs. A useful contrast is to analyse the same collision twice, once with both carts as the system (momentum conserved) and once with a single cart (its momentum changes by the other cart's impulse). Set 4C includes pushes apart and centre-of-mass questions."
     },
     {
       "topic": "4.4",
@@ -712,63 +700,67 @@
       ],
       "workedExamples": [
         {
-          "title": "Kinetic energy lost when carts stick",
-          "prompt": "A $2.0\\ \\text{kg}$ cart moving at $3.0\\ \\text{m/s}$ collides with a $1.0\\ \\text{kg}$ cart at rest on a level, low-friction track. The carts lock together. How much kinetic energy is transformed into other forms in the collision?",
+          "title": "Kinetic energy lost in a catch",
+          "prompt": "A $60\\ \\text{kg}$ skater glides east at $2.0\\ \\text{m/s}$ on smooth ice. A friend throws a $4.0\\ \\text{kg}$ medicine ball toward her, and it is moving west at $6.0\\ \\text{m/s}$ when she catches it and holds on. How much kinetic energy is transformed into other forms in the catch?",
           "steps": [
-            "The carts stick, so the collision is perfectly inelastic: momentum is conserved, kinetic energy is not.",
-            "Momentum before: $(2.0\\ \\text{kg})(3.0\\ \\text{m/s}) + 0 = 6.0\\ \\text{kg·m/s}$.",
-            "After, the carts move as one object of mass $3.0\\ \\text{kg}$: $(3.0\\ \\text{kg})\\,v_f = 6.0\\ \\text{kg·m/s}$, so $v_f = 2.0\\ \\text{m/s}$.",
-            "Kinetic energy before: $K_i = \\tfrac{1}{2}(2.0\\ \\text{kg})(3.0\\ \\text{m/s})^2 = 9.0\\ \\text{J}$. After: $K_f = \\tfrac{1}{2}(3.0\\ \\text{kg})(2.0\\ \\text{m/s})^2 = 6.0\\ \\text{J}$.",
-            "Subtract: $K_i - K_f = 9.0 - 6.0 = 3.0\\ \\text{J}$. One third of the kinetic energy has become thermal energy, sound and deformation, while all of the momentum is still there."
+            "Skater and ball move together after the catch, so this is a perfectly inelastic collision: momentum is conserved, kinetic energy is not. Take east as positive.",
+            "Momentum before: $(60\\ \\text{kg})(+2.0\\ \\text{m/s}) + (4.0\\ \\text{kg})(-6.0\\ \\text{m/s}) = 120 - 24 = +96\\ \\text{kg·m/s}$.",
+            "After, skater and ball move as one object of mass $64\\ \\text{kg}$: $(64\\ \\text{kg})\\,v_f = 96\\ \\text{kg·m/s}$, so $v_f = +1.5\\ \\text{m/s}$, still east.",
+            "Kinetic energy before: $K_i = \\tfrac{1}{2}(60)(2.0)^2 + \\tfrac{1}{2}(4.0)(6.0)^2 = 120 + 72 = 192\\ \\text{J}$. After: $K_f = \\tfrac{1}{2}(64\\ \\text{kg})(1.5\\ \\text{m/s})^2 = 72\\ \\text{J}$.",
+            "Subtract: $K_i - K_f = 192 - 72 = 120\\ \\text{J}$. Well over half the kinetic energy becomes thermal energy and deformation in her arms and the ball, because the two were moving toward each other; the momentum is all still there."
           ],
-          "answer": "$3.0\\ \\text{J}$ of kinetic energy is transformed (from $9.0\\ \\text{J}$ to $6.0\\ \\text{J}$)",
+          "answer": "$120\\ \\text{J}$ of kinetic energy is transformed (from $192\\ \\text{J}$ to $72\\ \\text{J}$)",
           "style": "stepped",
           "spec": {
             "givens": {
               "m_1": {
-                "value": 2,
+                "value": 60,
                 "unit": "kg"
               },
               "v_1": {
-                "value": 3,
+                "value": 2,
                 "unit": "m/s"
               },
               "m_2": {
-                "value": 1,
+                "value": 4,
                 "unit": "kg"
+              },
+              "v_2": {
+                "value": -6,
+                "unit": "m/s"
               }
             },
-            "expr": "0.5*m_1*v_1^2 - 0.5*(m_1 + m_2)*(m_1*v_1/(m_1 + m_2))^2",
+            "expr": "0.5*m_1*v_1^2 + 0.5*m_2*v_2^2 - 0.5*(m_1 + m_2)*((m_1*v_1 + m_2*v_2)/(m_1 + m_2))^2",
             "unit": "J"
           }
         },
         {
-          "title": "Is this collision elastic?",
-          "prompt": "Puck A, of mass $0.20\\ \\text{kg}$, slides at $5.0\\ \\text{m/s}$ on an air table and hits puck B, of mass $0.30\\ \\text{kg}$, which is at rest. Afterwards A moves backward at $1.0\\ \\text{m/s}$ and B moves forward at $4.0\\ \\text{m/s}$. Is the collision elastic? Justify your answer with a calculation.",
+          "title": "Is this head-on collision elastic?",
+          "prompt": "Two gliders approach each other head-on on a level air track. Glider A ($0.30\\ \\text{kg}$) moves to the right at $2.0\\ \\text{m/s}$ and glider B ($0.20\\ \\text{kg}$) moves to the left at $1.0\\ \\text{m/s}$. After they collide, A moves to the left at $0.40\\ \\text{m/s}$ and B moves to the right at $2.6\\ \\text{m/s}$. Check that momentum is conserved, then decide whether the collision is elastic. Justify your answer with a calculation.",
           "steps": [
-            "A collision is elastic if the total kinetic energy is the same before and after, so compare the two totals. Momentum cannot decide it; it is conserved either way (here $+1.0\\ \\text{kg·m/s}$ before and $-0.20 + 1.2 = +1.0\\ \\text{kg·m/s}$ after).",
-            "Before: $K_i = \\tfrac{1}{2}(0.20\\ \\text{kg})(5.0\\ \\text{m/s})^2 = 2.5\\ \\text{J}$.",
-            "After: $K_f = \\tfrac{1}{2}(0.20\\ \\text{kg})(1.0\\ \\text{m/s})^2 + \\tfrac{1}{2}(0.30\\ \\text{kg})(4.0\\ \\text{m/s})^2 = 0.10 + 2.4 = 2.5\\ \\text{J}$.",
-            "The totals are equal, so the collision is elastic. Direction does not enter: kinetic energy depends on speed squared, so A's backward motion still counts as positive."
+            "Take right as positive. Momentum before: $(0.30)(+2.0) + (0.20)(-1.0) = +0.40\\ \\text{kg·m/s}$. After: $(0.30)(-0.40) + (0.20)(+2.6) = -0.12 + 0.52 = +0.40\\ \\text{kg·m/s}$. Conserved, as it must be, but that cannot decide the question.",
+            "A collision is elastic if the total kinetic energy is the same before and after. Before: $K_i = \\tfrac{1}{2}(0.30)(2.0)^2 + \\tfrac{1}{2}(0.20)(1.0)^2 = 0.60 + 0.10 = 0.70\\ \\text{J}$.",
+            "After: $K_f = \\tfrac{1}{2}(0.30)(0.40)^2 + \\tfrac{1}{2}(0.20)(2.6)^2 = 0.024 + 0.676 = 0.70\\ \\text{J}$.",
+            "The totals are equal, so the collision is elastic. Signs do not enter the energy: each speed is squared, so motion to the left counts just as much as motion to the right."
           ],
-          "answer": "Yes, it is elastic: the total kinetic energy is $2.5\\ \\text{J}$ both before and after",
+          "answer": "Yes, it is elastic: the total kinetic energy is $0.70\\ \\text{J}$ both before and after",
           "style": "ap",
           "spec": {
             "givens": {
               "m_A": {
-                "value": 0.2,
-                "unit": "kg"
-              },
-              "v_Af": {
-                "value": 1,
-                "unit": "m/s"
-              },
-              "m_B": {
                 "value": 0.3,
                 "unit": "kg"
               },
+              "v_Af": {
+                "value": -0.4,
+                "unit": "m/s"
+              },
+              "m_B": {
+                "value": 0.2,
+                "unit": "kg"
+              },
               "v_Bf": {
-                "value": 4,
+                "value": 2.6,
                 "unit": "m/s"
               }
             },
