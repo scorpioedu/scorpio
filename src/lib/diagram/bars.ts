@@ -185,9 +185,10 @@ export function renderBars(
       const bx = x + 8 + i * (BAR_W + BAR_GAP);
       const cx = bx + BAR_W / 2;
       if (b.v === null) {
-        body += `<rect x="${f1(bx)}" y="${f1(y(Math.min(2 * step, top)))}" width="${BAR_W}" height="${f1(Math.min(2 * step, top) * u)}" fill="none" stroke="${ACCENT}" stroke-dasharray="4 3"/>`;
+        // The whole height of the chart, so the outline does not suggest a value on a numbered axis.
+        body += `<rect x="${f1(bx)}" y="${f1(y(top))}" width="${BAR_W}" height="${f1(top * u)}" fill="none" stroke="${ACCENT}" stroke-opacity=".6" stroke-dasharray="4 3"/>`;
         body += text(
-          [cx, y(Math.min(2 * step, top)) / 2 + y(0) / 2],
+          [cx, y(top) / 2 + y(0) / 2],
           "?",
           "middle",
           ` stroke="none"`,

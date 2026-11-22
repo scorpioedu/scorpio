@@ -423,7 +423,10 @@ export function checkSpecMatchesText(problem: DraftProblem): CheckOutcome {
   }
   const literals = specLiterals(spec);
   const extraneous = spec.extraneous ?? [];
-  const unused = numbers.filter(
+  // A diagram's source is drawing instructions (axis ticks, coordinates, sizes): a given may be read
+  // off it, but its numbers are not statements the spec has to account for.
+  const prose = textNumbers(problem.text.replace(/```dg[\s\S]*?```/g, " "));
+  const unused = prose.filter(
     (n) =>
       !n.label &&
       n.value !== 0 &&
