@@ -62,7 +62,7 @@ describe("set profiles", () => {
       expect(p.misconceptions.length).toBeGreaterThan(0);
       for (const m of p.misconceptions) expect(misconceptionTag(m.tag)).toBeTruthy();
     }
-    expect(typeSummary(setProfile(ID, "4A")!)).toBe("2 multiple choice, 3 numeric");
+    expect(typeSummary(setProfile(ID, "4A")!)).toMatch(/^\d+ multiple choice, \d+ numeric$/);
     expect(setProfile(ID, "zz")).toBeUndefined();
     expect(curriculumProfile("nope")).toEqual({});
   });
@@ -132,13 +132,16 @@ describe("set profiles", () => {
   });
 
   test("a set that is not assigned is shown as it is assigned by default; a copy by its own size", () => {
-    // Today every pool is five, so nothing reads differently.
-    const p = setProfile(ID, "4A")!;
-    expect(shownProfile(ID, "4A")).toEqual({ ...p, pool: 5, count: "5 problems" });
+    // A pool of five reads "5 problems"; a larger one names the default as part of it.
+    const whole = setProfile(ID, "4A")!;
+    const pool = whole.each.length;
+    const p = prefixProfile(whole, 5);
+    const count = pool > 5 ? `5 of ${pool} problems` : "5 problems";
+    expect(shownProfile(ID, "4A")).toEqual({ ...p, pool, count });
     expect(shownProfile(ID, "4A", 5)).toMatchObject({ problems: 5, minutes: p.minutes });
-    expect(shownProfile(ID, "4A", null)).toMatchObject({ count: "5 problems" });
+    expect(shownProfile(ID, "4A", null)).toMatchObject({ count });
     const three = shownProfile(ID, "4A", 3)!;
-    expect(three).toMatchObject({ problems: 3, pool: 5, count: "3 problems" });
+    expect(three).toMatchObject({ problems: 3, pool, count: "3 problems" });
     expect(three.minutes).toBeLessThan(p.minutes);
     expect(three.difficulty.easy + three.difficulty.medium + three.difficulty.hard).toBe(3);
     // A copy the teacher added a question to: its own count, the pool's figures.

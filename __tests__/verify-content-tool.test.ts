@@ -8,6 +8,7 @@ import path from "path";
 import { describeWithContent } from "../tests/helpers/course-content";
 import { contentHash, shuffledOptions, verificationIsCurrent } from "../src/lib/content/verify";
 import corpus from "../tests/fixtures/verifier-corpus.json";
+import { CURRICULA } from "../src/data/curricula";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const tool = require("../tools/verify-content.cjs");
@@ -657,7 +658,9 @@ describeWithContent("on the content files", () => {
     const failed = report.drafts.filter((d: { verdict: string }) => d.verdict === "failed");
     expect(failed.map((d: { id: string; failed: string[] }) => [d.id, d.failed])).toEqual([]);
     expect(run.status).toBe(0);
-    expect(report.summary.drafts).toBe(440);
+    expect(report.summary.drafts).toBe(
+      CURRICULA.flatMap((c) => c.sets.flatMap((s) => s.draftIds)).length,
+    );
     expect(new Set(report.drafts.map((d: { course: string }) => d.course))).toEqual(
       new Set(["ap-physics-1", "ap-physics-2", "ap-physics-c-mech"]),
     );
@@ -670,7 +673,7 @@ describeWithContent("on the content files", () => {
 
   test("--strict exits 1 while evidence is missing; a selection of nothing is an error", () => {
     const strict = node(["--set", "ap-physics-1:4A", "--strict"]);
-    expect(strict.stdout).toMatch(/5 drafts: /);
+    expect(strict.stdout).toMatch(/\b\d+ drafts: /);
     expect(strict.status).toBe(/ 0 incomplete/.test(strict.stdout) ? 0 : 1);
     const none = node(["--set", "ap-physics-1:nope"]);
     expect(none.status).toBe(1);
