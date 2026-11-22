@@ -269,66 +269,70 @@
       ],
       "workedExamples": [
         {
-          "title": "Pulling a wagon at an angle",
-          "prompt": "A child pulls a wagon $12\\ \\text{m}$ along a level path with a constant force of $30\\ \\text{N}$ on the handle. The handle makes an angle of $40^\\circ$ above the horizontal. How much work does the child's pull do on the wagon?",
+          "title": "Gravity's work on a ramp",
+          "prompt": "A $5.0\\ \\text{kg}$ box slides $3.0\\ \\text{m}$ down a straight ramp that is inclined at $25^\\circ$ to the horizontal. How much work does the gravitational force do on the box? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Find the angle between the force and the displacement. The displacement is horizontal and the pull is $40^\\circ$ above the horizontal, so $\\theta = 40^\\circ$.",
-            "Find the part of the pull along the motion: $F_{\\parallel} = F\\cos\\theta = (30\\ \\text{N})\\cos 40^\\circ = 23.0\\ \\text{N}$. The upward part of the pull is perpendicular to the motion and does no work.",
-            "Multiply by the displacement: $W = F_{\\parallel}d = (23.0\\ \\text{N})(12\\ \\text{m}) = 276\\ \\text{J}$, which is $2.8 \\times 10^2\\ \\text{J}$ to two significant figures.",
-            "The work is positive, so the pull transfers energy to the wagon. Gravity and the normal force are perpendicular to the displacement and do zero work."
+            "Find the angle between the force and the displacement. Gravity points straight down; the displacement points down the slope, $25^\\circ$ below the horizontal. The angle between them is $\\theta = 90^\\circ - 25^\\circ = 65^\\circ$, not $25^\\circ$.",
+            "The force is the weight: $F = mg = (5.0\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 49\\ \\text{N}$. Its part along the motion is $F\\cos\\theta = (49\\ \\text{N})\\cos 65^\\circ = 20.7\\ \\text{N}$; the part pressing into the ramp does no work.",
+            "Multiply by the displacement: $W = (20.7\\ \\text{N})(3.0\\ \\text{m}) = 62\\ \\text{J}$. Check: the box drops $(3.0\\ \\text{m})\\sin 25^\\circ = 1.27\\ \\text{m}$, and $mg$ times that drop is also $62\\ \\text{J}$.",
+            "The work is positive, so gravity transfers energy to the box. The normal force is perpendicular to the ramp and does zero work."
           ],
-          "answer": "$W = 2.8 \\times 10^2\\ \\text{J}$, positive: the pull adds energy to the wagon",
+          "answer": "$W = 62\\ \\text{J}$, positive: gravity adds energy to the box",
           "style": "stepped",
           "spec": {
             "givens": {
-              "F": {
-                "value": 30,
-                "unit": "N"
+              "m": {
+                "value": 5,
+                "unit": "kg"
               },
               "d": {
-                "value": 12,
+                "value": 3,
                 "unit": "m"
               },
               "theta": {
-                "value": 40,
+                "value": 25,
                 "unit": "deg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
               }
             },
-            "expr": "F*d*cos(theta)",
+            "expr": "m*g*d*sin(theta)",
             "unit": "J"
           }
         },
         {
           "title": "Work from a force–position graph",
-          "prompt": "A $2.0\\ \\text{kg}$ cart starts from rest on a level track with negligible friction. A horizontal force acts on it in the direction of its motion. As the graph shows, the force is a steady $6.0\\ \\text{N}$ from $x = 0$ to $x = 2.0\\ \\text{m}$ and then falls steadily to zero at $x = 5.0\\ \\text{m}$.\n\n```dg\nplot x=x[m] y=F[N] xr=0,5.5 yr=0,8\nseg 0,6 2,6 5,0\nxt 0 1 2 3 4 5\nyt 0 2 4 6 8\n```\n\nDetermine the work done on the cart by this force between $x = 0$ and $x = 5.0\\ \\text{m}$, and the cart's speed at $x = 5.0\\ \\text{m}$.",
+          "prompt": "A $0.40\\ \\text{kg}$ glider moves at $3.0\\ \\text{m/s}$ along a level, frictionless air track and reaches a magnetic bumper at $x = 0$. From there the bumper pushes back on it, against its motion. As the graph shows, the force (positive in the direction of motion) grows steadily from zero at $x = 0$ to $-4.0\\ \\text{N}$ at $x = 0.20\\ \\text{m}$.\n\n```dg\nplot x=x[m] y=F[N] xr=0,0.25 yr=-5,1\nseg 0,0 0.2,-4\nxt 0 0.05 0.1 0.15 0.2\nyt -4 -2 0\n```\n\nDetermine the work done on the glider by the bumper between $x = 0$ and $x = 0.20\\ \\text{m}$, and the glider's speed at $x = 0.20\\ \\text{m}$.",
           "steps": [
-            "The force is not constant, so the work is the area under the force–position graph. Split the area into a rectangle and a triangle.",
-            "Rectangle: $(6.0\\ \\text{N})(2.0\\ \\text{m}) = 12\\ \\text{J}$. Triangle: $\\tfrac{1}{2}(3.0\\ \\text{m})(6.0\\ \\text{N}) = 9.0\\ \\text{J}$. Total: $W = 12\\ \\text{J} + 9.0\\ \\text{J} = 21\\ \\text{J}$.",
-            "No other force does work (gravity and the normal force are perpendicular to the motion), so this is the net work and $\\Delta K = W_{\\text{net}} = 21\\ \\text{J}$.",
-            "The cart starts from rest, so $\\tfrac{1}{2}mv_f^2 = 21\\ \\text{J}$ and $v_f = \\sqrt{\\dfrac{2(21\\ \\text{J})}{2.0\\ \\text{kg}}} = 4.6\\ \\text{m/s}$."
+            "The force is not constant, so the work is the area between the force–position graph and the axis. Here that area is a triangle below the axis, so the work is negative.",
+            "$W = -\\tfrac{1}{2}(0.20\\ \\text{m})(4.0\\ \\text{N}) = -0.40\\ \\text{J}$.",
+            "No other force does work (gravity and the normal force are perpendicular to the motion), so this is the net work. The starting kinetic energy is $\\tfrac{1}{2}(0.40\\ \\text{kg})(3.0\\ \\text{m/s})^2 = 1.8\\ \\text{J}$, and $K_f = 1.8\\ \\text{J} - 0.40\\ \\text{J} = 1.4\\ \\text{J}$.",
+            "$v_f = \\sqrt{\\dfrac{2(1.4\\ \\text{J})}{0.40\\ \\text{kg}}} = 2.6\\ \\text{m/s}$. Slower, but still moving."
           ],
-          "answer": "$W = 21\\ \\text{J}$ and $v_f = 4.6\\ \\text{m/s}$",
+          "answer": "$W = -0.40\\ \\text{J}$ and $v_f = 2.6\\ \\text{m/s}$",
           "style": "ap",
           "spec": {
             "givens": {
               "F": {
-                "value": 6,
+                "value": 4,
                 "unit": "N"
               },
-              "x_1": {
-                "value": 2,
-                "unit": "m"
-              },
-              "x_2": {
-                "value": 5,
+              "x": {
+                "value": 0.2,
                 "unit": "m"
               },
               "m": {
-                "value": 2,
+                "value": 0.4,
                 "unit": "kg"
+              },
+              "v_0": {
+                "value": 3,
+                "unit": "m/s"
               }
             },
-            "expr": "sqrt(2*(F*x_1 + 0.5*F*(x_2 - x_1))/m)",
+            "expr": "sqrt(v_0^2 - 2*(0.5*F*x)/m)",
             "unit": "m/s"
           }
         }

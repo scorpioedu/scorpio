@@ -788,28 +788,53 @@
       "derivation": "**Field on the perpendicular bisector of a uniform rod.** A rod of length $L$ along the x-axis, centred on the origin, carries charge $Q$ uniformly, so $\\lambda = Q/L$. P is a distance $y$ up the bisector, as in the picture. The piece $dq = \\lambda\\,dx$ at position $x$ is a distance $r = \\sqrt{x^2 + y^2}$ from P and produces a field of size $dE = k\\lambda\\,dx/r^2$. The x-components cancel in pairs, so keep only $dE_y = dE\\cos\\theta$, where $\\theta$ is the angle between $r$ and the bisector and $\\cos\\theta = y/r$:\n\n$$\nE = \\int_{-L/2}^{L/2} \\frac{k\\lambda\\,y\\,dx}{(x^2 + y^2)^{3/2}}\n$$\n\nSubstitute $x = y\\tan\\theta$, so that $dx = y\\sec^2\\theta\\,d\\theta$ and $(x^2 + y^2)^{3/2} = y^3\\sec^3\\theta$:\n\n$$\nE = \\frac{k\\lambda}{y}\\int_{-\\theta_0}^{\\theta_0}\\cos\\theta\\,d\\theta = \\frac{2k\\lambda}{y}\\sin\\theta_0, \\qquad \\sin\\theta_0 = \\frac{L/2}{\\sqrt{y^2 + L^2/4}}\n$$\n\nwhere $\\theta_0$ is the angle to the rod's end. With $\\lambda = Q/L$,\n\n$$\nE = \\frac{kQ}{y\\sqrt{y^2 + L^2/4}}\n$$\n\nFar away ($y \\gg L$) this becomes $kQ/y^2$, a point charge. Close to a long rod ($y \\ll L$) it becomes $2k\\lambda/y$, which falls off only as $1/y$.",
       "workedExamples": [
         {
-          "title": "Field beyond the end of a rod",
-          "prompt": "A thin rod of length $0.20\\ \\text{m}$ lies along the x-axis from $x = 0$ to $x = 0.20\\ \\text{m}$ and carries $+6.0\\ \\text{nC}$ spread uniformly along it. Find the electric field at the point P on the axis, $0.10\\ \\text{m}$ beyond the rod's right-hand end. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "title": "Field level with the end of a long rod",
+          "prompt": "A very long, thin rod lies along the x-axis from $x = 0$ to $x \\to \\infty$ and carries $+2.0\\ \\text{nC}$ on each metre of its length. Find the electric field at the point P on the y-axis, $5.0\\ \\text{cm}$ from the rod's end. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
           "steps": [
-            "The linear charge density is $\\lambda = Q/L$, and a piece of length $dx$ at position $x$ carries $dq = \\lambda\\,dx$.",
-            "P is at $x = L + d$ with $d = 0.10\\ \\text{m}$, so the piece at $x$ is a distance $L + d - x$ from P. Its field at P is $dE = \\dfrac{k\\lambda\\,dx}{(L + d - x)^2}$, pointing in the $+x$ direction, away from the positive rod.",
-            "Every piece's field points the same way, so integrate directly: $E = \\displaystyle\\int_0^L \\frac{k\\lambda\\,dx}{(L + d - x)^2} = k\\lambda\\left[\\frac{1}{L + d - x}\\right]_0^L = k\\lambda\\left(\\frac{1}{d} - \\frac{1}{L + d}\\right)$.",
-            "Combine the fractions and use $\\lambda L = Q$: $E = \\dfrac{kQ}{d(L + d)}$.",
-            "Numbers: $E = \\dfrac{(8.99 \\times 10^9)(6.0 \\times 10^{-9})}{(0.10)(0.30)} = 1.8 \\times 10^3\\ \\text{N/C}$."
+            "The piece $dq = \\lambda\\,dx$ at position $x$ is a distance $r = \\sqrt{x^2 + y^2}$ from P, with $y = 0.050\\ \\text{m}$, and gives $dE = k\\lambda\\,dx/r^2$, pointing away from the piece.",
+            "No piece has a mirror-image partner across P, so both components survive: $dE_y = dE\\,(y/r)$ and $dE_x = -dE\\,(x/r)$.",
+            "$E_y = \\displaystyle\\int_0^\\infty \\frac{k\\lambda y\\,dx}{(x^2 + y^2)^{3/2}} = \\frac{k\\lambda}{y}$, and the same integral with $x$ in the numerator gives $|E_x| = k\\lambda/y$.",
+            "Each is $\\dfrac{(8.99 \\times 10^9)(2.0 \\times 10^{-9})}{0.050} = 3.6 \\times 10^2\\ \\text{N/C}$, so $E = \\sqrt{2}\\,k\\lambda/y = 5.1 \\times 10^2\\ \\text{N/C}$, at $45°$, up and away from the rod's end."
           ],
-          "answer": "$E = 1.8 \\times 10^3\\ \\text{N/C}$ in the $+x$ direction, away from the rod",
+          "answer": "$E = 5.1 \\times 10^2\\ \\text{N/C}$, at $45°$ between the $+y$ and $-x$ directions",
           "style": "stepped",
           "spec": {
             "givens": {
-              "Q": {
-                "value": 6,
-                "unit": "nC"
+              "lambda": {
+                "value": 2,
+                "unit": "nC/m"
               },
-              "L": {
-                "value": 0.2,
-                "unit": "m"
+              "y": {
+                "value": 5,
+                "unit": "cm"
               },
-              "d": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N·m^2/C^2"
+              }
+            },
+            "expr": "sqrt(2)*k*lambda/y",
+            "unit": "N/C"
+          }
+        },
+        {
+          "title": "A ring whose charge changes sign",
+          "prompt": "A thin ring of radius $0.10\\ \\text{m}$ is centred on the origin in the xy-plane. At angle $\\phi$ from the $+x$-axis its linear charge density is $\\lambda = \\lambda_0\\sin\\phi$, with $\\lambda_0 = 5.0\\ \\text{nC/m}$: positive on the upper half, negative on the lower. Derive an expression for the electric field at the centre and evaluate its magnitude. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "A piece at angle $\\phi$ carries $dq = \\lambda_0 R\\sin\\phi\\,d\\phi$ and is a distance $R$ from the centre, so $d\\vec{E} = -\\dfrac{k\\,dq}{R^2}(\\cos\\phi, \\sin\\phi)$. A negative $dq$ reverses the direction automatically.",
+            "$E_x = -\\dfrac{k\\lambda_0}{R}\\displaystyle\\int_0^{2\\pi}\\sin\\phi\\cos\\phi\\,d\\phi = 0$.",
+            "$E_y = -\\dfrac{k\\lambda_0}{R}\\displaystyle\\int_0^{2\\pi}\\sin^2\\phi\\,d\\phi = -\\dfrac{\\pi k\\lambda_0}{R}$. Opposite pieces add rather than cancel: the positive one above pushes down and the negative one below pulls down.",
+            "$E = \\dfrac{\\pi(8.99 \\times 10^9)(5.0 \\times 10^{-9})}{0.10} = 1.4 \\times 10^3\\ \\text{N/C}$, toward the negative half. The ring's net charge is zero, yet the field at its centre is not."
+          ],
+          "answer": "$E = \\pi k\\lambda_0/R = 1.4 \\times 10^3\\ \\text{N/C}$, pointing from the positive half toward the negative half",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "lambda_0": {
+                "value": 5,
+                "unit": "nC/m"
+              },
+              "R": {
                 "value": 0.1,
                 "unit": "m"
               },
@@ -818,38 +843,7 @@
                 "unit": "N·m^2/C^2"
               }
             },
-            "expr": "k*Q/(d*(L + d))",
-            "unit": "N/C"
-          }
-        },
-        {
-          "title": "Field at the centre of a semicircle",
-          "prompt": "A thin insulating rod is bent into a semicircle of radius $0.15\\ \\text{m}$ and carries a charge of $+4.0\\ \\text{nC}$ spread uniformly along it. Derive an expression for the electric field at the centre of curvature and evaluate its magnitude. Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
-          "steps": [
-            "The arc has length $\\pi R$, so $\\lambda = Q/(\\pi R)$. Label a piece by its angle $\\phi$ from the arc's line of symmetry; it has length $R\\,d\\phi$ and charge $dq = \\lambda R\\,d\\phi$.",
-            "Every piece is the same distance $R$ from the centre, so $dE = \\dfrac{k\\,dq}{R^2} = \\dfrac{k\\lambda\\,d\\phi}{R}$, directed away from the piece.",
-            "Pieces at $+\\phi$ and $-\\phi$ have equal and opposite components perpendicular to the line of symmetry. Only the component along it survives: $dE\\cos\\phi$.",
-            "$E = \\displaystyle\\int_{-\\pi/2}^{\\pi/2} \\frac{k\\lambda}{R}\\cos\\phi\\,d\\phi = \\frac{2k\\lambda}{R} = \\frac{2kQ}{\\pi R^2}$.",
-            "$E = \\dfrac{2(8.99 \\times 10^9)(4.0 \\times 10^{-9})}{\\pi(0.15)^2} = 1.0 \\times 10^3\\ \\text{N/C}$, directed along the line of symmetry, away from the middle of the arc."
-          ],
-          "answer": "$E = \\dfrac{2kQ}{\\pi R^2} = 1.0 \\times 10^3\\ \\text{N/C}$, pointing away from the midpoint of the arc",
-          "style": "ap",
-          "spec": {
-            "givens": {
-              "Q": {
-                "value": 4,
-                "unit": "nC"
-              },
-              "R": {
-                "value": 0.15,
-                "unit": "m"
-              },
-              "k": {
-                "value": 8990000000,
-                "unit": "N·m^2/C^2"
-              }
-            },
-            "expr": "2*k*Q/(pi*R^2)",
+            "expr": "pi*k*lambda_0/R",
             "unit": "N/C"
           }
         }
@@ -873,8 +867,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A ring carries charge $Q$ uniformly. What is the electric field at its centre, and why is it not $kQ/R^2$?",
-          "a": "Zero. Every piece has a partner directly opposite whose field at the centre is equal and opposite. $kQ/R^2$ would be the sum of magnitudes, not vectors."
+          "q": "Why can the pieces' fields be added as plain numbers for a point on a uniform rod's axis beyond its end, but not for a point on its perpendicular bisector?",
+          "a": "Beyond the end, every piece's field points the same way along the axis. On the bisector the fields point in different directions, so only their components along the bisector are integrated."
         },
         {
           "q": "For a point on the axis of a ring, a distance $x$ from its centre, each piece's field has size $k\\,dq/(x^2 + R^2)$. Why does the total come out as $kQx/(x^2 + R^2)^{3/2}$?",
@@ -1004,32 +998,28 @@
         },
         {
           "title": "Flux of a field that varies across the surface",
-          "prompt": "In a region of space the electric field points in the $+z$ direction and its magnitude grows with $x$: $E = cx$, where $c = 800\\ \\text{N/(C·m)}$. A flat rectangular surface lies in the xy-plane, covering $0 \\le x \\le 0.30\\ \\text{m}$ and $0 \\le y \\le 0.20\\ \\text{m}$, with its area vector in the $+z$ direction. Calculate the electric flux through the surface.",
+          "prompt": "In a region of space the electric field points in the $+z$ direction and its magnitude grows with the distance $r$ from the z-axis: $E = cr$, where $c = 600\\ \\text{N/(C·m)}$. A flat disk of radius $0.20\\ \\text{m}$ lies in the xy-plane, centred on the z-axis, with its area vector in the $+z$ direction. Calculate the electric flux through the disk.",
           "steps": [
-            "The field is perpendicular to the surface everywhere, so $\\cos\\theta = 1$, but its magnitude is not the same everywhere, so $EA$ cannot be used directly.",
-            "$E$ depends only on $x$. Cut the surface into strips parallel to the y-axis, each of width $dx$ and length $b = 0.20\\ \\text{m}$. Across one strip the field is constant, so $d\\Phi_E = E\\,dA = (cx)(b\\,dx)$.",
-            "Integrate over the strips, with $a = 0.30\\ \\text{m}$: $\\Phi_E = \\displaystyle\\int_0^a cbx\\,dx = \\tfrac{1}{2}cba^2$.",
-            "$\\Phi_E = \\tfrac{1}{2}(800)(0.20)(0.30)^2 = 7.2\\ \\text{N·m}^2/\\text{C}$.",
-            "Check: the field rises linearly from 0 to $240\\ \\text{N/C}$, so its average over the surface is $120\\ \\text{N/C}$, and $(120)(0.060) = 7.2\\ \\text{N·m}^2/\\text{C}$."
+            "The field is perpendicular to the disk everywhere, so $\\cos\\theta = 1$, but its magnitude is not the same everywhere, so $EA$ cannot be used directly.",
+            "$E$ depends only on $r$. Cut the disk into thin rings of radius $r$ and width $dr$, each of area $dA = 2\\pi r\\,dr$. Around one ring the field is constant, so $d\\Phi_E = (cr)(2\\pi r\\,dr)$.",
+            "Integrate out to the rim, $R = 0.20\\ \\text{m}$: $\\Phi_E = \\displaystyle\\int_0^R 2\\pi c r^2\\,dr = \\tfrac{2}{3}\\pi cR^3$.",
+            "$\\Phi_E = \\tfrac{2}{3}\\pi(600)(0.20)^3 = 10\\ \\text{N·m}^2/\\text{C}$.",
+            "Check: the field reaches $120\\ \\text{N/C}$ at the rim, but its average over the disk, weighted toward the rim, is $80\\ \\text{N/C}$: $(80)\\pi(0.20)^2 = 10\\ \\text{N·m}^2/\\text{C}$."
           ],
-          "answer": "$\\Phi_E = \\tfrac{1}{2}cba^2 = 7.2\\ \\text{N·m}^2/\\text{C}$",
+          "answer": "$\\Phi_E = \\tfrac{2}{3}\\pi cR^3 = 10\\ \\text{N·m}^2/\\text{C}$",
           "style": "ap",
           "spec": {
             "givens": {
               "c": {
-                "value": 800,
+                "value": 600,
                 "unit": "N/(C·m)"
               },
-              "a": {
-                "value": 0.3,
-                "unit": "m"
-              },
-              "b": {
+              "R": {
                 "value": 0.2,
                 "unit": "m"
               }
             },
-            "expr": "c*b*a^2/2",
+            "expr": "2*pi*c*R^3/3",
             "unit": "N·m^2/C"
           }
         }
@@ -1236,15 +1226,15 @@
           }
         },
         {
-          "title": "A sphere whose charge density is not uniform",
-          "prompt": "An insulating sphere of radius $0.10\\ \\text{m}$ has a volume charge density that increases with distance $r$ from its centre: $\\rho = \\beta r$, with $\\beta = 2.0\\ \\mu\\text{C/m}^4$. Derive an expression for the electric field inside the sphere and evaluate it at $r = 0.060\\ \\text{m}$. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)$.",
+          "title": "A cylinder whose charge density is not uniform",
+          "prompt": "A very long, solid insulating cylinder of radius $0.10\\ \\text{m}$ has volume charge density $\\rho = \\beta r$, where $r$ is the distance from its axis and $\\beta = 2.0\\ \\mu\\text{C/m}^4$. Derive an expression for the electric field inside, far from the ends, and evaluate it at $r = 0.060\\ \\text{m}$. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{C}^2/(\\text{N·m}^2)$.",
           "steps": [
-            "The density depends only on $r$, so the field is radial and depends only on $r$. Through a concentric Gaussian sphere of radius $r < 0.10\\ \\text{m}$ the flux is $E(4\\pi r^2)$.",
-            "The density is not uniform, so the enclosed charge must be integrated over thin shells of volume $4\\pi r'^2\\,dr'$: $q_{\\text{enc}} = \\displaystyle\\int_0^r (\\beta r')\\,4\\pi r'^2\\,dr' = \\pi\\beta r^4$.",
-            "Gauss's law: $E(4\\pi r^2) = \\dfrac{\\pi\\beta r^4}{\\varepsilon_0}$, so $E = \\dfrac{\\beta r^2}{4\\varepsilon_0}$, directed radially outward.",
-            "At $r = 0.060\\ \\text{m}$: $E = \\dfrac{(2.0 \\times 10^{-6})(0.060)^2}{4(8.85 \\times 10^{-12})} = 2.0 \\times 10^2\\ \\text{N/C}$."
+            "The density depends only on $r$, so the field is radial and depends only on $r$. A coaxial Gaussian cylinder of radius $r < 0.10\\ \\text{m}$ and length $L$ has flux $E(2\\pi rL)$, all through its curved side.",
+            "The density varies, so integrate the enclosed charge over thin shells of volume $2\\pi r'L\\,dr'$: $q_{\\text{enc}} = \\displaystyle\\int_0^r (\\beta r')\\,2\\pi r'L\\,dr' = \\tfrac{2}{3}\\pi\\beta Lr^3$.",
+            "Gauss's law: $E(2\\pi rL) = \\dfrac{2\\pi\\beta Lr^3}{3\\varepsilon_0}$, so $E = \\dfrac{\\beta r^2}{3\\varepsilon_0}$, radially outward.",
+            "At $r = 0.060\\ \\text{m}$: $E = \\dfrac{(2.0 \\times 10^{-6})(0.060)^2}{3(8.85 \\times 10^{-12})} = 2.7 \\times 10^2\\ \\text{N/C}$."
           ],
-          "answer": "$E = \\dfrac{\\beta r^2}{4\\varepsilon_0} = 2.0 \\times 10^2\\ \\text{N/C}$, radially outward",
+          "answer": "$E = \\dfrac{\\beta r^2}{3\\varepsilon_0} = 2.7 \\times 10^2\\ \\text{N/C}$, radially outward",
           "style": "ap",
           "spec": {
             "givens": {
@@ -1261,7 +1251,7 @@
                 "unit": "C^2/(N·m^2)"
               }
             },
-            "expr": "beta*r^2/(4*eps0)",
+            "expr": "beta*r^2/(3*eps0)",
             "unit": "N/C"
           }
         }

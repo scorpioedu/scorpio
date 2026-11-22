@@ -139,45 +139,45 @@
           }
         },
         {
-          "title": "Momentum and centre-of-mass velocity of a system",
-          "prompt": "Two pucks slide on a frictionless table. Puck A has mass $0.30\\ \\text{kg}$ and velocity $(4.0\\,\\hat{i} + 2.0\\,\\hat{j})\\ \\text{m/s}$. Puck B has mass $0.50\\ \\text{kg}$ and velocity $(-1.2\\,\\hat{i} + 3.6\\,\\hat{j})\\ \\text{m/s}$. Determine the momentum of the two-puck system, its magnitude, and the velocity of the system's centre of mass.",
+          "title": "One skater's velocity from the pair's centre of mass",
+          "prompt": "Two ice skaters glide across a rink without touching. Skater A ($55\\ \\text{kg}$) has velocity $(3.0\\,\\hat{i} - 1.0\\,\\hat{j})\\ \\text{m/s}$. A camera tracking the pair reports that their centre of mass moves at $(1.2\\,\\hat{i} + 0.50\\,\\hat{j})\\ \\text{m/s}$. Skater B has mass $75\\ \\text{kg}$. Determine skater B's velocity and speed.",
           "steps": [
-            "Momentum is a vector, so add components. $x$: $p_x = (0.30)(4.0) + (0.50)(-1.2) = 1.2 - 0.60 = 0.60\\ \\text{kg·m/s}$.",
-            "$y$: $p_y = (0.30)(2.0) + (0.50)(3.6) = 0.60 + 1.8 = 2.4\\ \\text{kg·m/s}$. So $\\vec{p}_{\\text{sys}} = (0.60\\,\\hat{i} + 2.4\\,\\hat{j})\\ \\text{kg·m/s}$.",
-            "Magnitude: $p_{\\text{sys}} = \\sqrt{(0.60)^2 + (2.4)^2} = 2.5\\ \\text{kg·m/s}$. (Adding the two pucks' individual magnitudes, $1.3 + 1.9$, would overstate it.)",
-            "The centre of mass moves with $\\vec{v}_{\\text{cm}} = \\vec{p}_{\\text{sys}}/M$, where $M = 0.80\\ \\text{kg}$: $\\vec{v}_{\\text{cm}} = (0.75\\,\\hat{i} + 3.0\\,\\hat{j})\\ \\text{m/s}$."
+            "The system's momentum is its total mass times the centre-of-mass velocity. With $M = 130\\ \\text{kg}$: $\\vec{p}_{\\text{sys}} = M\\vec{v}_{\\text{cm}} = (156\\,\\hat{i} + 65\\,\\hat{j})\\ \\text{kg·m/s}$.",
+            "Skater A carries $\\vec{p}_A = (55)(3.0\\,\\hat{i} - 1.0\\,\\hat{j}) = (165\\,\\hat{i} - 55\\,\\hat{j})\\ \\text{kg·m/s}$.",
+            "The system's momentum is the vector sum of the two, so subtract component by component: $\\vec{p}_B = \\vec{p}_{\\text{sys}} - \\vec{p}_A = (-9.0\\,\\hat{i} + 120\\,\\hat{j})\\ \\text{kg·m/s}$.",
+            "Divide by B's mass: $\\vec{v}_B = (-0.12\\,\\hat{i} + 1.6\\,\\hat{j})\\ \\text{m/s}$, a speed of $\\sqrt{(0.12)^2 + (1.6)^2} = 1.6\\ \\text{m/s}$. B moves almost straight along $+y$, which is how the pair's $y$-momentum can be positive while A heads toward $-y$."
           ],
-          "answer": "$\\vec{p}_{\\text{sys}} = (0.60\\,\\hat{i} + 2.4\\,\\hat{j})\\ \\text{kg·m/s}$, of magnitude $2.5\\ \\text{kg·m/s}$; $\\vec{v}_{\\text{cm}} = (0.75\\,\\hat{i} + 3.0\\,\\hat{j})\\ \\text{m/s}$",
+          "answer": "$\\vec{v}_B = (-0.12\\,\\hat{i} + 1.6\\,\\hat{j})\\ \\text{m/s}$, a speed of $1.6\\ \\text{m/s}$",
           "style": "ap",
           "spec": {
             "givens": {
               "m_A": {
-                "value": 0.3,
+                "value": 55,
+                "unit": "kg"
+              },
+              "m_B": {
+                "value": 75,
                 "unit": "kg"
               },
               "v_Ax": {
-                "value": 4,
+                "value": 3,
                 "unit": "m/s"
               },
               "v_Ay": {
-                "value": 2,
+                "value": -1,
                 "unit": "m/s"
               },
-              "m_B": {
+              "v_cmx": {
+                "value": 1.2,
+                "unit": "m/s"
+              },
+              "v_cmy": {
                 "value": 0.5,
-                "unit": "kg"
-              },
-              "v_Bx": {
-                "value": -1.2,
-                "unit": "m/s"
-              },
-              "v_By": {
-                "value": 3.6,
                 "unit": "m/s"
               }
             },
-            "expr": "sqrt((m_A*v_Ax + m_B*v_Bx)^2 + (m_A*v_Ay + m_B*v_By)^2)",
-            "unit": "kg·m/s"
+            "expr": "sqrt(((m_A + m_B)*v_cmx - m_A*v_Ax)^2 + ((m_A + m_B)*v_cmy - m_A*v_Ay)^2)/m_B",
+            "unit": "m/s"
           }
         }
       ],
@@ -378,34 +378,37 @@
           }
         },
         {
-          "title": "A growing force brings a block to rest",
-          "prompt": "A $2.0\\ \\text{kg}$ block slides in the $+x$ direction at $3.0\\ \\text{m/s}$ on a frictionless horizontal surface. Starting at $t = 0$, a horizontal force $F(t) = -bt$ acts on it, where $b = 4.0\\ \\text{N/s}$. Determine the time at which the block is momentarily at rest, and the average force on the block up to that time.",
+          "title": "A sideways thrust that fades",
+          "prompt": "A $150\\ \\text{kg}$ space probe drifts at $4.0\\ \\text{m/s}$ in the $+x$ direction. At $t = 0$ a side thruster fires in the $+y$ direction; as fuel pressure drops, the thrust fades as $F(t) = F_0 e^{-t/\\tau}$, with $F_0 = 60\\ \\text{N}$ and $\\tau = 4.0\\ \\text{s}$, until the fuel is gone. Determine the impulse the thruster delivers and the angle between the probe's final direction of motion and the $+x$ axis.",
           "steps": [
-            "The surface is frictionless, so $F(t)$ is the net force. It is not constant, so the constant-acceleration equations do not apply; integrate.",
-            "Impulse from $0$ to $t$: $J(t) = \\displaystyle\\int_0^t (-bt')\\,dt' = -\\tfrac{1}{2}bt^2$.",
-            "At rest, the change in momentum is $\\Delta p = 0 - mv_0 = -(2.0\\ \\text{kg})(3.0\\ \\text{m/s}) = -6.0\\ \\text{kg·m/s}$. Setting $J = \\Delta p$: $-\\tfrac{1}{2}bt^2 = -mv_0$.",
-            "$t = \\sqrt{\\dfrac{2mv_0}{b}} = \\sqrt{\\dfrac{2(6.0\\ \\text{kg·m/s})}{4.0\\ \\text{N/s}}} = \\sqrt{3.0\\ \\text{s}^2} = 1.7\\ \\text{s}$.",
-            "Average force: $F_{\\text{avg}} = \\dfrac{\\Delta p}{\\Delta t} = \\dfrac{-6.0\\ \\text{kg·m/s}}{1.73\\ \\text{s}} = -3.5\\ \\text{N}$. That is half the force acting at that final instant, $-bt = -6.9\\ \\text{N}$, as expected for a force that grows linearly from zero."
+            "The only force acts along $y$, so $p_x = (150)(4.0) = 600\\ \\text{kg·m/s}$ stays fixed.",
+            "The force varies, so integrate. Burning until the fuel is gone means letting $t \\to \\infty$: $J_y = \\displaystyle\\int_0^\\infty F_0 e^{-t/\\tau}\\,dt = F_0\\tau = (60\\ \\text{N})(4.0\\ \\text{s}) = 240\\ \\text{N·s}$.",
+            "Impulse equals change in momentum, and $p_y$ started at zero, so afterwards $p_y = 240\\ \\text{kg·m/s}$ and $v_y = 240/150 = 1.6\\ \\text{m/s}$.",
+            "The new velocity is $(4.0\\,\\hat{i} + 1.6\\,\\hat{j})\\ \\text{m/s}$, at $\\theta = \\tan^{-1}(1.6/4.0) = 21.8^\\circ$ from $+x$, with speed $4.3\\ \\text{m/s}$. The thrust never fully stops, yet its impulse is finite: the area under the fading curve converges."
           ],
-          "answer": "The block is at rest at $t = 1.7\\ \\text{s}$; the average force is $-3.5\\ \\text{N}$ (in the $-x$ direction)",
+          "answer": "$J = 2.4 \\times 10^2\\ \\text{N·s}$ along $+y$; the probe ends up moving at 21.8° from the $+x$ axis",
           "style": "ap",
           "spec": {
             "givens": {
               "m": {
-                "value": 2,
+                "value": 150,
                 "unit": "kg"
               },
               "v_0": {
-                "value": 3,
+                "value": 4,
                 "unit": "m/s"
               },
-              "b": {
+              "F_0": {
+                "value": 60,
+                "unit": "N"
+              },
+              "tau": {
                 "value": 4,
-                "unit": "N/s"
+                "unit": "s"
               }
             },
-            "expr": "sqrt(2*m*v_0/b)",
-            "unit": "s"
+            "expr": "atan(F_0*tau/(m*v_0))",
+            "unit": "°"
           }
         }
       ],
@@ -788,68 +791,72 @@
       "derivation": "**Elastic collision in one dimension.** Write conservation of momentum and of kinetic energy, and collect object 1 on the left and object 2 on the right:\n\n$$\nm_1(v_{1i} - v_{1f}) = m_2(v_{2f} - v_{2i})\n$$\n\n$$\nm_1(v_{1i}^2 - v_{1f}^2) = m_2(v_{2f}^2 - v_{2i}^2)\n$$\n\n(The factors of $\\tfrac{1}{2}$ have been cancelled.) Each side of the second equation is a difference of squares: $m_1(v_{1i} - v_{1f})(v_{1i} + v_{1f}) = m_2(v_{2f} - v_{2i})(v_{2f} + v_{2i})$. Divide it by the first equation, which is allowed because in a real collision the velocities change and neither side is zero:\n\n$$\nv_{1i} + v_{1f} = v_{2f} + v_{2i} \\quad\\Longrightarrow\\quad v_{1i} - v_{2i} = -(v_{1f} - v_{2f})\n$$\n\n**Target at rest.** Set $v_{2i} = 0$, so $v_{2f} = v_{1i} + v_{1f}$. Substitute into the momentum equation: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{1i} + m_2 v_{1f}$, which gives\n\n$$\nv_{1f} = \\frac{m_1 - m_2}{m_1 + m_2}\\,v_{1i}, \\qquad v_{2f} = v_{1i} + v_{1f} = \\frac{2m_1}{m_1 + m_2}\\,v_{1i}\n$$\n\nLimits: $m_1 = m_2$ gives $v_{1f} = 0$ and $v_{2f} = v_{1i}$; $m_2 \\gg m_1$ gives $v_{1f} \\approx -v_{1i}$; $m_1 \\gg m_2$ gives $v_{2f} \\approx 2v_{1i}$.",
       "workedExamples": [
         {
-          "title": "A head-on elastic collision",
-          "prompt": "A $0.20\\ \\text{kg}$ glider moving at $3.0\\ \\text{m/s}$ on an air track collides elastically, by way of a spring bumper, with a $0.40\\ \\text{kg}$ glider at rest. Find the velocity of each glider after the collision.",
+          "title": "An elastic collision from behind",
+          "prompt": "A $3.0\\ \\text{kg}$ cart moving at $4.0\\ \\text{m/s}$ along a level, frictionless track catches up with a $1.0\\ \\text{kg}$ cart moving the same way at $1.0\\ \\text{m/s}$. Magnetic bumpers make the collision elastic. Find the velocity of each cart after the collision.",
           "steps": [
-            "Take the first glider's direction as positive. Momentum is conserved: $(0.20)(3.0) = (0.20)\\,v_{1f} + (0.40)\\,v_{2f}$, so $0.60 = 0.20\\,v_{1f} + 0.40\\,v_{2f}$ (in $\\text{kg·m/s}$).",
-            "The collision is elastic, so the relative velocity reverses: $v_{1i} - v_{2i} = -(v_{1f} - v_{2f})$, which gives $3.0 = v_{2f} - v_{1f}$, so $v_{2f} = 3.0 + v_{1f}$.",
-            "Substitute: $0.60 = 0.20\\,v_{1f} + 0.40(3.0 + v_{1f}) = 1.2 + 0.60\\,v_{1f}$, so $v_{1f} = -1.0\\ \\text{m/s}$. The lighter glider bounces back.",
-            "Then $v_{2f} = 3.0 + (-1.0) = +2.0\\ \\text{m/s}$.",
-            "Check the kinetic energy. Before: $\\tfrac{1}{2}(0.20)(3.0)^2 = 0.90\\ \\text{J}$. After: $\\tfrac{1}{2}(0.20)(1.0)^2 + \\tfrac{1}{2}(0.40)(2.0)^2 = 0.10 + 0.80 = 0.90\\ \\text{J}$. Unchanged, as required."
+            "Take the direction of motion as positive. Momentum is conserved: $(3.0)(4.0) + (1.0)(1.0) = (3.0)\\,v_{1f} + (1.0)\\,v_{2f}$, so $13 = 3.0\\,v_{1f} + v_{2f}$ (in $\\text{kg·m/s}$).",
+            "The collision is elastic, so the relative velocity reverses: $v_{1i} - v_{2i} = -(v_{1f} - v_{2f})$, which gives $4.0 - 1.0 = v_{2f} - v_{1f}$, so $v_{2f} = 3.0 + v_{1f}$.",
+            "Substitute: $13 = 3.0\\,v_{1f} + 3.0 + v_{1f}$, so $v_{1f} = +2.5\\ \\text{m/s}$. The heavy cart slows but keeps going.",
+            "Then $v_{2f} = 3.0 + 2.5 = +5.5\\ \\text{m/s}$.",
+            "Check the kinetic energy. Before: $\\tfrac{1}{2}(3.0)(4.0)^2 + \\tfrac{1}{2}(1.0)(1.0)^2 = 24.5\\ \\text{J}$. After: $\\tfrac{1}{2}(3.0)(2.5)^2 + \\tfrac{1}{2}(1.0)(5.5)^2 = 9.375 + 15.125 = 24.5\\ \\text{J}$. Unchanged, as required."
           ],
-          "answer": "$v_{1f} = -1.0\\ \\text{m/s}$ (it rebounds) and $v_{2f} = +2.0\\ \\text{m/s}$",
+          "answer": "$v_{1f} = +2.5\\ \\text{m/s}$ and $v_{2f} = +5.5\\ \\text{m/s}$",
           "style": "stepped",
           "spec": {
             "givens": {
               "m_1": {
-                "value": 0.2,
+                "value": 3,
                 "unit": "kg"
               },
               "v_1i": {
-                "value": 3,
+                "value": 4,
                 "unit": "m/s"
               },
               "m_2": {
-                "value": 0.4,
+                "value": 1,
                 "unit": "kg"
+              },
+              "v_2i": {
+                "value": 1,
+                "unit": "m/s"
               }
             },
-            "expr": "2*m_1*v_1i/(m_1 + m_2)",
+            "expr": "(2*m_1*v_1i + (m_2 - m_1)*v_2i)/(m_1 + m_2)",
             "unit": "m/s"
           }
         },
         {
-          "title": "Two vehicles lock together at a junction",
-          "prompt": "A $1200\\ \\text{kg}$ car travelling east at $15\\ \\text{m/s}$ and a $2000\\ \\text{kg}$ van travelling north at $12\\ \\text{m/s}$ collide at a junction and lock together. Determine the speed and direction of the wreckage immediately after the collision, and the kinetic energy transformed into other forms.",
+          "title": "Working backwards from a tangle on the ice",
+          "prompt": "Two hockey players collide on frictionless ice and tangle together. Before the collision, player A ($80\\ \\text{kg}$) skated due east and player B ($100\\ \\text{kg}$) skated due north. Video shows the pair sliding off at $5.0\\ \\text{m/s}$, $30°$ north of east. Determine each player's speed before the collision, and the kinetic energy transformed.",
           "steps": [
-            "System: car and van. During the brief collision, friction with the road delivers negligible impulse, so momentum is conserved in each direction. Take east as $+x$ and north as $+y$.",
-            "$x$: only the car has $x$-momentum. $p_x = (1200\\ \\text{kg})(15\\ \\text{m/s}) = 1.8 \\times 10^4\\ \\text{kg·m/s}$. $y$: only the van. $p_y = (2000\\ \\text{kg})(12\\ \\text{m/s}) = 2.4 \\times 10^4\\ \\text{kg·m/s}$.",
-            "The wreckage has mass $3200\\ \\text{kg}$ and carries both components: $v_x = \\dfrac{1.8 \\times 10^4}{3200} = 5.63\\ \\text{m/s}$ and $v_y = \\dfrac{2.4 \\times 10^4}{3200} = 7.50\\ \\text{m/s}$.",
-            "Speed: $v_f = \\sqrt{5.63^2 + 7.50^2} = 9.4\\ \\text{m/s}$. Direction: $\\theta = \\tan^{-1}(7.50/5.63) = 53°$ north of east.",
-            "Kinetic energy before: $\\tfrac{1}{2}(1200)(15)^2 + \\tfrac{1}{2}(2000)(12)^2 = 1.35 \\times 10^5 + 1.44 \\times 10^5 = 2.79 \\times 10^5\\ \\text{J}$. After: $\\tfrac{1}{2}(3200)(9.375)^2 = 1.41 \\times 10^5\\ \\text{J}$. About $1.4 \\times 10^5\\ \\text{J}$, half of the total, was transformed."
+            "With no horizontal external force, momentum is conserved in each direction. Take east as $+x$ and north as $+y$.",
+            "After: the pair has mass $180\\ \\text{kg}$, so $p_x = (180)(5.0)\\cos 30° = 779\\ \\text{kg·m/s}$ and $p_y = (180)(5.0)\\sin 30° = 450\\ \\text{kg·m/s}$.",
+            "Before, only A had $x$-momentum and only B had $y$-momentum. So $v_A = 779/80 = 9.7\\ \\text{m/s}$ and $v_B = 450/100 = 4.5\\ \\text{m/s}$.",
+            "Kinetic energy before: $\\tfrac{1}{2}(80)(9.74)^2 + \\tfrac{1}{2}(100)(4.5)^2 = 3797 + 1013 = 4810\\ \\text{J}$. After: $\\tfrac{1}{2}(180)(5.0)^2 = 2250\\ \\text{J}$.",
+            "About $2.6 \\times 10^3\\ \\text{J}$, just over half, became thermal energy and deformation."
           ],
-          "answer": "$v_f = 9.4\\ \\text{m/s}$ at $53°$ north of east; about $1.4 \\times 10^5\\ \\text{J}$ of kinetic energy is transformed",
+          "answer": "$v_A = 9.7\\ \\text{m/s}$ and $v_B = 4.5\\ \\text{m/s}$; about $2.6 \\times 10^3\\ \\text{J}$ of kinetic energy is transformed",
           "style": "ap",
           "spec": {
             "givens": {
-              "m_1": {
-                "value": 1200,
+              "m_A": {
+                "value": 80,
                 "unit": "kg"
               },
-              "v_1": {
-                "value": 15,
-                "unit": "m/s"
-              },
-              "m_2": {
-                "value": 2000,
+              "m_B": {
+                "value": 100,
                 "unit": "kg"
               },
-              "v_2": {
-                "value": 12,
+              "v_f": {
+                "value": 5,
                 "unit": "m/s"
+              },
+              "theta": {
+                "value": 30,
+                "unit": "deg"
               }
             },
-            "expr": "sqrt((m_1*v_1)^2 + (m_2*v_2)^2)/(m_1 + m_2)",
+            "expr": "(m_A + m_B)*v_f*cos(theta)/m_A",
             "unit": "m/s"
           }
         }

@@ -765,29 +765,33 @@
           }
         },
         {
-          "title": "A disc that is denser toward its rim",
-          "prompt": "A thin flat disc of radius $R = 0.20\\ \\text{m}$ has a mass per unit area that increases with distance $r$ from the centre: $\\sigma(r) = cr$, with $c = 150\\ \\text{kg/m}^3$. Derive an expression for its rotational inertia about the central axis perpendicular to its face, evaluate it, and compare it with a uniform disc of the same mass and radius.",
+          "title": "A flywheel shaped like a washer",
+          "prompt": "A flywheel is a uniform flat annulus (a disc with a concentric hole) of mass $M = 4.0\\ \\text{kg}$, inner radius $R_1 = 0.10\\ \\text{m}$ and outer radius $R_2 = 0.25\\ \\text{m}$. Derive an expression for its rotational inertia about the central axis perpendicular to its face, evaluate it, and compare it with a solid uniform disc of the same mass and outer radius.",
           "steps": [
-            "Slice the disc into thin rings of radius $r$ and width $dr$. Every part of a ring is the same distance from the axis. Its area is $2\\pi r\\,dr$, so its mass is $dm = \\sigma\\,dA = (cr)(2\\pi r\\,dr) = 2\\pi c\\,r^2\\,dr$.",
-            "Rotational inertia: $I = \\displaystyle\\int r^2\\,dm = 2\\pi c\\int_0^R r^4\\,dr = \\tfrac{2}{5}\\pi cR^5$.",
-            "Evaluate: $I = \\tfrac{2}{5}\\pi(150\\ \\text{kg/m}^3)(0.20\\ \\text{m})^5 = 0.060\\ \\text{kg·m}^2$.",
-            "To compare, find the mass the same way: $M = \\displaystyle\\int dm = 2\\pi c\\int_0^R r^2\\,dr = \\tfrac{2}{3}\\pi cR^3 = 2.5\\ \\text{kg}$. Dividing gives $I = \\tfrac{3}{5}MR^2$.",
-            "A uniform disc has $I = \\tfrac{1}{2}MR^2$. Here the coefficient is larger, $\\tfrac{3}{5}$, because more of the mass lies near the rim, where $r^2$ is greatest."
+            "Slice the annulus into thin rings of radius $r$ and width $dr$, from $R_1$ to $R_2$. Every part of a ring is the same distance from the axis. The mass per unit area is uniform, $\\sigma = M/[\\pi(R_2^2 - R_1^2)]$, so a ring has $dm = \\sigma(2\\pi r\\,dr)$.",
+            "Rotational inertia: $I = \\displaystyle\\int r^2\\,dm = 2\\pi\\sigma\\int_{R_1}^{R_2} r^3\\,dr = \\tfrac{1}{2}\\pi\\sigma(R_2^4 - R_1^4)$.",
+            "Factor $R_2^4 - R_1^4 = (R_2^2 - R_1^2)(R_2^2 + R_1^2)$ and substitute $\\sigma$: $I = \\tfrac{1}{2}M(R_1^2 + R_2^2)$.",
+            "Evaluate: $I = \\tfrac{1}{2}(4.0\\ \\text{kg})\\big[(0.10\\ \\text{m})^2 + (0.25\\ \\text{m})^2\\big] = 0.145\\ \\text{kg·m}^2$.",
+            "A solid disc of the same mass and radius has $\\tfrac{1}{2}MR_2^2 = 0.125\\ \\text{kg·m}^2$. Moving the mass outward raises $I$. The limits check out: $R_1 = 0$ gives the solid disc, and $R_1 \\to R_2$ gives a hoop, $MR^2$."
           ],
-          "answer": "$I = \\tfrac{2}{5}\\pi cR^5 = 0.060\\ \\text{kg·m}^2$, which equals $\\tfrac{3}{5}MR^2$: larger than the uniform disc's $\\tfrac{1}{2}MR^2$",
+          "answer": "$I = \\tfrac{1}{2}M(R_1^2 + R_2^2) = 0.145\\ \\text{kg·m}^2$, larger than the solid disc's $0.125\\ \\text{kg·m}^2$",
           "style": "ap",
           "spec": {
             "givens": {
-              "c": {
-                "value": 150,
-                "unit": "kg/m^3"
+              "M": {
+                "value": 4,
+                "unit": "kg"
               },
-              "R": {
-                "value": 0.2,
+              "R_1": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "R_2": {
+                "value": 0.25,
                 "unit": "m"
               }
             },
-            "expr": "2*pi*c*R^5/5",
+            "expr": "M*(R_1^2 + R_2^2)/2",
             "unit": "kg·m^2"
           }
         }
@@ -815,8 +819,8 @@
           "a": "Midpoint: $2(1.0\\ \\text{kg})(1.0\\ \\text{m})^2 = 2.0\\ \\text{kg·m}^2$. Through one mass: $(1.0\\ \\text{kg})(2.0\\ \\text{m})^2 = 4.0\\ \\text{kg·m}^2$."
         },
         {
-          "q": "A solid disc has $I_{\\text{cm}} = \\tfrac{1}{2}MR^2$ about its central axis. What is its rotational inertia about a parallel axis through a point on its rim?",
-          "a": "$I = \\tfrac{1}{2}MR^2 + MR^2 = \\tfrac{3}{2}MR^2$, since the axes are a distance $R$ apart."
+          "q": "A solid sphere has $I_{\\text{cm}} = \\tfrac{2}{5}MR^2$ about an axis through its centre. What is its rotational inertia about a parallel axis that just touches its surface?",
+          "a": "$I = \\tfrac{2}{5}MR^2 + MR^2 = \\tfrac{7}{5}MR^2$, since the axes are a distance $R$ apart."
         },
         {
           "q": "In $I = \\int r^2\\,dm$ for a thin uniform rod of mass $M$ and length $L$ along the $x$-axis, what is $dm$, and why can $r^2$ not be taken outside the integral?",

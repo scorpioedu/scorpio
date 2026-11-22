@@ -66,32 +66,32 @@
    "derivation": "**Flux through a rectangular loop beside a long straight wire.** The wire carries current $I$. The loop lies in the same plane as the wire, with its near side a distance $a$ from the wire, its far side at $a + w$, and length $\\ell$ parallel to the wire.\n\n```dg\nscene\nrope 0,-0.9 0,4\nf 0,3 up 0.8 \"I\"\nrod 1.5,0.5 4,0.5\nrod 4,0.5 4,3\nrod 4,3 1.5,3\nrod 1.5,3 1.5,0.5\ndim 0,-0.4 1.5,-0.4 \"a\"\ndim 1.5,-0.4 4,-0.4 \"w\"\ndim 4.7,0.5 4.7,3 \"ℓ\"\ndash 2.6,0.5 2.6,3\ndash 2.9,0.5 2.9,3\ntext 2.75,3.3 \"dr\"\ndim 0,3.8 2.6,3.8 \"r\"\n```\n\nThe wire's field, $B = \\dfrac{\\mu_0 I}{2\\pi r}$, points straight through the loop, so $\\vec{B}\\cdot d\\vec{A} = B\\,dA$. But it weakens with distance $r$, so it cannot be taken outside the integral.\n\nUse strips parallel to the wire: a strip at distance $r$ with width $dr$ has area $dA = \\ell\\,dr$, and the field is the same all along it. Its flux is\n\n$$d\\Phi_B = \\frac{\\mu_0 I}{2\\pi r}\\,\\ell\\,dr$$\n\nAdd the strips from the near side to the far side:\n\n$$\\Phi_B = \\frac{\\mu_0 I \\ell}{2\\pi}\\int_a^{a+w}\\frac{dr}{r} = \\frac{\\mu_0 I \\ell}{2\\pi}\\ln\\!\\left(\\frac{a+w}{a}\\right)$$\n\nCheck: for a narrow loop, $w \\ll a$, the logarithm is approximately $w/a$ and the flux becomes $\\dfrac{\\mu_0 I}{2\\pi a}\\,\\ell w$, the field at distance $a$ times the area, as it should.",
    "workedExamples": [
     {
-     "title": "Flux through a tilted loop",
-     "prompt": "A flat circular loop of radius $6.0\\ \\text{cm}$ sits in a uniform magnetic field of $0.25\\ \\text{T}$. The plane of the loop makes an angle of $30°$ with the field. What is the magnetic flux through the loop?",
+     "title": "Flux through a loop round a solenoid",
+     "prompt": "A long solenoid of radius $2.0\\ \\text{cm}$ has $1200$ turns per metre and carries $3.0\\ \\text{A}$. A circular wire loop of radius $5.0\\ \\text{cm}$ encircles it near its middle, with the loop's plane perpendicular to the solenoid's axis. What is the magnetic flux through the loop?",
      "steps": [
-      "Find the angle the equation wants. The $30°$ is between the field and the *plane* of the loop. The area vector is perpendicular to the plane, so the angle between $\\vec{B}$ and $\\vec{A}$ is $\\theta = 90° - 30° = 60°$.",
-      "Find the area: $A = \\pi r^2 = \\pi(0.060\\ \\text{m})^2 = 1.13 \\times 10^{-2}\\ \\text{m}^2$.",
-      "The field is uniform and the loop is flat, so $\\Phi_B = BA\\cos\\theta = (0.25\\ \\text{T})(1.13 \\times 10^{-2}\\ \\text{m}^2)\\cos 60°$.",
-      "$\\Phi_B = 1.4 \\times 10^{-3}\\ \\text{Wb}$, half of $BA$."
+      "Find the field. Inside a long solenoid $B = \\mu_0 nI = (4\\pi \\times 10^{-7}\\ \\text{T·m/A})(1200\\ \\text{m}^{-1})(3.0\\ \\text{A}) = 4.52 \\times 10^{-3}\\ \\text{T}$, along the axis. Outside it the field is negligible.",
+      "Find the angle. The loop is perpendicular to the axis, so its area vector is parallel to $\\vec{B}$ and $\\cos\\theta = 1$.",
+      "Find the area the field actually crosses. Only the solenoid's own cross-section carries field, so it is $\\pi(0.020\\ \\text{m})^2 = 1.26 \\times 10^{-3}\\ \\text{m}^2$, not the loop's $\\pi(0.050\\ \\text{m})^2$.",
+      "$\\Phi_B = BA = (4.52 \\times 10^{-3}\\ \\text{T})(1.26 \\times 10^{-3}\\ \\text{m}^2) = 5.7 \\times 10^{-6}\\ \\text{Wb}$. A larger loop round the same solenoid would have the same flux."
      ],
-     "answer": "$\\Phi_B = 1.4 \\times 10^{-3}\\ \\text{Wb}$",
+     "answer": "$\\Phi_B = 5.7 \\times 10^{-6}\\ \\text{Wb}$",
      "style": "stepped",
      "spec": {
       "givens": {
-       "B": {
-        "value": 0.25,
-        "unit": "T"
+       "n": {
+        "value": 1200,
+        "unit": "m^-1"
        },
-       "r": {
-        "value": 6,
+       "I": {
+        "value": 3,
+        "unit": "A"
+       },
+       "r_s": {
+        "value": 2,
         "unit": "cm"
-       },
-       "tilt": {
-        "value": 30,
-        "unit": "deg"
        }
       },
-      "expr": "B*pi*r^2*sin(tilt)",
+      "expr": "mu0*n*I*pi*r_s^2",
       "unit": "Wb"
      }
     },
@@ -282,37 +282,37 @@
    "derivation": "**The emf of a rotating coil.** A coil of $N$ turns and area $A$ turns at constant angular speed $\\omega$ about an axis perpendicular to a uniform field $B$. It faces the field at $t = 0$, so $\\theta = \\omega t$.\n\nThe flux through one turn is\n\n$$\\Phi_B = BA\\cos\\omega t$$\n\nOnly the angle changes. Apply Faraday's law, using the chain rule on $\\cos\\omega t$:\n\n$$\\mathcal{E} = -N\\frac{d\\Phi_B}{dt} = -NBA\\,\\frac{d}{dt}\\cos\\omega t = NBA\\omega\\sin\\omega t$$\n\nThe peak emf is $NBA\\omega$, so spinning the coil faster raises the emf as well as the frequency. And the emf is a sine where the flux is a cosine: facing the field, the flux is at its maximum but momentarily not changing, so the emf is zero; a quarter turn later the flux is zero but changing fastest, and the emf peaks.",
    "workedExamples": [
     {
-     "title": "Emf from a field that grows with time",
-     "prompt": "A coil of $50$ turns, each of area $4.0 \\times 10^{-3}\\ \\text{m}^2$, is held facing a magnetic field that grows as $B = ct^2$, with $c = 0.30\\ \\text{T/s}^2$. What is the magnitude of the emf induced in the coil at $t = 2.0\\ \\text{s}$?",
+     "title": "Emf from an alternating field",
+     "prompt": "A search coil of $200$ turns, each of area $2.0 \\times 10^{-4}\\ \\text{m}^2$, faces a field that alternates as $B = B_0\\sin(2\\pi ft)$, with $B_0 = 5.0 \\times 10^{-4}\\ \\text{T}$ and $f = 60\\ \\text{Hz}$. What is the largest emf induced in the coil, and when does it occur?",
      "steps": [
-      "Write the flux through one turn as a function of time. The coil faces the field, so $\\theta = 0$ and $\\Phi_B = BA = cAt^2$.",
-      "The flux is not changing at a steady rate, so differentiate: $\\dfrac{d\\Phi_B}{dt} = 2cAt$.",
-      "Faraday's law gives the magnitude $|\\mathcal{E}| = N\\,\\dfrac{d\\Phi_B}{dt} = 2NcAt$.",
-      "At $t = 2.0\\ \\text{s}$: $|\\mathcal{E}| = 2(50)(0.30\\ \\text{T/s}^2)(4.0 \\times 10^{-3}\\ \\text{m}^2)(2.0\\ \\text{s}) = 0.24\\ \\text{V}$. Dividing the total change in flux by $2.0\\ \\text{s}$ would give the average emf, only half of this."
+      "The coil faces the field, so the flux through one turn is $\\Phi_B = BA = B_0A\\sin(2\\pi ft)$.",
+      "Faraday's law: $|\\mathcal{E}| = N\\,\\dfrac{d\\Phi_B}{dt} = 2\\pi fNB_0A\\,|\\cos(2\\pi ft)|$, largest when the cosine is $\\pm 1$.",
+      "$|\\mathcal{E}|_{\\max} = 2\\pi(60\\ \\text{Hz})(200)(5.0 \\times 10^{-4}\\ \\text{T})(2.0 \\times 10^{-4}\\ \\text{m}^2) = 7.5 \\times 10^{-3}\\ \\text{V}$, each time $B$ passes through zero, where it changes fastest.",
+      "Dividing the rise from $0$ to $B_0$ by the quarter period gives only the average emf over that quarter, $4.8\\ \\text{mV}$."
      ],
-     "answer": "$|\\mathcal{E}| = 0.24\\ \\text{V}$",
+     "answer": "$|\\mathcal{E}|_{\\max} = 7.5\\ \\text{mV}$, each time the field passes through zero",
      "style": "stepped",
      "spec": {
       "givens": {
        "N": {
-        "value": 50,
+        "value": 200,
         "unit": ""
        },
        "A": {
-        "value": 0.004,
+        "value": 0.0002,
         "unit": "m^2"
        },
-       "c": {
-        "value": 0.3,
-        "unit": "T/s^2"
+       "B_0": {
+        "value": 0.0005,
+        "unit": "T"
        },
-       "t": {
-        "value": 2,
-        "unit": "s"
+       "f": {
+        "value": 60,
+        "unit": "Hz"
        }
       },
-      "expr": "2*N*c*A*t",
-      "unit": "V"
+      "expr": "2*pi*f*N*B_0*A",
+      "unit": "mV"
      }
     },
     {
@@ -762,36 +762,36 @@
    "derivation": "**Inductance of a long solenoid.** A solenoid has $N$ turns, length $\\ell$ and cross-sectional area $A$, and carries current $I$. From Ampère's law (unit 12) the field inside is uniform and equal to $\\mu_0$ times the turns per unit length times the current:\n\n$$B = \\mu_0\\frac{N}{\\ell}I$$\n\nThe field is perpendicular to each turn, so the flux through one turn is $\\Phi_B = BA$, and the flux linked by all $N$ turns is\n\n$$N\\Phi_B = N\\left(\\mu_0\\frac{N}{\\ell}I\\right)A = \\frac{\\mu_0N^2A}{\\ell}\\,I$$\n\nInductance is defined by $N\\Phi_B = LI$, so the factor multiplying $I$ is the inductance:\n\n$$L = \\frac{\\mu_0N^2A}{\\ell}$$\n\nThe current has cancelled: $L$ is a property of the coil, as capacitance is a property of the plates.\n\n**Energy stored.** To raise the current, an external source must push charge through the inductor against its back emf, of magnitude $L\\,dI/dt$. The power delivered is current times that potential difference:\n\n$$P = \\frac{dU_L}{dt} = I\\,L\\frac{dI}{dt}$$\n\nMultiply by $dt$ and integrate as the current rises from zero to its final value $I$:\n\n$$U_L = \\int_0^{I} L\\,I'\\,dI' = \\tfrac{1}{2}LI^2$$",
    "workedExamples": [
     {
-     "title": "Inductance of a solenoid",
-     "prompt": "A solenoid is made by winding $400$ turns of wire evenly along a hollow tube $0.20\\ \\text{m}$ long with radius $1.5\\ \\text{cm}$. What is its inductance? Use $\\mu_0 = 1.26 \\times 10^{-6}\\ \\text{T·m/A}$.",
+     "title": "Inductance of a toroid",
+     "prompt": "A toroid has $500$ turns wound on a non-magnetic core of rectangular cross-section, with inner radius $2.0\\ \\text{cm}$, outer radius $3.0\\ \\text{cm}$ and height $1.0\\ \\text{cm}$. What is its inductance?",
      "steps": [
-      "The solenoid is long compared with its radius, so use $L = \\dfrac{\\mu_0N^2A}{\\ell}$.",
-      "Find the cross-sectional area: $A = \\pi r^2 = \\pi(0.015\\ \\text{m})^2 = 7.07 \\times 10^{-4}\\ \\text{m}^2$.",
-      "Substitute: $L = \\dfrac{(1.26 \\times 10^{-6}\\ \\text{T·m/A})(400)^2(7.07 \\times 10^{-4}\\ \\text{m}^2)}{0.20\\ \\text{m}}$.",
-      "$L = 7.1 \\times 10^{-4}\\ \\text{H} = 0.71\\ \\text{mH}$. Air-filled coils have small inductances, which is why practical inductors use many turns or iron cores."
+      "Find the field. Ampère's law round a circle of radius $r$ inside the core gives $B(2\\pi r) = \\mu_0NI$, so $B = \\dfrac{\\mu_0NI}{2\\pi r}$.",
+      "Find the flux through one turn. $B$ varies across the cross-section, so cut it into strips of height $h$ and width $dr$: $\\Phi_B = \\displaystyle\\int_a^b \\frac{\\mu_0NI}{2\\pi r}\\,h\\,dr = \\frac{\\mu_0NIh}{2\\pi}\\ln\\frac{b}{a}$.",
+      "The flux linked by all $N$ turns is $N\\Phi_B = LI$, so $L = \\dfrac{\\mu_0N^2h}{2\\pi}\\ln\\dfrac{b}{a}$.",
+      "$L = \\dfrac{(4\\pi \\times 10^{-7}\\ \\text{T·m/A})(500)^2(0.010\\ \\text{m})}{2\\pi}\\ln 1.5 = (5.0 \\times 10^{-4}\\ \\text{H})(0.405) = 2.0 \\times 10^{-4}\\ \\text{H} = 0.20\\ \\text{mH}$."
      ],
-     "answer": "$L = 0.71\\ \\text{mH}$",
+     "answer": "$L = 0.20\\ \\text{mH}$",
      "style": "stepped",
      "spec": {
       "givens": {
        "N": {
-        "value": 400,
+        "value": 500,
         "unit": ""
        },
-       "len": {
-        "value": 0.2,
-        "unit": "m"
-       },
-       "r": {
-        "value": 1.5,
+       "a": {
+        "value": 2,
         "unit": "cm"
        },
-       "mu0": {
-        "value": 0.00000126,
-        "unit": "T m/A"
+       "b": {
+        "value": 3,
+        "unit": "cm"
+       },
+       "h": {
+        "value": 1,
+        "unit": "cm"
        }
       },
-      "expr": "mu0*N^2*pi*r^2/len",
+      "expr": "mu0*N^2*h*ln(b/a)/(2*pi)",
       "unit": "mH"
      }
     },
@@ -988,37 +988,36 @@
    "derivation": "**Growth of current in a series LR circuit.** The switch closes at $t = 0$ with no current flowing. Around the loop in the direction of the current, the potential rises by $\\mathcal{E}$ in the battery, drops by $IR$ in the resistor and drops by $L\\,dI/dt$ in the inductor:\n\n$$\\mathcal{E} - IR - L\\frac{dI}{dt} = 0 \\quad\\Longrightarrow\\quad \\frac{dI}{dt} = \\frac{R}{L}\\left(\\frac{\\mathcal{E}}{R} - I\\right)$$\n\nThe current grows at a rate proportional to its distance from $\\mathcal{E}/R$. Separate the variables and integrate from $I = 0$ at $t = 0$:\n\n$$\\int_0^{I}\\frac{dI'}{\\mathcal{E}/R - I'} = \\frac{R}{L}\\int_0^{t}dt' \\quad\\Longrightarrow\\quad -\\ln\\!\\left(\\frac{\\mathcal{E}/R - I}{\\mathcal{E}/R}\\right) = \\frac{R}{L}\\,t$$\n\nTake the exponential of both sides and solve for $I$:\n\n$$I(t) = \\frac{\\mathcal{E}}{R}\\left(1 - e^{-Rt/L}\\right) = \\frac{\\mathcal{E}}{R}\\left(1 - e^{-t/\\tau}\\right), \\qquad \\tau = \\frac{L}{R}$$\n\nCheck the ends: the bracket is zero at $t = 0$ and goes to one as $t \\to \\infty$. Differentiating gives the inductor's voltage, $L\\,dI/dt = \\mathcal{E}e^{-t/\\tau}$, which starts at the full emf and decays to zero.\n\n**Decay.** With the battery gone the loop rule is $-IR - L\\,dI/dt = 0$, so $dI/dt = -(R/L)I$. Separating variables, as for the coasting rod of topic 13.3, gives $I(t) = I_0e^{-t/\\tau}$.",
    "workedExamples": [
     {
-     "title": "Current partway through the rise",
-     "prompt": "A $9.0\\ \\text{V}$ battery, a $6.0\\ \\Omega$ resistor and a $0.30\\ \\text{H}$ inductor are connected in series with an open switch. What is the current $0.080\\ \\text{s}$ after the switch is closed?",
+     "title": "When does the relay close?",
+     "prompt": "A relay coil has inductance $0.50\\ \\text{H}$ and resistance $25\\ \\Omega$. At $t = 0$ it is connected to an ideal $12\\ \\text{V}$ battery. The relay closes when the current reaches $0.30\\ \\text{A}$. When does it close?",
      "steps": [
-      "Find the final current, which the circuit is heading toward: $I_{\\text{final}} = \\dfrac{\\mathcal{E}}{R} = \\dfrac{9.0\\ \\text{V}}{6.0\\ \\Omega} = 1.5\\ \\text{A}$.",
-      "Find the time constant: $\\tau = \\dfrac{L}{R} = \\dfrac{0.30\\ \\text{H}}{6.0\\ \\Omega} = 0.050\\ \\text{s}$.",
-      "The time asked about is $t/\\tau = 0.080/0.050 = 1.6$ time constants.",
-      "$I = I_{\\text{final}}\\left(1 - e^{-t/\\tau}\\right) = (1.5\\ \\text{A})\\left(1 - e^{-1.6}\\right) = (1.5\\ \\text{A})(1 - 0.202) = 1.2\\ \\text{A}$."
+      "Treat the coil as an ideal inductor in series with its resistance: $I_{\\text{final}} = \\mathcal{E}/R = 0.48\\ \\text{A}$ and $\\tau = L/R = 0.020\\ \\text{s}$.",
+      "$(0.48\\ \\text{A})\\left(1 - e^{-t/\\tau}\\right) = 0.30\\ \\text{A}$ gives $e^{-t/\\tau} = 0.375$, so $t = \\tau\\ln(1/0.375) = (0.020\\ \\text{s})(0.981) = 0.020\\ \\text{s}$.",
+      "About one time constant: $0.30/0.48 = 62.5\\%$, close to the $63\\%$ reached after one $\\tau$."
      ],
-     "answer": "$I = 1.2\\ \\text{A}$",
+     "answer": "$t = 0.020\\ \\text{s}$",
      "style": "stepped",
      "spec": {
       "givens": {
        "emf": {
-        "value": 9,
+        "value": 12,
         "unit": "V"
        },
        "R": {
-        "value": 6,
+        "value": 25,
         "unit": "Ω"
        },
        "L": {
-        "value": 0.3,
+        "value": 0.5,
         "unit": "H"
        },
-       "t": {
-        "value": 0.08,
-        "unit": "s"
+       "I_1": {
+        "value": 0.3,
+        "unit": "A"
        }
       },
-      "expr": "(emf/R)*(1 - exp(-t*R/L))",
-      "unit": "A"
+      "expr": "L/R*ln(1/(1 - I_1*R/emf))",
+      "unit": "s"
      }
     },
     {
@@ -1208,34 +1207,32 @@
    "derivation": "**The loop rule gives simple harmonic motion.** Let $q$ be the charge on the capacitor plate that starts positive, and let $I$ be the current flowing away from that plate through the inductor. Current leaving the plate lowers its charge, so $I = -\\dfrac{dq}{dt}$.\n\nGo around the loop in the direction of the current. Through the inductor the potential changes by $-L\\,dI/dt$; crossing the capacitor from its negative plate back to its positive plate, it rises by $q/C$. The changes add to zero:\n\n$$\\frac{q}{C} - L\\frac{dI}{dt} = 0$$\n\nSubstitute $I = -dq/dt$, so that $dI/dt = -d^2q/dt^2$:\n\n$$\\frac{q}{C} + L\\frac{d^2q}{dt^2} = 0 \\quad\\Longrightarrow\\quad \\frac{d^2q}{dt^2} = -\\frac{1}{LC}\\,q$$\n\nThis is the same equation as $d^2x/dt^2 = -(k/m)x$ for a mass on a spring, whose solutions are sinusoids. Try $q = Q_{\\max}\\cos\\omega t$: differentiating twice gives $-\\omega^2q$, which satisfies the equation provided\n\n$$\\omega^2 = \\frac{1}{LC}, \\qquad \\omega = \\frac{1}{\\sqrt{LC}}, \\qquad T = \\frac{2\\pi}{\\omega} = 2\\pi\\sqrt{LC}$$\n\nThe current is $I = -dq/dt = \\omega Q_{\\max}\\sin\\omega t$, with maximum value $I_{\\max} = \\omega Q_{\\max}$.\n\n**Energy is constant.** Put these into the total energy:\n\n$$U = \\frac{q^2}{2C} + \\tfrac{1}{2}LI^2 = \\frac{Q_{\\max}^2}{2C}\\cos^2\\omega t + \\tfrac{1}{2}L\\omega^2Q_{\\max}^2\\sin^2\\omega t$$\n\nSince $L\\omega^2 = 1/C$, both terms have the same coefficient, and $\\cos^2 + \\sin^2 = 1$ leaves $U = \\dfrac{Q_{\\max}^2}{2C}$ at every instant.",
    "workedExamples": [
     {
-     "title": "Maximum current in an LC circuit",
-     "prompt": "An $8.0\\ \\mu\\text{F}$ capacitor is charged to $25\\ \\text{V}$, then disconnected from the battery and connected across a $5.0\\ \\text{mH}$ inductor of negligible resistance. What is the maximum current in the circuit, and how long after the connection is made does it first occur?",
+     "title": "From the inductor into the capacitor",
+     "prompt": "A $20\\ \\text{mH}$ inductor carries a steady $0.50\\ \\text{A}$. At $t = 0$ its supply is switched out and an uncharged $5.0\\ \\mu\\text{F}$ capacitor is switched across it; there is no resistance. What is the largest potential difference across the capacitor, and how much charge does it hold then?",
      "steps": [
-      "Use energy. At the start it is all in the capacitor, $\\tfrac{1}{2}CV^2$. When the current is greatest the capacitor is empty and it is all in the inductor, $\\tfrac{1}{2}LI_{\\max}^2$.",
-      "Set them equal: $\\tfrac{1}{2}CV^2 = \\tfrac{1}{2}LI_{\\max}^2$, so $I_{\\max} = V\\sqrt{\\dfrac{C}{L}}$.",
-      "$I_{\\max} = (25\\ \\text{V})\\sqrt{\\dfrac{8.0 \\times 10^{-6}\\ \\text{F}}{5.0 \\times 10^{-3}\\ \\text{H}}} = (25\\ \\text{V})(0.040\\ \\text{A/V}) = 1.0\\ \\text{A}$.",
-      "For the timing, find the angular frequency: $\\omega = \\dfrac{1}{\\sqrt{LC}} = \\dfrac{1}{\\sqrt{(5.0 \\times 10^{-3}\\ \\text{H})(8.0 \\times 10^{-6}\\ \\text{F})}} = 5.0 \\times 10^{3}\\ \\text{rad/s}$. As a check, $I_{\\max} = \\omega Q_{\\max} = \\omega CV$ gives $1.0\\ \\text{A}$ again.",
-      "The capacitor is first empty a quarter of a period after the start: $\\dfrac{T}{4} = \\dfrac{2\\pi}{4\\omega} = 3.1 \\times 10^{-4}\\ \\text{s}$."
+      "At $t = 0$ all the energy, $\\tfrac{1}{2}LI_0^2$, is in the inductor. Its current cannot change instantly, so it carries on and charges the capacitor.",
+      "At maximum charge the current is zero and the energy is all in the capacitor: $\\tfrac{1}{2}LI_0^2 = \\tfrac{1}{2}C(\\Delta V_{\\max})^2$, so $\\Delta V_{\\max} = I_0\\sqrt{\\dfrac{L}{C}} = (0.50\\ \\text{A})\\sqrt{\\dfrac{20 \\times 10^{-3}\\ \\text{H}}{5.0 \\times 10^{-6}\\ \\text{F}}} = 32\\ \\text{V}$.",
+      "$Q_{\\max} = C\\,\\Delta V_{\\max} = (5.0 \\times 10^{-6}\\ \\text{F})(31.6\\ \\text{V}) = 1.6 \\times 10^{-4}\\ \\text{C}$. Check: $\\omega = 1/\\sqrt{LC} = 3.16 \\times 10^{3}\\ \\text{rad/s}$, and $\\omega Q_{\\max} = 0.50\\ \\text{A}$."
      ],
-     "answer": "$I_{\\max} = 1.0\\ \\text{A}$, first reached a quarter period ($3.1 \\times 10^{-4}\\ \\text{s}$) after the connection is made",
+     "answer": "$\\Delta V_{\\max} = 32\\ \\text{V}$, with $Q_{\\max} = 1.6 \\times 10^{-4}\\ \\text{C}$",
      "style": "stepped",
      "spec": {
       "givens": {
-       "C": {
-        "value": 8,
-        "unit": "μF"
-       },
-       "V": {
-        "value": 25,
-        "unit": "V"
+       "I_0": {
+        "value": 0.5,
+        "unit": "A"
        },
        "L": {
-        "value": 5,
+        "value": 20,
         "unit": "mH"
+       },
+       "C": {
+        "value": 5,
+        "unit": "μF"
        }
       },
-      "expr": "V*sqrt(C/L)",
-      "unit": "A"
+      "expr": "I_0*sqrt(L/C)",
+      "unit": "V"
      }
     },
     {

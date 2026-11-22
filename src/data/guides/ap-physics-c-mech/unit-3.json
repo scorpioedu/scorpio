@@ -345,37 +345,29 @@
           }
         },
         {
-          "title": "Speed from a force that fades with distance",
-          "prompt": "A $0.80\\ \\text{kg}$ glider is at rest at $x = 0$ on a level air track. A fan then exerts on it a net force $F(x) = 6.0 - 2.0x$, in newtons with $x$ in metres. Determine the glider's speed at $x = 2.0\\ \\text{m}$, and the position at which its speed is greatest.",
+          "title": "Winding up a hanging cable",
+          "prompt": "A uniform cable of length $L = 12\\ \\text{m}$ and mass $M = 18\\ \\text{kg}$ hangs straight down from a winch drum at the top of a building. The winch slowly winds the whole cable up. How much work does the winch do? Use $g = 9.8\\ \\text{m/s}^2$, and compare the result with the work needed to raise a compact $18\\ \\text{kg}$ load through $12\\ \\text{m}$.",
           "steps": [
-            "The force changes with position, so the acceleration is not constant and the constant-acceleration equations do not apply. Use $W_{\\text{net}} = \\Delta K$, with the work found by integrating.",
-            "$W = \\int_0^{2.0} (6.0 - 2.0x)\\,dx = \\Big[6.0x - 1.0x^2\\Big]_0^{2.0} = 12 - 4.0 = 8.0\\ \\text{J}$.",
-            "The glider starts at rest, so $\\tfrac{1}{2}mv^2 - 0 = 8.0\\ \\text{J}$ and $v = \\sqrt{2(8.0\\ \\text{J})/(0.80\\ \\text{kg})} = \\sqrt{20}\\ \\text{m/s} = 4.5\\ \\text{m/s}$.",
-            "The speed keeps rising for as long as the net force is positive, because each extra $dx$ then adds positive work. The force reaches zero at $x = 3.0\\ \\text{m}$; beyond that it does negative work and the glider slows. So the speed is greatest at $x = 3.0\\ \\text{m}$."
+            "The cable rises slowly, so the winch's pull just balances the weight still hanging. After a length $y$ has been wound in, $L - y$ hangs below, with mass $(M/L)(L - y)$. The pull is $F(y) = (M/L)g(L - y)$, which shrinks as winding goes on.",
+            "Integrate over the winding: $W = \\displaystyle\\int_0^L \\frac{Mg}{L}(L - y)\\,dy = \\frac{Mg}{L}\\Big[Ly - \\tfrac{1}{2}y^2\\Big]_0^L = \\tfrac{1}{2}MgL$.",
+            "Numbers: $W = \\tfrac{1}{2}(18\\ \\text{kg})(9.8\\ \\text{m/s}^2)(12\\ \\text{m}) = 1.1 \\times 10^3\\ \\text{J}$.",
+            "A compact $18\\ \\text{kg}$ load raised $12\\ \\text{m}$ needs $MgL = 2.1 \\times 10^3\\ \\text{J}$, twice as much. The cable's centre of mass starts only $L/2$ below the drum, and most of the cable travels less than the full $12\\ \\text{m}$."
           ],
-          "answer": "$v = 4.5\\ \\text{m/s}$ at $x = 2.0\\ \\text{m}$; the speed is greatest at $x = 3.0\\ \\text{m}$",
+          "answer": "$W = \\tfrac{1}{2}MgL = 1.1 \\times 10^3\\ \\text{J}$, half that for a compact load",
           "style": "ap",
           "spec": {
             "givens": {
-              "m": {
-                "value": 0.8,
+              "M": {
+                "value": 18,
                 "unit": "kg"
               },
-              "F_0": {
-                "value": 6,
-                "unit": "N"
-              },
-              "c": {
-                "value": 2,
-                "unit": "N/m"
-              },
-              "x": {
-                "value": 2,
+              "L": {
+                "value": 12,
                 "unit": "m"
               }
             },
-            "expr": "sqrt(2*(F_0*x - 0.5*c*x^2)/m)",
-            "unit": "m/s"
+            "expr": "0.5*M*g*L",
+            "unit": "J"
           }
         }
       ],
@@ -412,7 +404,7 @@
       ],
       "tryIt": {
         "diagram": "plot x=x[m] y=F[N] xr=0,3.3 yr=0,7.5\nseg 0,6 3,0\nshade 0..{{x}}\npt {{x}},{{6-2*x}}\nnote 2.3,6.8 \"W = {{6*x-x^2}} J\"\nnote 2.3,6 \"F = {{6-2*x}} N\"\nxt 0 1 2 3\nyt 0 2 4 6",
-        "caption": "The glider's force, $F(x) = 6.0 - 2.0x$. Slide the position: the shaded area is the work done so far. It grows quickly at first and more slowly as the force fades, reaching $9\\ \\text{J}$ at $x = 3\\ \\text{m}$.",
+        "caption": "A force that fades with distance, $F(x) = 6.0 - 2.0x$. Slide the position: the shaded area is the work done so far. It grows quickly at first and more slowly as the force fades, reaching $9\\ \\text{J}$ at $x = 3\\ \\text{m}$.",
         "params": [
           {
             "name": "x",
@@ -1016,63 +1008,71 @@
       "derivation": "The small amount of work a force $\\vec{F}$ does during a small displacement $d\\vec{r}$ is $dW = \\vec{F}\\cdot d\\vec{r}$. Divide by the time $dt$ that the displacement takes:\n\n$$P = \\frac{dW}{dt} = \\vec{F}\\cdot\\frac{d\\vec{r}}{dt} = \\vec{F}\\cdot\\vec{v}$$\n\nApply this to the net force. By the work–energy theorem the net work goes into kinetic energy, so the net power is the rate of change of kinetic energy:\n\n$$P_{\\text{net}} = \\frac{dK}{dt} = \\frac{d}{dt}\\left(\\tfrac{1}{2}mv^2\\right) = mv\\frac{dv}{dt}$$\n\nwhich is $F_{\\text{net}}\\,v$ again, since $m\\,dv/dt = F_{\\text{net}}$ for motion along a line.\n\n**Constant power from rest.** Suppose the net power on an object of mass $m$ is a constant $P$ and it starts from rest. Then $dK/dt = P$, and integrating from $0$ to $t$ gives $\\tfrac{1}{2}mv^2 = Pt$, so\n\n$$v(t) = \\sqrt{\\frac{2Pt}{m}}$$\n\nThe speed grows as $\\sqrt{t}$, not as $t$. Differentiating, $a = dv/dt = \\sqrt{P/(2mt)}$, which falls as time goes on: constant power is not constant acceleration.",
       "workedExamples": [
         {
-          "title": "Power to lift at constant speed",
-          "prompt": "An elevator motor raises a $900\\ \\text{kg}$ car at a constant speed of $2.5\\ \\text{m/s}$. What power must the cable deliver to the car? Ignore friction and use $g = 9.8\\ \\text{m/s}^2$.",
+          "title": "Power to drive up a hill at steady speed",
+          "prompt": "A $1200\\ \\text{kg}$ car drives up a straight road inclined at $5.0^\\circ$ at a constant $20\\ \\text{m/s}$. Air drag and rolling resistance together oppose the motion with a force of $600\\ \\text{N}$. What power must the driving force deliver? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Constant velocity means zero net force, so the cable tension balances the weight: $T = mg = (900\\ \\text{kg})(9.8\\ \\text{m/s}^2) = 8820\\ \\text{N}$.",
-            "The tension points up and so does the velocity, so $\\theta = 0$ and $P = Tv\\cos 0^\\circ = Tv$.",
-            "$P = (8820\\ \\text{N})(2.5\\ \\text{m/s}) = 2.2 \\times 10^4\\ \\text{W}$, about $22\\ \\text{kW}$.",
-            "Check with energy: each second the car rises $2.5\\ \\text{m}$ and the system gains $mg\\,\\Delta y = (8820\\ \\text{N})(2.5\\ \\text{m}) = 2.2 \\times 10^4\\ \\text{J}$ of gravitational potential energy. That is $2.2 \\times 10^4\\ \\text{J}$ every second, the same power."
+            "Constant velocity means zero net force along the road. The driving force must balance the component of gravity down the slope plus the resistance: $F = mg\\sin\\theta + f = (1200)(9.8)\\sin 5.0^\\circ + 600 = 1025 + 600 = 1625\\ \\text{N}$.",
+            "The driving force points along the velocity, so $\\theta = 0$ between them and $P = Fv\\cos 0^\\circ = Fv$.",
+            "$P = (1625\\ \\text{N})(20\\ \\text{m/s}) = 3.2 \\times 10^4\\ \\text{W}$, about $32\\ \\text{kW}$.",
+            "Check with energy: each second the car climbs $(20\\ \\text{m})\\sin 5.0^\\circ = 1.74\\ \\text{m}$, gaining $mg\\,\\Delta y = 2.05 \\times 10^4\\ \\text{J}$, and the resistance turns $(600\\ \\text{N})(20\\ \\text{m}) = 1.2 \\times 10^4\\ \\text{J}$ into thermal energy. Together that is $3.2 \\times 10^4\\ \\text{J}$ every second."
           ],
-          "answer": "$P = 2.2 \\times 10^4\\ \\text{W}$ (about $22\\ \\text{kW}$)",
+          "answer": "$P = 3.2 \\times 10^4\\ \\text{W}$ (about $32\\ \\text{kW}$)",
           "style": "stepped",
           "spec": {
             "givens": {
               "m": {
-                "value": 900,
+                "value": 1200,
                 "unit": "kg"
               },
-              "g": {
-                "value": 9.8,
-                "unit": "m/s^2"
+              "theta": {
+                "value": 5,
+                "unit": "deg"
+              },
+              "f": {
+                "value": 600,
+                "unit": "N"
               },
               "v": {
-                "value": 2.5,
+                "value": 20,
                 "unit": "m/s"
               }
             },
-            "expr": "m*g*v",
+            "expr": "(m*g*sin(theta) + f)*v",
             "unit": "W"
           }
         },
         {
-          "title": "Work and speed from a power that grows",
-          "prompt": "A winch drags a $40\\ \\text{kg}$ crate from rest along a level, frictionless floor with a horizontal cable. The power it delivers to the crate rises with time as $P(t) = 90t^2$, in watts with $t$ in seconds. Determine the work done on the crate in the first $2.0\\ \\text{s}$ and the crate's speed at $t = 2.0\\ \\text{s}$.",
+          "title": "Speed from a power that fades",
+          "prompt": "A $70\\ \\text{kg}$ sprinter starts from rest. During the start, the net power delivered to her body falls off as $P(t) = P_0 e^{-t/\\tau}$, with $P_0 = 1500\\ \\text{W}$ and $\\tau = 1.0\\ \\text{s}$. Determine the net work done on her in the first $2.0\\ \\text{s}$ and her speed at $t = 2.0\\ \\text{s}$.",
           "steps": [
             "The power is not constant, so the work is not one value of $P$ times the time. Work is the integral of power over time.",
-            "$W = \\int_0^{2.0} 90t^2\\,dt = 30t^3\\Big|_0^{2.0} = 30(8.0) = 240\\ \\text{J}$.",
-            "The cable's force is the only one that does work on the crate: gravity and the normal force are perpendicular to the motion and there is no friction. So $W_{\\text{net}} = \\Delta K$ gives $\\tfrac{1}{2}mv^2 - 0 = 240\\ \\text{J}$.",
-            "$v = \\sqrt{\\dfrac{2(240\\ \\text{J})}{40\\ \\text{kg}}} = \\sqrt{12}\\ \\text{m/s} = 3.5\\ \\text{m/s}$.",
-            "Check with $P = Fv$: at $2.0\\ \\text{s}$ the power is $90(2.0)^2 = 360\\ \\text{W}$, so the cable force then is $F = P/v = 360/3.5 \\approx 100\\ \\text{N}$, a reasonable pull for a winch."
+            "$W = \\displaystyle\\int_0^{t} P_0 e^{-t'/\\tau}\\,dt' = P_0\\tau\\big(1 - e^{-t/\\tau}\\big) = (1500)(1.0)\\big(1 - e^{-2.0}\\big) = 1.30 \\times 10^3\\ \\text{J}$.",
+            "This is the net power, so the work–energy theorem applies directly: $\\tfrac{1}{2}mv^2 - 0 = 1.30 \\times 10^3\\ \\text{J}$.",
+            "$v = \\sqrt{\\dfrac{2(1297\\ \\text{J})}{70\\ \\text{kg}}} = 6.1\\ \\text{m/s}$.",
+            "Check the trend: as $t \\to \\infty$ the work approaches $P_0\\tau = 1500\\ \\text{J}$, so her speed can never pass $\\sqrt{2(1500)/70} = 6.5\\ \\text{m/s}$ from this push. At $2.0\\ \\text{s}$ she is already close to it."
           ],
-          "answer": "$W = 2.4 \\times 10^2\\ \\text{J}$ and $v = 3.5\\ \\text{m/s}$",
+          "answer": "$W = 1.3 \\times 10^3\\ \\text{J}$ and $v = 6.1\\ \\text{m/s}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "b": {
-                "value": 90,
-                "unit": "W/s^2"
+              "P_0": {
+                "value": 1500,
+                "unit": "W"
+              },
+              "tau": {
+                "value": 1,
+                "unit": "s"
               },
               "t": {
                 "value": 2,
                 "unit": "s"
               },
               "m": {
-                "value": 40,
+                "value": 70,
                 "unit": "kg"
               }
             },
-            "expr": "sqrt(2*b*t^3/(3*m))",
+            "expr": "sqrt(2*P_0*tau*(1 - exp(-t/tau))/m)",
             "unit": "m/s"
           }
         }
@@ -1101,8 +1101,8 @@
       ],
       "checkYourself": [
         {
-          "q": "A $60\\ \\text{kg}$ student climbs a staircase $3.0\\ \\text{m}$ high in $4.0\\ \\text{s}$. What average power goes into raising the student?",
-          "a": "$P_{\\text{avg}} = mg\\,\\Delta y/\\Delta t = (60)(9.8)(3.0)/4.0 = 440\\ \\text{W}$."
+          "q": "A $750\\ \\text{W}$ pump lifts water $12\\ \\text{m}$ from a well into a tank. Ignoring losses, how much water can it raise each minute?",
+          "a": "In one minute the pump transfers $(750\\ \\text{W})(60\\ \\text{s}) = 45\\,000\\ \\text{J}$, all of it into $mg\\,\\Delta y$. So $m = 45\\,000/[(9.8)(12)] = 380\\ \\text{kg}$ each minute."
         },
         {
           "q": "The drag force on a car is proportional to $v^2$. By what factor must the engine's power rise to cruise at twice the speed?",

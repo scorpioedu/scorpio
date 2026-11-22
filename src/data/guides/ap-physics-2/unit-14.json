@@ -253,33 +253,33 @@
           }
         },
         {
-          "title": "Ocean waves passing a buoy",
-          "prompt": "A buoy bobs through $15$ complete cycles in $30\\ \\text{s}$ as ocean waves pass it. The crests are $6.0\\ \\text{m}$ apart. Determine the speed of the waves, and explain what happens to their wavelength when they move into shallower water, where they travel more slowly.",
+          "title": "Waves between a boat and a pier",
+          "prompt": "A boat at anchor rocks up and down with a period of $4.0\\ \\text{s}$ as water waves pass it. A crest takes $8.0\\ \\text{s}$ to travel from the boat to a pier $24\\ \\text{m}$ away. Determine the wavelength of the waves, and explain whether larger waves with the same period, on the same water, would have a different wavelength.",
           "steps": [
-            "The buoy is one point of the medium, so its bobbing gives the frequency: $f = \\dfrac{15\\ \\text{cycles}}{30\\ \\text{s}} = 0.50\\ \\text{Hz}$ (a period of $2.0\\ \\text{s}$).",
-            "The crest spacing is the wavelength, $\\lambda = 6.0\\ \\text{m}$, so $v = f\\lambda = (0.50\\ \\text{Hz})(6.0\\ \\text{m}) = 3.0\\ \\text{m/s}$.",
-            "In shallower water the frequency cannot change: every crest that arrives at the boundary must also leave it, or crests would pile up there. So $f$ stays $0.50\\ \\text{Hz}$ while $v$ decreases.",
-            "Since $\\lambda = v/f$ with $f$ fixed, the wavelength decreases in the same proportion as the speed. The crests bunch closer together as the waves slow down."
+            "A crest moves at the wave speed, so timing one crest over a known distance gives $v = \\dfrac{24\\ \\text{m}}{8.0\\ \\text{s}} = 3.0\\ \\text{m/s}$.",
+            "The boat is one point of the medium, so its rocking period is the wave's period. In one period a crest moves one wavelength: $\\lambda = vT = (3.0\\ \\text{m/s})(4.0\\ \\text{s}) = 12\\ \\text{m}$. At any instant there are two wavelengths between the boat and the pier.",
+            "Larger waves have a larger amplitude, but the speed is set by the medium (here, the depth of the water), not by the amplitude. With the same speed and the same period, $\\lambda = vT$ is unchanged.",
+            "So bigger waves on the same water, with the same period, have the same $12\\ \\text{m}$ wavelength; they just rise higher and carry more energy."
           ],
-          "answer": "$v = 3.0\\ \\text{m/s}$. In the shallows the frequency is unchanged and the speed is lower, so the wavelength is shorter.",
+          "answer": "$\\lambda = 12\\ \\text{m}$. Larger waves with the same period travel at the same speed on the same water, so their wavelength is the same.",
           "style": "ap",
           "spec": {
             "givens": {
-              "N": {
-                "value": 15,
-                "unit": ""
+              "D": {
+                "value": 24,
+                "unit": "m"
               },
               "t": {
-                "value": 30,
+                "value": 8,
                 "unit": "s"
               },
-              "lambda": {
-                "value": 6,
-                "unit": "m"
+              "T": {
+                "value": 4,
+                "unit": "s"
               }
             },
-            "expr": "N/t*lambda",
-            "unit": "m/s"
+            "expr": "D/t*T",
+            "unit": "m"
           }
         }
       ],
@@ -701,20 +701,20 @@
       "derivation": "**Source moving toward a stationary observer.** The source emits one crest every period $T = 1/f_s$.\n\nIn one period a crest travels a distance $vT$ through the air. In that same time the source moves forward $v_s T$ before emitting the next crest. So the distance between neighbouring crests ahead of the source is\n\n$$\\lambda' = vT - v_s T = \\dfrac{v - v_s}{f_s}$$\n\nThese crests travel past the observer at the wave speed $v$, so the observer receives them at frequency\n\n$$f_o = \\dfrac{v}{\\lambda'} = f_s\\,\\dfrac{v}{v - v_s}$$\n\nBehind the source the crests are spaced $vT + v_s T$ apart, which changes the minus sign to a plus.",
       "workedExamples": [
         {
-          "title": "A train horn moving away",
-          "prompt": "A train sounds its horn, which emits $350\\ \\text{Hz}$, as it moves directly away from a person standing by the track at $25\\ \\text{m/s}$. The speed of sound is $343\\ \\text{m/s}$. What frequency does the person hear?",
+          "title": "Wavelengths around a racing car",
+          "prompt": "A racing car moves at $60.0\\ \\text{m/s}$ while its horn emits $500\\ \\text{Hz}$. The speed of sound is $343\\ \\text{m/s}$. What is the wavelength of the sound directly in front of the car, and directly behind it?",
           "steps": [
-            "Decide which case this is. The source (the horn) moves and the observer is at rest in the air, so use $f_o = f_s\\,\\dfrac{v}{v \\mp v_s}$.",
-            "Choose the sign. The train is moving away, so the frequency heard must be lower than $350\\ \\text{Hz}$. That needs a larger denominator: use the plus sign.",
-            "Substitute: $f_o = (350\\ \\text{Hz})\\,\\dfrac{343\\ \\text{m/s}}{343\\ \\text{m/s} + 25\\ \\text{m/s}} = (350\\ \\text{Hz})\\,\\dfrac{343}{368}$.",
-            "Calculate: $\\dfrac{343}{368} = 0.932$, so $f_o = 326\\ \\text{Hz}$, lower than $350\\ \\text{Hz}$ as it must be."
+            "With the car at rest the crests would be $\\lambda = v/f = 343/500 = 0.686\\ \\text{m}$ apart.",
+            "In each period the car moves $v_s/f$ toward the crest it just emitted, so in front the crests are closer: $\\lambda_{\\text{front}} = \\dfrac{v - v_s}{f} = \\dfrac{343 - 60.0}{500}\\ \\text{m} = 0.566\\ \\text{m}$.",
+            "Behind, the car moves away from its last crest, so: $\\lambda_{\\text{behind}} = \\dfrac{v + v_s}{f} = \\dfrac{343 + 60.0}{500}\\ \\text{m} = 0.806\\ \\text{m}$.",
+            "The sound still travels at $343\\ \\text{m/s}$, so someone ahead hears $343/0.566 = 606\\ \\text{Hz}$, as $f_s\\,\\dfrac{v}{v - v_s}$ gives."
           ],
-          "answer": "$f_o = 326\\ \\text{Hz}$",
+          "answer": "$\\lambda_{\\text{front}} = 0.566\\ \\text{m}$ and $\\lambda_{\\text{behind}} = 0.806\\ \\text{m}$",
           "style": "stepped",
           "spec": {
             "givens": {
               "f": {
-                "value": 350,
+                "value": 500,
                 "unit": "Hz"
               },
               "v": {
@@ -722,12 +722,12 @@
                 "unit": "m/s"
               },
               "v_s": {
-                "value": 25,
+                "value": 60,
                 "unit": "m/s"
               }
             },
-            "expr": "f*v/(v+v_s)",
-            "unit": "Hz"
+            "expr": "(v - v_s)/f",
+            "unit": "m"
           }
         },
         {
@@ -928,33 +928,32 @@
           }
         },
         {
-          "title": "Finding a pipe's length from two resonances",
-          "prompt": "A pipe that is closed at one end and open at the other resonates at $255\\ \\text{Hz}$ and at $425\\ \\text{Hz}$, and at no frequency in between. The speed of sound is $340\\ \\text{m/s}$. Determine the fundamental frequency of the pipe and its length.",
+          "title": "An organ pipe on a cold day",
+          "prompt": "An organ pipe open at both ends is tuned to $262\\ \\text{Hz}$ when the speed of sound is $343\\ \\text{m/s}$. On a cold day the speed of sound is $331\\ \\text{m/s}$. Determine the pipe's frequency then, and explain what a listener hears if it is played with a piano note at $262\\ \\text{Hz}$.",
           "steps": [
-            "A pipe closed at one end has only odd harmonics: $f_1, 3f_1, 5f_1, \\dots$ Neighbouring resonances are therefore $2f_1$ apart.",
-            "The two given resonances are neighbours, so $2f_1 = 425\\ \\text{Hz} - 255\\ \\text{Hz} = 170\\ \\text{Hz}$ and $f_1 = 85\\ \\text{Hz}$.",
-            "Check: $255/85 = 3$ and $425/85 = 5$. Both are odd whole numbers, as they must be; these are the third and fifth harmonics.",
-            "For the fundamental of a closed pipe, $f_1 = \\dfrac{v}{4L}$, so $L = \\dfrac{v}{4f_1} = \\dfrac{340\\ \\text{m/s}}{4(85\\ \\text{Hz})} = 1.0\\ \\text{m}$."
+            "The standing wave must fit the pipe: $\\lambda_1 = 2L$. The length barely changes with temperature, so the wavelength is fixed.",
+            "With $\\lambda$ fixed, $f = v/\\lambda$ is proportional to the speed: $f_{\\text{cold}} = (262\\ \\text{Hz})\\,\\dfrac{331\\ \\text{m/s}}{343\\ \\text{m/s}} = 253\\ \\text{Hz}$.",
+            "With the piano note, the two sounds drift in and out of step $262 - 253 \\approx 9$ times a second: about $9$ beats per second, with the organ flat."
           ],
-          "answer": "$f_1 = 85\\ \\text{Hz}$ and $L = 1.0\\ \\text{m}$",
+          "answer": "$f = 253\\ \\text{Hz}$; with the $262\\ \\text{Hz}$ note the listener hears about $9$ beats per second",
           "style": "ap",
           "spec": {
             "givens": {
-              "f_a": {
-                "value": 255,
+              "f": {
+                "value": 262,
                 "unit": "Hz"
               },
-              "f_b": {
-                "value": 425,
-                "unit": "Hz"
+              "v1": {
+                "value": 343,
+                "unit": "m/s"
               },
-              "v": {
-                "value": 340,
+              "v2": {
+                "value": 331,
                 "unit": "m/s"
               }
             },
-            "expr": "v/(4*(f_b-f_a)/2)",
-            "unit": "m"
+            "expr": "f*v2/v1",
+            "unit": "Hz"
           }
         }
       ],
@@ -1326,37 +1325,33 @@
           }
         },
         {
-          "title": "Measuring a laser's wavelength with two slits",
-          "prompt": "A laser shines on two slits $0.25\\ \\text{mm}$ apart. On a screen $2.5\\ \\text{m}$ away, the third bright fringe ($m = 3$) is $1.8\\ \\text{cm}$ from the central bright fringe. Determine the wavelength of the laser light, and explain how the pattern would change if a laser of shorter wavelength were used.",
+          "title": "Where two colours' fringes meet",
+          "prompt": "Light containing two wavelengths, $600\\ \\text{nm}$ and $450\\ \\text{nm}$, passes through two slits $0.20\\ \\text{mm}$ apart onto a screen $1.5\\ \\text{m}$ away. Apart from the centre, how far from the central fringe is the nearest point where bright fringes of both colours fall in the same place? Explain why the pattern looks coloured elsewhere.",
           "steps": [
-            "The fringe is $1.8\\ \\text{cm}$ from the centre on a screen $2.5\\ \\text{m}$ away, so the angle is small and the bright fringes are at $y = \\dfrac{m\\lambda L}{d}$.",
-            "Solve for the wavelength and use metres throughout: $\\lambda = \\dfrac{y\\,d}{mL} = \\dfrac{(0.018\\ \\text{m})(2.5 \\times 10^{-4}\\ \\text{m})}{(3)(2.5\\ \\text{m})}$.",
-            "$\\lambda = \\dfrac{4.5 \\times 10^{-6}\\ \\text{m}^2}{7.5\\ \\text{m}} = 6.0 \\times 10^{-7}\\ \\text{m} = 600\\ \\text{nm}$, which is orange-red light.",
-            "With a shorter wavelength a smaller angle is enough to make the path difference equal to one wavelength, so every bright fringe moves closer to the centre. The fringe spacing $\\lambda L/d$ shrinks in proportion to the wavelength; the central fringe stays where it is."
+            "A point is bright for a colour when the path difference is a whole number of its wavelengths. Both colours are bright together where $m_1(600\\ \\text{nm}) = m_2(450\\ \\text{nm})$.",
+            "So $m_2/m_1 = 600/450 = 4/3$. The smallest whole numbers are $m_1 = 3$ and $m_2 = 4$: a path difference of $1800\\ \\text{nm}$, three of one wavelength and four of the other.",
+            "Position: $y = \\dfrac{m_1\\lambda_1 L}{d} = \\dfrac{(3)(6.00 \\times 10^{-7}\\ \\text{m})(1.5\\ \\text{m})}{2.0 \\times 10^{-4}\\ \\text{m}} = 1.35 \\times 10^{-2}\\ \\text{m} = 13.5\\ \\text{mm}$. The blue light gives the same: $(4)(4.50 \\times 10^{-7})(1.5)/(2.0 \\times 10^{-4}) = 13.5\\ \\text{mm}$.",
+            "Elsewhere the two colours' fringes fall at different places, because each colour's spacing is $\\lambda L/d$, so the bright bands alternate in colour. Only the centre and these coincidences show both colours together."
           ],
-          "answer": "$\\lambda = 600\\ \\text{nm}$. A shorter wavelength gives the same kind of pattern with the fringes closer together.",
+          "answer": "$y = 13.5\\ \\text{mm}$, where the third-order $600\\ \\text{nm}$ fringe meets the fourth-order $450\\ \\text{nm}$ fringe",
           "style": "ap",
           "spec": {
             "givens": {
-              "y": {
-                "value": 1.8,
-                "unit": "cm"
-              },
-              "d": {
-                "value": 0.25,
-                "unit": "mm"
-              },
-              "m": {
-                "value": 3,
-                "unit": ""
+              "lambda1": {
+                "value": 600,
+                "unit": "nm"
               },
               "L": {
-                "value": 2.5,
+                "value": 1.5,
                 "unit": "m"
+              },
+              "d": {
+                "value": 0.2,
+                "unit": "mm"
               }
             },
-            "expr": "y*d/(m*L)",
-            "unit": "nm"
+            "expr": "3*lambda1*L/d",
+            "unit": "mm"
           }
         }
       ],

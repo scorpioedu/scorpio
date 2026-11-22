@@ -264,37 +264,32 @@
       "derivation": "Two metal spheres of radii $R_1$ and $R_2$ are far apart, joined by a long thin wire, and hold total charge $Q$. Let sphere 1 hold $q$, so that sphere 2 holds $Q - q$.\n\n**Equal potentials.** Far apart, each sphere's potential is its own $kq/R$. Equilibrium requires\n$$\\frac{kq}{R_1} = \\frac{k(Q-q)}{R_2} \\quad\\Rightarrow\\quad q = Q\\,\\frac{R_1}{R_1+R_2}, \\qquad Q - q = Q\\,\\frac{R_2}{R_1+R_2}.$$\n\n**Surface charge density.** With $\\sigma = q/4\\pi R^2$ and $q_1/q_2 = R_1/R_2$,\n$$\\frac{\\sigma_1}{\\sigma_2} = \\frac{q_1}{q_2}\\cdot\\frac{R_2^2}{R_1^2} = \\frac{R_2}{R_1}.$$\n\n**The same answer from energy.** Charging a sphere from zero to $q$ takes work $\\int_0^q (kq'/R)\\,dq' = kq^2/2R$, so the pair stores\n$$U(q) = \\frac{kq^2}{2R_1} + \\frac{k(Q-q)^2}{2R_2}.$$\nSetting $\\dfrac{dU}{dq} = \\dfrac{kq}{R_1} - \\dfrac{k(Q-q)}{R_2} = 0$ gives the equal-potential condition again, and $\\dfrac{d^2U}{dq^2} = \\dfrac{k}{R_1} + \\dfrac{k}{R_2} > 0$, so it is a minimum: charge flows until the stored energy is as small as it can be.",
       "workedExamples": [
         {
-          "title": "Two charged spheres joined by a wire",
-          "prompt": "Metal sphere A has radius $5.0\\ \\text{cm}$ and charge $+18\\ \\text{nC}$. Metal sphere B, far away, has radius $10.0\\ \\text{cm}$ and charge $-6.0\\ \\text{nC}$. They are joined by a long, thin wire and the charges come to rest. What is the final charge on sphere A, and what is the spheres' common potential? Use $k = 8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2$.",
+          "title": "Charge drawn onto a grounded sphere",
+          "prompt": "A metal sphere of radius $0.10\\ \\text{m}$ is connected to the ground. A small sphere carrying $+6.0\\ \\text{nC}$ is held fixed $0.30\\ \\text{m}$ from its centre. Taking the potential to be zero far away, what net charge does the grounded sphere hold?",
           "steps": [
-            "Charge is conserved: $q_A + q_B = +18\\ \\text{nC} + (-6.0\\ \\text{nC}) = +12\\ \\text{nC}$.",
-            "The wire makes the spheres one conductor, so they finish at the same potential: $\\dfrac{kq_A}{R_A} = \\dfrac{kq_B}{R_B}$, which gives $q_B = q_A\\,\\dfrac{R_B}{R_A} = 2q_A$.",
-            "Substitute: $q_A + 2q_A = 12\\ \\text{nC}$, so $q_A = +4.0\\ \\text{nC}$ and $q_B = +8.0\\ \\text{nC}$.",
-            "Common potential: $V = \\dfrac{kq_A}{R_A} = \\dfrac{(8.99 \\times 10^9\\ \\text{N·m}^2/\\text{C}^2)(4.0 \\times 10^{-9}\\ \\text{C})}{0.050\\ \\text{m}} = 7.2 \\times 10^2\\ \\text{V}$.",
-            "Check the flow: A lost $14\\ \\text{nC}$ of positive charge. What actually moved was electrons, from B to A, toward the higher potential."
+            "Grounding holds the whole metal sphere at zero potential, its centre included.",
+            "At the centre the small sphere gives $kq/d$, with $d = 0.30\\ \\text{m}$. The induced charge $Q$, however it crowds, is all $R = 0.10\\ \\text{m}$ from the centre, so it gives $kQ/R$.",
+            "$\\dfrac{kq}{d} + \\dfrac{kQ}{R} = 0$, so $Q = -q\\,\\dfrac{R}{d} = -(6.0\\ \\text{nC})\\left(\\dfrac{0.10}{0.30}\\right) = -2.0\\ \\text{nC}$: electrons drawn up the ground wire.",
+            "Remove the wire, then the small sphere, and this charge stays: charging by induction."
           ],
-          "answer": "$q_A = +4.0\\ \\text{nC}$ (and $q_B = +8.0\\ \\text{nC}$); both spheres are at $7.2 \\times 10^2\\ \\text{V}$",
+          "answer": "$Q = -2.0\\ \\text{nC}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "q_A": {
-                "value": 18,
+              "q": {
+                "value": 6,
                 "unit": "nC"
               },
-              "q_B": {
-                "value": -6,
-                "unit": "nC"
+              "R": {
+                "value": 0.1,
+                "unit": "m"
               },
-              "R_A": {
-                "value": 5,
-                "unit": "cm"
-              },
-              "R_B": {
-                "value": 10,
-                "unit": "cm"
+              "d": {
+                "value": 0.3,
+                "unit": "m"
               }
             },
-            "expr": "(q_A + q_B)*R_A/(R_A + R_B)",
+            "expr": "-q*R/d",
             "unit": "nC"
           }
         },
@@ -330,8 +325,8 @@
       ],
       "checkYourself": [
         {
-          "q": "Two identical metal spheres carry $+10\\ \\text{nC}$ and $-4\\ \\text{nC}$. They touch and are then separated. What charge does each have?",
-          "a": "$+3\\ \\text{nC}$ each. The total is $+6\\ \\text{nC}$, and identical spheres share it equally."
+          "q": "Identical metal spheres: A carries $+12\\ \\text{nC}$, B and C are neutral. A touches B, then B touches C. What charge does each end with?",
+          "a": "A has $+6\\ \\text{nC}$, and B and C $+3\\ \\text{nC}$ each: every touch splits the pair's total equally."
         },
         {
           "q": "A small sphere and a large sphere are joined by a wire and charged. Which holds more charge? Which has the stronger field at its surface?",
@@ -479,15 +474,13 @@
       "derivation": "**Parallel plates.** Give the plates charges $+Q$ and $-Q$, so the surface charge density is $\\sigma = Q/A$. Apply Gauss's law to a pillbox of end area $a$ with one end inside the positive plate's metal, where $E = 0$, and the other in the gap: $Ea = \\sigma a/\\varepsilon_0$, so $E = Q/\\varepsilon_0 A$, the same everywhere in the gap. The potential difference between the plates is\n$$\\Delta V = \\int_0^d E\\,dx = \\frac{Qd}{\\varepsilon_0 A}, \\qquad\\text{so}\\qquad C = \\frac{Q}{\\Delta V} = \\frac{\\varepsilon_0 A}{d}.$$\n\n**Stored energy.** When the capacitor holds charge $q$, the potential difference is $q/C$, and moving a further $dq$ from the negative plate to the positive plate takes work $dU = (q/C)\\,dq$. Charging from zero to $Q$:\n$$U_C = \\int_0^Q \\frac{q}{C}\\,dq = \\frac{Q^2}{2C} = \\tfrac{1}{2}C(\\Delta V)^2 = \\tfrac{1}{2}Q\\,\\Delta V.$$\n\n**Energy density.** For parallel plates, substitute $C = \\varepsilon_0 A/d$ and $\\Delta V = Ed$ to get $U_C = \\tfrac{1}{2}\\varepsilon_0 E^2\\,(Ad)$. Dividing by the volume of the gap, $Ad$, gives $u_E = \\tfrac{1}{2}\\varepsilon_0 E^2$.",
       "workedExamples": [
         {
-          "title": "Charge and energy of a parallel-plate capacitor",
-          "prompt": "Two metal plates, each of area $0.020\\ \\text{m}^2$, are held $1.5\\ \\text{mm}$ apart in air and connected to a $24\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
+          "title": "A capacitor with a metal sheet in the gap",
+          "prompt": "Two metal plates of area $0.030\\ \\text{m}^2$ are $2.0\\ \\text{mm}$ apart in air, and a metal sheet $0.80\\ \\text{mm}$ thick, as large as the plates, is slid into the gap without touching them. The capacitor is connected to a $12\\ \\text{V}$ battery. Find the capacitance, the charge on each plate and the energy stored. Use $\\varepsilon_0 = 8.85 \\times 10^{-12}\\ \\text{F/m}$.",
           "steps": [
-            "$C = \\dfrac{\\varepsilon_0 A}{d} = \\dfrac{(8.85 \\times 10^{-12}\\ \\text{F/m})(0.020\\ \\text{m}^2)}{1.5 \\times 10^{-3}\\ \\text{m}} = 1.18 \\times 10^{-10}\\ \\text{F} = 118\\ \\text{pF}$.",
-            "The battery fixes $\\Delta V = 24\\ \\text{V}$, so $Q = C\\,\\Delta V = (1.18 \\times 10^{-10}\\ \\text{F})(24\\ \\text{V}) = 2.8 \\times 10^{-9}\\ \\text{C}$: $+2.8\\ \\text{nC}$ on one plate and $-2.8\\ \\text{nC}$ on the other.",
-            "$U_C = \\tfrac{1}{2}C(\\Delta V)^2 = \\tfrac{1}{2}(1.18 \\times 10^{-10}\\ \\text{F})(24\\ \\text{V})^2 = 3.4 \\times 10^{-8}\\ \\text{J} = 34\\ \\text{nJ}$.",
-            "Check with the field: $E = \\Delta V/d = 1.6 \\times 10^4\\ \\text{V/m}$, so $u_E = \\tfrac{1}{2}\\varepsilon_0 E^2 = 1.13 \\times 10^{-3}\\ \\text{J/m}^3$. Multiplying by the volume of the gap, $Ad = 3.0 \\times 10^{-5}\\ \\text{m}^3$, gives $3.4 \\times 10^{-8}\\ \\text{J}$ again."
+            "With no field inside the metal, $E = Q/\\varepsilon_0 A$ fills only the air, of total width $d - t = 1.2\\ \\text{mm}$: $C = \\dfrac{\\varepsilon_0 A}{d - t} = \\dfrac{(8.85 \\times 10^{-12})(0.030)}{1.2 \\times 10^{-3}} = 221\\ \\text{pF}$, wherever the sheet sits.",
+            "$Q = C\\,\\Delta V = (221\\ \\text{pF})(12\\ \\text{V}) = 2.7\\ \\text{nC}$, and $U_C = \\tfrac{1}{2}C(\\Delta V)^2 = 16\\ \\text{nJ}$."
           ],
-          "answer": "$C = 118\\ \\text{pF}$, $Q = 2.8\\ \\text{nC}$ and $U_C = 34\\ \\text{nJ}$",
+          "answer": "$C = 221\\ \\text{pF}$, $Q = 2.7\\ \\text{nC}$ and $U_C = 16\\ \\text{nJ}$",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -496,19 +489,23 @@
                 "unit": "F/m"
               },
               "A": {
-                "value": 0.02,
+                "value": 0.03,
                 "unit": "m^2"
               },
               "d": {
-                "value": 1.5,
+                "value": 2,
+                "unit": "mm"
+              },
+              "t": {
+                "value": 0.8,
                 "unit": "mm"
               },
               "V": {
-                "value": 24,
+                "value": 12,
                 "unit": "V"
               }
             },
-            "expr": "0.5*eps0*A/d*V^2",
+            "expr": "0.5*eps0*A/(d - t)*V^2",
             "unit": "nJ"
           }
         },
@@ -699,16 +696,15 @@
       "derivation": "**A filled gap.** Put free charge $\\pm Q$ on plates of area $A$, so $\\sigma = Q/A$. With an empty gap the field is $E_0 = \\sigma/\\varepsilon_0$. The slab's bound charge, of density $\\sigma_b$ on each face, makes an opposing field $\\sigma_b/\\varepsilon_0$, so inside the slab\n$$E = \\frac{\\sigma - \\sigma_b}{\\varepsilon_0} = \\frac{E_0}{\\kappa}.$$\nFor ordinary dielectrics the polarisation, and with it $\\sigma_b$, is proportional to the field, so the ratio $\\kappa$ is a constant of the material. Solving for the bound charge gives $\\sigma_b = \\sigma(1 - 1/\\kappa)$. Then\n$$\\Delta V = \\int_0^d E\\,dx = \\frac{E_0 d}{\\kappa} = \\frac{Qd}{\\kappa\\varepsilon_0 A}, \\qquad C = \\frac{Q}{\\Delta V} = \\frac{\\kappa\\varepsilon_0 A}{d} = \\kappa C_0.$$\n\n**A partly filled gap.** If the slab has thickness $t$, less than $d$, the field is $E_0$ in the empty part and $E_0/\\kappa$ in the slab. The integral splits in two:\n$$\\Delta V = E_0(d - t) + \\frac{E_0}{\\kappa}\\,t = \\frac{Q}{\\varepsilon_0 A}\\left(d - t + \\frac{t}{\\kappa}\\right), \\qquad C = \\frac{\\varepsilon_0 A}{d - t + t/\\kappa}.$$\nCheck the ends: $t = 0$ gives $C_0$, and $t = d$ gives $\\kappa C_0$. A metal slab behaves like $\\kappa \\to \\infty$: the field inside it is zero, and $C = \\varepsilon_0 A/(d - t)$.",
       "workedExamples": [
         {
-          "title": "A dielectric slides into an isolated capacitor",
-          "prompt": "An air-filled capacitor of capacitance $120\\ \\text{pF}$ is charged to $90\\ \\text{V}$ and then disconnected from the battery. A plastic sheet with dielectric constant $\\kappa = 3.0$ is slid in so that it fills the gap. Find the new potential difference and the change in the stored energy.",
+          "title": "A slab that partly fills an isolated capacitor",
+          "prompt": "An air capacitor with a $3.0\\ \\text{mm}$ gap is charged to $90\\ \\text{V}$ and disconnected. A plastic slab as large as the plates, $2.0\\ \\text{mm}$ thick and with $\\kappa = 3.0$, is slid in, leaving $1.0\\ \\text{mm}$ of air. Find the field in the air, the field in the plastic and the new potential difference.",
           "steps": [
-            "Decide what is fixed. The capacitor is disconnected, so its charge cannot change: $Q = C_0\\,\\Delta V_0 = (120 \\times 10^{-12}\\ \\text{F})(90\\ \\text{V}) = 1.08 \\times 10^{-8}\\ \\text{C}$, before and after.",
-            "The dielectric multiplies the capacitance: $C = \\kappa C_0 = (3.0)(120\\ \\text{pF}) = 360\\ \\text{pF}$.",
-            "New potential difference: $\\Delta V = \\dfrac{Q}{C} = \\dfrac{1.08 \\times 10^{-8}\\ \\text{C}}{360 \\times 10^{-12}\\ \\text{F}} = 30\\ \\text{V}$, which is $\\Delta V_0/\\kappa$.",
-            "Energy before: $U_0 = \\tfrac{1}{2}C_0(\\Delta V_0)^2 = \\tfrac{1}{2}(120 \\times 10^{-12}\\ \\text{F})(90\\ \\text{V})^2 = 4.86 \\times 10^{-7}\\ \\text{J}$. After: $U = \\tfrac{1}{2}(360 \\times 10^{-12}\\ \\text{F})(30\\ \\text{V})^2 = 1.62 \\times 10^{-7}\\ \\text{J}$.",
-            "The stored energy falls by $3.2 \\times 10^{-7}\\ \\text{J}$: the work the field did in pulling the sheet in."
+            "Isolated, so $Q$ is fixed, and so is the field it makes in air: $E_0 = \\Delta V_0/d = (90\\ \\text{V})/(3.0\\ \\text{mm}) = 3.0 \\times 10^4\\ \\text{V/m}$.",
+            "In the air the field stays $E_0$; in the plastic it is $E_0/\\kappa = 1.0 \\times 10^4\\ \\text{V/m}$.",
+            "$\\Delta V = E_0(d - t) + \\dfrac{E_0}{\\kappa}t = 30\\ \\text{V} + 20\\ \\text{V} = 50\\ \\text{V}$, between $90\\ \\text{V}$ (no slab) and $30\\ \\text{V}$ (gap filled).",
+            "With $Q$ fixed, the stored energy $\\tfrac{1}{2}Q\\,\\Delta V$ falls to $50/90$ of its first value."
           ],
-          "answer": "$\\Delta V = 30\\ \\text{V}$; the stored energy falls by $3.2 \\times 10^{-7}\\ \\text{J}$",
+          "answer": "$3.0 \\times 10^4\\ \\text{V/m}$ in the air, $1.0 \\times 10^4\\ \\text{V/m}$ in the plastic; $\\Delta V = 50\\ \\text{V}$",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -716,26 +712,32 @@
                 "value": 90,
                 "unit": "V"
               },
+              "d": {
+                "value": 3,
+                "unit": "mm"
+              },
+              "t": {
+                "value": 2,
+                "unit": "mm"
+              },
               "kappa": {
                 "value": 3,
                 "unit": ""
               }
             },
-            "expr": "V_0/kappa",
+            "expr": "V_0*(d - t + t/kappa)/d",
             "unit": "V"
           }
         },
         {
-          "title": "A dielectric with the battery connected",
-          "prompt": "An air-filled parallel-plate capacitor of capacitance $40\\ \\text{pF}$ is connected to a $12\\ \\text{V}$ battery, as shown. With the battery still connected, a slab of glass with dielectric constant $\\kappa = 5.0$ is inserted so that it fills the gap. (a) State what happens to the electric field between the plates, and justify your answer. (b) Calculate the additional charge the battery delivers to the positive plate.\n\n```dg\ncircuit\nbattery a b 12V\ncapacitor a b 40pF C_0\n```",
+          "title": "Energy bookkeeping with the battery connected",
+          "prompt": "An air-filled capacitor of capacitance $40\\ \\text{pF}$ stays connected to a $12\\ \\text{V}$ battery, as shown, while a glass slab with $\\kappa = 5.0$ is slid in to fill the gap. (a) Calculate the change in the stored energy. (b) Calculate the work done by the battery, and account for the difference.\n\n```dg\ncircuit\nbattery a b 12V\ncapacitor a b 40pF C_0\n```",
           "steps": [
-            "(a) The battery holds the potential difference between the plates at $12\\ \\text{V}$, and the plate separation $d$ does not change. For parallel plates $E = \\Delta V/d$, so the field is the same as before.",
-            "This does not contradict $E = E_0/\\kappa$, which holds for a fixed plate charge. Here the battery adds charge until the field is restored.",
-            "(b) Before: $Q_0 = C_0\\,\\Delta V = (40\\ \\text{pF})(12\\ \\text{V}) = 480\\ \\text{pC}$.",
-            "After: $C = \\kappa C_0 = 200\\ \\text{pF}$, so $Q = C\\,\\Delta V = (200\\ \\text{pF})(12\\ \\text{V}) = 2400\\ \\text{pC}$.",
-            "Additional charge: $Q - Q_0 = (\\kappa - 1)\\,C_0\\,\\Delta V = 1920\\ \\text{pC} \\approx 1.9\\ \\text{nC}$."
+            "(a) $\\Delta V$ is fixed while $C$ rises to $\\kappa C_0$, so $\\Delta U_C = \\tfrac{1}{2}(\\kappa - 1)C_0(\\Delta V)^2 = \\tfrac{1}{2}(4.0)(40\\ \\text{pF})(12\\ \\text{V})^2 = 11.5\\ \\text{nJ}$, an increase.",
+            "(b) The battery moves the extra charge $\\Delta Q = (\\kappa - 1)C_0\\,\\Delta V = 1.92\\ \\text{nC}$ through $12\\ \\text{V}$: $W_{\\text{batt}} = \\Delta Q\\,\\Delta V = 23.0\\ \\text{nJ}$.",
+            "The battery supplies twice what the capacitor gains. The other $11.5\\ \\text{nJ}$ is work the field does pulling the slab in, which ends up as the slab's kinetic energy or in whatever holds it back."
           ],
-          "answer": "(a) The field is unchanged, because the battery fixes $\\Delta V$ and $d$ is the same; (b) the battery delivers an additional $1.9\\ \\text{nC}$",
+          "answer": "(a) The stored energy rises by $11.5\\ \\text{nJ}$; (b) the battery does $23.0\\ \\text{nJ}$, half of it spent pulling the slab in",
           "style": "ap",
           "spec": {
             "givens": {
@@ -752,8 +754,8 @@
                 "unit": ""
               }
             },
-            "expr": "(kappa - 1)*C_0*V",
-            "unit": "nC"
+            "expr": "(kappa - 1)*C_0*V^2/2",
+            "unit": "nJ"
           }
         }
       ],

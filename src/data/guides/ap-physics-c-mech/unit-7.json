@@ -89,27 +89,27 @@
       "derivation": "**The equation of motion.** For a block of mass $m$ on a frictionless horizontal surface, the spring force is the net force, so Newton's second law reads\n\n$$m\\,\\frac{d^2x}{dt^2} = -kx \\quad\\Longrightarrow\\quad \\frac{d^2x}{dt^2} = -\\frac{k}{m}\\,x.$$\n\n**Checking the solution.** Try $x(t) = A\\cos(\\omega t + \\phi)$, where $A$, $\\omega$ and $\\phi$ are constants. Differentiate twice with the chain rule:\n\n$$\\frac{dx}{dt} = -A\\omega\\sin(\\omega t + \\phi), \\qquad \\frac{d^2x}{dt^2} = -A\\omega^2\\cos(\\omega t + \\phi) = -\\omega^2 x.$$\n\nThis matches the equation of motion at every instant provided $\\omega^2 = k/m$. $A$ and $\\phi$ are not restricted: they are set by how the motion is started.\n\n**A vertical spring.** A hanging block at rest stretches the spring by $\\Delta\\ell$, with $k\\,\\Delta\\ell = mg$. Let $y$ be its displacement below that position (down positive). The total stretch is $\\Delta\\ell + y$, so\n\n$$F_{\\text{net}} = mg - k(\\Delta\\ell + y) = -ky.$$\n\nGravity cancels against the stretch the spring already had, so the motion is SHM about the new equilibrium with the same $\\omega = \\sqrt{k/m}$.",
       "workedExamples": [
         {
-          "title": "Acceleration at the moment of release",
-          "prompt": "A $0.40\\ \\text{kg}$ cart on a level, frictionless track is attached to a horizontal spring of spring constant $50\\ \\text{N/m}$. The cart is held $0.060\\ \\text{m}$ to the right of its equilibrium position and released. Taking right as positive, what is the cart's acceleration at the instant it is released?",
+          "title": "Acceleration on a spring along a slope",
+          "prompt": "A $0.50\\ \\text{kg}$ block rests on a frictionless ramp inclined at $30^\\circ$, held by a spring of spring constant $40\\ \\text{N/m}$ fixed at the top of the ramp. The block is pulled $0.050\\ \\text{m}$ down the slope from its equilibrium position and released. Taking down the slope as positive, what is its acceleration at the instant of release? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "Measure $x$ from equilibrium, so $x = +0.060\\ \\text{m}$ at release.",
-            "The track is level and frictionless, so the spring force is the net force: $F_{\\text{net}} = -kx = -(50\\ \\text{N/m})(0.060\\ \\text{m}) = -3.0\\ \\text{N}$.",
-            "Apply Newton's second law: $a = \\dfrac{F_{\\text{net}}}{m} = \\dfrac{-3.0\\ \\text{N}}{0.40\\ \\text{kg}} = -7.5\\ \\text{m/s}^2$."
+            "At equilibrium the spring is already stretched enough to hold the block: $k\\,\\Delta\\ell = mg\\sin\\theta$, so $\\Delta\\ell = (0.50)(9.8)(0.50)/40 = 0.061\\ \\text{m}$.",
+            "At release the stretch is $\\Delta\\ell + x = 0.111\\ \\text{m}$. Net force along the slope: $F_{\\text{net}} = mg\\sin\\theta - k(\\Delta\\ell + x) = 2.45 - 4.45 = -2.0\\ \\text{N}$. The gravity term cancels the equilibrium stretch, leaving $F_{\\text{net}} = -kx$.",
+            "Apply Newton's second law: $a = \\dfrac{F_{\\text{net}}}{m} = -\\dfrac{kx}{m} = \\dfrac{-2.0\\ \\text{N}}{0.50\\ \\text{kg}} = -4.0\\ \\text{m/s}^2$, up the slope, toward equilibrium."
           ],
-          "answer": "$a = -7.5\\ \\text{m/s}^2$ (directed to the left, toward equilibrium)",
+          "answer": "$a = -4.0\\ \\text{m/s}^2$ (up the slope, toward equilibrium)",
           "style": "stepped",
           "spec": {
             "givens": {
               "k": {
-                "value": 50,
+                "value": 40,
                 "unit": "N/m"
               },
               "x": {
-                "value": 0.06,
+                "value": 0.05,
                 "unit": "m"
               },
               "m": {
-                "value": 0.4,
+                "value": 0.5,
                 "unit": "kg"
               }
             },
@@ -118,16 +118,15 @@
           }
         },
         {
-          "title": "Showing that a glider between two springs moves in SHM",
-          "prompt": "A $0.50\\ \\text{kg}$ glider on a level air track is attached to two springs, one on each side, whose far ends are fixed. The left spring has $k_1 = 30\\ \\text{N/m}$ and the right spring has $k_2 = 42\\ \\text{N/m}$. At equilibrium both springs are stretched. (a) Show that the glider moves in simple harmonic motion when displaced along the track. (b) Determine the angular frequency.\n\n```dg\nscene\nwall 0 0..1.6\nwall 8 0..1.6 side=l\nground 0..8\nblock G 4,0 \"0.50 kg\"\nspring 0,0.35 G.l\nspring G.r 8,0.35\ntext 1.7,1 \"k_1\"\ntext 6.3,1 \"k_2\"\n```",
+          "title": "Showing that a block on two springs in series moves in SHM",
+          "prompt": "A $0.20\\ \\text{kg}$ block on a level, frictionless surface is joined to a wall by two light springs connected end to end: $k_1 = 30\\ \\text{N/m}$ next to the wall and $k_2 = 60\\ \\text{N/m}$ next to the block. (a) Show that the block moves in simple harmonic motion when displaced along the line of the springs. (b) Determine the angular frequency.\n\n```dg\nscene\nwall 0 0..1.6\nground 0..8\nblock B 6,0 \"0.20 kg\"\nspring 0,0.35 3.5,0.35\ndot 3.5,0.35\nspring 3.5,0.35 B.l\ntext 1.75,1 \"k_1\"\ntext 4.5,1 \"k_2\"\n```",
           "steps": [
-            "(a) Let $x$ be the glider's displacement from equilibrium, positive to the right. At $x = 0$ the spring forces cancel, so only their changes matter.",
-            "Moving the glider $x$ to the right stretches the left spring by a further $x$. It pulls to the left, and its pull grows by $k_1 x$: a change of $-k_1 x$ in the net force.",
-            "The right spring's stretch shrinks by $x$. It pulls to the right, and its pull weakens by $k_2 x$: another change of $-k_2 x$.",
-            "So $F_{\\text{net}} = -(k_1 + k_2)\\,x$, and Newton's second law gives $\\dfrac{d^2x}{dt^2} = -\\dfrac{k_1 + k_2}{m}\\,x$. The acceleration is a negative constant times the displacement: simple harmonic motion.",
-            "(b) Comparing with $\\dfrac{d^2x}{dt^2} = -\\omega^2 x$: $\\omega = \\sqrt{\\dfrac{k_1 + k_2}{m}} = \\sqrt{\\dfrac{(30 + 42)\\ \\text{N/m}}{0.50\\ \\text{kg}}} = \\sqrt{144\\ \\text{s}^{-2}} = 12\\ \\text{rad/s}$."
+            "(a) Let $x$ be the block's displacement from equilibrium, where both springs are relaxed. The springs are light, so the net force on their junction is zero: both carry the same tension $T$.",
+            "Each spring stretches by its own amount, $x_1 = T/k_1$ and $x_2 = T/k_2$, and together they make up the block's displacement: $x = x_1 + x_2 = T\\left(\\dfrac{1}{k_1} + \\dfrac{1}{k_2}\\right)$.",
+            "The spring next to the block pulls it back with force $T$, so $F_{\\text{net}} = -k_{\\text{eff}}\\,x$ with $\\dfrac{1}{k_{\\text{eff}}} = \\dfrac{1}{k_1} + \\dfrac{1}{k_2}$. Newton's second law gives $\\dfrac{d^2x}{dt^2} = -\\dfrac{k_{\\text{eff}}}{m}\\,x$: simple harmonic motion.",
+            "(b) $k_{\\text{eff}} = \\dfrac{k_1k_2}{k_1 + k_2} = \\dfrac{(30)(60)}{90}\\ \\text{N/m} = 20\\ \\text{N/m}$, softer than either spring alone. Then $\\omega = \\sqrt{\\dfrac{20\\ \\text{N/m}}{0.20\\ \\text{kg}}} = 10\\ \\text{rad/s}$."
           ],
-          "answer": "The net force is $-(k_1 + k_2)x$, so the motion is simple harmonic with $\\omega = 12\\ \\text{rad/s}$",
+          "answer": "The net force is $-k_{\\text{eff}}x$ with $k_{\\text{eff}} = k_1k_2/(k_1 + k_2)$, so the motion is simple harmonic with $\\omega = 10\\ \\text{rad/s}$",
           "style": "ap",
           "spec": {
             "givens": {
@@ -136,15 +135,15 @@
                 "unit": "N/m"
               },
               "k2": {
-                "value": 42,
+                "value": 60,
                 "unit": "N/m"
               },
               "m": {
-                "value": 0.5,
+                "value": 0.2,
                 "unit": "kg"
               }
             },
-            "expr": "sqrt((k1 + k2)/m)",
+            "expr": "sqrt(k1*k2/((k1 + k2)*m))",
             "unit": "rad/s"
           }
         }
@@ -282,28 +281,24 @@
       "derivation": "**From the solution to the period.** The motion is $x(t) = A\\cos(\\omega t + \\phi)$. A cosine repeats when its argument increases by $2\\pi$, so the period $T$ is the time for which\n\n$$\\omega(t + T) + \\phi = (\\omega t + \\phi) + 2\\pi \\quad\\Longrightarrow\\quad T = \\frac{2\\pi}{\\omega}.$$\n\n**The spring.** Substituting $x = A\\cos(\\omega t + \\phi)$ into $m\\,\\frac{d^2x}{dt^2} = -kx$ gives\n\n$$-mA\\omega^2\\cos(\\omega t + \\phi) = -kA\\cos(\\omega t + \\phi).$$\n\nThe factor $A\\cos(\\omega t + \\phi)$ cancels from both sides, leaving $m\\omega^2 = k$. Therefore\n\n$$\\omega = \\sqrt{\\frac{k}{m}}, \\qquad T = 2\\pi\\sqrt{\\frac{m}{k}}.$$\n\nNotice what cancelled. The amplitude $A$ dropped out because the equation of motion is linear in $x$: every term is proportional to $A$. That cancellation is the reason the period cannot depend on the amplitude.\n\n**Small oscillations in a potential well.** Let $U(x)$ have a minimum at $x_0$, so $\\frac{dU}{dx} = 0$ there. For a small displacement $s = x - x_0$, the force is $F = -\\frac{dU}{dx} \\approx -\\left(\\frac{d^2U}{dx^2}\\right)_{x_0} s$, because the slope of $U$ starts at zero and changes at the rate given by the second derivative. This is $-k_{\\text{eff}}\\,s$, so $\\omega = \\sqrt{k_{\\text{eff}}/m}$.",
       "workedExamples": [
         {
-          "title": "Period of a block on a spring",
-          "prompt": "A $0.30\\ \\text{kg}$ block is attached to a horizontal spring of spring constant $30\\ \\text{N/m}$ on a frictionless surface. It is pulled $0.050\\ \\text{m}$ from equilibrium and released. What is the period of its motion?",
+          "title": "Period from how far a spring sags",
+          "prompt": "When a mass is hung from a vertical spring and allowed to come to rest, it stretches the spring by $9.8\\ \\text{cm}$. The mass is then pulled down a little and released. What is the period of its oscillation? Use $g = 9.8\\ \\text{m/s}^2$.",
           "steps": [
-            "The restoring force is $-kx$, so the motion is simple harmonic with $\\omega = \\sqrt{k/m}$.",
-            "$\\omega = \\sqrt{\\dfrac{30\\ \\text{N/m}}{0.30\\ \\text{kg}}} = \\sqrt{100\\ \\text{s}^{-2}} = 10\\ \\text{rad/s}$.",
-            "$T = \\dfrac{2\\pi}{\\omega} = \\dfrac{2\\pi}{10\\ \\text{rad/s}} = 0.63\\ \\text{s}$. The frequency is $f = 1/T = 1.6\\ \\text{Hz}$.",
-            "The release distance of $0.050\\ \\text{m}$ was never used. It sets the amplitude, not the period: released from $0.10\\ \\text{m}$, the block would still take $0.63\\ \\text{s}$ per cycle."
+            "At rest the spring holds up the weight: $k\\,\\Delta\\ell = mg$, so $\\dfrac{k}{m} = \\dfrac{g}{\\Delta\\ell}$. Neither $k$ nor $m$ is needed on its own.",
+            "Gravity only shifts the equilibrium, so the motion is SHM with $\\omega = \\sqrt{k/m} = \\sqrt{g/\\Delta\\ell} = \\sqrt{\\dfrac{9.8\\ \\text{m/s}^2}{0.098\\ \\text{m}}} = 10\\ \\text{rad/s}$.",
+            "$T = \\dfrac{2\\pi}{\\omega} = 2\\pi\\sqrt{\\dfrac{\\Delta\\ell}{g}} = 0.63\\ \\text{s}$. The frequency is $f = 1/T = 1.6\\ \\text{Hz}$.",
+            "How far the mass was pulled down was never given, because it sets the amplitude, not the period. A heavier mass on the same spring would sag further and oscillate more slowly."
           ],
-          "answer": "$T = 0.63\\ \\text{s}$, whatever the amplitude",
+          "answer": "$T = 2\\pi\\sqrt{\\Delta\\ell/g} = 0.63\\ \\text{s}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "m": {
-                "value": 0.3,
-                "unit": "kg"
-              },
-              "k": {
-                "value": 30,
-                "unit": "N/m"
+              "dl": {
+                "value": 0.098,
+                "unit": "m"
               }
             },
-            "expr": "2*pi*sqrt(m/k)",
+            "expr": "2*pi*sqrt(dl/g)",
             "unit": "s"
           }
         },
@@ -546,16 +541,15 @@
       "derivation": "**Velocity and acceleration.** Start from $x(t) = A\\cos(\\omega t + \\phi)$ and use the chain rule, remembering that the derivative of $\\omega t + \\phi$ with respect to $t$ is $\\omega$:\n\n$$v = \\frac{dx}{dt} = -A\\omega\\sin(\\omega t + \\phi), \\qquad a = \\frac{dv}{dt} = -A\\omega^2\\cos(\\omega t + \\phi).$$\n\nSince sine and cosine never exceed 1 in magnitude, $v_{\\text{max}} = A\\omega$ and $a_{\\text{max}} = A\\omega^2$.\n\n**Amplitude and phase from the start of the motion.** Let the position and velocity at $t = 0$ be $x_0$ and $v_0$. Setting $t = 0$ in the two functions gives\n\n$$x_0 = A\\cos\\phi, \\qquad v_0 = -A\\omega\\sin\\phi.$$\n\nDivide the second by $\\omega$, square both and add. Because $\\cos^2\\phi + \\sin^2\\phi = 1$,\n\n$$x_0^2 + \\left(\\frac{v_0}{\\omega}\\right)^2 = A^2 \\quad\\Longrightarrow\\quad A = \\sqrt{x_0^2 + \\left(\\frac{v_0}{\\omega}\\right)^2}.$$\n\nDividing the second equation by the first instead gives $\\tan\\phi = -\\dfrac{v_0}{\\omega x_0}$. A tangent has two solutions half a cycle apart, so choose the $\\phi$ for which $\\cos\\phi$ has the sign of $x_0$ and $\\sin\\phi$ has the sign of $-v_0$.",
       "workedExamples": [
         {
-          "title": "Velocity at a given time",
-          "prompt": "A block on a spring moves according to $x(t) = (0.080\\ \\text{m})\\cos(5.0t)$, with $t$ in seconds and the angle in radians. What is the block's velocity at $t = 0.20\\ \\text{s}$?",
+          "title": "When the block reaches a given position",
+          "prompt": "A block on a spring moves according to $x(t) = (0.080\\ \\text{m})\\cos(5.0t)$, with $t$ in seconds and the angle in radians. At what time does the block first reach $x = -0.040\\ \\text{m}$, and how fast is it moving then?",
           "steps": [
-            "Read off the constants: $A = 0.080\\ \\text{m}$, $\\omega = 5.0\\ \\text{rad/s}$ and $\\phi = 0$.",
-            "Differentiate the position: $v(t) = \\dfrac{dx}{dt} = -A\\omega\\sin(\\omega t) = -(0.080\\ \\text{m})(5.0\\ \\text{rad/s})\\sin(5.0t) = -(0.40\\ \\text{m/s})\\sin(5.0t)$.",
-            "At $t = 0.20\\ \\text{s}$ the argument is $\\omega t = (5.0)(0.20) = 1.0\\ \\text{rad}$. With the calculator in radian mode, $\\sin(1.0) = 0.841$.",
-            "$v = -(0.40\\ \\text{m/s})(0.841) = -0.34\\ \\text{m/s}$.",
-            "Check the sign: at this time $x = (0.080\\ \\text{m})\\cos(1.0) = +0.043\\ \\text{m}$. The block was released from $+0.080\\ \\text{m}$ and is on its way in toward equilibrium, so a negative velocity is right."
+            "Read off the constants: $A = 0.080\\ \\text{m}$, $\\omega = 5.0\\ \\text{rad/s}$ and $\\phi = 0$. The block starts at $+A$, at rest.",
+            "Set $x(t) = -0.040\\ \\text{m}$: $\\cos(5.0t) = -0.040/0.080 = -0.50$. In radian mode, $\\cos^{-1}(-0.50) = 2.09\\ \\text{rad}$, so the first time is $t = 2.09/5.0 = 0.42\\ \\text{s}$.",
+            "That is a third of a period, $T = 2\\pi/\\omega = 1.26\\ \\text{s}$: the block has passed equilibrium and is halfway out to $-A$.",
+            "Differentiate for the velocity: $v = -A\\omega\\sin(\\omega t) = -(0.40\\ \\text{m/s})\\sin(2.09) = -0.35\\ \\text{m/s}$, negative because the block is still heading out toward $-A$."
           ],
-          "answer": "$v = -0.34\\ \\text{m/s}$ (moving toward equilibrium)",
+          "answer": "$t = 0.42\\ \\text{s}$, when it is moving at $0.35\\ \\text{m/s}$ in the $-x$ direction",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -567,43 +561,47 @@
                 "value": 5,
                 "unit": "rad/s"
               },
-              "t": {
-                "value": 0.2,
-                "unit": "s"
+              "x": {
+                "value": -0.04,
+                "unit": "m"
               }
             },
-            "expr": "-A*w*sin(w*t)",
-            "unit": "m/s"
+            "expr": "acos(x/A)/w",
+            "unit": "s"
           }
         },
         {
-          "title": "Writing the motion from its initial conditions",
-          "prompt": "A cart on a spring oscillates with angular frequency $8.0\\ \\text{rad/s}$. At $t = 0$ the cart is at $x_0 = +0.060\\ \\text{m}$ and has velocity $v_0 = -0.64\\ \\text{m/s}$. Determine the amplitude of the motion and write an expression for $x(t)$.",
+          "title": "Amplitude and frequency from two snapshots",
+          "prompt": "A motion sensor watches a cart oscillating in simple harmonic motion on a spring. When the cart is $0.060\\ \\text{m}$ from equilibrium its speed is $0.40\\ \\text{m/s}$; when it is $0.080\\ \\text{m}$ from equilibrium its speed is $0.30\\ \\text{m/s}$. Determine the angular frequency and the amplitude of the motion.",
           "steps": [
-            "Write $x(t) = A\\cos(\\omega t + \\phi)$, so $v(t) = -A\\omega\\sin(\\omega t + \\phi)$. At $t = 0$: $A\\cos\\phi = x_0 = 0.060\\ \\text{m}$ and $A\\sin\\phi = -\\dfrac{v_0}{\\omega} = \\dfrac{0.64\\ \\text{m/s}}{8.0\\ \\text{rad/s}} = 0.080\\ \\text{m}$.",
-            "Square and add: $A = \\sqrt{(0.060\\ \\text{m})^2 + (0.080\\ \\text{m})^2} = 0.10\\ \\text{m}$.",
-            "Divide: $\\tan\\phi = \\dfrac{0.080}{0.060} = 1.33$. Both $\\cos\\phi$ and $\\sin\\phi$ are positive, so $\\phi$ lies in the first quadrant: $\\phi = 0.93\\ \\text{rad}$.",
-            "Therefore $x(t) = (0.10\\ \\text{m})\\cos(8.0t + 0.93)$, with $t$ in seconds.",
-            "Check: $x(0) = (0.10\\ \\text{m})\\cos(0.93) = 0.060\\ \\text{m}$ and $v(0) = -(0.10\\ \\text{m})(8.0\\ \\text{rad/s})\\sin(0.93) = -0.64\\ \\text{m/s}$, as given."
+            "At any instant the time can be treated as a new $t = 0$, so the relation from the derivation holds at every point of the motion: $x^2 + (v/\\omega)^2 = A^2$.",
+            "Write it for both snapshots: $x_1^2 + v_1^2/\\omega^2 = A^2$ and $x_2^2 + v_2^2/\\omega^2 = A^2$. Subtract to remove $A$: $\\omega^2 = \\dfrac{v_1^2 - v_2^2}{x_2^2 - x_1^2} = \\dfrac{0.16 - 0.090}{0.0064 - 0.0036}\\ \\text{s}^{-2} = 25\\ \\text{s}^{-2}$, so $\\omega = 5.0\\ \\text{rad/s}$.",
+            "Then $A = \\sqrt{x_1^2 + (v_1/\\omega)^2} = \\sqrt{(0.060)^2 + (0.40/5.0)^2}\\ \\text{m} = 0.10\\ \\text{m}$.",
+            "Check with the second snapshot: $\\sqrt{(0.080)^2 + (0.30/5.0)^2} = 0.10\\ \\text{m}$, as it must be.",
+            "The signs of $x$ and $v$ were not needed: only squares enter."
           ],
-          "answer": "$A = 0.10\\ \\text{m}$ and $x(t) = (0.10\\ \\text{m})\\cos(8.0t + 0.93)$",
+          "answer": "$\\omega = 5.0\\ \\text{rad/s}$ and $A = 0.10\\ \\text{m}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "x0": {
+              "x1": {
                 "value": 0.06,
                 "unit": "m"
               },
-              "v0": {
-                "value": -0.64,
+              "v1": {
+                "value": 0.4,
                 "unit": "m/s"
               },
-              "w": {
-                "value": 8,
-                "unit": "rad/s"
+              "x2": {
+                "value": 0.08,
+                "unit": "m"
+              },
+              "v2": {
+                "value": 0.3,
+                "unit": "m/s"
               }
             },
-            "expr": "sqrt(x0^2 + (v0/w)^2)",
+            "expr": "sqrt((x2^2*v1^2 - x1^2*v2^2)/(v1^2 - v2^2))",
             "unit": "m"
           }
         }
@@ -664,7 +662,7 @@
         "7.1",
         "7.2"
       ],
-      "teacherNotes": "Have students sketch $x$, $v$ and $a$ on aligned time axes and mark, on all three, the instants of maximum speed and maximum acceleration; most errors in this topic are placing those at the wrong points. Ask \"what is the slope doing here?\" rather than \"what is the formula?\". On calculations, the two reliable slips are a calculator left in degree mode and a phase constant taken from $\\tan^{-1}$ without checking the quadrant, so require a check of $x(0)$ and $v(0)$ at the end, as in the second example. Set 7C practises these."
+      "teacherNotes": "Have students sketch $x$, $v$ and $a$ on aligned time axes and mark, on all three, the instants of maximum speed and maximum acceleration; most errors in this topic are placing those at the wrong points. Ask \"what is the slope doing here?\" rather than \"what is the formula?\". On calculations, the two reliable slips are a calculator left in degree mode and a phase constant taken from $\\tan^{-1}$ without checking the quadrant, so require a check of the answer against the given data at the end, as in the second example. Set 7C practises these."
     },
     {
       "topic": "7.4",
@@ -768,16 +766,15 @@
       "derivation": "**The energy is constant.** Substitute $x = A\\cos(\\omega t + \\phi)$ and $v = -A\\omega\\sin(\\omega t + \\phi)$ into the two energies, using $m\\omega^2 = k$:\n\n$$K = \\tfrac{1}{2}mv^2 = \\tfrac{1}{2}mA^2\\omega^2\\sin^2(\\omega t + \\phi) = \\tfrac{1}{2}kA^2\\sin^2(\\omega t + \\phi),$$\n\n$$U_s = \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}kA^2\\cos^2(\\omega t + \\phi).$$\n\nAdding them, and using $\\sin^2 + \\cos^2 = 1$,\n\n$$E = K + U_s = \\tfrac{1}{2}kA^2.$$\n\nThe time has disappeared: the total never changes, although each part does.\n\n**From energy back to the equation of motion.** The argument also runs the other way. If $E = \\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2$ is constant, its time derivative is zero. Using the chain rule, with $\\frac{dx}{dt} = v$ and $\\frac{dv}{dt} = a$,\n\n$$\\frac{dE}{dt} = mv\\,\\frac{dv}{dt} + kx\\,\\frac{dx}{dt} = v\\,(ma + kx) = 0.$$\n\nThe velocity is not zero throughout the motion, so $ma + kx = 0$, which is $\\frac{d^2x}{dt^2} = -\\frac{k}{m}x$. This gives a second way to find $\\omega$ for an unfamiliar oscillator: write its energy in the form $\\tfrac{1}{2}(\\text{inertia})v^2 + \\tfrac{1}{2}(\\text{stiffness})x^2$, and $\\omega^2$ is the stiffness divided by the inertia.",
       "workedExamples": [
         {
-          "title": "Speed at a given displacement",
-          "prompt": "A $0.20\\ \\text{kg}$ block on a frictionless surface is attached to a spring of spring constant $45\\ \\text{N/m}$ and oscillates with amplitude $0.10\\ \\text{m}$. How fast is the block moving when it is $0.060\\ \\text{m}$ from equilibrium?",
+          "title": "Amplitude from a sharp tap",
+          "prompt": "A $0.20\\ \\text{kg}$ block sits at rest at the equilibrium position of a horizontal spring of spring constant $45\\ \\text{N/m}$ on a frictionless surface. A sharp tap gives it a speed of $1.5\\ \\text{m/s}$. How far from equilibrium does it travel before it turns around?",
           "steps": [
-            "No time is given, only positions, so use conservation of energy for the block–spring system: $\\tfrac{1}{2}mv^2 + \\tfrac{1}{2}kx^2 = \\tfrac{1}{2}kA^2$.",
-            "Solve for the speed: $v = \\sqrt{\\dfrac{k}{m}\\left(A^2 - x^2\\right)}$.",
-            "$A^2 - x^2 = (0.10\\ \\text{m})^2 - (0.060\\ \\text{m})^2 = 0.0100 - 0.0036 = 0.0064\\ \\text{m}^2$, and $\\dfrac{k}{m} = \\dfrac{45\\ \\text{N/m}}{0.20\\ \\text{kg}} = 225\\ \\text{s}^{-2}$.",
-            "$v = \\sqrt{(225\\ \\text{s}^{-2})(0.0064\\ \\text{m}^2)} = \\sqrt{1.44\\ \\text{m}^2/\\text{s}^2} = 1.2\\ \\text{m/s}$.",
-            "Check: the maximum speed is $A\\omega = (0.10\\ \\text{m})(15\\ \\text{rad/s}) = 1.5\\ \\text{m/s}$, and the block is slower than that away from equilibrium, as it should be."
+            "No time is asked for, only a distance, so use conservation of energy for the block–spring system. Just after the tap the block is at $x = 0$, so all the energy is kinetic: $E = \\tfrac{1}{2}mv_0^2$.",
+            "At a turning point the block is momentarily at rest, so all the energy is in the spring: $\\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv_0^2$.",
+            "Solve for the amplitude: $A = v_0\\sqrt{\\dfrac{m}{k}} = (1.5\\ \\text{m/s})\\sqrt{\\dfrac{0.20\\ \\text{kg}}{45\\ \\text{N/m}}} = (1.5\\ \\text{m/s})(0.0667\\ \\text{s}) = 0.10\\ \\text{m}$.",
+            "Check: this is $A = v_{\\text{max}}/\\omega$ with $\\omega = \\sqrt{k/m} = 15\\ \\text{rad/s}$, the same as $v_{\\text{max}} = A\\omega$ read backwards. A tap twice as hard would double the amplitude, not quadruple it."
           ],
-          "answer": "The speed is $1.2\\ \\text{m/s}$",
+          "answer": "The block travels $0.10\\ \\text{m}$ from equilibrium",
           "style": "stepped",
           "spec": {
             "givens": {
@@ -789,17 +786,13 @@
                 "value": 45,
                 "unit": "N/m"
               },
-              "A": {
-                "value": 0.1,
-                "unit": "m"
-              },
-              "x": {
-                "value": 0.06,
-                "unit": "m"
+              "v_0": {
+                "value": 1.5,
+                "unit": "m/s"
               }
             },
-            "expr": "sqrt(k/m*(A^2 - x^2))",
-            "unit": "m/s"
+            "expr": "v_0*sqrt(m/k)",
+            "unit": "m"
           }
         },
         {
@@ -1014,21 +1007,21 @@
           }
         },
         {
-          "title": "A disc swinging about a point on its rim",
-          "prompt": "A uniform solid disc of mass $1.5\\ \\text{kg}$ and radius $0.200\\ \\text{m}$ hangs from a frictionless horizontal pin through a small hole at its rim and swings in its own plane through small angles. A disc's rotational inertia about its centre is $\\tfrac{1}{2}MR^2$, and $g = 9.8\\ \\text{m/s}^2$. Derive an expression for the period and calculate its value.\n\n```dg\nscene\nceil 2.2 -1..1\nhinge 0,2.2\nball D 0,1.2 r=1\ndot 0,1.2 \"cm\"\ndim 0,2.2 0,1.2 \"R\" off=-30\n```",
+          "title": "Where to drill a metre stick for the fastest swing",
+          "prompt": "A uniform metre stick ($L = 1.00\\ \\text{m}$, $I_{\\text{cm}} = \\tfrac{1}{12}ML^2$) is hung from a frictionless pin through a hole a distance $d$ from its centre and swings through small angles, with $g = 9.8\\ \\text{m/s}^2$. Find the value of $d$ that gives the shortest period, and calculate that period.\n\n```dg\nscene\nhinge 0,2.2\nrod 0,2.83 0,-0.17\ndot 0,1.33 \"cm\"\ndim 0,2.2 0,1.33 \"d\" off=-30\n```",
           "steps": [
-            "The disc is a physical pendulum. Its centre of mass is at its centre, a distance $d = R$ from the pivot.",
-            "The rotational inertia must be taken about the pivot. By the parallel-axis theorem, $I = I_{\\text{cm}} + Md^2 = \\tfrac{1}{2}MR^2 + MR^2 = \\tfrac{3}{2}MR^2$.",
-            "For a displacement $\\theta$, gravity's torque about the pin is $\\tau = -MgR\\sin\\theta \\approx -MgR\\,\\theta$. Newton's second law for rotation gives $\\tfrac{3}{2}MR^2\\,\\dfrac{d^2\\theta}{dt^2} = -MgR\\,\\theta$, so $\\dfrac{d^2\\theta}{dt^2} = -\\dfrac{2g}{3R}\\,\\theta$.",
-            "This is the SHM equation with $\\omega^2 = \\dfrac{2g}{3R}$, so $T = \\dfrac{2\\pi}{\\omega} = 2\\pi\\sqrt{\\dfrac{3R}{2g}}$. The mass has cancelled.",
-            "$T = 2\\pi\\sqrt{\\dfrac{3(0.200\\ \\text{m})}{2(9.8\\ \\text{m/s}^2)}} = 2\\pi\\sqrt{0.0306\\ \\text{s}^2} = 1.10\\ \\text{s}$."
+            "The stick is a physical pendulum. By the parallel-axis theorem its rotational inertia about the pin is $I = \\tfrac{1}{12}ML^2 + Md^2$, so $T = 2\\pi\\sqrt{\\dfrac{I}{Mgd}} = 2\\pi\\sqrt{\\dfrac{L^2/12 + d^2}{gd}}$. The mass cancels.",
+            "Two effects compete. A small $d$ means a weak gravitational torque, $Mgd\\,\\theta$; a large $d$ means a large $Md^2$. The period is shortest where $f(d) = \\dfrac{L^2/12 + d^2}{d} = \\dfrac{L^2}{12d} + d$ is smallest.",
+            "Set the derivative to zero: $\\dfrac{df}{dd} = -\\dfrac{L^2}{12d^2} + 1 = 0$, so $d = \\dfrac{L}{\\sqrt{12}} = 0.289\\ \\text{m}$ from the centre. The second derivative, $L^2/(6d^3)$, is positive, so this is a minimum.",
+            "There $f = 2d$, so $T_{\\min} = 2\\pi\\sqrt{\\dfrac{2d}{g}} = 2\\pi\\sqrt{\\dfrac{2(0.289\\ \\text{m})}{9.8\\ \\text{m/s}^2}} = 1.53\\ \\text{s}$.",
+            "Check: hung from one end ($d = 0.50\\ \\text{m}$) the same formula gives $1.64\\ \\text{s}$, longer, as it must be."
           ],
-          "answer": "$T = 2\\pi\\sqrt{\\dfrac{3R}{2g}} = 1.10\\ \\text{s}$",
+          "answer": "$d = L/\\sqrt{12} = 0.289\\ \\text{m}$ from the centre, giving $T_{\\min} = 1.53\\ \\text{s}$",
           "style": "ap",
           "spec": {
             "givens": {
-              "R": {
-                "value": 0.2,
+              "L": {
+                "value": 1,
                 "unit": "m"
               },
               "g": {
@@ -1036,7 +1029,7 @@
                 "unit": "m/s^2"
               }
             },
-            "expr": "2*pi*sqrt(3*R/(2*g))",
+            "expr": "2*pi*sqrt(2*L/(sqrt(12)*g))",
             "unit": "s"
           }
         }

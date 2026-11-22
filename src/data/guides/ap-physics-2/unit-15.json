@@ -345,32 +345,28 @@
           }
         },
         {
-          "title": "A photon with energy to spare",
-          "prompt": "A hydrogen atom is in the $n = 2$ level when it absorbs a photon of energy $4.00\\ \\text{eV}$. The ground-state energy of hydrogen is $-13.6\\ \\text{eV}$. Show that the electron is freed from the atom, and determine its kinetic energy once it is far away.",
+          "title": "Exciting hydrogen by a collision",
+          "prompt": "An electron with $12.5\\ \\text{eV}$ of kinetic energy collides with a hydrogen atom in its ground state. The ground-state energy of hydrogen is $-13.6\\ \\text{eV}$. Unlike a photon, a colliding electron can give the atom any part of its kinetic energy. Determine the highest level the atom can be raised to, and the electron's kinetic energy afterwards if that happens. Explain why a $12.5\\ \\text{eV}$ photon would behave differently.",
           "steps": [
-            "The energy of the $n = 2$ level is $E_2 = \\dfrac{-13.6\\ \\text{eV}}{2^2} = -3.40\\ \\text{eV}$.",
-            "A free electron at rest has energy zero, so freeing the electron from $n = 2$ takes $0 - (-3.40) = 3.40\\ \\text{eV}$. The photon brings $4.00\\ \\text{eV}$, which is more than enough, so the atom is ionized.",
-            "Energy is conserved: the photon's energy goes into lifting the electron to zero, and whatever is left becomes kinetic energy. $K = 4.00\\ \\text{eV} - 3.40\\ \\text{eV} = 0.60\\ \\text{eV}$.",
-            "This absorption is allowed even though $4.00\\ \\text{eV}$ matches no gap between levels, because above zero the electron is free and can have any energy. A $2.20\\ \\text{eV}$ photon, by contrast, could neither ionize the atom nor match a jump from $n = 2$ (those need $1.89$, $2.55$, $2.86\\ \\text{eV}$, ...), so it would not be absorbed."
+            "Using $E_n = -13.6\\ \\text{eV}/n^2$: $E_2 = -3.40$, $E_3 = -1.51$ and $E_4 = -0.85\\ \\text{eV}$. Raising the atom from the ground state takes $10.2\\ \\text{eV}$ to reach $n = 2$, $12.09\\ \\text{eV}$ to reach $n = 3$ and $12.75\\ \\text{eV}$ to reach $n = 4$.",
+            "The electron has $12.5\\ \\text{eV}$: enough for $n = 3$ but not for $n = 4$. So $n = 3$ is the highest level it can reach.",
+            "Energy is conserved, so the electron keeps what the jump does not use: $K = 12.5\\ \\text{eV} - 12.09\\ \\text{eV} = 0.41\\ \\text{eV}$.",
+            "A photon is absorbed whole or not at all. $12.5\\ \\text{eV}$ matches no gap from the ground state and is too little to ionize the atom ($13.6\\ \\text{eV}$), so a $12.5\\ \\text{eV}$ photon would pass through without being absorbed."
           ],
-          "answer": "The atom is ionized; the electron leaves with $K = 0.60\\ \\text{eV}$",
+          "answer": "Up to $n = 3$, leaving the electron with $K = 0.41\\ \\text{eV}$; a $12.5\\ \\text{eV}$ photon would not be absorbed at all",
           "style": "ap",
           "spec": {
             "givens": {
-              "E_photon": {
-                "value": 4,
+              "K": {
+                "value": 12.5,
                 "unit": "eV"
               },
               "E1": {
                 "value": -13.6,
                 "unit": "eV"
-              },
-              "n": {
-                "value": 2,
-                "unit": ""
               }
             },
-            "expr": "E_photon + E1/n^2",
+            "expr": "K + E1 - E1/9",
             "unit": "eV"
           }
         }
@@ -406,8 +402,8 @@
           "a": "$n = 2 \\to 1$. Its gap is $10.2\\ \\text{eV}$ against $1.89\\ \\text{eV}$, and a larger photon energy means a shorter wavelength ($\\lambda = hc/E$)."
         },
         {
-          "q": "A hydrogen atom in the ground state is hit by a photon of energy $11.0\\ \\text{eV}$. What happens?",
-          "a": "Nothing: the photon is not absorbed. Reaching $n = 2$ takes $10.2\\ \\text{eV}$ and $n = 3$ takes $12.1\\ \\text{eV}$; $11.0\\ \\text{eV}$ matches no gap and is too little to ionize."
+          "q": "A hydrogen atom in the ground state is hit by a photon of energy $12.75\\ \\text{eV}$. What happens?",
+          "a": "The photon is absorbed and the atom jumps to $n = 4$: $E_4 - E_1 = -0.85 - (-13.6) = 12.75\\ \\text{eV}$, an exact match to that gap."
         }
       ],
       "tryIt": {
@@ -489,32 +485,32 @@
       ],
       "workedExamples": [
         {
-          "title": "Emission lines from three levels",
-          "prompt": "The atoms of a gas have a ground state at $-8.0\\ \\text{eV}$ and excited levels at $-4.9\\ \\text{eV}$ and $-2.5\\ \\text{eV}$. An electric discharge excites the atoms to the top level. How many different emission lines can the gas produce, and what is the longest wavelength among them? Use $hc = 1240\\ \\text{eV·nm}$.",
+          "title": "Two small jumps or one big one",
+          "prompt": "An excited atom drops from level C to level B, emitting a photon of wavelength $750\\ \\text{nm}$, and then from level B to the ground state A, emitting a photon of wavelength $310\\ \\text{nm}$. Another atom drops from C straight to A. What is the wavelength of the photon it emits? Use $hc = 1240\\ \\text{eV·nm}$.",
           "steps": [
-            "List every downward jump. From the top level the atom can drop to the middle level or straight to the ground state, and from the middle level it can drop to the ground state. That is three jumps, so three lines.",
-            "Find each gap. Top to middle: $-2.5 - (-4.9) = 2.4\\ \\text{eV}$. Middle to ground: $-4.9 - (-8.0) = 3.1\\ \\text{eV}$. Top to ground: $-2.5 - (-8.0) = 5.5\\ \\text{eV}$.",
-            "The longest wavelength belongs to the photon with the least energy, because $\\lambda = hc/\\Delta E$. That is the $2.4\\ \\text{eV}$ jump.",
-            "$\\lambda = \\dfrac{1240\\ \\text{eV·nm}}{2.4\\ \\text{eV}} = 517\\ \\text{nm}$, in the green. The other two lines are at $1240/3.1 = 400\\ \\text{nm}$ and $1240/5.5 = 225\\ \\text{nm}$."
+            "Turn each wavelength into a photon energy, which is the gap between two levels: C to B, $\\dfrac{1240\\ \\text{eV·nm}}{750\\ \\text{nm}} = 1.65\\ \\text{eV}$; B to A, $\\dfrac{1240\\ \\text{eV·nm}}{310\\ \\text{nm}} = 4.00\\ \\text{eV}$.",
+            "The direct jump from C to A spans both gaps, so its photon carries their sum: $\\Delta E = 1.65\\ \\text{eV} + 4.00\\ \\text{eV} = 5.65\\ \\text{eV}$. Energies add; wavelengths do not.",
+            "$\\lambda = \\dfrac{hc}{\\Delta E} = \\dfrac{1240\\ \\text{eV·nm}}{5.65\\ \\text{eV}} = 219\\ \\text{nm}$, in the ultraviolet.",
+            "Check: adding the wavelengths would give $1060\\ \\text{nm}$, longer than either, which would mean less energy for the bigger jump. The largest gap must give the shortest wavelength, and $219\\ \\text{nm}$ is shorter than both."
           ],
-          "answer": "Three lines; the longest wavelength is $517\\ \\text{nm}$",
+          "answer": "$\\lambda = 219\\ \\text{nm}$",
           "style": "stepped",
           "spec": {
             "givens": {
-              "E3": {
-                "value": -2.5,
-                "unit": "eV"
+              "l1": {
+                "value": 750,
+                "unit": "nm"
               },
-              "E2": {
-                "value": -4.9,
-                "unit": "eV"
+              "l2": {
+                "value": 310,
+                "unit": "nm"
               },
               "hc": {
                 "value": 1240,
                 "unit": "eV·nm"
               }
             },
-            "expr": "hc/(E3 - E2)",
+            "expr": "hc/(hc/l1 + hc/l2)",
             "unit": "nm"
           }
         },
@@ -689,15 +685,15 @@
           }
         },
         {
-          "title": "Power from a heated sphere",
-          "prompt": "A solid metal sphere of radius $5.0\\ \\text{cm}$ is heated to $800\\ \\text{K}$ and radiates like a blackbody. Calculate the power it radiates. Then, without recalculating from scratch, determine what happens to the radiated power and to the peak wavelength if the sphere is heated to $1600\\ \\text{K}$. Use $\\sigma = 5.67 \\times 10^{-8}\\ \\text{W/(m}^2\\text{·K}^4)$.",
+          "title": "The temperature of the Sun's surface",
+          "prompt": "The Sun radiates energy at a rate of $3.85 \\times 10^{26}\\ \\text{W}$, and its radius is $6.96 \\times 10^8\\ \\text{m}$. Treating the Sun as a blackbody, estimate the temperature of its surface. Then explain why a 10% error in the measured power would change this estimate by only about 2.5%. Use $\\sigma = 5.67 \\times 10^{-8}\\ \\text{W/(m}^2\\text{·K}^4)$.",
           "steps": [
-            "The radiating surface is the sphere's surface: $A = 4\\pi r^2 = 4\\pi(0.050\\ \\text{m})^2 = 0.0314\\ \\text{m}^2$.",
-            "$P = \\sigma A T^4 = (5.67 \\times 10^{-8})(0.0314)(800)^4$. Since $800^4 = 4.10 \\times 10^{11}$, this gives $P = 7.3 \\times 10^{2}\\ \\text{W}$.",
-            "Going from $800\\ \\text{K}$ to $1600\\ \\text{K}$ doubles the absolute temperature. The area is unchanged and $P \\propto T^4$, so the power becomes $2^4 = 16$ times larger, about $1.2 \\times 10^{4}\\ \\text{W}$.",
-            "By Wien's law $\\lambda_{\\max} \\propto 1/T$, so doubling the temperature halves the peak wavelength, from $3.6\\ \\mu\\text{m}$ to $1.8\\ \\mu\\text{m}$. The peak is still in the infrared, but more of the curve now reaches the visible and the sphere glows brighter and less red."
+            "The Sun radiates from its whole surface: $A = 4\\pi R^2 = 4\\pi(6.96 \\times 10^8\\ \\text{m})^2 = 6.09 \\times 10^{18}\\ \\text{m}^2$.",
+            "Solve $P = \\sigma A T^4$ for the temperature: $T^4 = \\dfrac{P}{\\sigma A} = \\dfrac{3.85 \\times 10^{26}}{(5.67 \\times 10^{-8})(6.09 \\times 10^{18})}\\ \\text{K}^4 = 1.12 \\times 10^{15}\\ \\text{K}^4$.",
+            "Take the fourth root by taking the square root twice: $\\sqrt{1.12 \\times 10^{15}} = 3.34 \\times 10^7$, and $\\sqrt{3.34 \\times 10^7} = 5.78 \\times 10^3$. So $T = 5.78 \\times 10^3\\ \\text{K}$.",
+            "Because $T = (P/\\sigma A)^{1/4}$, multiplying $P$ by $1.1$ multiplies $T$ by $1.1^{1/4} = 1.024$, only about 2.5% more. The steep $T^4$ law that makes power so sensitive to temperature makes the temperature insensitive to the power."
           ],
-          "answer": "$P = 7.3 \\times 10^{2}\\ \\text{W}$ at $800\\ \\text{K}$; at $1600\\ \\text{K}$ the power is 16 times larger and the peak wavelength is halved",
+          "answer": "$T = 5.78 \\times 10^3\\ \\text{K}$; since $T \\propto P^{1/4}$, a 10% change in $P$ changes $T$ by only about 2.5%",
           "style": "ap",
           "spec": {
             "givens": {
@@ -705,17 +701,17 @@
                 "value": 5.67e-8,
                 "unit": "W/(m^2·K^4)"
               },
-              "r": {
-                "value": 5,
-                "unit": "cm"
+              "P": {
+                "value": 3.85e+26,
+                "unit": "W"
               },
-              "T": {
-                "value": 800,
-                "unit": "K"
+              "R": {
+                "value": 696000000.0,
+                "unit": "m"
               }
             },
-            "expr": "sigma*4*pi*r^2*T^4",
-            "unit": "W"
+            "expr": "sqrt(sqrt(P/(sigma*4*pi*R^2)))",
+            "unit": "K"
           }
         }
       ],
@@ -872,33 +868,45 @@
       ],
       "workedExamples": [
         {
-          "title": "Ultraviolet light on zinc",
-          "prompt": "Ultraviolet light of frequency $1.20 \\times 10^{15}\\ \\text{Hz}$ shines on a zinc plate, whose work function is $4.31\\ \\text{eV}$. What is the maximum kinetic energy of the ejected electrons, and what stopping voltage would reduce the current to zero? Use $h = 4.14 \\times 10^{-15}\\ \\text{eV·s}$.",
+          "title": "The current from a laser beam",
+          "prompt": "A $2.0\\ \\text{mW}$ violet laser of wavelength $405\\ \\text{nm}$ shines on a metal whose threshold wavelength is longer than $405\\ \\text{nm}$. One electron is ejected for every $1000$ photons that arrive. What current do the ejected electrons carry? Use $h = 6.63 \\times 10^{-34}\\ \\text{J·s}$, $c = 3.00 \\times 10^8\\ \\text{m/s}$ and $e = 1.60 \\times 10^{-19}\\ \\text{C}$.",
           "steps": [
-            "Find the energy of one photon: $hf = (4.14 \\times 10^{-15}\\ \\text{eV·s})(1.20 \\times 10^{15}\\ \\text{Hz}) = 4.97\\ \\text{eV}$.",
-            "Compare with the work function. $4.97\\ \\text{eV}$ is more than $4.31\\ \\text{eV}$, so each photon can free an electron and electrons are ejected.",
-            "What is left after the electron escapes is its kinetic energy: $K_{\\max} = hf - \\phi = 4.97 - 4.31 = 0.66\\ \\text{eV}$.",
-            "An electron with $0.66\\ \\text{eV}$ of kinetic energy is stopped by climbing a potential difference of $0.66\\ \\text{V}$, so $V_{\\text{stop}} = 0.66\\ \\text{V}$."
+            "Energy of one photon: $E = \\dfrac{hc}{\\lambda} = \\dfrac{(6.63 \\times 10^{-34}\\ \\text{J·s})(3.00 \\times 10^8\\ \\text{m/s})}{405 \\times 10^{-9}\\ \\text{m}} = 4.91 \\times 10^{-19}\\ \\text{J}$, about $3.07\\ \\text{eV}$.",
+            "Photons arriving each second: $\\dfrac{2.0 \\times 10^{-3}\\ \\text{J/s}}{4.91 \\times 10^{-19}\\ \\text{J}} = 4.07 \\times 10^{15}\\ \\text{s}^{-1}$.",
+            "One in $1000$ ejects an electron: $4.07 \\times 10^{12}$ electrons per second. Each carries $1.60 \\times 10^{-19}\\ \\text{C}$, so $I = (4.07 \\times 10^{12}\\ \\text{s}^{-1})(1.60 \\times 10^{-19}\\ \\text{C}) = 6.5 \\times 10^{-7}\\ \\text{A}$.",
+            "Doubling the laser's power would double the current, but not the electrons' maximum kinetic energy, which is set by one photon's energy."
           ],
-          "answer": "$K_{\\max} = 0.66\\ \\text{eV}$; the stopping voltage is $0.66\\ \\text{V}$",
+          "answer": "$I = 6.5 \\times 10^{-7}\\ \\text{A}$",
           "style": "stepped",
           "spec": {
             "givens": {
+              "P": {
+                "value": 2,
+                "unit": "mW"
+              },
+              "lambda": {
+                "value": 405,
+                "unit": "nm"
+              },
               "h": {
-                "value": 4.14e-15,
-                "unit": "eV·s"
+                "value": 6.63e-34,
+                "unit": "J·s"
               },
-              "f": {
-                "value": 1200000000000000,
-                "unit": "Hz"
+              "c": {
+                "value": 300000000.0,
+                "unit": "m/s"
               },
-              "phi": {
-                "value": 4.31,
-                "unit": "eV"
+              "e": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "N": {
+                "value": 1000,
+                "unit": ""
               }
             },
-            "expr": "h*f - phi",
-            "unit": "eV"
+            "expr": "P*lambda/(h*c)/N*e",
+            "unit": "A"
           }
         },
         {
@@ -950,8 +958,8 @@
       ],
       "checkYourself": [
         {
-          "q": "Photons of energy $3.0\\ \\text{eV}$ strike a metal with work function $2.2\\ \\text{eV}$. What is $K_{\\max}$, and what is the stopping voltage?",
-          "a": "$K_{\\max} = 3.0 - 2.2 = 0.8\\ \\text{eV}$, so the stopping voltage is $0.8\\ \\text{V}$."
+          "q": "Photons of energy $3.0\\ \\text{eV}$ eject electrons from a metal, and a stopping voltage of $0.8\\ \\text{V}$ turns back even the fastest. What is the work function of the metal?",
+          "a": "$K_{\\max} = 0.8\\ \\text{eV}$, so $\\phi = hf - K_{\\max} = 3.0 - 0.8 = 2.2\\ \\text{eV}$."
         },
         {
           "q": "Light above the threshold shines on a metal. Its intensity is doubled without changing its colour. What happens to the current and to the stopping voltage?",
