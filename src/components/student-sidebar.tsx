@@ -6,7 +6,7 @@ import { NAV_ICONS } from "./nav-icons";
 
 // Five pages, one question each: what now (Home), what's due (Assignments), how did I do
 // (Grades), my study tools (Study), help if I want it (Raise). `match` lists the routes each
-// page groups; the Study tabs live in components/student/section-tabs.tsx.
+// page groups; the Study tabs (Lessons first) live in components/student/section-tabs.tsx.
 const navSections: NavSection[] = [
   {
     items: [
@@ -24,21 +24,21 @@ const navSections: NavSection[] = [
         match: ["/student/submissions"],
       },
       {
-        href: "/student/notebook",
+        href: "/student/lessons",
         label: "Study",
         icon: NAV_ICONS.study,
-        match: ["/student/vault", "/student/resources"],
+        match: ["/student/guides", "/student/notebook", "/student/vault", "/student/resources", "/student/courses"],
       },
     ],
   },
   {
-    // Raise sits apart from the everyday tools: coursework never requires it.
-    label: "Optional help",
-    items: [{ href: "/student/tutor", label: "Raise", icon: NAV_ICONS.raise }],
-  },
-  {
+    // Raise sits at the bottom, apart from the everyday tools (coursework never requires it),
+    // just above Green Impact, which shows what using it costs.
     placement: "bottom",
-    items: [{ href: "/student/sustainability", label: "Green Impact", icon: NAV_ICONS.impact }],
+    items: [
+      { href: "/student/tutor", label: "Raise", icon: NAV_ICONS.raise },
+      { href: "/student/sustainability", label: "Green Impact", icon: NAV_ICONS.impact },
+    ],
   },
 ];
 

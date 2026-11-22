@@ -23,7 +23,9 @@ export default function StudentLayout({
 
   const isAssignmentView = pathname?.includes("assignment-view");
   const isTutor = pathname?.includes("/student/tutor");
-  const isFullScreen = isAssignmentView || isTutor;
+  // A unit guide is a reader with its own contents sidebar, so the site sidebar steps aside.
+  const isGuideReader = pathname?.startsWith("/student/courses/");
+  const isFullScreen = isAssignmentView || isTutor || isGuideReader;
   
   return (
     <ProtectedRoute allowedRole="student">

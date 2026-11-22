@@ -13,10 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
-import {
-  ArrowRight,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { NAV_ICONS } from "@/components/nav-icons";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
@@ -24,7 +21,8 @@ import { StudentProgressChart } from "@/components/dashboard/student-progress-ch
 import { errorMessage } from "@/lib/error-utils";
 import { parseDueDate } from "@/lib/due-date";
 import { buildStudentRoadmap, type StudentRoadmap } from "@/lib/student-roadmap";
-import { StudentCourseRoadmap } from "@/components/dashboard/student-course-roadmap";
+import { StudentRoadmapSummary } from "@/components/dashboard/student-course-roadmap";
+import { pillClass } from "@/components/student/tones";
 
 interface Stats {
   totalAssignments: number;
@@ -45,6 +43,8 @@ function dateMs(value: FirestoreDate, fallback: number): number {
 interface AssignmentDoc {
   id: string;
   title?: string;
+  description?: string;
+  questions?: unknown[];
   dueDate?: FirestoreDate;
   curriculumSetKey?: unknown;
   curriculumId?: unknown;
@@ -62,6 +62,8 @@ interface SubmissionDoc {
 interface RecentAssignment {
   id: string;
   title: string;
+  description: string;
+  questionCount: number;
   dueDate: FirestoreDate;
   isSubmitted: boolean;
 }
@@ -254,6 +256,8 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           .map((a) => ({
             id: a.id,
             title: a.title || "Untitled",
+            description: typeof a.description === "string" ? a.description : "",
+            questionCount: Array.isArray(a.questions) ? a.questions.length : 0,
             dueDate: a.dueDate,
             isSubmitted: submittedAssignmentIds.has(a.id),
           }))
@@ -265,7 +269,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             const timeB = dateMs(b.dueDate, Infinity);
             return timeA - timeB;
           })
-          .slice(0, 3);
+          .slice(0, 4);
 
         if (!active) return;
         setFirstSubmissionDone(submittedAssignmentIds.size > 0);
@@ -359,7 +363,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
   };
 
   // The list is sorted unsubmitted first, then by due date, so this is the most urgent open one.
-  const nextAssignment = recentAssignments.find((assignment) => !assignment.isSubmitted) ?? null;
+  const openAssignments = recentAssignments.filter((assignment) => !assignment.isSubmitted);
+  const nextAssignment = openAssignments[0] ?? null;
+  // What comes after Next up, shown inside the same card (Home has no separate upcoming list).
+  const laterAssignments = openAssignments.slice(1, 4);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -376,13 +383,13 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
       >
         <RundownDialog
           userRole="student"
-          triggerLabel="Guide"
+          triggerLabel="Help"
           title="How Scorpio is laid out"
           steps={[
             {
               title: "1. Home",
               description:
-                "Start here. Next up names the one assignment to do now, and below it you see your class, your course and how you're doing.",
+                "Start here. Next up names the one assignment to do now and what comes after it, and beside it is your progress through the course.",
               icon: NAV_ICONS.home,
             },
             {
@@ -400,7 +407,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             {
               title: "4. Study",
               description:
-                "Your study tools, in three tabs: Notebook for your own notes and derivations, Formula vault for the equations and constants in your course, and Resources for files your teacher shared.",
+                "Your study tools, in four tabs: Lessons that walk through each unit topic by topic, Notebook for your own notes and derivations, Formula vault for the equations and constants in your course, and Resources for files your teacher shared.",
               icon: NAV_ICONS.study,
             },
             {
@@ -506,8 +513,22 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           <p role="status" className="text-sm text-muted-foreground">
             Loading your assignments…
           </p>
+        ) : roadmap && roadmap.units.some((u) => u.assigned > 0) ? (
+          // The full unit list is on Study > Guides; here it is one small card beside Next up.
+          <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
+            <NextUpCard
+              assignment={nextAssignment}
+              later={laterAssignments}
+              anySubmitted={firstSubmissionDone}
+            />
+            <StudentRoadmapSummary roadmap={roadmap} />
+          </div>
         ) : (
-          <NextUpCard assignment={nextAssignment} anySubmitted={firstSubmissionDone} />
+          <NextUpCard
+            assignment={nextAssignment}
+            later={laterAssignments}
+            anySubmitted={firstSubmissionDone}
+          />
         ))}
 
       <ConfirmDialog
@@ -520,12 +541,6 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         cancelText="Stay"
       />
 
-      {roadmap &&
-        dataReady &&
-        !dashboardError &&
-        !enrollmentError &&
-        roadmap.units.some((u) => u.assigned > 0) && <StudentCourseRoadmap roadmap={roadmap} />}
-
       <StudentProgressChart
         totalAssignments={stats.totalAssignments}
         completedAssignments={stats.completedAssignments}
@@ -533,91 +548,22 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         scores={recentScores}
       />
 
-      <Card className="gap-0 py-0 shadow-none overflow-hidden">
-        <CardHeader className="flex flex-wrap items-center justify-between gap-3 border-b border-border/80 bg-muted/40 px-5 py-3.5">
-          <h2 className="text-sm font-semibold tracking-tight text-foreground">
-            Upcoming assignments
-          </h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className="h-7 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <Link href="/student/assignments">
-              All Assignments <ArrowRight className="size-3.5" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent className="p-0 bg-card">
-          {recentAssignments.length > 0 ? (
-            <ul className="divide-y divide-border">
-              {recentAssignments.map((assignment) => (
-                <li key={assignment.id}>
-                  <Link
-                    href={
-                      assignment.isSubmitted
-                        ? `/student/grades`
-                        : `/student/assignment-view?id=${assignment.id}`
-                    }
-                    className="group flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-muted/30 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
-                  >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="block break-words text-sm font-medium text-foreground transition-colors group-hover:text-primary">
-                          {assignment.title}
-                        </span>
-                        {assignment.isSubmitted && (
-                          <Badge
-                            variant="secondary"
-                            className="text-[10px] h-4.5 px-1.5 font-normal"
-                          >
-                            Completed
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">
-                        {assignment.dueDate
-                          ? `Due ${new Date(dateMs(assignment.dueDate, 0)).toLocaleDateString()}`
-                          : "No due date"}
-                      </span>
-                    </div>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="px-5 py-6 text-sm text-muted-foreground">
-              {dashboardError || enrollmentError
-                ? "Coursework is unavailable."
-                : dataReady
-                  ? "No coursework assigned yet."
-                  : "Loading coursework…"}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
       <section aria-labelledby="study-heading" className="space-y-3 pt-1">
         <h2 id="study-heading" className="text-sm font-semibold tracking-tight text-foreground">
           Study
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Link
-            href="/student/vault"
+            href="/student/lessons"
             className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                Formula vault
+                Lessons
               </span>
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Physics formulas & constants</p>
+            <p className="mt-1 text-xs text-muted-foreground">Unit lessons with worked examples</p>
           </Link>
 
           <Link
@@ -634,16 +580,16 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           </Link>
 
           <Link
-            href="/student/resources"
+            href="/student/vault"
             className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                Resources
+                Formula vault
               </span>
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Course materials & references</p>
+            <p className="mt-1 text-xs text-muted-foreground">Physics formulas & constants</p>
           </Link>
 
           <Link
@@ -673,19 +619,34 @@ function dueText(dueDate: FirestoreDate): { text: string; overdue: boolean } {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate()).getTime();
   const days = Math.round((dueDay - today) / 86_400_000);
-  if (days < 0) return { text: days === -1 ? "1 day overdue" : `${-days} days overdue`, overdue: true };
+  if (days < 0)
+    return { text: days === -1 ? "1 day overdue" : `${-days} days overdue`, overdue: true };
   if (days === 0) return { text: "Due today", overdue: false };
   if (days === 1) return { text: "Due tomorrow", overdue: false };
   if (days <= 7) return { text: `Due in ${days} days`, overdue: false };
-  return { text: `Due ${due.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`, overdue: false };
+  return {
+    text: `Due ${due.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`,
+    overdue: false,
+  };
+}
+
+/**
+ * A course set's title without the course name ("AP Physics 1 · Unit 1B · Representing motion"
+ * -> "Unit 1B · Representing motion"), for the narrow list beside Next up.
+ */
+function shortTitle(title: string): string {
+  const parts = title.split(" · ");
+  return parts.length >= 3 ? parts.slice(1).join(" · ") : title;
 }
 
 /** The one thing to do now: the most urgent open assignment, or a note that nothing is open. */
 function NextUpCard({
   assignment,
+  later,
   anySubmitted,
 }: {
   assignment: RecentAssignment | null;
+  later: RecentAssignment[];
   anySubmitted: boolean;
 }) {
   if (!assignment) {
@@ -712,23 +673,97 @@ function NextUpCard({
     );
   }
   const due = dueText(assignment.dueDate);
+  const dueMs = dateMs(assignment.dueDate, NaN);
   return (
-    <Card className="shadow-none">
-      <CardHeader className="flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Next up</p>
-          <CardTitle className="mt-1 break-words text-lg">{assignment.title}</CardTitle>
-          <CardDescription className={due.overdue ? "font-medium text-destructive" : undefined}>
-            {due.text}
-          </CardDescription>
+    // The assignment to do now on the left, the next few on the right, so the card is full width
+    // with something worth reading in it rather than a title over empty space.
+    <Card className="h-full gap-0 py-0 shadow-none overflow-hidden">
+      <div className="grid h-full md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div className="flex min-w-0 flex-col gap-3 p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Next up
+          </p>
+          <div className="min-w-0 space-y-1.5">
+            <h2 className="break-words text-lg font-semibold tracking-tight">{assignment.title}</h2>
+            {assignment.description && (
+              <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                {assignment.description}
+              </p>
+            )}
+          </div>
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span className={pillClass(due.overdue ? "alert" : "accent")}>{due.text}</span>
+              {!Number.isNaN(dueMs) && (
+                <span>
+                  {new Date(dueMs).toLocaleDateString(undefined, {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              )}
+              {assignment.questionCount > 0 && (
+                <span>
+                  · {assignment.questionCount}{" "}
+                  {assignment.questionCount === 1 ? "question" : "questions"}
+                </span>
+              )}
+            </div>
+            <Button asChild>
+              <Link href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}`}>
+                {anySubmitted ? "Start" : "Start your first assignment"}
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
-        <Button asChild>
-          <Link href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}`}>
-            {anySubmitted ? "Start" : "Start your first assignment"}
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
-      </CardHeader>
+
+        <div className="flex min-w-0 flex-col border-t border-border bg-muted/20 md:border-l md:border-t-0">
+          <div className="flex items-center justify-between gap-2 px-5 pt-4 pb-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              After that
+            </p>
+            <Link
+              href="/student/assignments"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              All <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
+          </div>
+          {later.length > 0 ? (
+            <ul className="flex-1 pb-2">
+              {later.map((a) => {
+                const d = dueText(a.dueDate);
+                return (
+                  <li key={a.id}>
+                    <Link
+                      href={`/student/assignment-view?id=${encodeURIComponent(a.id)}`}
+                      className="group flex items-center justify-between gap-3 px-5 py-2 transition-colors hover:bg-muted/40"
+                    >
+                      <span
+                        title={a.title}
+                        className="min-w-0 truncate text-sm group-hover:text-primary"
+                      >
+                        {shortTitle(a.title)}
+                      </span>
+                      <span
+                        className={`shrink-0 text-xs tabular-nums ${d.overdue ? "text-destructive" : "text-muted-foreground"}`}
+                      >
+                        {d.text}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="px-5 pb-4 text-sm text-muted-foreground">
+              Nothing else is open after this one.
+            </p>
+          )}
+        </div>
+      </div>
     </Card>
   );
 }

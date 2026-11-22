@@ -126,6 +126,9 @@ function AssignmentDetailContent() {
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const id = searchParams ? (searchParams.get("id") ?? "") : "";
+  // Opened from Grades ("Full view"): Back returns there instead of to Assignments.
+  const backHref =
+    searchParams?.get("from") === "grades" ? "/student/grades" : "/student/assignments";
   const router = useRouter();
   const { user, profile } = useAuth();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
@@ -691,7 +694,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
   const handleBackClick = () => {
     if (submitted || !hasStarted) {
-      router.push("/student/assignments");
+      router.push(backHref);
       return;
     }
     setShowLeaveDialog(true);
@@ -1151,7 +1154,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                           )}
                           {guideHref && (
                             <GuideLink href={guideHref} newTab={!submitted}>
-                              Study guide
+                              Lesson
                             </GuideLink>
                           )}
                           <Badge variant="outline">{question.points || 10} pts</Badge>

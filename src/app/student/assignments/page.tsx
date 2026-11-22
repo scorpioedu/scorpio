@@ -6,7 +6,6 @@ import { collection, getDocs, query, where, doc, getDoc } from "firebase/firesto
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { WorkspaceHeader } from "@/components/ui/workspace";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +14,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { groupByUnit } from "@/lib/student-grouping";
+import { groupByUnit, sortByDueThenCourse } from "@/lib/student-grouping";
+import { TONE, pillClass, type Tone } from "@/components/student/tones";
 import { normalisePlan } from "@/lib/curriculum-plan";
 import { getCurriculum } from "@/data/curricula";
 import type { ApCourseId } from "@/data/ap";
@@ -58,6 +58,13 @@ export default function StudentAssignmentsPage() {
   const [apCourse, setApCourse] = useState<ApCourseId | undefined>(undefined);
   /** The course the class follows now; sets from a course it followed before are not on its roadmap. */
   const [classCurriculum, setClassCurriculum] = useState<string | undefined>(undefined);
+  // "todo" (the default): what is still to hand in, by due date then course order, with handed-in
+  // work behind a button. "all": every assignment with the status filter and, for a class on a
+  // course roadmap, grouped by unit.
+  const [view, setView] = useState<"todo" | "all">("todo");
+  const [showSubmitted, setShowSubmitted] = useState(false);
+  // When the page opened, for "due this week" (render must not read the clock).
+  const [openedAt] = useState(() => Date.now());
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("dueDateAsc");
 
@@ -90,8 +97,9 @@ export default function StudentAssignmentsPage() {
             setFollowsCourse(typeof curriculumId === "string");
             setApCourse(getCurriculum(curriculumId)?.apCourse);
             setClassCurriculum(getCurriculum(curriculumId)?.id);
+            // The class's order of sets (the course's own order when the teacher kept it).
             setSetOrder(
-              typeof curriculumId === "string" && classDoc.data()?.curriculumPlan
+              getCurriculum(curriculumId)
                 ? normalisePlan(curriculumId, classDoc.data()?.curriculumPlan).order
                 : undefined,
             );
@@ -161,6 +169,7 @@ export default function StudentAssignmentsPage() {
         formattedDate: "No due date",
         relativeText: isSubmitted ? "Submitted" : "Open",
         urgency: "normal" as const,
+        tone: "quiet" as Tone,
       };
     }
 
@@ -203,7 +212,10 @@ export default function StudentAssignmentsPage() {
       urgency = "normal";
     }
 
-    return { formattedDate, relativeText, urgency };
+    // Overdue in the destructive colour, due within a week in the brand colour, the rest quiet.
+    const tone: Tone =
+      urgency === "past" ? "alert" : urgency !== "submitted" && diffDays <= 7 ? "accent" : "quiet";
+    return { formattedDate, relativeText, urgency, tone };
   }
 
   // Filtering
@@ -221,6 +233,25 @@ export default function StudentAssignmentsPage() {
     pending: assignments.filter((a) => !submissions.has(a.id) && !isPastDue(a.dueDate)).length,
     submitted: assignments.filter((a) => submissions.has(a.id)).length,
     pastDue: assignments.filter((a) => !submissions.has(a.id) && isPastDue(a.dueDate)).length,
+  };
+
+  const toDo = sortByDueThenCourse(
+    assignments.filter((a) => !submissions.has(a.id)),
+    setOrder,
+  );
+  const handedIn = sortByDueThenCourse(
+    assignments.filter((a) => submissions.has(a.id)),
+    setOrder,
+    -1,
+  );
+
+  const weekAhead = openedAt + 7 * 86_400_000;
+  const dueBuckets = {
+    overdue: toDo.filter((a) => isPastDue(a.dueDate)).length,
+    week: toDo.filter(
+      (a) => a.dueDate && !isPastDue(a.dueDate) && new Date(a.dueDate).getTime() <= weekAhead,
+    ).length,
+    later: toDo.filter((a) => !a.dueDate || new Date(a.dueDate).getTime() > weekAhead).length,
   };
 
   // Sorting
@@ -244,18 +275,14 @@ export default function StudentAssignmentsPage() {
     return (
       <li
         key={assignment.id}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-muted/20"
+        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 px-5 py-4 transition-colors hover:bg-muted/20 ${TONE[dateInfo.tone].bar}`}
       >
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="break-words text-sm font-semibold text-foreground">
               {assignment.title}
             </h2>
-            {isSubmitted && (
-              <Badge variant="secondary" className="text-[10px] h-4.5 px-1.5 font-normal">
-                Submitted
-              </Badge>
-            )}
+            {isSubmitted && <span className={pillClass("quiet")}>Submitted</span>}
           </div>
           {assignment.description && (
             <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
@@ -276,17 +303,7 @@ export default function StudentAssignmentsPage() {
             <p className="text-sm font-semibold tabular-nums text-foreground">
               {dateInfo.formattedDate}
             </p>
-            <p
-              className={`text-xs tabular-nums ${
-                dateInfo.urgency === "urgent"
-                  ? "font-medium text-primary"
-                  : dateInfo.urgency === "past"
-                    ? "font-medium text-destructive"
-                    : "text-muted-foreground"
-              }`}
-            >
-              {dateInfo.relativeText}
-            </p>
+            <p className={`${pillClass(dateInfo.tone)} tabular-nums`}>{dateInfo.relativeText}</p>
           </div>
 
           <Button
@@ -307,115 +324,232 @@ export default function StudentAssignmentsPage() {
     );
   };
 
-  const groups = followsCourse ? groupByUnit(filteredAssignments, setOrder, apCourse, classCurriculum) : null;
+  const groups = followsCourse
+    ? groupByUnit(filteredAssignments, setOrder, apCourse, classCurriculum)
+    : null;
 
   return (
     <div className="space-y-6">
       <WorkspaceHeader title="Assignments" description="Open coursework and check what’s due." />
-      <div className="flex flex-wrap gap-2 items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-9">
-              Status:{" "}
-              {(() => {
-                if (filter === "all") return `All (${counts.all})`;
-                if (filter === "submitted") return `Submitted (${counts.submitted})`;
-                if (filter === "pending") return `Pending (${counts.pending})`;
-                if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
-                return "All";
-              })()}{" "}
-              <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onSelect={() => setFilter("all")}>
-              All ({counts.all})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("pending")}>
-              Pending ({counts.pending})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("submitted")}>
-              Submitted ({counts.submitted})
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setFilter("pastDue")}>
-              Past Due ({counts.pastDue})
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {!followsCourse && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9">
-                Sort by:{" "}
-                {(() => {
-                  if (sort === "dueDateAsc") return "Due Date (Earliest)";
-                  if (sort === "dueDateDesc") return "Due Date (Latest)";
-                  if (sort === "titleAsc") return "Title (A–Z)";
-                  if (sort === "titleDesc") return "Title (Z–A)";
-                  return "Due Date (Earliest)";
-                })()}{" "}
-                <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>
-                Due Date (Earliest)
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>
-                Due Date (Latest)
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setSort("titleAsc")}>Title (A–Z)</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setSort("titleDesc")}>Title (Z–A)</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+      <div
+        role="tablist"
+        aria-label="Assignments view"
+        className="inline-flex rounded-lg border border-border bg-muted/40 p-1"
+      >
+        {(
+          [
+            ["todo", `To do${loading ? "" : ` (${toDo.length})`}`],
+            ["all", "All coursework"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={view === id}
+            onClick={() => setView(id)}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              view === id
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Coursework ({filteredAssignments.length})
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {followsCourse
-              ? "By unit, in course order"
-              : sort === "dueDateAsc"
-                ? "Earliest due first"
-                : sort === "dueDateDesc"
-                  ? "Latest due first"
-                  : sort === "titleAsc"
-                    ? "Alphabetical (A–Z)"
-                    : "Alphabetical (Z–A)"}
-          </span>
-        </div>
-
-        {loading ? (
-          <p role="status" className="p-6 text-sm text-muted-foreground">
-            Loading assignments…
-          </p>
-        ) : filteredAssignments.length === 0 ? (
-          <p className="p-6 text-sm text-muted-foreground">No assignments match this view.</p>
-        ) : groups ? (
-          <div>
-            {groups.map((group) => (
-              <section key={group.id} aria-labelledby={`group-${group.id}`}>
-                <h2
-                  id={`group-${group.id}`}
-                  className="border-b border-border/80 bg-muted/20 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                >
-                  {group.label}
-                </h2>
-                <ul className="divide-y divide-border border-b border-border last:border-b-0">
-                  {group.items.map(renderItem)}
-                </ul>
-              </section>
-            ))}
+      {view === "todo" ? (
+        <div className="space-y-4">
+          {!loading && toDo.length > 0 && (
+            <div className="grid grid-cols-3 gap-3" aria-label="What is left">
+              {(
+                [
+                  ["alert", "Overdue", dueBuckets.overdue],
+                  ["accent", "Due this week", dueBuckets.week],
+                  ["quiet", "Later", dueBuckets.later],
+                ] as const
+              ).map(([tone, label, n]) => (
+                <div key={label} className="rounded-xl border border-border bg-card p-3 sm:p-4">
+                  <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                  <p
+                    className={`text-2xl font-semibold tabular-nums ${n > 0 && tone !== "quiet" ? TONE[tone].text : "text-foreground"}`}
+                  >
+                    {n}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                To do ({toDo.length})
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {followsCourse ? "By due date, then course order" : "Earliest due first"}
+              </span>
+            </div>
+            {loading ? (
+              <p role="status" className="p-6 text-sm text-muted-foreground">
+                Loading assignments…
+              </p>
+            ) : toDo.length === 0 ? (
+              <p className="p-6 text-sm text-muted-foreground">
+                {assignments.length === 0
+                  ? "No coursework assigned yet."
+                  : "You’re all caught up. Nothing is left to hand in."}
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">{toDo.map(renderItem)}</ul>
+            )}
           </div>
-        ) : (
-          <ul className="divide-y divide-border">{filteredAssignments.map(renderItem)}</ul>
-        )}
-      </div>
+
+          {!loading && handedIn.length > 0 && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                aria-expanded={showSubmitted}
+                aria-controls="past-submissions"
+                onClick={() => setShowSubmitted((v) => !v)}
+              >
+                {showSubmitted
+                  ? "Hide past submissions"
+                  : `Show past submissions (${handedIn.length})`}
+                <ChevronDown
+                  className={`ml-1.5 size-3.5 opacity-60 transition-transform ${showSubmitted ? "rotate-180" : ""}`}
+                />
+              </Button>
+              {showSubmitted && (
+                <div
+                  id="past-submissions"
+                  className="overflow-hidden rounded-xl border border-border bg-card"
+                >
+                  <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Past submissions ({handedIn.length})
+                    </span>
+                    <span className="text-xs text-muted-foreground">Latest due first</span>
+                  </div>
+                  <ul className="divide-y divide-border">{handedIn.map(renderItem)}</ul>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-2 items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9">
+                  Status:{" "}
+                  {(() => {
+                    if (filter === "all") return `All (${counts.all})`;
+                    if (filter === "submitted") return `Submitted (${counts.submitted})`;
+                    if (filter === "pending") return `Pending (${counts.pending})`;
+                    if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
+                    return "All";
+                  })()}{" "}
+                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem onSelect={() => setFilter("all")}>
+                  All ({counts.all})
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setFilter("pending")}>
+                  Pending ({counts.pending})
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setFilter("submitted")}>
+                  Submitted ({counts.submitted})
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setFilter("pastDue")}>
+                  Past Due ({counts.pastDue})
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {!followsCourse && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9">
+                    Sort by:{" "}
+                    {(() => {
+                      if (sort === "dueDateAsc") return "Due Date (Earliest)";
+                      if (sort === "dueDateDesc") return "Due Date (Latest)";
+                      if (sort === "titleAsc") return "Title (A–Z)";
+                      if (sort === "titleDesc") return "Title (Z–A)";
+                      return "Due Date (Earliest)";
+                    })()}{" "}
+                    <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem onSelect={() => setSort("dueDateAsc")}>
+                    Due Date (Earliest)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setSort("dueDateDesc")}>
+                    Due Date (Latest)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setSort("titleAsc")}>
+                    Title (A–Z)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setSort("titleDesc")}>
+                    Title (Z–A)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-border bg-card">
+            <div className="flex items-center justify-between border-b border-border/80 bg-muted/40 px-5 py-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Coursework ({filteredAssignments.length})
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {followsCourse
+                  ? "By unit, in course order"
+                  : sort === "dueDateAsc"
+                    ? "Earliest due first"
+                    : sort === "dueDateDesc"
+                      ? "Latest due first"
+                      : sort === "titleAsc"
+                        ? "Alphabetical (A–Z)"
+                        : "Alphabetical (Z–A)"}
+              </span>
+            </div>
+
+            {loading ? (
+              <p role="status" className="p-6 text-sm text-muted-foreground">
+                Loading assignments…
+              </p>
+            ) : filteredAssignments.length === 0 ? (
+              <p className="p-6 text-sm text-muted-foreground">No assignments match this view.</p>
+            ) : groups ? (
+              <div>
+                {groups.map((group) => (
+                  <section key={group.id} aria-labelledby={`group-${group.id}`}>
+                    <h2
+                      id={`group-${group.id}`}
+                      className="border-b border-border/80 bg-muted/20 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                    >
+                      {group.label}
+                    </h2>
+                    <ul className="divide-y divide-border border-b border-border last:border-b-0">
+                      {group.items.map(renderItem)}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">{filteredAssignments.map(renderItem)}</ul>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
