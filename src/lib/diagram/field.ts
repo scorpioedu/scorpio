@@ -9,6 +9,7 @@
 // wire x,y out ["I"] [2]             long straight wire seen end-on; current out of / into the page
 // equi [n=7]                         dashed equipotentials at equal steps of potential
 // gauss circle x,y r ["S"]   gauss rect x,y x,y ["S"]     dashed Gaussian surface
+// ampere circle x,y r ["C"]  ampere rect x,y x,y ["C"]    dashed Amperian loop (same outline)
 // test x,y + ["q"] [v=right]         test charge with its computed force (v= for a magnetic force)
 // pt x,y "P"                         labelled point
 //
@@ -58,7 +59,16 @@ type Uniform = {
   line: number;
 };
 type Wire = { p: P; i: number; label?: string; line: number };
-type Gauss = { shape: "circle" | "rect"; a: P; b: P; r: number; label?: string; line: number };
+type Gauss = {
+  /** gauss: a Gaussian surface; ampere: an Amperian loop, drawn the same way */
+  op: "gauss" | "ampere";
+  shape: "circle" | "rect";
+  a: P;
+  b: P;
+  r: number;
+  label?: string;
+  line: number;
+};
 type Test = { p: P; q: number; label?: string; v?: P; line: number };
 type Strip = { c: P; u: P; half: number; sigma: number };
 
@@ -194,21 +204,24 @@ export function renderField(
       case "equipotentials":
         equi = { n: c.kv.n !== undefined ? num(c.kv.n, c.line, errs, "n=") : 7, line: c.line };
         break;
-      case "gauss": {
+      case "gauss":
+      case "ampere": {
+        const op = c.op;
         const shape = c.args[0];
         if (shape === "circle") {
           const a = pair(c.args[1], c.line, errs);
           const r = num(c.args[2], c.line, errs, "radius");
-          if (r > 0) gausses.push({ shape, a, b: a, r, label: lab(c, 3), line: c.line });
+          if (r > 0) gausses.push({ op, shape, a, b: a, r, label: lab(c, 3), line: c.line });
           else
             errs.push({
               line: c.line,
-              msg: "gauss circle needs a centre and a positive radius: gauss circle 0,0 1.5",
+              msg: `${op} circle needs a centre and a positive radius: ${op} circle 0,0 1.5`,
             });
         } else if (shape === "rect") {
           const a = pair(c.args[1], c.line, errs),
             b = pair(c.args[2], c.line, errs);
           gausses.push({
+            op,
             shape,
             a: [Math.min(a[0], b[0]), Math.min(a[1], b[1])],
             b: [Math.max(a[0], b[0]), Math.max(a[1], b[1])],
@@ -219,7 +232,10 @@ export function renderField(
         } else
           errs.push({
             line: c.line,
-            msg: `gauss needs circle or rect: gauss circle 0,0 1.5 "S" or gauss rect -1,-1 1,1 "S"`,
+            msg:
+              op === "gauss"
+                ? `gauss needs circle or rect: gauss circle 0,0 1.5 "S" or gauss rect -1,-1 1,1 "S"`
+                : `ampere needs circle or rect: ampere circle 0,0 1.5 "C" or ampere rect -1,-1 1,1 "C"`,
           });
         break;
       }
@@ -249,7 +265,7 @@ export function renderField(
       default:
         errs.push({
           line: c.line,
-          msg: `field has no "${c.op}" (use charge, plates, uniform, wire, equi, gauss, test, pt)`,
+          msg: `field has no "${c.op}" (use charge, plates, uniform, wire, equi, gauss, ampere, test, pt)`,
         });
     }
   }
@@ -1103,6 +1119,22 @@ export function renderField(
       g.shape === "circle"
         ? len(sub(p, g.a)) - g.r
         : -Math.min(p[0] - g.a[0], g.b[0] - p[0], p[1] - g.a[1], g.b[1] - p[1]);
+    const name = g.label ? ` ${plain(g.label)}` : "";
+    if (g.op === "ampere") {
+      if (wires.some((w) => Math.abs(within(w.p)) < R))
+        warns.push({
+          line: g.line,
+          kind: "physics",
+          msg: `the Amperian loop${name} passes through a wire, so the current it encloses is not defined; make the loop clearly contain or clearly miss each wire`,
+        });
+      if (wires.length) {
+        const net = wires.filter((w) => within(w.p) < 0).reduce((s, w) => s + w.i, 0);
+        said.push(
+          `a dashed Amperian loop${name} enclosing net current ${fmt(Math.abs(net))}${net > 0 ? " out of the page" : net < 0 ? " into the page" : ""}`,
+        );
+      } else said.push(`a dashed Amperian loop${name}`);
+      continue;
+    }
     const on = charges.find((c) => Math.abs(within(c.p)) < R);
     if (on)
       warns.push({

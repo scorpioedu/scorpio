@@ -137,7 +137,8 @@ export const SPEC_CONSTANTS: Record<string, { value: number; unit: string; dims:
   deg: { value: Math.PI / 180, unit: "", dims: NONE },
 };
 
-const FUNCTIONS = new Set([
+/** The functions an expression may call. Exported so the guide checks read the same list. */
+export const SPEC_FUNCTIONS: ReadonlySet<string> = new Set([
   "sqrt",
   "abs",
   "exp",
@@ -154,6 +155,7 @@ const FUNCTIONS = new Set([
   "max",
   "round",
 ]);
+const FUNCTIONS = SPEC_FUNCTIONS;
 
 const NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 /** Own keys only: "constructor" is not a step of every spec. */
@@ -363,11 +365,21 @@ function evaluate(expr: string, lookup: (name: string) => Quantity | undefined):
   return result;
 }
 
-/** A spec unit ("" is a pure number). Celsius is read; see the note on temperatures above. */
+/**
+ * A spec unit ("" is a pure number). Celsius is read; see the note on temperatures above. A
+ * reciprocal may be written "1/s", "1/mm" or "1/(m s)" as well as "s^-1" (the grader's parser does
+ * not read a leading 1, so this adds to it without changing anything it already reads).
+ */
 export function parseSpecUnit(unit: string): Unit | undefined {
   if (typeof unit !== "string") return undefined;
   if (!unit.trim()) return { factor: 1, dims: NONE };
-  return parseUnit(unit, { temperature: true });
+  const parsed = parseUnit(unit, { temperature: true });
+  if (parsed) return parsed;
+  const per = unit.match(/^\s*1\s*\/\s*(\S.*)$/);
+  const below =
+    per && !/^1\s*\//.test(per[1]) ? parseUnit(per[1], { temperature: true }) : undefined;
+  // 0 - d, not -d: no -0 in the dimensions
+  return below && { factor: 1 / below.factor, dims: below.dims.map((d) => 0 - d) as Dims };
 }
 
 /** Name lookup for one spec: givens, constants, and steps worked out the first time they are named. */

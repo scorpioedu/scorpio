@@ -15,6 +15,7 @@ import {
   computeSpec,
   contentHash,
   deterministicChecks,
+  diagramNumbers,
   optionQuantities,
   resolveSolverAnswer,
   shuffledOptions,
@@ -424,6 +425,30 @@ describe("spec-matches-text", () => {
     expect(
       checkSpecMatchesText({ ...light, text: light.text.replace("15 cm", "-15 cm") }).pass,
     ).toBe(true);
+  });
+
+  test("a given read off a diagram is found as the diagram reads it", () => {
+    // "100,140" is the point (100, 140), and "0..2" a range: not 100140, and not 0 and .2
+    const graph =
+      '```dg\nplot x=t[s] y=x[m]\nseg 0,0 2,140\npt 2,140 "P"\nfn 70*t 0..2\nxt none\nyt none\n```';
+    expect(diagramNumbers(`Text 1,500 m.\n${graph}`).map((n) => n.value)).toEqual([
+      0, 0, 2, 140, 2, 140, 70, 0, 2,
+    ]);
+    // quoted labels are read as prose
+    expect(
+      diagramNumbers('```dg\nrigid rod L=4\ndim 0 2 "1,500 m"\n```').map((n) => n.value),
+    ).toContain(1500);
+    expect(diagramNumbers("no diagram, 100,140")).toEqual([]);
+    const text = `A cart starts from rest. Its position is graphed below.\n\n${graph}\n\nFind its average speed.`;
+    const p = withSpec(
+      {
+        givens: { x: { value: 140, unit: "m" }, t: { value: 2, unit: "s" } },
+        expr: "x/t",
+        unit: "m/s",
+      },
+      { text, correctAnswer: "70 m/s" },
+    );
+    expect(checkSpecMatchesText(p)).toEqual({ pass: true });
   });
 
   test("zero and labels are never reported as unused", () => {

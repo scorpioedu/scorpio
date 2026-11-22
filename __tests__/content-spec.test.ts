@@ -10,6 +10,7 @@ import {
   specShapeErrors,
   type ProblemSpec,
 } from "../src/lib/content/spec";
+import { parseUnit } from "../functions/src/units";
 
 const spec = (expr: string, unit = "", givens: ProblemSpec["givens"] = {}): ProblemSpec => ({
   givens,
@@ -205,6 +206,40 @@ describe("temperatures", () => {
     expect(parseSpecUnit("")).toEqual({ factor: 1, dims: [0, 0, 0, 0, 0, 0, 0] });
     expect(parseSpecUnit("   ")).toEqual({ factor: 1, dims: [0, 0, 0, 0, 0, 0, 0] });
     expect(parseSpecUnit(5 as unknown as string)).toBeUndefined();
+  });
+});
+
+describe("reciprocal units", () => {
+  const per = (dims: number[]) => ({ factor: 1, dims });
+  test('"1/s", "1/m" and "1/mm" read like s^-1, m^-1 and mm^-1', () => {
+    expect(parseSpecUnit("1/s")).toEqual(per([0, 0, -1, 0, 0, 0, 0]));
+    expect(parseSpecUnit("1/s")).toEqual(parseSpecUnit("s^-1"));
+    expect(parseSpecUnit("1 / m")).toEqual(parseSpecUnit("m^-1"));
+    expect(parseSpecUnit("1/mm")!.factor).toBeCloseTo(1000, 9);
+    expect(parseSpecUnit("1/mm")!.dims).toEqual(parseSpecUnit("mm^-1")!.dims);
+    expect(parseSpecUnit("1/(m s)")!.dims).toEqual([-1, 0, -1, 0, 0, 0, 0]);
+    // an expansion coefficient: per degree is a difference, with no offset
+    expect(parseSpecUnit("1/°C")).toEqual(per([0, 0, 0, 0, -1, 0, 0]));
+    for (const bad of ["1/", "1/x", "1/1/s", "2/s"]) expect(parseSpecUnit(bad)).toBeUndefined();
+    expect(value("n/t", "1/s", { n: { value: 30, unit: "" }, t: { value: 2, unit: "min" } })).toBe(
+      0.25,
+    );
+    expect(value("k", "1/mm", { k: { value: 2000, unit: "1/m" } })).toBeCloseTo(2, 12);
+  });
+
+  test("units that already parsed read the same", () => {
+    for (const u of [
+      "s^-1",
+      "Hz",
+      "m/s^2",
+      "N m^2/C^2",
+      "J/(kg·°C)",
+      "kg·m/s",
+      "mol^-1",
+      "Ω",
+      "°C",
+    ])
+      expect(parseSpecUnit(u)).toEqual(parseUnit(u, { temperature: true }));
   });
 });
 

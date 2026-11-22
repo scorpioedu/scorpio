@@ -17,6 +17,8 @@ import {
   type WorkedExampleSpec,
 } from "./schema";
 import { expressionNames, fillTemplate, placeholders, tryItCorners } from "./try-it";
+import { SPEC_CONSTANTS, SPEC_FUNCTIONS, parseSpecUnit } from "@/lib/content/spec";
+import { sameQuantity, textNumbers } from "@/lib/content/verify";
 
 /**
  * Words per topic across the prose fields: the big idea, the explanation, the derivation, the
@@ -205,10 +207,11 @@ export function unexplainedSymbols(equation: GuideEquation): string[] {
 export type SpecEvaluation =
   { ok: true; value: number; unit: string } | { ok: false; error: string };
 /**
- * INTEGRATION HOOK. The evaluator is `evaluateSpec` from src/lib/content/spec.ts, which is written
- * elsewhere and passed in, so this file does not depend on it. Until it is passed
- * (`verifyUnitGuide(data, { evaluate: evaluateSpec })`, in tools/verify-guides.cjs and
- * __tests__/guides-content.test.ts), worked examples are checked for shape only.
+ * INTEGRATION HOOK. The evaluator is `evaluateSpec` from src/lib/content/spec.ts, passed in. (This
+ * file does import that module's function and constant names, for the shape check, and the problem
+ * verifier's number reader.) Until it is passed (`verifyUnitGuide(data, { evaluate: evaluateSpec })`,
+ * in tools/verify-guides.cjs and __tests__/guides-content.test.ts), worked examples are checked for
+ * shape only.
  */
 export type SpecEvaluator = (spec: WorkedExampleSpec) => SpecEvaluation;
 
@@ -249,7 +252,10 @@ export function checkWorkedExample(example: WorkedExample, evaluate?: SpecEvalua
   }
   const names = Object.keys(spec.givens);
   if (!names.length) errors.push("spec has no givens");
-  for (const name of expressionNames(spec.expr))
+  // The spec evaluator's own functions (ln, exp, asin...) are not givens. Its constants (g, k, eps0,
+  // e...) are allowed too: a given of the same name replaces one, as in evaluateSpec.
+  const builtIn = (n: string) => SPEC_FUNCTIONS.has(n) || Object.hasOwn(SPEC_CONSTANTS, n);
+  for (const name of expressionNames(spec.expr, builtIn))
     if (!names.includes(name)) errors.push(`spec.expr reads "${name}", which is not a given`);
   const stated = answerNumbers(example.answer);
   if (!stated.length) errors.push("the example has a spec but its answer states no number");
@@ -445,14 +451,15 @@ export function verifyUnitGuide(data: unknown, options: VerifyOptions = {}): Gui
     g.workedExamples.forEach((w, i) => {
       const where = `workedExamples[${i}]`;
       checkWorkedExample(w, options.evaluate).forEach((m) => error(where, m));
-      if (w.spec)
+      if (w.spec) {
+        // The problem verifier's reading of numbers and its relative comparison, so "7.35 × 10^22 kg"
+        // states 7.35e22 and "15 cm" states 0.15 m.
+        // Guides space a unit with "\ " ($2.0\ \text{kg}$), which the shared reader leaves alone.
+        const stated = textNumbers(w.prompt.replace(/\\ /g, " "));
         for (const [name, given] of Object.entries(w.spec.givens))
-          if (
-            !answerNumbers(w.prompt).some(
-              (n) => Math.abs(Math.abs(n.value) - Math.abs(given.value)) < 1e-9,
-            )
-          )
+          if (!stated.some((n) => sameQuantity(n, given.value, parseSpecUnit(given.unit))))
             warn(where, `the prompt does not state ${name} = ${given.value} ${given.unit}`.trim());
+      }
     });
 
     g.misconceptions.forEach((m, i) => {
@@ -466,7 +473,7 @@ export function verifyUnitGuide(data: unknown, options: VerifyOptions = {}): Gui
     if (g.tryIt) {
       const names = g.tryIt.params.map((p) => p.name);
       if (new Set(names).size !== names.length) error("tryIt", "two parameters share a name");
-      const used = new Set(placeholders(g.tryIt.diagram).flatMap(expressionNames));
+      const used = new Set(placeholders(g.tryIt.diagram).flatMap((p) => expressionNames(p)));
       for (const n of used) if (!names.includes(n)) error("tryIt", `{{${n}}} has no parameter`);
       for (const n of names)
         if (!used.has(n)) error("tryIt", `parameter "${n}" is not in the diagram`);

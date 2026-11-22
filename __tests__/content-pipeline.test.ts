@@ -92,6 +92,17 @@ describe("validateDraftProblem", () => {
     expect(validateDraftProblem(numeric, "4.3").warnings.join()).not.toMatch(/LaTeX/);
   });
 
+  test("label markup inside a ```dg diagram block is not LaTeX in the text", () => {
+    const dg =
+      '```dg\nrigid disc r=1\nf 90 ccw "\\tau" 2\ndim 30 "\\theta"\nf 0 down "\\omega \\Phi" 1\n```';
+    const text = `${numeric.text}\n\n${dg}`;
+    expect(validateDraftProblem({ ...numeric, text }, "4.3").warnings.join()).not.toMatch(/LaTeX/);
+    // outside the block it is still flagged
+    expect(
+      validateDraftProblem({ ...numeric, text: `${text} Then \\omega = 2 rad/s.` }, "4.3").warnings,
+    ).toContain("The text or an option contains LaTeX; write the mathematics as plain text");
+  });
+
   test("fatal errors", () => {
     const cases: [unknown, string, RegExp][] = [
       [null, "4.3", /Not an object/],

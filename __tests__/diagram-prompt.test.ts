@@ -41,11 +41,33 @@ describe("diagram reference", () => {
       const ref = diagramReference(course);
       expect(ref).toMatch(/^circuit\b/m);
       expect(ref).toMatch(/^field\b/m);
-      expect(ref).not.toMatch(/^bars\b/m);
+      expect(ref).toMatch(/^ampere circle/m);
+      // energy bar charts serve energy accounting in E&M too
+      expect(ref).toMatch(/^bars energy/m);
       expect(ref).not.toMatch(/^motion\b/m);
       expect(ref).not.toMatch(/^rigid\b/m);
     }
     // optics, waves, thermodynamics and atomic levels are AP Physics 2 only
+    expect(diagramKindsForCourse("physics-c-em")).toEqual([
+      "plot",
+      "fbd",
+      "scene",
+      "bars",
+      "circuit",
+      "field",
+    ]);
+    expect(diagramKindsForCourse("physics-2")).toEqual([
+      "plot",
+      "fbd",
+      "scene",
+      "bars",
+      "circuit",
+      "field",
+      "ray",
+      "wave",
+      "pv",
+      "levels",
+    ]);
     for (const kind of ["ray", "wave", "pv", "levels"]) {
       expect(diagramReference("physics-2")).toMatch(new RegExp(`^${kind}\\b`, "m"));
       expect(diagramReference("physics-c-em")).not.toMatch(new RegExp(`^${kind}\\b`, "m"));
@@ -59,10 +81,10 @@ describe("diagram reference", () => {
   it("is shorter for a course than in full", () => {
     expect(diagramReference("physics-1").length).toBeLessThan(DIAGRAM_REFERENCE.length - 1000);
     expect(diagramReference("physics-2").length).toBeLessThan(DIAGRAM_REFERENCE.length - 500);
-    expect(diagramReference("physics-c-em").length).toBeLessThan(DIAGRAM_REFERENCE.length - 2500);
+    expect(diagramReference("physics-c-em").length).toBeLessThan(DIAGRAM_REFERENCE.length - 2400);
     // sent on every call that knows its course: keep each one small
     expect(diagramReference("physics-1").length).toBeLessThan(2900);
-    expect(diagramReference("physics-c-em").length).toBeLessThan(3100);
+    expect(diagramReference("physics-c-em").length).toBeLessThan(3600);
     expect(diagramReference("physics-2").length).toBeLessThan(5300);
     expect(DIAGRAM_REFERENCE.length).toBeLessThan(6500);
   });
@@ -146,6 +168,7 @@ describe("the reference's own examples draw", () => {
       `field\nplates 0,1 0,-1 w=4\ntest 0,0 + "q"`,
       `field\nuniform E right\nuniform B in (x=0..3 y=0..2)\ntest 1,1 + "q" (v=right)`,
       `field\nwire 0,0 out "I"`,
+      `field\nwire 0,0 out "I"\nampere circle 0,0 1 "C"`,
     ]) {
       const r = render(src);
       expect(r.errors).toEqual([]);
@@ -157,6 +180,7 @@ describe("the reference's own examples draw", () => {
       "uniform E right",
       "uniform B in (x=0..3 y=0..2)",
       'wire 0,0 out "I"',
+      'ampere circle 0,0 1 "C"',
       'test 1,1 + "q" (v=right)',
     ])
       expect(DIAGRAM_REFERENCE).toContain(part);

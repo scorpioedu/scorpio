@@ -190,6 +190,13 @@ final K ? U_g 8`,
   ],
   [
     "bars",
+    "Small values: the axis scales to the data",
+    `bars energy unit=J
+initial K 0.2 U_g 0
+final K 0.05 E_th 0.15`,
+  ],
+  [
+    "bars",
     "WARNING: energy not conserved",
     `bars energy
 initial K 0 U_g 4
@@ -332,6 +339,14 @@ wire 1.2,0 in "I_2"`,
 uniform E right "E" x=0..3.5
 uniform B out "B" x=4.5..8
 gauss rect 1,1 2.5,3 "S"`,
+  ],
+  [
+    "field",
+    "Amperian loop round two wires",
+    `field
+wire -0.8,0 out "I_1"
+wire 0.8,0 in "I_2"
+ampere circle -0.8,0 1.1 "C"`,
   ],
   // ---- second batch: ray, wave, pv, levels, rigid ----
   ["ray", "Converging lens, object beyond 2F (real, inverted, reduced)", `ray lens f=10 unit=cm
@@ -497,6 +512,11 @@ f 4 down F_2 2`],
   // ---- older kinds, as a regression reference ----
   ["plot", "v-t graph", `plot x=t[s] y=v[m/s]\nseg 0,12 6,0 10,-8\nshade 0..6\npt 6,0 "A"`],
   ["plot", "Function", `plot x=t[s] y=x[m]\nfn 0.15*cos(8*t) 0..1.6`],
+  [
+    "plot",
+    "Long y label, a note by the axis, a long hl label",
+    `plot x=t[s] y=\\omega[rad/s]\nseg 0,2 4,10\nhl 10 "ω_max (rad/s)"\nnote 0.4,6 "starts from rest"\nxt 0 2 4\nyt 2 6 10`,
+  ],
   ["fbd", "Block on an incline", `fbd box "m" tilt=30\nf down F_g 1.2\nf 120 F_N 1\nf 30 f_s 0.6`],
   ["fbd", "Hanging mass", `fbd dot "m"\nf up T 1\nf down F_g 1`],
   [
@@ -509,107 +529,119 @@ f 4 down F_2 2`],
     "Block on an incline with a spring",
     `scene\nincline R 0,0 30 5 lab=\\theta\nblock A on=R t=.5 "m"\nspring R.top A.r\nf A.c down 1 "F_g"`,
   ],
+  [
+    "scene",
+    "Vector labels",
+    `scene\nblock A 0,0 "m"\nf A.c right 1 "\\vec{E}_1"\nf A.c up 1 "\\vec{p}"`,
+  ],
 ];
 
-function arg(name) {
-  const i = process.argv.indexOf(name);
-  return i === -1 ? undefined : process.argv[i + 1];
-}
-const out = path.resolve(arg("--out") ?? path.join(root, "diagram-gallery.html"));
-const only = arg("--only");
-const svgDir = arg("--svg-dir");
-const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// The examples are also checked by __tests__/diagram-author-fixes.test.ts (well-formed XML).
+module.exports = { EXAMPLES };
+if (require.main === module) main();
 
-const rows = [];
-let cards = "";
-const [from, to] = (arg("--slice") ?? "0,999").split(",").map(Number);
-EXAMPLES.filter(([kind]) => !only || kind === only)
-  .slice(from, to)
-  .forEach(([kind, title, src], i) => {
-    render(src); // warm up, so the timing below is not the first-call cost
-    const t0 = process.hrtime.bigint();
-    const r = render(src);
-    const ms = Number(process.hrtime.bigint() - t0) / 1e6;
-    const overlaps = r.svg ? labelOverlaps(r.svg) : [];
-    const safe = r.svg ? isSafeSvg(r.svg) : true;
-    rows.push({
-      kind,
-      title,
-      ok: r.ok,
-      ms: +ms.toFixed(2),
-      bytes: r.svg.length,
-      warnings: r.warnings.length,
-      overlaps: overlaps.length,
-      safe,
+function main() {
+
+  function arg(name) {
+    const i = process.argv.indexOf(name);
+    return i === -1 ? undefined : process.argv[i + 1];
+  }
+  const out = path.resolve(arg("--out") ?? path.join(root, "diagram-gallery.html"));
+  const only = arg("--only");
+  const svgDir = arg("--svg-dir");
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const rows = [];
+  let cards = "";
+  const [from, to] = (arg("--slice") ?? "0,999").split(",").map(Number);
+  EXAMPLES.filter(([kind]) => !only || kind === only)
+    .slice(from, to)
+    .forEach(([kind, title, src], i) => {
+      render(src); // warm up, so the timing below is not the first-call cost
+      const t0 = process.hrtime.bigint();
+      const r = render(src);
+      const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+      const overlaps = r.svg ? labelOverlaps(r.svg) : [];
+      const safe = r.svg ? isSafeSvg(r.svg) : true;
+      rows.push({
+        kind,
+        title,
+        ok: r.ok,
+        ms: +ms.toFixed(2),
+        bytes: r.svg.length,
+        warnings: r.warnings.length,
+        overlaps: overlaps.length,
+        safe,
+      });
+      if (svgDir && r.svg) {
+        fs.mkdirSync(svgDir, { recursive: true });
+        for (const [theme, fg, bg] of [
+          ["light", "#18181b", "#ffffff"],
+          ["dark", "#e4e4e7", "#18181b"],
+        ])
+          fs.writeFileSync(
+            path.join(svgDir, `${String(i + 1).padStart(2, "0")}-${kind}-${theme}.svg`),
+            r.svg
+              .replace("<svg ", `<svg color="${fg}" style="background:${bg};--dg-bg:${bg}" `)
+              .replace(` style="max-width:100%;height:auto"`, ""),
+          );
+      }
+      const notes = [
+        ...r.errors.map((e) => `<li class="err">error, line ${e.line}: ${esc(e.msg)}</li>`),
+        ...r.warnings.map(
+          (w) => `<li class="warn"><b>${w.kind ?? "warning"}</b>, line ${w.line}: ${esc(w.msg)}</li>`,
+        ),
+        ...overlaps.map(
+          ([a, b]) => `<li class="warn">labels may overlap: “${esc(a)}” and “${esc(b)}”</li>`,
+        ),
+        ...(safe ? [] : [`<li class="err">isSafeSvg rejected this output</li>`]),
+      ].join("");
+      const panel = r.svg || `<div class="none">not drawn</div>`;
+      cards += `<section>
+  <h2><span class="kind">${kind}</span> ${esc(title)}</h2>
+  <div class="panels"><div class="panel light">${panel}</div><div class="panel dark">${panel}</div></div>
+  <div class="meta"><pre>${esc(src)}</pre><div>
+  <p class="alt"><b>alt:</b> ${esc(r.alt)}</p>
+  <ul>${notes}</ul>
+  <p class="stats">${ms.toFixed(2)} ms · ${r.svg.length.toLocaleString()} bytes</p></div></div>
+  </section>\n`;
     });
-    if (svgDir && r.svg) {
-      fs.mkdirSync(svgDir, { recursive: true });
-      for (const [theme, fg, bg] of [
-        ["light", "#18181b", "#ffffff"],
-        ["dark", "#e4e4e7", "#18181b"],
-      ])
-        fs.writeFileSync(
-          path.join(svgDir, `${String(i + 1).padStart(2, "0")}-${kind}-${theme}.svg`),
-          r.svg
-            .replace("<svg ", `<svg color="${fg}" style="background:${bg};--dg-bg:${bg}" `)
-            .replace(` style="max-width:100%;height:auto"`, ""),
-        );
-    }
-    const notes = [
-      ...r.errors.map((e) => `<li class="err">error, line ${e.line}: ${esc(e.msg)}</li>`),
-      ...r.warnings.map(
-        (w) => `<li class="warn"><b>${w.kind ?? "warning"}</b>, line ${w.line}: ${esc(w.msg)}</li>`,
-      ),
-      ...overlaps.map(
-        ([a, b]) => `<li class="warn">labels may overlap: “${esc(a)}” and “${esc(b)}”</li>`,
-      ),
-      ...(safe ? [] : [`<li class="err">isSafeSvg rejected this output</li>`]),
-    ].join("");
-    const panel = r.svg || `<div class="none">not drawn</div>`;
-    cards += `<section>
-<h2><span class="kind">${kind}</span> ${esc(title)}</h2>
-<div class="panels"><div class="panel light">${panel}</div><div class="panel dark">${panel}</div></div>
-<div class="meta"><pre>${esc(src)}</pre><div>
-<p class="alt"><b>alt:</b> ${esc(r.alt)}</p>
-<ul>${notes}</ul>
-<p class="stats">${ms.toFixed(2)} ms · ${r.svg.length.toLocaleString()} bytes</p></div></div>
-</section>\n`;
-  });
 
-const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Diagram gallery</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{font:14px/1.45 system-ui,sans-serif;margin:24px;background:#f4f4f5;color:#18181b}
-h1{font-size:20px} h2{font-size:15px;margin:0 0 8px} .kind{font:12px ui-monospace,monospace;background:#18181b;color:#fff;border-radius:4px;padding:2px 6px;margin-right:6px}
-section{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:14px;margin:0 0 18px}
-.panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.panel{display:flex;justify-content:center;align-items:center;border-radius:8px;padding:16px;min-height:80px;overflow-x:auto;border:1px solid #e4e4e7}
-.light{background:#fff;color:#18181b;--dg-bg:#fff;--dg-accent:#2563eb}
-.dark{background:#18181b;color:#e4e4e7;--dg-bg:#18181b;--dg-accent:#7aa2ff;border-color:#18181b}
-.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-pre{margin:0;background:#f4f4f5;border-radius:6px;padding:10px;font:12px/1.5 ui-monospace,monospace;overflow-x:auto}
-ul{margin:6px 0;padding-left:18px} .err{color:#b91c1c} .warn{color:#92400e} .alt{margin:0;color:#3f3f46} .stats{margin:4px 0 0;color:#71717a;font-size:12px}
-.none{color:#a1a1aa;font-style:italic}
-</style></head><body>
-<h1>Diagram gallery</h1>
-<p>${rows.length} examples. Left panel light theme, right panel dark. Generated by tools/diagram-gallery.cjs; not committed.</p>
-${cards}</body></html>`;
-fs.writeFileSync(out, html);
+  const html = `<!doctype html>
+  <html lang="en"><head><meta charset="utf-8"><title>Diagram gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  body{font:14px/1.45 system-ui,sans-serif;margin:24px;background:#f4f4f5;color:#18181b}
+  h1{font-size:20px} h2{font-size:15px;margin:0 0 8px} .kind{font:12px ui-monospace,monospace;background:#18181b;color:#fff;border-radius:4px;padding:2px 6px;margin-right:6px}
+  section{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:14px;margin:0 0 18px}
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .panel{display:flex;justify-content:center;align-items:center;border-radius:8px;padding:16px;min-height:80px;overflow-x:auto;border:1px solid #e4e4e7}
+  .light{background:#fff;color:#18181b;--dg-bg:#fff;--dg-accent:#2563eb}
+  .dark{background:#18181b;color:#e4e4e7;--dg-bg:#18181b;--dg-accent:#7aa2ff;border-color:#18181b}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  pre{margin:0;background:#f4f4f5;border-radius:6px;padding:10px;font:12px/1.5 ui-monospace,monospace;overflow-x:auto}
+  ul{margin:6px 0;padding-left:18px} .err{color:#b91c1c} .warn{color:#92400e} .alt{margin:0;color:#3f3f46} .stats{margin:4px 0 0;color:#71717a;font-size:12px}
+  .none{color:#a1a1aa;font-style:italic}
+  </style></head><body>
+  <h1>Diagram gallery</h1>
+  <p>${rows.length} examples. Left panel light theme, right panel dark. Generated by tools/diagram-gallery.cjs; not committed.</p>
+  ${cards}</body></html>`;
+  fs.writeFileSync(out, html);
 
-const byKind = {};
-for (const r of rows) (byKind[r.kind] ??= []).push(r);
-console.log("kind      n   ms(max)  ms(median)  bytes(max)  bytes(median)");
-for (const [kind, rs] of Object.entries(byKind)) {
-  const med = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
-  console.log(
-    `${kind.padEnd(8)} ${String(rs.length).padStart(2)} ${String(Math.max(...rs.map((r) => r.ms))).padStart(9)} ${String(med(rs.map((r) => r.ms))).padStart(11)} ${String(Math.max(...rs.map((r) => r.bytes))).padStart(11)} ${String(med(rs.map((r) => r.bytes))).padStart(14)}`,
-  );
-}
-for (const r of rows)
-  if (!r.ok || !r.safe || r.overlaps)
+  const byKind = {};
+  for (const r of rows) (byKind[r.kind] ??= []).push(r);
+  console.log("kind      n   ms(max)  ms(median)  bytes(max)  bytes(median)");
+  for (const [kind, rs] of Object.entries(byKind)) {
+    const med = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
     console.log(
-      `  note: ${r.kind} "${r.title}": ${!r.ok ? "NOT DRAWN " : ""}${!r.safe ? "UNSAFE " : ""}${r.overlaps ? `${r.overlaps} possible label overlap(s)` : ""}`,
+      `${kind.padEnd(8)} ${String(rs.length).padStart(2)} ${String(Math.max(...rs.map((r) => r.ms))).padStart(9)} ${String(med(rs.map((r) => r.ms))).padStart(11)} ${String(Math.max(...rs.map((r) => r.bytes))).padStart(11)} ${String(med(rs.map((r) => r.bytes))).padStart(14)}`,
     );
-if (process.argv.includes("--verbose")) console.table(rows);
-console.log(`wrote ${out}`);
+  }
+  for (const r of rows)
+    if (!r.ok || !r.safe || r.overlaps)
+      console.log(
+        `  note: ${r.kind} "${r.title}": ${!r.ok ? "NOT DRAWN " : ""}${!r.safe ? "UNSAFE " : ""}${r.overlaps ? `${r.overlaps} possible label overlap(s)` : ""}`,
+      );
+  if (process.argv.includes("--verbose")) console.table(rows);
+  console.log(`wrote ${out}`);
+}
