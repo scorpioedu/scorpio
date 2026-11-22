@@ -36,8 +36,9 @@ export type Result = {
   /**
    * Every piece of text a student can read on the picture, as drawn (subscripts as R_{1}), plus
    * values that are not printed but can be read off a numbered scale (a bar's height, a state's
-   * pressure). Axis and tick numbers are in `scale` instead: they are not claims, though they can
-   * still give a key away.
+   * pressure). The numbers of a regular scale itself (axis ticks, dot numbers, fringe orders) are
+   * in `scale` instead: they are not claims about the physics. plot, fbd and scene do not report
+   * a scale, so for those everything drawn is in `visible`.
    */
   visible: string[];
   scale: string[];

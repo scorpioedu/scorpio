@@ -46,7 +46,7 @@ export function renderBars(
   doc: Doc,
   errs: DgError[],
   warns: DgError[] = [],
-): { svg: string; alt: string } {
+): { svg: string; alt: string; scale?: string[]; read?: string[] } {
   const h = doc.head;
   const quantity = h.args.includes("energy")
     ? "energy"
@@ -169,6 +169,7 @@ export function renderBars(
   const y = (v: number) => (top - v) * u;
   const axisW = axis ? 30 : 0;
   let body = "";
+  const scale: string[] = []; // the axis numbers
   let x = axisW;
   let alt = `${quantity ? quantity[0].toUpperCase() + quantity.slice(1) : "Bar"} chart${h.text ? ` (${plain(h.text)})` : ""}. `;
   const signs: { x: number; s: string }[] = [];
@@ -227,6 +228,7 @@ export function renderBars(
     for (let v = bot; v <= top + 1e-9; v += step) {
       body += line([axisW - 9, y(v)], [axisW - 6, y(v)], ` stroke-width="1"`);
       body += text([axisW - 12, y(v)], fmt(v), "end", ` stroke="none" font-size="11"`);
+      scale.push(fmt(v));
     }
     if (unit)
       body += text([axisW - 6, y(top) - 14], unit, "middle", ` stroke="none" font-size="11"`);
@@ -252,7 +254,9 @@ export function renderBars(
     x1 = Math.max(W + PAD, W / 2 + titleW / 2 + 4);
   const y0 = y(top) - PAD - titleH,
     y1 = maxLabelY + 30 + PAD - 4;
-  return { svg: wrap(x1 - x0, y1 - y0, body, alt, x0, y0), alt };
+  // with a numbered axis every bar's height can be read off, so the values count as shown
+  const read = axis ? all.flatMap((b) => (b.v === null ? [] : [fmt(b.v)])) : [];
+  return { svg: wrap(x1 - x0, y1 - y0, body, alt, x0, y0), alt, scale, read };
 }
 
 function niceStep(max: number): number {

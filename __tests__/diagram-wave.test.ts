@@ -194,10 +194,9 @@ describe("wave", () => {
       for (const u of [0, 1, -2, 3]) expect(m.intensity(u)).toBeCloseTo(1, 9);
       for (const u of [0.5, -1.5, 2.5]) expect(m.intensity(u)).toBeCloseTo(0, 9);
       expect(m.spacing).toBeUndefined();
-      const v = render(DOUBLE).visible;
-      expect(v).toEqual(
-        expect.arrayContaining(["central maximum", "m =", "0", "1", "−1", "3", "−3"]),
-      );
+      // the order numbers are tick labels (scale), not claims
+      expect(render(DOUBLE).visible).toEqual(expect.arrayContaining(["central maximum", "m ="]));
+      expect(render(DOUBLE).scale).toEqual(["−3", "−2", "−1", "0", "1", "2", "3"]);
     });
 
     it("double slit with finite slits: the envelope dims and removes orders; fringe spacing λL/d", () => {
@@ -220,7 +219,7 @@ describe("wave", () => {
           "λ = 600 nm,  d = 0.2 mm,  L = 1.5 m",
         ]),
       );
-      expect(r.visible).not.toContain("4"); // the missing order is not labelled
+      expect(r.scale).not.toContain("4"); // the missing order is not labelled
     });
 
     it("single slit: dark fringes at whole m, a central maximum twice as wide", () => {
@@ -235,7 +234,7 @@ describe("wave", () => {
       expect(r.alt).toContain(
         "Dark fringes are λL/a = 2 cm apart; the central maximum is 4 cm wide",
       );
-      expect(r.visible).not.toContain("0"); // m = 0 is not a dark fringe
+      expect(r.scale).not.toContain("0"); // m = 0 is not a dark fringe
       expect(r.visible.join(" ")).not.toContain("cm"); // num prints the givens only
     });
 

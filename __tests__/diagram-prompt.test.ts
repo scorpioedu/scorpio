@@ -213,7 +213,9 @@ describe("the reference's own examples draw", () => {
     const r = render(src.join("\n"));
     expect(r.errors).toEqual([]);
     expect(r.warnings).toEqual([]);
-    expect(render(`pv\nstate A V=1 P=4\nstate B V=2\nadiabatic A B gamma=1.4\nline B A`).errors).toEqual([]);
+    expect(
+      render(`pv\nstate A V=1 P=4\nstate B V=2\nadiabatic A B gamma=1.4\nline B A`).errors,
+    ).toEqual([]);
   });
 
   it("levels", () => {

@@ -545,6 +545,7 @@ function slits(h: Cmd, kind: "double" | "single", errs: DgError[]): Out {
     H = 96;
   const X = (u: number) => (u / uMax) * (W / 2);
   const cv = new Canvas();
+  const scale: string[] = [];
   const pts: P[] = [];
   for (let i = 0; i <= 480; i++) {
     const u = -uMax + (2 * uMax * i) / 480;
@@ -563,6 +564,7 @@ function slits(h: Cmd, kind: "double" | "single", errs: DgError[]): Out {
     if (missing.includes(Math.abs(m))) continue;
     cv.line([X(m), 0], [X(m), 4], ` stroke-width="1"`);
     cv.text([X(m), yM], fmt(m), "middle", "", 11);
+    scale.push(fmt(m)); // an order number is a tick label, not a claim
     if (all && spacing !== undefined)
       cv.text([X(m), yM + 15], niceLength(m * spacing, spacing), "middle", "", 10);
   }
@@ -604,6 +606,7 @@ function slits(h: Cmd, kind: "double" | "single", errs: DgError[]): Out {
   return {
     svg: wrap(b.w, b.h, cv.body, alt, b.x0, b.y0),
     alt,
+    scale,
     wave: { kind: dbl ? "double-slit" : "single-slit", orders, spacing, missing, intensity },
   };
 }
