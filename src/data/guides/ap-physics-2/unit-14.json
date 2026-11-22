@@ -1567,6 +1567,7 @@
           "right": "Only when zero or two reflections are shifted. With exactly one shifted reflection, a whole number of wavelengths of extra path gives cancellation instead."
         },
         {
+          "tag": "frequency-changes-in-medium",
           "wrong": "The wavelength to compare with the film's thickness is the wavelength of the light in air.",
           "right": "The extra path is inside the film, where the wavelength is $\\lambda/n$."
         }

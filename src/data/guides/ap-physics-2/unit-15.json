@@ -387,6 +387,7 @@
           "right": "Going up needs energy, so the atom must absorb a photon. A photon is emitted when the electron drops to a lower level and the atom has energy to give away."
         },
         {
+          "tag": "photon-energy-is-level-energy",
           "wrong": "A hydrogen atom can soak up part of a photon's energy, or any photon with at least enough energy for a jump.",
           "right": "A photon is absorbed whole or not at all, and for a jump between levels its energy must match the gap exactly. Only ionization accepts extra, because a freed electron can carry any kinetic energy."
         },
@@ -1523,6 +1524,7 @@
           "right": "A nucleus has no memory. Its chance of decaying in the next second is the same however long it has existed, which is exactly why the half-life stays constant."
         },
         {
+          "tag": "half-life-linear",
           "wrong": "Heating a radioactive sample, or having less of it, changes its half-life.",
           "right": "The half-life is a property of the kind of nucleus. Temperature, pressure, chemical bonding and the amount of material do not change it; a smaller sample just has fewer decays per second."
         }

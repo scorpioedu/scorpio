@@ -615,6 +615,7 @@
           "right": "The current leaving the bulb equals the current entering. The light comes from the energy each coulomb loses as it drops through the potential difference across the bulb."
         },
         {
+          "tag": "rated-power-fixed",
           "wrong": "A bulb marked $60\\ \\text{W}$ dissipates $60\\ \\text{W}$ in any circuit.",
           "right": "The rating is the power at the potential difference the bulb was designed for. Give it a smaller potential difference and it dissipates less power and glows more dimly."
         }
@@ -1159,10 +1160,12 @@
           "right": "The current that leaves the second junction equals the current that entered the first. The resistors take energy from the charge, not charge from the circuit."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "Current always splits equally at a junction.",
           "right": "It splits equally only between identical branches. Otherwise the branch with less resistance carries more current, since all the branches have the same potential difference."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "All of the current takes the path of least resistance.",
           "right": "Most of it does, not all. Any branch with a potential difference across it and a finite resistance carries some current."
         }

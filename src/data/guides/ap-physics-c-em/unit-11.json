@@ -327,14 +327,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "current-used-up",
           "wrong": "The bulb uses up current, so less current returns to the battery than left it.",
           "right": "The current is the same on both sides of the bulb, because charge is conserved. What the bulb takes is energy: each coulomb leaves at a lower potential than it arrived with."
         },
         {
+          "tag": "battery-constant-current",
           "wrong": "A battery pushes out the same current whatever is connected to it.",
           "right": "An ideal battery fixes the potential difference between its terminals, not the current. The current is whatever the rest of the circuit allows: more through a small resistance, none through an open switch."
         },
         {
+          "tag": "voltage-current-confusion",
           "wrong": "No current flows through an open switch, so there is no potential difference across it.",
           "right": "With no current there is no potential difference across the loads, so each side of the switch is at the potential of one battery terminal. The whole emf appears across the gap."
         }
@@ -707,10 +710,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "power-energy-confusion",
           "wrong": "A 100 W bulb always uses more energy than a 60 W bulb.",
           "right": "Power is the rate of energy transfer, not an amount of energy. Energy is power multiplied by time: a $60\\ \\text{W}$ bulb left on for two hours transfers more energy than a $100\\ \\text{W}$ bulb on for one."
         },
         {
+          "tag": "resistance-brightness-rule",
           "wrong": "$P = I^2R$ says more resistance means more power and $P = \\Delta V^2/R$ says it means less, so one of them must be wrong.",
           "right": "Both are right; they answer different questions. At a fixed current (series), more resistance dissipates more. At a fixed potential difference (parallel, or straight across a supply), more resistance draws less current and dissipates less."
         },
@@ -902,14 +907,17 @@
       ],
       "misconceptions": [
         {
+          "tag": "series-parallel-confusion",
           "wrong": "Adding another resistor in parallel increases the total resistance, because there is now more resistance in the circuit.",
           "right": "A new parallel branch is an extra path for charge. The equivalent resistance goes down, below the smallest branch, and the battery supplies more current."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "Current takes the path of least resistance, so in a parallel pair it all goes through the smaller resistor.",
           "right": "Every branch with a potential difference across it carries current. The current divides in inverse proportion to resistance: a $3\\ \\Omega$ branch carries twice the current of a $6\\ \\Omega$ branch beside it, not all of it."
         },
         {
+          "tag": "terminal-voltage-equals-emf",
           "wrong": "The potential difference across a battery's terminals is always its emf.",
           "right": "Only when no current flows. A real battery has internal resistance, and while it supplies a current $I$ its terminal potential difference is $\\varepsilon - Ir$. The larger the current, the lower it is."
         }
@@ -1095,10 +1103,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "loop-rule-sign",
           "wrong": "A battery always contributes $+\\varepsilon$ to a loop equation.",
           "right": "The sign depends on the way you cross it: $+\\varepsilon$ from negative terminal to positive, $-\\varepsilon$ from positive to negative, whatever the direction of the current."
         },
         {
+          "tag": "loop-rule-sign",
           "wrong": "A resistor always contributes $-IR$ to a loop equation.",
           "right": "Only when you cross it along its current arrow. Current flows from high potential to low, so walking against the arrow you go up in potential: $+IR$."
         },
@@ -1301,10 +1311,12 @@
       ],
       "misconceptions": [
         {
+          "tag": "current-used-up",
           "wrong": "Some current is used up in each resistor, so less current leaves a parallel section than entered it.",
           "right": "Charge is conserved at every junction. The currents that divide at one junction recombine at the next, and the current returning to the battery equals the current that left."
         },
         {
+          "tag": "current-split-wrong",
           "wrong": "At a junction the current splits equally between the branches.",
           "right": "Only if the branches have equal resistance. Parallel branches share a potential difference, so the branch with less resistance carries more current."
         },
