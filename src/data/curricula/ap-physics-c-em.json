@@ -2,7 +2,7 @@
   "id": "ap-physics-c-em",
   "apCourse": "physics-c-em",
   "name": "AP Physics C: Electricity and Magnetism",
-  "description": "Scorpio's outline of the six AP Physics C: Electricity and Magnetism units (8 to 13), with calculus throughout. The sets are planned: their problems are not written yet.",
+  "description": "Scorpio's roadmap through the six AP Physics C: Electricity and Magnetism units (8 to 13), with calculus throughout: ready-made, auto-graded sets in a teaching order.",
   "sets": [
     {
       "key": "8A",
@@ -352,7 +352,18 @@
       "title": "Wires and the Biot-Savart law",
       "description": "Fields of wires and loops by integrating current elements, and forces on and between wires.",
       "topics": ["12.3"],
-      "draftIds": []
+      "draftIds": [
+        "E92kfA5V25pMWP7yJWGe",
+        "CYzQn8S0MfuE5B3Dd56g",
+        "OGAnaZ0oFxjH2RHIGDo6",
+        "5ZwADiGHFNA4BtlaWP5v",
+        "m7GCiMXUZVkbktMI0aLn",
+        "P0MgQWnC117GfXffL3lZ",
+        "eRBsjrtUljAmQiOmw2ic",
+        "vN8N8vvvK0F8552l9gae",
+        "1IKOsgIGoEYEpG5WgCn1",
+        "5StCnzotDPjESsNwUbko"
+      ]
     },
     {
       "key": "12D",
@@ -360,7 +371,18 @@
       "title": "Ampère's law",
       "description": "Enclosed current and the field of long wires, thick conductors and solenoids.",
       "topics": ["12.4"],
-      "draftIds": []
+      "draftIds": [
+        "BtOvoKiyXFBdXuimCUBI",
+        "3ztgvahpPOugOWMrUjAz",
+        "FzbF4yZYA7MZtjW4cxea",
+        "jyL6V2M3PBjTKvdTUPMo",
+        "2vSdTvF74eKcQqooBv2d",
+        "iCvcTfWmkAZsMPAklPGx",
+        "Mg9OGOFbvZ5ucc7ntQRF",
+        "hTXQGrCNE9sRplgGAiUf",
+        "cC2ULSqJiG6SAfYW2uEI",
+        "JAnlt1nFOmYLFYIPwDcK"
+      ]
     },
     {
       "key": "13A",
@@ -368,7 +390,18 @@
       "title": "Magnetic flux and Faraday's law",
       "description": "Flux through a loop, and the emf induced when that flux changes.",
       "topics": ["13.1", "13.2"],
-      "draftIds": []
+      "draftIds": [
+        "OKHhUedrMle6M3qQixx8",
+        "PmXavQSqesH0bLwnQ70t",
+        "bgoax55epFA8Xo8EF6fa",
+        "CK0vOlAy3pltiFQ5qI5n",
+        "siN0vuJ9eBF4iKEIGRju",
+        "ZAURFDadt9H5tbzAEx5Z",
+        "NvhXjYZ9xLPvjskY78qh",
+        "BVYJmXEPnccUZKKvEOj2",
+        "HjBkzcYE82iSts8wBzQt",
+        "mPirB3zHSvqeu0nmEqk3"
+      ]
     },
     {
       "key": "13B",
@@ -376,7 +409,18 @@
       "title": "Induced currents and forces",
       "description": "Lenz's law, moving rods and loops, and the magnetic force on an induced current.",
       "topics": ["13.3"],
-      "draftIds": []
+      "draftIds": [
+        "z4WYgjBnjWUEWMnuJVYk",
+        "QOMQehbL1H2DMjnahMsp",
+        "aW3AcS0xDCoRZk6MRszl",
+        "I62zk6kxkHYzUCyPbjkF",
+        "MHKpysIZhOoOGL0yPUlj",
+        "kt5MQYzAxP79ApFBs0vr",
+        "CkqLmA2lUDqXqaS0JzE0",
+        "0aYEBLDLZNVenkK8J5Bs",
+        "NcjywpF92DAYSpvz0scl",
+        "nGJhryJU1xFyPfmcdNIM"
+      ]
     },
     {
       "key": "13C",
@@ -384,7 +428,18 @@
       "title": "Inductance and LR circuits",
       "description": "Self-induced emf, energy stored in an inductor, and current that grows or decays exponentially.",
       "topics": ["13.4", "13.5"],
-      "draftIds": []
+      "draftIds": [
+        "shQFziohvnXiQc5a2XG9",
+        "1aApXTSOHchkBPWRGOnW",
+        "ruBXkGHds9VR3a5XWXrw",
+        "BFJGKzW0NNDmZvV1NCI5",
+        "UEy8vhhtl6fCA9oFeaHN",
+        "68ReqSeosmI2HDHh0yOE",
+        "V6iTN29EAfv4p8FpTNEf",
+        "26akGAtsIuvvnZqgpRMw",
+        "TE44dbnDaTO8QBCEGZib",
+        "wltahsSWBC0vQFE7N434"
+      ]
     },
     {
       "key": "13D",
@@ -392,7 +447,18 @@
       "title": "LC circuits",
       "description": "Oscillating charge and current, and energy passing between capacitor and inductor.",
       "topics": ["13.6"],
-      "draftIds": []
+      "draftIds": [
+        "xiU68D1VfumLOxdE9sjg",
+        "cb9Da6eUu4rjhN0zrT6P",
+        "s61QcvlvEpCDitGC4VFb",
+        "xiH41DBqTHhXHpBUZ1Gg",
+        "9OM4wzql5mxkYprZDZZN",
+        "34iZ3w4v1UxEc2x8W7r6",
+        "40fbUCJRZ64IE54HXt0Q",
+        "pIlYeELBXw7ksAjuIvye",
+        "g58Dpv9NAbrj1kOzrft2",
+        "Lg3j0TPfSYUg9XowmSpf"
+      ]
     }
   ]
 }

@@ -2149,5 +2149,713 @@
         ]
       }
     ]
+  },
+  "12C": {
+    "problems": 10,
+    "minutes": 29,
+    "difficulty": {
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "wire-field-not-circular",
+        "problems": 3
+      },
+      {
+        "tag": "ampere-law-without-symmetry",
+        "problems": 2
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 2
+      },
+      {
+        "tag": "magnetic-force-along-field",
+        "problems": 1
+      },
+      {
+        "tag": "third-law-unequal-forces",
+        "problems": 1
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      },
+      {
+        "tag": "vector-scalar-superposition",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "ampere-law-without-symmetry"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "wire-field-not-circular"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "ampere-law-without-symmetry"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "third-law-unequal-forces",
+          "wire-field-not-circular"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "vector-scalar-superposition"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "wire-field-not-circular"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "magnetic-force-along-field"
+        ]
+      }
+    ]
+  },
+  "12D": {
+    "problems": 10,
+    "minutes": 27,
+    "difficulty": {
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "enclosed-charge-or-current-wrong",
+        "problems": 5
+      },
+      {
+        "tag": "power-of-ten",
+        "problems": 4
+      },
+      {
+        "tag": "ampere-law-without-symmetry",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "enclosed-charge-or-current-wrong"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "enclosed-charge-or-current-wrong"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "enclosed-charge-or-current-wrong"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "enclosed-charge-or-current-wrong"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "enclosed-charge-or-current-wrong"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "power-of-ten"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "ampere-law-without-symmetry"
+        ]
+      }
+    ]
+  },
+  "13A": {
+    "problems": 10,
+    "minutes": 27,
+    "difficulty": {
+      "easy": 3,
+      "medium": 5,
+      "hard": 2
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "emf-from-flux-not-rate",
+        "problems": 6
+      },
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 4
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "emf-from-flux-not-rate",
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      }
+    ]
+  },
+  "13B": {
+    "problems": 10,
+    "minutes": 29,
+    "difficulty": {
+      "easy": 2,
+      "medium": 5,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "unit-conversion",
+        "problems": 3
+      },
+      {
+        "tag": "flux-ignores-orientation",
+        "problems": 2
+      },
+      {
+        "tag": "emf-from-flux-not-rate",
+        "problems": 1
+      },
+      {
+        "tag": "energy-not-conserved",
+        "problems": 1
+      },
+      {
+        "tag": "induction-needs-change",
+        "problems": 1
+      },
+      {
+        "tag": "lenz-opposes-field",
+        "problems": 1
+      },
+      {
+        "tag": "magnetic-force-along-field",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "lenz-opposes-field"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "energy-not-conserved"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "induction-needs-change"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "magnetic-force-along-field"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "flux-ignores-orientation"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      }
+    ]
+  },
+  "13C": {
+    "problems": 10,
+    "minutes": 28,
+    "difficulty": {
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "time-constant-misread",
+        "problems": 5
+      },
+      {
+        "tag": "emf-from-flux-not-rate",
+        "problems": 2
+      },
+      {
+        "tag": "inductor-limits-swapped",
+        "problems": 2
+      },
+      {
+        "tag": "inductor-opposes-current",
+        "problems": 2
+      },
+      {
+        "tag": "derivative-integral-confusion",
+        "problems": 1
+      },
+      {
+        "tag": "sign-error",
+        "problems": 1
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "inductor-limits-swapped",
+          "time-constant-misread"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "inductor-limits-swapped"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "emf-from-flux-not-rate",
+          "inductor-opposes-current"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "time-constant-misread"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "time-constant-misread"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "derivative-integral-confusion",
+          "emf-from-flux-not-rate"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "inductor-opposes-current",
+          "sign-error"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "time-constant-misread"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "time-constant-misread"
+        ]
+      }
+    ]
+  },
+  "13D": {
+    "problems": 10,
+    "minutes": 28,
+    "difficulty": {
+      "easy": 3,
+      "medium": 4,
+      "hard": 3
+    },
+    "types": {
+      "multiple-choice": 4,
+      "numeric": 6
+    },
+    "misconceptions": [
+      {
+        "tag": "lc-charge-current-in-phase",
+        "problems": 7
+      },
+      {
+        "tag": "inductor-opposes-current",
+        "problems": 2
+      },
+      {
+        "tag": "unit-conversion",
+        "problems": 1
+      }
+    ],
+    "each": [
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "unit-conversion"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "medium",
+        "type": "numeric",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 3,
+        "difficulty": "hard",
+        "type": "multiple-choice",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 1.5,
+        "difficulty": "easy",
+        "type": "multiple-choice",
+        "tags": [
+          "inductor-opposes-current"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "medium",
+        "type": "multiple-choice",
+        "tags": [
+          "inductor-opposes-current"
+        ]
+      },
+      {
+        "minutes": 4.5,
+        "difficulty": "hard",
+        "type": "numeric",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      },
+      {
+        "minutes": 2,
+        "difficulty": "easy",
+        "type": "numeric",
+        "tags": [
+          "lc-charge-current-in-phase"
+        ]
+      }
+    ]
   }
 }

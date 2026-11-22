@@ -1,0 +1,762 @@
+{
+  "curriculumId": "ap-physics-c-em",
+  "unit": 9,
+  "guides": [
+    {
+      "topic": "9.1",
+      "bigIdea": "Electric potential energy belongs to a system of charges: every pair stores $U = kq_1q_2/r$, which is the work an outside agent does to bring that pair together from far apart.",
+      "picture": {
+        "diagram": "plot x=r[cm] y=U[mJ] xr=-4,40 yr=-200,200 h=300\nfn 899/r 4.5..40\nfn -899/r 4.5..40 dash\npt 10,90\npt 10,-90\nnote 27,95 \"like charges: U > 0\"\nnote 27,-95 \"unlike charges: U < 0\"\nxt 10 20\nyt -200 -90 90 200",
+        "caption": "The potential energy of two charges of size $1.0\\ \\mu\\text{C}$ a distance $r$ apart. For like charges (solid) it is positive and falls toward zero as they separate; for unlike charges (dashed) it is negative and rises toward zero. At $r = 10\\ \\text{cm}$ the values are $\\pm 90\\ \\text{mJ}$."
+      },
+      "explanation": "The electric force is conservative, like gravity: the work it does on a charge depends only on where the charge starts and ends, not on the path. That lets us define a potential energy whose change is minus the work done by the electric force, $\\Delta U = -W_E$. When charges move the way the force pushes them, the force does positive work and the system's potential energy falls.\n\nFor two point charges, with $U = 0$ chosen where they are infinitely far apart, the result is $U = kq_1q_2/r$. Put the charges in with their signs. Like charges give a positive energy: someone had to push them together, and if released they fly apart. Unlike charges give a negative energy: they are bound, and it takes work to separate them. Notice the $1/r$, not the $1/r^2$ of the force, and that $U$ is a scalar with no direction.\n\nThe energy belongs to the pair, not to either charge. With three or more charges, add one term for every pair: three charges make three pairs, four make six. That sum equals the work needed to assemble the arrangement one charge at a time from far away. An outside agent that moves charges slowly, so they are at rest before and after, does work $W_{\\text{ext}} = \\Delta U$.",
+      "equations": [
+        {
+          "latex": "U = \\frac{k q_1 q_2}{r}",
+          "meaning": "The potential energy of two point charges, taken as zero at infinite separation. Here $k = 1/(4\\pi\\varepsilon_0)$.",
+          "variables": [
+            {
+              "symbol": "U",
+              "name": "electric potential energy of the pair",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the charges, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the charges",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Two point charges, or spheres far enough apart to act as points.",
+          "notWhen": "Do not square the distance, and do not drop the signs. For a spread-out charge, integrate or use its potential instead."
+        },
+        {
+          "latex": "U = k\\left(\\frac{q_1 q_2}{r_{12}} + \\frac{q_1 q_3}{r_{13}} + \\frac{q_2 q_3}{r_{23}}\\right)",
+          "meaning": "The energy of a system of point charges is the sum over every pair, each counted once.",
+          "variables": [
+            {
+              "symbol": "U",
+              "name": "total electric potential energy of the system",
+              "unit": "J"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2,\\ q_3",
+              "name": "the charges, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance between the two charges named in the subscript",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Three or more point charges: the energy stored, or the work to assemble or take apart the arrangement.",
+          "notWhen": "Do not count a pair twice, and do not add the terms as vectors: they are signed numbers."
+        },
+        {
+          "latex": "\\Delta U = -W_E = -\\int_{r_i}^{r_f} F_r\\,dr",
+          "meaning": "The change in potential energy is minus the work done by the electric force.",
+          "variables": [
+            {
+              "symbol": "U",
+              "name": "electric potential energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "W_E",
+              "name": "work done by the electric force",
+              "unit": "J"
+            },
+            {
+              "symbol": "F_r",
+              "name": "radial component of the electric force",
+              "unit": "N"
+            },
+            {
+              "symbol": "r",
+              "name": "separation (initial $r_i$, final $r_f$)",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Deriving a potential energy from a force law, or finding the work the field does in a move.",
+          "notWhen": "Do not multiply force by distance when the force changes along the way; that needs the integral."
+        },
+        {
+          "latex": "W_{\\text{ext}} = \\Delta U",
+          "meaning": "An outside agent that rearranges charges without changing their kinetic energy does work equal to the change in potential energy.",
+          "variables": [
+            {
+              "symbol": "W",
+              "name": "work done by the external agent",
+              "unit": "J"
+            },
+            {
+              "symbol": "U",
+              "name": "electric potential energy of the system",
+              "unit": "J"
+            }
+          ],
+          "useWhen": "Charges are moved slowly, or are at rest before and after.",
+          "notWhen": "If the kinetic energy also changes, the agent's work is $\\Delta K + \\Delta U$."
+        }
+      ],
+      "derivation": "Fix $q_1$ at the origin and let $q_2$ move along a line through it. The radial component of the force on $q_2$ is $F_r = kq_1q_2/s^2$ at separation $s$ (positive, meaning outward, for like charges). The change in potential energy is minus the work this force does as $q_2$ comes in from infinity to separation $r$:\n\n$$U(r) - U(\\infty) = -\\int_{\\infty}^{r} \\frac{kq_1q_2}{s^2}\\,ds = -kq_1q_2\\left[-\\frac{1}{s}\\right]_{\\infty}^{r} = \\frac{kq_1q_2}{r}$$\n\nChoosing $U(\\infty) = 0$ leaves $U = kq_1q_2/r$. Integrating $1/s^2$ is what turns an inverse-square force into a $1/r$ energy. Differentiating goes back the other way: $F_r = -dU/dr = kq_1q_2/r^2$. Any sideways step is perpendicular to the force and takes no work, so the result holds for every path.",
+      "workedExamples": [
+        {
+          "title": "Three charges on a line",
+          "prompt": "Three point charges are fixed on the $x$-axis: $q_1 = +2.0\\ \\text{nC}$ at the origin, $q_2 = -3.0\\ \\text{nC}$ at $x = 0.10\\ \\text{m}$ and $q_3 = +4.0\\ \\text{nC}$ at $x = 0.30\\ \\text{m}$. Taking $U = 0$ when the charges are very far apart, what is the electric potential energy of the system? Use $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Three charges make three pairs: 1 and 2, 1 and 3, 2 and 3. The energy is one $kq_aq_b/r$ term for each pair.",
+            "Find the separations from the positions: $r_{12} = 0.10\\ \\text{m}$, $r_{13} = 0.30\\ \\text{m}$ and $r_{23} = 0.30 - 0.10 = 0.20\\ \\text{m}$.",
+            "Work out each term, keeping the signs. $U_{12} = \\dfrac{(8.99 \\times 10^{9})(+2.0 \\times 10^{-9})(-3.0 \\times 10^{-9})}{0.10} = -5.39 \\times 10^{-7}\\ \\text{J}$. In the same way $U_{13} = +2.40 \\times 10^{-7}\\ \\text{J}$ and $U_{23} = -5.39 \\times 10^{-7}\\ \\text{J}$.",
+            "Add them as signed numbers: $U = (-5.39 + 2.40 - 5.39) \\times 10^{-7}\\ \\text{J} = -8.4 \\times 10^{-7}\\ \\text{J}$.",
+            "Read the sign. The total is negative, so the arrangement is bound overall: an outside agent would have to supply $8.4 \\times 10^{-7}\\ \\text{J}$ to pull all three charges far apart."
+          ],
+          "answer": "$U = -8.4 \\times 10^{-7}\\ \\text{J}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N m^2/C^2"
+              },
+              "q_1": {
+                "value": 2,
+                "unit": "nC"
+              },
+              "q_2": {
+                "value": -3,
+                "unit": "nC"
+              },
+              "q_3": {
+                "value": 4,
+                "unit": "nC"
+              },
+              "x_2": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "x_3": {
+                "value": 0.3,
+                "unit": "m"
+              }
+            },
+            "expr": "k*(q_1*q_2/x_2 + q_1*q_3/x_3 + q_2*q_3/(x_3 - x_2))",
+            "unit": "J"
+          }
+        },
+        {
+          "title": "Four charges on a square",
+          "prompt": "Four identical point charges, each $q = +10\\ \\text{nC}$, are held at the corners of a square of side $a = 5.0\\ \\text{cm}$. (a) Derive an expression for the electric potential energy of the system in terms of $k$, $q$ and $a$, and calculate its value. (b) Determine the work an external agent does in slowly moving one of the charges to a point very far away. Use $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "(a) Four charges make six pairs. Four pairs lie along the sides, a distance $a$ apart; two lie across the diagonals, a distance $a\\sqrt{2}$ apart.",
+            "$U_i = 4\\,\\dfrac{kq^2}{a} + 2\\,\\dfrac{kq^2}{a\\sqrt{2}} = \\dfrac{kq^2}{a}\\left(4 + \\sqrt{2}\\right)$.",
+            "With $\\dfrac{kq^2}{a} = \\dfrac{(8.99 \\times 10^{9})(10 \\times 10^{-9})^2}{0.050} = 1.80 \\times 10^{-5}\\ \\text{J}$, this is $U_i = (5.41)(1.80 \\times 10^{-5}) = 9.7 \\times 10^{-5}\\ \\text{J}$.",
+            "(b) Taking one charge away removes the three pairs it belongs to: two sides and one diagonal. Their energy is $\\dfrac{kq^2}{a}\\left(2 + \\dfrac{1}{\\sqrt{2}}\\right) = (2.71)(1.80 \\times 10^{-5}) = 4.9 \\times 10^{-5}\\ \\text{J}$.",
+            "The charge starts and ends at rest, so $W_{\\text{ext}} = \\Delta U = U_f - U_i = -4.9 \\times 10^{-5}\\ \\text{J}$. It is negative because the other three charges push this one outward, so the agent has to hold it back."
+          ],
+          "answer": "(a) $U = \\dfrac{kq^2}{a}\\left(4 + \\sqrt{2}\\right) = 9.7 \\times 10^{-5}\\ \\text{J}$; (b) $W_{\\text{ext}} = -4.9 \\times 10^{-5}\\ \\text{J}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N m^2/C^2"
+              },
+              "q": {
+                "value": 10,
+                "unit": "nC"
+              },
+              "a": {
+                "value": 5,
+                "unit": "cm"
+              }
+            },
+            "expr": "k*q^2/a*(4 + sqrt(2))",
+            "unit": "J"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "inverse-square-misapplied",
+          "wrong": "Potential energy falls off as $1/r^2$, like the force, so doubling the separation cuts the energy to a quarter.",
+          "right": "The force goes as $1/r^2$; the energy, its integral, goes as $1/r$. Doubling the separation halves the size of $U$."
+        },
+        {
+          "tag": "potential-energy-potential-confusion",
+          "wrong": "Moving two charges closer together always raises their potential energy, so the signs of the charges can be left out.",
+          "right": "The signs decide. For like charges $U$ is positive and rises as they approach. For unlike charges $U$ is negative and becomes more negative: the energy falls."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "A charge midway between two equal positive charges feels no net force, so the energies of its two pairs cancel as well.",
+          "right": "Forces are vectors and can cancel. Energies are signed numbers: each pair contributes $kq_aq_b/r$ whatever the direction, so here the two terms add."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Two charges $+q$ and $+q$ a distance $d$ apart have potential energy $U_0$. One is replaced by $-q$, and the separation is then tripled. What is the energy after each change?",
+          "a": "$-U_0$ after the swap, because the product of the charges changes sign. Then $-U_0/3$: tripling $r$ divides the size by three, so the energy rises toward zero."
+        },
+        {
+          "q": "How many pair terms are in the potential energy of five point charges?",
+          "a": "Ten. Each of the 5 charges pairs with 4 others, and dividing by 2 so no pair is counted twice gives $5 \\times 4 / 2 = 10$."
+        },
+        {
+          "q": "An agent slowly pulls a proton and an electron farther apart. Is the agent's work positive or negative, and what happens to the potential energy?",
+          "a": "Positive. The charges attract, so the agent pulls against the electric force. $U$ is negative and rises toward zero, and $W_{\\text{ext}} = \\Delta U > 0$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=r[cm] y=U[mJ] xr=-4,40 yr=-800,800\nfn {{1798*q}}/r 9..38\nnote 28,680 \"q_2 = {{q}} μC\"\nnote 28,540 \"U at 20 cm = {{round(89.9*q)}} mJ\"\nxt 10 20 30 40\nyt -800 -400 400 800",
+        "caption": "A $+2.0\\ \\mu\\text{C}$ charge is fixed and a second charge $q_2$ sits a distance $r$ away. Change the size and sign of $q_2$: the curve scales with it and flips when the sign changes, but it always heads to zero at large $r$.",
+        "params": [
+          {
+            "name": "q",
+            "label": "Second charge",
+            "min": -4,
+            "max": 4,
+            "step": 0.5,
+            "default": 2,
+            "unit": "μC"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.1",
+        "8.3"
+      ],
+      "teacherNotes": "Ask \"whose energy is it?\" early and often: students who attach $U$ to one charge double-count pairs later. Have them list the pairs before writing any numbers, and insist that signed charges go into $kq_1q_2/r$. The other steady error is carrying $1/r^2$ over from Coulomb's law; the derivation here is worth doing live so the $1/r$ is seen to come from the integral. Set 9A practises assembly and rearrangement work."
+    },
+    {
+      "topic": "9.2",
+      "bigIdea": "Electric potential is the potential energy per unit charge at a point, a scalar set by the source charges alone, and the electric field points the way the potential falls fastest.",
+      "picture": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +1\ncharge 1.5,0 -1\nequi",
+        "caption": "Field lines (solid) and equipotentials (dashed) for a positive charge and an equal negative charge. The two sets of lines cross at right angles everywhere, and the field runs from high potential near the positive charge to low potential near the negative one. The straight dashed line midway between the charges is the $V = 0$ equipotential, yet the field on it is far from zero."
+      },
+      "explanation": "Potential energy depends on the charge you bring to a point. Divide that charge out and what is left describes the place itself: the electric potential, $V = U/q$, in joules per coulomb, or volts. The sources set $V$; a charge $q$ placed there then has $U = qV$. Only differences in potential matter, and we usually take $V = 0$ far from the charges.\n\nA point charge has $V = kq/r$, positive around a positive charge and negative around a negative one. Because $V$ is a scalar, the potential of several charges is a plain sum of numbers, with no components to resolve. For continuous charge, slice it into pieces $dq$ and add: $V = k\\int dq/r$.\n\nPotential and field hold the same information. Going one way, $\\Delta V = -\\int \\vec{E}\\cdot d\\vec{r}$: move along the field and the potential drops. Going the other, $E_x = -dV/dx$: the field component is minus the slope of the potential, so the field points downhill and is strongest where $V$ changes fastest. In a uniform field the drop over a distance $d$ along the field is simply $Ed$.\n\nAn equipotential is a surface on which $V$ is constant. Moving a charge along one takes no work, so the field has no component along it: field lines cross equipotentials at right angles, and equipotentials drawn at equal steps crowd together where the field is strong. Since the field is the slope of $V$ and not its value, either can be zero where the other is not.",
+      "equations": [
+        {
+          "latex": "V = \\frac{U}{q}",
+          "meaning": "The potential at a point is the potential energy a charge would have there, per unit of that charge.",
+          "variables": [
+            {
+              "symbol": "V",
+              "name": "electric potential at the point",
+              "unit": "V"
+            },
+            {
+              "symbol": "U",
+              "name": "potential energy of a charge placed at the point",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "the charge placed there, with its sign",
+              "unit": "C"
+            }
+          ],
+          "useWhen": "Going between potential and energy: $U = qV$ and $\\Delta U = q\\,\\Delta V$.",
+          "notWhen": "$q$ here is the charge that feels the potential, not the charge that makes it."
+        },
+        {
+          "latex": "V = \\frac{kq_1}{r_1} + \\frac{kq_2}{r_2} + \\dots",
+          "meaning": "The potential of point charges is the sum of each charge's kq/r, with signs, taking V = 0 far away.",
+          "variables": [
+            {
+              "symbol": "V",
+              "name": "potential at the point",
+              "unit": "V"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the source charges, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "r_1,\\ r_2",
+              "name": "distance from each charge to the point",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "One or more point charges, or outside any spherically symmetric charge.",
+          "notWhen": "Do not take components or square the distance: it is a scalar sum of $1/r$ terms."
+        },
+        {
+          "latex": "V = k\\int \\frac{dq}{r}",
+          "meaning": "For continuous charge, add the potentials of all the small pieces of charge.",
+          "variables": [
+            {
+              "symbol": "V",
+              "name": "potential at the point",
+              "unit": "V"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q",
+              "name": "charge (the integral runs over the pieces $dq$)",
+              "unit": "C"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the piece $dq$ to the point",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Rods, rings, arcs and discs of charge. Write $dq$ as $\\lambda\\,dx$, $\\lambda R\\,d\\theta$ or $\\sigma\\,dA$.",
+          "notWhen": "$r$ is not the distance to the centre of the object unless every piece is that far away."
+        },
+        {
+          "latex": "V_b - V_a = -\\int_a^b \\vec{E}\\cdot d\\vec{r}",
+          "meaning": "The potential difference between two points is minus the line integral of the field from one to the other, along any path.",
+          "variables": [
+            {
+              "symbol": "V_a,\\ V_b",
+              "name": "potential at the start and at the end of the path",
+              "unit": "V"
+            },
+            {
+              "symbol": "a,\\ b",
+              "name": "the start and end points",
+              "unit": ""
+            },
+            {
+              "symbol": "\\vec{E}",
+              "name": "electric field",
+              "unit": "V/m (= N/C)"
+            },
+            {
+              "symbol": "\\vec{r}",
+              "name": "position along the path ($d\\vec{r}$ is a small step)",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know the field (often from Gauss's law) and want the potential. For a uniform field along the path it becomes $\\Delta V = -Ed$.",
+          "notWhen": "Do not drop the minus sign: the potential falls in the direction of the field."
+        },
+        {
+          "latex": "E_x = -\\frac{dV}{dx}",
+          "meaning": "The component of the field in any direction is minus the rate of change of potential with distance in that direction.",
+          "variables": [
+            {
+              "symbol": "E_x",
+              "name": "component of the field along x",
+              "unit": "V/m"
+            },
+            {
+              "symbol": "V",
+              "name": "potential",
+              "unit": "V"
+            },
+            {
+              "symbol": "x",
+              "name": "position",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You have $V$ as a function of position, or a graph of $V$ against position (the field is minus its slope).",
+          "notWhen": "It gives the slope, so it needs $V$ near the point, not just one value of $V$ at the point."
+        }
+      ],
+      "derivation": "A thin ring of radius $R$ carries total charge $Q$. Find the potential on its axis, a distance $x$ from the centre. Every piece $dq$ of the ring is the same distance, $\\sqrt{x^2 + R^2}$, from that point, so the distance comes out of the integral:\n\n$$V = k\\int \\frac{dq}{r} = \\frac{k}{\\sqrt{x^2 + R^2}}\\int dq = \\frac{kQ}{\\sqrt{x^2 + R^2}}$$\n\nThe field on the axis follows by differentiating with the chain rule:\n\n$$E_x = -\\frac{dV}{dx} = -kQ\\left(-\\tfrac{1}{2}\\right)\\left(x^2 + R^2\\right)^{-3/2}(2x) = \\frac{kQx}{\\left(x^2 + R^2\\right)^{3/2}}$$\n\nThis is the result that needed a component integral in Unit 8. Check: at the centre $V = kQ/R$ is at its maximum, so its slope, and the field, are zero; and far away, where $x \\gg R$, $V \\to kQ/x$, the potential of a point charge.",
+      "workedExamples": [
+        {
+          "title": "Potential in a uniform field",
+          "prompt": "A uniform electric field of magnitude $2.5 \\times 10^{3}\\ \\text{V/m}$ points in the $+x$ direction. The potential at $x = 0$ is $60\\ \\text{V}$. What is the potential at $x = 4.0\\ \\text{cm}$?",
+          "steps": [
+            "Potential difference comes from the field: $\\Delta V = -\\int \\vec{E}\\cdot d\\vec{r}$. Take a path along the $x$-axis, so $\\vec{E}\\cdot d\\vec{r} = E_x\\,dx$ with $E_x = +2.5 \\times 10^{3}\\ \\text{V/m}$.",
+            "The field is constant, so it comes out of the integral: $\\Delta V = -E_x\\int_0^{0.040\\ \\text{m}} dx = -(2.5 \\times 10^{3}\\ \\text{V/m})(0.040\\ \\text{m}) = -100\\ \\text{V}$.",
+            "Add the change to the starting value: $V = 60\\ \\text{V} + (-100\\ \\text{V}) = -40\\ \\text{V}$.",
+            "Check the sign: the path runs along the field, so the potential should fall, and it does. It passes through zero at $x = 2.4\\ \\text{cm}$, where nothing special happens: the field is the same there as everywhere else."
+          ],
+          "answer": "$V = -40\\ \\text{V}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "V_0": {
+                "value": 60,
+                "unit": "V"
+              },
+              "E": {
+                "value": 2500,
+                "unit": "V/m"
+              },
+              "x": {
+                "value": 4,
+                "unit": "cm"
+              }
+            },
+            "expr": "V_0 - E*x",
+            "unit": "V"
+          }
+        },
+        {
+          "title": "Potential of a charged shell",
+          "prompt": "A thin spherical shell of radius $R = 10\\ \\text{cm}$ carries a charge $Q = +5.0\\ \\text{nC}$ spread uniformly over its surface. Take $V = 0$ very far away. Starting from the electric field, determine the potential (a) at the surface of the shell and (b) at its centre. Use $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "Gauss's law gives the field. Outside the shell ($r \\ge R$) it is radial with $E_r = kQ/r^2$, as for a point charge. Inside ($r < R$) a Gaussian sphere encloses no charge, so $E = 0$.",
+            "(a) Integrate inward along a radial line from infinity, where $V = 0$: $V(R) = -\\int_{\\infty}^{R} \\dfrac{kQ}{r^2}\\,dr = \\left[\\dfrac{kQ}{r}\\right]_{\\infty}^{R} = \\dfrac{kQ}{R}$.",
+            "$V(R) = \\dfrac{(8.99 \\times 10^{9})(5.0 \\times 10^{-9})}{0.10} = 4.5 \\times 10^{2}\\ \\text{V}$.",
+            "(b) Continue from the surface to the centre: $V(0) - V(R) = -\\int_{R}^{0} E_r\\,dr = 0$, because the field is zero all the way. So the centre is also at $4.5 \\times 10^{2}\\ \\text{V}$.",
+            "The whole interior is at one potential. Zero field means the potential is not changing, not that the potential is zero."
+          ],
+          "answer": "(a) $V = \\dfrac{kQ}{R} = 4.5 \\times 10^{2}\\ \\text{V}$ at the surface; (b) the same value, $4.5 \\times 10^{2}\\ \\text{V}$, at the centre",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "k": {
+                "value": 8990000000,
+                "unit": "N m^2/C^2"
+              },
+              "Q": {
+                "value": 5,
+                "unit": "nC"
+              },
+              "R": {
+                "value": 10,
+                "unit": "cm"
+              }
+            },
+            "expr": "k*Q/R",
+            "unit": "V"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "field-potential-zero-together",
+          "wrong": "Midway between charges $+q$ and $-q$ the potential is zero, so a charge placed there feels no force.",
+          "right": "The field is the slope of the potential, not its value. At that midpoint $V = 0$ but $V$ is falling steeply from one charge to the other, and the field is large."
+        },
+        {
+          "tag": "vector-scalar-superposition",
+          "wrong": "Midway between two equal positive charges the potentials cancel, just as the fields do.",
+          "right": "Fields are vectors and cancel there. Potentials are numbers of the same sign and add: $V = 2kq/r$, with $r$ the distance to each charge."
+        },
+        {
+          "tag": "potential-gradient-sign",
+          "wrong": "The electric field points toward higher potential.",
+          "right": "$E_x = -dV/dx$: the field points the way the potential falls. Follow a field line and $V$ goes down."
+        },
+        {
+          "tag": "distribution-as-point-charge",
+          "wrong": "A ring of charge $Q$ has potential $kQ/x$ at a distance $x$ along its axis, as if the charge were at its centre.",
+          "right": "Every piece of the ring is $\\sqrt{x^2 + R^2}$ from that point, so $V = kQ/\\sqrt{x^2 + R^2}$. It looks like a point charge only when $x \\gg R$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "The potential $3.0\\ \\text{m}$ from a point charge is $60\\ \\text{V}$. What is it at $6.0\\ \\text{m}$, and how does the field strength compare?",
+          "a": "$30\\ \\text{V}$: potential goes as $1/r$, so it halves. The field goes as $1/r^2$, so it drops to a quarter."
+        },
+        {
+          "q": "Equipotentials drawn every $10\\ \\text{V}$ are $2.0\\ \\text{mm}$ apart in one region and $8.0\\ \\text{mm}$ apart in another. Compare the fields.",
+          "a": "$E \\approx \\Delta V/\\Delta s$: about $5000\\ \\text{V/m}$ where they are $2.0\\ \\text{mm}$ apart and $1250\\ \\text{V/m}$ where they are $8.0\\ \\text{mm}$ apart. Closer lines mean a stronger field, here four times stronger."
+        },
+        {
+          "q": "Along the $x$-axis the potential is $V = 30x^2 - 12x$, in volts with $x$ in metres. Find $E_x$ at $x = 0.50\\ \\text{m}$, and the point where the field is zero.",
+          "a": "$E_x = -dV/dx = -(60x - 12)$. At $x = 0.50\\ \\text{m}$ this is $-18\\ \\text{V/m}$, pointing in the $-x$ direction. It is zero at $x = 0.20\\ \\text{m}$, where $V$ has its minimum."
+        }
+      ],
+      "tryIt": {
+        "diagram": "field xr=-4..4 yr=-3..3\ncharge -1.5,0 +2\ncharge 1.5,0 -{{q}}\nequi",
+        "caption": "The positive charge stays at 2 units; change the size of the negative charge. However lopsided the pair, the dashed equipotentials still cross every field line at a right angle.",
+        "params": [
+          {
+            "name": "q",
+            "label": "Size of the negative charge",
+            "min": 1,
+            "max": 4,
+            "step": 0.5,
+            "default": 2,
+            "unit": "units"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "8.4",
+        "8.6",
+        "9.1"
+      ],
+      "teacherNotes": "Keep three things apart on the board all week: $V$ (a property of the place), $U = qV$ (needs a charge) and $\\vec{E}$ (the slope of $V$). Ask for both $V$ and $E$ at the midpoint of a dipole and of two equal like charges; the pair of answers exposes most confusion. In integrals, make students say what $r$ is for a general piece $dq$ before they integrate. Sets 9B and 9C practise superposition, integration and the field–potential link."
+    },
+    {
+      "topic": "9.3",
+      "bigIdea": "When only electric forces do work, kinetic energy plus electric potential energy stays constant, so a charge $q$ that moves through a potential difference $\\Delta V$ changes its kinetic energy by $-q\\,\\Delta V$.",
+      "picture": {
+        "diagram": "field xr=-3..3 yr=-2.5..2.5\nplates -2,0 2,0 w=4\nequi\ntest -0.8,0.8 + \"proton\"\ntest 0.8,-0.8 - \"electron\"",
+        "caption": "Between charged plates the potential falls steadily from the positive plate (left) to the negative plate (right). The proton is pushed toward lower potential and the electron toward higher potential. Each is heading for lower potential energy, so each speeds up."
+      },
+      "explanation": "Because the electric force is conservative, a charge that is acted on only by electric forces keeps its total mechanical energy. With fixed sources that set up a potential $V$, the charge has $U = qV$, so $K_i + qV_i = K_f + qV_f$, or $\\Delta K = -q\\,\\Delta V$. Only the two end points matter. You do not need the field in between, the shape of the path or the time taken, which is why energy succeeds where constant-acceleration equations fail: near a point charge the force changes at every step.\n\nWatch the signs. A positive charge released from rest moves toward lower potential; a negative charge moves toward higher potential. In both cases $q\\,\\Delta V$ is negative: potential energy falls and kinetic energy rises. All charges run downhill in potential energy, but only positive ones run downhill in potential.\n\nA handy unit follows. A particle with charge $e$ that moves through $1\\ \\text{V}$ gains or loses one electron-volt, $1\\ \\text{eV} = 1.60 \\times 10^{-19}\\ \\text{J}$, so an electron accelerated through $250\\ \\text{V}$ gains $250\\ \\text{eV}$. Starting from rest, $\\tfrac{1}{2}mv^2 = |q\\,\\Delta V|$, so the speed grows only as the square root of the potential difference.\n\nFor a charge moving near a fixed point charge, use $U = kq_1q_2/r$: the sum $\\tfrac{1}{2}mv^2 + kq_1q_2/r$ stays constant. A charge fired straight at a fixed like charge stops for an instant at its closest approach, where all of its kinetic energy has become potential energy. If an outside agent also does work, that work equals $\\Delta K + \\Delta U$.",
+      "equations": [
+        {
+          "latex": "K_i + qV_i = K_f + qV_f",
+          "meaning": "With only electric forces doing work, a charge's kinetic energy plus its potential energy qV is the same at the start and at the end.",
+          "variables": [
+            {
+              "symbol": "K_i,\\ K_f",
+              "name": "kinetic energy at the start and at the end",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "the moving charge, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "V_i,\\ V_f",
+              "name": "potential at the start and at the end",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "A charge moves between two points of known potential and nothing but the electric force does work on it.",
+          "notWhen": "Not when another force does work (add $W_{\\text{ext}}$ to the left side), and not for the potential the charge itself creates."
+        },
+        {
+          "latex": "\\Delta K = -q\\,\\Delta V",
+          "meaning": "The change in kinetic energy is minus the charge times the potential difference it moves through.",
+          "variables": [
+            {
+              "symbol": "K",
+              "name": "kinetic energy",
+              "unit": "J"
+            },
+            {
+              "symbol": "q",
+              "name": "the moving charge, with its sign",
+              "unit": "C"
+            },
+            {
+              "symbol": "V",
+              "name": "potential ($\\Delta V = V_f - V_i$)",
+              "unit": "V"
+            }
+          ],
+          "useWhen": "Quick energy bookkeeping. With $q$ in units of $e$ and $\\Delta V$ in volts, the answer is in electron-volts.",
+          "notWhen": "Do not use the size of $q$ only: an electron and a proton moving through the same $\\Delta V$ have opposite changes in kinetic energy."
+        },
+        {
+          "latex": "v = \\sqrt{\\frac{2\\,|q\\,\\Delta V|}{m}}",
+          "meaning": "The speed of a charge that starts from rest and is accelerated through a potential difference.",
+          "variables": [
+            {
+              "symbol": "v",
+              "name": "final speed",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "q",
+              "name": "charge",
+              "unit": "C"
+            },
+            {
+              "symbol": "V",
+              "name": "potential ($\\Delta V$ is the difference moved through)",
+              "unit": "V"
+            },
+            {
+              "symbol": "m",
+              "name": "mass of the particle",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "The particle starts at rest and moves the way the electric force pushes it.",
+          "notWhen": "Not if the particle already has speed; then use the full energy equation. It also fails near the speed of light (electrons above a few tens of kilovolts)."
+        },
+        {
+          "latex": "\\tfrac{1}{2}mv_i^2 + \\frac{kq_1q_2}{r_i} = \\tfrac{1}{2}mv_f^2 + \\frac{kq_1q_2}{r_f}",
+          "meaning": "Energy conservation for a charge moving near a fixed point charge.",
+          "variables": [
+            {
+              "symbol": "m",
+              "name": "mass of the moving charge",
+              "unit": "kg"
+            },
+            {
+              "symbol": "v_i,\\ v_f",
+              "name": "its speed at the start and at the end",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "k",
+              "name": "Coulomb constant",
+              "unit": "N·m²/C²"
+            },
+            {
+              "symbol": "q_1,\\ q_2",
+              "name": "the two charges, with signs",
+              "unit": "C"
+            },
+            {
+              "symbol": "r_i,\\ r_f",
+              "name": "their separation at the start and at the end",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "Closest approach, escape, or the speed at a given separation, when one charge stays put.",
+          "notWhen": "If both charges are free to move, both kinetic energies go in, and momentum conservation is needed as well."
+        }
+      ],
+      "derivation": "Take a charge $q$ of mass $m$ acted on only by the electric force, so Newton's second law reads $m\\,d\\vec{v}/dt = q\\vec{E}$. Take the dot product of both sides with the velocity, $\\vec{v} = d\\vec{r}/dt$. Since $\\tfrac{d}{dt}(v^2) = 2\\vec{v}\\cdot d\\vec{v}/dt$, the left side is the rate of change of kinetic energy:\n\n$$\\frac{d}{dt}\\left(\\tfrac{1}{2}mv^2\\right) = q\\vec{E}\\cdot\\frac{d\\vec{r}}{dt}$$\n\nIntegrate over time from the start to the end of the motion. The left side becomes $\\Delta K$. The right side becomes $q\\int \\vec{E}\\cdot d\\vec{r}$ along the path, and by the definition of potential difference that integral is $-\\Delta V$:\n\n$$\\Delta K = q\\int_i^f \\vec{E}\\cdot d\\vec{r} = -q\\,\\Delta V = -\\Delta U$$\n\nSo $K + qV$ is the same at both ends, whatever the path and however the field varies along it. One consequence: a charge $q$ fired from far away with kinetic energy $K_0$ straight at a fixed like charge $Q$ stops where $K_0 = kqQ/r_{\\min}$, so its closest approach is $r_{\\min} = kqQ/K_0$.",
+      "workedExamples": [
+        {
+          "title": "A proton climbing a potential hill",
+          "prompt": "A proton (mass $1.67 \\times 10^{-27}\\ \\text{kg}$, charge $+1.60 \\times 10^{-19}\\ \\text{C}$) is moving at $3.0 \\times 10^{5}\\ \\text{m/s}$ at a point where the potential is zero. Only the electric force acts on it. How fast is it moving when it reaches a point where the potential is $+300\\ \\text{V}$?",
+          "steps": [
+            "Only the electric force acts, so $K + qV$ is conserved: $\\tfrac{1}{2}mv_f^2 = \\tfrac{1}{2}mv_i^2 - q\\,\\Delta V$, with $\\Delta V = +300\\ \\text{V}$.",
+            "Predict first. A positive charge moving to higher potential is going uphill: its potential energy rises by $q\\,\\Delta V = (1.60 \\times 10^{-19}\\ \\text{C})(300\\ \\text{V}) = 4.80 \\times 10^{-17}\\ \\text{J}$, so it must slow down.",
+            "Initial kinetic energy: $K_i = \\tfrac{1}{2}(1.67 \\times 10^{-27}\\ \\text{kg})(3.0 \\times 10^{5}\\ \\text{m/s})^2 = 7.52 \\times 10^{-17}\\ \\text{J}$.",
+            "Final kinetic energy: $K_f = 7.52 \\times 10^{-17} - 4.80 \\times 10^{-17} = 2.72 \\times 10^{-17}\\ \\text{J}$.",
+            "$v_f = \\sqrt{\\dfrac{2K_f}{m}} = \\sqrt{\\dfrac{2(2.72 \\times 10^{-17}\\ \\text{J})}{1.67 \\times 10^{-27}\\ \\text{kg}}} = 1.8 \\times 10^{5}\\ \\text{m/s}$.",
+            "Check in electron-volts: the proton starts with about $470\\ \\text{eV}$ and gives up $300\\ \\text{eV}$, leaving $170\\ \\text{eV}$."
+          ],
+          "answer": "$v_f = 1.8 \\times 10^{5}\\ \\text{m/s}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 1.67e-27,
+                "unit": "kg"
+              },
+              "q": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "v_i": {
+                "value": 300000,
+                "unit": "m/s"
+              },
+              "dV": {
+                "value": 300,
+                "unit": "V"
+              }
+            },
+            "expr": "sqrt(v_i^2 - 2*q*dV/m)",
+            "unit": "m/s"
+          }
+        },
+        {
+          "title": "Closest approach to a nucleus",
+          "prompt": "An alpha particle (mass $6.64 \\times 10^{-27}\\ \\text{kg}$, charge $+2e$) is fired from far away at $1.5 \\times 10^{7}\\ \\text{m/s}$ directly toward a gold nucleus (charge $+79e$), which stays at rest. Derive an expression for the distance of closest approach, and calculate it. Use $e = 1.60 \\times 10^{-19}\\ \\text{C}$ and $k = 8.99 \\times 10^{9}\\ \\text{N·m}^2/\\text{C}^2$.",
+          "steps": [
+            "The only force on the alpha particle is the electric repulsion of the nucleus, which is conservative, so the alpha particle's kinetic energy plus the pair's potential energy is constant.",
+            "Far away the potential energy is zero, so the total energy is $\\tfrac{1}{2}mv^2$.",
+            "The approach is head-on, so at the closest point the alpha particle is momentarily at rest: $K = 0$ and $U = \\dfrac{k(2e)(79e)}{r_{\\min}}$.",
+            "Set the two totals equal: $\\tfrac{1}{2}mv^2 = \\dfrac{158\\,ke^2}{r_{\\min}}$, so $r_{\\min} = \\dfrac{316\\,ke^2}{mv^2}$.",
+            "Numbers: $mv^2 = (6.64 \\times 10^{-27})(1.5 \\times 10^{7})^2 = 1.49 \\times 10^{-12}\\ \\text{J}$ and $316\\,ke^2 = 316(8.99 \\times 10^{9})(1.60 \\times 10^{-19})^2 = 7.27 \\times 10^{-26}\\ \\text{J·m}$, giving $r_{\\min} = 4.9 \\times 10^{-14}\\ \\text{m}$.",
+            "That is several times the radius of a gold nucleus (about $7 \\times 10^{-15}\\ \\text{m}$), so the alpha particle turns back without touching it."
+          ],
+          "answer": "$r_{\\min} = \\dfrac{316\\,ke^2}{mv^2} = 4.9 \\times 10^{-14}\\ \\text{m}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 6.64e-27,
+                "unit": "kg"
+              },
+              "v": {
+                "value": 15000000,
+                "unit": "m/s"
+              },
+              "e": {
+                "value": 1.6e-19,
+                "unit": "C"
+              },
+              "k": {
+                "value": 8990000000,
+                "unit": "N m^2/C^2"
+              },
+              "Z_1": {
+                "value": 2,
+                "unit": ""
+              },
+              "Z_2": {
+                "value": 79,
+                "unit": ""
+              }
+            },
+            "expr": "k*Z_1*Z_2*e^2/(0.5*m*v^2)",
+            "unit": "m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "field-direction-ignores-sign",
+          "wrong": "Any charge released from rest moves toward lower potential.",
+          "right": "A positive charge does. A negative charge, such as an electron, moves toward higher potential. What every charge moves toward is lower potential energy, $qV$."
+        },
+        {
+          "tag": "potential-energy-potential-confusion",
+          "wrong": "An electron at a point where $V = +100\\ \\text{V}$ has more potential energy than one where $V = 0$.",
+          "right": "$U = qV$ and the electron's charge is negative, so its energy there is $-100\\ \\text{eV}$: lower, not higher. High potential is low potential energy for a negative charge."
+        },
+        {
+          "wrong": "Doubling the accelerating potential difference doubles the particle's final speed.",
+          "right": "It doubles the kinetic energy. Since $K = \\tfrac{1}{2}mv^2$, the speed rises by a factor of $\\sqrt{2} \\approx 1.4$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "An electron and a proton each start from rest and move through a potential difference of size $100\\ \\text{V}$. Compare their final kinetic energies and speeds.",
+          "a": "The kinetic energies are equal, $100\\ \\text{eV}$ each, because the charges have the same size. The electron is about 1840 times lighter, so it is faster by $\\sqrt{1840} \\approx 43$ times."
+        },
+        {
+          "q": "A $-2.0\\ \\mu\\text{C}$ charge moves from a point at $50\\ \\text{V}$ to a point at $20\\ \\text{V}$ with only the electric force acting. Does it gain or lose kinetic energy, and how much?",
+          "a": "It loses. $\\Delta K = -q\\,\\Delta V = -(-2.0 \\times 10^{-6}\\ \\text{C})(-30\\ \\text{V}) = -6.0 \\times 10^{-5}\\ \\text{J}$. For a negative charge, moving to lower potential is uphill in potential energy."
+        },
+        {
+          "q": "A charge moves along an equipotential with only the electric force acting. What happens to its speed?",
+          "a": "Nothing. $\\Delta V = 0$, so $\\Delta K = 0$. The force is perpendicular to the path, so it does no work; it can change the direction of motion but not the speed."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[cm] y=E[eV] xr=-0.6,10 yr=0,1300\nseg 0,{{V}} 10,0\nseg 0,0 10,{{V}} dash=1\nnote 5,1240 \"speed at the far plate: {{round(13.84*sqrt(V))}} km/s\"\nnote 1.6,{{V+60}} \"U = qV\"\nnote 9.3,{{V+60}} \"K\"\nxt 0 2 4 6 8 10\nyt 200 400 600 800 1000 1200",
+        "caption": "A proton is released from rest at the positive plate ($x = 0$) and crosses to the negative plate $10\\ \\text{cm}$ away. Change the potential difference between the plates: potential energy (solid) turns into kinetic energy (dashed), the total stays level, and the final speed grows only as the square root of the potential difference.",
+        "params": [
+          {
+            "name": "V",
+            "label": "Potential difference",
+            "min": 200,
+            "max": 1000,
+            "step": 100,
+            "default": 400,
+            "unit": "V"
+          }
+        ]
+      },
+      "prerequisites": [
+        "8.3",
+        "9.1",
+        "9.2"
+      ],
+      "teacherNotes": "Before any calculation, ask students to predict whether the particle speeds up or slows down, and to say it in terms of potential energy, not potential; electrons are where the prediction goes wrong. Many will reach for kinematics whenever a speed is asked for, so set at least one problem near a point charge where the acceleration is plainly not constant. Electron-volts make the bookkeeping quick, but have students convert to joules before solving for a speed. Set 9D practises these."
+    }
+  ]
+}

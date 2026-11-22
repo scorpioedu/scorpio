@@ -576,6 +576,7 @@ describe("the committed corpus fixture", () => {
     "solution-consistent",
     "grader-round-trip",
     "mc-quantity",
+    "circuit-consistent",
     "near-duplicate",
   ];
   const isOutcomeMap = (o: object) =>
@@ -625,7 +626,7 @@ describe("the committed corpus fixture", () => {
     // Controls: at least 30, in all three courses, all passing.
     expect(corpus.controls.length).toBeGreaterThanOrEqual(30);
     expect(new Set(corpus.controls.map((c) => c.course))).toEqual(
-      new Set(["ap-physics-1", "ap-physics-2", "ap-physics-c-mech"]),
+      new Set(["ap-physics-1", "ap-physics-2", "ap-physics-c-mech", "ap-physics-c-em"]),
     );
     expect(corpus.controls.filter((c) => !all(c.checks)).map((c) => c.id)).toEqual([]);
     expect(corpus.summary).toMatchObject({
@@ -662,7 +663,7 @@ describeWithContent("on the content files", () => {
       CURRICULA.flatMap((c) => c.sets.flatMap((s) => s.draftIds)).length,
     );
     expect(new Set(report.drafts.map((d: { course: string }) => d.course))).toEqual(
-      new Set(["ap-physics-1", "ap-physics-2", "ap-physics-c-mech"]),
+      new Set(["ap-physics-1", "ap-physics-2", "ap-physics-c-mech", "ap-physics-c-em"]),
     );
     // Every draft belongs to a set of its course definition.
     expect(report.drafts.filter((d: { set: string | null }) => !d.set)).toEqual([]);

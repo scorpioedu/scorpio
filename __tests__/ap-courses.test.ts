@@ -194,21 +194,20 @@ describe("course definitions", () => {
     expect(curriculumUnits("ap-physics-2").map((u) => u.unit)).toEqual([9, 10, 11, 12, 13, 14, 15]);
   });
 
-  test("AP Physics C: Electricity and Magnetism is an outline: 24 planned sets, 8A-13D, no problems", () => {
+  test("AP Physics C: Electricity and Magnetism is written: 24 sets, 8A-13D, ten problems each", () => {
     const id = "ap-physics-c-em";
     const c = getCurriculum(id)!;
     expect(c).toMatchObject({ apCourse: "physics-c-em", name: apCourseName("physics-c-em") });
     expect(c.sets.map((s) => s.key)).toEqual(
       [8, 9, 10, 11, 12, 13].flatMap((u) => ["A", "B", "C", "D"].map((l) => `${u}${l}`)),
     );
-    // Nothing is written: no set has problems or a profile, and no content file is listed.
-    expect(c.sets.flatMap((s) => s.draftIds)).toEqual([]);
-    expect(hasContent(c)).toBe(false);
-    expect(c.sets.filter((s) => setProfile(id, s.key))).toEqual([]);
-    expect(CONTENT_FILES[id]).toEqual([]);
-    expect(c.description).toMatch(/planned/i);
-    expect(c.description).toMatch(/not written yet/i);
-    // The plan still covers every topic of every unit, four sets a unit.
+    // Every set is written and has a profile, and the content file is listed.
+    for (const s of c.sets) expect([s.key, s.draftIds.length]).toEqual([s.key, 10]);
+    expect(hasContent(c)).toBe(true);
+    expect(c.sets.filter((s) => !setProfile(id, s.key))).toEqual([]);
+    expect(CONTENT_FILES[id]).toEqual(["content/ap-physics-c-em/units-8-13.json"]);
+    expect(c.description).not.toMatch(/planned|not written yet/i);
+    // The sets cover every topic of every unit, four sets a unit.
     const covered = new Set(c.sets.flatMap((s) => s.topics));
     const all = apUnits(c.apCourse).flatMap((u) => u.topics.map((t) => t.id));
     expect(all.filter((t) => !covered.has(t))).toEqual([]);
@@ -217,13 +216,12 @@ describe("course definitions", () => {
     );
     for (const s of c.sets)
       expect([s.key, !!s.title.trim() && !!s.description.trim()]).toEqual([s.key, true]);
-    // Teachers see every set as "planned": nothing to preview, assign or pace.
+    // Written but not yet published: every set is awaiting publication, none is "planned".
     const road = deriveRoadmap(id, [], []);
     expect(road.map((u) => u.unit)).toEqual([8, 9, 10, 11, 12, 13]);
     expect(new Set(road.flatMap((u) => u.sets.map((s) => s.availability)))).toEqual(
-      new Set(["planned"]),
+      new Set(["awaiting"]),
     );
-    expect(nextUnit(road)).toBeUndefined();
     // A published set of another course with the same key ("9A" is also AP Physics 2) changes nothing.
     const fromP2 = { id: "a", curriculumId: "ap-physics-2", curriculumSetKey: "9A" };
     expect(deriveRoadmap(id, [], [fromP2])[1].sets[0]).toMatchObject({ assigned: false });
@@ -355,10 +353,9 @@ describeWithContent("reviewed content of every course", () => {
     }
   });
 
-  test("the planned course has no content: no files, no folder of drafts", () => {
-    expect(CONTENT_FILES["ap-physics-c-em"]).toEqual([]);
-    expect(load("ap-physics-c-em").size).toBe(0);
-    expect(fs.existsSync(path.join(__dirname, "..", "content", "ap-physics-c-em"))).toBe(false);
+  test("the newest course has its content: one file with every set's ten problems", () => {
+    expect(CONTENT_FILES["ap-physics-c-em"]).toEqual(["content/ap-physics-c-em/units-8-13.json"]);
+    expect(load("ap-physics-c-em").size).toBe(240);
   });
 
   test("AP Physics 2 and AP Physics C: Mechanics are complete: 28 sets of 5 to 10 problems each", () => {

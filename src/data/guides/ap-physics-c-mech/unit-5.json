@@ -1,0 +1,1238 @@
+{
+  "curriculumId": "ap-physics-c-mech",
+  "unit": 5,
+  "guides": [
+    {
+      "topic": "5.1",
+      "bigIdea": "Angular position, angular velocity and angular acceleration describe rotation the way $x$, $v$ and $a$ describe straight-line motion, and they are linked by the same derivatives and integrals.",
+      "picture": {
+        "diagram": "plot x=t[s] y=\\omega[rad/s] xr=-0.15,2.4 yr=0,14\nfn 12-3*t^2 0..2\nshade 0..2\npt 0,12\npt 2,0\nnote 0.62,4.5 \"area = 16 rad\"\nxt 0 0.5 1 1.5 2\nyt 0 4 8 12",
+        "caption": "A wheel's angular velocity falls as $\\omega(t) = 12 - 3t^2$ (in rad/s, with $t$ in seconds). The slope of the curve at any instant is the angular acceleration, $-6t$; the shaded area is the angle turned before it stops, $\\int_0^2 (12 - 3t^2)\\,dt = 16\\ \\text{rad}$."
+      },
+      "explanation": "Every point on a rigid object turning about a fixed axis sweeps through the same angle in the same time, so one number describes where the whole object is: its angular position $\\theta$, measured in radians from a reference line. A change in angular position, $\\Delta\\theta$, is the angular displacement. By the usual convention counter-clockwise is positive, and the sign carries the direction just as it does for $x$ on a line.\n\nAngular velocity is the rate at which angular position changes, $\\omega = d\\theta/dt$, in rad/s. Angular acceleration is the rate at which angular velocity changes, $\\alpha = d\\omega/dt = d^2\\theta/dt^2$, in $\\text{rad/s}^2$. On graphs these are slopes: $\\omega$ is the slope of $\\theta(t)$ and $\\alpha$ is the slope of $\\omega(t)$. Running the other way they are areas: the area under $\\omega(t)$ is the angular displacement and the area under $\\alpha(t)$ is the change in angular velocity. The signs work as they do in one dimension: when $\\omega$ and $\\alpha$ have the same sign the object spins faster, and when they have opposite signs it slows.\n\nIf $\\alpha$ is constant, the integrals can be done once and for all and give three equations with exactly the form of the constant-acceleration equations of Unit 1, with $\\theta$, $\\omega$ and $\\alpha$ in place of $x$, $v$ and $a$. If $\\alpha$ changes with time, those equations are wrong and you must integrate the function you are given. Deciding which case you are in is the first step of every problem in this topic.",
+      "equations": [
+        {
+          "latex": "\\omega = \\frac{d\\theta}{dt} \\qquad \\alpha = \\frac{d\\omega}{dt}",
+          "meaning": "Angular velocity is the time derivative of angular position, and angular acceleration is the time derivative of angular velocity.",
+          "variables": [
+            {
+              "symbol": "\\theta",
+              "name": "angular position",
+              "unit": "rad"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration",
+              "unit": "rad/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "You have $\\theta(t)$ or $\\omega(t)$ as a function or a graph and want the rate at one instant.",
+          "notWhen": "Do not divide a total angle by a total time and call it the angular velocity at an instant; that is only the average."
+        },
+        {
+          "latex": "\\Delta\\theta = \\int_{t_1}^{t_2}\\omega\\,dt \\qquad \\Delta\\omega = \\int_{t_1}^{t_2}\\alpha\\,dt",
+          "meaning": "The angle turned is the area under the angular velocity–time graph, and the change in angular velocity is the area under the angular acceleration–time graph.",
+          "variables": [
+            {
+              "symbol": "\\Delta\\theta",
+              "name": "angular displacement",
+              "unit": "rad"
+            },
+            {
+              "symbol": "\\Delta\\omega",
+              "name": "change in angular velocity",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity as a function of time",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration as a function of time",
+              "unit": "rad/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time (the interval runs from $t_1$ to $t_2$)",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The angular acceleration or angular velocity varies with time, or you are reading a graph.",
+          "notWhen": "An integral gives a change. Add the starting value ($\\theta_0$ or $\\omega_0$) to get the position or velocity itself."
+        },
+        {
+          "latex": "\\omega = \\omega_0 + \\alpha t \\qquad \\theta = \\theta_0 + \\omega_0 t + \\tfrac{1}{2}\\alpha t^2 \\qquad \\omega^2 = \\omega_0^2 + 2\\alpha(\\theta - \\theta_0)",
+          "meaning": "For constant angular acceleration, angular velocity changes linearly with time and angular position quadratically.",
+          "variables": [
+            {
+              "symbol": "\\theta,\\ \\theta_0",
+              "name": "angular position at time $t$ and at $t = 0$",
+              "unit": "rad"
+            },
+            {
+              "symbol": "\\omega,\\ \\omega_0",
+              "name": "angular velocity at time $t$ and at $t = 0$",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration (constant)",
+              "unit": "rad/s²"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The angular acceleration is constant: a steady torque on a rigid object, or a problem that says \"uniformly\".",
+          "notWhen": "Never when $\\alpha$ is given as a function of time, angle or angular velocity. Integrate instead."
+        }
+      ],
+      "derivation": "Start from the definitions and take $\\alpha$ constant. Since $\\alpha = d\\omega/dt$, integrate from time 0, when the angular velocity is $\\omega_0$, to time $t$:\n\n$$\\int_{\\omega_0}^{\\omega} d\\omega' = \\int_0^t \\alpha\\,dt' \\quad\\Rightarrow\\quad \\omega = \\omega_0 + \\alpha t.$$\n\nNow use $\\omega = d\\theta/dt$ and integrate again, with the result just found as the integrand:\n\n$$\\theta - \\theta_0 = \\int_0^t (\\omega_0 + \\alpha t')\\,dt' = \\omega_0 t + \\tfrac{1}{2}\\alpha t^2.$$\n\nFor the equation without time, use the chain rule to write the angular acceleration as a derivative with respect to angle: $\\alpha = \\dfrac{d\\omega}{dt} = \\dfrac{d\\omega}{d\\theta}\\dfrac{d\\theta}{dt} = \\omega\\,\\dfrac{d\\omega}{d\\theta}$. Separate the variables and integrate:\n\n$$\\int_{\\omega_0}^{\\omega}\\omega'\\,d\\omega' = \\int_{\\theta_0}^{\\theta}\\alpha\\,d\\theta' \\quad\\Rightarrow\\quad \\tfrac{1}{2}\\omega^2 - \\tfrac{1}{2}\\omega_0^2 = \\alpha(\\theta - \\theta_0).$$\n\nOnly the last step of each line used the fact that $\\alpha$ is constant (it was taken outside the integral). When $\\alpha$ is a function, the same integrals still hold; you just have to do them with that function.",
+      "workedExamples": [
+        {
+          "title": "A motor whose angular acceleration fades",
+          "prompt": "A motor shaft is turning at $3.0\\ \\text{rad/s}$ at $t = 0$. From then on its angular acceleration is $\\alpha(t) = 8.0 - 2.0t$, with $\\alpha$ in $\\text{rad/s}^2$ and $t$ in seconds. Through what angle does the shaft turn between $t = 0$ and $t = 4.0\\ \\text{s}$?",
+          "steps": [
+            "Decide which tools apply. The angular acceleration depends on time, so the constant-acceleration equations cannot be used. Integrate instead.",
+            "Find the angular velocity: $\\omega(t) = \\omega_0 + \\int_0^t (8.0 - 2.0t')\\,dt' = 3.0 + 8.0t - 1.0t^2$, in rad/s.",
+            "Integrate again for the angular displacement: $\\Delta\\theta = \\int_0^{4.0} (3.0 + 8.0t - 1.0t^2)\\,dt = \\Big[3.0t + 4.0t^2 - \\tfrac{1}{3}t^3\\Big]_0^{4.0}$.",
+            "Evaluate: $\\Delta\\theta = 12 + 64 - 21.3 = 54.7\\ \\text{rad}$, which is $55\\ \\text{rad}$ to two significant figures (nearly nine revolutions).",
+            "Check the size. The angular velocity rises from $3.0\\ \\text{rad/s}$ to $\\omega(4.0) = 19\\ \\text{rad/s}$, so the average is somewhere in between, and $55\\ \\text{rad}$ in $4.0\\ \\text{s}$ is an average of about $14\\ \\text{rad/s}$. Reasonable."
+          ],
+          "answer": "$\\Delta\\theta = 55\\ \\text{rad}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "w0": {
+                "value": 3,
+                "unit": "rad/s"
+              },
+              "A": {
+                "value": 8,
+                "unit": "rad/s^2"
+              },
+              "B": {
+                "value": 2,
+                "unit": "rad/s^3"
+              },
+              "T": {
+                "value": 4,
+                "unit": "s"
+              }
+            },
+            "expr": "w0*T + A*T^2/2 - B*T^3/6",
+            "unit": "rad"
+          }
+        },
+        {
+          "title": "A flywheel braking uniformly",
+          "prompt": "A flywheel spinning at $15\\ \\text{rad/s}$ is braked so that it slows uniformly and turns through $45\\ \\text{rad}$ while coming to rest. Determine its angular acceleration and the time it takes to stop.",
+          "steps": [
+            "\"Slows uniformly\" means the angular acceleration is constant, so the constant-$\\alpha$ equations apply. Take the direction of spin as positive: $\\omega_0 = +15\\ \\text{rad/s}$, $\\omega = 0$ and $\\Delta\\theta = +45\\ \\text{rad}$.",
+            "Time is not known yet, so use the equation without it: $\\omega^2 = \\omega_0^2 + 2\\alpha\\,\\Delta\\theta$ gives $\\alpha = \\dfrac{0 - (15\\ \\text{rad/s})^2}{2(45\\ \\text{rad})} = -2.5\\ \\text{rad/s}^2$. The negative sign says $\\alpha$ is opposite to $\\omega$, as it must be for something slowing down.",
+            "Then $\\omega = \\omega_0 + \\alpha t$ gives $t = \\dfrac{0 - 15\\ \\text{rad/s}}{-2.5\\ \\text{rad/s}^2} = 6.0\\ \\text{s}$.",
+            "Check with the average angular velocity, which for constant $\\alpha$ is $\\tfrac{1}{2}(15 + 0) = 7.5\\ \\text{rad/s}$: $(7.5\\ \\text{rad/s})(6.0\\ \\text{s}) = 45\\ \\text{rad}$, in agreement."
+          ],
+          "answer": "$\\alpha = -2.5\\ \\text{rad/s}^2$ (opposite to the spin) and $t = 6.0\\ \\text{s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "w0": {
+                "value": 15,
+                "unit": "rad/s"
+              },
+              "dth": {
+                "value": 45,
+                "unit": "rad"
+              }
+            },
+            "expr": "2*dth/w0",
+            "unit": "s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "The angular acceleration is $\\alpha(t) = 8 - 2t$, so after $4\\ \\text{s}$ the angular velocity has changed by $\\alpha t$ with $\\alpha$ taken at $t = 4\\ \\text{s}$ (or at $t = 0$).",
+          "right": "$\\omega = \\omega_0 + \\alpha t$ holds only when $\\alpha$ is one constant number. When it varies, the change in angular velocity is the integral $\\int \\alpha\\,dt$, the area under the $\\alpha$–$t$ graph."
+        },
+        {
+          "tag": "derivative-integral-confusion",
+          "wrong": "To get the angle turned from an $\\omega$–$t$ graph, find its slope.",
+          "right": "The slope of an $\\omega$–$t$ graph is the angular acceleration. The angle turned is the area under it. Going down the chain $\\theta \\to \\omega \\to \\alpha$ is differentiating; coming back up is integrating."
+        },
+        {
+          "tag": "sign-error",
+          "wrong": "A negative angular acceleration always means the object is slowing down.",
+          "right": "It means $\\alpha$ points in the negative (clockwise) sense. A wheel already spinning clockwise, with negative $\\omega$, speeds up when $\\alpha$ is negative. Slowing down means $\\omega$ and $\\alpha$ have opposite signs."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A disc's angular position is $\\theta(t) = 2.0t^3 - 6.0t$ (rad, with $t$ in s). What are its angular velocity and angular acceleration at $t = 1.0\\ \\text{s}$, and what is the disc doing at that instant?",
+          "a": "$\\omega = 6.0t^2 - 6.0 = 0$ and $\\alpha = 12t = 12\\ \\text{rad/s}^2$. The disc is momentarily at rest, reversing from clockwise to counter-clockwise rotation."
+        },
+        {
+          "q": "A wheel has $\\omega = -4\\ \\text{rad/s}$ and $\\alpha = +2\\ \\text{rad/s}^2$. Is it speeding up or slowing down?",
+          "a": "Slowing down. The signs are opposite, so the angular velocity is being pulled toward zero. If $\\alpha$ stays constant it stops after $2\\ \\text{s}$ and then spins the other way."
+        },
+        {
+          "q": "A fan starts from rest with constant angular acceleration and turns through $10\\ \\text{rad}$ in the first $2\\ \\text{s}$. Through what angle does it turn in the first $4\\ \\text{s}$?",
+          "a": "$40\\ \\text{rad}$. From rest with constant $\\alpha$, $\\Delta\\theta = \\tfrac{1}{2}\\alpha t^2$, so doubling the time multiplies the angle by four."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=t[s] y=\\omega[rad/s] xr=-0.3,4.4 yr=0,11\nseg 0,2 4,{{2+4*a}}\nshade 0..4\nnote 1.5,10.3 \"slope = {{a}} rad/s^2\"\nnote 1.5,9.2 \"area = {{8+8*a}} rad\"\nxt 0 1 2 3 4\nyt 0 2 4 6 8 10",
+        "caption": "A wheel starts at $2\\ \\text{rad/s}$ and has constant angular acceleration for $4\\ \\text{s}$. Change $\\alpha$: it sets the slope of the line, and the shaded area, $\\omega_0 t + \\tfrac{1}{2}\\alpha t^2$, is the angle turned.",
+        "params": [
+          {
+            "name": "a",
+            "label": "Angular acceleration",
+            "min": -0.5,
+            "max": 2,
+            "step": 0.5,
+            "default": 1,
+            "unit": "rad/s²"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.2",
+        "1.3"
+      ],
+      "teacherNotes": "Ask students to say out loud, before any algebra, whether $\\alpha$ is constant; the commonest error in this topic is reaching for $\\omega = \\omega_0 + \\alpha t$ when $\\alpha$ is a function. Putting the linear and rotational definitions side by side ($x, v, a$ against $\\theta, \\omega, \\alpha$) lets them reuse everything from Unit 1, including the $\\alpha = \\omega\\,d\\omega/d\\theta$ trick, which reappears on free-response questions. Set 5A practises both the calculus and the constant-$\\alpha$ cases."
+    },
+    {
+      "topic": "5.2",
+      "bigIdea": "Every point on a rigid rotating object shares the same $\\theta$, $\\omega$ and $\\alpha$, but its distance travelled, speed and tangential acceleration are each larger in proportion to its distance $r$ from the axis.",
+      "picture": {
+        "diagram": "scene\nrod 1,1 5,1\nhinge 1,1\ndot 3,1\ndot 5,1\ntext 2.75,1.3 \"P\"\ntext 4.75,1.3 \"Q\"\nf 3,1 up 1 \"v_P = ½R\\omega\"\nf 5,1 up 2 \"v_Q = R\\omega\"\ndim 1,1 5,1 \"R\" off=-34\nang 1,1 0 50 \"\\omega\"",
+        "caption": "A bar turning counter-clockwise about a pivot at its left end, seen along the axis. Point P is half as far from the axis as point Q at the tip, so it moves at half the speed, yet both go round once in the same time. Each velocity is tangent to that point's circle, perpendicular to the bar."
+      },
+      "explanation": "A point a distance $r$ from the axis of a rotating object moves along a circle of radius $r$. When the object turns through an angle $\\theta$ in radians, the point travels an arc length $s = r\\theta$; this is what a radian means. Because the object is rigid, $r$ is fixed for each point, and differentiating with respect to time gives the point's speed, $v = r\\omega$, and the rate at which that speed changes, the tangential acceleration $a_t = r\\alpha$.\n\nSo the angular quantities belong to the whole object, while the linear quantities belong to a particular point and grow with $r$. The rim of a wheel moves faster than a point near the hub, although both have the same $\\omega$. This is also how rotation is tied to straight-line motion: a string that unwinds from a pulley without slipping moves at the speed of the rim, $v = R\\omega$, and a belt or chain forces the rims of two wheels to share one linear speed even though their angular speeds differ.\n\nA point moving in a circle is accelerating even when its speed is constant, because the direction of its velocity keeps changing. From Unit 2, this centripetal (radial) acceleration points toward the axis and has magnitude $a_c = v^2/r = \\omega^2 r$. The tangential component changes the speed; the radial component changes the direction. They are perpendicular, so the magnitude of the total acceleration is $a = \\sqrt{a_t^2 + a_c^2}$.",
+      "equations": [
+        {
+          "latex": "s = r\\theta \\qquad v = r\\omega \\qquad a_t = r\\alpha",
+          "meaning": "A point's arc length, speed and tangential acceleration are its distance from the axis multiplied by the object's angle, angular velocity and angular acceleration.",
+          "variables": [
+            {
+              "symbol": "s",
+              "name": "arc length travelled by the point",
+              "unit": "m"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the point (tangent to its circle)",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "a_t",
+              "name": "tangential acceleration of the point",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "r",
+              "name": "distance of the point from the axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle turned, in radians",
+              "unit": "rad"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration",
+              "unit": "rad/s²"
+            }
+          ],
+          "useWhen": "Linking a rotating object to a point on it, or to a string, belt or surface that moves with its rim without slipping.",
+          "notWhen": "Not with angles in degrees or revolutions, and not when a string or surface slips on the rim."
+        },
+        {
+          "latex": "a_c = \\frac{v^2}{r} = \\omega^2 r",
+          "meaning": "A point on a rotating object has a centripetal acceleration toward the axis, even at constant angular velocity.",
+          "variables": [
+            {
+              "symbol": "a_c",
+              "name": "centripetal (radial) acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "v",
+              "name": "speed of the point",
+              "unit": "m/s"
+            },
+            {
+              "symbol": "r",
+              "name": "distance of the point from the axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity",
+              "unit": "rad/s"
+            }
+          ],
+          "useWhen": "You need the acceleration toward the axis, or the force needed to keep a piece of the object moving in its circle.",
+          "notWhen": "It is not the rate of change of speed; that is $a_t$. Do not use $r\\alpha$ here."
+        },
+        {
+          "latex": "a = \\sqrt{a_t^2 + a_c^2}",
+          "meaning": "The total acceleration of a point is the vector sum of its perpendicular tangential and centripetal components.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "magnitude of the point's total acceleration",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "a_t",
+              "name": "tangential component",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "a_c",
+              "name": "centripetal component",
+              "unit": "m/s²"
+            }
+          ],
+          "useWhen": "The object is both spinning and changing its spin rate, and you want the full acceleration of a point.",
+          "notWhen": "Do not add the two components as plain numbers; they are at right angles."
+        }
+      ],
+      "derivation": "Take a point at a fixed distance $r$ from the axis. By the definition of the radian, the arc it travels when the object turns through $\\theta$ is\n\n$$s = r\\theta.$$\n\nDifferentiate with respect to time. The object is rigid, so $r$ is a constant and comes outside the derivative:\n\n$$v = \\frac{ds}{dt} = r\\,\\frac{d\\theta}{dt} = r\\omega.$$\n\nDifferentiate once more to get the rate of change of the point's speed:\n\n$$a_t = \\frac{dv}{dt} = r\\,\\frac{d\\omega}{dt} = r\\alpha.$$\n\nThis is only the component of the acceleration along the direction of motion. The component toward the centre is the centripetal acceleration of circular motion, $a_c = v^2/r$; substituting $v = r\\omega$ gives\n\n$$a_c = \\frac{(r\\omega)^2}{r} = \\omega^2 r.$$",
+      "workedExamples": [
+        {
+          "title": "Total acceleration of a rider on a starting merry-go-round",
+          "prompt": "A playground merry-go-round starts from rest and has a constant angular acceleration of $0.50\\ \\text{rad/s}^2$. A child sits $2.0\\ \\text{m}$ from the axis. What is the magnitude of the child's acceleration $3.0\\ \\text{s}$ after the start?",
+          "steps": [
+            "The child moves in a circle of radius $r = 2.0\\ \\text{m}$ with changing speed, so the acceleration has two perpendicular parts: tangential and centripetal.",
+            "Tangential: $a_t = r\\alpha = (2.0\\ \\text{m})(0.50\\ \\text{rad/s}^2) = 1.0\\ \\text{m/s}^2$. This is the same at every instant.",
+            "The centripetal part needs the angular velocity at $3.0\\ \\text{s}$. With constant $\\alpha$ from rest, $\\omega = \\alpha t = (0.50\\ \\text{rad/s}^2)(3.0\\ \\text{s}) = 1.5\\ \\text{rad/s}$.",
+            "Centripetal: $a_c = \\omega^2 r = (1.5\\ \\text{rad/s})^2(2.0\\ \\text{m}) = 4.5\\ \\text{m/s}^2$, directed toward the axis.",
+            "Combine the perpendicular components: $a = \\sqrt{(1.0)^2 + (4.5)^2}\\ \\text{m/s}^2 = 4.6\\ \\text{m/s}^2$. It points mostly inward, tilted about $13^\\circ$ forward of the line to the centre."
+          ],
+          "answer": "$a = 4.6\\ \\text{m/s}^2$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "al": {
+                "value": 0.5,
+                "unit": "rad/s^2"
+              },
+              "r": {
+                "value": 2,
+                "unit": "m"
+              },
+              "t": {
+                "value": 3,
+                "unit": "s"
+              }
+            },
+            "expr": "sqrt((al*r)^2 + ((al*t)^2*r)^2)",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "From pedals to road speed",
+          "prompt": "On a bicycle the front sprocket has radius $0.10\\ \\text{m}$ and is turned by the pedals at $6.0\\ \\text{rad/s}$. A chain that does not slip connects it to a rear sprocket of radius $0.040\\ \\text{m}$, which is fixed to the rear wheel of radius $0.34\\ \\text{m}$. The wheel rolls without slipping. Determine the speed of the bicycle.",
+          "steps": [
+            "The chain does not slip, so every link moves at the rim speed of the front sprocket: $v_{\\text{chain}} = r_1\\omega_1 = (0.10\\ \\text{m})(6.0\\ \\text{rad/s}) = 0.60\\ \\text{m/s}$.",
+            "The same chain runs over the rear sprocket, so its rim has this speed too. Its angular velocity is $\\omega_2 = \\dfrac{v_{\\text{chain}}}{r_2} = \\dfrac{0.60\\ \\text{m/s}}{0.040\\ \\text{m}} = 15\\ \\text{rad/s}$. The smaller sprocket must turn faster to keep up with the chain.",
+            "The rear sprocket and the rear wheel are one rigid object, so they share $\\omega_2 = 15\\ \\text{rad/s}$. They do not share a linear speed.",
+            "Rolling without slipping means the wheel's centre advances at the rim speed relative to the axle: $v = R\\omega_2 = (0.34\\ \\text{m})(15\\ \\text{rad/s}) = 5.1\\ \\text{m/s}$."
+          ],
+          "answer": "$v = 5.1\\ \\text{m/s}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "r1": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "w1": {
+                "value": 6,
+                "unit": "rad/s"
+              },
+              "r2": {
+                "value": 0.04,
+                "unit": "m"
+              },
+              "Rw": {
+                "value": 0.34,
+                "unit": "m"
+              }
+            },
+            "expr": "r1*w1/r2*Rw",
+            "unit": "m/s"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "All points on a spinning disc move at the same speed, because the disc is one rigid object.",
+          "right": "All points have the same angular velocity. Linear speed is $v = r\\omega$, so a point twice as far from the axis moves twice as fast, and the point on the axis does not move at all."
+        },
+        {
+          "wrong": "A point on a wheel turning at constant angular velocity has no acceleration, since $\\alpha = 0$.",
+          "right": "Zero $\\alpha$ only makes the tangential part zero. The point's velocity keeps changing direction, so it still has the centripetal acceleration $\\omega^2 r$ toward the axis."
+        },
+        {
+          "tag": "unit-conversion",
+          "wrong": "A wheel of radius $0.5\\ \\text{m}$ that turns through $90^\\circ$ moves a point on its rim $s = (0.5)(90) = 45\\ \\text{m}$.",
+          "right": "$s = r\\theta$ needs $\\theta$ in radians: $90^\\circ = \\pi/2\\ \\text{rad}$, so $s = 0.79\\ \\text{m}$. The same goes for $v = r\\omega$ and $a_t = r\\alpha$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A ceiling fan turns at a steady $10\\ \\text{rad/s}$. Compare the speed and the centripetal acceleration of a point $0.60\\ \\text{m}$ from the axis with those of a point $0.20\\ \\text{m}$ from it.",
+          "a": "Both are three times larger at the outer point: $v = r\\omega$ gives $6.0$ against $2.0\\ \\text{m/s}$, and $a_c = \\omega^2 r$ gives $60$ against $20\\ \\text{m/s}^2$. At fixed $\\omega$ both are proportional to $r$."
+        },
+        {
+          "q": "A block hangs from a string wound on a pulley of radius $0.050\\ \\text{m}$. The block descends at $0.30\\ \\text{m/s}$ and the string does not slip. What is the pulley's angular velocity?",
+          "a": "The rim moves at the speed of the string, so $\\omega = v/R = (0.30\\ \\text{m/s})/(0.050\\ \\text{m}) = 6.0\\ \\text{rad/s}$."
+        },
+        {
+          "q": "A disc starts from rest with constant $\\alpha$. At what angular velocity are a rim point's tangential and centripetal accelerations equal in size?",
+          "a": "Set $r\\alpha = \\omega^2 r$: $\\omega = \\sqrt{\\alpha}$, whatever the radius. This happens when the disc has turned through $\\theta = \\omega^2/2\\alpha = \\tfrac{1}{2}\\ \\text{rad}$."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nrod 1,1 5,1\nhinge 1,1\ndot {{1+2*r}},1\nf {{1+2*r}},1 up {{r}} \"v = {{3*r}} m/s\"\ndim 1,1 {{1+2*r}},1 \"r = {{r}} m\" off=-34\ntext 3,3.6 \"\\omega = 3 rad/s\"\ntext 3,-0.6 \"a_c = {{9*r}} m/s^2\"",
+        "caption": "A $2\\ \\text{m}$ bar turns about its left end at a fixed $3\\ \\text{rad/s}$. Slide the point outward from the axis: its speed $r\\omega$ and its centripetal acceleration $\\omega^2 r$ both grow in proportion to $r$, while $\\omega$ never changes.",
+        "params": [
+          {
+            "name": "r",
+            "label": "Distance from the axis",
+            "min": 0.5,
+            "max": 2,
+            "step": 0.25,
+            "default": 1,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.5",
+        "2.10",
+        "5.1"
+      ],
+      "teacherNotes": "Ask which quantities two points on the same disc share and which they do not, then repeat the question for two gears or belt-driven wheels; students who can answer both have the topic. Insist on radians whenever $r$ multiplies an angular quantity. The total-acceleration question (tangential and centripetal at right angles) is a favourite free-response part, and students routinely report only $r\\alpha$. Set 5A covers this topic together with 5.1."
+    },
+    {
+      "topic": "5.3",
+      "bigIdea": "Torque measures how effectively a force twists an object about an axis, and it depends on the force, on where the force is applied and on the angle between the two: $\\vec{\\tau} = \\vec{r}\\times\\vec{F}$.",
+      "picture": {
+        "diagram": "rigid rod L=0.3 unit=m \"wrench\"\npivot 0\nf 0.3 120 F 1\nf 0.3 90 \"F sin 60°\" 0.866\ndim 0 0.3 \"r = 0.30 m\"",
+        "caption": "A force $F$ applied to the end of a wrench at $60^\\circ$ to the handle. Only its component perpendicular to the handle, $F\\sin 60^\\circ$, turns the bolt, so the torque about the bolt is $rF\\sin 60^\\circ$, about 87% of what the same force would give at a right angle."
+      },
+      "explanation": "Push a door near its hinge and it barely moves; push at the handle and it swings easily; push straight toward the hinge and nothing happens. Torque is the quantity that combines the three things that matter: the size of the force, how far from the axis it acts, and its direction.\n\nLet $\\vec{r}$ be the position vector from the axis (or pivot) to the point where the force acts. The torque is the cross product $\\vec{\\tau} = \\vec{r}\\times\\vec{F}$, with magnitude $\\tau = rF\\sin\\theta$, where $\\theta$ is the angle between $\\vec{r}$ and $\\vec{F}$ drawn tail to tail. Read it either way: keep the full distance $r$ and use only the component of the force perpendicular to it, $F_\\perp = F\\sin\\theta$; or keep the full force and use the lever arm $r_\\perp = r\\sin\\theta$, the perpendicular distance from the axis to the force's line of action. A force whose line of action passes through the axis has no lever arm and no torque.\n\nThe cross product points along the axis, by the right-hand rule: curl the fingers of your right hand from $\\vec{r}$ toward $\\vec{F}$ and the thumb gives $\\vec{\\tau}$. For forces in the $xy$-plane the torque is along $\\pm z$, so a sign is enough: counter-clockwise positive, clockwise negative. Torques about the same axis add with their signs to give the net torque.\n\nTorque is always about a chosen point: change the point and $\\vec{r}$ changes, so the same force has a different torque. Its unit is $\\text{N·m}$, never written as joules, because torque is not an energy.",
+      "equations": [
+        {
+          "latex": "\\vec{\\tau} = \\vec{r}\\times\\vec{F}",
+          "meaning": "The torque of a force about a point is the cross product of the position vector from that point to where the force acts, and the force.",
+          "variables": [
+            {
+              "symbol": "\\vec{\\tau}",
+              "name": "torque about the chosen point",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "\\vec{r}",
+              "name": "position vector from that point to the point of application",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\vec{F}",
+              "name": "force",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "You need the direction of a torque, or the vectors are given in components.",
+          "notWhen": "The order matters: $\\vec{F}\\times\\vec{r}$ has the opposite sign. And $\\vec{r}$ starts at the pivot, not at the origin, unless they coincide."
+        },
+        {
+          "latex": "\\tau = rF\\sin\\theta = r_\\perp F",
+          "meaning": "The size of a torque is the force multiplied by its lever arm, the perpendicular distance from the axis to the force's line of action.",
+          "variables": [
+            {
+              "symbol": "\\tau",
+              "name": "magnitude of the torque",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "r",
+              "name": "distance from the axis to the point of application",
+              "unit": "m"
+            },
+            {
+              "symbol": "F",
+              "name": "magnitude of the force",
+              "unit": "N"
+            },
+            {
+              "symbol": "\\theta",
+              "name": "angle between $\\vec{r}$ and $\\vec{F}$",
+              "unit": "rad or degrees"
+            },
+            {
+              "symbol": "r_\\perp",
+              "name": "lever arm",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know a force, a distance and an angle, or can read the lever arm straight from a diagram.",
+          "notWhen": "Check which angle you have been given. If it is the angle between the force and the perpendicular to $\\vec{r}$, the factor is a cosine."
+        },
+        {
+          "latex": "\\tau_z = xF_y - yF_x",
+          "meaning": "For a force in the xy-plane acting at the point (x, y), the torque about the origin is along z; positive is counter-clockwise.",
+          "variables": [
+            {
+              "symbol": "\\tau_z",
+              "name": "z-component of the torque about the origin",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "x,\\ y",
+              "name": "coordinates of the point of application",
+              "unit": "m"
+            },
+            {
+              "symbol": "F_x,\\ F_y",
+              "name": "components of the force",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Position and force are given in unit-vector form.",
+          "notWhen": "For a pivot that is not at the origin, first subtract the pivot's coordinates from $x$ and $y$."
+        }
+      ],
+      "derivation": "**Components.** Put the pivot at the origin and let the force act at $\\vec{r} = x\\,\\hat{\\imath} + y\\,\\hat{\\jmath}$ with $\\vec{F} = F_x\\,\\hat{\\imath} + F_y\\,\\hat{\\jmath}$. Expand the cross product term by term, using $\\hat{\\imath}\\times\\hat{\\imath} = \\hat{\\jmath}\\times\\hat{\\jmath} = 0$, $\\hat{\\imath}\\times\\hat{\\jmath} = \\hat{k}$ and $\\hat{\\jmath}\\times\\hat{\\imath} = -\\hat{k}$:\n\n$$\\vec{r}\\times\\vec{F} = xF_y\\,(\\hat{\\imath}\\times\\hat{\\jmath}) + yF_x\\,(\\hat{\\jmath}\\times\\hat{\\imath}) = (xF_y - yF_x)\\,\\hat{k}.$$\n\n**Magnitude.** Write the vectors in polar form: $\\vec{r}$ at angle $\\phi$ to the $x$-axis and $\\vec{F}$ at angle $\\phi + \\theta$, so that $\\theta$ is the angle from $\\vec{r}$ to $\\vec{F}$. Then $x = r\\cos\\phi$, $y = r\\sin\\phi$, $F_x = F\\cos(\\phi+\\theta)$ and $F_y = F\\sin(\\phi+\\theta)$, and\n\n$$\\tau_z = rF\\big[\\cos\\phi\\,\\sin(\\phi+\\theta) - \\sin\\phi\\,\\cos(\\phi+\\theta)\\big] = rF\\sin\\theta,$$\n\nby the sine subtraction identity. Grouping this as $r(F\\sin\\theta)$ gives distance times perpendicular force; grouping it as $(r\\sin\\theta)F$ gives lever arm times force.",
+      "workedExamples": [
+        {
+          "title": "A wrench pushed at an angle",
+          "prompt": "A mechanic pushes on the end of a wrench $0.25\\ \\text{m}$ long with a force of $80\\ \\text{N}$. The force makes an angle of $65^\\circ$ with the handle. What is the magnitude of the torque on the bolt?",
+          "steps": [
+            "Identify $\\vec{r}$: it runs from the bolt (the axis) along the handle to the mechanic's hand, so $r = 0.25\\ \\text{m}$. The angle between $\\vec{r}$ and $\\vec{F}$ is the given $65^\\circ$.",
+            "Find the part of the force that turns the wrench, the component perpendicular to the handle: $F_\\perp = F\\sin\\theta = (80\\ \\text{N})\\sin 65^\\circ = 72.5\\ \\text{N}$.",
+            "Multiply by the distance: $\\tau = rF_\\perp = (0.25\\ \\text{m})(72.5\\ \\text{N}) = 18\\ \\text{N·m}$.",
+            "Check with the lever arm, $r_\\perp = r\\sin\\theta = 0.227\\ \\text{m}$: $(0.227\\ \\text{m})(80\\ \\text{N}) = 18\\ \\text{N·m}$ again."
+          ],
+          "answer": "$\\tau = 18\\ \\text{N·m}$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "r": {
+                "value": 0.25,
+                "unit": "m"
+              },
+              "F": {
+                "value": 80,
+                "unit": "N"
+              },
+              "theta": {
+                "value": 65,
+                "unit": "deg"
+              }
+            },
+            "expr": "r*F*sin(theta)",
+            "unit": "N·m"
+          }
+        },
+        {
+          "title": "Net torque on a stepped pulley",
+          "prompt": "A stepped pulley turns freely on an axle through its centre. A rope wrapped around the outer rim, of radius $0.25\\ \\text{m}$, hangs from the right side and is pulled straight down with $30\\ \\text{N}$. A rope wrapped around the inner hub, of radius $0.10\\ \\text{m}$, hangs from the left side and is pulled straight down with $50\\ \\text{N}$. Taking counter-clockwise as positive, determine the net torque about the axle and state which way the pulley starts to turn.\n\n```dg\nrigid disc r=0.25 unit=m\nf 0 down \"30 N\" 3\nf 0.1,180 down \"50 N\" 5\ndim 0.1,180 \"0.10 m\"\ndim 0 \"0.25 m\"\n```",
+          "steps": [
+            "Each rope leaves its rim along a tangent, so the lever arm of each force is simply that radius.",
+            "Outer rope: pulling down on the right would turn the pulley clockwise, so the torque is negative. $\\tau_1 = -(0.25\\ \\text{m})(30\\ \\text{N}) = -7.5\\ \\text{N·m}$.",
+            "Inner rope: pulling down on the left would turn it counter-clockwise, so the torque is positive. $\\tau_2 = +(0.10\\ \\text{m})(50\\ \\text{N}) = +5.0\\ \\text{N·m}$.",
+            "The pulley's weight and the axle's force act at the axle, so they give no torque. Add: $\\tau_{\\text{net}} = -7.5 + 5.0 = -2.5\\ \\text{N·m}$.",
+            "The net torque is negative, so the pulley starts to turn clockwise: the smaller force wins through its longer lever arm."
+          ],
+          "answer": "$\\tau_{\\text{net}} = -2.5\\ \\text{N·m}$, that is $2.5\\ \\text{N·m}$ clockwise",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "r_in": {
+                "value": 0.1,
+                "unit": "m"
+              },
+              "F_in": {
+                "value": 50,
+                "unit": "N"
+              },
+              "r_out": {
+                "value": 0.25,
+                "unit": "m"
+              },
+              "F_out": {
+                "value": 30,
+                "unit": "N"
+              }
+            },
+            "expr": "r_in*F_in - r_out*F_out",
+            "unit": "N·m"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "torque-ignores-lever-arm",
+          "wrong": "The larger force always produces the larger torque.",
+          "right": "Torque is force multiplied by lever arm. $30\\ \\text{N}$ with a $0.25\\ \\text{m}$ lever arm out-twists $50\\ \\text{N}$ with a $0.10\\ \\text{m}$ lever arm."
+        },
+        {
+          "tag": "torque-ignores-lever-arm",
+          "wrong": "Torque is $rF$, with $r$ the distance from the pivot to where the force acts, whatever the direction of the force.",
+          "right": "That is true only when the force is perpendicular to $\\vec{r}$. In general $\\tau = rF\\sin\\theta$; a force directed along $\\vec{r}$, straight toward or away from the pivot, gives no torque at all."
+        },
+        {
+          "wrong": "The torque vector points in the direction the force pushes.",
+          "right": "$\\vec{\\tau} = \\vec{r}\\times\\vec{F}$ is perpendicular to both $\\vec{r}$ and $\\vec{F}$: it lies along the axis of the rotation it would cause. In a flat diagram that is into or out of the page."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "You push on a door with the same force three ways: at the handle perpendicular to the door, at the middle perpendicular to it, and at the handle straight toward the hinges. Rank the torques about the hinges.",
+          "a": "The handle push is largest; the middle gives half as much, because the lever arm is halved; pushing toward the hinges gives zero, because the line of action passes through the axis."
+        },
+        {
+          "q": "A force $\\vec{F} = 5.0\\,\\hat{\\jmath}\\ \\text{N}$ acts at the point $\\vec{r} = 2.0\\,\\hat{\\imath}\\ \\text{m}$. Find the torque about the origin, with its direction.",
+          "a": "$\\tau_z = xF_y - yF_x = (2.0)(5.0) - 0 = +10\\ \\text{N·m}$, along $+\\hat{k}$ (counter-clockwise)."
+        },
+        {
+          "q": "Why is a door handle placed on the side far from the hinges?",
+          "a": "That makes the lever arm as long as possible, so a small push gives a large torque about the hinges."
+        }
+      ],
+      "tryIt": {
+        "diagram": "rigid rod L=2 unit=m\npivot 0\nf 2 {{th}} \"10 N at {{th}}°\" 1\nf 2 90 \"F_⊥ = {{round(100*sin(th*pi/180))/10}} N\" {{sin(th*pi/180)}}\ndim 0 2",
+        "caption": "A $10\\ \\text{N}$ force acts on the end of a $2\\ \\text{m}$ rod. Change its angle to the rod and watch the perpendicular component: the torque about the pivot is $2\\ \\text{m}$ times that component, largest at $90^\\circ$ and shrinking toward zero as the force lines up with the rod.",
+        "params": [
+          {
+            "name": "th",
+            "label": "Angle between the force and the rod",
+            "min": 15,
+            "max": 165,
+            "step": 5,
+            "default": 60,
+            "unit": "°"
+          }
+        ]
+      },
+      "prerequisites": [
+        "1.1",
+        "2.2",
+        "2.1"
+      ],
+      "teacherNotes": "Have students draw $\\vec{r}$ from the pivot and extend the force's line of action before calculating anything; most errors are a wrong angle or the full distance used in place of the lever arm. Offer both readings, $rF_\\perp$ and $r_\\perp F$, and let them choose whichever is easier in the geometry at hand. The cross-product form matters in this course: expect components in unit-vector notation and the right-hand rule for direction. Set 5B practises all three forms."
+    },
+    {
+      "topic": "5.4",
+      "bigIdea": "Rotational inertia measures how strongly an object resists angular acceleration about a given axis, and it depends not just on how much mass there is but on how far that mass lies from the axis: $I = \\int r^2\\,dm$.",
+      "picture": {
+        "diagram": "plot x=x[m] y=dI/dx[kg·m] xr=-0.22,1.1 yr=0,3.3\nfn 3*x^2 0..1\nshade 0..1\nvl 0.5\nnote 0.25,2.9 \"I = 1.0 kg·m^2\"\nnote 0.8,0.3 \"7/8 of I\"\nxt 0 0.25 0.5 0.75 1\nyt 0 1 2 3",
+        "caption": "A uniform $3.0\\ \\text{kg}$ rod $1.0\\ \\text{m}$ long, turning about one end. A slice at distance $x$ from the axis adds $dI = x^2\\lambda\\,dx$ to the rotational inertia, where $\\lambda = 3.0\\ \\text{kg/m}$ is the mass per unit length, so the curve is $dI/dx = \\lambda x^2$. The area under it is $I = 1.0\\ \\text{kg·m}^2$, and seven eighths of it comes from the half of the rod farther from the axis."
+      },
+      "explanation": "It is harder to start a heavy flywheel spinning than a light one, but mass is not the whole story: a skater with arms out is harder to spin up than the same skater with arms pulled in. What matters is how the mass is distributed about the axis. The rotational inertia (moment of inertia), $I$, in $\\text{kg·m}^2$, captures this; it plays the role for rotation that mass plays for straight-line motion.\n\nFor point masses, $I = \\sum m_i r_i^2$, where $r_i$ is the perpendicular distance of each mass from the axis. The distance is squared, so mass far from the axis counts heavily: twice as far out, four times the contribution. For a continuous object the sum becomes an integral, $I = \\int r^2\\,dm$. Slice the object into pieces that each lie at one distance from the axis, write $dm$ with a density ($dm = \\lambda\\,dx$ for a thin rod, $dm = \\sigma\\,dA$ for a flat sheet), and integrate.\n\nRotational inertia belongs to an object and an axis together. The same rod has $I = \\tfrac{1}{12}ML^2$ about a perpendicular axis through its centre and $\\tfrac{1}{3}ML^2$ about one through its end. The parallel-axis theorem connects such cases without a new integral: if $I_{\\text{cm}}$ is the value about an axis through the centre of mass, then about a parallel axis a distance $d$ away, $I = I_{\\text{cm}} + Md^2$.\n\nRotational inertias about the same axis add, so composite objects are handled piece by piece. Useful results about a central axis: hoop, $MR^2$; solid disc or cylinder, $\\tfrac{1}{2}MR^2$; solid sphere, $\\tfrac{2}{5}MR^2$.",
+      "equations": [
+        {
+          "latex": "I = \\sum_i m_i r_i^2",
+          "meaning": "The rotational inertia of a set of point masses is the sum of each mass times the square of its perpendicular distance from the axis.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the chosen axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "m_i",
+              "name": "mass of the i-th particle",
+              "unit": "kg"
+            },
+            {
+              "symbol": "r_i",
+              "name": "its perpendicular distance from the axis",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "The object is made of a few small masses, or of pieces whose rotational inertias you can add.",
+          "notWhen": "Not with distances measured from the centre of mass or the origin when the axis is somewhere else."
+        },
+        {
+          "latex": "I = \\int r^2\\,dm",
+          "meaning": "For a continuous object, add up r² dm over every piece of the object.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the chosen axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "r",
+              "name": "perpendicular distance of the mass element from the axis",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass ($dm$ is the mass of one small piece)",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "The mass is spread out: rods, discs, plates, and any object whose density varies with position.",
+          "notWhen": "Do not pull $r^2$ outside the integral unless every piece really is at the same distance, as in a thin hoop."
+        },
+        {
+          "latex": "I = I_{\\text{cm}} + Md^2",
+          "meaning": "The rotational inertia about any axis equals that about the parallel axis through the centre of mass, plus the total mass times the square of the distance between the axes.",
+          "variables": [
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the new axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "I_{\\text{cm}}",
+              "name": "rotational inertia about the parallel axis through the centre of mass",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass of the object",
+              "unit": "kg"
+            },
+            {
+              "symbol": "d",
+              "name": "perpendicular distance between the two axes",
+              "unit": "m"
+            }
+          ],
+          "useWhen": "You know $I$ about a centre-of-mass axis and need it about a parallel one (or the reverse, by subtracting $Md^2$).",
+          "notWhen": "Not between two axes neither of which passes through the centre of mass, and not for axes that are not parallel."
+        }
+      ],
+      "derivation": "**A uniform rod about one end.** A thin rod of mass $M$ and length $L$ lies along the $x$-axis from $0$ to $L$, with the axis through $x = 0$, perpendicular to the rod. Its mass per unit length is $\\lambda = M/L$, so a slice of length $dx$ at distance $x$ from the axis has mass $dm = (M/L)\\,dx$:\n\n$$I_{\\text{end}} = \\int x^2\\,dm = \\frac{M}{L}\\int_0^L x^2\\,dx = \\frac{M}{L}\\cdot\\frac{L^3}{3} = \\tfrac{1}{3}ML^2.$$\n\n**The same rod about its centre.** Only the limits change:\n\n$$I_{\\text{cm}} = \\frac{M}{L}\\int_{-L/2}^{L/2} x^2\\,dx = \\frac{M}{L}\\cdot\\frac{2}{3}\\Big(\\frac{L}{2}\\Big)^3 = \\tfrac{1}{12}ML^2.$$\n\n**The parallel-axis theorem.** Put the origin at the centre of mass. A piece of the object at position $x$ is a distance $x - d$ from a parallel axis at $x = d$, so\n\n$$I = \\int (x-d)^2\\,dm = \\int x^2\\,dm - 2d\\int x\\,dm + d^2\\int dm.$$\n\nThe first integral is $I_{\\text{cm}}$. The second is $Mx_{\\text{cm}}$, which is zero because the origin is the centre of mass. The third is $M$. Hence $I = I_{\\text{cm}} + Md^2$. The rod confirms it: $\\tfrac{1}{12}ML^2 + M(L/2)^2 = \\tfrac{1}{3}ML^2$.",
+      "workedExamples": [
+        {
+          "title": "A rod pivoted a quarter of the way along",
+          "prompt": "A uniform thin rod has mass $0.60\\ \\text{kg}$ and length $0.80\\ \\text{m}$. What is its rotational inertia about a perpendicular axis through a point one quarter of its length from one end?",
+          "steps": [
+            "The axis passes through neither the centre nor an end, so use the parallel-axis theorem, starting from the centre of mass.",
+            "About the centre: $I_{\\text{cm}} = \\tfrac{1}{12}ML^2 = \\tfrac{1}{12}(0.60\\ \\text{kg})(0.80\\ \\text{m})^2 = 0.032\\ \\text{kg·m}^2$.",
+            "The centre of mass is $L/2$ from the end and the axis is $L/4$ from it, so the axes are $d = L/4 = 0.20\\ \\text{m}$ apart.",
+            "Add the shift term: $I = I_{\\text{cm}} + Md^2 = 0.032 + (0.60\\ \\text{kg})(0.20\\ \\text{m})^2 = 0.032 + 0.024 = 0.056\\ \\text{kg·m}^2$.",
+            "Check by direct integration, from $-L/4$ to $3L/4$: $I = \\dfrac{M}{L}\\displaystyle\\int_{-L/4}^{3L/4} x^2\\,dx = \\dfrac{M}{3L}\\Big(\\dfrac{27L^3}{64} + \\dfrac{L^3}{64}\\Big) = \\tfrac{7}{48}ML^2 = 0.056\\ \\text{kg·m}^2$."
+          ],
+          "answer": "$I = 0.056\\ \\text{kg·m}^2$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "M": {
+                "value": 0.6,
+                "unit": "kg"
+              },
+              "L": {
+                "value": 0.8,
+                "unit": "m"
+              }
+            },
+            "expr": "M*L^2/12 + M*(L/4)^2",
+            "unit": "kg·m^2"
+          }
+        },
+        {
+          "title": "A disc that is denser toward its rim",
+          "prompt": "A thin flat disc of radius $R = 0.20\\ \\text{m}$ has a mass per unit area that increases with distance $r$ from the centre: $\\sigma(r) = cr$, with $c = 150\\ \\text{kg/m}^3$. Derive an expression for its rotational inertia about the central axis perpendicular to its face, evaluate it, and compare it with a uniform disc of the same mass and radius.",
+          "steps": [
+            "Slice the disc into thin rings of radius $r$ and width $dr$. Every part of a ring is the same distance from the axis. Its area is $2\\pi r\\,dr$, so its mass is $dm = \\sigma\\,dA = (cr)(2\\pi r\\,dr) = 2\\pi c\\,r^2\\,dr$.",
+            "Rotational inertia: $I = \\displaystyle\\int r^2\\,dm = 2\\pi c\\int_0^R r^4\\,dr = \\tfrac{2}{5}\\pi cR^5$.",
+            "Evaluate: $I = \\tfrac{2}{5}\\pi(150\\ \\text{kg/m}^3)(0.20\\ \\text{m})^5 = 0.060\\ \\text{kg·m}^2$.",
+            "To compare, find the mass the same way: $M = \\displaystyle\\int dm = 2\\pi c\\int_0^R r^2\\,dr = \\tfrac{2}{3}\\pi cR^3 = 2.5\\ \\text{kg}$. Dividing gives $I = \\tfrac{3}{5}MR^2$.",
+            "A uniform disc has $I = \\tfrac{1}{2}MR^2$. Here the coefficient is larger, $\\tfrac{3}{5}$, because more of the mass lies near the rim, where $r^2$ is greatest."
+          ],
+          "answer": "$I = \\tfrac{2}{5}\\pi cR^5 = 0.060\\ \\text{kg·m}^2$, which equals $\\tfrac{3}{5}MR^2$: larger than the uniform disc's $\\tfrac{1}{2}MR^2$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "c": {
+                "value": 150,
+                "unit": "kg/m^3"
+              },
+              "R": {
+                "value": 0.2,
+                "unit": "m"
+              }
+            },
+            "expr": "2*pi*c*R^5/5",
+            "unit": "kg·m^2"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "rotational-inertia-mass-only",
+          "wrong": "A hoop and a solid disc with the same mass and radius are equally hard to spin up, because they have the same mass.",
+          "right": "The hoop has $I = MR^2$ and the disc $\\tfrac{1}{2}MR^2$: all of the hoop's mass is at the rim, where it counts most."
+        },
+        {
+          "wrong": "To find $I$ for an extended object, treat all of its mass as a point at the centre of mass: $I = Md_{\\text{cm}}^2$.",
+          "right": "That shortcut works for gravitational torque, not here: it leaves out $I_{\\text{cm}}$. A rod pivoted at its end would get $\\tfrac{1}{4}ML^2$ in place of the correct $\\tfrac{1}{3}ML^2$."
+        },
+        {
+          "wrong": "The parallel-axis theorem lets me shift between any two parallel axes: $I_2 = I_1 + Md^2$.",
+          "right": "One of the two axes must pass through the centre of mass. Between two off-centre axes, first subtract to get $I_{\\text{cm}}$, then add the new $Md^2$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "Two $1.0\\ \\text{kg}$ point masses are joined by a light rod $2.0\\ \\text{m}$ long. Find the rotational inertia about a perpendicular axis through the midpoint, and about one through either mass.",
+          "a": "Midpoint: $2(1.0\\ \\text{kg})(1.0\\ \\text{m})^2 = 2.0\\ \\text{kg·m}^2$. Through one mass: $(1.0\\ \\text{kg})(2.0\\ \\text{m})^2 = 4.0\\ \\text{kg·m}^2$."
+        },
+        {
+          "q": "A solid disc has $I_{\\text{cm}} = \\tfrac{1}{2}MR^2$ about its central axis. What is its rotational inertia about a parallel axis through a point on its rim?",
+          "a": "$I = \\tfrac{1}{2}MR^2 + MR^2 = \\tfrac{3}{2}MR^2$, since the axes are a distance $R$ apart."
+        },
+        {
+          "q": "In $I = \\int r^2\\,dm$ for a thin uniform rod of mass $M$ and length $L$ along the $x$-axis, what is $dm$, and why can $r^2$ not be taken outside the integral?",
+          "a": "$dm = (M/L)\\,dx$. Different slices are at different distances from the axis, so $r = x$ varies and must stay inside."
+        }
+      ],
+      "tryIt": {
+        "diagram": "plot x=x[m] y=dI/dx[kg·m] xr=-0.3,1.75 yr=0,3.4\nfn 3*(x-{{d}})^2 0..1\nshade 0..1\nvl {{d}}\nnote 1.4,2.6 \"I = {{round(1000*(0.25+3*(d-0.5)^2))/1000}} kg·m^2\"\nnote 1.4,3.1 \"axis at {{d}} m\"\nxt 0 0.25 0.5 0.75 1\nyt 0 1 2 3",
+        "caption": "The same $3\\ \\text{kg}$, $1\\ \\text{m}$ rod, with the axis (dashed line) moved along it. The shaded area is $I$. It is smallest, $0.25\\ \\text{kg·m}^2$, with the axis at the centre of mass, and grows by $Md^2$ as the axis moves a distance $d$ away from it.",
+        "params": [
+          {
+            "name": "d",
+            "label": "Position of the axis along the rod",
+            "min": 0,
+            "max": 1,
+            "step": 0.05,
+            "default": 0.5,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.1",
+        "5.1",
+        "5.2"
+      ],
+      "teacherNotes": "Students can usually do the integral once $dm$ is written down; the sticking point is choosing the slice and writing $dm$ in terms of the integration variable. Have them name the slice, its distance from the axis and its mass before writing any integral sign. On the parallel-axis theorem, ask each time which of the two axes goes through the centre of mass. Set 5C mixes point masses, a non-uniform rod and the parallel-axis theorem."
+    },
+    {
+      "topic": "5.5",
+      "bigIdea": "An extended object's angular velocity stays constant only when the net torque on it is zero, so staying at rest takes two conditions at once: zero net force and zero net torque.",
+      "picture": {
+        "diagram": "rigid rod L=4 eq unit=m \"beam\"\nsupport 0 4\nf 0 up \"N_A = 250 N\" 2.5\nf 4 up \"N_B = 550 N\" 5.5\nf 2 down \"200 N\" 2\nf 3 down \"600 N\" 6\ndim 0 2\ndim 2 3\ndim 3 4",
+        "caption": "A $200\\ \\text{N}$ uniform beam on two supports carries a $600\\ \\text{N}$ person standing $3.0\\ \\text{m}$ from the left end. The upward forces add to the $800\\ \\text{N}$ of weight, and they share it unequally so that the torques also cancel: about the left end, $(4.0\\ \\text{m})(550\\ \\text{N}) = (2.0\\ \\text{m})(200\\ \\text{N}) + (3.0\\ \\text{m})(600\\ \\text{N})$."
+      },
+      "explanation": "Newton's first law has a rotational form: if the net torque on a rigid object is zero, its angular velocity does not change. A wheel already spinning keeps spinning at a constant rate: torque is needed to change rotation, not to maintain it.\n\nFor an object with size, balancing the forces is not enough. Two equal and opposite forces applied at different points give zero net force, yet they still twist the object. Static equilibrium therefore needs both $\\sum\\vec{F} = 0$ and $\\sum\\tau = 0$.\n\nWhen the net force is zero, the net torque is the same about every point (derived below), so the pivot can go anywhere. Put it on the line of action of a force you do not know: that force then has no lever arm and drops out.\n\nA routine: draw the extended free-body diagram, with every force where it acts and the weight at the centre of mass; choose a pivot; write $\\sum\\tau = 0$; then use the force equations for what is still unknown. An object begins to tip about one support at the moment the normal force at the other falls to zero.",
+      "equations": [
+        {
+          "latex": "\\sum \\tau = 0",
+          "meaning": "In rotational equilibrium the torques about any chosen point add to zero: the counter-clockwise torques balance the clockwise ones.",
+          "variables": [
+            {
+              "symbol": "\\tau",
+              "name": "torque of each force about the chosen point, with its sign",
+              "unit": "N·m"
+            }
+          ],
+          "useWhen": "The object is at rest or rotating at a constant rate. Choose the pivot to remove an unknown force.",
+          "notWhen": "Not when the object has an angular acceleration; then the sum equals $I\\alpha$. And take every torque about the same point."
+        },
+        {
+          "latex": "\\sum F_x = 0 \\qquad \\sum F_y = 0",
+          "meaning": "In translational equilibrium the force components add to zero in each direction.",
+          "variables": [
+            {
+              "symbol": "F_x,\\ F_y",
+              "name": "components of each force on the object",
+              "unit": "N"
+            }
+          ],
+          "useWhen": "Together with the torque equation, to find the forces that the torque equation did not involve, such as the force at a hinge.",
+          "notWhen": "On their own they do not guarantee equilibrium for an extended object; check the torques too."
+        },
+        {
+          "latex": "x_{\\text{cm}} = \\frac{1}{M}\\int x\\,dm",
+          "meaning": "The weight of an extended object acts, for torque purposes, at its centre of mass, found by integrating when the object is not uniform.",
+          "variables": [
+            {
+              "symbol": "x_{\\text{cm}}",
+              "name": "position of the centre of mass",
+              "unit": "m"
+            },
+            {
+              "symbol": "M",
+              "name": "total mass",
+              "unit": "kg"
+            },
+            {
+              "symbol": "x",
+              "name": "position of a mass element",
+              "unit": "m"
+            },
+            {
+              "symbol": "m",
+              "name": "mass ($dm$ is the mass of one small piece, $\\lambda\\,dx$ for a thin beam)",
+              "unit": "kg"
+            }
+          ],
+          "useWhen": "You need to know where to draw the weight of a non-uniform beam or plate.",
+          "notWhen": "For a uniform object skip the integral: the centre of mass is at the geometric centre."
+        }
+      ],
+      "derivation": "**Why any pivot will do.** Let forces $\\vec{F}_i$ act at points $\\vec{r}_i$ measured from a point $O$, so the net torque about $O$ is $\\vec{\\tau}_O = \\sum \\vec{r}_i\\times\\vec{F}_i$. Measured from another point $P$, at position $\\vec{R}$ from $O$, the same points are at $\\vec{r}_i - \\vec{R}$:\n\n$$\\vec{\\tau}_P = \\sum (\\vec{r}_i - \\vec{R})\\times\\vec{F}_i = \\sum \\vec{r}_i\\times\\vec{F}_i - \\vec{R}\\times\\sum\\vec{F}_i = \\vec{\\tau}_O - \\vec{R}\\times\\vec{F}_{\\text{net}}.$$\n\n$\\vec{R}$ is the same for every force, so it comes outside the sum. In translational equilibrium $\\vec{F}_{\\text{net}} = 0$ and the last term vanishes: the net torque is the same about every point.\n\n**Where the weight acts.** For a horizontal beam along the $x$-axis, a slice of mass $dm$ at position $x$ has weight $g\\,dm$ and lever arm $x$ about the origin. The total torque of gravity is\n\n$$\\tau_g = \\int x\\,g\\,dm = g\\int x\\,dm = Mg\\,x_{\\text{cm}},$$\n\nby the definition of the centre of mass, $x_{\\text{cm}} = \\frac{1}{M}\\int x\\,dm$. A single force $Mg$ at the centre of mass gives the same torque.",
+      "workedExamples": [
+        {
+          "title": "How far can the painter walk?",
+          "prompt": "A uniform plank of mass $20\\ \\text{kg}$ and length $4.0\\ \\text{m}$ rests horizontally on two supports: A under its left end and B $3.0\\ \\text{m}$ from the left end, leaving a $1.0\\ \\text{m}$ overhang. A painter of mass $50\\ \\text{kg}$ walks out past B. How far beyond B can the painter go before the plank begins to tip?",
+          "steps": [
+            "The plank is about to tip about B when support A no longer pushes up: the normal force at A is zero.",
+            "Take torques about B. The force from B has no lever arm there, so only the two weights remain.",
+            "The plank's weight acts at its centre, $2.0\\ \\text{m}$ from the left end, which is $3.0 - 2.0 = 1.0\\ \\text{m}$ left of B: a counter-clockwise torque $(20\\ \\text{kg})g(1.0\\ \\text{m})$.",
+            "The painter, a distance $d$ right of B, gives a clockwise torque $(50\\ \\text{kg})g\\,d$. Set the net torque to zero; $g$ cancels: $d = \\dfrac{(20\\ \\text{kg})(1.0\\ \\text{m})}{50\\ \\text{kg}} = 0.40\\ \\text{m}$."
+          ],
+          "answer": "$d = 0.40\\ \\text{m}$ beyond support B",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m_p": {
+                "value": 20,
+                "unit": "kg"
+              },
+              "L": {
+                "value": 4,
+                "unit": "m"
+              },
+              "x_B": {
+                "value": 3,
+                "unit": "m"
+              },
+              "m_w": {
+                "value": 50,
+                "unit": "kg"
+              }
+            },
+            "expr": "m_p*(x_B - L/2)/m_w",
+            "unit": "m"
+          }
+        },
+        {
+          "title": "A ladder against a smooth wall",
+          "prompt": "A uniform ladder of mass $12\\ \\text{kg}$ and length $L$ leans against a frictionless vertical wall, making an angle of $60^\\circ$ with the rough horizontal floor. Determine the friction force the floor exerts on the ladder and the smallest coefficient of static friction that keeps it in place. Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Draw the extended free-body diagram: the weight $mg$ at the ladder's centre; the floor's normal force $N_f$ and static friction $f_s$ at the foot; and the wall's normal force $N_w$ at the top, horizontal because a frictionless wall can push only perpendicular to itself.\n\n```dg\nrigid rod L=5 tilt=60 eq \"ladder\"\nf 0 up N_f 3.464\nf 0 right f_s 1\nf 5 left N_w 1\nf 2.5 down mg 3.464\n```",
+            "Forces: $\\sum F_y = 0$ gives $N_f = mg = 117.6\\ \\text{N}$, and $\\sum F_x = 0$ gives $f_s = N_w$, directed toward the wall.",
+            "Take torques about the foot, which removes $N_f$ and $f_s$. The lever arm of $N_w$ is the height of the top, $L\\sin 60^\\circ$; the lever arm of the weight is the horizontal distance $\\tfrac{1}{2}L\\cos 60^\\circ$.",
+            "$\\sum\\tau = 0$: $N_w\\,L\\sin 60^\\circ = mg\\,\\tfrac{1}{2}L\\cos 60^\\circ$, so $N_w = \\dfrac{mg}{2\\tan 60^\\circ} = \\dfrac{117.6\\ \\text{N}}{2(1.732)} = 34\\ \\text{N}$, and $f_s = 34\\ \\text{N}$.",
+            "Static friction supplies at most $\\mu_s N_f$, so the ladder stays only if $\\mu_s \\ge \\dfrac{f_s}{N_f} = \\dfrac{1}{2\\tan 60^\\circ} = 0.29$."
+          ],
+          "answer": "$f_s = 34\\ \\text{N}$, directed toward the wall; the ladder needs $\\mu_s \\ge 0.29$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "m": {
+                "value": 12,
+                "unit": "kg"
+              },
+              "theta": {
+                "value": 60,
+                "unit": "deg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "m*g/(2*tan(theta))",
+            "unit": "N"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "tag": "equilibrium-forces-only",
+          "wrong": "The forces on the object add to zero, so it is in equilibrium.",
+          "right": "Zero net force only keeps the centre of mass from accelerating. Two equal, opposite forces at different points still make the object spin, so check the net torque too."
+        },
+        {
+          "tag": "torque-ignores-lever-arm",
+          "wrong": "Two supports under a beam each carry half of the total load.",
+          "right": "Only if the load is placed symmetrically. The torque condition gives the support nearer the load the larger share."
+        },
+        {
+          "wrong": "The force at the pivot is zero, because it does not appear in the torque equation.",
+          "right": "It drops out only because its lever arm about the pivot is zero. The force itself is usually large; find it from the force equations."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A uniform metre stick balances on a pivot at its $50\\ \\text{cm}$ mark with a $0.20\\ \\text{kg}$ mass hanging at the $20\\ \\text{cm}$ mark. Where must a $0.30\\ \\text{kg}$ mass hang to keep it balanced?",
+          "a": "At the $70\\ \\text{cm}$ mark: $(0.20\\ \\text{kg})(30\\ \\text{cm}) = (0.30\\ \\text{kg})\\,d$ gives $d = 20\\ \\text{cm}$ on the other side."
+        },
+        {
+          "q": "A wheel on a frictionless axle spins at a constant $20\\ \\text{rad/s}$. What is the net torque on it?",
+          "a": "Zero: constant angular velocity means no angular acceleration."
+        },
+        {
+          "q": "A beam is hinged to a wall at one end and held by a cable at the other. Why take torques about the hinge to find the tension?",
+          "a": "The unknown hinge force has no lever arm about the hinge, so the torque equation contains only the weight and the tension."
+        }
+      ],
+      "tryIt": {
+        "diagram": "rigid rod L=4 eq unit=m \"beam\"\nsupport 0 4\nf 0 up \"N_A = {{700-150*x}} N\" {{7-1.5*x}}\nf 4 up \"N_B = {{100+150*x}} N\" {{1+1.5*x}}\nf 2 down \"200 N\" 2\nf {{x}} down \"600 N\" 6",
+        "caption": "The picture's beam again. Move the $600\\ \\text{N}$ person along it: the two support forces always add to $800\\ \\text{N}$, but the support nearer the person takes the larger share, exactly as the torque balance demands.",
+        "params": [
+          {
+            "name": "x",
+            "label": "Person's distance from the left end",
+            "min": 0.5,
+            "max": 3.5,
+            "step": 0.5,
+            "default": 3,
+            "unit": "m"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.2",
+        "2.4",
+        "2.7",
+        "5.3"
+      ],
+      "teacherNotes": "Ask students to state both conditions and to say where their pivot is and why they chose it; a well-chosen pivot is most of the solution. The extended free-body diagram matters here in a way the particle diagram did not: forces must be drawn where they act. Common slips are leaving out the beam's own weight, placing it at the end, and using the full length where a lever arm needs a sine or cosine. Set 5C includes a non-uniform beam, where the centre of mass has to be found by integration first."
+    },
+    {
+      "topic": "5.6",
+      "bigIdea": "A net torque gives a rigid object an angular acceleration that is proportional to the torque and inversely proportional to the rotational inertia about the axis: $\\tau_{\\text{net}} = I\\alpha$.",
+      "picture": {
+        "diagram": "scene\npulley P 4,3.4 r=.7\nblock A 3.3,0.6 w=.8 h=.7 \"m\"\nrope A.t P.l\nf A.t+0.25,0 up 0.9 \"T\"\nf A.b down 1.4 \"mg\"\nf P.l down 0.9 \"T\"\nf 2.2,1.4 down 0.7 \"a = R\\alpha\"\ntext 5.6,3.4 \"pulley: M, R\"",
+        "caption": "A block hangs from a string wound on a pulley of mass $M$ and radius $R$. The string tension $T$ pulls up on the block and, with lever arm $R$, exerts the torque $TR$ that spins the pulley. Because the block accelerates downward, $T$ is less than $mg$; the string ties the two motions together through $a = R\\alpha$."
+      },
+      "explanation": "For straight-line motion the net force sets the acceleration: $\\vec{F}_{\\text{net}} = m\\vec{a}$. Rotation about a fixed axis obeys a law of the same form, $\\tau_{\\text{net}} = I\\alpha$. The net torque about the axis sets the angular acceleration, and the rotational inertia about that axis says how hard the object is to accelerate.\n\nTake torque and rotational inertia about the same axis, count only external torques (internal ones cancel in pairs), and use one sign convention for torque and $\\alpha$. Since $\\alpha = d\\omega/dt$, the law is a differential equation. A constant net torque gives constant $\\alpha$ and the equations of Topic 5.1. If the torque changes with time, with angle (a falling rod) or with angular velocity (a drag torque), $\\alpha$ changes and you integrate.\n\nMany problems combine rotation with translation: a block on a string turning a pulley, or a wheel rolling down a slope. Treat each object separately. Write $\\sum F = ma$ for what translates and $\\sum\\tau = I\\alpha$ for what rotates, then connect them with the no-slip condition $a = R\\alpha$. So a string over a pulley that has mass must have different tensions on its two sides, since that difference provides the net torque on the pulley.\n\nFor a rolling object, apply $\\sum\\vec{F} = M\\vec{a}_{\\text{cm}}$ to the centre of mass and $\\sum\\tau = I_{\\text{cm}}\\alpha$ about it.",
+      "equations": [
+        {
+          "latex": "\\tau_{\\text{net}} = I\\alpha",
+          "meaning": "The net external torque on a rigid object about a fixed axis equals its rotational inertia about that axis times its angular acceleration.",
+          "variables": [
+            {
+              "symbol": "\\tau_{\\text{net}}",
+              "name": "net external torque about the axis",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the same axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration",
+              "unit": "rad/s²"
+            }
+          ],
+          "useWhen": "A rigid object turns about a fixed axis, or about an axis through its centre of mass that keeps its direction (rolling).",
+          "notWhen": "Not with torque and rotational inertia taken about different axes, and not for an object whose shape, and so $I$, is changing."
+        },
+        {
+          "latex": "\\tau_{\\text{net}} = I\\,\\frac{d\\omega}{dt}",
+          "meaning": "Written with the derivative, the law is an equation of motion: integrate the torque to find how the angular velocity changes.",
+          "variables": [
+            {
+              "symbol": "\\tau_{\\text{net}}",
+              "name": "net torque, possibly a function of time, angle or angular velocity",
+              "unit": "N·m"
+            },
+            {
+              "symbol": "I",
+              "name": "rotational inertia about the axis",
+              "unit": "kg·m²"
+            },
+            {
+              "symbol": "\\omega",
+              "name": "angular velocity",
+              "unit": "rad/s"
+            },
+            {
+              "symbol": "t",
+              "name": "time",
+              "unit": "s"
+            }
+          ],
+          "useWhen": "The torque is not constant, so $\\alpha$ is not constant.",
+          "notWhen": "If the torque is constant there is no need to integrate; find $\\alpha$ once and use the constant-$\\alpha$ equations."
+        },
+        {
+          "latex": "a = R\\alpha",
+          "meaning": "A string that does not slip on a pulley, or a wheel that rolls without slipping, moves with a linear acceleration equal to the radius times the angular acceleration.",
+          "variables": [
+            {
+              "symbol": "a",
+              "name": "linear acceleration of the string, hanging object or wheel's centre",
+              "unit": "m/s²"
+            },
+            {
+              "symbol": "R",
+              "name": "radius at which the string leaves, or radius of the rolling wheel",
+              "unit": "m"
+            },
+            {
+              "symbol": "\\alpha",
+              "name": "angular acceleration of the pulley or wheel",
+              "unit": "rad/s²"
+            }
+          ],
+          "useWhen": "Linking the translational and rotational equations of connected objects.",
+          "notWhen": "Not if the string slips on the pulley or the wheel skids."
+        }
+      ],
+      "derivation": "Treat a rigid object turning about a fixed axis as a collection of small pieces. A piece of mass $dm$ at perpendicular distance $r$ from the axis moves in a circle, and Newton's second law applies to it along the tangent. If $dF_t$ is the tangential component of the net force on the piece,\n\n$$dF_t = dm\\,a_t = dm\\,(r\\alpha),$$\n\nusing $a_t = r\\alpha$ from Topic 5.2. The radial component has no lever arm, so the torque on the piece about the axis is\n\n$$d\\tau = r\\,dF_t = r^2\\alpha\\,dm.$$\n\nAdd the torques on all the pieces. The object is rigid, so every piece has the same $\\alpha$, which comes outside the integral:\n\n$$\\tau_{\\text{net}} = \\int r^2\\alpha\\,dm = \\alpha\\int r^2\\,dm = I\\alpha.$$\n\nForces from neighbouring pieces come in equal and opposite pairs along the same line (Newton's third law), so their torques cancel in the sum, leaving the net external torque. Notice that $r$ enters twice, through the acceleration and through the lever arm: hence the $r^2$ in $I$.",
+      "workedExamples": [
+        {
+          "title": "An Atwood machine with a real pulley",
+          "prompt": "Two blocks, of mass $3.0\\ \\text{kg}$ and $1.0\\ \\text{kg}$, hang from the ends of a light string that passes over a pulley, a uniform solid disc of mass $2.0\\ \\text{kg}$ on a frictionless axle. The string does not slip. The blocks are released from rest. What is the magnitude of their acceleration? Use $g = 9.8\\ \\text{m/s}^2$.",
+          "steps": [
+            "Take as positive the way each moves: the heavier block ($m_1$) down, the lighter ($m_2$) up. The pulley has mass, so call the tensions on its two sides $T_1$ and $T_2$.",
+            "Blocks: $m_1 g - T_1 = m_1 a$ and $T_2 - m_2 g = m_2 a$.",
+            "Pulley, about its axle: each tension acts at radius $R$, so $(T_1 - T_2)R = I\\alpha$. With $I = \\tfrac{1}{2}MR^2$ and $\\alpha = a/R$ this becomes $T_1 - T_2 = \\tfrac{1}{2}Ma$; the radius cancels.",
+            "Add the three equations so the tensions cancel: $(m_1 - m_2)g = \\big(m_1 + m_2 + \\tfrac{1}{2}M\\big)a$.",
+            "Solve: $a = \\dfrac{(3.0 - 1.0)\\ \\text{kg}\\,(9.8\\ \\text{m/s}^2)}{(3.0 + 1.0 + 1.0)\\ \\text{kg}} = 3.9\\ \\text{m/s}^2$. A massless pulley would give $4.9\\ \\text{m/s}^2$; the disc acts like an extra $\\tfrac{1}{2}M$ of mass."
+          ],
+          "answer": "$a = 3.9\\ \\text{m/s}^2$",
+          "style": "stepped",
+          "spec": {
+            "givens": {
+              "m1": {
+                "value": 3,
+                "unit": "kg"
+              },
+              "m2": {
+                "value": 1,
+                "unit": "kg"
+              },
+              "M": {
+                "value": 2,
+                "unit": "kg"
+              },
+              "g": {
+                "value": 9.8,
+                "unit": "m/s^2"
+              }
+            },
+            "expr": "(m1 - m2)*g/(m1 + m2 + M/2)",
+            "unit": "m/s^2"
+          }
+        },
+        {
+          "title": "A flywheel slowed by a drag torque",
+          "prompt": "A flywheel with rotational inertia $0.50\\ \\text{kg·m}^2$ is spinning at $40\\ \\text{rad/s}$ when its motor is switched off. Bearing drag then exerts a torque proportional to the angular velocity, $\\tau = -b\\omega$, with $b = 0.10\\ \\text{N·m·s}$. Derive an expression for $\\omega(t)$, and determine the total angle the flywheel turns through as it coasts to rest.",
+          "steps": [
+            "The only torque depends on $\\omega$, so $\\alpha$ is not constant and the law is a differential equation: $I\\,\\dfrac{d\\omega}{dt} = -b\\omega$.",
+            "Separate the variables: $\\dfrac{d\\omega}{\\omega} = -\\dfrac{b}{I}\\,dt$.",
+            "Integrate from $t = 0$, when $\\omega = \\omega_0$: $\\ln\\dfrac{\\omega}{\\omega_0} = -\\dfrac{b}{I}\\,t$, so $\\omega(t) = \\omega_0\\,e^{-bt/I}$. The angular velocity decays exponentially, with time constant $I/b = 5.0\\ \\text{s}$.",
+            "The angle turned is the area under this curve: $\\Delta\\theta = \\displaystyle\\int_0^\\infty \\omega_0\\,e^{-bt/I}\\,dt = \\dfrac{\\omega_0 I}{b}$.",
+            "Evaluate: $\\Delta\\theta = \\dfrac{(40\\ \\text{rad/s})(0.50\\ \\text{kg·m}^2)}{0.10\\ \\text{N·m·s}} = 200\\ \\text{rad}$. The flywheel never quite stops, yet the total angle is finite."
+          ],
+          "answer": "$\\omega(t) = \\omega_0\\,e^{-bt/I}$, and the flywheel turns through $\\Delta\\theta = \\omega_0 I/b = 200\\ \\text{rad}$",
+          "style": "ap",
+          "spec": {
+            "givens": {
+              "I": {
+                "value": 0.5,
+                "unit": "kg·m^2"
+              },
+              "b": {
+                "value": 0.1,
+                "unit": "N·m·s"
+              },
+              "w0": {
+                "value": 40,
+                "unit": "rad/s"
+              }
+            },
+            "expr": "w0*I/b",
+            "unit": "rad"
+          }
+        }
+      ],
+      "misconceptions": [
+        {
+          "wrong": "The tension in the string holding a hanging block equals the block's weight, so the torque on the pulley is $mgR$.",
+          "right": "Then the block would not accelerate. While it speeds up downward, $T = m(g - a)$, less than $mg$."
+        },
+        {
+          "tag": "constant-acceleration-assumed",
+          "wrong": "A rod pivoted at one end and released from horizontal has $\\alpha = 3g/2L$, so its angular velocity after time $t$ is $(3g/2L)\\,t$.",
+          "right": "That $\\alpha$ holds only at the instant of release. As the rod swings down, the lever arm of its weight shrinks, so the torque and $\\alpha$ decrease. Use energy or integrate."
+        },
+        {
+          "tag": "linear-angular-confusion",
+          "wrong": "The pulley and the block have the same acceleration, so put $\\alpha = a$.",
+          "right": "They are different quantities with different units. A string that does not slip links them through the radius: $a = R\\alpha$."
+        }
+      ],
+      "checkYourself": [
+        {
+          "q": "A constant torque of $6.0\\ \\text{N·m}$ acts on a wheel with $I = 1.5\\ \\text{kg·m}^2$ that starts from rest. Find its angular acceleration and its angular velocity after $3.0\\ \\text{s}$.",
+          "a": "$\\alpha = \\tau/I = 4.0\\ \\text{rad/s}^2$. The torque is constant, so $\\omega = \\alpha t = 12\\ \\text{rad/s}$."
+        },
+        {
+          "q": "A uniform disc of mass $M$ and radius $R$ is pivoted about a horizontal axis through a point on its rim and released from rest with its centre level with the pivot. Find its initial angular acceleration.",
+          "a": "The weight acts at the centre, a distance $R$ from the pivot, so $\\tau = MgR$. By the parallel-axis theorem $I = \\tfrac{1}{2}MR^2 + MR^2 = \\tfrac{3}{2}MR^2$. Then $\\alpha = \\tau/I = 2g/3R$."
+        },
+        {
+          "q": "In an Atwood machine whose pulley has mass, why must the two tensions differ?",
+          "a": "The pulley's angular acceleration needs a net torque, $(T_1 - T_2)R = I\\alpha$; equal tensions would give none. The larger tension is on the descending block's side."
+        }
+      ],
+      "tryIt": {
+        "diagram": "scene\nground 1.5..8.5 y=-1\npulley P 4,3.6 r={{0.35+0.045*M}}\nblock A {{4-(0.35+0.045*M)}},1 w=.7 h=.6 \"1 kg\"\nrope A.t P.l\nf A.b down {{1.6/(1+M/2)}} \"a = {{round(98/(1+M/2))/10}} m/s^2\"\ntext 6.3,3.6 \"pulley: {{M}} kg\"\ntext 6.3,3.1 \"T = {{round(98*(M/2)/(1+M/2))/10}} N\"",
+        "caption": "A $1\\ \\text{kg}$ block hangs from a string wound on a solid-disc pulley. Make the pulley more massive: the block's acceleration, $a = mg/(m + \\tfrac{1}{2}M)$, falls and the tension climbs toward the block's weight, $9.8\\ \\text{N}$. With a massless pulley the block is in free fall and the string is slack.",
+        "params": [
+          {
+            "name": "M",
+            "label": "Mass of the pulley",
+            "min": 0,
+            "max": 10,
+            "step": 0.5,
+            "default": 2,
+            "unit": "kg"
+          }
+        ]
+      },
+      "prerequisites": [
+        "2.5",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.4"
+      ],
+      "teacherNotes": "Ask for a separate diagram and a separate equation for each object, with the constraint $a = R\\alpha$ written as its own line; students who try to write one equation for the whole system usually set the tension equal to the hanging weight. Have them predict, before calculating, whether a massive pulley raises or lowers the acceleration. When the torque varies (a swinging rod, a drag torque), stress that $\\tau = I\\alpha$ gives $\\alpha$ at an instant and the motion needs an integral. Set 5D covers fixed-axis and rolling problems."
+    }
+  ]
+}
