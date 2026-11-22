@@ -989,7 +989,7 @@
         "10.5",
         "15.1"
       ],
-      "teacherNotes": "Before giving Einstein's equation, ask students to predict with the wave model what dim violet and bright red light should do, then show the data; the failed predictions are what make the photon idea stick. The persistent error is letting intensity change $K_{\\max}$, so ask \"what does one photon do?\" whenever brightness comes up. Have them read slope, x-intercept and y-intercept from the $K_{\\max}$ against $f$ graph, since the AP exam often asks for $h$ or $\\phi$ from such data."
+      "teacherNotes": "Before giving Einstein's equation, ask students to predict with the wave model what dim violet and bright red light should do, then show the data; the failed predictions are what make the photon idea stick. The persistent error is letting intensity change $K_{\\max}$, so ask \"what does one photon do?\" whenever brightness comes up. Have them read slope, x-intercept and y-intercept from the $K_{\\max}$ against $f$ graph, since finding $h$ or $\\phi$ from such data is a standard question."
     },
     {
       "topic": "15.6",

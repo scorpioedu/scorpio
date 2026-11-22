@@ -194,7 +194,7 @@
           }
         ]
       },
-      "teacherNotes": "Ask students to explain pressure in a sentence that uses the words \"collisions\" and \"momentum\" before any formula appears; the link back to impulse from mechanics is what the free-response questions reward. The two errors to listen for are \"all the molecules go at the same speed\" and \"heavier molecules have more energy at the same temperature\". A quick diagnostic is to ask which is faster in room air, nitrogen or oxygen, and which has more kinetic energy on average. Set 9A practises this topic."
+      "teacherNotes": "Ask students to explain pressure in a sentence that uses the words \"collisions\" and \"momentum\" before any formula appears; the link back to impulse from mechanics is the heart of the explanation. The two errors to listen for are \"all the molecules go at the same speed\" and \"heavier molecules have more energy at the same temperature\". A quick diagnostic is to ask which is faster in room air, nitrogen or oxygen, and which has more kinetic energy on average. Set 9A practises this topic."
     },
     {
       "topic": "9.2",
@@ -1173,7 +1173,7 @@
         "9.3",
         "9.4"
       ],
-      "teacherNotes": "Students readily learn \"entropy always increases\" and then apply it to a single object. Give them a process in which one object's entropy clearly falls (freezing water, a refrigerator's contents) and ask them to find where the larger increase is. The AP Physics 2 exam treats entropy mainly qualitatively; the calculations with $\\Delta S = Q/T$ and the efficiency limit here are for making the argument concrete and go a little beyond what the exam asks for. For engines, have students draw the energy-flow picture and check $Q_H = W + Q_C$ before computing any efficiency, always with kelvin temperatures. Set 9D practises this topic."
+      "teacherNotes": "Students readily learn \"entropy always increases\" and then apply it to a single object. Give them a process in which one object's entropy clearly falls (freezing water, a refrigerator's contents) and ask them to find where the larger increase is. For engines, have students draw the energy-flow picture and check $Q_H = W + Q_C$ before computing any efficiency, always with kelvin temperatures. Set 9D practises this topic."
     }
   ]
 }

@@ -197,7 +197,7 @@
         "2.5",
         "2.8"
       ],
-      "teacherNotes": "Ask students to say in words what $\\frac{d^2x}{dt^2} = -\\omega^2 x$ claims before they solve anything: \"the acceleration is proportional to how far you are from equilibrium, and points back\". The commonest slip is reaching for constant-acceleration kinematics because a force and a mass are given; have them compute $a$ at two different positions and see that it changed. For free-response \"show that the motion is SHM\" questions, insist on the full chain: net force in terms of displacement, Newton's second law, comparison with the standard form. Set 7A practises exactly this."
+      "teacherNotes": "Ask students to say in words what $\\frac{d^2x}{dt^2} = -\\omega^2 x$ claims before they solve anything: \"the acceleration is proportional to how far you are from equilibrium, and points back\". The commonest slip is reaching for constant-acceleration kinematics because a force and a mass are given; have them compute $a$ at two different positions and see that it changed. For \"show that the motion is SHM\" questions, insist on the full chain: net force in terms of displacement, Newton's second law, comparison with the standard form. Set 7A practises exactly this."
     },
     {
       "topic": "7.2",

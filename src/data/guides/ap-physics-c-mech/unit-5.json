@@ -215,7 +215,7 @@
         "1.2",
         "1.3"
       ],
-      "teacherNotes": "Ask students to say out loud, before any algebra, whether $\\alpha$ is constant; the commonest error in this topic is reaching for $\\omega = \\omega_0 + \\alpha t$ when $\\alpha$ is a function. Putting the linear and rotational definitions side by side ($x, v, a$ against $\\theta, \\omega, \\alpha$) lets them reuse everything from Unit 1, including the $\\alpha = \\omega\\,d\\omega/d\\theta$ trick, which reappears on free-response questions. Set 5A practises both the calculus and the constant-$\\alpha$ cases."
+      "teacherNotes": "Ask students to say out loud, before any algebra, whether $\\alpha$ is constant; the commonest error in this topic is reaching for $\\omega = \\omega_0 + \\alpha t$ when $\\alpha$ is a function. Putting the linear and rotational definitions side by side ($x, v, a$ against $\\theta, \\omega, \\alpha$) lets them reuse everything from Unit 1, including the $\\alpha = \\omega\\,d\\omega/d\\theta$ trick, which reappears in harder problems. Set 5A practises both the calculus and the constant-$\\alpha$ cases."
     },
     {
       "topic": "5.2",
@@ -440,7 +440,7 @@
         "2.10",
         "5.1"
       ],
-      "teacherNotes": "Ask which quantities two points on the same disc share and which they do not, then repeat the question for two gears or belt-driven wheels; students who can answer both have the topic. Insist on radians whenever $r$ multiplies an angular quantity. The total-acceleration question (tangential and centripetal at right angles) is a favourite free-response part, and students routinely report only $r\\alpha$. Set 5A covers this topic together with 5.1."
+      "teacherNotes": "Ask which quantities two points on the same disc share and which they do not, then repeat the question for two gears or belt-driven wheels; students who can answer both have the topic. Insist on radians whenever $r$ multiplies an angular quantity. The total-acceleration question (tangential and centripetal at right angles) is a common question, and students routinely report only $r\\alpha$. Set 5A covers this topic together with 5.1."
     },
     {
       "topic": "5.3",

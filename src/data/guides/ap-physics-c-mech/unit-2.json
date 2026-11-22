@@ -397,7 +397,7 @@
         "1.1",
         "2.1"
       ],
-      "teacherNotes": "Ask for the agent of every arrow (\"what object exerts this force?\"); it removes \"force of motion\" and $ma$ arrows faster than any rule. AP scoring penalises extra forces and components drawn as if they were forces on the diagram, so have students draw components beside the diagram or dashed. The wall example is worth doing live because the normal force is horizontal and unrelated to $mg$."
+      "teacherNotes": "Ask for the agent of every arrow (\"what object exerts this force?\"); it removes \"force of motion\" and $ma$ arrows faster than any rule. Extra forces, and components drawn on the diagram as if they were forces, make a free-body diagram wrong, so have students draw components beside the diagram or dashed. The wall example is worth doing live because the normal force is horizontal and unrelated to $mg$."
     },
     {
       "topic": "2.3",
@@ -1878,7 +1878,7 @@
         "1.2",
         "2.5"
       ],
-      "teacherNotes": "Before any algebra, have students sketch the force diagram at three moments (release, part-way, terminal) and predict the shapes of the $a$-$t$ and $v$-$t$ graphs; the differential equation then confirms what they already expect. In the derivation the usual slips are the sign from integrating $1/(v_T - v)$ and the limits of integration. AP free-response questions often ask only for the differential equation and a sketch, so make sure students can write $m\\,dv/dt = mg - bv$ straight from a free-body diagram."
+      "teacherNotes": "Before any algebra, have students sketch the force diagram at three moments (release, part-way, terminal) and predict the shapes of the $a$-$t$ and $v$-$t$ graphs; the differential equation then confirms what they already expect. In the derivation the usual slips are the sign from integrating $1/(v_T - v)$ and the limits of integration. Questions often ask only for the differential equation and a sketch, so make sure students can write $m\\,dv/dt = mg - bv$ straight from a free-body diagram."
     },
     {
       "topic": "2.10",

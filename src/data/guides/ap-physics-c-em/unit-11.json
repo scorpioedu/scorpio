@@ -1631,7 +1631,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since free-response questions ask for exactly that. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises the two limits, the time constant and combining capacitors."
+      "teacherNotes": "Before any exponential is written, ask for the current and the capacitor's potential difference at $t = 0$ and as $t \\to \\infty$; students who can reason at the two limits rarely pick the wrong one of the two exponential forms. Make them derive the differential equation from the loop rule at least once, since it is a standard question. Common slips: treating $\\tau$ as the time to charge fully, and combining capacitors with the resistor rules. Set 11D practises the two limits, the time constant and combining capacitors."
     }
   ]
 }

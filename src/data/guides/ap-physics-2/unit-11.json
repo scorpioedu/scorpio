@@ -1424,7 +1424,7 @@
         "11.5",
         "11.6"
       ],
-      "teacherNotes": "A bulb in series with a large capacitor makes the whole story visible: bright, dimming, dark, and bright again in the other sense when the capacitor is discharged through it. Ask for the current at $t = 0$ and after a long time before any graph is drawn; students who can replace the capacitor by a wire and then by an open switch can handle most exam questions. Expect straight-line graphs and \"half charged at half time\", and expect the full emf to be put across a capacitor that sits in parallel with only part of the circuit."
+      "teacherNotes": "A bulb in series with a large capacitor makes the whole story visible: bright, dimming, dark, and bright again in the other sense when the capacitor is discharged through it. Ask for the current at $t = 0$ and after a long time before any graph is drawn; students who can replace the capacitor by a wire and then by an open switch can handle most RC questions. Expect straight-line graphs and \"half charged at half time\", and expect the full emf to be put across a capacitor that sits in parallel with only part of the circuit."
     }
   ]
 }

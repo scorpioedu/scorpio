@@ -684,7 +684,7 @@
         "4.1",
         "4.2"
       ],
-      "teacherNotes": "Insist on a named system and a one-line reason it is isolated (or isolated in one direction) before any equation; that sentence is what free-response rubrics look for. The derivation is short enough to do live: write $dp/dt$ for each of two objects, add, and let students spot which terms cancel and why. Problems where only one component is conserved (the sand cart) and centre-of-mass problems with no velocities at all (the canoe) expose students who have memorised $m_1v_1 + m_2v_2$ without the condition. Set 4C includes explosions in two dimensions."
+      "teacherNotes": "Insist on a named system and a one-line reason it is isolated (or isolated in one direction) before any equation; that sentence is the justification a written answer needs. The derivation is short enough to do live: write $dp/dt$ for each of two objects, add, and let students spot which terms cancel and why. Problems where only one component is conserved (the sand cart) and centre-of-mass problems with no velocities at all (the canoe) expose students who have memorised $m_1v_1 + m_2v_2$ without the condition. Set 4C includes explosions in two dimensions."
     },
     {
       "topic": "4.4",

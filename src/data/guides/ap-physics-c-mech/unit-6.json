@@ -872,7 +872,7 @@
         "6.1",
         "6.3"
       ],
-      "teacherNotes": "Make students name the system, name the axis and say why the external torque about it is zero before writing $L_i = L_f$; on free-response questions that sentence earns credit. The most revealing question is to ask for the kinetic energy before and after the skater pulls in: many expect it to be unchanged, and the string-through-a-hole integral shows where the extra comes from. In pivot collisions, ask why linear momentum cannot be used. Set 6C practises this topic."
+      "teacherNotes": "Make students name the system, name the axis and say why the external torque about it is zero before writing $L_i = L_f$; that sentence is the justification a written answer needs. The most revealing question is to ask for the kinetic energy before and after the skater pulls in: many expect it to be unchanged, and the string-through-a-hole integral shows where the extra comes from. In pivot collisions, ask why linear momentum cannot be used. Set 6C practises this topic."
     },
     {
       "topic": "6.5",

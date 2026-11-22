@@ -579,7 +579,7 @@
         "7.1",
         "7.2"
       ],
-      "teacherNotes": "Have students annotate one cycle of a position–time graph with the sign and relative size of $x$, $v$ and $a$ at each quarter period before they meet any formula; pointing at a spot and asking \\\"faster or slower here? which way is the force?\\\" exposes most errors. The usual mistakes are zero acceleration at the turning points, amplitude read as trough-to-peak, and a calculator left in degree mode. The AP Physics 1 equation sheet gives $x = A\\cos(2\\pi f t)$ and $x = A\\sin(2\\pi f t)$; the maximum speed and acceleration can also be reached through energy and Newton's second law. Sets 7B and 7C use graphs and equations of motion."
+      "teacherNotes": "Have students annotate one cycle of a position–time graph with the sign and relative size of $x$, $v$ and $a$ at each quarter period before they meet any formula; pointing at a spot and asking \\\"faster or slower here? which way is the force?\\\" exposes most errors. The usual mistakes are zero acceleration at the turning points, amplitude read as trough-to-peak, and a calculator left in degree mode. Students should be able to use both $x = A\\cos(2\\pi f t)$ and $x = A\\sin(2\\pi f t)$; the maximum speed and acceleration can also be reached through energy and Newton's second law. Sets 7B and 7C use graphs and equations of motion."
     },
     {
       "topic": "7.4",

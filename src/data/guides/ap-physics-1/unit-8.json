@@ -843,7 +843,7 @@
         "8.1",
         "8.2"
       ],
-      "teacherNotes": "Nearly every student predicts higher pressure in the constriction (\"it's squeezed\"). Ask instead which way the net force on a parcel of water must point as it speeds up into the narrow section; the answer forces the pressure to be higher behind it. Have students mark two points and list $P$, $v$ and $y$ at each before writing Bernoulli's equation, and say which terms cancel and why, since free-response credit often rests on that justification. In this course flows are ideal; viscosity and turbulence are named only as limits of the model. Set 8D covers continuity, Bernoulli and Torricelli."
+      "teacherNotes": "Nearly every student predicts higher pressure in the constriction (\"it's squeezed\"). Ask instead which way the net force on a parcel of water must point as it speeds up into the narrow section; the answer forces the pressure to be higher behind it. Have students mark two points and list $P$, $v$ and $y$ at each before writing Bernoulli's equation, and say which terms cancel and why, since that justification is part of a complete answer. In this course flows are ideal; viscosity and turbulence are named only as limits of the model. Set 8D covers continuity, Bernoulli and Torricelli."
     }
   ]
 }

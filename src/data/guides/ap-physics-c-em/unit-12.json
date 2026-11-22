@@ -1033,7 +1033,7 @@
         "8.6",
         "12.3"
       ],
-      "teacherNotes": "Run Ampère's law in parallel with Gauss's law: same three steps (argue the symmetry, choose the loop, find what is enclosed), and the same two errors (using it without symmetry, and using the total instead of the enclosed amount). Ask students to say in words why $B$ comes out of the integral before they write $B(2\\pi r)$. Problems with $J(r)$ are the usual free-response version; the ring element $2\\pi r'\\,dr'$ is where most slips happen. Set 12D covers thick wires, coaxial conductors and solenoids."
+      "teacherNotes": "Run Ampère's law in parallel with Gauss's law: same three steps (argue the symmetry, choose the loop, find what is enclosed), and the same two errors (using it without symmetry, and using the total instead of the enclosed amount). Ask students to say in words why $B$ comes out of the integral before they write $B(2\\pi r)$. In problems with $J(r)$ the ring element $2\\pi r'\\,dr'$ is where most slips happen. Set 12D covers thick wires, coaxial conductors and solenoids."
     }
   ]
 }

@@ -457,7 +457,7 @@
       "prerequisites": [
         "1.1"
       ],
-      "teacherNotes": "Ask for the units of every coefficient: a student who can say why the $1.2$ in $v = 6.0t - 1.2t^2$ is in $\\text{m/s}^3$ rarely differentiates when they should integrate. On free-response questions the lost point is usually the initial condition, so have students write $v(0)$ and $x(0)$ down before they integrate. Set 1A works the chain in both directions."
+      "teacherNotes": "Ask for the units of every coefficient: a student who can say why the $1.2$ in $v = 6.0t - 1.2t^2$ is in $\\text{m/s}^3$ rarely differentiates when they should integrate. The usual slip is the initial condition, so have students write $v(0)$ and $x(0)$ down before they integrate. Set 1A works the chain in both directions."
     },
     {
       "topic": "1.3",
@@ -1146,7 +1146,7 @@
         "1.2",
         "1.3"
       ],
-      "teacherNotes": "Have students write two columns, $x$ and $y$, with the knowns in each and time bridging them, before they touch an equation; it stops horizontal quantities leaking into vertical equations. Ask what the acceleration is at the top of the arc and which way it points on the way up: both questions expose students who think acceleration follows velocity. The range formula is a derived special case, and on free-response questions students are expected to start from the component equations. Set 1D adds vector functions of time that must be differentiated or integrated component by component."
+      "teacherNotes": "Have students write two columns, $x$ and $y$, with the knowns in each and time bridging them, before they touch an equation; it stops horizontal quantities leaking into vertical equations. Ask what the acceleration is at the top of the arc and which way it points on the way up: both questions expose students who think acceleration follows velocity. The range formula is a derived special case, and students should be able to start from the component equations. Set 1D adds vector functions of time that must be differentiated or integrated component by component."
     }
   ]
 }

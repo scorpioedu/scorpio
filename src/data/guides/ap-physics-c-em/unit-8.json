@@ -427,7 +427,7 @@
       "prerequisites": [
         "8.1"
       ],
-      "teacherNotes": "Have students narrate induction as a sequence of electron movements, including the order of the last two steps (ground off, then rod away); reversing them leaves the sphere neutral, and that is the usual exam trap. Insist on \"electrons moved from … to …\" in every explanation, never \"positive charge flowed\". Set 8A has contact-sharing and electron-counting questions; the leaking-charge model here is a first taste of the exponential that returns with RC circuits in Unit 11."
+      "teacherNotes": "Have students narrate induction as a sequence of electron movements, including the order of the last two steps (ground off, then rod away); reversing them leaves the sphere neutral, and that is the usual trap. Insist on \"electrons moved from … to …\" in every explanation, never \"positive charge flowed\". Set 8A has contact-sharing and electron-counting questions; the leaking-charge model here is a first taste of the exponential that returns with RC circuits in Unit 11."
     },
     {
       "topic": "8.3",
@@ -898,7 +898,7 @@
         "8.1",
         "8.3"
       ],
-      "teacherNotes": "Grade the set-up, not the integral: a labelled sketch with $dq$, $r$, the angle and the component being kept is where the physics is, and it is what free-response scoring rewards. The two standard failures are integrating magnitudes and pulling a varying $r$ outside the integral. Always ask for the far-field limit as a check. Set 8C covers lines, rings and arcs; students need the substitution $x = y\\tan\\theta$ or a table integral for the bisector case."
+      "teacherNotes": "Grade the set-up, not the integral: a labelled sketch with $dq$, $r$, the angle and the component being kept is where the physics is. The two standard failures are integrating magnitudes and pulling a varying $r$ outside the integral. Always ask for the far-field limit as a check. Set 8C covers lines, rings and arcs; students need the substitution $x = y\\tan\\theta$ or a table integral for the bisector case."
     },
     {
       "topic": "8.5",
