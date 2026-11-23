@@ -4,7 +4,10 @@ export type UserRole = "teacher" | "student" | "school_admin" | "super_admin";
 
 export interface UserPreferences {
   autoRedirectPortal?: boolean;
+  /** Teachers: stop all student emails (new work, due reminders, results). On unless set to true. */
   disableAssignmentEmails?: boolean;
+  /** Students: stop every Scorpio email to themselves. */
+  disableStudentEmails?: boolean;
   /** Teachers: turn off the Monday summary email (sendTeacherDigests). On unless set. */
   disableWeeklyDigest?: boolean;
   /** Teacher Home setup card: "started" once it has been shown unfinished, "done" once hidden. */

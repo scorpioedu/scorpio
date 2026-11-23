@@ -56,7 +56,7 @@ jest.mock(
   }),
 );
 const sendEmail = jest.fn(
-  async (args: { to: string | string[]; subject: string; react: { props: Doc } }) => {
+  async (args: { to: string | string[]; subject: string; tag?: string; react: { props: Doc } }) => {
     void args;
   },
 );
@@ -110,19 +110,41 @@ describe("onAssignmentCreated guards", () => {
     expect(sendEmail).not.toHaveBeenCalled();
   });
 
-  it("treats a teacher profile with no preferences as emails disabled", async () => {
+  it("emails by default when the teacher never changed the setting", async () => {
     state.teacher = { exists: true, data: { role: "teacher" } };
+    await runCreated({ teacherId: "t1", title: "T" });
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
+  it("skips and logs when the teacher turned student emails off", async () => {
+    state.teacher = { exists: true, data: { preferences: { disableAssignmentEmails: true } } };
     await runCreated({ teacherId: "t1", title: "T" });
     expect(infoMessages()).toContain("Teacher t1 has disabled assignment emails, skipping.");
     expect(state.txCount).toBe(0);
     expect(sendEmail).not.toHaveBeenCalled();
   });
 
-  it("treats a teacher document that exists but has no data as emails disabled", async () => {
+  it("emails when the teacher document exists but has no data", async () => {
     state.teacher = { exists: true, data: undefined };
     await runCreated({ teacherId: "t1" });
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits while the assignment is hidden from students (archived) or a shared course pool", async () => {
+    await runCreated({ teacherId: "t1", title: "T", archivedAt: new Date() });
+    await runCreated({ teacherId: "t1", title: "T", visibility: "global" });
+    expect(infoMessages()).toContain("Assignment a1 is hidden from students, skipping emails for now.");
     expect(state.txCount).toBe(0);
     expect(sendEmail).not.toHaveBeenCalled();
+  });
+
+  it("leaves out students who turned emails off", async () => {
+    state.students = [
+      { email: "a@x.test" },
+      { email: "off@x.test", preferences: { disableStudentEmails: true } },
+    ];
+    await runCreated({ teacherId: "t1", title: "T" });
+    expect(sendEmail.mock.calls.map((c) => c[0].to)).toEqual(["a@x.test"]);
   });
 
   it("keeps going when the teacher document does not exist", async () => {
@@ -166,18 +188,34 @@ describe("onAssignmentCreated email content", () => {
   it('falls back to "Assignment" when the title is missing', async () => {
     await runCreated({ teacherId: "t1" });
     const call = sendEmail.mock.calls[0][0];
-    expect(call.subject).toBe("New Assignment Published: Assignment");
-    expect(call.react.props).toMatchObject({ assignmentName: "Assignment", studentName: "Ann" });
+    expect(call.subject).toBe("New assignment: Assignment");
+    expect(call.react.props).toMatchObject({ assignmentTitle: "Assignment", firstName: "Ann" });
   });
 
-  it('uses the student name field, then "Student", when there is no displayName', async () => {
+  it("links to the assignment itself, shows the due date and problem count, and is tagged", async () => {
+    await runCreated({
+      teacherId: "t1",
+      title: "Quiz 1",
+      dueDate: new Date("2026-11-26T07:59:00Z"),
+      questions: [{}, {}, {}],
+    });
+    const call = sendEmail.mock.calls[0][0];
+    expect(call.tag).toBe("assignment_new");
+    expect(call.react.props).toMatchObject({
+      link: "https://scorpioedu.org/student/assignment-view?id=a1",
+      due: "Wed, Nov 25 at 11:59 PM PST",
+      problems: 3,
+    });
+  });
+
+  it('uses the student name field, then no name, when there is no displayName', async () => {
     state.students = [{ email: "n@x.test", name: "Nora" }, { email: "z@x.test" }];
     await runCreated({ teacherId: "t1", title: "Quiz 1" });
     const names = Object.fromEntries(
-      sendEmail.mock.calls.map((c) => [c[0].to as string, c[0].react.props.studentName]),
+      sendEmail.mock.calls.map((c) => [c[0].to as string, c[0].react.props.firstName]),
     );
-    expect(names).toEqual({ "n@x.test": "Nora", "z@x.test": "Student" });
-    expect(sendEmail.mock.calls[0][0].subject).toBe("New Assignment Published: Quiz 1");
+    expect(names).toEqual({ "n@x.test": "Nora", "z@x.test": "" });
+    expect(sendEmail.mock.calls[0][0].subject).toBe("New assignment: Quiz 1");
   });
 
   it('logs a masked address with an "unknown" error name when a send rejects with a non-Error, and still emails the rest', async () => {

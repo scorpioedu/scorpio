@@ -44,7 +44,11 @@ export const PATCH = withAuthorizedRequest(
 
       const update: Record<string, unknown> = { ...fields, updatedAt: new Date() };
       if (title !== undefined) update.title = title;
-      if (dueDate !== undefined) update.dueDate = dueDate == null ? null : new Date(dueDate);
+      if (dueDate !== undefined) {
+        update.dueDate = dueDate == null ? null : new Date(dueDate);
+        // A new due date earns a new day-before reminder (functions/src/student-emails.ts).
+        update.reminderSentAt = null;
+      }
       if (archived !== undefined) update.archivedAt = archived ? new Date() : null;
       if (apCourse !== undefined || apUnit !== undefined || apTopics !== undefined)
         Object.assign(

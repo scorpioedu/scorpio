@@ -64,7 +64,7 @@ describe('sendEmail', () => {
     const result = await m.sendEmail({ apiKey: 'arg-key', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
     expect(result).toBe(response);
     expect(m.ResendCtor).toHaveBeenCalledWith('arg-key');
-    expect(m.send).toHaveBeenCalledWith({ from: 'Scorpio Platform <hello@scorpioedu.org>', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
+    expect(m.send).toHaveBeenCalledWith({ from: 'Scorpio <hello@scorpioedu.org>', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
     expect(m.logger.info).toHaveBeenCalledWith(expect.stringContaining('Email sent successfully'), { id: 'msg1' });
   });
 
