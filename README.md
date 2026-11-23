@@ -17,7 +17,7 @@ Scorpio is a homework and classroom platform for AP Physics. It has three parts 
 - **Raise.** A Socratic AI assistant that gives students hints instead of answers, so homework still reflects what they understand.
 - **Grading and insight.** Automatic grading of numeric and multiple-choice work, and a class report that ranks the misconceptions students are showing.
 
-The first release targets AP Physics 1. AP Physics 2 and AP Physics C: Mechanics are outlined and in development.
+Scorpio supports four courses: AP Physics 1, AP Physics 2, AP Physics C: Mechanics, and AP Physics C: Electricity and Magnetism.
 
 ---
 
@@ -49,14 +49,14 @@ A teacher can attach a course to a class. Classes that follow no course behave e
 
 ### Available courses
 
-| Course                  | Status                                                                       |
-| :---------------------- | :--------------------------------------------------------------------------- |
-| AP Physics 1            | Eight units, 32 sets, 160 problems.                                          |
-| AP Physics 2            | Outlined: units 9 to 15, 28 sets. Problems are not yet written.              |
-| AP Physics C: Mechanics | Outlined: units 1 to 7, 28 sets. Problems are not yet written.               |
-| AP Physics C: Electricity and Magnetism | Outlined: units 8 to 13, 24 sets. Problems are not yet written. |
+| Course                                  | Units | Sets | Problems |
+| :-------------------------------------- | ----: | ---: | -------: |
+| AP Physics 1                            |     8 |   32 |      320 |
+| AP Physics 2                            |     7 |   28 |      280 |
+| AP Physics C: Mechanics                 |     7 |   28 |      280 |
+| AP Physics C: Electricity and Magnetism |     6 |   24 |      240 |
 
-Problems are drafted with AI assistance, validated automatically, independently re-solved by a second model call, and then reviewed by a person. A set is published only after a person has approved every problem in it. Planned courses can be read and browsed, but nothing in them can be assigned until sets are published.
+Each set contains ten problems. Problems are drafted with AI assistance, validated automatically, independently re-solved by a second model call, and then reviewed before publication. Review of answer keys is ongoing, and review logs are kept in `content/`. A course whose sets contain no problems is shown as planned and cannot be assigned.
 
 ### What a teacher can do
 
@@ -340,12 +340,14 @@ Every pull request and every push to `main` runs `.github/workflows/ci.yml`. The
 
 ## Deployment
 
-> **Pending decision (RT-33).** `firebase.json` configures Firebase Hosting with `hosting.frameworksBackend` (Next.js on Cloud Functions) alongside the `functions/` codebase, and the repository contains no Vercel artifacts. The commands below therefore describe a Firebase deployment. This section will be finalized once the deployment target is settled. See [RT-33-DEPLOY-PATHS.md](docs/quality-audit/remediation/RT-33-DEPLOY-PATHS.md) for the facts and options.
+The web application is deployed on Vercel from `main`. Firestore rules, Storage rules and Cloud Functions are deployed to Firebase. When a change touches several of these, deploy in this order: security rules, then the web application, then functions.
 
 ```bash
-npm run build
-firebase deploy
+firebase deploy --only firestore:rules,storage
+firebase deploy --only functions
 ```
+
+Production configuration is held in the Vercel and Firebase project settings, not in the repository. The deployment target is still under review; see [RT-33-DEPLOY-PATHS.md](docs/quality-audit/remediation/RT-33-DEPLOY-PATHS.md).
 
 ---
 
@@ -361,4 +363,4 @@ firebase deploy
 
 ---
 
-&copy; 2025 Scorpio. Built for the advancement of physics education.
+Released under the [MIT License](LICENSE). &copy; 2026 Scorpio.
