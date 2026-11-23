@@ -162,6 +162,8 @@ describe("POST /api/assignments/clone", () => {
     const data = copy.data as Record<string, unknown> & {
       questions: Array<Record<string, unknown>>;
     };
+    // A copy always says whether it is locked down: students treat a missing field as locked.
+    expect(data.lockdownMode).toBe(false);
     expect(data).toMatchObject({
       teacherId: "teacher1",
       organizationId: "orgB",

@@ -160,6 +160,9 @@ export const POST = withAuthorizedRequest(
         title ?? (typeof source.title === "string" && source.title ? source.title : "Untitled"),
       gradingType:
         typeof source.gradingType === "string" && source.gradingType ? source.gradingType : "ai",
+      // Always written. An assignment with no lockdown field opens locked for students (the old
+      // default, kept so live assignments don't change), so a new copy must say it is off.
+      lockdownMode: copied.lockdownMode === true,
       // The class's own settings win over the source's, so every assignment in it behaves alike.
       // No class time limit leaves the source's own limit (e.g. a timed unit test) alone.
       ...(classDefaults

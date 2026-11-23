@@ -7,12 +7,13 @@ jest.mock('next/headers', () => ({ cookies: async () => ({ set: mockCookieSet, d
 const mockVerifyIdToken = jest.fn();
 const mockCreateSessionCookie = jest.fn();
 const mockProfile = jest.fn();
+const mockUpdate = jest.fn(async (..._a: unknown[]) => {});
 jest.mock('../src/lib/firebase-admin', () => ({
   adminAuth: {
     verifyIdToken: (...a: unknown[]) => mockVerifyIdToken(...a),
     createSessionCookie: (...a: unknown[]) => mockCreateSessionCookie(...a),
   },
-  adminDb: { collection: () => ({ doc: () => ({ get: async () => ({ data: () => mockProfile() }) }) }) },
+  adminDb: { collection: () => ({ doc: () => ({ update: (...a: unknown[]) => mockUpdate(...a), get: async () => ({ data: () => mockProfile() }) }) }) },
 }));
 const mockEnforce = jest.fn();
 jest.mock('../src/lib/rate-limit', () => ({ enforceRateLimit: (...a: unknown[]) => mockEnforce(...a) }));
@@ -79,6 +80,17 @@ describe('POST /api/auth/session', () => {
     expect(mockCookieSet).toHaveBeenCalledWith('__session', 'session-cookie-value', expect.objectContaining({
       maxAge: 5 * 24 * 60 * 60, httpOnly: true, sameSite: 'lax', path: '/', secure: false,
     }));
+  });
+
+  test('records when the app was last opened, at most once an hour', async () => {
+    mockProfile.mockReturnValue({ role: 'student' });
+    await sessionCall({ idToken: 'tok' });
+    expect(mockUpdate).toHaveBeenCalledWith({ lastLoginAt: expect.any(Date) });
+    mockUpdate.mockClear();
+    // The client re-posts whenever the profile changes, so a fresh timestamp must not be rewritten.
+    mockProfile.mockReturnValue({ role: 'student', lastLoginAt: { toMillis: () => Date.now() - 60_000 } });
+    await sessionCall({ idToken: 'tok' });
+    expect(mockUpdate).not.toHaveBeenCalled();
   });
 
   test('cookie is marked secure in production', async () => {

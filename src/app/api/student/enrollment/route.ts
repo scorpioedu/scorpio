@@ -46,8 +46,12 @@ export const POST = withAuthorizedRequest(
         const { teacherId, courseId, organizationId } = course;
         enrollment = { teacherId, courseId, organizationId };
       }
-      transaction.set(userRef, enrollment, { merge: true });
-      transaction.set(studentRef, enrollment, { merge: true });
+      // joinedClassAt feeds the admin activation funnel; rejoining the same class keeps the first date.
+      const joinedClassAt =
+        action === "leave" ? null : profile.courseId === enrollment.courseId ? undefined : new Date();
+      const update = joinedClassAt === undefined ? enrollment : { ...enrollment, joinedClassAt };
+      transaction.set(userRef, update, { merge: true });
+      transaction.set(studentRef, update, { merge: true });
       return null;
     });
 

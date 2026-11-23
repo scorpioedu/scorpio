@@ -6,7 +6,7 @@ type SendFn = jest.Mock<Promise<unknown>, never[]>;
 const LOGGER = require.resolve('../functions/node_modules/firebase-functions/lib/logger/index.js');
 
 interface Loaded {
-  sendEmail: (args: { apiKey?: string; to: string | string[]; subject: string; react: React.ReactElement }) => Promise<unknown>;
+  sendEmail: (args: { apiKey?: string; to: string | string[]; subject: string; react: React.ReactElement; replyTo?: string }) => Promise<unknown>;
   send: SendFn;
   ResendCtor: jest.Mock;
   logger: { info: jest.Mock; warn: jest.Mock; error: jest.Mock };
@@ -49,6 +49,12 @@ describe('sendEmail', () => {
     const m = load(jest.fn(async () => ({ data: { id: 'msg1' } })));
     await m.sendEmail({ to: 'a@x.test', subject: 's', react: element });
     expect(m.ResendCtor).toHaveBeenCalledWith('env-key');
+  });
+
+  it('passes a reply-to address through only when one is given', async () => {
+    const m = load(jest.fn(async () => ({ data: { id: 'msg2' } })));
+    await m.sendEmail({ apiKey: 'k', to: 'a@x.test', subject: 's', react: element, replyTo: 'owner@x.test' });
+    expect(m.send).toHaveBeenCalledWith(expect.objectContaining({ replyTo: 'owner@x.test' }));
   });
 
   it('prefers an explicit key, sends from the platform address and returns the provider response', async () => {

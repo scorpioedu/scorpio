@@ -94,7 +94,7 @@ function LoginForm() {
       console.log(`[Login] Redirecting to: ${role === "teacher" ? "/teacher" : "/student"}`);
       // Hard redirect is safer for ensuring middleware catches the new session
       const sessionData = await response.json();
-      const target =
+      let target =
         sessionData.role === "teacher"
           ? teacherInvite
             ? networkInvitePath(teacherInvite)
@@ -102,6 +102,16 @@ function LoginForm() {
           : classCode
             ? classInvitePath(classCode)
             : "/student";
+      // "Sign in and join" joins here. Anything the join can't settle on its own (a bad code, or
+      // already being in another class) falls through to the invite page, which explains it.
+      if (sessionData.role === "student" && classCode) {
+        const joined = await fetch("/api/student/enrollment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${idToken}` },
+          body: JSON.stringify({ action: "join", code: classCode }),
+        }).catch(() => null);
+        if (joined?.ok) target = "/student";
+      }
       window.location.href = target;
     } catch (err: unknown) {
       console.error("[Login] Detailed Error:", err);

@@ -14,7 +14,7 @@ import {
   type Query,
   type QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, updateUserProfile } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +30,11 @@ import { useRouter } from "next/navigation";
 import { isCurrentAssignment, timeOf } from "@/lib/assignment-listing";
 import { WELCOME_SKIPPED_KEY } from "@/lib/first-run";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
+import {
+  SetupChecklist,
+  setupSteps,
+  type SetupProgress,
+} from "@/components/teacher/setup-checklist";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -193,6 +198,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
   const [pendingGrading, setPendingGrading] = useState<PendingSubmission[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [dataReady, setDataReady] = useState(false);
+  const [setupOverride, setSetupOverride] = useState<"started" | "done" | null>(null);
   const classManager = useClassManager({
     classes: courses,
     setClasses: setCourses,
@@ -318,15 +324,15 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
 
   // A teacher with no classes goes to the guided first-run page (unless they skipped it before).
   useEffect(() => {
-    if (!dataReady || setupError || !networkId || courses.length > 0) return;
-    let skipped = false;
+    if (!dataReady || setupError || !networkId || !profile || courses.length > 0) return;
+    let skipped = profile.preferences?.welcomeSkipped === true;
     try {
-      skipped = localStorage.getItem(WELCOME_SKIPPED_KEY) === "1";
+      skipped ||= localStorage.getItem(WELCOME_SKIPPED_KEY) === "1";
     } catch {
       /* storage unavailable */
     }
     if (!skipped) router.replace("/teacher/welcome");
-  }, [dataReady, setupError, networkId, courses.length, router]);
+  }, [dataReady, setupError, networkId, profile, courses.length, router]);
 
   function retrySetup() {
     setNetworkError(false);
@@ -339,11 +345,47 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
   const hasClassAssignment = courses.some((course) => classAssignmentIds.includes(course.id));
   const networkName = network?.id === networkId ? network?.name : null;
 
+  // The setup card stays until students have turned work in. A teacher who was already past that
+  // before the card existed never sees it; one who watched it fill in gets the finished state once.
+  const setupProgress: SetupProgress = {
+    hasClass: courses.length > 0,
+    hasAssignment: hasClassAssignment,
+    students: stats.totalStudents,
+    submissions: stats.completedSubmissions + stats.pendingSubmissions,
+  };
+  const setupState = setupOverride ?? profile?.preferences?.setupChecklist;
+  const setupUnfinished = setupSteps(setupProgress).next !== null;
+  const showSetup = setupUnfinished || setupState === "started";
+
+  // Remember that this teacher saw the card unfinished, so they get its finished state later.
+  const uid = user?.uid;
+  const preferences = profile?.preferences;
+  const markStarted =
+    dataReady && !setupError && !!networkId && !!profile && setupUnfinished && !setupState;
+  useEffect(() => {
+    if (!markStarted || !uid) return;
+    updateUserProfile(uid, { preferences: { ...preferences, setupChecklist: "started" } }).catch(
+      () => {},
+    );
+    // preferences is read once, when the flag flips; it must not re-run this write.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [markStarted, uid]);
+
+  function saveSetupState(value: "started" | "done") {
+    if (!user) return;
+    setSetupOverride(value);
+    updateUserProfile(user.uid, {
+      preferences: { ...profile?.preferences, setupChecklist: value },
+    }).catch(() => {
+      /* The card still works; it just won't remember across devices. */
+    });
+  }
+
   return (
     <div className="space-y-6">
       <TeacherPageHeader
         title="Home"
-        description={`Welcome back, ${user?.displayName || "Teacher"}.`}
+        description={`Welcome, ${(profile?.displayName || user?.displayName || "").trim().split(/\s+/)[0] || "teacher"}.`}
       >
         <RundownDialog
           userRole="teacher"
@@ -434,55 +476,30 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         <p role="status" className="text-sm text-muted-foreground">
           Loading your classroom setup…
         </p>
-      ) : !networkId || !hasClassAssignment ? (
+      ) : !networkId ? (
         <Card className="shadow-none">
           <CardHeader>
-            <CardTitle className="break-words">
-              {!networkId
-                ? "Set up your Network"
-                : firstClass
-                  ? `Get ${firstClass.name} ready`
-                  : "Create your first class"}
-            </CardTitle>
+            <CardTitle>Set up your Network</CardTitle>
             <CardDescription>
-              {!networkId
-                ? "Create or join a Network to start teaching and share resources with colleagues."
-                : firstClass
-                  ? "Share your class with students and give them their first assignment."
-                  : "Give your class a name. Scorpio will generate a code students can use to join."}
+              Create or join a Network to start teaching and share resources with colleagues.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            {!networkId ? (
-              <Button asChild>
-                <Link href="/teacher/network">Set up your Network</Link>
-              </Button>
-            ) : firstClass ? (
-              <>
-                <Button asChild>
-                  <Link href={`/teacher/create?courseId=${encodeURIComponent(firstClass.id)}`}>
-                    Create your first assignment
-                  </Link>
-                </Button>
-                <Button variant="outline" onClick={() => copyClassInvite(firstClass, true)}>
-                  Copy student invite link
-                </Button>
-                <Button variant="outline" onClick={() => copyClassInvite(firstClass, false)}>
-                  Copy class code
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button asChild>
-                  <Link href="/teacher/welcome">Guided setup (5 minutes)</Link>
-                </Button>
-                <Button variant="outline" onClick={classManager.openCreate}>
-                  Create your first class
-                </Button>
-              </>
-            )}
+          <CardContent>
+            <Button asChild>
+              <Link href="/teacher/network">Set up your Network</Link>
+            </Button>
           </CardContent>
         </Card>
+      ) : showSetup ? (
+        <SetupChecklist
+          progress={setupProgress}
+          className={firstClass?.name}
+          classId={firstClass?.id}
+          onCreateClass={classManager.openCreate}
+          onCopyLink={() => firstClass && copyClassInvite(firstClass, true)}
+          onCopyCode={() => firstClass && copyClassInvite(firstClass, false)}
+          onDismiss={() => saveSetupState("done")}
+        />
       ) : null}
 
       <TeacherDashboardContent

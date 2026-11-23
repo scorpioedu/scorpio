@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withAuthorizedRequest, type AuthorizedContext } from "@/lib/auth-verify";
 import { adminAuth, adminDb } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
+import { summariseActivation } from "@/lib/admin/summaries";
 
 type AuthMeta = {
   createdAt: string | null;
@@ -53,7 +54,7 @@ async function handleTeachers(req: NextRequest, { requestId }: AuthorizedContext
     const email = req.nextUrl.searchParams.get("email")?.trim().toLowerCase();
     if (email) return NextResponse.json(await lookup(email));
 
-    const [auth, usersSnap, orgsSnap] = await Promise.all([
+    const [auth, usersSnap, orgsSnap, coursesSnap, assignmentsSnap, submissionsSnap] = await Promise.all([
       allAuthUsers(),
       adminDb
         .collection("users")
@@ -71,6 +72,10 @@ async function handleTeachers(req: NextRequest, { requestId }: AuthorizedContext
         .collection("organizations")
         .select("name", "planId", "pilot", "ownerId", "aiBudgetLimit", "aiUsageCurrent")
         .get(),
+      // Activation funnel: only the fields it counts, so these stay small reads.
+      adminDb.collection("courses").select("teacherId").get(),
+      adminDb.collection("assignments").select("teacherId", "courseId", "visibility").get(),
+      adminDb.collection("submissions").select("teacherId", "status").get(),
     ]);
 
     const orgs = new Map(orgsSnap.docs.map((d) => [d.id, d.data()]));
@@ -83,8 +88,16 @@ async function handleTeachers(req: NextRequest, { requestId }: AuthorizedContext
         studentsByTeacher.set(u.teacherId, (studentsByTeacher.get(u.teacherId) ?? 0) + 1);
     }
 
-    const teachers = usersSnap.docs
-      .filter((d) => d.data().role === "teacher")
+    const teacherDocs = usersSnap.docs.filter((d) => d.data().role === "teacher");
+    const activation = summariseActivation({
+      teacherIds: teacherDocs.map((d) => d.id),
+      courses: coursesSnap.docs.map((d) => d.data()),
+      assignments: assignmentsSnap.docs.map((d) => d.data()),
+      students: usersSnap.docs.map((d) => d.data()).filter((u) => u.role === "student"),
+      submissions: submissionsSnap.docs.map((d) => d.data()),
+    });
+
+    const teachers = teacherDocs
       .map((d) => {
         const u = d.data();
         const org = u.organizationId ? orgs.get(u.organizationId) : undefined;
@@ -101,6 +114,10 @@ async function handleTeachers(req: NextRequest, { requestId }: AuthorizedContext
           aiBudgetLimit: org?.aiBudgetLimit ?? null,
           aiUsageCurrent: org?.aiUsageCurrent ?? null,
           students: studentsByTeacher.get(d.id) ?? 0,
+          reached: activation.byTeacher[d.id]?.reached ?? null,
+          classes: activation.byTeacher[d.id]?.classes ?? 0,
+          assignments: activation.byTeacher[d.id]?.assignments ?? 0,
+          submissions: activation.byTeacher[d.id]?.submissions ?? 0,
           inviteCode: u.invite?.code ?? null,
           inviteLabel: u.invite?.label ?? null,
           signedUpAt: tsIso(u.createdAt) ?? a?.createdAt ?? null,
@@ -117,7 +134,12 @@ async function handleTeachers(req: NextRequest, { requestId }: AuthorizedContext
       .map(([uid, a]) => ({ uid, ...a }))
       .sort((x, y) => String(y.createdAt).localeCompare(String(x.createdAt)));
 
-    return NextResponse.json({ teachers, incomplete, generatedAt: new Date().toISOString() });
+    return NextResponse.json({
+      teachers,
+      incomplete,
+      funnel: { teachers: activation.teachers, reached: activation.reached },
+      generatedAt: new Date().toISOString(),
+    });
   } catch (error) {
     return errorResponse(error, "admin/teachers", requestId);
   }

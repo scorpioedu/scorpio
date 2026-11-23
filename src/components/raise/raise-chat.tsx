@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/auth-context";
+import { JoinClassForm } from "@/components/student/join-class-form";
 import { ChatContainerContent, ChatContainerRoot } from "@/components/prompt-kit/chat-container";
 import {
   Message as PromptMessage,
@@ -823,6 +824,26 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
   );
 
   const activeSession = sessions.find((s) => s.id === activeSessionId);
+
+  // Not in a class yet: the API would refuse the first message, so say so before they type one.
+  if (variant === "student" && profile && !profile.organizationId && !profile.teacherId) {
+    return (
+      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-background p-4">
+        <Card className="w-full max-w-md shadow-none">
+          <CardContent className="space-y-4 pt-8 pb-8">
+            <div className="space-y-2">
+              <CardTitle className="text-xl font-bold">Raise opens once you’re in a class</CardTitle>
+              <CardDescription>
+                Raise is the tutor that gives hints on your class’s work. Enter the class code from
+                your teacher and it will be ready here.
+              </CardDescription>
+            </div>
+            <JoinClassForm />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Free Tier Restriction Guard
   if (isFreePlan && variant === "student") {

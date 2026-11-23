@@ -5,6 +5,7 @@ import Link from "next/link";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { JoinClassPrompt } from "@/components/student/join-class-form";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +49,8 @@ interface Assignment {
 
 export default function StudentAssignmentsPage() {
   const { user, profile } = useAuth();
+  // Set by the lookup below, which also checks the older students/{uid} enrollment record.
+  const [notInClass, setNotInClass] = useState(false);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -88,6 +91,7 @@ export default function StudentAssignmentsPage() {
             console.error("Could not fetch legacy student profile", e);
           }
         }
+        setNotInClass(!teacherId && !courseId);
 
         let data: Assignment[] = [];
         if (courseId) {
@@ -394,6 +398,8 @@ export default function StudentAssignmentsPage() {
               <p role="status" className="p-6 text-sm text-muted-foreground">
                 Loading assignments…
               </p>
+            ) : notInClass ? (
+              <JoinClassPrompt what="your assignments" />
             ) : toDo.length === 0 ? (
               <p className="p-6 text-sm text-muted-foreground">
                 {assignments.length === 0

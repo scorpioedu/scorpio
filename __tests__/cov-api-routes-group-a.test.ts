@@ -785,6 +785,7 @@ describe("POST /api/auth/register", () => {
         organizationId: "org1",
         teacherId: "t1",
         courseId: "c1",
+        joinedClassAt: expect.any(Date),
         createdAt: expect.any(Date),
         lastLoginAt: expect.any(Date),
       };
@@ -803,7 +804,7 @@ describe("POST /api/auth/register", () => {
     test("an unknown class code is rejected and no profile is created", async () => {
       const res = await call({ role: "student", name: "Sam", code: "NOSUCH" });
       expect(res.status).toBe(400);
-      expect(await json(res)).toEqual({ error: "A valid class code is required" });
+      expect(await json(res)).toEqual({ error: expect.stringContaining("doesn't match a class") });
       expect(mockDb.writes).toEqual([]);
     });
   });
@@ -1272,7 +1273,7 @@ describe("POST /api/courses", () => {
 describe("POST /api/student/enrollment", () => {
   gateTests("enrollment", enrollment, { code: "PHYS101" }, "write", false, "s1");
 
-  const cleared = { teacherId: null, courseId: null, organizationId: null };
+  const cleared = { teacherId: null, courseId: null, organizationId: null, joinedClassAt: null };
   beforeEach(() => {
     mockVerifyIdToken.mockResolvedValue({ uid: "s1" });
     mockDb.seed("users/s1", { role: "student" });
@@ -1285,7 +1286,12 @@ describe("POST /api/student/enrollment", () => {
     const res = await enrollment(req({ code: "phys101" }));
     expect(res.status).toBe(200);
     expect(await json(res)).toEqual({ success: true });
-    const enrolled = { teacherId: "t1", courseId: "c1", organizationId: "org1" };
+    const enrolled = {
+      teacherId: "t1",
+      courseId: "c1",
+      organizationId: "org1",
+      joinedClassAt: expect.any(Date),
+    };
     expect(mockDb.writes).toEqual([
       { op: "set", path: "users/s1", data: enrolled, opts: { merge: true } },
       { op: "set", path: "students/s1", data: enrolled, opts: { merge: true } },
@@ -1318,7 +1324,12 @@ describe("POST /api/student/enrollment", () => {
     });
     const res = await enrollment(req({ action: "switch", code: "PHYS101" }));
     expect(res.status).toBe(200);
-    const enrolled = { teacherId: "t1", courseId: "c1", organizationId: "org1" };
+    const enrolled = {
+      teacherId: "t1",
+      courseId: "c1",
+      organizationId: "org1",
+      joinedClassAt: expect.any(Date),
+    };
     expect(mockDb.writes).toEqual([
       { op: "set", path: "users/s1", data: enrolled, opts: { merge: true } },
       { op: "set", path: "students/s1", data: enrolled, opts: { merge: true } },

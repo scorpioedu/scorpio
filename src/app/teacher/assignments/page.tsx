@@ -359,7 +359,9 @@ export default function AssignmentsPage() {
                 ? "Loading assignments…"
                 : status === "archived"
                   ? "Nothing archived. Archived assignments are hidden from students and can be restored."
-                  : "No assignments match. Try another class or “All but archived”."}
+                  : rows.length === 0
+                    ? "No assignments yet. Assign a ready-made unit from Course, or write your own with New assignment."
+                    : "No assignments match. Try another class or “All but archived”."}
             </div>
           ) : (
             <Table aria-label="Assignments">

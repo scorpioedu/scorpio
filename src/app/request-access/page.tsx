@@ -90,7 +90,7 @@ export default function RequestAccessPage() {
             Thank you, <span className="text-foreground font-medium">{name}</span>. Your access request for{" "}
             <span className="text-foreground font-medium">{institution}</span> is in our queue. We review every
             educator request by hand and will reach out to{" "}
-            <span className="text-foreground font-medium">{email}</span> within 24–48 hours.
+            <span className="text-foreground font-medium">{email}</span> within 1–2 business days.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild className="h-11 sm:flex-1">

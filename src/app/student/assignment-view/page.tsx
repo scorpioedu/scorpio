@@ -9,6 +9,7 @@ import { getTimerExpiryAction, GRACE_PERIOD_SECONDS } from "@/lib/assignment-tim
 import { useSearchParams, useRouter } from "next/navigation";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db, uploadFilesToStorage, type WorkFile } from "@/lib/firebase";
+import { SubmittedDialog } from "@/components/student/submitted-dialog";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ interface Assignment {
   id: string;
   title: string;
   description: string;
-  dueDate: Date;
+  dueDate: Date | null;
   questions: Question[];
   gradingType?: "ai" | "manual";
   timeLimit?: number;
@@ -129,8 +130,12 @@ function AssignmentDetailContent() {
   // Opened from Grades ("Full view"): Back returns there instead of to Assignments.
   const backHref =
     searchParams?.get("from") === "grades" ? "/student/grades" : "/student/assignments";
+  // Home's "Start your first assignment" adds this: a new student gets the short briefing first.
+  const firstAssignment = searchParams?.get("first") === "1";
   const router = useRouter();
   const { user, profile } = useAuth();
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [confirmBlank, setConfirmBlank] = useState(false);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const totalPoints = getAssignmentPoints(assignment?.questions);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -304,7 +309,7 @@ function AssignmentDetailContent() {
             id: docSnap.id,
             title: data.title,
             description: data.description,
-            dueDate: data.dueDate?.toDate?.() || new Date(data.dueDate),
+            dueDate: data.dueDate?.toDate?.() ?? (data.dueDate ? new Date(data.dueDate) : null),
             questions: data.questions || [],
             gradingType: data.gradingType || "ai",
             timeLimit: data.timeLimit,
@@ -312,7 +317,10 @@ function AssignmentDetailContent() {
             allowAIHelp: data.allowAIHelp || false,
             allowCalculator: data.allowCalculator || false,
             enableTabDetection: data.enableTabDetection ?? true,
-            lockdownMode: data.lockdownMode ?? true, // Default to true if not present
+// Assignments saved without this field have always opened locked, and teachers may be
+            // relying on that, so they stay locked. Everything created now writes the field: the
+            // editor and the copy route both default it to off.
+            lockdownMode: data.lockdownMode ?? true,
             type: data.type || "standard",
             teacherId: data.teacherId || studentTeacherId,
             courseId: data.courseId || studentCourseId,
@@ -367,7 +375,7 @@ function AssignmentDetailContent() {
                   // For now, let's just set it to 0 and let the timer effect handle it
                 }
               }
-            } else {
+            } else if (!firstAssignment) {
               setHasStarted(true); // No timer, so "started" immediately
             }
           }
@@ -379,7 +387,7 @@ function AssignmentDetailContent() {
       }
     }
     fetchAssignment();
-  }, [id, user, profile]);
+  }, [id, user, profile, firstAssignment]);
 
   // Correct answers and worked solutions. The server decides what this student may see (graded,
   // and past the due date); a failure leaves the page as it is without them.
@@ -788,8 +796,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       });
       if (!response.ok) throw new Error((await response.json()).error || "Submission failed");
 
+      const saved = await response.json().catch(() => ({}));
       setSubmitted(true);
-      router.push("/student/grades");
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      // Stay here: the dialog confirms the hand-in and shows the score when grading lands.
+      if (typeof saved.id === "string") setSubmittedId(saved.id);
+      else router.push("/student/grades");
     } catch (error) {
       console.error("Error submitting:", error);
       setSubmitError(error instanceof Error ? error.message : String(error));
@@ -855,6 +867,22 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   to copy or paste may be logged. Right-click is disabled.
                 </li>
               )}
+              {!assignment.lockdownMode && (
+                <li>
+                  You don’t have to finish in one go. Save Draft keeps your answers so you can
+                  come back.
+                </li>
+              )}
+              <li>
+                {assignment.allowAIHelp
+                  ? "Stuck? Raise hand, at the top, gives you a hint on the question you’re on. It won’t give the answer."
+                  : "Your teacher has turned hints off for this one, so Raise won’t open here."}
+              </li>
+              <li>
+                {assignment.gradingType === "manual"
+                  ? "Your teacher grades this one, so your score shows up on Grades once they have."
+                  : "When you submit, it is graded straight away and you see feedback on each question."}
+              </li>
               <li>Use a stable connection and keep this page open.</li>
             </ul>
           </section>
@@ -865,6 +893,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       </div>
     );
   }
+
+  const blankCount = assignment.questions.filter((q) => !(answers[q.id] ?? "").trim()).length;
 
   const raisePanel = (
     <RaiseHelpPanel
@@ -938,6 +968,39 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               className="w-full sm:w-auto px-10 shadow-lg font-bold uppercase tracking-wide cursor-pointer"
             >
               {unfocusCount <= 1 ? "Return to Assignment" : "Acknowledge Violation"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <SubmittedDialog
+        submissionId={submittedId}
+        assignmentId={assignment.id}
+        title={assignment.title}
+        teacherGraded={assignment.gradingType === "manual"}
+      />
+
+      <Dialog open={confirmBlank} onOpenChange={setConfirmBlank}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {blankCount === 1 ? "1 question is blank" : `${blankCount} questions are blank`}
+            </DialogTitle>
+            <DialogDescription>
+              Blank answers get no points, and you can’t change them after you submit.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button variant="ghost" onClick={() => setConfirmBlank(false)}>
+              Keep working
+            </Button>
+            <Button
+              onClick={() => {
+                setConfirmBlank(false);
+                void handleSubmit();
+              }}
+            >
+              Submit anyway
             </Button>
           </div>
         </DialogContent>
@@ -1078,10 +1141,12 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   )}
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  <Badge variant="outline" className="bg-muted/50">
-                    <Clock className="mr-1.5 h-3.5 w-3.5" />
-                    Due {new Date(assignment.dueDate).toLocaleDateString()}
-                  </Badge>
+                  {assignment.dueDate && (
+                    <Badge variant="outline" className="bg-muted/50">
+                      <Clock className="mr-1.5 h-3.5 w-3.5" />
+                      Due {new Date(assignment.dueDate).toLocaleDateString()}
+                    </Badge>
+                  )}
                   <Badge variant="outline" className="bg-muted/50">
                     <FileText className="mr-1.5 h-3.5 w-3.5" />
                     {assignment.questions.length}{" "}
@@ -1387,7 +1452,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     </Button>
                   )}
                   <Button
-                    onClick={handleSubmit}
+                    onClick={() => (blankCount > 0 ? setConfirmBlank(true) : handleSubmit())}
                     disabled={
                       submitting || (assignment.requireWorkSubmission && uploadedFiles.length === 0)
                     }
