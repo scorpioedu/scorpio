@@ -3,16 +3,18 @@ import { Fragment } from "react";
 import { apUnits } from "@/data/ap";
 import { CURRICULA } from "@/data/curricula";
 import { DocsLines } from "@/components/docs-lines";
+import { COURSE_LIST, CourseRotator } from "@/components/landing/course-rotator";
 import { HeroLiveClass } from "@/components/landing/hero-live-class";
 import { Button } from "@/components/ui/button";
 import intro from "./hero-intro.module.css";
 
 const at = (ms: number) => ({ "--d": ms }) as React.CSSProperties;
 
-const LINE_ONE = ["AP", "Physics", "1,", "2", "and", "C:", "Mechanics."];
+/** Line one ends in the rotating course name, which enters as its last word. */
+const LINE_ONE = ["Assign", "AP", "Physics"];
 const LINE_TWO = ["A", "problem", "set", "for", "every", "unit."];
 /** Line two starts after line one's last word has begun to settle. */
-const LINE_TWO_AT = 120 + LINE_ONE.length * 55 + 160;
+const LINE_TWO_AT = 120 + (LINE_ONE.length + 1) * 55 + 160;
 
 function Words({ words, start }: { words: string[]; start: number }) {
   return words.map((word, i) => (
@@ -32,6 +34,7 @@ const unitLabel = unit?.title ?? "Dynamics";
 /** The features, as a plain list beside the window. */
 const features = [
   "Every AP unit planned",
+  "A lesson for every unit",
   "Hints instead of answers",
   "Graded as students work",
   "A reteach list for you",
@@ -46,8 +49,21 @@ export function LandingHero() {
     >
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         <h1 className="max-w-[24ch] text-balance text-[clamp(2.1rem,4.2vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.045em]">
-          <span className="sm:block">
-            <Words words={LINE_ONE} start={120} />
+          {/* Screen readers get every course at once; the rotating line is for the eye only. */}
+          <span className="sr-only">Assign AP Physics {COURSE_LIST}.</span>
+          <span
+            aria-hidden="true"
+            className="sm:block motion-reduce:hidden sm:motion-reduce:hidden"
+          >
+            <Words words={LINE_ONE} start={120} />{" "}
+            {/* On phones the course gets its own line, so a long name never re-wraps the headline. */}
+            <span className="block whitespace-nowrap sm:inline">
+              <CourseRotator start={120} index={LINE_ONE.length} />
+            </span>
+          </span>
+          {/* Reduced motion: nothing rotates, so the line names every course. */}
+          <span aria-hidden="true" className="hidden motion-reduce:inline sm:motion-reduce:block">
+            AP Physics {COURSE_LIST}
           </span>{" "}
           <span className="text-muted-foreground sm:block">
             <Words words={LINE_TWO} start={LINE_TWO_AT} />

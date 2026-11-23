@@ -37,7 +37,7 @@ const faqs = [
     index: "04",
     question: "What physics topics and grade levels are supported?",
     answer:
-      "Scorpio is built for high school AP Physics 1, AP Physics 2 and AP Physics C: Mechanics. Ready-made problem sets are organized by AP unit, and teachers can also write their own questions for any physics course.",
+      "Scorpio is built for high school AP Physics 1, AP Physics 2, AP Physics C: Mechanics and AP Physics C: Electricity and Magnetism. Every AP unit has ready-made problem sets and a lesson, and teachers can also write their own questions for any physics course.",
   },
   {
     index: "05",
