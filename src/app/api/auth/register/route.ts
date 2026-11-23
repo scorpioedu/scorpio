@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
       const course =
         role === "student" && normalizedCode ? await findClassByCode(normalizedCode, tx) : null;
       if (role === "student" && normalizedCode && !course)
-        throw new ClientError("A valid class code is required");
+        throw new ClientError(
+          "That class code doesn't match a class. Check it with your teacher, or clear the field and join from Home later.",
+        );
       let orgId: string | null = course?.organizationId ?? null;
       let inviteRef;
       let attribution: Record<string, unknown> | null = null;
@@ -87,6 +89,7 @@ export async function POST(req: NextRequest) {
         organizationId: orgId,
         teacherId: course?.teacherId ?? null,
         courseId: course?.courseId ?? null,
+        ...(course ? { joinedClassAt: new Date() } : {}),
         createdAt: new Date(),
         lastLoginAt: new Date(),
         ...(attribution ? { invite: attribution } : {}),

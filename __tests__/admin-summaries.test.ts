@@ -1,4 +1,4 @@
-import { summariseUsage, summariseUsers, toMillis } from "../src/lib/admin/summaries";
+import { summariseActivation, summariseUsage, summariseUsers, toMillis } from "../src/lib/admin/summaries";
 
 const NOW = Date.parse("2026-11-19T12:00:00Z");
 const DAY = 24 * 60 * 60 * 1000;
@@ -115,5 +115,50 @@ describe("summariseUsage", () => {
     expect(u.byType[0]).toEqual({ type: "tutor", events: 2, costCents: 3 });
     expect(u.byOrganization[0]).toMatchObject({ id: "o2", name: "o2", costCents: 5 });
     expect(u.byOrganization[1]).toMatchObject({ id: "o1", name: "Lincoln", events: 2 });
+  });
+});
+
+describe("summariseActivation", () => {
+  const f = summariseActivation({
+    teacherIds: ["new", "classOnly", "assigned", "full", "studentsNoWork"],
+    courses: [
+      { teacherId: "classOnly" },
+      { teacherId: "assigned" },
+      { teacherId: "full" },
+      { teacherId: "studentsNoWork" },
+      { teacherId: "gone" },
+    ],
+    assignments: [
+      { teacherId: "assigned", courseId: "c1", visibility: "private" },
+      { teacherId: "full", courseId: "c2" },
+      { teacherId: "classOnly", courseId: null }, // not given to a class
+      { teacherId: "classOnly", courseId: "c0", visibility: "global" }, // library set
+    ],
+    students: [{ teacherId: "full" }, { teacherId: "full" }, { teacherId: "studentsNoWork" }],
+    submissions: [
+      { teacherId: "full", status: "graded" },
+      { teacherId: "assigned", status: "draft" },
+    ],
+  });
+
+  it("counts each step only when the earlier ones are done", () => {
+    expect(f.teachers).toBe(5);
+    expect(f.reached).toEqual({ class: 4, assigned: 2, students: 1, submissions: 1 });
+  });
+
+  it("gives each teacher the last step they finished", () => {
+    expect(f.byTeacher.new.reached).toBeNull();
+    expect(f.byTeacher.classOnly.reached).toBe("class");
+    expect(f.byTeacher.assigned.reached).toBe("assigned");
+    expect(f.byTeacher.full).toEqual({
+      reached: "submissions",
+      classes: 1,
+      assignments: 1,
+      students: 2,
+      submissions: 1,
+    });
+    // Students without an assignment stay at "class": the funnel is in order.
+    expect(f.byTeacher.studentsNoWork.reached).toBe("class");
+    expect(f.byTeacher.studentsNoWork.students).toBe(1);
   });
 });

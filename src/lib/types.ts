@@ -5,6 +5,12 @@ export type UserRole = "teacher" | "student" | "school_admin" | "super_admin";
 export interface UserPreferences {
   autoRedirectPortal?: boolean;
   disableAssignmentEmails?: boolean;
+  /** Teachers: turn off the Monday summary email (sendTeacherDigests). On unless set. */
+  disableWeeklyDigest?: boolean;
+  /** Teacher Home setup card: "started" once it has been shown unfinished, "done" once hidden. */
+  setupChecklist?: "started" | "done";
+  /** The teacher chose "Skip for now" on the first-run page; kept here so it holds on every device. */
+  welcomeSkipped?: boolean;
 }
 
 export interface UserProfile {

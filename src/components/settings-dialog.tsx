@@ -110,6 +110,22 @@ export function SettingsDialog() {
     }
   };
 
+  const handleWeeklyDigestChange = async (checked: boolean) => {
+    if (!user) return;
+    try {
+      await updateUserProfile(user.uid, {
+        preferences: { ...profile?.preferences, disableWeeklyDigest: !checked },
+      });
+      setAlertMessage("Account settings updated.");
+      setAlertType("success");
+      setTimeout(() => setAlertMessage(""), 3000);
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      setAlertMessage("Failed to update settings.");
+      setAlertType("error");
+    }
+  };
+
   const handleAssignmentEmailsChange = async (checked: boolean) => {
     if (!user) return;
     try {
@@ -341,6 +357,29 @@ export function SettingsDialog() {
                         checked={profile?.preferences?.disableAssignmentEmails ?? true}
                         onCheckedChange={handleAssignmentEmailsChange}
                         ariaLabel="Toggle Assignment Emails"
+                      />
+                    </div>
+                  )}
+
+                  {role === "teacher" && (
+                    <div className="flex items-center justify-between p-4 gap-4">
+                      <div className="space-y-0.5">
+                        <Label
+                          htmlFor="weekly-digest-toggle"
+                          className="text-sm font-medium text-foreground cursor-pointer"
+                        >
+                          Weekly summary email
+                        </Label>
+                        <p className="text-xs text-muted-foreground">
+                          A Monday email with what was turned in, what is missing and the most
+                          common mistakes. Skipped in weeks with nothing to report.
+                        </p>
+                      </div>
+                      <ToggleSwitch
+                        id="weekly-digest-toggle"
+                        checked={!(profile?.preferences?.disableWeeklyDigest ?? false)}
+                        onCheckedChange={handleWeeklyDigestChange}
+                        ariaLabel="Toggle weekly summary email"
                       />
                     </div>
                   )}

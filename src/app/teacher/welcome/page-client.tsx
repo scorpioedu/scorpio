@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Link2, Presentation } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
+import { updateUserProfile } from "@/lib/firebase";
 import { apUnitLabel } from "@/data/ap";
 import {
   CURRICULA,
@@ -42,6 +43,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { withArticle } from "@/lib/article";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -89,6 +91,8 @@ export default function WelcomeClient() {
   const [isSchoolDay] = useState(() => schoolDays(defaultCalendar()));
   const [start, setStart] = useState(() => defaultFirstDue(isSchoolDay));
   const [spacing, setSpacing] = useState("2");
+  const [amount, setAmount] = useState<"unit" | "first">("unit");
+  const [projecting, setProjecting] = useState(false);
   const [assigning, setAssigning] = useState(false);
   const [assignError, setAssignError] = useState("");
   const [done, setDone] = useState<Scheduled[]>([]);
@@ -152,12 +156,18 @@ export default function WelcomeClient() {
   }, [sets]);
   const units = getCurriculum(curriculumId) ? curriculumUnits(curriculumId) : [];
   const unitsWithSets = units.filter((u) => counts.has(u.unit));
-  const unitSets = useMemo(
+  const wholeUnit = useMemo(
     () => (sets ?? []).filter((s) => String(s.apUnit) === unit),
     [sets, unit],
   );
+  // "Just the first set" is the smallest way to try Scorpio with a class; the rest of the unit can
+  // be assigned later from Course.
+  const unitSets = useMemo(
+    () => (amount === "first" ? wholeUnit.slice(0, 1) : wholeUnit),
+    [wholeUnit, amount],
+  );
   const startDate = parseDateInput(start);
-  const planSig = `${unit}|${start}|${spacing}`;
+  const planSig = `${unit}|${amount}|${start}|${spacing}`;
   // A plan made for different inputs is ignored (and replaced on the next Assign).
   const plan = planState.sig === planSig ? planState.items : [];
   const preview = useMemo(
@@ -175,6 +185,7 @@ export default function WelcomeClient() {
   );
 
   const joinUrl = course ? new URL(classInvitePath(course.code), window.location.origin).href : "";
+  const joinHost = course ? window.location.host : "";
   const first = done[0];
   const message = course
     ? studentMessage({
@@ -192,6 +203,11 @@ export default function WelcomeClient() {
     } catch {
       /* storage unavailable: still skip */
     }
+    // Also on the profile, so another browser or device doesn't send them back here.
+    if (user)
+      updateUserProfile(user.uid, {
+        preferences: { ...profile?.preferences, welcomeSkipped: true },
+      }).catch(() => {});
     router.push("/teacher");
   }
 
@@ -381,8 +397,11 @@ export default function WelcomeClient() {
         <CardContent className="space-y-4">
           {setsError ? (
             <p role="alert" className="text-sm text-destructive">
-              Could not load the unit library. Refresh to try again, or pick assignments from
-              Waypoints.
+              Could not load the unit library. Refresh to try again, or assign from{" "}
+              <Link className="underline" href="/teacher/courses">
+                Course
+              </Link>
+              .
             </p>
           ) : sets === null ? (
             <p role="status" className="text-sm text-muted-foreground">
@@ -424,6 +443,24 @@ export default function WelcomeClient() {
                   <p className="text-xs text-muted-foreground">
                     Available now: {unitsWithSets.map((u) => `Unit ${u.unit}`).join(", ")}.
                   </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="amount">How much</Label>
+                  <Select
+                    value={amount}
+                    onValueChange={(v) => setAmount(v as "unit" | "first")}
+                    disabled={!course || assigning || done.length > 0}
+                  >
+                    <SelectTrigger id="amount" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unit">
+                        The whole unit{wholeUnit.length ? ` (${wholeUnit.length})` : ""}
+                      </SelectItem>
+                      <SelectItem value="first">Just the first set</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="start">First due date</Label>
@@ -486,7 +523,9 @@ export default function WelcomeClient() {
                   {assigning
                     ? "Assigning…"
                     : unit
-                      ? `Assign all ${unitSets.length} to my class`
+                      ? unitSets.length === 1
+                        ? "Assign it to my class"
+                        : `Assign all ${unitSets.length} to my class`
                       : "Assign unit"}
                 </Button>
               )}
@@ -512,6 +551,14 @@ export default function WelcomeClient() {
                   <Copy />
                   Copy code
                 </Button>
+                <Button variant="outline" size="sm" onClick={() => copy(joinUrl, "Invite link")}>
+                  <Link2 />
+                  Copy link
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setProjecting(true)}>
+                  <Presentation />
+                  Show on screen
+                </Button>
               </div>
               <Label htmlFor="student-message" className="sr-only">
                 Message for students
@@ -528,9 +575,6 @@ export default function WelcomeClient() {
                   <Copy />
                   Copy message
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/teacher">Go to Home</Link>
-                </Button>
               </div>
             </>
           ) : (
@@ -538,6 +582,64 @@ export default function WelcomeClient() {
           )}
         </CardContent>
       </Card>
+
+      {course && (
+        <Card className="shadow-none">
+          <CardHeader>
+            <CardTitle>What happens next</CardTitle>
+            <CardDescription>You don’t need to do anything else today.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ol className="list-decimal space-y-2 pl-5 text-sm">
+              <li>
+                Students open the link or enter the code, make an account, and land in {course.name}
+                . They show up under Classes as they join.
+              </li>
+              <li>
+                {first
+                  ? `They do ${first.title}. Scorpio grades it as each one turns it in.`
+                  : "Once you assign work, Scorpio grades it as each student turns it in."}
+              </li>
+              <li>
+                Scores appear on Home and in the Gradebook, and Misconceptions shows what the class
+                got wrong and why.
+              </li>
+            </ol>
+            <p className="text-sm text-muted-foreground">
+              We’ll email you when your first student joins and when the first results are in. Home
+              keeps a short checklist until then.
+            </p>
+            <Button asChild>
+              <Link href="/teacher">Go to Home</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {course && (
+        <Dialog open={projecting} onOpenChange={setProjecting}>
+          <DialogContent className="sm:max-w-3xl">
+            <DialogTitle className="text-center text-2xl">Join {course.name}</DialogTitle>
+            <DialogDescription className="text-center text-base">
+              Put this on the projector. Students go to the address and enter the code.
+            </DialogDescription>
+            <div className="space-y-6 py-4 text-center">
+              <div>
+                <p className="text-sm text-muted-foreground">1. Go to</p>
+                <p className="break-all font-mono text-2xl font-semibold sm:text-3xl">
+                  {joinHost}/signup
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">2. Enter this class code</p>
+                <p className="font-mono text-5xl font-bold tracking-[0.2em] sm:text-7xl">
+                  {course.code}
+                </p>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

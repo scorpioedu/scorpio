@@ -155,3 +155,6 @@ export const onAssignmentCreated = onDocumentCreated(
 export { deliverBillingUsage } from "./billing";
 
 export { expireStaleReservations } from "./reservations";
+
+export { onAccessRequestApproved, onStudentEnrolled, onFirstResults } from "./teacher-emails";
+export { sendTeacherDigests } from "./teacher-digest";

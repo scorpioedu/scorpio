@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, query, orderBy, where, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { JoinClassPrompt } from "@/components/student/join-class-form";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,6 +22,8 @@ interface Resource {
 
 export default function StudentResourcesPage() {
   const { user, profile } = useAuth();
+  // Set by the lookup below, which also checks the older students/{uid} enrollment record.
+  const [notInClass, setNotInClass] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,6 +47,7 @@ export default function StudentResourcesPage() {
             }
           } catch (e) { console.error("Could not fetch legacy student profile", e); }
         }
+        setNotInClass(!teacherId && !studentCourseId);
 
         // --- LEGACY RESOLUTION START ---
         if (teacherId && !studentCourseId) {
@@ -132,6 +136,8 @@ export default function StudentResourcesPage() {
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         {loading ? (
           <p role="status" className="p-6 text-sm text-muted-foreground">Loading resources…</p>
+        ) : notInClass ? (
+          <JoinClassPrompt what="what your teacher shares" />
         ) : filteredResources.length === 0 ? (
           <p className="p-6 text-sm text-muted-foreground">
             {resources.length ? "No resources match your filters." : "Your teacher hasn’t shared any resources yet."}

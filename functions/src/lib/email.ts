@@ -9,12 +9,15 @@ export async function sendEmail({
   apiKey,
   to,
   subject,
-  react
+  react,
+  replyTo
 }: {
   apiKey?: string;
   to: string | string[];
   subject: string;
   react: React.ReactElement;
+  /** Where replies go. The From address is send-only: it has no inbox behind it. */
+  replyTo?: string;
 }) {
   const finalApiKey = apiKey || process.env.RESEND_API_KEY;
   if (!finalApiKey) {
@@ -32,6 +35,7 @@ export async function sendEmail({
       to,
       subject,
       react,
+      ...(replyTo ? { replyTo } : {}),
     });
     logger.info(`Email sent successfully to ${maskEmail(to)}`, { id: data?.data?.id });
     return data;

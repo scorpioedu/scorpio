@@ -18,6 +18,10 @@ interface TeacherRow {
   planId: string | null;
   pilotStatus: string | null;
   students: number;
+  reached: "class" | "assigned" | "students" | "submissions" | null;
+  classes: number;
+  assignments: number;
+  submissions: number;
   inviteLabel: string | null;
   signedUpAt: string | null;
   lastSignInAt: string | null;
@@ -36,6 +40,7 @@ interface IncompleteRow {
 interface TeachersData {
   teachers: TeacherRow[];
   incomplete: IncompleteRow[];
+  funnel?: { teachers: number; reached: Record<NonNullable<TeacherRow["reached"]>, number> };
   generatedAt: string;
 }
 type Lookup =
@@ -63,6 +68,14 @@ type Lookup =
     };
 
 const DAY = 24 * 60 * 60 * 1000;
+
+/** Onboarding steps in order; a teacher's stage is the last one they have finished. */
+const STEPS = [
+  { key: "class", label: "Created a class", stage: "Has a class" },
+  { key: "assigned", label: "Assigned work", stage: "Assigned work" },
+  { key: "students", label: "Students joined", stage: "Students joined" },
+  { key: "submissions", label: "Work turned in", stage: "Work turned in" },
+] as const;
 
 const isPast = (iso: string | null) => !!iso && Date.parse(iso) <= Date.now();
 const withinDays = (iso: string | null, days: number) =>
@@ -203,6 +216,46 @@ export default function AdminTeachersPage() {
         />
       </div>
 
+      {data?.funnel && (
+        <section className="mt-8 space-y-3" aria-labelledby="activation-heading">
+          <div>
+            <h2 id="activation-heading" className="text-sm font-medium">
+              Activation
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              How many teachers got through each onboarding step, counted in order. A teacher is
+              activated once a student turns in work.
+            </p>
+          </div>
+          <ol className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            {[{ key: "signup", label: "Signed up" } as const, ...STEPS].map((step, i, all) => {
+              const count =
+                step.key === "signup" ? data.funnel!.teachers : data.funnel!.reached[step.key];
+              const prevKey = i > 0 ? all[i - 1].key : null;
+              const prev =
+                prevKey === null
+                  ? null
+                  : prevKey === "signup"
+                    ? data.funnel!.teachers
+                    : data.funnel!.reached[prevKey];
+              return (
+                <li key={step.key} className="rounded-lg border border-border/60 p-3">
+                  <div className="text-xs text-muted-foreground">{step.label}</div>
+                  <div className="mt-1 text-2xl font-semibold tabular-nums">{count}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {prev === null
+                      ? "all teachers"
+                      : prev > 0
+                        ? `${Math.round((count / prev) * 100)}% of previous step`
+                        : "—"}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
+
       <section className="mt-8 space-y-3 rounded-lg border border-border/60 p-4">
         <div>
           <h2 className="text-sm font-medium">Look up a person</h2>
@@ -264,6 +317,7 @@ export default function AdminTeachersPage() {
                 <th className="px-4 py-2 font-medium">Teacher</th>
                 <th className="px-4 py-2 font-medium">Network</th>
                 <th className="px-4 py-2 font-medium">Plan</th>
+                <th className="px-4 py-2 font-medium">Stage</th>
                 <th className="px-4 py-2 text-right font-medium">Students</th>
                 <th className="px-4 py-2 font-medium">Signed up</th>
                 <th className="px-4 py-2 font-medium">Last active</th>
@@ -292,6 +346,16 @@ export default function AdminTeachersPage() {
                   <td className="px-4 py-2">
                     <PlanBadge planId={t.planId} pilotStatus={t.pilotStatus} />
                   </td>
+                  <td
+                    className="px-4 py-2"
+                    title={`${t.classes} classes · ${t.assignments} assigned · ${t.students} students · ${t.submissions} turned in`}
+                  >
+                    {t.reached ? (
+                      STEPS.find((s) => s.key === t.reached)!.stage
+                    ) : (
+                      <span className="text-amber-600 dark:text-amber-400">No class yet</span>
+                    )}
+                  </td>
                   <td className="px-4 py-2 text-right tabular-nums">{t.students}</td>
                   <td className="px-4 py-2 text-muted-foreground">{ago(t.signedUpAt)}</td>
                   <td
@@ -308,14 +372,14 @@ export default function AdminTeachersPage() {
               ))}
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                     {filter || pilotsOnly ? "No teacher matches." : "No teachers yet."}
                   </td>
                 </tr>
               )}
               {loading && !data && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                     Loading…
                   </td>
                 </tr>

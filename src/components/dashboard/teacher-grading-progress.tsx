@@ -16,7 +16,6 @@ interface TeacherGradingProgressProps {
 export function TeacherGradingProgress({
   completedSubmissions,
   pendingSubmissions,
-  totalAssignments,
   showGradebookLink = true,
   dataReady,
 }: TeacherGradingProgressProps) {
@@ -24,8 +23,6 @@ export function TeacherGradingProgress({
   const gradedPercentage =
     totalSubmissions > 0
       ? Math.round((completedSubmissions / totalSubmissions) * 100)
-      : totalAssignments > 0
-      ? 100
       : 0;
 
   return (
@@ -52,7 +49,7 @@ export function TeacherGradingProgress({
                 Grading Turnaround
               </span>
               <span className="font-semibold tabular-nums text-foreground">
-                {dataReady ? `${gradedPercentage}% graded` : "—"}
+                {dataReady && totalSubmissions > 0 ? `${gradedPercentage}% graded` : "—"}
               </span>
             </div>
             <Progress
@@ -70,8 +67,10 @@ export function TeacherGradingProgress({
                   {pendingSubmissions === 1 ? "submission" : "submissions"}{" "}
                   waiting for grading.
                 </>
-              ) : (
+              ) : totalSubmissions > 0 ? (
                 "All student submissions are graded."
+              ) : (
+                "Nothing turned in yet. Student work shows up here as it comes in."
               )}
             </p>
           </div>

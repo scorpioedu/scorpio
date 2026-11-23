@@ -50,6 +50,8 @@ async function handleRequestAccess(req: NextRequest) {
           createdAt: data.createdAt?.toDate?.()?.toISOString() ?? null,
           reviewedAt: data.reviewedAt?.toDate?.()?.toISOString() ?? null,
           generatedCode: data.generatedCode ?? null,
+          // Set by the onAccessRequestApproved function once the code has been emailed.
+          approvalEmailSentAt: data.approvalEmailSentAt?.toDate?.()?.toISOString() ?? null,
         };
       });
 

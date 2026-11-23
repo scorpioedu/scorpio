@@ -40,6 +40,16 @@ export async function POST(req: NextRequest) {
       sameSite: "lax",
       path: "/",
     });
+    // The app posts here every time it opens (auth-context), so this is "last opened the app".
+    // Hourly at most: the client re-posts whenever the profile document changes, and an
+    // unconditional write here would make that a loop. Best effort; never blocks sign-in.
+    const last = profile.lastLoginAt?.toMillis?.() ?? 0;
+    if (Date.now() - last > 60 * 60 * 1000)
+      await adminDb
+        .collection("users")
+        .doc(token.uid)
+        .update({ lastLoginAt: new Date() })
+        .catch(() => {});
     return NextResponse.json({ status: "success", role: profile.role });
   } catch {
     return NextResponse.json({ error: "Invalid session credentials" }, { status: 401 });

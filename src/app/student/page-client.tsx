@@ -23,6 +23,8 @@ import { parseDueDate } from "@/lib/due-date";
 import { buildStudentRoadmap, type StudentRoadmap } from "@/lib/student-roadmap";
 import { StudentRoadmapSummary } from "@/components/dashboard/student-course-roadmap";
 import { pillClass } from "@/components/student/tones";
+import { JoinClassForm } from "@/components/student/join-class-form";
+import { CelebrationDialog } from "@/components/invite-celebration";
 
 interface Stats {
   totalAssignments: number;
@@ -94,8 +96,6 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
     null,
   );
   const [roadmap, setRoadmap] = useState<StudentRoadmap | null>(null);
-  const [classCode, setClassCode] = useState("");
-  const [joining, setJoining] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [dataReady, setDataReady] = useState(false);
@@ -320,27 +320,6 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
     setRetry((value) => value + 1);
   }
 
-  const handleJoinClass = async () => {
-    if (!user || !classCode) return;
-    setJoining(true);
-    try {
-      const response = await authenticatedFetch("/api/student/enrollment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: classCode.trim() }),
-      });
-      if (!response.ok) throw new Error((await response.json()).error);
-      setClassCode("");
-      toast.success("Joined class successfully");
-      router.refresh(); // Refresh to pick up new claims without full reload
-    } catch (error: unknown) {
-      console.error("Error joining class:", error);
-      toast.error(`Failed to join class: ${errorMessage(error)}`);
-    } finally {
-      setJoining(false);
-    }
-  };
-
   const handleLeaveClass = async () => {
     if (!user) return;
     setLeaving(true);
@@ -351,7 +330,6 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         body: JSON.stringify({ action: "leave" }),
       });
       if (!response.ok) throw new Error((await response.json()).error);
-      setClassCode("");
       toast.success("Successfully left class.");
       router.refresh(); // Refresh to clear context without full reload
     } catch (error: unknown) {
@@ -365,6 +343,28 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
   // The list is sorted unsubmitted first, then by due date, so this is the most urgent open one.
   const openAssignments = recentAssignments.filter((assignment) => !assignment.isSubmitted);
   const nextAssignment = openAssignments[0] ?? null;
+
+  // Once per class per browser, and never for a student who has already turned work in: the
+  // invite popup before signup promised a class, and this is where they see they are in it.
+  const welcomeKey = courseId ? `scorpio-class-welcomed:${courseId}` : null;
+  const [welcomed, setWelcomed] = useState<string | null>(null);
+  const showWelcome =
+    !!welcomeKey &&
+    enrollmentReady &&
+    dataReady &&
+    !dashboardError &&
+    !firstSubmissionDone &&
+    welcomed !== welcomeKey &&
+    !alreadyWelcomed(welcomeKey);
+  function dismissWelcome() {
+    if (!welcomeKey) return;
+    try {
+      localStorage.setItem(welcomeKey, "1");
+    } catch {
+      /* storage unavailable: it stays closed for this visit */
+    }
+    setWelcomed(welcomeKey);
+  }
   // What comes after Next up, shown inside the same card (Home has no separate upcoming list).
   const laterAssignments = openAssignments.slice(1, 4);
 
@@ -447,28 +447,12 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             <CardTitle className="text-lg font-semibold">Join your class</CardTitle>
             <CardDescription className="text-base">
               {teacherId
-                ? "Please enter your Class Code to access assignments and resources."
-                : "To get started, please enter the Class Code provided by your teacher."}
+                ? "Enter your class code to see your assignments and what your teacher shares."
+                : "Enter the class code from your teacher. If they sent an invite link, opening it does this for you."}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              className="flex flex-col sm:flex-row gap-2 max-w-md"
-              onSubmit={(event) => {
-                event.preventDefault();
-                handleJoinClass();
-              }}
-            >
-              <Input
-                placeholder="Class Code (e.g. PHYS101)"
-                value={classCode}
-                onChange={(e) => setClassCode(e.target.value)}
-                aria-label="Class code"
-              />
-              <Button type="submit" disabled={joining || !classCode.trim()}>
-                {joining ? "Enrolling..." : "Enroll"}
-              </Button>
-            </form>
+            <JoinClassForm />
           </CardContent>
         </Card>
       ) : (
@@ -530,6 +514,22 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             anySubmitted={firstSubmissionDone}
           />
         ))}
+
+      <CelebrationDialog
+        open={showWelcome}
+        onOpenChange={(open) => !open && dismissWelcome()}
+        eyebrow="You’re in"
+        title={`Welcome to ${courseName || "your class"}`}
+        body={
+          <>
+            {teacherName ? `${teacherName} is your teacher. ` : ""}
+            {nextAssignment
+              ? `Your first assignment, ${nextAssignment.title}, is on Home under Next up. You can save a draft and come back to it.`
+              : "Nothing is assigned yet. When your teacher posts work, it shows up on Home under Next up."}
+          </>
+        }
+        action={nextAssignment ? "Show me" : "Got it"}
+      />
 
       <ConfirmDialog
         open={showLeaveConfirm}
@@ -639,6 +639,14 @@ function shortTitle(title: string): string {
   return parts.length >= 3 ? parts.slice(1).join(" · ") : title;
 }
 
+function alreadyWelcomed(key: string): boolean {
+  try {
+    return localStorage.getItem(key) === "1";
+  } catch {
+    return false;
+  }
+}
+
 /** The one thing to do now: the most urgent open assignment, or a note that nothing is open. */
 function NextUpCard({
   assignment,
@@ -711,7 +719,9 @@ function NextUpCard({
               )}
             </div>
             <Button asChild>
-              <Link href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}`}>
+              <Link
+                href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}${anySubmitted ? "" : "&first=1"}`}
+              >
                 {anySubmitted ? "Start" : "Start your first assignment"}
                 <ArrowRight className="size-4" />
               </Link>

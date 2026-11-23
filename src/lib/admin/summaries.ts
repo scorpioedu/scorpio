@@ -131,6 +131,76 @@ export function summariseUsers(users: UserRow[], orgs: OrgRow[], now = Date.now(
   return summary;
 }
 
+// ─── Teacher activation ──────────────────────────────────────────────────────
+
+/** The steps between a teacher signing up and Scorpio being useful to them, in order. */
+export const ACTIVATION_STEPS = ["class", "assigned", "students", "submissions"] as const;
+export type ActivationStep = (typeof ACTIVATION_STEPS)[number];
+
+export interface TeacherActivation {
+  /** How far along the funnel this teacher is: each step counts only if the ones before it are done. */
+  reached: ActivationStep | null;
+  classes: number;
+  assignments: number;
+  students: number;
+  submissions: number;
+}
+
+export interface ActivationFunnel {
+  teachers: number;
+  /** Teachers who reached each step (cumulative). */
+  reached: Record<ActivationStep, number>;
+  byTeacher: Record<string, TeacherActivation>;
+}
+
+/**
+ * Works from documents that already exist (classes, class assignments, enrolled students, turned-in
+ * work), so it covers teachers who signed up before anyone was counting.
+ */
+export function summariseActivation(input: {
+  teacherIds: string[];
+  courses: Array<{ teacherId?: unknown }>;
+  /** Only assignments given to a class count; library sets and unassigned drafts do not. */
+  assignments: Array<{ teacherId?: unknown; courseId?: unknown; visibility?: unknown }>;
+  students: Array<{ teacherId?: unknown }>;
+  /** Drafts do not count as turned in. */
+  submissions: Array<{ teacherId?: unknown; status?: unknown }>;
+}): ActivationFunnel {
+  const byTeacher: Record<string, TeacherActivation> = {};
+  for (const id of input.teacherIds)
+    byTeacher[id] = { reached: null, classes: 0, assignments: 0, students: 0, submissions: 0 };
+  const bump = (teacherId: unknown, key: Exclude<keyof TeacherActivation, "reached">) => {
+    const row = typeof teacherId === "string" ? byTeacher[teacherId] : undefined;
+    if (row) row[key] += 1;
+  };
+  for (const c of input.courses) bump(c.teacherId, "classes");
+  for (const a of input.assignments)
+    if (str(a.courseId) && a.visibility !== "global") bump(a.teacherId, "assignments");
+  for (const s of input.students) bump(s.teacherId, "students");
+  for (const s of input.submissions) if (s.status !== "draft") bump(s.teacherId, "submissions");
+
+  const reached: Record<ActivationStep, number> = {
+    class: 0,
+    assigned: 0,
+    students: 0,
+    submissions: 0,
+  };
+  for (const row of Object.values(byTeacher)) {
+    const done: Record<ActivationStep, boolean> = {
+      class: row.classes > 0,
+      assigned: row.assignments > 0,
+      students: row.students > 0,
+      submissions: row.submissions > 0,
+    };
+    for (const step of ACTIVATION_STEPS) {
+      if (!done[step]) break;
+      row.reached = step;
+      reached[step] += 1;
+    }
+  }
+  return { teachers: input.teacherIds.length, reached, byTeacher };
+}
+
 // ─── AI usage ────────────────────────────────────────────────────────────────
 
 export interface UsageRow {

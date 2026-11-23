@@ -5,6 +5,7 @@ import { Check, ChevronDown, Copy, Mail, RefreshCw, Search, X } from "lucide-rea
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { errorMessage } from "@/lib/error-utils";
+import { inviteAuthPath } from "@/lib/onboarding-links";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ interface AccessRequest {
   createdAt: string | null;
   reviewedAt: string | null;
   generatedCode: string | null;
+  approvalEmailSentAt?: string | null;
 }
 
 type Filter = "pending" | "approved" | "rejected" | "all";
@@ -35,6 +37,11 @@ const ROLE_LABELS: Record<string, string> = {
   other: "Other",
 };
 
+/** Approved in the last five minutes: the automatic email may still be on its way. */
+function justReviewed(iso: string | null): boolean {
+  return !!iso && Date.now() - Date.parse(iso) < 5 * 60 * 1000;
+}
+
 function ago(iso: string | null): string {
   if (!iso) return "—";
   const ms = Date.now() - Date.parse(iso);
@@ -48,7 +55,10 @@ function ago(iso: string | null): string {
   return new Date(iso).toLocaleDateString();
 }
 
-/** Opens the admin's mail app with the invite code filled in; nothing is sent automatically. */
+/**
+ * Opens the admin's mail app with the invite code filled in. Scorpio emails the code itself on
+ * approval (onAccessRequestApproved); this is for resending or adding a personal note.
+ */
 function inviteMailto(r: AccessRequest): string {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const first = r.name.split(/\s+/)[0] || r.name;
@@ -57,9 +67,11 @@ function inviteMailto(r: AccessRequest): string {
     "",
     `Thanks for your interest in Scorpio. Your access request for ${r.institution} is approved.`,
     "",
-    `Sign up as a teacher at ${origin}/signup and enter this access code:`,
+    "Create your teacher account here (your access code is already filled in):",
     "",
-    `    ${r.generatedCode}`,
+    `    ${origin}${inviteAuthPath("signup", "network", r.generatedCode ?? "")}`,
+    "",
+    `If the link doesn't open, go to ${origin}/signup, choose Teacher and enter this code: ${r.generatedCode}`,
     "",
     "The code works once and expires in 60 days. Reply to this email if anything gets in the way.",
     "",
@@ -164,9 +176,17 @@ function RequestRow({
               </Button>
               <Button variant="outline" size="sm" asChild>
                 <a href={inviteMailto(r)}>
-                  <Mail className="size-3.5" /> Email code
+                  <Mail className="size-3.5" />{" "}
+                  {r.approvalEmailSentAt ? "Email again" : "Email code"}
                 </a>
               </Button>
+              <span className="text-xs text-muted-foreground">
+                {r.approvalEmailSentAt
+                  ? `Code emailed automatically ${ago(r.approvalEmailSentAt)}.`
+                  : justReviewed(r.reviewedAt)
+                    ? "Emailing the code now. Refresh in a minute."
+                    : "No automatic email on record. If you haven’t sent the code, use Email code."}
+              </span>
             </div>
           )}
 
