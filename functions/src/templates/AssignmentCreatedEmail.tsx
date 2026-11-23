@@ -48,7 +48,7 @@ export const AssignmentCreatedEmail = ({
       preview={preview}
       footer={
         <>
-          You got this because you're in {className || "a class"} on Scorpio. To stop these emails,
+          You got this because you&apos;re in {className || "a class"} on Scorpio. To stop these emails,
           open Settings in Scorpio and turn off Assignment emails.
         </>
       }
