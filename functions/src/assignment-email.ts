@@ -1,18 +1,26 @@
 /** Pure helpers for the assignment-created email trigger (K-002). */
 
+import { studentWantsEmails } from "./student-email-rules";
+
 export interface StudentDoc {
+  id?: string;
   data(): Record<string, unknown> | undefined;
 }
 
 /**
  * Students who should be told about an assignment. When the assignment belongs to a course
  * only students enrolled in that course (users.courseId) are kept; assignments without a
- * course keep the previous behaviour of notifying all of the teacher's students.
+ * course keep the previous behaviour of notifying all of the teacher's students. Students who
+ * turned emails off in Settings, and imported students who have not
+ * signed up yet, are left out. Each result carries the student's id as `uid`.
  */
 export function selectRecipients(students: StudentDoc[], courseId: unknown): Array<Record<string, unknown>> {
   return students
-    .map(doc => doc.data() ?? {})
+    .map((doc): Record<string, unknown> => ({ ...(doc.data() ?? {}), uid: doc.id }))
     .filter(student => typeof student.email === "string" && student.email !== "")
+    // Roster placeholders a teacher imported before the student signed up: no account to open yet.
+    .filter(student => student.status !== "pending_invite")
+    .filter(student => studentWantsEmails(student))
     .filter(student => !courseId || student.courseId === courseId);
 }
 

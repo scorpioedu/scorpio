@@ -12,7 +12,6 @@ import * as logger from "firebase-functions/logger";
 import { onDocumentDeleted } from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 import { collectSubmissionObjects, deleteStorageObjects } from "./assignment-cleanup";
-import { mapWithConcurrency, selectRecipients } from "./assignment-email";
 
 admin.initializeApp();
 
@@ -55,18 +54,15 @@ export const onAssignmentDeleted = onDocumentDeleted(
 // Import and export new grading triggers
 export { onSubmissionCreated, onSubmissionUpdated, sweepStuckGrading } from "./grading";
 
-import * as React from "react";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
-import { sendEmail } from "./lib/email";
-import { maskEmail } from "./pii";
-import { AssignmentCreatedEmail } from "./templates/AssignmentCreatedEmail";
+import { announceAssignment } from "./student-emails";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
-const EMAIL_CONCURRENCY = 5;
 
 /**
- * Trigger to send emails to all students when a teacher creates a new assignment.
+ * Email the class when a teacher creates an assignment they can see. Hidden copies are announced
+ * by onAssignmentAssigned when the teacher assigns them. See student-emails.ts.
  */
 export const onAssignmentCreated = onDocumentCreated(
   {
@@ -78,79 +74,11 @@ export const onAssignmentCreated = onDocumentCreated(
     if (!assignmentData) {
       return;
     }
-
-    const db = admin.firestore();
-    const teacherId = assignmentData.teacherId;
-
-    if (!teacherId) {
-      logger.info("No teacherId found on assignment, skipping emails.");
-      return;
-    }
-
-    const teacherDoc = await db.collection("users").doc(teacherId).get();
-    if (teacherDoc.exists) {
-      const teacherData = teacherDoc.data();
-      const disableEmails = teacherData?.preferences?.disableAssignmentEmails ?? true;
-      if (disableEmails) {
-        logger.info(`Teacher ${teacherId} has disabled assignment emails, skipping.`);
-        return;
-      }
-    }
-
-    // Idempotency: Firestore triggers are at-least-once. Claim the send in a transaction so a
-    // duplicate delivery of the same create event does not email everyone twice.
-    const assignmentRef = db.collection("assignments").doc(event.params.assignmentId);
-    const claimed = await db.runTransaction(async (tx) => {
-      const current = await tx.get(assignmentRef);
-      if (current.data()?.emailsSentAt) return false;
-      tx.update(assignmentRef, { emailsSentAt: new Date() });
-      return true;
-    });
-    if (!claimed) {
-      logger.info(`Assignment ${event.params.assignmentId} emails already sent, skipping.`);
-      return;
-    }
-
-    // Find all students for this teacher, narrowed to the assignment's course when it has one
-    const studentsSnapshot = await db
-      .collection("users")
-      .where("teacherId", "==", teacherId)
-      .where("role", "==", "student")
-      .get();
-
-    const recipients = selectRecipients(studentsSnapshot.docs, assignmentData.courseId);
-    if (recipients.length === 0) {
-      logger.info(
-        `No students found for assignment ${event.params.assignmentId}, skipping emails.`,
-      );
-      return;
-    }
-
-    logger.info(`Sending assignment notification to ${recipients.length} students.`);
-
-    await mapWithConcurrency(recipients, EMAIL_CONCURRENCY, async (student) => {
-      const email = student.email as string;
-      try {
-        await sendEmail({
-          apiKey: resendApiKey.value(),
-          to: email,
-          subject: `New Assignment Published: ${assignmentData.title || "Assignment"}`,
-          react: React.createElement(AssignmentCreatedEmail, {
-            studentName: (student.displayName as string) || (student.name as string) || "Student",
-            assignmentName: assignmentData.title || "Assignment",
-            link: `https://scorpioedu.org/student/assignments`,
-          }),
-        });
-      } catch (err) {
-        // Log but don't fail the entire batch if one email fails
-        logger.error(`Failed to email student ${maskEmail(email)}`, {
-          error: err instanceof Error ? err.name : "unknown",
-        });
-      }
-    });
-    logger.info(`Finished sending assignment creation emails for ${event.params.assignmentId}`);
+    await announceAssignment(event.params.assignmentId, assignmentData, resendApiKey.value());
   },
 );
+
+export { onAssignmentAssigned, sendDueReminders, onSubmissionReviewed } from "./student-emails";
 
 export { deliverBillingUsage } from "./billing";
 

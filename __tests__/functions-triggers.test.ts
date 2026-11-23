@@ -92,7 +92,19 @@ const sendEmail = jest.fn(async (args: { to: string | string[] }) => {
   void args;
 });
 jest.mock("../functions/src/lib/email", () => ({
-  sendEmail: (args: { to: string | string[] }) => sendEmail(args),
+  sendEmail: (args: never) => sendEmail(args),
+  sendEmailBatch: async ({ messages }: { messages: never[] }) => {
+    let sent = 0;
+    for (const m of messages) {
+      try {
+        await sendEmail(m);
+        sent++;
+      } catch {
+        // The real sender logs a failed chunk and carries on.
+      }
+    }
+    return sent;
+  },
 }));
 jest.mock("@google/genai", () => ({ GoogleGenAI: jest.fn() }), { virtual: true });
 
@@ -147,8 +159,15 @@ describe("onAssignmentCreated email recipients", () => {
     expect(recipients()).toEqual(["s1@x.test", "s2@x.test"]);
   });
 
-  test("teachers who have not opted in (default) send nothing", async () => {
+  test("teachers who never changed the setting email their students (on by default)", async () => {
     state.users[0] = { id: "t1", data: { role: "teacher" } };
+    state.assignments.a1 = {};
+    await runCreated("a1", { teacherId: "t1", title: "HW" });
+    expect(recipients()).toEqual(["s1@x.test", "s2@x.test"]);
+  });
+
+  test("teachers who turned student emails off send nothing", async () => {
+    state.users[0] = { id: "t1", data: { role: "teacher", preferences: { disableAssignmentEmails: true } } };
     state.assignments.a1 = {};
     await runCreated("a1", { teacherId: "t1", title: "HW" });
     expect(sendEmail).not.toHaveBeenCalled();

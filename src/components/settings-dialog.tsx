@@ -132,7 +132,10 @@ export function SettingsDialog() {
       await updateUserProfile(user.uid, {
         preferences: {
           ...profile?.preferences,
-          disableAssignmentEmails: checked,
+          // Teachers turn off emails to their students; students turn off emails to themselves.
+          ...(role === "student"
+            ? { disableStudentEmails: !checked }
+            : { disableAssignmentEmails: !checked }),
         },
       });
       setAlertMessage("Account settings updated.");
@@ -339,24 +342,30 @@ export function SettingsDialog() {
                     </div>
                   )}
 
-                  {role === "teacher" && (
+                  {(role === "teacher" || role === "student") && (
                     <div className="flex items-center justify-between p-4 gap-4">
                       <div className="space-y-0.5">
                         <Label
                           htmlFor="assignment-emails-toggle"
                           className="text-sm font-medium text-foreground cursor-pointer"
                         >
-                          Disable Assignment Emails
+                          {role === "student" ? "Assignment emails" : "Email my students"}
                         </Label>
                         <p className="text-xs text-muted-foreground">
-                          Mute email notifications sent to students when new assignments are created.
+                          {role === "student"
+                            ? "Emails when you get new work, the day before it's due if you haven't turned it in, and when your teacher finishes grading."
+                            : "Students get an email for new assignments, a reminder the day before work is due if they haven't turned it in, and their results after you review their work."}
                         </p>
                       </div>
                       <ToggleSwitch
                         id="assignment-emails-toggle"
-                        checked={profile?.preferences?.disableAssignmentEmails ?? true}
+                        checked={
+                          role === "student"
+                            ? !(profile?.preferences?.disableStudentEmails ?? false)
+                            : !(profile?.preferences?.disableAssignmentEmails ?? false)
+                        }
                         onCheckedChange={handleAssignmentEmailsChange}
-                        ariaLabel="Toggle Assignment Emails"
+                        ariaLabel="Toggle assignment emails"
                       />
                     </div>
                   )}

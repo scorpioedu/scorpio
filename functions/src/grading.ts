@@ -232,29 +232,6 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
 
   await recordEvents(true);
   logger.info("Successfully graded submission", { submissionId, aiCalls: result.aiCalls });
-
-  // --- EMAIL NOTIFICATION (DISABLED) ---
-  // if (studentData?.email && finalScore !== undefined) {
-  //     try {
-  //         const courseName = "Scorpio Platform"; // Future improvement: fetch class name if available
-  //         await sendEmail({
-  //             apiKey: resendApiKey.value(),
-  //             to: studentData.email,
-  //             subject: `Your Grade is Available: ${assignmentData?.title || 'Assignment'} - ${finalScore}%`,
-  //             react: React.createElement(GradeAvailableEmail, {
-  //                 studentName: studentData.displayName || studentData.name || "Student",
-  //                 assignmentName: assignmentData?.title || 'Assignment',
-  //                 courseName,
-  //                 score: finalScore,
-  //                 maxScore: 100, // finalScore is currently normalized to 100 percentage points above
-  //                 link: `https://scorpioedu.org/dashboard/student/assignments/${assignmentId}`
-  //             })
-  //         });
-  //         console.log(`Grade available email successfully triggered for ${studentData.email}`);
-  //     } catch (error) {
-  //         console.error("Failed to send grade notification email:", error);
-  //     }
-  // }
 }
 
 async function rosterNames(

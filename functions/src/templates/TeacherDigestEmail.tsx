@@ -1,17 +1,15 @@
+import { Link } from "@react-email/components";
+import type { Digest } from "../teacher-digest-rules";
 import {
-  Html,
-  Head,
-  Preview,
-  Body,
-  Container,
-  Section,
-  Text,
-  Hr,
-  Link,
-  Tailwind,
-  Heading,
-} from '@react-email/components';
-import type { Digest } from '../teacher-digest-rules';
+  BigNumber,
+  EmailShell,
+  Headline,
+  ListItem,
+  ListPanel,
+  Paragraph,
+  PrimaryButton,
+  linkStyle,
+} from "./components";
 
 interface TeacherDigestEmailProps {
   greeting: string;
@@ -30,81 +28,76 @@ export const TeacherDigestEmail = ({
   const summary =
     digest.turnedInThisWeek > 0
       ? `${digest.turnedInThisWeek} ${digest.turnedInThisWeek === 1 ? "submission" : "submissions"} came in over the last 7 days.`
-      : 'No work was turned in over the last 7 days.';
+      : "No work was turned in over the last 7 days.";
   return (
-    <Html>
-      <Tailwind>
-        <Head />
-        <Preview>{summary}</Preview>
-        <Body className="bg-zinc-50 font-sans text-zinc-900 m-0 py-8">
-          <Container className="mx-auto max-w-xl rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm my-10">
-            <Section className="mb-6">
-              <Heading className="m-0 text-xl font-bold tracking-tight text-zinc-900">
-                SCORPIO
-              </Heading>
-            </Section>
+    <EmailShell
+      preview={summary}
+      footer="Sent on Mondays, and only when there is something to report. To stop it, open Settings in Scorpio and turn off Weekly summary email."
+    >
+      <Headline>Your week on Scorpio</Headline>
+      <Paragraph>{greeting}</Paragraph>
+      <Paragraph>{summary}</Paragraph>
 
-            <Text className="mt-0 mb-4 text-base font-medium">{greeting}</Text>
-            <Text className="mb-4 text-base leading-relaxed text-zinc-600">
-              {summary}
-              {digest.toReview > 0
-                ? ` ${digest.toReview} ${digest.toReview === 1 ? 'submission is' : 'submissions are'} waiting for your review.`
-                : ''}
-            </Text>
+      {digest.toReview > 0 ? (
+        <BigNumber label="Waiting for your review" value={String(digest.toReview)} />
+      ) : null}
 
-            {digest.rows.length > 0 && (
-              <Section className="my-6 rounded-xl border border-zinc-100 bg-zinc-50 p-5">
-                <Text className="m-0 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                  Assignments
-                </Text>
-                {digest.rows.map((row, i) => (
-                  <Text key={i} className="m-0 mt-3 text-sm leading-relaxed text-zinc-700">
-                    <strong className="font-semibold text-zinc-900">{row.title}</strong>
-                    <br />
-                    {row.turnedIn} of {row.enrolled} turned in · {row.due}
-                    {row.behind ? ` · ${row.enrolled - row.turnedIn} missing` : ''}
-                  </Text>
-                ))}
-              </Section>
-            )}
+      {digest.rows.length > 0 && (
+        <ListPanel title="Assignments">
+          {digest.rows.map((row, i) => (
+            <ListItem
+              key={i}
+              title={row.title}
+              detail={
+                <>
+                  {row.turnedIn} of {row.enrolled} turned in · {row.due}
+                  {row.behind ? ` · ${row.enrolled - row.turnedIn} missing` : ""}
+                </>
+              }
+            />
+          ))}
+        </ListPanel>
+      )}
 
-            {digest.misconceptions.length > 0 && (
-              <Section className="my-6 rounded-xl border border-zinc-100 bg-zinc-50 p-5">
-                <Text className="m-0 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                  Most common mistakes this week
-                </Text>
-                {digest.misconceptions.map((m, i) => (
-                  <Text key={i} className="m-0 mt-3 text-sm leading-relaxed text-zinc-700">
-                    {m.label} · {m.students} {m.students === 1 ? 'student' : 'students'}
-                  </Text>
-                ))}
-                <Text className="m-0 mt-4 text-sm">
-                  <Link href={insightsLink} className="text-zinc-900 underline">
-                    See which questions and who
-                  </Link>
-                </Text>
-              </Section>
-            )}
-
-            <Section className="mt-8 mb-4 text-center">
-              <Link
-                href={gradebookLink}
-                className="inline-block rounded-lg bg-zinc-900 px-6 py-3 text-sm font-semibold text-white no-underline"
-              >
-                Open the Gradebook
+      {digest.misconceptions.length > 0 && (
+        <ListPanel title="Most common mistakes this week">
+          {digest.misconceptions.map((m, i) => (
+            <ListItem
+              key={i}
+              detail={`${m.label} · ${m.students} ${m.students === 1 ? "student" : "students"}`}
+            />
+          ))}
+          <ListItem
+            detail={
+              <Link href={insightsLink} style={linkStyle}>
+                See which questions and who
               </Link>
-            </Section>
+            }
+          />
+        </ListPanel>
+      )}
 
-            <Hr className="my-8 border-zinc-200" />
-            <Text className="text-xs leading-relaxed text-zinc-400">
-              Sent on Mondays, and only when there is something to report. To stop it, open
-              Settings in Scorpio and turn off Weekly summary email.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+      <PrimaryButton href={gradebookLink}>Open the Gradebook</PrimaryButton>
+    </EmailShell>
   );
 };
 
 export default TeacherDigestEmail;
+
+TeacherDigestEmail.PreviewProps = {
+  greeting: "Hi Dana,",
+  gradebookLink: "https://scorpioedu.org/teacher/grades",
+  insightsLink: "https://scorpioedu.org/teacher/insights",
+  digest: {
+    turnedInThisWeek: 46,
+    toReview: 3,
+    rows: [
+      { title: "Unit 3: Circular Motion", turnedIn: 24, enrolled: 28, due: "Due Wed, Nov 25", behind: false },
+      { title: "Unit 2: Forces", turnedIn: 22, enrolled: 28, due: "Was due Sat, Nov 21", behind: true },
+    ],
+    misconceptions: [
+      { label: "Treats centripetal force as a separate force", students: 9 },
+      { label: "Drops the sign on acceleration", students: 5 },
+    ],
+  },
+} satisfies TeacherDigestEmailProps;

@@ -54,6 +54,7 @@ export const onAccessRequestApproved = onDocumentUpdated(
       subject: "Your Scorpio access is approved",
       react: React.createElement(TeacherNoticeEmail, {
         preview: "Your access code is ready. Create your teacher account.",
+        headline: "Your access is approved",
         greeting: hello(approved.name),
         paragraphs: [
           "Thanks for your interest in Scorpio. Your access request is approved.",
@@ -102,6 +103,7 @@ export const onStudentEnrolled = onDocumentWritten(
       subject: `Your first student joined ${className}`,
       react: React.createElement(TeacherNoticeEmail, {
         preview: `${className} has its first student on Scorpio.`,
+        headline: "Your first student joined",
         greeting: hello(teacher.displayName),
         paragraphs: [
           `Your first student just joined ${className} on Scorpio, so your invite is working.`,
@@ -154,6 +156,7 @@ export const onFirstResults = onDocumentUpdated(
       subject: `First results are in for ${title}`,
       react: React.createElement(TeacherNoticeEmail, {
         preview: `A student turned in ${title}.`,
+        headline: "Your first results are in",
         greeting: hello(teacher.displayName),
         paragraphs: [
           result.needsReview

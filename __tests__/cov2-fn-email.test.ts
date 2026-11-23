@@ -64,7 +64,7 @@ describe('sendEmail', () => {
     const result = await m.sendEmail({ apiKey: 'arg-key', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
     expect(result).toBe(response);
     expect(m.ResendCtor).toHaveBeenCalledWith('arg-key');
-    expect(m.send).toHaveBeenCalledWith({ from: 'Scorpio Platform <hello@scorpioedu.org>', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
+    expect(m.send).toHaveBeenCalledWith({ from: 'Scorpio <hello@scorpioedu.org>', to: ['a@x.test', 'b@x.test'], subject: 'Hello', react: element });
     expect(m.logger.info).toHaveBeenCalledWith(expect.stringContaining('Email sent successfully'), { id: 'msg1' });
   });
 
@@ -93,5 +93,72 @@ describe('sendEmail', () => {
     const m = load(jest.fn(async () => { throw 'offline'; }));
     await expect(m.sendEmail({ apiKey: 'k', to: 'a@x.test', subject: 's', react: element })).rejects.toBe('offline');
     expect(m.logger.error).toHaveBeenCalledWith(expect.any(String), { error: 'unknown' });
+  });
+});
+
+describe('Resend failures and batches', () => {
+  type Batch = jest.Mock<Promise<unknown>, [unknown[], unknown?]>;
+  function loadWith(send: SendFn, batchSend: Batch) {
+    type Mod = {
+      sendEmail: Loaded['sendEmail'];
+      sendEmailBatch: (args: { apiKey?: string; messages: Array<{ to: string; subject: string; react: React.ReactElement }> }) => Promise<number>;
+    };
+    let mod: Mod | undefined;
+    const logger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() };
+    jest.isolateModules(() => {
+      jest.doMock('resend', () => ({ Resend: jest.fn(() => ({ emails: { send }, batch: { send: batchSend } })) }), { virtual: true });
+      jest.doMock(LOGGER, () => logger);
+      mod = jest.requireActual<Mod>('../functions/src/lib/email');
+    });
+    return { ...(mod as unknown as Mod), logger };
+  }
+  const msg = (to: string) => ({ to, subject: 's', react: element });
+
+  it('treats an { error } response as a failure instead of logging success', async () => {
+    const m = loadWith(jest.fn(async () => ({ data: null, error: { name: 'validation_error', statusCode: 422 } })), jest.fn());
+    await expect(m.sendEmail({ apiKey: 'k', ...msg('a@x.test') })).rejects.toMatchObject({ name: 'EmailSendError', code: 'validation_error' });
+    expect(m.logger.error).toHaveBeenCalledWith('Failed to send email to a***@x.test', { error: 'validation_error' });
+    expect(m.logger.info).not.toHaveBeenCalled();
+  });
+
+  it('waits and retries when Resend rate-limits', async () => {
+    const send = jest
+      .fn()
+      .mockResolvedValueOnce({ data: null, error: { name: 'rate_limit_exceeded', statusCode: 429 } })
+      .mockResolvedValueOnce({ data: { id: 'ok' } });
+    const m = loadWith(send as unknown as SendFn, jest.fn());
+    await m.sendEmail({ apiKey: 'k', ...msg('a@x.test') });
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(m.logger.info).toHaveBeenCalledWith(expect.any(String), { id: 'ok' });
+  });
+
+  it('sends a class in chunks of 100, permissively, and counts what Resend accepted', async () => {
+    const batchSend: Batch = jest.fn(async (emails: unknown[]) => ({
+      data: { data: emails.map(() => ({ id: 'x' })), ...(emails.length === 100 ? { errors: [{ index: 3, message: 'bad' }] } : {}) },
+    }));
+    const m = loadWith(jest.fn(), batchSend);
+    const messages = Array.from({ length: 150 }, (_, i) => msg(`s${i}@x.test`));
+    expect(await m.sendEmailBatch({ apiKey: 'k', messages })).toBe(149);
+    expect(batchSend.mock.calls.map((c) => c[0].length)).toEqual([100, 50]);
+    expect(batchSend.mock.calls[0][1]).toEqual({ batchValidation: 'permissive' });
+    expect(m.logger.warn).toHaveBeenCalledWith('Resend skipped 1 of 100 emails in a batch');
+  });
+
+  it('logs a failed chunk and still sends the next one', async () => {
+    const batchSend: Batch = jest
+      .fn()
+      .mockResolvedValueOnce({ data: null, error: { name: 'application_error', statusCode: 500 } })
+      .mockResolvedValueOnce({ data: { data: [] } });
+    const m = loadWith(jest.fn(), batchSend);
+    const messages = Array.from({ length: 101 }, (_, i) => msg(`s${i}@x.test`));
+    expect(await m.sendEmailBatch({ apiKey: 'k', messages })).toBe(1);
+    expect(m.logger.error).toHaveBeenCalledWith('Failed to send 100 emails', { error: 'application_error' });
+  });
+
+  it('sends nothing for an empty class', async () => {
+    const batchSend: Batch = jest.fn();
+    const m = loadWith(jest.fn(), batchSend);
+    expect(await m.sendEmailBatch({ apiKey: 'k', messages: [] })).toBe(0);
+    expect(batchSend).not.toHaveBeenCalled();
   });
 });

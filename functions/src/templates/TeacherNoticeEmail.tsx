@@ -1,19 +1,9 @@
-import {
-  Html,
-  Head,
-  Preview,
-  Body,
-  Container,
-  Section,
-  Text,
-  Hr,
-  Link,
-  Tailwind,
-  Heading,
-} from '@react-email/components';
+import { EmailShell, Headline, Paragraph, PrimaryButton } from "./components";
 
 interface TeacherNoticeEmailProps {
   preview: string;
+  /** Optional large headline above the greeting. */
+  headline?: string;
   greeting: string;
   paragraphs: string[];
   action: { label: string; link: string };
@@ -23,51 +13,34 @@ interface TeacherNoticeEmailProps {
 /** One short message to a teacher with a single button: approval, first student, first results. */
 export const TeacherNoticeEmail = ({
   preview,
+  headline,
   greeting,
   paragraphs,
   action,
   footer,
 }: TeacherNoticeEmailProps) => {
   return (
-    <Html>
-      <Tailwind>
-        <Head />
-        <Preview>{preview}</Preview>
-        <Body className="bg-zinc-50 font-sans text-zinc-900 m-0 py-8">
-          <Container className="mx-auto max-w-xl rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm my-10">
-            <Section className="mb-6">
-              <Heading className="m-0 text-xl font-bold tracking-tight text-zinc-900">
-                SCORPIO
-              </Heading>
-            </Section>
-
-            <Section>
-              <Text className="mt-0 mb-4 text-base font-medium">{greeting}</Text>
-              {paragraphs.map((p, i) => (
-                <Text key={i} className="mb-4 text-base leading-relaxed text-zinc-600">
-                  {p}
-                </Text>
-              ))}
-              <Section className="mt-8 mb-4 text-center">
-                <Link
-                  href={action.link}
-                  className="inline-block rounded-lg bg-zinc-900 px-6 py-3 text-sm font-semibold text-white no-underline"
-                >
-                  {action.label}
-                </Link>
-              </Section>
-            </Section>
-
-            <Hr className="my-8 border-zinc-200" />
-
-            <Section>
-              <Text className="text-xs leading-relaxed text-zinc-400">{footer}</Text>
-            </Section>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+    <EmailShell preview={preview} footer={footer}>
+      {headline ? <Headline>{headline}</Headline> : null}
+      <Paragraph>{greeting}</Paragraph>
+      {paragraphs.map((p, i) => (
+        <Paragraph key={i}>{p}</Paragraph>
+      ))}
+      <PrimaryButton href={action.link}>{action.label}</PrimaryButton>
+    </EmailShell>
   );
 };
 
 export default TeacherNoticeEmail;
+
+TeacherNoticeEmail.PreviewProps = {
+  preview: "Your access code is ready. Create your teacher account.",
+  headline: "Your access is approved",
+  greeting: "Hi Dana,",
+  paragraphs: [
+    "Thanks for your interest in Scorpio. Your access request is approved.",
+    "The button below opens the teacher signup with your access code already filled in. Setting up a class and assigning a first unit takes about five minutes.",
+  ],
+  action: { label: "Create your teacher account", link: "https://scorpioedu.org/signup" },
+  footer: "The code works once and expires in 60 days. Reply to this email if anything gets in the way.",
+} satisfies TeacherNoticeEmailProps;
