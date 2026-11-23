@@ -4,6 +4,7 @@ import {
   dueDayWord,
   dueLabel,
   handedIn,
+  isPastDue,
   isVisibleToStudents,
   justAssigned,
   millis,
@@ -40,13 +41,37 @@ describe("visibility", () => {
     expect(isVisibleToStudents(undefined)).toBe(false);
   });
 
-  test("justAssigned: archived -> visible, and not already announced", () => {
-    const hidden = { teacherId: "t", archivedAt: new Date() };
-    expect(justAssigned(hidden, { teacherId: "t", archivedAt: null })).toBe(true);
-    expect(justAssigned(hidden, { teacherId: "t", archivedAt: null, emailsSentAt: new Date() })).toBe(false);
-    expect(justAssigned({ teacherId: "t" }, { teacherId: "t", title: "edited" })).toBe(false);
-    expect(justAssigned(hidden, hidden)).toBe(false);
+  test("justAssigned: a copy created hidden is announced when it is first assigned", () => {
+    const created = new Date(NOW - 3 * 24 * HOUR);
+    const hidden = { teacherId: "t", createdAt: created, archivedAt: created };
+    const shown = { ...hidden, archivedAt: null, dueDate: new Date(NOW + 48 * HOUR) };
+    expect(justAssigned(hidden, shown, NOW)).toBe(true);
+    expect(justAssigned(hidden, { ...shown, emailsSentAt: new Date() }, NOW)).toBe(false);
+    expect(justAssigned(hidden, hidden, NOW)).toBe(false);
+    expect(justAssigned({ teacherId: "t" }, { teacherId: "t", title: "edited" }, NOW)).toBe(false);
   });
+
+  test("justAssigned: restoring an archived assignment (or Undo) is not a new assignment", () => {
+    const created = new Date(NOW - 3 * 24 * HOUR);
+    const archivedLater = { teacherId: "t", createdAt: created, archivedAt: new Date(NOW - 5000) };
+    expect(justAssigned(archivedLater, { ...archivedLater, archivedAt: null }, NOW)).toBe(false);
+  });
+
+  test("justAssigned: nothing for a copy assigned with a due date already passed", () => {
+    const created = new Date(NOW - 3 * 24 * HOUR);
+    const hidden = { teacherId: "t", createdAt: created, archivedAt: created };
+    expect(justAssigned(hidden, { ...hidden, archivedAt: null, dueDate: new Date(NOW - HOUR) }, NOW)).toBe(false);
+  });
+
+  test("isPastDue", () => {
+    expect(isPastDue({ dueDate: new Date(NOW - 1) }, NOW)).toBe(true);
+    expect(isPastDue({ dueDate: new Date(NOW + 1) }, NOW)).toBe(false);
+    expect(isPastDue({}, NOW)).toBe(false);
+  });
+
+  test("teacher ids with a slash are not trusted", () => {
+    expect(isVisibleToStudents({ teacherId: "a/b" })).toBe(false);
+});
 });
 
 describe("dates", () => {

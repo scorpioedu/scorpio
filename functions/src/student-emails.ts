@@ -11,9 +11,8 @@ import * as logger from "firebase-functions/logger";
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { defineSecret } from "firebase-functions/params";
-import { sendEmail } from "./lib/email";
-import { maskEmail } from "./pii";
-import { mapWithConcurrency, selectRecipients } from "./assignment-email";
+import { sendEmail, sendEmailBatch } from "./lib/email";
+import { selectRecipients } from "./assignment-email";
 import {
   REMINDER_LEAD_MS,
   assignmentLink,
@@ -21,6 +20,7 @@ import {
   dueLabel,
   firstName,
   handedIn,
+  isPastDue,
   isVisibleToStudents,
   justAssigned,
   millis,
@@ -35,7 +35,6 @@ import { AssignmentCreatedEmail } from "./templates/AssignmentCreatedEmail";
 import { ResultsReadyEmail } from "./templates/ResultsReadyEmail";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
-const EMAIL_CONCURRENCY = 5;
 
 type Doc = admin.firestore.DocumentData;
 
@@ -86,6 +85,10 @@ export async function announceAssignment(assignmentId: string, assignment: Doc, 
     logger.info(`Assignment ${assignmentId} is hidden from students, skipping emails for now.`);
     return;
   }
+  if (isPastDue(assignment, Date.now())) {
+    logger.info(`Assignment ${assignmentId} is already past due, skipping emails.`);
+    return;
+  }
   const teacher = (await db.collection("users").doc(teacherId).get()).data();
   if (!teacherSendsStudentEmails(teacher)) {
     logger.info(`Teacher ${teacherId} has disabled assignment emails, skipping.`);
@@ -106,32 +109,24 @@ export async function announceAssignment(assignmentId: string, assignment: Doc, 
   const title = text(assignment.title) ?? "Assignment";
   logger.info(`Sending assignment notification to ${recipients.length} students.`);
 
-  await mapWithConcurrency(recipients, EMAIL_CONCURRENCY, async (student) => {
-    const email = student.email as string;
-    try {
-      await sendEmail({
-        apiKey,
-        to: email,
-        replyTo: ctx.replyTo,
-        tag: "assignment_new",
-        subject: `New assignment: ${title}`,
-        react: React.createElement(AssignmentCreatedEmail, {
-          kind: "new",
-          firstName: firstName(student.displayName ?? student.name),
-          assignmentTitle: title,
-          className: ctx.className,
-          teacherName: ctx.teacherName,
-          due: due === null ? null : dueLabel(due),
-          problems: problemCount(assignment),
-          link: assignmentLink(assignmentId),
-        }),
-      });
-    } catch (err) {
-      // One bad address must not stop the rest of the class.
-      logger.error(`Failed to email student ${maskEmail(email)}`, {
-        error: err instanceof Error ? err.name : "unknown",
-      });
-    }
+  await sendEmailBatch({
+    apiKey,
+    messages: recipients.map((student) => ({
+      to: student.email as string,
+      replyTo: ctx.replyTo,
+      tag: "assignment_new",
+      subject: `New assignment: ${title}`,
+      react: React.createElement(AssignmentCreatedEmail, {
+        kind: "new",
+        firstName: firstName(student.displayName ?? student.name),
+        assignmentTitle: title,
+        className: ctx.className,
+        teacherName: ctx.teacherName,
+        due: due === null ? null : dueLabel(due),
+        problems: problemCount(assignment),
+        link: assignmentLink(assignmentId),
+      }),
+    })),
   });
   logger.info(`Finished sending assignment creation emails for ${assignmentId}`);
 }
@@ -142,7 +137,7 @@ export const onAssignmentAssigned = onDocumentUpdated(
   async (event) => {
     const before = event.data?.before.data();
     const after = event.data?.after.data();
-    if (!after || !justAssigned(before, after)) return;
+    if (!after || !justAssigned(before, after, Date.now())) return;
     await announceAssignment(event.params.assignmentId, after, resendApiKey.value());
   },
 );
@@ -181,33 +176,25 @@ export async function runDueReminders(db: admin.firestore.Firestore, now: Date, 
       const due = millis(assignment.dueDate) as number;
       const title = text(assignment.title) ?? "Your assignment";
       const day = dueDayWord(due, now.getTime());
-      await mapWithConcurrency(missing, EMAIL_CONCURRENCY, async (student) => {
-        const email = student.email as string;
-        try {
-          await sendEmail({
-            apiKey,
-            to: email,
-            replyTo: ctx.replyTo,
-            tag: "assignment_reminder",
-            subject: `Due ${day}: ${title}`,
-            react: React.createElement(AssignmentCreatedEmail, {
-              kind: "reminder",
-              firstName: firstName(student.displayName ?? student.name),
-              assignmentTitle: title,
-              className: ctx.className,
-              teacherName: ctx.teacherName,
-              due: dueLabel(due),
-              dueDay: day,
-              problems: problemCount(assignment),
-              link: assignmentLink(doc.id),
-            }),
-          });
-          sent += 1;
-        } catch (err) {
-          logger.error(`Failed to remind student ${maskEmail(email)}`, {
-            error: err instanceof Error ? err.name : "unknown",
-          });
-        }
+      sent += await sendEmailBatch({
+        apiKey,
+        messages: missing.map((student) => ({
+          to: student.email as string,
+          replyTo: ctx.replyTo,
+          tag: "assignment_reminder",
+          subject: `Due ${day}: ${title}`,
+          react: React.createElement(AssignmentCreatedEmail, {
+            kind: "reminder",
+            firstName: firstName(student.displayName ?? student.name),
+            assignmentTitle: title,
+            className: ctx.className,
+            teacherName: ctx.teacherName,
+            due: dueLabel(due),
+            dueDay: day,
+            problems: problemCount(assignment),
+            link: assignmentLink(doc.id),
+          }),
+        })),
       });
     } catch (error) {
       // One assignment's failure must not stop the rest.

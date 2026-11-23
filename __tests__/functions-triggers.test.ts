@@ -92,7 +92,19 @@ const sendEmail = jest.fn(async (args: { to: string | string[] }) => {
   void args;
 });
 jest.mock("../functions/src/lib/email", () => ({
-  sendEmail: (args: { to: string | string[] }) => sendEmail(args),
+  sendEmail: (args: never) => sendEmail(args),
+  sendEmailBatch: async ({ messages }: { messages: never[] }) => {
+    let sent = 0;
+    for (const m of messages) {
+      try {
+        await sendEmail(m);
+        sent++;
+      } catch {
+        // The real sender logs a failed chunk and carries on.
+      }
+    }
+    return sent;
+  },
 }));
 jest.mock("@google/genai", () => ({ GoogleGenAI: jest.fn() }), { virtual: true });
 

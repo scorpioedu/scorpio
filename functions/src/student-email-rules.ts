@@ -35,15 +35,33 @@ export function studentWantsEmails(student: Doc): boolean {
 export function isVisibleToStudents(assignment: Doc): boolean {
   if (!assignment || assignment.archivedAt) return false;
   if (assignment.visibility === "global") return false;
-  return Boolean(text(assignment.teacherId));
+  const teacherId = text(assignment.teacherId);
+  return Boolean(teacherId) && !teacherId!.includes("/");
+}
+
+/** The due date has already passed: no "new assignment" email for it. */
+export function isPastDue(assignment: Doc, now: number): boolean {
+  const due = millis(assignment?.dueDate);
+  return due !== null && due <= now;
+}
+
+/** Courses copies made with `hidden` are archived in the same write that creates them. */
+const CREATED_HIDDEN_WINDOW_MS = 60 * 1000;
+function createdHidden(assignment: Doc): boolean {
+  const archived = millis(assignment?.archivedAt);
+  const created = millis(assignment?.createdAt);
+  return archived !== null && created !== null && Math.abs(archived - created) <= CREATED_HIDDEN_WINDOW_MS;
 }
 
 /**
- * A hidden copy (cloned from Courses with `hidden`) that the teacher has just assigned. The
- * create trigger skipped it because students could not see it yet.
+ * A hidden copy (cloned from Courses with `hidden`) that the teacher has just assigned. The create
+ * trigger skipped it because students could not see it yet. Restoring an assignment the teacher
+ * archived later (including Undo after Archive) is not a new assignment and sends nothing.
  */
-export function justAssigned(before: Doc, after: Doc): boolean {
-  return Boolean(before?.archivedAt) && isVisibleToStudents(after) && !after?.emailsSentAt;
+export function justAssigned(before: Doc, after: Doc, now: number): boolean {
+  return (
+    createdHidden(before) && isVisibleToStudents(after) && !after?.emailsSentAt && !isPastDue(after, now)
+  );
 }
 
 /** "Wed, Nov 25 at 11:59 PM PST" */

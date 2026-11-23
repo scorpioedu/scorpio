@@ -132,6 +132,18 @@ describe("PATCH /api/assignments/{id}", () => {
     expect(updates("submissions/s1")).toEqual([]);
   });
 
+  test("a moved due date clears reminderSentAt; the same date keeps it", async () => {
+    mockDocs.set("assignments/a1", {
+      ...mockDocs.get("assignments/a1")!,
+      dueDate: new Date("2026-12-01T23:59:00.000Z"),
+      reminderSentAt: new Date(),
+    });
+    await patch("a1", { dueDate: "2026-12-01T23:59:00.000Z" });
+    expect(updates("assignments/a1")[0]).not.toHaveProperty("reminderSentAt");
+    await patch("a1", { dueDate: "2026-12-03T23:59:00.000Z" });
+    expect(updates("assignments/a1")[1].reminderSentAt).toBeNull();
+  });
+
   test("archive sets archivedAt, restore clears it", async () => {
     await patch("a1", { archived: true });
     expect(updates("assignments/a1")[0].archivedAt).toBeInstanceOf(Date);

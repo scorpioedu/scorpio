@@ -60,7 +60,21 @@ const sendEmail = jest.fn(
     void args;
   },
 );
-jest.mock("../functions/src/lib/email", () => ({ sendEmail: (args: never) => sendEmail(args) }));
+jest.mock("../functions/src/lib/email", () => ({
+  sendEmail: (args: never) => sendEmail(args),
+  sendEmailBatch: async ({ messages }: { messages: never[] }) => {
+    let sent = 0;
+    for (const m of messages) {
+      try {
+        await sendEmail(m);
+        sent++;
+      } catch {
+        // The real sender logs a failed chunk and carries on.
+      }
+    }
+    return sent;
+  },
+}));
 jest.mock("@google/genai", () => ({ GoogleGenAI: jest.fn() }), { virtual: true });
 
 import * as logger from "../functions/node_modules/firebase-functions/lib/logger/index.js";
@@ -196,14 +210,14 @@ describe("onAssignmentCreated email content", () => {
     await runCreated({
       teacherId: "t1",
       title: "Quiz 1",
-      dueDate: new Date("2026-11-26T07:59:00Z"),
+      dueDate: new Date("2036-11-26T07:59:00Z"),
       questions: [{}, {}, {}],
     });
     const call = sendEmail.mock.calls[0][0];
     expect(call.tag).toBe("assignment_new");
     expect(call.react.props).toMatchObject({
       link: "https://scorpioedu.org/student/assignment-view?id=a1",
-      due: "Wed, Nov 25 at 11:59 PM PST",
+      due: "Tue, Nov 25 at 11:59 PM PST",
       problems: 3,
     });
   });
@@ -218,25 +232,26 @@ describe("onAssignmentCreated email content", () => {
     expect(sendEmail.mock.calls[0][0].subject).toBe("New assignment: Quiz 1");
   });
 
-  it('logs a masked address with an "unknown" error name when a send rejects with a non-Error, and still emails the rest', async () => {
+  it("a failing send does not stop the rest of the class", async () => {
     state.students = [{ email: "bad@x.test" }, { email: "good@x.test" }];
     sendEmail.mockImplementation(async (args) => {
       if (args.to === "bad@x.test") throw "smtp down";
     });
     await runCreated({ teacherId: "t1", title: "T" });
     expect(sendEmail).toHaveBeenCalledTimes(2);
-    expect(logger.error).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith("Failed to email student b***@x.test", {
-      error: "unknown",
-    });
     expect(infoMessages()).toContain("Finished sending assignment creation emails for a1");
   });
 
-  it("logs the error name, never the message, when a send rejects with an Error", async () => {
-    sendEmail.mockRejectedValue(new TypeError("secret detail a@x.test"));
+  it("skips work that is already past due", async () => {
+    await runCreated({ teacherId: "t1", title: "T", dueDate: new Date(Date.now() - 60_000) });
+    expect(infoMessages()).toContain("Assignment a1 is already past due, skipping emails.");
+    expect(state.txCount).toBe(0);
+    expect(sendEmail).not.toHaveBeenCalled();
+  });
+
+  it("leaves out imported students who have not signed up yet", async () => {
+    state.students = [{ email: "a@x.test" }, { email: "p@x.test", status: "pending_invite" }];
     await runCreated({ teacherId: "t1", title: "T" });
-    expect(logger.error).toHaveBeenCalledWith("Failed to email student a***@x.test", {
-      error: "TypeError",
-    });
+    expect(sendEmail.mock.calls.map((c) => c[0].to)).toEqual(["a@x.test"]);
   });
 });
