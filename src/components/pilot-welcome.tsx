@@ -47,7 +47,8 @@ export function PilotWelcome() {
 
   if (!pilot) return null;
 
-  const budget = `$${((organization?.aiBudgetLimit ?? pilot.budgetCents) / 100).toFixed(0)}`;
+  // Pilot AI is bonus credit; aiBudgetLimit is now the owner's optional spend cap (usually 0).
+  const budget = `$${((pilot.grantedCents ?? pilot.budgetCents) / 100).toFixed(0)}`;
   const ends = pilot.endsAt
     ? new Date(pilot.endsAt).toLocaleDateString(undefined, {
         month: "long",
@@ -71,8 +72,8 @@ export function PilotWelcome() {
       title={`${organization?.name ?? "Your network"} is now a Scorpio pilot`}
       body={
         <>
-          Your network has a {budget} AI balance{ends ? <> through {ends}</> : null}, so Raise is on
-          for your students. Everything else in Scorpio is free.
+          Your network has {budget} of AI credit, so Raise is on for your students
+          {ends ? <>. Your pilot runs through {ends}</> : null}. Everything else in Scorpio is free.
         </>
       }
       action="Let's go"

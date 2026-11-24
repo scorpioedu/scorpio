@@ -14,6 +14,8 @@ export interface UserPreferences {
   setupChecklist?: "started" | "done";
   /** The teacher chose "Skip for now" on the first-run page; kept here so it holds on every device. */
   welcomeSkipped?: boolean;
+  /** Teachers: id of the newest "What's new" entry they dismissed (src/lib/whats-new.ts). */
+  whatsNewSeen?: string;
 }
 
 export interface UserProfile {
