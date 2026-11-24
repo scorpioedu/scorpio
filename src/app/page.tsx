@@ -3,6 +3,7 @@ import { CourseGrid } from "@/components/landing/course-grid";
 import { HomeChatbot, HomeHeader, HomeScrollReveal } from "@/components/landing/home-interactions";
 import reveal from "@/components/landing/home-reveal.module.css";
 import { LandingHero } from "@/components/landing/LandingHero";
+import { LessonsTeaser } from "@/components/landing/lessons-teaser";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { ColumnGuides } from "@/components/landing/line-art";
 import {
@@ -32,6 +33,8 @@ export default function Home() {
         <WorkflowRows />
 
         <CourseGrid />
+
+        <LessonsTeaser />
 
         <section
           id="efficacy"

@@ -4,11 +4,21 @@
 // (/student/courses/{course}/{unit}). The content is src/data/guides; the sections come in the
 // order of the schema (src/lib/guides/schema.ts). Text goes through the app's Markdown renderer, so
 // $…$ math and ```dg diagrams work in every field.
-import { useId, useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useId,
+  useMemo,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
 import { apCourseName, apTopic, apTopicLabel, misconceptionTag, type ApCourseId } from "@/data/ap";
-import { misconceptionAnchor } from "@/lib/guides";
+import { guideSectionId, misconceptionAnchor } from "@/lib/guides";
 import type { TopicGuide as TopicGuideData, WorkedExample } from "@/lib/guides/schema";
 import { defaultValues, fillTemplate, formatValue, type TryItParam } from "@/lib/guides/try-it";
 import { cn } from "@/lib/utils";
@@ -56,8 +66,9 @@ function Heading({
 }
 
 function Section({ level, title, children }: { level: Level; title: string; children: ReactNode }) {
+  const anchored = useContext(GuideMarkdownContext) !== null;
   return (
-    <section className="space-y-3">
+    <section id={anchored ? guideSectionId(title) : undefined} className="scroll-mt-24 space-y-3">
       <Heading level={level} className="text-base font-semibold tracking-tight">
         {title}
       </Heading>
@@ -66,8 +77,77 @@ function Section({ level, title, children }: { level: Level; title: string; chil
   );
 }
 
+type RenderMarkdown = (markdown: string, className?: string) => ReactNode;
+
+/**
+ * Which Markdown renderer the guide uses. In the app it is the lazy one (client only, so KaTeX loads
+ * when needed); the public lessons pass the full renderer so the text is in the server HTML.
+ */
+const GuideMarkdownContext = createContext<RenderMarkdown | null>(null);
+
+/**
+ * For the public lessons: renders Markdown on the server and gives each section an id, so the page
+ * can link to its sections. (In the app the address hash names the topic, so sections get none.)
+ */
+export function GuideMarkdown({
+  renderer,
+  children,
+}: {
+  /** Called with each Markdown field; returns the rendered element. */
+  renderer: RenderMarkdown;
+  children: ReactNode;
+}) {
+  return <GuideMarkdownContext.Provider value={renderer}>{children}</GuideMarkdownContext.Provider>;
+}
+
 function Md({ children, className }: { children: string; className?: string }) {
-  return <LazyMarkdownRenderer className={className}>{children}</LazyMarkdownRenderer>;
+  const render = useContext(GuideMarkdownContext);
+  return render ? (
+    render(children, className)
+  ) : (
+    <LazyMarkdownRenderer className={className}>{children}</LazyMarkdownRenderer>
+  );
+}
+
+/** True on the public lesson pages, where closed content stays in the page for search engines. */
+function useCrawlable(): boolean {
+  return useContext(GuideMarkdownContext) !== null;
+}
+
+/**
+ * Content that is closed but still in the page: hidden="until-found", so search engines read it and
+ * the browser's find-in-page opens it (calling onFound). React renders the attribute as plain
+ * `hidden`, so the "until-found" value is set after mount.
+ */
+function Findable({
+  as: Tag = "div",
+  onFound,
+  className,
+  children,
+}: {
+  as?: "div" | "li";
+  onFound: () => void;
+  className?: string;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const found = useRef(onFound);
+  useEffect(() => {
+    found.current = onFound;
+  });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.setAttribute("hidden", "until-found");
+    const onMatch = () => found.current();
+    el.addEventListener("beforematch", onMatch);
+    return () => el.removeEventListener("beforematch", onMatch);
+  }, []);
+  return (
+    <Tag ref={ref as never} hidden className={className}>
+      {children}
+    </Tag>
+  );
 }
 
 /** A button that shows and hides what it controls. Closed, the content is not rendered at all. */
@@ -84,6 +164,7 @@ export function Reveal({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const id = useId();
+  const crawlable = useCrawlable();
   return (
     <div className="space-y-2">
       <Button
@@ -97,7 +178,15 @@ export function Reveal({
         <ChevronDown className={cn("transition-transform", open && "rotate-180")} aria-hidden />
         {open ? hide : show}
       </Button>
-      <div id={id}>{open && children}</div>
+      {open ? (
+        <div id={id}>{children}</div>
+      ) : crawlable ? (
+        <Findable onFound={() => setOpen(true)}>
+          <div id={id}>{children}</div>
+        </Findable>
+      ) : (
+        <div id={id} />
+      )}
     </div>
   );
 }
@@ -158,6 +247,7 @@ export function WorkedExampleCard({
   const total = example.steps.length;
   const stepped = example.style === "stepped";
   const [shown, setShown] = useState(stepped ? Math.min(initialShown, total) : total);
+  const crawlable = useCrawlable();
   const done = shown >= total;
   return (
     <li className="space-y-3 rounded-2xl border border-border bg-card p-4">
@@ -170,22 +260,34 @@ export function WorkedExampleCard({
         </span>
       </div>
       <Md>{example.prompt}</Md>
-      {shown > 0 && (
+      {(shown > 0 || crawlable) && (
         <ol className="space-y-2">
-          {example.steps.slice(0, shown).map((step, i) => (
-            <li key={i} className="flex gap-3">
-              <span
-                aria-hidden
-                className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums"
-              >
-                {i + 1}
-              </span>
-              <span className="sr-only">Step {i + 1}:</span>
-              <div className="min-w-0 flex-1">
-                <Md>{step}</Md>
-              </div>
-            </li>
-          ))}
+          {example.steps.slice(0, crawlable ? total : shown).map((step, i) => {
+            const body = (
+              <>
+                <span
+                  aria-hidden
+                  className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums"
+                >
+                  {i + 1}
+                </span>
+                <span className="sr-only">Step {i + 1}:</span>
+                <div className="min-w-0 flex-1">
+                  <Md>{step}</Md>
+                </div>
+              </>
+            );
+            // Steps not shown yet stay in the page (public lessons), hidden until asked for.
+            return i < shown ? (
+              <li key={i} className="flex gap-3">
+                {body}
+              </li>
+            ) : (
+              <Findable key={i} as="li" className="flex gap-3" onFound={() => setShown(total)}>
+                {body}
+              </Findable>
+            );
+          })}
         </ol>
       )}
       {stepped && !done && (
@@ -201,11 +303,18 @@ export function WorkedExampleCard({
           </span>
         </div>
       )}
-      {done && (
+      {done ? (
         <div className="rounded-xl bg-muted/50 px-3 py-2">
           <p className="text-xs font-medium text-muted-foreground">Answer</p>
           <Md>{example.answer}</Md>
         </div>
+      ) : (
+        crawlable && (
+          <Findable className="rounded-xl bg-muted/50 px-3 py-2" onFound={() => setShown(total)}>
+            <p className="text-xs font-medium text-muted-foreground">Answer</p>
+            <Md>{example.answer}</Md>
+          </Findable>
+        )
       )}
     </li>
   );

@@ -1,10 +1,10 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
@@ -49,6 +49,7 @@ const resourcesItems: MenuItem[] = [
 
 const navItems: NavItem[] = [
   { id: "platform", label: "Platform", menu: platformItems },
+  { id: "lessons", label: "Lessons", href: "/lessons" },
   { id: "raise", label: "Test Raise", href: "/ai" },
   { id: "pricing", label: "Pricing", href: "/pricing" },
   { id: "resources", label: "Resources", menu: resourcesItems },
@@ -63,12 +64,15 @@ function reducedMotion() {
 
 interface SiteHeaderProps {
   activeSection?: string;
+  /** Slide the header away while scrolling down and back on any scroll up. On by default. */
+  autoHide?: boolean;
 }
 
-export function SiteHeader({ activeSection }: SiteHeaderProps) {
+export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const router = useRouter();
@@ -77,12 +81,19 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
 
   const currentNav = (() => {
     if (pathname.startsWith("/demos")) return "platform";
+    if (pathname.startsWith("/lessons")) return "lessons";
     if (pathname === "/ai") return "raise";
     if (pathname === "/pricing") return "pricing";
     if (
-      ["/sustainability", "/about", "/research", "/contact", "/privacy", "/terms", "/request-access"].some(
-        (p) => pathname.startsWith(p),
-      )
+      [
+        "/sustainability",
+        "/about",
+        "/research",
+        "/contact",
+        "/privacy",
+        "/terms",
+        "/request-access",
+      ].some((p) => pathname.startsWith(p))
     )
       return "resources";
     if (isHomePage) {
@@ -93,8 +104,32 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
     return "";
   })();
 
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => setIsScrolled(y > 8));
+  // A plain scroll listener: it reads the position on every event, so a quick reversal is never missed.
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const prev = lastY;
+      lastY = y;
+      setIsScrolled(y > 8);
+      if (!autoHide) return;
+      // Hide after scrolling down past the top; show again on any real scroll up.
+      let next: boolean | null = null;
+      if (y <= 120) next = false;
+      else if (y > prev + 2) next = true;
+      else if (y < prev - 2) next = false;
+      if (next === null) return;
+      setHidden(next);
+      // Sticky bars under the header (the lesson contents) move up with it.
+      document.documentElement.toggleAttribute("data-header-hidden", next);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [autoHide]);
+
+  // Leaving the page must not leave the "header hidden" flag behind for the next one.
+  useEffect(() => () => document.documentElement.removeAttribute("data-header-hidden"), []);
 
   const scheduleClose = useCallback(() => {
     closeTimeoutRef.current = setTimeout(() => setOpenMenu(null), 160);
@@ -117,7 +152,10 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50"
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out motion-reduce:transition-none",
+        hidden && !openMenu && !menuOpen && "-translate-y-full",
+      )}
       onKeyDown={(event) => {
         if (event.key === "Escape") setOpenMenu(null);
       }}
@@ -220,8 +258,12 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                         {item.menu.map((entry) => {
                           const body = (
                             <>
-                              <span className="block text-sm font-medium text-foreground">{entry.label}</span>
-                              <span className="block text-[13px] text-muted-foreground">{entry.desc}</span>
+                              <span className="block text-sm font-medium text-foreground">
+                                {entry.label}
+                              </span>
+                              <span className="block text-[13px] text-muted-foreground">
+                                {entry.desc}
+                              </span>
                             </>
                           );
                           const cls =
@@ -229,7 +271,11 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                           return (
                             <li key={entry.label}>
                               {entry.href ? (
-                                <Link href={entry.href} onClick={() => setOpenMenu(null)} className={cls}>
+                                <Link
+                                  href={entry.href}
+                                  onClick={() => setOpenMenu(null)}
+                                  className={cls}
+                                >
                                   {body}
                                 </Link>
                               ) : (
@@ -292,14 +338,23 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                   <Logo size={18} aria-hidden="true" />
                   <span className="font-inter text-base font-black tracking-tight">Scorpio</span>
                 </SheetTitle>
-                <Button variant="ghost" size="icon" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Close menu"
+                >
                   <X className="size-4" />
                 </Button>
               </div>
 
-              <nav aria-label="Main" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-5">
+              <nav
+                aria-label="Main"
+                className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-5"
+              >
                 <ul role="list" className="list-none">
                   {[
+                    { label: "Lessons", href: "/lessons" },
                     { label: "Test Raise", href: "/ai" },
                     { label: "Pricing", href: "/pricing" },
                   ].map((l) => (
@@ -307,10 +362,10 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                       <Link
                         href={l.href}
                         onClick={() => setMenuOpen(false)}
-                        aria-current={pathname === l.href ? "page" : undefined}
+                        aria-current={pathname.startsWith(l.href) ? "page" : undefined}
                         className={cn(
                           "block rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-muted",
-                          pathname === l.href ? "text-foreground" : "text-muted-foreground",
+                          pathname.startsWith(l.href) ? "text-foreground" : "text-muted-foreground",
                         )}
                       >
                         {l.label}
@@ -324,7 +379,9 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                   { title: "Resources", items: resourcesItems },
                 ].map((group) => (
                   <div key={group.title}>
-                    <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground/70">{group.title}</p>
+                    <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground/70">
+                      {group.title}
+                    </p>
                     <ul role="list" className="list-none">
                       {group.items.map((entry) => {
                         const cls =
@@ -332,7 +389,11 @@ export function SiteHeader({ activeSection }: SiteHeaderProps) {
                         return (
                           <li key={entry.label}>
                             {entry.href ? (
-                              <Link href={entry.href} onClick={() => setMenuOpen(false)} className={cls}>
+                              <Link
+                                href={entry.href}
+                                onClick={() => setMenuOpen(false)}
+                                className={cls}
+                              >
                                 {entry.label}
                               </Link>
                             ) : (

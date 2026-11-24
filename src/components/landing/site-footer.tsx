@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
 const footerLinks = [
+  { label: "Lessons", href: "/lessons" },
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
   { label: "Sustainability", href: "/sustainability" },

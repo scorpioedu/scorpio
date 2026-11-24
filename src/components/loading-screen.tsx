@@ -56,12 +56,8 @@ export function LoadingScreen() {
               className={`${styles.ring} absolute inset-0 rounded-full border border-foreground/25`}
             />
             <Logo size={90} strokeWidth={3} className={styles.logo}>
-              <circle className={styles.compass} cx="12" cy="12" r="10" pathLength={1} />
-              <path
-                className={styles.needle}
-                d="M16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88Z"
-                pathLength={1}
-              />
+              <circle className={styles.compass} cx="12" cy="12" r="10" />
+              <path className={styles.needle} d="M16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88Z" />
             </Logo>
           </div>
 
