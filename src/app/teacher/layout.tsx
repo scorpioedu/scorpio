@@ -8,6 +8,7 @@ import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { PageTransition } from "@/components/page-transition";
 import { DepartmentBanner } from "@/components/department-banner";
 import { PilotWelcome } from "@/components/pilot-welcome";
+import { WhatsNew } from "@/components/teacher/whats-new";
 import { SelectedClassProvider } from "@/contexts/selected-class-context";
 import { usePathname } from "next/navigation";
 
@@ -47,6 +48,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               {!onboarding && <DepartmentBanner />}
               <div className="w-full px-4 pb-24 sm:px-6 md:px-8 md:pt-8">
                 <div className="max-w-7xl mx-auto">
+                  {!onboarding && <WhatsNew />}
                   <PageTransition>{children}</PageTransition>
                 </div>
               </div>

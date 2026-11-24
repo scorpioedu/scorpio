@@ -8,22 +8,13 @@ import { db } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Organization } from "@/lib/types";
 import { RaiseLogo } from "@/components/ui/raise-logo";
+import { summarizeBalance, LOW_BALANCE_CENTS } from "../../functions/src/budget-policy";
 import { ArrowRight, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const SNOOZE_KEY = "scorpio_department_banner_snooze_until";
+const SNOOZE_KEY = "scorpio_low_balance_banner_snooze_until";
 const SNOOZE_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-
-/**
- * Helper to determine whether an organization has an active Department plan.
- */
-export function isOnDepartmentPlan(org: Partial<Organization> | null | undefined): boolean {
-  if (!org) return false;
-  if (!org.planId || org.planId === "free") return false;
-  if (org.subscriptionStatus && org.subscriptionStatus !== "active") return false;
-  return true;
-}
 
 export function DepartmentBanner({ className }: { className?: string }) {
   const pathname = usePathname();
@@ -93,16 +84,13 @@ export function DepartmentBanner({ className }: { className?: string }) {
     return null;
   }
 
-  // If profile is loaded without an organization, user is not on department
-  const hasNoOrg = profile !== null && !profile?.organizationId;
-
-  // While fetching org for a user with organizationId, do not show yet
-  if (!hasNoOrg && organization === undefined) {
+  // No network, or still loading it: nothing to warn about yet.
+  if (!profile?.organizationId || !organization) {
     return null;
   }
 
-  const onDepartment = !hasNoOrg && isOnDepartmentPlan(organization);
-  if (onDepartment) {
+  const { availableCents } = summarizeBalance(organization);
+  if (availableCents >= LOW_BALANCE_CENTS) {
     return null;
   }
 
@@ -123,13 +111,14 @@ export function DepartmentBanner({ className }: { className?: string }) {
         >
           <RaiseLogo size={13} className="text-purple-400 shrink-0" />
           <span className="text-[11px] sm:text-xs font-medium text-purple-100">
-            AI features with Raise are limited on your current plan.
+            Your AI balance is low (${(availableCents / 100).toFixed(2)}). Raise and AI grading
+            pause at $0.
           </span>
           <Link
             href="/teacher/network/billing"
             className="inline-flex items-center gap-0.5 text-[11px] sm:text-xs font-bold text-white underline underline-offset-2 hover:text-purple-200 transition-colors ml-0.5"
           >
-            Upgrade in Billing
+            Top up
             <ArrowRight className="size-3 inline-block" />
           </Link>
           <button

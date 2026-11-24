@@ -59,19 +59,19 @@ KEY DIFFERENTIATORS:
 - 0.92 LaTeX notation density in the study (baseline Gemini: 0.22)
 - Inference-Time Scaffolding — no fine-tuning, no black-box retraining. Every Socratic behaviour is enforced at inference time — observable, auditable, reproducible.
 - +0.67 pedagogical uplift measured in a 125-response ablation study
-- 100% cost transparency — zero-markup Gemini API pass-through billing via Polar metered billing
+- 100% cost transparency — zero-markup Gemini API pass-through billing from a prepaid balance
 
 FEATURES:
 - Raise (scorpioedu.org/student/tutor): Socratic physics learning assistant. Students ask questions, Raise guides them — never tells them the answer. Teacher-controlled message limits per student.
 - Notebook (scorpioedu.org/student/notebook): AI-powered note-taking workspace with full LaTeX support for complex derivations.
 - Formula vault (scorpioedu.org/student/vault): The equations and constants for the student's course; teachers choose which ones students see.
-- Waypoints (scorpioedu.org/teacher/waypoints): Ready-made assignments, including AP Physics 1 sets. Every global Waypoint is free to copy on the free plan; department waypoints shared inside a school network need a Department License.
+- Waypoints (scorpioedu.org/teacher/waypoints): Ready-made assignments, including AP Physics 1 sets. Every Waypoint is free to copy, including department waypoints shared inside a school network.
 - Auto-grading: numeric answers with units and tolerance, multiple choice, and AI grading of written answers. Free.
 - Class misconception report (scorpioedu.org/teacher/insights): top misconceptions ranked by how many students showed them (for example 8 of 24 students), by class, assignment and AP unit. Free.
 - Not built: Google Classroom and Canvas integrations. Students join with a class code and teachers can export grades as CSV.
 - Assignments (scorpioedu.org/teacher/create): AI-powered assignment builder — paste text or upload a file and Scorpio auto-parses it into structured questions.
 - AI-Assisted Grading (scorpioedu.org/teacher/submission/grade): Automated rubric-based grading with explainability.
-- Network & Billing (scorpioedu.org/teacher/network): Teacher-controlled AI budget caps per student, real-time usage analytics, and Polar metered billing.
+- Network & Billing (scorpioedu.org/teacher/network): Teacher-controlled AI limits per student, real-time usage analytics, and the AI balance.
 
 RESEARCH:
 - Full methodology available at scorpioedu.org/research
@@ -79,10 +79,13 @@ RESEARCH:
 - Scorpio: 0% direct answer rate | unconstrained baseline: 100%
 
 PRICING:
-- Free plan: every global Waypoint, auto-grading, the misconception report, and a small starter AI budget
-- Department License ($10/month or $100/year flat for the whole department) adds department waypoints, network sharing and higher AI limits — AI is billed at the actual Gemini API cost with zero markup
-- Polar metered billing: Input tokens $0.75/M, Output tokens $3.75/M (Gemini 3.8 Flash raw pass-through rates)
-- Contact rushil@scorpioedu.org for institutional or departmental pricing
+- Scorpio is free for every teacher: every feature, no card, no trial, no per-student fees. Department sharing and the AI tools are included.
+- AI runs on a prepaid balance charged at Google's exact cost, with no markup. Every network gets $1 of AI free each month.
+- Gemini 3.8 Flash rates: $0.75 per 1M input tokens and $3.75 per 1M output tokens through 31 Dec 2026, then $1.50 and $7.50 from 1 Jan 2027. A Raise hint costs about a tenth of a cent.
+- Teachers can top up from $5; Polar's processing fee is shown before paying. Paid credit never expires.
+- Refer a colleague: when they get their first class results, you get $5 of AI credit and they get $2.
+- Schools can pay by invoice.
+- Contact rushil@scorpioedu.org to pay by invoice
 - Sign up at scorpioedu.org/signup — teachers create a Scorpio Network after onboarding
 
 SOCRATIC TUTORING (PHYSICS QUESTIONS / DEMO / TRY AI):

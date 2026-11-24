@@ -690,10 +690,10 @@ export default function FeaturesPage() {
             <div className="rounded-[2.5rem] p-8 sm:p-14 md:p-20 border border-primary/30 bg-gradient-to-br from-primary/10 via-card/40 to-background backdrop-blur-2xl relative overflow-hidden text-center shadow-2xl space-y-8">
               <div className="space-y-4 max-w-xl mx-auto">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-0.035em] leading-none text-foreground">
-                  Ready to upgrade your physics classroom?
+                  Ready to try it in your physics class?
                 </h2>
                 <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                  Start free with your class today, or see the flat department pricing.
+                  Scorpio is free for every teacher. AI is paid at cost, with $1 free every month.
                 </p>
               </div>
 
@@ -713,7 +713,7 @@ export default function FeaturesPage() {
                   variant="outline"
                   className="rounded-full px-8 font-semibold"
                 >
-                  <Link href="/pricing">View Flat Pricing</Link>
+                  <Link href="/pricing">See Pricing</Link>
                 </Button>
               </div>
             </div>

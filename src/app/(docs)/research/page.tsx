@@ -285,9 +285,9 @@ export default function ResearchPage() {
         </p>
         <DocList
           items={[
-            { term: "Infrastructure", description: "Higher AI limits for Raise and AI grading, plus Department Waypoints and sharing, come with every Department License. Auto-grading and the class misconception report are free." },
-            { term: "Zero markup", description: "$0.75 per 1M input tokens and $3.75 per 1M output tokens, fixed at Google DeepMind Gemini 3.8 Flash rates." },
-            { term: "Enterprise scale", description: "District-wide deployment with custom SSO, dedicated infrastructure, and tiered volume pricing." },
+            { term: "Infrastructure", description: "Scorpio is free for every teacher, including department sharing, auto-grading and the class misconception report. AI runs on a prepaid balance: every network gets $1 of AI free each month, and teachers can top up from $5." },
+            { term: "Zero markup", description: "$0.75 per 1M input tokens and $3.75 per 1M output tokens, Google Gemini 3.8 Flash rates through 31 December 2026, then $1.50 and $7.50 from 1 January 2027." },
+            { term: "Enterprise scale", description: "Schools and districts can pay by invoice. Custom SSO and dedicated infrastructure are not built." },
           ]}
         />
         <div className="pt-4">

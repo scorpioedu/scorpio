@@ -1,6 +1,6 @@
 /**
  * RT-21 characterization: pins the decisions of checkBudget (pre-check) and reserveBudget (enforcement)
- * across the status/plan/budget table, including where the two diverge.
+ * across the credit-balance table (free allowance, bonus, paid, reserved, monthly cap), including where the two diverge.
  */
 const orgs: Record<string, Record<string, unknown> | undefined> = {};
 const users: Record<string, Record<string, unknown> | undefined> = {};
@@ -54,44 +54,58 @@ const reserve = async (org: Record<string, unknown> | undefined, type = 'grading
   }
 };
 
-const base = { subscriptionStatus: 'active', planId: 'free', aiBudgetLimit: 50, aiUsageCurrent: 0, aiUsageReserved: 0 };
+const past = new Date(Date.now() - 86400e3).toISOString();
+const future = new Date(Date.now() + 86400e3 * 30).toISOString();
+// A network with no spend yet: the free $1 for this month is untouched.
+const base = { aiFreeMonth: month, aiFreeUsedCents: 0, aiUsageReserved: 0 };
 
-describe('subscription status (same in both callers)', () => {
-  test.each([
-    ['active', true],
-    ['trialing', true],
-    ['canceled', false],
-    ['revoked', false],
-    ['past_due', false],
-    ['none', false],
-    [undefined, false],
-  ])('status %s -> allowed=%s', async (status, expected) => {
-    const org = { ...base, subscriptionStatus: status };
-    expect(await preCheck(org)).toBe(expected);
-    expect(await reserve(org)).toBe(expected);
-  });
-
+describe('network lookup (same in both callers)', () => {
   test('missing organization is rejected by both', async () => {
     expect(await preCheck(undefined)).toBe(false);
     expect(await reserve(undefined)).toBe(false);
   });
+
+  test('no organization id is rejected by the pre-check', async () => {
+    expect((await checkBudget(undefined)).allowed).toBe(false);
+    expect((await checkBudget(null)).allowed).toBe(false);
+  });
+
+  test('subscription status and plan no longer matter', async () => {
+    for (const org of [
+      { ...base, subscriptionStatus: 'canceled', planId: 'free' },
+      { ...base, subscriptionStatus: undefined, planId: 'department_network' },
+    ]) {
+      expect(await preCheck(org)).toBe(true);
+      expect(await reserve(org)).toBe(true);
+    }
+  });
 });
 
-describe('budget table', () => {
+describe('balance table', () => {
   // [label, org overrides, checkBudget, reserveBudget(cost 1)]
   test.each<[string, Record<string, unknown>, boolean, boolean]>([
-    ['free, 50c limit, unused', {}, true, true],
-    ['free, limit 0 (membership default)', { aiBudgetLimit: 0 }, false, false],
-    ['free, usage at limit', { aiUsageCurrent: 50 }, false, false],
-    ['free, reserved counts towards limit', { aiUsageCurrent: 20, aiUsageReserved: 30 }, false, false],
-    ['free, limit 500 above the 50c cap, usage 100', { aiBudgetLimit: 500, aiUsageCurrent: 100 }, false, false], // RT-21: pre-check was true, now matches enforcement
-    ['free, limit 500, usage 10', { aiBudgetLimit: 500, aiUsageCurrent: 10 }, true, true],
-    ['paid, limit 1000, unused', { planId: 'dept', aiBudgetLimit: 1000 }, true, true],
-    ['paid, usage at limit', { planId: 'dept', aiBudgetLimit: 1000, aiUsageCurrent: 1000 }, false, false],
-    ['paid, limit 0 (pre-check used to treat as unlimited)', { planId: 'dept', aiBudgetLimit: 0 }, false, false], // RT-21: pre-check was true, now matches enforcement
-    ['no planId, limit 0', { planId: undefined, aiBudgetLimit: 0 }, false, false],
-    ['no planId, limit 1000, usage 100 (pre-check treats as free, reserve as paid)', { planId: undefined, aiBudgetLimit: 1000, aiUsageCurrent: 100 }, true, true],
-    ['no planId, limit 1000, usage 999.5 and cost 1', { planId: undefined, aiBudgetLimit: 1000, aiUsageCurrent: 999.5 }, true, false], // DIVERGES (cost-aware)
+    ['free allowance only, unused', {}, true, true],
+    ['free allowance only, new month (stale free counter)', { aiFreeMonth: '2000-01', aiFreeUsedCents: 100 }, true, true],
+    ['free allowance partly used', { aiFreeUsedCents: 60 }, true, true],
+    ['free allowance used up, nothing else', { aiFreeUsedCents: 100 }, false, false],
+    ['free used up, unexpired bonus', { aiFreeUsedCents: 100, aiBonusCents: 500, aiBonusExpiresAt: future }, true, true],
+    ['free used up, bonus with no expiry', { aiFreeUsedCents: 100, aiBonusCents: 500 }, true, true],
+    ['free used up, bonus expired', { aiFreeUsedCents: 100, aiBonusCents: 500, aiBonusExpiresAt: past }, false, false],
+    ['free used up, paid balance', { aiFreeUsedCents: 100, aiPaidCents: 300 }, true, true],
+    ['free used up, paid negative after refund', { aiFreeUsedCents: 100, aiPaidCents: -50 }, false, false],
+    ['free left but paid negative after refund covers it', { aiFreeUsedCents: 50, aiPaidCents: -50 }, false, false],
+    ['free left, paid slightly negative', { aiFreeUsedCents: 0, aiPaidCents: -40 }, true, true],
+    ['reserved counts: everything reserved', { aiFreeUsedCents: 100, aiPaidCents: 200, aiUsageReserved: 200 }, false, false],
+    ['reserved counts: some still available', { aiFreeUsedCents: 100, aiPaidCents: 200, aiUsageReserved: 150 }, true, true],
+    ['reserved counts: free allowance fully reserved', { aiUsageReserved: 100 }, false, false],
+    ['available 0.5c, cost 1', { aiFreeUsedCents: 99.5 }, true, false], // DIVERGES (cost-aware)
+    ['monthly cap not reached', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 100 }, true, true],
+    ['monthly cap reached (over it)', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 501 }, false, false],
+    ['monthly cap hit exactly: both refuse (pre-check treats spend at the cap as reached)', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 500 }, false, false],
+    ['monthly cap: reserved counts', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 400, aiUsageReserved: 101 }, false, false],
+    ['monthly cap: last cent is cost-aware', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 499.5 }, true, false], // DIVERGES (cost-aware)
+    ['monthly cap: stale usage month is ignored', { aiPaidCents: 1000, aiBudgetLimit: 500, aiUsageMonth: '2000-01', aiUsageCurrent: 500 }, true, true],
+    ['monthly cap 0 means no cap', { aiPaidCents: 1000, aiBudgetLimit: 0, aiUsageMonth: month, aiUsageCurrent: 99999 }, true, true],
   ])('%s', async (_label, overrides, pre, res) => {
     const org = { ...base, ...overrides };
     expect(await preCheck(org)).toBe(pre);
@@ -100,7 +114,7 @@ describe('budget table', () => {
 });
 
 describe('per-user limits', () => {
-  const org = { ...base, planId: 'dept', aiBudgetLimit: 10000, aiTutorLimitPerStudent: 5, aiNotebookLimitPerStudent: 3 };
+  const org = { ...base, aiPaidCents: 10000, aiTutorLimitPerStudent: 5, aiNotebookLimitPerStudent: 3 };
   test.each<[string, string, Record<string, unknown> | undefined, boolean]>([
     ['tutor under allowance', 'tutor', { usageMonth: month, tutorUsageCurrent: 4 }, true],
     ['tutor at allowance', 'tutor', { usageMonth: month, tutorUsageCurrent: 5 }, false],

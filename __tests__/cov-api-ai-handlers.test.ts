@@ -509,11 +509,10 @@ describe('POST /api/student/tutor', () => {
 });
 
 describe('POST /api/checkout', () => {
-  const body = { userId: 'u1', organizationId: 'o1', planId: 'department_monthly' };
+  const body = { userId: 'u1', organizationId: 'o1', amountCents: 1000 };
   const saved = { ...process.env };
   beforeEach(() => {
-    process.env.POLAR_MONTHLY_ID = 'price_monthly';
-    process.env.POLAR_PRODUCT_ID = 'price_product';
+    process.env.POLAR_CREDIT_PRODUCT_ID = 'prod_credit';
     process.env.NEXT_PUBLIC_APP_URL = 'https://app.example.test';
     mockDocs.set('organizations/o1', { ownerId: 'u1', ownerEmail: 'owner@example.test' });
   });
@@ -522,7 +521,12 @@ describe('POST /api/checkout', () => {
   test('400 for a malformed body', async () => {
     const res = await call(checkoutPost, { userId: 'u1' });
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toBe('Missing required fields');
+    expect(mockCheckoutCreate).not.toHaveBeenCalled();
+  });
+
+  test.each([[499], [50_001], [1000.5]])('400 for amountCents %p', async amountCents => {
+    expect((await call(checkoutPost, { ...body, amountCents })).status).toBe(400);
+    expect(mockCheckoutCreate).not.toHaveBeenCalled();
   });
 
   test('500 when the database is unavailable', async () => {
@@ -530,7 +534,7 @@ describe('POST /api/checkout', () => {
     expect((await call(checkoutPost, body)).status).toBe(500);
   });
 
-  test('404 for an unknown organisation, 403 for a non-owner', async () => {
+  test('404 for an unknown organisation, 403 for someone outside the network', async () => {
     mockDocs.delete('organizations/o1');
     expect((await call(checkoutPost, body)).status).toBe(404);
     mockDocs.set('organizations/o1', { ownerId: 'someone-else' });
@@ -538,50 +542,52 @@ describe('POST /api/checkout', () => {
     expect(mockCheckoutCreate).not.toHaveBeenCalled();
   });
 
-  test('400 with a generic message when the plan has no configured product', async () => {
-    const res = await call(checkoutPost, { ...body, planId: 'no_such_plan' });
+  test('a non-owner member of the network may top it up', async () => {
+    mockDocs.set('organizations/o1', { ownerId: 'someone-else' });
+    mockDocs.set('users/u1', { organizationId: 'o1' });
+    mockCheckoutCreate.mockResolvedValue({ url: 'https://polar.example.test/c/m' });
+    const res = await call(checkoutPost, body);
+    expect(res.status).toBe(200);
+    expect(mockCheckoutCreate).toHaveBeenCalledTimes(1);
+  });
+
+  test('400 with a generic message when the credit product is not configured', async () => {
+    delete process.env.POLAR_CREDIT_PRODUCT_ID;
+    const res = await call(checkoutPost, body);
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toBe('Configuration Error');
-    expect(json.message).toBe('This plan is not available for checkout right now.');
+    expect(json.message).toBe('Top-ups are not available right now.');
     expect(json.requestId).toBe('req-1');
-    expect(JSON.stringify(json)).not.toContain('no_such_plan');
   });
 
-  test('400 when the mapped environment variable is unset', async () => {
-    delete process.env.POLAR_MONTHLY_ID;
-    expect((await call(checkoutPost, body)).status).toBe(400);
-  });
-
-  test('500 when the Polar SDK is unavailable', async () => {
+  test('an unavailable Polar SDK is the same generic 502 (the route no longer has a separate null check)', async () => {
     mockPolarNull = true;
     const res = await call(checkoutPost, body);
-    expect(res.status).toBe(500);
-    expect(await res.json()).toEqual({ error: 'Polar SDK not initialized' });
+    expect(res.status).toBe(502);
+    expect((await res.json()).error).toBe('We could not start checkout. Please try again.');
   });
 
-  test('creates a checkout with metadata, owner email and the configured success URL', async () => {
+  test('creates a checkout with the amount, credit metadata and the success URL', async () => {
     mockCheckoutCreate.mockResolvedValue({ url: 'https://polar.example.test/c/1' });
     const res = await call(checkoutPost, body);
     expect(await res.json()).toEqual({ url: 'https://polar.example.test/c/1' });
     expect(mockCheckoutCreate).toHaveBeenCalledWith({
-      products: ['price_monthly'],
-      successUrl: 'https://app.example.test/teacher/network?success=true',
-      includeConfirmationEmail: true,
-      metadata: { organizationId: 'o1', userId: 'u1', planId: 'department_monthly' },
-      customerEmail: 'owner@example.test',
+      products: ['prod_credit'],
+      amount: 1000,
+      successUrl: 'https://app.example.test/teacher/network/billing?success=true',
+      metadata: { kind: 'ai_credit', organizationId: 'o1', userId: 'u1' },
     });
   });
 
-  test('falls back to the request origin and omits the email when the owner has none', async () => {
+  test('falls back to the request origin and sends the user email when there is one', async () => {
     delete process.env.NEXT_PUBLIC_APP_URL;
-    mockDocs.set('organizations/o1', { ownerId: 'u1' });
+    mockDocs.set('users/u1', { organizationId: 'o1', email: 'u1@example.test' });
     mockCheckoutCreate.mockResolvedValue({ url: 'https://polar.example.test/c/2' });
-    await call(checkoutPost, { ...body, planId: 'department_network' });
+    await call(checkoutPost, body);
     const options = mockCheckoutCreate.mock.calls[0][0];
-    expect(options.successUrl).toBe('https://scorpio.test/teacher/network?success=true');
-    expect(options.products).toEqual(['price_product']);
-    expect(options).not.toHaveProperty('customerEmail');
+    expect(options.successUrl).toBe('https://scorpio.test/teacher/network/billing?success=true');
+    expect(options.customerEmail).toBe('u1@example.test');
   });
 
   test('500 when Polar returns no URL', async () => {

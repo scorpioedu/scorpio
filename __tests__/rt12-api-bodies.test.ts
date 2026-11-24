@@ -381,10 +381,12 @@ describe('POST /api/grade', () => {
 // ─── POST /api/checkout ───────────────────────────────────────────────────
 describe('POST /api/checkout', () => {
   beforeEach(() => {
+    process.env.POLAR_CREDIT_PRODUCT_ID = 'prod_credit';
     store['users/u1'] = teacher;
     store['organizations/org1'] = { ownerId: 'u1', ownerEmail: 'o@school.test' };
   });
-  const clientBody = () => ({ userId: 'u1', organizationId: 'org1', planId: 'standard_monthly' });
+  afterEach(() => { delete process.env.POLAR_CREDIT_PRODUCT_ID; });
+  const clientBody = () => ({ userId: 'u1', organizationId: 'org1', amountCents: 1000 });
 
   it('characterization: the billing-page payload returns the checkout url', async () => {
     const res = await checkoutPost(post('/api/checkout', clientBody()));
@@ -392,22 +394,47 @@ describe('POST /api/checkout', () => {
     expect(await json(res)).toEqual({ url: 'https://polar.test/c/1' });
   });
 
-  it('characterization: missing fields and unmapped plans keep their responses', async () => {
-    let res = await checkoutPost(post('/api/checkout', { userId: 'u1', organizationId: 'org1' }));
-    expect([res.status, (await json(res)).error]).toEqual([400, 'Missing required fields']);
-    res = await checkoutPost(post('/api/checkout', { ...clientBody(), planId: 'unknown_plan' }));
-    expect([res.status, (await json(res)).error]).toEqual([400, 'Configuration Error']);
+  it('characterization: a missing amount keeps the 400 response', async () => {
+    const res = await checkoutPost(post('/api/checkout', { userId: 'u1', organizationId: 'org1' }));
+    expect(res.status).toBe(400);
+    expect((await json(res)).error).toEqual(expect.any(String));
   });
 
-  it('red: a non-string planId is rejected before the plan lookup', async () => {
-    const res = await checkoutPost(post('/api/checkout', { ...clientBody(), planId: { toString: 'x' } }));
+  it.each([[500], [50_000]])('amountCents %i (the bounds) is accepted', async amountCents => {
+    const res = await checkoutPost(post('/api/checkout', { ...clientBody(), amountCents }));
+    expect(res.status).toBe(200);
+  });
+
+  it.each([[499], [50_001], [0], [-500], [1000.5], ['1000'], [null]])('red: amountCents %p is rejected', async amountCents => {
+    const res = await checkoutPost(post('/api/checkout', { ...clientBody(), amountCents }));
     expect(res.status).toBe(400);
-    expect((await json(res)).error).toBe('Missing required fields');
   });
 
   it('red: an organizationId with a slash is a 400', async () => {
     const res = await checkoutPost(post('/api/checkout', { ...clientBody(), organizationId: 'a/b' }));
     expect(res.status).toBe(400);
-    expect((await json(res)).error).toBe('Missing required fields');
+  });
+
+  it('a member who is not the owner may top up', async () => {
+    store['organizations/org1'] = { ownerId: 'someone-else' };
+    store['users/u1'] = { ...teacher, organizationId: 'org1' };
+    const res = await checkoutPost(post('/api/checkout', clientBody()));
+    expect(res.status).toBe(200);
+  });
+
+  it('red: a teacher outside the network gets 403', async () => {
+    store['organizations/org1'] = { ownerId: 'someone-else' };
+    store['users/u1'] = { ...teacher, organizationId: 'other-org' };
+    const res = await checkoutPost(post('/api/checkout', clientBody()));
+    expect(res.status).toBe(403);
+  });
+
+  it('a missing POLAR_CREDIT_PRODUCT_ID is a generic 400', async () => {
+    delete process.env.POLAR_CREDIT_PRODUCT_ID;
+    const res = await checkoutPost(post('/api/checkout', clientBody()));
+    expect(res.status).toBe(400);
+    const out = await json(res);
+    expect(out.error).toBe('Configuration Error');
+    expect(out.message).toBe('Top-ups are not available right now.');
   });
 });

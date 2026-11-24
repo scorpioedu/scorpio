@@ -2,7 +2,7 @@
 
 // Add questions by generating them with the AI or importing pasted text.
 import { useState } from "react";
-import { FileDown, Loader2, Lock, Sparkles } from "lucide-react";
+import { FileDown, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { parseQuestionsManually } from "@/lib/assignment-parser";
@@ -24,11 +24,9 @@ import { AI_COUNT, clampAiCount, fromGenerated, type Question, type RawQuestion 
 import { flagAnswerChecks } from "./answer-checks";
 
 export function QuestionSources({
-  isFreePlan,
   userId,
   onAdd,
 }: {
-  isFreePlan: boolean;
   userId?: string;
   onAdd: (questions: Question[]) => void;
 }) {
@@ -160,12 +158,9 @@ export function QuestionSources({
             type="button"
             size="sm"
             variant="outline"
-            disabled={isFreePlan}
-            title={isFreePlan ? "Requires AI access" : undefined}
           >
             <Sparkles />
             Generate with AI
-            {isFreePlan && <Lock className="size-3" />}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">
@@ -279,12 +274,9 @@ export function QuestionSources({
             type="button"
             size="sm"
             variant="outline"
-            disabled={isFreePlan}
-            title={isFreePlan ? "Requires AI access" : undefined}
           >
             <FileDown />
             Import text
-            {isFreePlan && <Lock className="size-3" />}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">

@@ -7,13 +7,17 @@ import { ClientError } from "@/lib/client-error";
 import { parseJsonBody } from "@/lib/api-schema";
 import { adminPilotBody } from "@/lib/schemas/api-bodies";
 import {
-  newOrganizationDefaults,
   pilotOrganizationFields,
+  pilotBonusExpiry,
   DEFAULT_PILOT_BUDGET_CENTS,
   DEFAULT_PILOT_COHORT,
 } from "@/lib/organization-defaults";
 import { inviteAuthPath } from "@/lib/onboarding-links";
-import { PILOT_PLAN_BUDGET_CAP_CENTS } from "../../../../../functions/src/budget-policy";
+import {
+  MAX_ADMIN_GRANT_CENTS,
+  summarizeBalance,
+} from "../../../../../functions/src/budget-policy";
+import { applyCreditInTx } from "../../../../../functions/src/credits";
 
 const iso = (v: unknown): string | null => {
   if (!v) return null;
@@ -31,6 +35,12 @@ const iso = (v: unknown): string | null => {
  * GET /api/admin/pilots : every network with a pilot record (with its teachers and student count),
  * the free networks that could start one, and the pilot invite codes.
  */
+/** Total pilot credit granted (start + top-ups); older pilots only recorded budgetCents. */
+function pilotGranted(o: Record<string, unknown>): number {
+  const p = (o.pilot ?? {}) as { grantedCents?: number; budgetCents?: number };
+  return Number(p.grantedCents ?? p.budgetCents ?? 0) || 0;
+}
+
 async function handleList(_req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const [orgsSnap, usersSnap, invitesSnap] = await Promise.all([
@@ -41,8 +51,8 @@ async function handleList(_req: NextRequest, { requestId }: AuthorizedContext) {
           "planId",
           "subscriptionStatus",
           "pilot",
-          "aiBudgetLimit",
-          "aiUsageCurrent",
+          "aiBonusCents",
+          "aiBonusExpiresAt",
           "aiUsageReserved",
           "lastAiUsageAt",
           "ownerId",
@@ -84,8 +94,9 @@ async function handleList(_req: NextRequest, { requestId }: AuthorizedContext) {
           ...base,
           pilot: o.pilot,
           subscriptionStatus: o.subscriptionStatus ?? "none",
-          aiBudgetLimit: o.aiBudgetLimit ?? 0,
-          aiUsageCurrent: (o.aiUsageCurrent ?? 0) + (o.aiUsageReserved ?? 0),
+          // Pilot AI is bonus credit now: show what was granted and how much of it is gone.
+          aiBudgetLimit: pilotGranted(o),
+          aiUsageCurrent: Math.max(0, pilotGranted(o) - summarizeBalance(o).bonusCents),
           lastAiUsageAt: iso(o.lastAiUsageAt),
         });
       } else if (!o.planId || o.planId === "free") {
@@ -119,7 +130,7 @@ async function handleList(_req: NextRequest, { requestId }: AuthorizedContext) {
       defaults: {
         budgetCents: DEFAULT_PILOT_BUDGET_CENTS,
         cohort: DEFAULT_PILOT_COHORT,
-        capCents: PILOT_PLAN_BUDGET_CAP_CENTS,
+        capCents: MAX_ADMIN_GRANT_CENTS,
       },
       generatedAt: new Date().toISOString(),
     });
@@ -192,21 +203,32 @@ async function handleAction(req: NextRequest, { caller, requestId }: AuthorizedC
 
       switch (body.action) {
         case "start": {
-          if (org.planId && org.planId !== "free" && org.planId !== "pilot")
-            throw new ClientError("This network is on a paid plan already");
           if (isPilotNow && org.pilot?.status === "active")
             throw new ClientError("This network is already a pilot");
-          const fields = pilotOrganizationFields(
-            {
-              budgetCents: body.budgetCents,
-              endsAt: body.endsAt ?? null,
-              cohort: body.cohort,
-              note: body.note,
-            },
+          const budgetCents = body.budgetCents ?? DEFAULT_PILOT_BUDGET_CENTS;
+          const fields: Record<string, unknown> = pilotOrganizationFields(
+            { budgetCents, endsAt: body.endsAt ?? null, cohort: body.cohort, note: body.note },
             "admin",
           );
-          // A restart keeps the network's usage counter, so earlier spend still counts against the budget.
+          delete fields.aiBonusCents;
+          delete fields.aiBonusExpiresAt;
           tx.update(ref, fields);
+          applyCreditInTx(
+            tx,
+            ref,
+            org,
+            ref.collection("credit_ledger").doc(),
+            {
+              organizationId: ref.id,
+              bucket: "bonus",
+              cents: budgetCents,
+              kind: "admin",
+              reason: "Pilot AI credit",
+              actorUid: caller.uid,
+            },
+            new Date(),
+            pilotBonusExpiry(body.endsAt ?? null),
+          );
           return;
         }
         case "extend":
@@ -216,27 +238,38 @@ async function handleAction(req: NextRequest, { caller, requestId }: AuthorizedC
           return;
         case "topup": {
           if (!isPilotNow) throw new ClientError("Only a pilot network can be topped up here");
-          const next = (org.aiBudgetLimit ?? 0) + body.addCents;
-          if (next > PILOT_PLAN_BUDGET_CAP_CENTS)
-            throw new ClientError(
-              `A pilot budget cannot go above $${PILOT_PLAN_BUDGET_CAP_CENTS / 100}`,
-            );
-          tx.update(ref, { aiBudgetLimit: next });
+          if (body.addCents > MAX_ADMIN_GRANT_CENTS)
+            throw new ClientError(`One grant cannot go above $${MAX_ADMIN_GRANT_CENTS / 100}`);
+          tx.update(ref, { "pilot.grantedCents": pilotGranted(org) + body.addCents });
+          applyCreditInTx(
+            tx,
+            ref,
+            org,
+            ref.collection("credit_ledger").doc(),
+            {
+              organizationId: ref.id,
+              bucket: "bonus",
+              cents: body.addCents,
+              kind: "admin",
+              reason: "Pilot top-up",
+              actorUid: caller.uid,
+            },
+            new Date(),
+            pilotBonusExpiry(org.pilot?.endsAt ?? null),
+          );
           return;
         }
         case "end":
           if (!isPilotNow) throw new ClientError("This network is not a pilot");
+          // Unspent pilot credit stays with the network until it expires.
           tx.update(ref, {
             planId: "free",
-            aiBudgetLimit: newOrganizationDefaults("register").aiBudgetLimit,
             "pilot.status": "ended",
             "pilot.endedAt": new Date().toISOString(),
           });
           return;
         case "reset_usage":
-          if (!isPilotNow) throw new ClientError("Usage can only be reset on a pilot network here");
-          tx.update(ref, { aiUsageCurrent: 0 });
-          return;
+          throw new ClientError("Pilot AI is credit now; use Top up to add more.");
       }
     });
     return NextResponse.json({ ok: true });

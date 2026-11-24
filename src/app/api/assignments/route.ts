@@ -39,7 +39,7 @@ export const POST = withAuthorizedRequest(
     let split: ReturnType<typeof splitAssignmentQuestions>;
     try {
       assertCanCreateAssignment({
-        plan: await resolveCallerPlan(profile.organizationId),
+        plan: resolveCallerPlan(profile.organizationId),
         visibility: data.visibility,
       });
       assertValidAnswerKeys(questions);

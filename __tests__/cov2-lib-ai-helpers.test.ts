@@ -97,7 +97,7 @@ describe('getNetworkLimitsHelp', () => {
     generateContent.mockResolvedValue(reply('ok'));
     const out = await getNetworkLimitsHelp('q', [], ctx());
     expect(out).toEqual({ text: 'ok', usage: NO_USAGE });
-    expect(promptOf()).toContain('Plan: Free (upgrade required for most features)');
+    expect(promptOf()).toContain('Plan: Free (every feature is included; AI runs on a prepaid balance)');
     expect(promptOf()).toContain('(25.0%)');
     expect(promptOf()).not.toContain('Previous conversation history');
   });

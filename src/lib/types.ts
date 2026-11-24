@@ -14,6 +14,8 @@ export interface UserPreferences {
   setupChecklist?: "started" | "done";
   /** The teacher chose "Skip for now" on the first-run page; kept here so it holds on every device. */
   welcomeSkipped?: boolean;
+  /** Teachers: id of the newest "What's new" entry they dismissed (src/lib/whats-new.ts). */
+  whatsNewSeen?: string;
 }
 
 export interface UserProfile {
@@ -55,9 +57,17 @@ export interface Organization {
   planId: "free" | "standard_monthly" | "standard_yearly" | "pro_monthly" | "pro_yearly" | string;
   createdAt: Timestamp | Date;
 
-  // AI Budgeting & Usage
-  aiBudgetLimit: number; // Monthly budget in cents or "token units" (e.g. 500 = $5.00)
-  aiUsageCurrent: number; // Current month's usage in same units
+  // AI balance (credit model, functions/src/budget-policy.ts). All amounts in cents.
+  aiBudgetLimit: number; // Owner's optional monthly spend cap; 0 = no cap
+  aiUsageCurrent: number; // Spend in the month named by aiUsageMonth
+  aiUsageMonth?: string; // YYYY-MM
+  aiUsageReserved?: number; // Held for AI calls in flight
+  aiUsageTotalCents?: number; // All-time spend
+  aiFreeMonth?: string; // YYYY-MM the free allowance counter belongs to
+  aiFreeUsedCents?: number; // Spend against this month's free $1
+  aiBonusCents?: number; // Referral, welcome, pilot and admin credit
+  aiBonusExpiresAt?: string; // ISO; bonus counts as zero after it
+  aiPaidCents?: number; // Deposits and invoices; may be negative after a refund
   practiceLimitPerStudent?: number; // Allowance assigned per member (legacy)
   practiceLimit?: number; // Calculated: practiceLimitPerStudent * memberCount (legacy)
   practiceUsageCurrent?: number; // Current month's practice usage count (legacy)
@@ -65,7 +75,7 @@ export interface Organization {
   aiNotebookLimitPerStudent?: number; // Max AI interactions per student per month
   notebookLimit?: number; // Total network usage limit for interactions
   aiTutorLimitPerStudent?: number; // Max AI tutor messages per student per month
-  baseMonthlyFee: number; // Flat fee for storage/base features
+  baseMonthlyFee?: number; // Legacy flat fee, unused since the credit model
   /** Set when a Scorpio admin made this network a pilot. Kept after the pilot ends or converts to paid. */
   pilot?: OrganizationPilot;
   lastAiUsageAt?: Timestamp | Date;
@@ -77,8 +87,9 @@ export interface OrganizationPilot {
   cohort: string;
   status: PilotStatus;
   startedAt: string; // ISO
-  endsAt?: string | null; // ISO; AI is refused after this
-  budgetCents: number; // what was granted at start (top-ups raise aiBudgetLimit)
+  endsAt?: string | null; // ISO
+  budgetCents: number; // what was granted at start, as bonus credit
+  grantedCents?: number; // start + top-ups
   note?: string | null;
   source?: "admin" | "invite";
 }

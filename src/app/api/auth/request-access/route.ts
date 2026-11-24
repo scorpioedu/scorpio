@@ -5,6 +5,7 @@ import { randomBytes } from "crypto";
 import { withAuthorizedRequest } from "@/lib/auth-verify";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
+import { normalizeReferralCode, resolveReferrer } from "@/lib/referral";
 import { parseJsonBody, parseValue } from "@/lib/api-schema";
 import {
   requestAccessAction,
@@ -37,6 +38,22 @@ async function handleRequestAccess(req: NextRequest) {
         .limit(200)
         .get();
 
+      const referrerIds = [
+        ...new Set(
+          snapshot.docs
+            .map((d) => d.data().referredBy)
+            .filter((v): v is string => typeof v === "string" && !!v),
+        ),
+      ];
+      const referrerNames = new Map<string, string>();
+      if (referrerIds.length) {
+        const refs = referrerIds.map((uid) => adminDb.collection("users").doc(uid));
+        for (const u of await adminDb.getAll(...refs)) {
+          const n = u.data()?.displayName;
+          referrerNames.set(u.id, typeof n === "string" && n ? n : "a teacher");
+        }
+      }
+
       const requests = snapshot.docs.map((d) => {
         const data = d.data();
         return {
@@ -52,6 +69,7 @@ async function handleRequestAccess(req: NextRequest) {
           generatedCode: data.generatedCode ?? null,
           // Set by the onAccessRequestApproved function once the code has been emailed.
           approvalEmailSentAt: data.approvalEmailSentAt?.toDate?.()?.toISOString() ?? null,
+          referredByName: data.referredBy ? (referrerNames.get(data.referredBy) ?? null) : null,
         };
       });
 
@@ -90,6 +108,7 @@ async function handleRequestAccess(req: NextRequest) {
           usedBy: null,
           usedByEmail: null,
           requestId: id,
+          ...(data.referredBy ? { referredBy: data.referredBy } : {}),
           ...(pilot ? pilotInviteFields() : {}),
         });
         tx.update(requestRef, {
@@ -124,7 +143,7 @@ async function handleRequestAccess(req: NextRequest) {
     // ─── SUBMIT (public — called from /request-access page) ──────────────────
     const submission = parseValue(raw, requestAccessSubmitBody, "Missing required fields.");
     if (!submission.ok) return submission.response;
-    const { name, email, institution, role, message } = submission.data;
+    const { name, email, institution, role, message, ref } = submission.data;
 
     if (!name?.trim() || !email?.trim() || !institution?.trim() || !role?.trim()) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
@@ -134,6 +153,11 @@ async function handleRequestAccess(req: NextRequest) {
     if (!emailRegex.test(email.trim())) {
       return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
     }
+
+    // Unknown codes and a teacher referring their own address are ignored rather than rejected.
+    const referrer = ref ? await resolveReferrer(ref) : null;
+    const referredBy =
+      referrer && referrer.email !== email.trim().toLowerCase() ? referrer.uid : null;
 
     // Duplicate check and insert share one transaction so double-clicks cannot create two pending rows (G-009).
     const created = await adminDb.runTransaction(async (tx: FirebaseFirestore.Transaction) => {
@@ -155,6 +179,7 @@ async function handleRequestAccess(req: NextRequest) {
         createdAt: FieldValue.serverTimestamp(),
         reviewedAt: null,
         generatedCode: null,
+        ...(referredBy ? { referralCode: normalizeReferralCode(ref), referredBy } : {}),
       });
       return true;
     });

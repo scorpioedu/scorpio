@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { parseAssignmentDefaults } from "@/lib/assignment-defaults";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
@@ -26,7 +26,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowLeft, ChevronDown, Eye, Loader2, Settings2 } from "lucide-react";
 import { toast } from "sonner";
-import { Organization } from "@/lib/types";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { SmartDateTimePicker } from "@/components/ui/smart-datetime-picker";
 import { QuestionsEditor } from "@/components/teacher/assignment-editor/questions-editor";
@@ -98,10 +97,9 @@ function CreateAssignmentForm() {
   const searchParams = useSearchParams();
   const forkId = searchParams?.get("fork");
   const initialCourseId = searchParams?.get("courseId");
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile } = useAuth();
   const { classes, classId: selectedClassId } = useSelectedClass({ allowAll: true, mirror: false });
   const courses: CourseItem[] = classes ?? [];
-  const [organization, setOrganization] = useState<Organization | null>(null);
   const [chosenCourseId, setChosenCourseId] = useState("");
   const selectedCourseId =
     chosenCourseId ||
@@ -144,28 +142,6 @@ function CreateAssignmentForm() {
   const [customPoints, setCustomPoints] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-
-  const isFreePlan =
-    authLoading ||
-    !organization ||
-    (organization.planId === "free" &&
-      (organization.aiBudgetLimit || 0) <= (organization.aiUsageCurrent || 0));
-
-  useEffect(() => {
-    async function fetchOrg() {
-      if (profile?.organizationId) {
-        try {
-          const orgSnap = await getDoc(doc(db, "organizations", profile.organizationId));
-          if (orgSnap.exists()) {
-            setOrganization({ id: orgSnap.id, ...orgSnap.data() } as Organization);
-          }
-        } catch (e) {
-          console.error("Error fetching organization", e);
-        }
-      }
-    }
-    fetchOrg();
-  }, [profile?.organizationId]);
 
   // Forks are copied server-side by POST /api/assignments/clone (answer key included); the copy is
   // the teacher's own, so GET /api/assignments returns it with its answers.
@@ -265,7 +241,7 @@ function CreateAssignmentForm() {
           requireWorkSubmission: settings.requireWorkSubmission,
           enableTabDetection: settings.enableTabDetection,
           lockdownMode: settings.lockdownMode,
-          allowAIHelp: settings.allowAIHelp && !isFreePlan,
+          allowAIHelp: settings.allowAIHelp,
           allowCalculator: settings.allowCalculator,
           totalPoints: assignmentPoints,
           questions: scoredQuestions,
@@ -411,7 +387,6 @@ function CreateAssignmentForm() {
                 </p>
               </div>
               <QuestionSources
-                isFreePlan={isFreePlan}
                 userId={user?.uid}
                 onAdd={(added) => setQuestions((current) => [...current, ...added])}
               />
@@ -434,7 +409,6 @@ function CreateAssignmentForm() {
             <SettingsFields
               value={settings}
               onChange={setSettings}
-              isFreePlan={isFreePlan}
               hasNetwork={!!profile?.organizationId}
             />
           </AdvancedSettings>

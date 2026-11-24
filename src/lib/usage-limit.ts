@@ -1,6 +1,9 @@
 import { adminDb } from "./firebase-admin";
 import { evaluateBudget } from "../../functions/src/budget-policy";
 
+/** Where a teacher tops up their network's AI balance. */
+export const AI_CREDIT_PATH = "/teacher/network/billing";
+
 /**
  * Cheap pre-check before an AI request. The rules live in evaluateBudget (functions/src/budget-policy.ts),
  * shared with reserveBudget, which is the transactional enforcement point.
@@ -11,7 +14,7 @@ export async function checkBudget(
   userId?: string,
 ): Promise<{ allowed: boolean; error?: string }> {
   if (!organizationId) {
-    return { allowed: false, error: "AI Features require a Department License." };
+    return { allowed: false, error: "AI features need a Scorpio network. Create or join one in Network settings." };
   }
 
   if (!adminDb) return { allowed: false, error: "Database not initialized" };
@@ -26,25 +29,21 @@ export async function checkBudget(
     const decision = evaluateBudget(data, userData, type);
     if (decision.allowed) return { allowed: true };
 
-    const budgetLimit = data?.aiBudgetLimit || 0;
-    const isFree = !data?.planId || data.planId === "free";
-    const isPilot = data?.planId === "pilot";
+    const isStudentType = type === "tutor" || type === "notebook";
     switch (decision.reason) {
-      case "subscription_inactive":
-        return {
-          allowed: false,
-          error: isPilot
-            ? "Your Scorpio pilot has ended. Contact the Scorpio team to extend it or continue on a Department License."
-            : "Your subscription is no longer active.",
-        };
       case "budget_exhausted":
         return {
           allowed: false,
-          error: isPilot
-            ? "Your pilot AI budget is used up. Contact the Scorpio team and we'll top it up."
-            : isFree
-              ? "Free starter AI budget reached. Upgrade to a Department License in Network settings for unlimited AI access."
-              : `Monthly AI budget ($${(budgetLimit / 100).toFixed(2)}) reached. Please increase your limit in Network settings.`,
+          error: isStudentType
+            ? "Raise is paused for now. Let your teacher know so they can turn it back on."
+            : "Your AI balance is empty. Top up from $5 in Network settings, or wait for next month's free $1.",
+        };
+      case "monthly_cap_reached":
+        return {
+          allowed: false,
+          error: isStudentType
+            ? "Raise is paused for now. Let your teacher know so they can turn it back on."
+            : "Your network reached the monthly AI spend cap you set. Raise it in Network settings.",
         };
       case "user_allowance_reached":
         return {

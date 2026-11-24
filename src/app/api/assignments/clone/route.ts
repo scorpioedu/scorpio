@@ -15,12 +15,6 @@ import {
   normalizeForkedAnswer,
   stripQuestionKey,
 } from "@/lib/answer-key-access";
-import {
-  PlanGateError,
-  assertCanCloneAssignment,
-  planGateResponse,
-  resolveCallerPlan,
-} from "@/lib/plan-gates";
 
 /** Settings copied from the source; everything else (owner, class, sharing, due date) belongs to the copy. */
 const COPIED_FIELDS = [
@@ -50,8 +44,8 @@ const SOLUTIONS = "assignment_solutions";
  * POST /api/assignments/clone { sourceId, courseId?, title?, dueDate?, count?, pick?, hidden? } -> { id }
  * Copies an assignment the caller can read (own, global, or shared with their network) into a new
  * private assignment they own. The answer key is copied server-side (assignment_keys/{sourceId} ->
- * assignment_keys/{newId}) and is never returned. Free plans may copy their own assignments and every
- * global waypoint; department (network) waypoints need a Department License (403 { code: 'plan_upgrade_required', feature, hasNoOrg }).
+ * assignment_keys/{newId}) and is never returned. Everyone may copy their own assignments, every
+ * global waypoint and the waypoints shared with their network.
  *
  * A published course set (global, with a curriculumSetKey) is a pool: the copy gets its first `count`
  * problems, or the first 5 when no count is sent, and never more than the pool holds; `pick` names
@@ -87,11 +81,6 @@ export const POST = withAuthorizedRequest(
     let apTopics: string[] | undefined;
     const solutions: Record<string, string> = {};
     try {
-      assertCanCloneAssignment({
-        plan: await resolveCallerPlan(profile.organizationId),
-        source,
-        callerUid: caller.uid,
-      });
       const key = (await adminDb.collection("assignment_keys").doc(sourceId).get()).data();
       const merged = mergeAnswerKey(source, key);
       rubric = typeof merged.rubric === "string" ? merged.rubric : "";
@@ -142,7 +131,6 @@ export const POST = withAuthorizedRequest(
         }
       }
     } catch (error) {
-      if (error instanceof PlanGateError) return planGateResponse(error);
       return errorResponse(error, "assignments/clone", requestId);
     }
 

@@ -45,7 +45,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,9 +52,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Lock } from "lucide-react";
-import { doc, getDoc } from "firebase/firestore";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 interface UsageEntry {
@@ -87,19 +83,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
   const [typeDistribution, setTypeDistribution] = useState<TypeDistribution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isFree, setIsFree] = useState(true);
   const [hoveredTrendIdx, setHoveredTrendIdx] = useState<number | null>(null);
-
-  useEffect(() => {
-    async function checkPlan() {
-      if (!organizationId) return;
-      const docSnap = await getDoc(doc(db, "organizations", organizationId));
-      if (docSnap.exists()) {
-        setIsFree(docSnap.data().planId === "free");
-      }
-    }
-    checkPlan();
-  }, [organizationId]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -296,38 +280,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
   }
 
   return (
-    <div
-      className={cn(
-        "space-y-6 relative transition-all duration-700",
-        isFree && "grayscale-[0.5] scale-[0.99] select-none",
-      )}
-    >
-      {isFree && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] rounded-[2.5rem] p-12 text-center border border-white/5 shadow-2xl overflow-hidden group">
-          <div className="relative z-10 space-y-6 flex flex-col items-center">
-            <div className="p-4 bg-zinc-900/90 rounded-full border border-white/10 shadow-2xl">
-              <Lock className="h-6 w-6 text-zinc-400" />
-            </div>
-
-            <div className="space-y-2 max-w-md">
-              <h3 className="text-2xl font-black tracking-tight text-white uppercase tracking-widest">
-                Network Analytics
-              </h3>
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
-                Usage tracking is reserved for active networks.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 w-full relative z-20">
-              <Link href="/teacher/network/billing" className="z-30">
-                <Button className="cursor-pointer bg-white text-black hover:bg-zinc-200 border-none font-black px-10 h-10 rounded-full text-[10px] uppercase tracking-widest shadow-2xl transition-all">
-                  Upgrade to Unlock
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className="space-y-6 relative">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {

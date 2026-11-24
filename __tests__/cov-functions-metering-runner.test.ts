@@ -103,7 +103,8 @@ describe('token rates and cost estimate', () => {
 });
 
 describe('reserveBudget', () => {
-  const org = { subscriptionStatus: 'active', aiBudgetLimit: 100, aiUsageCurrent: 10, aiUsageReserved: 5 };
+  // Credit model: $1 free this month is enough for these small holds.
+  const org = { aiUsageReserved: 5 };
 
   test.each([
     ['empty organization id', '', 1],
@@ -127,15 +128,15 @@ describe('reserveBudget', () => {
 
   test('holds start from zero when the organization has no reserved field', async () => {
     const db = new FakeDb();
-    db.seed('organizations/org1', { subscriptionStatus: 'active', aiBudgetLimit: 100 });
+    db.seed('organizations/org1', {});
     await reserveBudget(asDb(db), 'org1', 'grading', undefined, 2);
     expect(db.store.get('organizations/org1')).toMatchObject({ aiUsageReserved: 2 });
   });
 
   test.each([
-    ['inactive subscription', { ...org, subscriptionStatus: 'canceled' }, 'AI subscription is not active'],
-    ['missing organization', undefined, 'AI subscription is not active'],
-    ['exhausted budget', { ...org, aiUsageCurrent: 99 }, 'Insufficient AI budget for this request'],
+    ['missing organization', undefined, 'Insufficient AI balance for this request'],
+    ['empty balance', { aiFreeMonth: new Date().toISOString().slice(0, 7), aiFreeUsedCents: 99 }, 'Insufficient AI balance for this request'],
+    ['monthly cap reached', { aiPaidCents: 1000, aiBudgetLimit: 10, aiUsageMonth: new Date().toISOString().slice(0, 7), aiUsageCurrent: 9 }, 'Monthly AI spend cap reached'],
   ])('denies %s and writes nothing', async (_n, orgDoc, message) => {
     const db = new FakeDb();
     if (orgDoc) db.seed('organizations/org1', orgDoc);
@@ -198,26 +199,34 @@ describe('settleBudget', () => {
     const cost = 1000 * 0.000075 + 200 * 0.000375;
     const orgDoc = db.store.get('organizations/org1') as Doc;
     expect(orgDoc.aiUsageReserved).toBe(4);
-    expect(orgDoc.aiUsageCurrent as number).toBeCloseTo(1 + cost, 8);
+    // aiUsageCurrent had no aiUsageMonth, so this month's spend starts from zero.
+    expect(orgDoc.aiUsageCurrent as number).toBeCloseTo(cost, 8);
+    expect(orgDoc.aiUsageMonth).toBe(new Date().toISOString().slice(0, 7));
+    expect(orgDoc.aiFreeUsedCents as number).toBeCloseTo(cost, 8);
     expect(orgDoc.aiUsageTotalCents as number).toBeCloseTo(4 + cost, 8);
     expect(db.store.get('ai_reservations/r1')).toMatchObject({ status: 'settled' });
     expect(db.store.get('usage_analytics/r1')).toMatchObject({ organizationId: 'org1', userId: 'u1', type: 'grading', inputTokens: 1000, outputTokens: 200 });
     expect(db.store.has('billing_outbox/r1')).toBe(false);
   });
 
-  test('an organization with a Polar customer gets a pending billing outbox row', async () => {
+  test('no billing outbox row is written any more, even for Polar customers', async () => {
     const db = new FakeDb();
     seedReservation(db, {}, { polarCustomerId: 'cus_1' });
     await settleBudget(asDb(db), 'r1', 1000, 200);
-    expect(db.store.get('billing_outbox/r1')).toMatchObject({ customerId: 'cus_1', organizationId: 'org1', status: 'pending', attempts: 0, inputTokens: 1000, outputTokens: 200 });
+    expect(db.store.has('billing_outbox/r1')).toBe(false);
   });
 
-  test('zero-cost usage creates no outbox row even for Polar customers', async () => {
+  test('cost is spent from free, then bonus, then paid', async () => {
     const db = new FakeDb();
-    seedReservation(db, {}, { polarCustomerId: 'cus_1' });
-    await settleBudget(asDb(db), 'r1', 0, 0);
-    expect(db.store.has('billing_outbox/r1')).toBe(false);
-    expect(db.store.get('ai_reservations/r1')).toMatchObject({ status: 'settled', costCents: 0 });
+    const month = new Date().toISOString().slice(0, 7);
+    seedReservation(db, {}, { aiFreeMonth: month, aiFreeUsedCents: 99.9, aiBonusCents: 0.05, aiPaidCents: 5 });
+    await settleBudget(asDb(db), 'r1', 1000, 200);
+    const cost = 1000 * 0.000075 + 200 * 0.000375;
+    const orgDoc = db.store.get('organizations/org1') as Doc;
+    expect(orgDoc.aiFreeUsedCents as number).toBeCloseTo(100, 8);
+    expect(orgDoc.aiBonusCents as number).toBeCloseTo(0, 8);
+    expect(orgDoc.aiPaidCents as number).toBeCloseTo(5 - (cost - 0.1 - 0.05), 8);
+    expect(db.store.get('ai_reservations/r1')).toMatchObject({ status: 'settled' });
   });
 
   test('the organization hold never goes below zero', async () => {

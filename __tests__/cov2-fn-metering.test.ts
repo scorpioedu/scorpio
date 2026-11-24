@@ -71,15 +71,15 @@ describe('settleBudget with an organization that has no counters yet', () => {
     expect(db.store.has('billing_outbox/r1')).toBe(false);
   });
 
-  it('queues a billing outbox row only when the organization has a Polar customer and the cost is positive', async () => {
+  it('never queues a billing outbox row, and releases each hold', async () => {
     const db = new FakeDb();
     db.seed('organizations/org1', { polarCustomerId: 'cus_1', aiUsageReserved: 1 });
     db.seed('ai_reservations/r1', { organizationId: 'org1', type: 'grading', maxCost: 0.5, status: 'pending' });
     db.seed('ai_reservations/r2', { organizationId: 'org1', type: 'grading', maxCost: 0.25, status: 'pending' });
     await settleBudget(asDb(db), 'r1', 0, 0);
-    expect(db.store.has('billing_outbox/r1')).toBe(false);
     await settleBudget(asDb(db), 'r2', 10, 10);
-    expect(db.store.get('billing_outbox/r2')).toMatchObject({ customerId: 'cus_1', status: 'pending', attempts: 0 });
+    expect(db.store.has('billing_outbox/r1')).toBe(false);
+    expect(db.store.has('billing_outbox/r2')).toBe(false);
     expect((db.store.get('organizations/org1') as Doc).aiUsageReserved).toBe(0.25);
   });
 

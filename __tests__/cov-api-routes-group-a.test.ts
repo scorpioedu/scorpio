@@ -283,7 +283,7 @@ describe("POST /api/teacher/network/membership", () => {
   describe("create", () => {
     beforeEach(() => mockDb.seed("users/t1", { role: "teacher" }));
 
-    test("creates a free, zero-budget network owned by the caller and links the profile", async () => {
+    test("creates an active free network (no spend cap) owned by the caller and links the profile", async () => {
       const res = await call({ action: "create", name: "  Riverside  " });
       expect(res.status).toBe(200);
       expect(await json(res)).toEqual({ success: true });
@@ -296,7 +296,7 @@ describe("POST /api/teacher/network/membership", () => {
             ownerId: "t1",
             ownerEmail: "t1@school.test",
             planId: "free",
-            subscriptionStatus: "none",
+            subscriptionStatus: "active",
             aiBudgetLimit: 0,
             createdAt: expect.any(Date),
           }),
@@ -828,7 +828,9 @@ describe("POST /api/auth/register", () => {
           ownerEmail: "u1@school.test",
           planId: "free",
           subscriptionStatus: "active",
-          aiBudgetLimit: 50,
+          aiBudgetLimit: 0,
+          aiBonusCents: 0,
+          aiPaidCents: 0,
         }),
       );
       expect(mockDb.docs.get("users/u1")).toEqual(
@@ -862,6 +864,7 @@ describe("POST /api/auth/register", () => {
               contactEmail: "ann@school.test",
               label: "Dec outreach",
               redeemedAt: expect.any(Date),
+              referredBy: null,
             },
           }),
         );

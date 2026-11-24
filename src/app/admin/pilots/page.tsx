@@ -251,8 +251,9 @@ export default function AdminPilotsPage() {
 
       {data && (
         <p className="mt-6 text-xs text-muted-foreground">
-          Pilot budgets don&apos;t reset monthly; they cover the whole pilot. A pilot can hold at
-          most {dollars(data.defaults.capCents)}. Updated{" "}
+          Pilot AI is bonus credit on top of the free $1 a month. It lasts until the pilot ends or
+          12 months, whichever is later. One grant can be at most {dollars(data.defaults.capCents)}.
+          Updated{" "}
           {new Date(data.generatedAt).toLocaleTimeString()}.
         </p>
       )}
@@ -418,31 +419,12 @@ function PilotCard({
             <Button
               size="sm"
               variant="ghost"
-              disabled={busy !== null}
-              onClick={() => {
-                if (
-                  confirm(
-                    `Reset ${p.name}'s AI usage to $0? This gives them their full budget back.`,
-                  )
-                )
-                  void act(
-                    key("reset"),
-                    { action: "reset_usage", organizationId: p.id },
-                    "Usage reset",
-                  );
-              }}
-            >
-              Reset usage
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
               className="text-destructive hover:text-destructive"
               disabled={busy !== null}
               onClick={() => {
                 if (
                   confirm(
-                    `End the pilot for ${p.name}? It goes back to the free plan (50¢ AI budget). The pilot record is kept.`,
+                    `End the pilot for ${p.name}? Unspent pilot credit stays with the network until it expires. The pilot record is kept.`,
                   )
                 )
                   void act(key("end"), { action: "end", organizationId: p.id }, "Pilot ended");

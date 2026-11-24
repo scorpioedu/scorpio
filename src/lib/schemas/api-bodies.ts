@@ -162,6 +162,8 @@ export const requestAccessSubmitBody = z.object({
   institution: z.string().max(500),
   role: z.string().max(500),
   message: z.string().max(10000).nullish(),
+  /** A teacher's referral code from the ?ref= link; unknown codes are ignored server-side. */
+  ref: z.string().max(40).nullish(),
 });
 export const requestAccessReviewBody = z.object({ id: docId, pilot: z.boolean().optional() });
 
@@ -193,10 +195,11 @@ export const submissionBody = z.object({
 });
 
 // ─── POST /api/checkout ────────────────────────────────────────────────────
+/** AI credit deposit, whole cents; bounds mirror MIN_DEPOSIT_CENTS / MAX_DEPOSIT_CENTS in functions/src/budget-policy.ts. */
 export const checkoutBody = z.object({
   userId: z.string().min(1).max(256),
   organizationId: docId,
-  planId: z.string().min(1).max(128),
+  amountCents: z.number().int().min(500).max(50_000),
 });
 
 // ─── POST /api/courses ─────────────────────────────────────────────────────

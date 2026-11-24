@@ -19,13 +19,11 @@ import type { AssignmentSettingsValue } from "./types";
 export function SettingsFields({
   value,
   onChange,
-  isFreePlan,
   hasNetwork,
   showSharing = true,
 }: {
   value: AssignmentSettingsValue;
   onChange: (next: AssignmentSettingsValue) => void;
-  isFreePlan: boolean;
   hasNetwork: boolean;
   showSharing?: boolean;
 }) {
@@ -140,12 +138,9 @@ export function SettingsFields({
             {
               id: "allowAIHelp",
               label: "Allow Raise hints",
-              description: isFreePlan
-                ? "Requires AI access."
-                : "Give students guided hints as they work.",
+              description: "Give students guided hints as they work.",
               checked: value.allowAIHelp,
               setChecked: (allowAIHelp: boolean) => set({ allowAIHelp }),
-              disabled: isFreePlan,
             },
             {
               id: "requireWork",
@@ -168,12 +163,11 @@ export function SettingsFields({
               checked: value.lockdownMode,
               setChecked: (lockdownMode: boolean) => set({ lockdownMode }),
             },
-          ].map(({ id, label, description, checked, setChecked, disabled }) => (
+          ].map(({ id, label, description, checked, setChecked }) => (
             <div key={id} className="flex items-start gap-2.5">
               <Checkbox
                 id={id}
                 checked={checked}
-                disabled={disabled}
                 onCheckedChange={(value) => setChecked(value === true)}
                 aria-describedby={`${id}-help`}
                 className="mt-0.5"
