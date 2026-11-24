@@ -39,11 +39,17 @@ test('a pilot invite creates the new network as a pilot; a pilot invite into an 
  expect((await register(req('auth/register','wpilot',{role:'teacher',name:'Pia',code:'PILOTNEW'}))).status).toBe(200);
  const orgId=(await adminDb.collection('users').doc('wpilot').get()).data()!.organizationId;
  const org=(await adminDb.collection('organizations').doc(orgId).get()).data()!;
- expect(org).toMatchObject({planId:'pilot',subscriptionStatus:'active',aiBudgetLimit:1000,ownerId:'wpilot'});
+ // A pilot's AI arrives as bonus credit, recorded in the ledger; aiBudgetLimit is the owner's spend cap (0 = none).
+ expect(org).toMatchObject({planId:'pilot',aiBudgetLimit:0,aiBonusCents:1000,ownerId:'wpilot'});
+ const ledger=(await adminDb.collection('organizations').doc(orgId).collection('credit_ledger').get()).docs.map(d=>d.data());
+ expect(ledger).toEqual([expect.objectContaining({bucket:'bonus',cents:1000,meta:{source:'pilot-invite'}})]);
  expect(org.pilot).toMatchObject({cohort:'fall-2026',status:'active',budgetCents:1000,endsAt:'2027-06-15T00:00:00.000Z',source:'invite'});
  await adminDb.collection('teacherInviteCodes').doc('PILOTJOIN').set({organizationId:'worg',isPilot:true,pilot:{cohort:'fall-2026',budgetCents:1000},expiresAt:new Date(Date.now()+60000),isUsed:false});
  expect((await register(req('auth/register','wpilotjoin',{role:'teacher',name:'Jo',code:'PILOTJOIN'}))).status).toBe(200);
- expect((await adminDb.collection('organizations').doc('worg').get()).data()!.planId).toBe('free');
+ const joined=(await adminDb.collection('organizations').doc('worg').get()).data()!;
+ expect(joined.planId).not.toBe('pilot');
+ expect(joined.aiBonusCents||0).toBe(0);
+ expect((await adminDb.collection('organizations').doc('worg').collection('credit_ledger').get()).size).toBe(0);
 });
 test('teacher invite attribution is copied onto the server-managed profile in the same transaction',async()=>{
  await adminDb.collection('teacherInviteCodes').doc('ATTRIB').set({organizationId:null,contactEmail:'ann@school.test',label:'Dec outreach',expiresAt:new Date(Date.now()+60000),isUsed:false});

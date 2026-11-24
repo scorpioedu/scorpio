@@ -110,7 +110,7 @@ describe('landing budget alert', () => {
   });
 
   test('counts current usage alone when nothing is reserved', async () => {
-    mockDocs.set('organizations/landing-org', { aiBudgetLimit: 100, aiUsageCurrent: 80 });
+    mockDocs.set('organizations/landing-org', { aiBudgetLimit: 100, aiUsageCurrent: 80, aiUsageMonth: new Date().toISOString().slice(0, 7) });
     await call({ message: 'hi' });
     expect(warned().some(m => m.includes('80% used'))).toBe(true);
   });
