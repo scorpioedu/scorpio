@@ -15,9 +15,22 @@
   animation: settle 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/*
+ * The strokes draw themselves. Lengths are real path lengths (not pathLength, which some browsers
+ * ignore on <circle>), the gap is longer than the stroke so it never wraps, and each stroke stays
+ * invisible until it starts, so its round cap is not left as a stray dot.
+ */
+.compass {
+  --len: 63; /* 2 * pi * 10 */
+}
+
+.needle {
+  --len: 27; /* four sides of about 6.7 */
+}
+
 .splash[open] .compass,
 .splash[open] .needle {
-  stroke-dasharray: 1;
+  stroke-dasharray: var(--len) calc(var(--len) + 2);
   animation: draw 420ms ease-in-out 50ms both;
 }
 
@@ -47,8 +60,9 @@
 }
 
 @keyframes draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+  0% { stroke-dashoffset: var(--len); opacity: 0; }
+  8% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
 }
 
 @keyframes expand {

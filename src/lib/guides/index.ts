@@ -84,6 +84,11 @@ export function topicAnchor(topicId: string): string {
   return `topic-${topicId.replace(".", "-")}`;
 }
 
+/** "guide-worked-examples": a section of a topic's guide, anchored on the public lesson pages only. */
+export function guideSectionId(title: string): string {
+  return `guide-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+}
+
 /** "topic-4-2-mistake-impulse-force-confusion": a tagged "Common mistakes" entry of a topic's guide. */
 export function misconceptionAnchor(topicId: string, tag: string): string {
   return `${topicAnchor(topicId)}-mistake-${tag}`;
