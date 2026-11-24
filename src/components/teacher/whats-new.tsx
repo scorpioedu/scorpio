@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Sparkles, X } from "lucide-react";
+import { ChevronDown, Megaphone, X } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { updateUserProfile } from "@/lib/firebase";
 import { unseenWhatsNew, WHATS_NEW } from "@/lib/whats-new";
@@ -36,7 +36,7 @@ export function WhatsNew() {
       className="mb-6 rounded-xl border border-border/60 bg-card/60 text-sm backdrop-blur-sm"
     >
       <div className="flex items-center gap-2 px-4 py-2.5">
-        <Sparkles className="size-4 shrink-0 text-purple-400" aria-hidden />
+        <Megaphone className="size-4 shrink-0 text-primary" aria-hidden />
         <p className="min-w-0 flex-1 truncate">
           <span className="font-medium">What&apos;s new:</span>{" "}
           <span className="text-muted-foreground">{latest.title}</span>

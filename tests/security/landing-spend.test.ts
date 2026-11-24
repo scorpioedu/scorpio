@@ -12,6 +12,11 @@ import { model } from '../../src/lib/ai/config';
 import { POST } from '../../src/app/api/chat/landing/route';
 
 const ORG = 'landing-org';
+const MONTH = new Date().toISOString().slice(0, 7);
+/** The month's spend has reached the cap. */
+const capReached = () => org().set({ aiUsageCurrent: 1000, aiUsageMonth: MONTH }, { merge: true });
+/** No cap, and every bucket is empty: this month's free credit used, no bonus, no paid. */
+const balanceEmpty = () => org().set({ aiBudgetLimit: 0, aiFreeMonth: MONTH, aiFreeUsedCents: 100, aiBonusCents: 0, aiPaidCents: 0 }, { merge: true });
 // Test-only value; the real secret comes from the deployment environment.
 const TEST_SECRET = 'test-only-landing-cookie-secret-0123456789';
 
@@ -44,7 +49,8 @@ async function wipe(col: string) {
 let fetchSpy: jest.SpyInstance;
 beforeEach(async () => {
   await Promise.all(['landing_visitors', 'landing_daily', 'rate_limits', 'ai_reservations'].map(wipe));
-  await org().set({ planId: 'pro', subscriptionStatus: 'active', aiBudgetLimit: 1000, aiUsageCurrent: 0, aiUsageReserved: 0 });
+  // A $10 monthly spend cap and $50 of paid balance; spend only counts for the month it was written in.
+  await org().set({ aiBudgetLimit: 1000, aiUsageCurrent: 0, aiUsageMonth: MONTH, aiUsageReserved: 0, aiPaidCents: 5000 });
   process.env.GEMINI_API_KEY = 'test-key-not-real';
   process.env.LANDING_ORG_ID = ORG;
   process.env.LANDING_VISITOR_COOKIE_SECRET = TEST_SECRET;
@@ -144,11 +150,23 @@ describe('fail closed on missing or exhausted landing budget', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  test('exhausted landing org budget returns 503 and makes no provider call', async () => {
-    await org().set({ aiUsageCurrent: 1000 }, { merge: true });
+  test('landing org at its monthly spend cap returns 503 and makes no provider call', async () => {
+    await capReached();
     const res = await send({ ip: newIp() });
     expect(res.status).toBe(503);
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  test('landing org with an empty balance returns 503 and makes no provider call', async () => {
+    await balanceEmpty();
+    const res = await send({ ip: newIp() });
+    expect(res.status).toBe(503);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  test('spend from an earlier month does not count against this month\'s cap', async () => {
+    await org().set({ aiUsageCurrent: 1000, aiUsageMonth: '2000-01' }, { merge: true });
+    expect((await send({ ip: newIp() })).status).toBe(200);
   });
 
   test('missing cookie secret returns 503 and makes no provider call', async () => {
@@ -164,7 +182,7 @@ describe('fail closed on missing or exhausted landing budget', () => {
   });
 
   test('landing type with an exhausted budget throws instead of calling the provider', async () => {
-    await org().set({ aiUsageCurrent: 1000 }, { merge: true });
+    await balanceEmpty();
     await expect(billingContext.run({ organizationId: ORG, type: 'landing' }, () => model.generateContent('hi'))).rejects.toThrow();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
@@ -172,7 +190,7 @@ describe('fail closed on missing or exhausted landing budget', () => {
 
 describe('research exemption is retained but visible', () => {
   test('research with an exhausted budget still calls the provider and logs the swallowed error', async () => {
-    await org().set({ aiUsageCurrent: 1000 }, { merge: true });
+    await balanceEmpty();
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const res = await billingContext.run({ organizationId: ORG, type: 'research' }, () => model.generateContent('hi'));
     expect((await res.response).text()).toBe('ok');
@@ -199,8 +217,16 @@ describe('global daily cap, output cap and budget alert', () => {
     expect(body.generationConfig.maxOutputTokens).toBeLessThanOrEqual(512);
   });
 
-  test('logs a warning once the landing org passes 80% of its budget', async () => {
-    await org().set({ aiUsageCurrent: 850 }, { merge: true });
+  test('logs a warning once the landing org passes 80% of its monthly cap', async () => {
+    await org().set({ aiUsageCurrent: 850, aiUsageMonth: MONTH }, { merge: true });
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const res = await send({ ip: newIp() });
+    expect(res.status).toBe(200);
+    expect(warn.mock.calls.flat().join(' ')).toMatch(/80%/);
+  });
+
+  test('with no cap, logs a warning once 80% of this month\'s spend plus balance is used', async () => {
+    await org().set({ aiBudgetLimit: 0, aiUsageCurrent: 850, aiUsageMonth: MONTH, aiFreeMonth: MONTH, aiFreeUsedCents: 100, aiPaidCents: 150 }, { merge: true });
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const res = await send({ ip: newIp() });
     expect(res.status).toBe(200);

@@ -254,7 +254,7 @@ describe('POST /api/chat/landing budget alert', () => {
   const warned = () => (console.warn as jest.Mock).mock.calls.map(c => String(c[0]));
 
   test('warns at 80 percent usage including reserved spend', async () => {
-    mockDocs.set('organizations/landing-org', { aiBudgetLimit: 100, aiUsageCurrent: 70, aiUsageReserved: 10 });
+    mockDocs.set('organizations/landing-org', { aiBudgetLimit: 100, aiUsageCurrent: 70, aiUsageMonth: new Date().toISOString().slice(0, 7), aiUsageReserved: 10 });
     const res = await call({ message: 'hi' });
     expect(res.status).toBe(200);
     expect(warned().some(m => m.includes('past 80%') && m.includes('80%'))).toBe(true);

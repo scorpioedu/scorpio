@@ -200,8 +200,9 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     );
     expect(orgSnap.exists()).toBe(true);
     expect(orgSnap.data()!.ownerId).toBe(TEACHER_UID);
-    expect(orgSnap.data()!.subscriptionStatus).toBe('active');
-    expect(orgSnap.data()!.aiBudgetLimit).toBe(50);
+    // A new network starts with no spend cap and no paid balance; AI runs on the monthly free credit.
+    expect(orgSnap.data()!.aiBudgetLimit).toBe(0);
+    expect(orgSnap.data()!.aiPaidCents || 0).toBe(0);
 
     // Reusing the same invite code is rejected
     const reuseRes = await teacherCode(
@@ -756,10 +757,15 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     for (const q of forkFetched.questions) expect(q).not.toHaveProperty('correctAnswer');
     expect(forkFetched).not.toHaveProperty('rubric');
 
-    // Forking department waypoints is a Department License feature; this network is on the free plan
+    // Forking department waypoints is free for every network now: the colleague gets their own copy,
+    // with the answer key copied server-side and never returned to the browser.
     const cloneRes = await cloneAssignment(apiReq('assignments/clone', COLLEAGUE_UID, { sourceId: assignmentId }));
-    expect(cloneRes.status).toBe(403);
-    expect(await cloneRes.json()).toMatchObject({ code: 'plan_upgrade_required', feature: 'network-share' });
+    expect(cloneRes.status).toBe(200);
+    const cloneBody = await cloneRes.json();
+    expect(Object.keys(cloneBody)).toEqual(['id']);
+    const forked = (await adminDb.collection('assignments').doc(cloneBody.id).get()).data()!;
+    expect(forked.teacherId).toBe(COLLEAGUE_UID);
+    expect((await adminDb.collection('assignment_keys').doc(cloneBody.id).get()).exists).toBe(true);
 
     // Teacher compiles an AI Learning Portfolio for Student 1 based on Raise tutor sessions
     const portfolioRes = await generatePortfolio(
@@ -793,6 +799,9 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     );
     await assertFails(getDoc(doc(clientDb(OUTSIDER_TEACHER_UID), 'submissions', submission1Id)));
     await assertFails(getDoc(doc(clientDb(OUTSIDER_TEACHER_UID), 'portfolios', STUDENT_1_UID)));
+    // ...and cannot fork the network's waypoints either
+    const outClone = await cloneAssignment(apiReq('assignments/clone', OUTSIDER_TEACHER_UID, { sourceId: assignmentId }));
+    expect(outClone.status).toBe(403);
   });
 
   test('9. Lifecycle cleanup: teacher removes a student from roster, and student exports & deletes account', async () => {

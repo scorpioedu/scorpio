@@ -17,6 +17,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { parseJsonBody } from "@/lib/api-schema";
 import { landingChatBody } from "@/lib/schemas/api-bodies";
 import { diagramsOn } from "@/lib/ai/tutor";
+import { summarizeBalance } from "../../../../../functions/src/budget-policy";
 import { landingDiagramSection } from "@/lib/diagram/prompt";
 import { auditDiagramBlocks } from "@/lib/diagram/blocks";
 
@@ -146,13 +147,19 @@ async function admit(visitorId: string, ipHash: string | null): Promise<Admissio
   });
 }
 
-/** Logs when the landing organization has used 80% or more of its budget. Never throws. */
+/**
+ * Logs when the landing organization has used 80% or more of what it can spend this month: its
+ * monthly spend cap when one is set, otherwise this month's spend plus its remaining balance.
+ * Never throws.
+ */
 async function warnIfNearBudget(orgId: string) {
   try {
     const org = (await adminDb.collection("organizations").doc(orgId).get()).data();
-    const limit = Number(org?.aiBudgetLimit) || 0;
+    if (!org) return;
+    const b = summarizeBalance(org);
+    const used = b.monthSpendCents + b.reservedCents;
+    const limit = b.monthlyCapCents > 0 ? b.monthlyCapCents : used + b.availableCents;
     if (limit <= 0) return;
-    const used = (Number(org?.aiUsageCurrent) || 0) + (Number(org?.aiUsageReserved) || 0);
     if (used >= limit * BUDGET_ALERT_RATIO) {
       console.warn(
         `[Landing Chat] ALERT: landing org budget past 80% (${Math.round((used / limit) * 100)}% used)`,

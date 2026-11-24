@@ -11,7 +11,7 @@ beforeAll(async () => {
    'users/ta':{role:'teacher',organizationId:'a'}, 'users/tb':{role:'teacher',organizationId:'b'},
    'users/sa':{role:'student',teacherId:'ta',courseId:'ca',organizationId:'a'},'users/sb':{role:'student',teacherId:'tb',courseId:'cb',organizationId:'b'},
    'organizations/a':{ownerId:'ta',planId:'free'}, 'organizations/b':{ownerId:'tb'},
-   'users/tp':{role:'teacher',organizationId:'p'}, 'organizations/p':{ownerId:'tp',planId:'pilot',aiBudgetLimit:1000,pilot:{status:'active'}},
+   'users/tp':{role:'teacher',organizationId:'p'}, 'organizations/p':{ownerId:'tp',planId:'pilot',aiBudgetLimit:1000,aiBonusCents:1000,aiPaidCents:0,pilot:{status:'active'}}, 'organizations/p/credit_ledger/l1':{kind:'admin',bucket:'bonus',cents:1000},
    'courses/ca':{teacherId:'ta',organizationId:'a'},'courses/cb':{teacherId:'tb',organizationId:'b'},
    'assignments/aa':{teacherId:'ta',courseId:'ca',organizationId:'a',visibility:'private',answerKeySeparated:true,questions:[]},
    'assignments/legacy':{teacherId:'ta',courseId:'ca',organizationId:'a',visibility:'private',questions:[{correctAnswer:'secret'}]},
@@ -57,10 +57,24 @@ test('owner can change display settings but cannot forge subscription or usage',
  await assertFails(updateDoc(doc(db('ta'),'organizations/a'),{planId:'paid',aiUsageCurrent:0}));
 });
 
-test('pilot owner can lower but not raise the AI budget, and cannot edit the pilot record',async()=>{
+// aiBudgetLimit is the owner's own monthly spend cap (0 = none) on their own balance, so they may
+// raise or lower it. What they cannot do is add credit, clear spend or edit the pilot record.
+test('owner sets their spend cap but cannot add credit, clear spend or edit the pilot record',async()=>{
  await assertSucceeds(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:500}));
- await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:5000}));
+ await assertSucceeds(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:5000}));
+ await assertSucceeds(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:0}));
+ await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:-1}));
+ await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{aiBudgetLimit:'999'}));
+ for (const field of ['aiPaidCents','aiBonusCents','aiBonusExpiresAt','aiFreeUsedCents','aiFreeMonth','aiUsageCurrent','aiUsageMonth','aiUsageReserved'])
+  await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{[field]:field==='aiFreeMonth'||field==='aiUsageMonth'?'2000-01':999999}));
  await assertFails(updateDoc(doc(db('tp'),'organizations/p'),{pilot:{status:'active',endsAt:null}}));
+ await assertFails(updateDoc(doc(db('ta'),'organizations/p'),{aiBudgetLimit:0}));
+});
+test('credit ledger: network teachers read it, nobody writes it, other networks cannot see it',async()=>{
+ await assertSucceeds(getDoc(doc(db('tp'),'organizations/p/credit_ledger/l1')));
+ await assertFails(getDoc(doc(db('ta'),'organizations/p/credit_ledger/l1')));
+ await assertFails(setDoc(doc(db('tp'),'organizations/p/credit_ledger/forged'),{kind:'deposit',bucket:'paid',cents:100000}));
+ await assertFails(updateDoc(doc(db('tp'),'organizations/p/credit_ledger/l1'),{cents:999999}));
 });
 
 test('student assignment queries remain valid with sanitized marker',async()=>{
