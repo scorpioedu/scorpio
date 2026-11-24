@@ -36,6 +36,7 @@ import {
   type SetupProgress,
 } from "@/components/teacher/setup-checklist";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
+import { InviteColleagueCard } from "@/components/teacher/invite-colleague-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   chunk,
@@ -501,6 +502,8 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
           onDismiss={() => saveSetupState("done")}
         />
       ) : null}
+
+      {networkId && profile && dataReady && !setupError ? <InviteColleagueCard /> : null}
 
       <TeacherDashboardContent
         stats={stats}

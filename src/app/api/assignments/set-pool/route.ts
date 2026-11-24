@@ -4,12 +4,6 @@ import { adminDb } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
 import { mergeAnswerKey } from "@/lib/assignment-security";
 import { assignmentAccess } from "@/lib/answer-key-access";
-import {
-  PlanGateError,
-  assertCanCloneAssignment,
-  planGateResponse,
-  resolveCallerPlan,
-} from "@/lib/plan-gates";
 
 /**
  * GET /api/assignments/set-pool?sourceId= -> { questions: [{ text, type, options?, points?, apTopic?, correctAnswer }] }
@@ -30,11 +24,6 @@ export const GET = withAuthorizedRequest(
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       if (source.visibility !== "global" || typeof source.curriculumSetKey !== "string")
         return NextResponse.json({ error: "Not a course set" }, { status: 400 });
-      assertCanCloneAssignment({
-        plan: await resolveCallerPlan(profile.organizationId),
-        source,
-        callerUid: caller.uid,
-      });
       const key = (await adminDb.collection("assignment_keys").doc(sourceId).get()).data();
       const questions = mergeAnswerKey(source, key).questions.map((merged) => {
         const q = merged as Record<string, unknown>;
@@ -49,7 +38,6 @@ export const GET = withAuthorizedRequest(
       });
       return NextResponse.json({ questions });
     } catch (error) {
-      if (error instanceof PlanGateError) return planGateResponse(error);
       return errorResponse(error, "assignments/set-pool", requestId);
     }
   },

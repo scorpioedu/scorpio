@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
-import { useDepartmentPlan } from "@/hooks/use-department-plan";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import type { Organization } from "@/lib/types";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { CelebrationDialog } from "@/components/invite-celebration";
 
@@ -13,9 +15,21 @@ import { CelebrationDialog } from "@/components/invite-celebration";
  */
 export function PilotWelcome() {
   const { profile } = useAuth();
-  const { organization } = useDepartmentPlan();
+  const [organization, setOrganization] = useState<Organization | null>(null);
   const [open, setOpen] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+
+  const organizationId = profile?.organizationId;
+
+  useEffect(() => {
+    if (!organizationId) return;
+    return onSnapshot(
+      doc(db, "organizations", organizationId),
+      (snap) =>
+        setOrganization(snap.exists() ? ({ id: snap.id, ...snap.data() } as Organization) : null),
+      () => setOrganization(null),
+    );
+  }, [organizationId]);
 
   const pilot =
     organization?.planId === "pilot" && organization.pilot?.status === "active"
@@ -57,8 +71,8 @@ export function PilotWelcome() {
       title={`${organization?.name ?? "Your network"} is now a Scorpio pilot`}
       body={
         <>
-          You have the full Department License{ends ? <> until {ends}</> : null}: Raise for your
-          students, shared department waypoints, and a {budget} AI budget for the pilot.
+          Your network has a {budget} AI balance{ends ? <> through {ends}</> : null}, so Raise is on
+          for your students. Everything else in Scorpio is free.
         </>
       }
       action="Let's go"

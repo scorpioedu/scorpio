@@ -1,16 +1,8 @@
 import type { firestore } from 'firebase-admin';
 import { randomUUID } from 'node:crypto';
-import { evaluateBudget } from './budget-policy';
+import { evaluateBudget, getActiveTokenRates, splitSpend, currentUsageMonth } from './budget-policy';
 
-// Gemini 3.8 Flash text rates in cents/token.
-// Introductory through Dec 31, 2026: $0.75/1M input, $3.75/1M output
-// Standard starting Jan 1, 2027: $1.50/1M input, $7.50/1M output
-export function getActiveTokenRates(): { input: number; output: number } {
-  const isStandardPost2026 = Date.now() >= 1798761600000; // 2027-01-01T00:00:00.000Z
-  return isStandardPost2026
-    ? { input: 0.00015, output: 0.00075 }
-    : { input: 0.000075, output: 0.000375 };
-}
+export { getActiveTokenRates };
 
 export const TOKEN_RATES = getActiveTokenRates();
 
@@ -30,12 +22,12 @@ export async function reserveBudget(db: firestore.Firestore, organizationId: str
     const decision = evaluateBudget(org, user, type, maxCost, month);
     if (!decision.allowed) {
       throw new Error({
-        subscription_inactive: 'AI subscription is not active',
-        budget_exhausted: 'Insufficient AI budget for this request',
+        budget_exhausted: 'Insufficient AI balance for this request',
+        monthly_cap_reached: 'Monthly AI spend cap reached',
         user_allowance_reached: 'Your monthly AI allowance has been reached',
       }[decision.reason]);
     }
-    if (!org) throw new Error('AI subscription is not active'); // unreachable: evaluateBudget denies a missing org
+    if (!org) throw new Error('Insufficient AI balance for this request'); // unreachable: evaluateBudget denies a missing org
     const counters: Record<string, string> = { tutor: 'tutorUsageCurrent', notebook: 'aiNotebookUsageCurrent' };
     const counter = counters[type];
     if (userRef && user && counter) {
@@ -58,14 +50,37 @@ export async function settleBudget(db: firestore.Firestore, id: string, inputTok
     if (!org) throw new Error('Network missing during usage settlement');
     const rates = getActiveTokenRates();
     const costCents = inputTokens * rates.input + outputTokens * rates.output;
-    tx.update(orgRef, { aiUsageReserved: Math.max(0,(org.aiUsageReserved || 0)-reservation.maxCost), aiUsageCurrent: (org.aiUsageCurrent || 0)+costCents, aiUsageTotalCents: (org.aiUsageTotalCents || 0)+costCents, lastAiUsageAt: new Date() });
-    tx.update(ref, { status: 'settled', costCents, settledAt: new Date() });
-    tx.create(db.collection('usage_analytics').doc(id), { organizationId: reservation.organizationId, userId: reservation.userId, type: reservation.type, inputTokens, outputTokens, costCents, timestamp: new Date() });
-    if (org.polarCustomerId && costCents > 0) tx.create(db.collection('billing_outbox').doc(id), {
-      customerId: org.polarCustomerId, organizationId: reservation.organizationId, type: reservation.type,
-      inputTokens, outputTokens, costCents, timestamp: new Date(), status: 'pending', attempts: 0,
+    const month = currentUsageMonth();
+    const spend = splitSpend(org, costCents, month);
+    const sameFreeMonth = org.aiFreeMonth === month;
+    const sameUsageMonth = org.aiUsageMonth === month;
+    const bonusExpired = (org.aiBonusCents || 0) > 0 && isExpired(org.aiBonusExpiresAt);
+    tx.update(orgRef, {
+      aiUsageReserved: Math.max(0, (org.aiUsageReserved || 0) - reservation.maxCost),
+      aiUsageMonth: month,
+      aiUsageCurrent: (sameUsageMonth ? (org.aiUsageCurrent || 0) : 0) + costCents,
+      aiUsageTotalCents: (org.aiUsageTotalCents || 0) + costCents,
+      aiFreeMonth: month,
+      aiFreeUsedCents: (sameFreeMonth ? (org.aiFreeUsedCents || 0) : 0) + spend.free,
+      aiBonusCents: bonusExpired ? 0 : (org.aiBonusCents || 0) - spend.bonus,
+      aiPaidCents: (org.aiPaidCents || 0) - spend.paid,
+      lastAiUsageAt: new Date(),
     });
+    if (bonusExpired) {
+      tx.create(orgRef.collection('credit_ledger').doc(`expire-${id}`), {
+        kind: 'expire', bucket: 'bonus', cents: -(org.aiBonusCents || 0), reason: 'Bonus credit expired', createdAt: new Date(),
+      });
+    }
+    tx.update(ref, { status: 'settled', costCents, spend, settledAt: new Date() });
+    tx.create(db.collection('usage_analytics').doc(id), { organizationId: reservation.organizationId, userId: reservation.userId, type: reservation.type, inputTokens, outputTokens, costCents, spend, timestamp: new Date() });
   });
+}
+
+function isExpired(value: unknown): boolean {
+  if (!value) return false;
+  const v = value as { toMillis?: () => number };
+  const ms = typeof value === 'string' ? Date.parse(value) : typeof v.toMillis === 'function' ? v.toMillis() : value instanceof Date ? value.getTime() : NaN;
+  return Number.isFinite(ms) && ms <= Date.now();
 }
 
 export const STALE_RESERVATION_MS = 30 * 60 * 1000;

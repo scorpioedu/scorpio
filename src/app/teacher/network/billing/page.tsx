@@ -1,75 +1,154 @@
 "use client";
 
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import {
-  Check,
-  CheckCircle2,
-  Loader2,
-  ChevronLeft,
-  Building2,
-  ShieldCheck,
-  Cpu,
-  Receipt,
-  ExternalLink,
-  Sliders,
-  ArrowRight,
-} from "lucide-react";
+import { collection, doc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { Loader2, ChevronLeft, Building2, Cpu, Gift, HandCoins, Sparkles, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Organization } from "@/lib/types";
 import { errorMessage } from "@/lib/error-utils";
+import {
+  FREE_MONTHLY_CENTS,
+  MAX_DEPOSIT_CENTS,
+  MIN_DEPOSIT_CENTS,
+  depositCreditCents,
+  estimateHints,
+  summarizeBalance,
+} from "../../../../../functions/src/budget-policy";
+
+interface LedgerEntry {
+  id: string;
+  kind: string;
+  bucket: string;
+  cents: number;
+  reason: string;
+  createdAt: Date | null;
+}
+
+const PRESET_AMOUNTS_CENTS = [500, 1000, 2500, 5000];
+
+const KIND_LABELS: Record<string, string> = {
+  deposit: "Deposit",
+  refund: "Refund",
+  invoice: "Invoice",
+  referral: "Referral",
+  welcome: "Welcome",
+  migration: "Moved from plan",
+  admin: "Adjustment",
+  expire: "Expired",
+};
+
+const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+const signedDollars = (cents: number) =>
+  `${cents < 0 ? "-" : "+"}$${(Math.abs(cents) / 100).toFixed(2)}`;
+const formatDate = (d: Date | number) =>
+  new Date(d).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+
+function toDate(value: unknown): Date | null {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  const v = value as { toDate?: () => Date };
+  return typeof v.toDate === "function" ? v.toDate() : null;
+}
 
 export default function BillingPage() {
   const { user, profile, loading: authLoading } = useAuth();
-  const [upgrading, setUpgrading] = useState(false);
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const [ledger, setLedger] = useState<LedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [checkingOut, setCheckingOut] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState("");
 
-  const fetchOrg = useCallback(async () => {
-    try {
-      const orgRef = doc(db, "organizations", profile!.organizationId!);
-      const orgSnap = await getDoc(orgRef);
-      if (orgSnap.exists()) {
-        setOrganization({ id: orgSnap.id, ...orgSnap.data() } as Organization);
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to load billing info.");
-    } finally {
-      setLoading(false);
-    }
-  }, [profile]);
+  const organizationId = profile?.organizationId;
 
+  // Live balance and history, so the page updates when the payment webhook lands.
   useEffect(() => {
     if (authLoading) return;
-    if (user && profile?.organizationId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- loads from the server when its inputs change; state is set as the request starts and finishes
-      fetchOrg();
-    } else {
+    if (!user || !organizationId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to subscribe to without a network
       setLoading(false);
+      return;
     }
-  }, [user, profile, authLoading, fetchOrg]);
+    const unsubOrg = onSnapshot(
+      doc(db, "organizations", organizationId),
+      (snap) => {
+        setOrganization(snap.exists() ? ({ id: snap.id, ...snap.data() } as Organization) : null);
+        setLoading(false);
+      },
+      (e) => {
+        console.error(e);
+        toast.error("Failed to load AI credit info.");
+        setLoading(false);
+      },
+    );
+    const unsubLedger = onSnapshot(
+      query(
+        collection(db, "organizations", organizationId, "credit_ledger"),
+        orderBy("createdAt", "desc"),
+        limit(25),
+      ),
+      (snap) => {
+        setLedger(
+          snap.docs.map((d) => {
+            const data = d.data();
+            return {
+              id: d.id,
+              kind: String(data.kind ?? ""),
+              bucket: String(data.bucket ?? ""),
+              cents: typeof data.cents === "number" ? data.cents : 0,
+              reason: String(data.reason ?? ""),
+              createdAt: toDate(data.createdAt),
+            };
+          }),
+        );
+      },
+      (e) => console.error("credit_ledger", e),
+    );
+    return () => {
+      unsubOrg();
+      unsubLedger();
+    };
+  }, [user, organizationId, authLoading]);
 
-  const handleUpgrade = async (planId: string) => {
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("success") === "true") {
+        toast.success("Payment received. Your balance updates in a few seconds.");
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const handleDeposit = async (amountCents: number) => {
     if (!user || !organization) return;
-
-    setUpgrading(true);
+    if (
+      !Number.isInteger(amountCents) ||
+      amountCents < MIN_DEPOSIT_CENTS ||
+      amountCents > MAX_DEPOSIT_CENTS
+    ) {
+      toast.error(
+        `Enter an amount between ${dollars(MIN_DEPOSIT_CENTS)} and ${dollars(MAX_DEPOSIT_CENTS)}.`,
+      );
+      return;
+    }
+    setCheckingOut(amountCents);
     try {
       const response = await authenticatedFetch("/api/checkout", {
         method: "POST",
@@ -77,23 +156,22 @@ export default function BillingPage() {
         body: JSON.stringify({
           userId: user.uid,
           organizationId: organization.id,
-          planId: planId,
+          amountCents,
         }),
       });
-
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || data.error || "Failed to start checkout.");
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned.");
+      if (!response.ok || data.error) {
+        throw new Error(data.message || data.error || "Failed to start checkout.");
       }
+      if (data.url) {
+        window.location.assign(data.url);
+        return;
+      }
+      throw new Error("No checkout URL returned.");
     } catch (e: unknown) {
       console.error(e);
-      toast.error(errorMessage(e) || "Failed to start upgrade process.");
-    } finally {
-      setUpgrading(false);
+      toast.error(errorMessage(e) || "Failed to start checkout.");
+      setCheckingOut(null);
     }
   };
 
@@ -101,7 +179,7 @@ export default function BillingPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm font-medium text-muted-foreground">Loading billing...</p>
+        <p className="text-sm font-medium text-muted-foreground">Loading AI credit...</p>
       </div>
     );
   }
@@ -112,10 +190,9 @@ export default function BillingPage() {
         <div className="p-3 rounded-xl bg-muted border border-border/60">
           <Building2 className="h-8 w-8 text-muted-foreground mx-auto" />
         </div>
-        <h2 className="text-xl font-bold tracking-tight">No Department Network Found</h2>
+        <h2 className="text-xl font-bold tracking-tight">No Network Found</h2>
         <p className="text-sm text-muted-foreground">
-          You must be part of an authenticated Scorpio Network to view or manage department
-          licensing.
+          You must be part of a Scorpio Network to view or add AI credit.
         </p>
         <Button variant="outline" asChild size="sm">
           <Link href="/teacher/network">Return to Network</Link>
@@ -126,397 +203,306 @@ export default function BillingPage() {
 
   const isOwner =
     user?.uid === organization.ownerId || (profile?.role as string) === "school_admin";
-  const isFreePlan = !organization.planId || organization.planId === "free";
-  const isYearlyActive = organization.planId?.includes("yearly");
-  const isPilot = organization.planId === "pilot";
-  const pilotEnds = organization.pilot?.endsAt
-    ? new Date(organization.pilot.endsAt).toLocaleDateString(undefined, {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  const balance = summarizeBalance(organization);
+  const hints = estimateHints(balance.availableCents);
 
-  const budgetCapDollars = (organization.aiBudgetLimit || 0) / 100;
-  const currentUsageDollars = (organization.aiUsageCurrent || 0) / 100;
-
-  const handleCheckout = () => {
-    handleUpgrade(billingCycle === "yearly" ? "standard_yearly" : "standard_monthly");
-  };
+  const customDollars = parseFloat(customAmount);
+  const customCents = Number.isFinite(customDollars) ? Math.round(customDollars * 100) : 0;
+  const customValid = customCents >= MIN_DEPOSIT_CENTS && customCents <= MAX_DEPOSIT_CENTS;
 
   return (
     <div className="space-y-8">
       {/* ── Header ── */}
       <div className="flex flex-col gap-4 border-b border-border/60 pb-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <Link
-              href="/teacher/network"
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-2"
-            >
-              <ChevronLeft className="h-4 w-4" /> Back to Department Network
-            </Link>
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-              Department Licensing
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Flat department subscription with zero-markup AI pass-through.
-            </p>
-          </div>
-
-          {/* Current Status Pill */}
-          <div className="flex items-center gap-3 bg-card border border-border/60 px-4 py-2 rounded-xl">
-            <div
-              className={cn(
-                "h-2.5 w-2.5 rounded-full shrink-0",
-                isFreePlan ? "bg-amber-500" : "bg-emerald-500",
-              )}
-            />
-            <div className="text-xs">
-              <span className="text-muted-foreground">Current Plan: </span>
-              <span className="font-semibold text-foreground">
-                {isFreePlan ? "Free Starter" : isPilot ? "Founding Pilot" : "Department License"}
-              </span>
-              {!isFreePlan && !isPilot && (
-                <span className="ml-1 text-muted-foreground">
-                  ({isYearlyActive ? "Annual" : "Monthly"})
-                </span>
-              )}
-            </div>
-            {!isFreePlan && !isPilot && (
-              <Button asChild variant="outline" size="sm" className="h-7 text-xs ml-1">
-                <Link
-                  href="https://polar.sh/scorpio/portal"
-                  target="_blank"
-                  className="flex items-center gap-1"
-                >
-                  Polar Portal <ExternalLink className="h-3 w-3" />
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {isPilot && (
-        <div className="rounded-xl border border-primary/20 bg-accent/40 px-5 py-4">
-          <p className="text-sm font-semibold text-foreground">You&apos;re in the Scorpio pilot</p>
-          <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-            Your network has the full Department License at no cost
-            {pilotEnds ? (
-              <>
-                {" "}
-                until <span className="font-medium text-foreground">{pilotEnds}</span>
-              </>
-            ) : null}
-            , with a ${budgetCapDollars.toFixed(2)} AI budget for the pilot ($
-            {currentUsageDollars.toFixed(2)} used so far). If you run low, email the Scorpio team
-            and we&apos;ll top it up.
-          </p>
-        </div>
-      )}
-
-      {/* ── Billing Cycle Toggle ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">Plans & Pricing</h2>
-          <p className="text-xs text-muted-foreground">
-            Covers every physics instructor, section, and student in your school.
+          <Link
+            href="/teacher/network"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-2"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back to Network
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+            AI credit
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Scorpio is free. AI runs on a prepaid balance, charged at Google&apos;s exact cost.
           </p>
         </div>
-
-        <div className="inline-flex p-1 rounded-xl border border-border/60 bg-muted/30">
-          <button
-            type="button"
-            onClick={() => setBillingCycle("monthly")}
-            className={cn(
-              "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
-              billingCycle === "monthly"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            Monthly ($10/mo)
-          </button>
-          <button
-            type="button"
-            onClick={() => setBillingCycle("yearly")}
-            className={cn(
-              "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5",
-              billingCycle === "yearly"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <span>Annual ($100/yr)</span>
-            <span className="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded">
-              Save $20
-            </span>
-          </button>
-        </div>
       </div>
 
-      {/* ── Pricing Cards (Dominant Department License) ── */}
+      {/* ── Balance ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Free Starter Card (Compact - col-span-4) */}
-        <Card className="lg:col-span-4 border-border/60 shadow-sm flex flex-col justify-between">
-          <CardHeader className="pb-4">
-            <Badge variant="outline" className="w-fit text-xs text-muted-foreground">
-              Individual / Trial
-            </Badge>
-            <CardTitle className="text-lg font-bold mt-2">Free Starter</CardTitle>
-            <CardDescription className="text-xs">
-              Every global Waypoint, auto-grading and the misconception report for individual
-              teachers.
+        <Card className="lg:col-span-5 border-primary/40 shadow-md ring-1 ring-primary/20">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs font-semibold uppercase tracking-wider">
+              Available balance
             </CardDescription>
-            <div className="pt-3">
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-foreground">$0</span>
-                <span className="text-xs text-muted-foreground">/ month</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Free forever. No card required.
-              </p>
-            </div>
+            <CardTitle className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+              {dollars(balance.availableCents)}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              About {hints.toLocaleString()} Raise hint{hints === 1 ? "" : "s"}
+            </p>
           </CardHeader>
-
-          <CardContent className="space-y-3 text-xs">
-            <p className="font-semibold text-foreground text-xs">What&apos;s included:</p>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                <span>Every global Waypoint, including AP Physics 1 sets</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                <span>Unlimited courses and students</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                <span>Auto-grading, class misconception report & LaTeX equation editor</span>
-              </li>
-              <li className="flex items-start gap-2 text-muted-foreground/50">
-                <span className="h-4 w-4 flex items-center justify-center shrink-0">—</span>
-                <span>Small starter AI budget; no department waypoints or sharing</span>
-              </li>
-            </ul>
+          <CardContent className="text-xs text-muted-foreground space-y-1">
+            <p>Spent this month: {dollars(balance.monthSpendCents)}</p>
+            {balance.monthlyCapCents > 0 && (
+              <p>
+                Monthly spend cap: {dollars(balance.monthlyCapCents)}.{" "}
+                <Link href="/teacher/network" className="text-primary hover:underline">
+                  Change
+                </Link>
+              </p>
+            )}
+            {balance.availableCents <= 0 && (
+              <p className="font-medium text-amber-600 dark:text-amber-400">
+                Raise and AI grading are paused until the balance is topped up or the free credit
+                resets on the 1st.
+              </p>
+            )}
           </CardContent>
-
-          <CardFooter className="pt-2">
-            <Button
-              variant="outline"
-              disabled
-              className="w-full h-9 text-xs font-medium cursor-default"
-            >
-              {isFreePlan ? "Current Plan" : "Included"}
-            </Button>
-          </CardFooter>
         </Card>
 
-        {/* Department License Card (Hero - Bigger & Dominant - col-span-8) */}
-        <Card className="lg:col-span-8 border-primary/50 shadow-md bg-card flex flex-col justify-between relative ring-1 ring-primary/25 p-2 sm:p-4">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <Badge className="bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-0.5">
-                Department License
-              </Badge>
-              <span className="text-xs font-mono text-muted-foreground">
-                Entire School Department
-              </span>
-            </div>
-            <CardTitle className="text-2xl sm:text-3xl font-bold mt-2">
-              Department License
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Department waypoints and sharing, plus higher AI limits for Raise hints and AI
-              grading, for your entire school.
+        <Card className="lg:col-span-7 border-border/60 shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">Where it comes from</CardTitle>
+            <CardDescription className="text-xs">
+              Spent in this order: free, then bonus, then paid.
             </CardDescription>
-
-            <div className="pt-4 pb-1">
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight">
-                  {billingCycle === "yearly" ? "$100" : "$10"}
-                </span>
-                <span className="text-sm text-muted-foreground font-medium">
-                  {billingCycle === "yearly" ? "/ year ($8.33/mo)" : "/ month"}
-                </span>
-              </div>
-              <p className="text-xs font-semibold text-primary mt-1">
-                Flat base fee + zero-markup metered AI compute
-              </p>
-            </div>
           </CardHeader>
-
-          <CardContent className="space-y-4 text-xs sm:text-sm">
-            {/* Flat + Metered Summary Box */}
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-2.5">
-              <p className="font-semibold text-foreground text-xs uppercase tracking-wider">
-                How Billing Works:
+          <CardContent className="space-y-3 text-sm">
+            <div className="flex items-start justify-between gap-4 rounded-xl border border-border/60 p-3">
+              <div className="flex items-start gap-2.5">
+                <Sparkles className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-foreground">Free this month</p>
+                  <p className="text-xs text-muted-foreground">Resets on the 1st</p>
+                </div>
+              </div>
+              <p className="font-mono font-semibold text-foreground text-right">
+                {dollars(balance.freeLeftCents)}{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  of {dollars(FREE_MONTHLY_CENTS)} left
+                </span>
               </p>
-              <div className="space-y-2 text-xs text-muted-foreground">
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold text-foreground shrink-0">• Flat Fee:</span>
-                  <span>
-                    {billingCycle === "yearly" ? "$100/yr" : "$10/mo"} covers all teachers, courses,
-                    and students in your department. No per-seat fees.
-                  </span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold text-foreground shrink-0">
-                    • At-Cost AI Metering:
-                  </span>
-                  <span>
-                    Gemini 3.8 Flash passed through at exact Google cost ($0.75 / 1M in, $3.75 / 1M
-                    out). ~0.10/student/mo. Zero markup.
-                  </span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="font-semibold text-foreground shrink-0">
-                    • Spend Protection:
-                  </span>
-                  <span>
-                    You set a hard monthly cap in Network Settings (e.g. $25). AI halts safely if
-                    reached—no surprise overages.
-                  </span>
-                </div>
-              </div>
             </div>
-
-            {/* Checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-foreground/90 pt-1">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Socratic AI tutor for all students</span>
+            <div className="flex items-start justify-between gap-4 rounded-xl border border-border/60 p-3">
+              <div className="flex items-start gap-2.5">
+                <Gift className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-foreground">Bonus</p>
+                  <p className="text-xs text-muted-foreground">
+                    {balance.bonusCents > 0 && balance.bonusExpiresAt
+                      ? `Expires ${formatDate(balance.bonusExpiresAt)}`
+                      : "Referral, welcome and pilot credit"}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Higher AI limits for AI grading of written answers</span>
+              <p className="font-mono font-semibold text-foreground">
+                {dollars(balance.bonusCents)}
+              </p>
+            </div>
+            <div className="flex items-start justify-between gap-4 rounded-xl border border-border/60 p-3">
+              <div className="flex items-start gap-2.5">
+                <HandCoins className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-foreground">Paid</p>
+                  <p className="text-xs text-muted-foreground">Never expires</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Department waypoints and sharing across your network</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Hard department spend cap protection</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Unlimited teachers & course periods</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                <span>Itemized PDF receipts for school bookkeeping</span>
-              </div>
+              <p
+                className={cn(
+                  "font-mono font-semibold",
+                  balance.paidCents < 0 ? "text-red-500" : "text-foreground",
+                )}
+              >
+                {balance.paidCents < 0 ? "-" : ""}
+                {dollars(Math.abs(balance.paidCents))}
+              </p>
             </div>
           </CardContent>
-
-          <CardFooter className="pt-4">
-            {isFreePlan ? (
-              <Button
-                onClick={handleCheckout}
-                disabled={upgrading || !isOwner}
-                className="w-full h-13 sm:h-14 text-sm sm:text-base font-bold shadow-md cursor-pointer"
-              >
-                {upgrading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Redirecting to Polar
-                    Checkout...
-                  </>
-                ) : !isOwner ? (
-                  "Only Network Owner Can Upgrade"
-                ) : (
-                  <>
-                    Upgrade to Department License (
-                    {billingCycle === "yearly" ? "$100/yr" : "$10/mo"})
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </Button>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button asChild className="flex-1 h-12 text-sm font-semibold" variant="outline">
-                  <Link
-                    href="https://polar.sh/scorpio/portal"
-                    target="_blank"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <Receipt className="h-4 w-4" /> Polar Customer Portal
-                  </Link>
-                </Button>
-                <Button asChild className="h-12 text-sm font-semibold" variant="secondary">
-                  <Link href="/teacher/network" className="flex items-center justify-center gap-2">
-                    <Sliders className="h-4 w-4" /> Adjust Spend Caps
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </CardFooter>
         </Card>
       </div>
 
-      {/* ── Explanation: Flat Fee + Metering ── */}
+      {/* ── Add credit ── */}
       <Card className="border-border/60 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold">How Pricing Works</CardTitle>
+          <CardTitle className="text-base font-semibold">Add credit</CardTitle>
           <CardDescription className="text-xs">
-            A predictable flat license with raw pass-through AI compute.
+            Pay once with a card through Polar. Between {dollars(MIN_DEPOSIT_CENTS)} and{" "}
+            {dollars(MAX_DEPOSIT_CENTS)}.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs pt-1">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 font-semibold text-foreground">
-              <Building2 className="h-4 w-4 text-primary" />
-              <span>1. Flat Department License</span>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              {billingCycle === "yearly" ? "$100/year" : "$10/month"} covers your entire school.
-              Unlimited teachers, unlimited course periods, and unlimited students. No per-seat
-              license fees.
+        <CardContent className="space-y-5">
+          {!isOwner && (
+            <p className="text-xs text-muted-foreground">
+              Only the network owner can add credit. Ask them to top it up.
             </p>
+          )}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {PRESET_AMOUNTS_CENTS.map((cents) => (
+              <div
+                key={cents}
+                className="rounded-xl border border-border/60 p-3 flex flex-col gap-2"
+              >
+                <Button
+                  onClick={() => handleDeposit(cents)}
+                  disabled={!isOwner || checkingOut !== null}
+                  className="h-10 font-bold cursor-pointer"
+                >
+                  {checkingOut === cents ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    dollars(cents).replace(".00", "")
+                  )}
+                </Button>
+                <p className="text-[11px] leading-snug text-muted-foreground">
+                  You&apos;ll get {dollars(depositCreditCents(cents))} of AI credit after
+                  Polar&apos;s fee
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 font-semibold text-foreground">
-              <Cpu className="h-4 w-4 text-emerald-500" />
-              <span>2. At-Cost AI Metering</span>
+          <div className="rounded-xl border border-border/60 p-3 space-y-2 max-w-md">
+            <Label htmlFor="custom-deposit" className="text-xs font-bold text-muted-foreground">
+              Custom amount (USD)
+            </Label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-2.5 text-sm font-bold text-muted-foreground font-mono">
+                  $
+                </span>
+                <Input
+                  id="custom-deposit"
+                  type="number"
+                  inputMode="decimal"
+                  step="1"
+                  min={MIN_DEPOSIT_CENTS / 100}
+                  max={MAX_DEPOSIT_CENTS / 100}
+                  placeholder="5 to 500"
+                  className="h-10 pl-7 font-mono font-bold text-sm bg-background"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  disabled={!isOwner}
+                />
+              </div>
+              <Button
+                className="h-10 px-4 font-bold cursor-pointer"
+                onClick={() => handleDeposit(customCents)}
+                disabled={!isOwner || !customValid || checkingOut !== null}
+              >
+                {checkingOut !== null && checkingOut === customCents ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Add credit"
+                )}
+              </Button>
             </div>
-            <p className="text-muted-foreground leading-relaxed">
-              AI requests use Gemini 3.8 Flash, billed at exact Google cost ($0.75 / 1M input, $3.75
-              / 1M output). Scorpio takes zero markup on AI compute.
-            </p>
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 font-semibold text-foreground">
-              <ShieldCheck className="h-4 w-4 text-amber-500" />
-              <span>3. Guaranteed Spend Caps</span>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              Set a monthly dollar cap in Network Settings. If reached, AI assistance halts safely
-              until next month or until you raise it.
+            <p className="text-[11px] text-muted-foreground">
+              {customValid
+                ? `You'll get ${dollars(depositCreditCents(customCents))} of AI credit after Polar's fee`
+                : `Minimum ${dollars(MIN_DEPOSIT_CENTS)}, maximum ${dollars(MAX_DEPOSIT_CENTS)}.`}
             </p>
           </div>
         </CardContent>
+      </Card>
 
-        {budgetCapDollars > 0 && (
-          <CardFooter className="border-t border-border/40 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Sliders className="h-4 w-4 text-primary" />
-              <span>Department Spend Cap:</span>
-              <span className="font-semibold text-foreground">
-                ${budgetCapDollars.toFixed(2)}/mo
-              </span>
-              <span>(Used this month: ${currentUsageDollars.toFixed(2)})</span>
+      {/* ── History ── */}
+      <Card className="border-border/60 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold">History</CardTitle>
+          <CardDescription className="text-xs">Your latest 25 credit changes.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {ledger.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nothing yet. Deposits, bonuses and refunds will show up here.
+            </p>
+          ) : (
+            <ul className="divide-y divide-border/60">
+              {ledger.map((entry) => (
+                <li key={entry.id} className="flex items-start justify-between gap-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {KIND_LABELS[entry.kind] ?? entry.kind}
+                      {entry.bucket && (
+                        <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          {entry.bucket}
+                        </span>
+                      )}
+                    </p>
+                    {entry.reason && (
+                      <p className="text-xs text-muted-foreground break-words">{entry.reason}</p>
+                    )}
+                    <p className="text-[11px] text-muted-foreground/80">
+                      {entry.createdAt ? formatDate(entry.createdAt) : "Just now"}
+                    </p>
+                  </div>
+                  <p
+                    className={cn(
+                      "font-mono text-sm font-semibold shrink-0",
+                      entry.cents < 0
+                        ? "text-red-500"
+                        : "text-emerald-600 dark:text-emerald-400",
+                    )}
+                  >
+                    {signedDollars(entry.cents)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ── How it works ── */}
+      <Card className="border-border/60 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold">How AI pricing works</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-semibold text-foreground">
+              <Building2 className="h-4 w-4 text-primary" />
+              <span>Scorpio is free</span>
             </div>
-            <Link
-              href="/teacher/network"
-              className="text-primary hover:underline font-medium inline-flex items-center gap-1"
-            >
-              Adjust in Network Settings <ArrowRight className="h-3 w-3" />
-            </Link>
-          </CardFooter>
-        )}
+            <p className="text-muted-foreground leading-relaxed">
+              Courses, assignments, grading tools and students cost nothing. Only AI features use
+              credit.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-semibold text-foreground">
+              <Cpu className="h-4 w-4 text-emerald-500" />
+              <span>At Google&apos;s exact cost</span>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              AI is charged at what Google charges Scorpio, with no markup. Polar&apos;s payment
+              fee comes out of each deposit.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-semibold text-foreground">
+              <Sparkles className="h-4 w-4 text-amber-500" />
+              <span>$1 free every month</span>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              Every network gets {dollars(FREE_MONTHLY_CENTS)} of AI each month. It resets on the
+              1st and does not roll over.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-semibold text-foreground">
+              <Info className="h-4 w-4 text-primary" />
+              <span>Paid and bonus credit</span>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              Paid credit never expires, and unused paid credit is refundable on request: reply to
+              any Scorpio email. Bonus credit expires 12 months after your last bonus.
+            </p>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

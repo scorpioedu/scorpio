@@ -56,7 +56,6 @@ import {
   type RawQuestion,
 } from "@/components/teacher/assignment-editor/types";
 import type { GradableQuestion } from "../../../../functions/src/grading-core";
-import type { Organization } from "@/lib/types";
 
 type Tab = "results" | "problems" | "settings";
 const TABS: Tab[] = ["results", "problems", "settings"];
@@ -160,7 +159,7 @@ async function loadSubmissions(id: string): Promise<Submission[]> {
 }
 
 function AssignmentHub() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile } = useAuth();
   const { classes } = useSelectedClass({ allowAll: true, mirror: false });
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -180,28 +179,6 @@ function AssignmentHub() {
   const [assigningNow, setAssigningNow] = useState(false);
   const [confirmRegrade, setConfirmRegrade] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [organization, setOrganization] = useState<Organization | null>(null);
-
-  useEffect(() => {
-    if (!profile?.organizationId) return;
-    let active = true;
-    getDoc(doc(db, "organizations", profile.organizationId))
-      .then(
-        (snap) =>
-          active &&
-          snap.exists() &&
-          setOrganization({ id: snap.id, ...snap.data() } as Organization),
-      )
-      .catch(() => undefined);
-    return () => {
-      active = false;
-    };
-  }, [profile?.organizationId]);
-  const isFreePlan =
-    authLoading ||
-    !organization ||
-    (organization.planId === "free" &&
-      (organization.aiBudgetLimit || 0) <= (organization.aiUsageCurrent || 0));
 
   const uid = user?.uid;
   useEffect(() => {
@@ -590,7 +567,6 @@ function AssignmentHub() {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <QuestionSources
-                  isFreePlan={isFreePlan}
                   userId={user?.uid}
                   onAdd={(added) =>
                     setDraft((d) => (d ? { ...d, questions: [...d.questions, ...added] } : d))
@@ -671,7 +647,6 @@ function AssignmentHub() {
             <SettingsFields
               value={draft.settings}
               onChange={(settings) => setDraft({ ...draft, settings })}
-              isFreePlan={isFreePlan}
               hasNetwork={!!profile?.organizationId}
               showSharing={false}
             />

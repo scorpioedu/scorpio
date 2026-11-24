@@ -23,6 +23,7 @@ interface AccessRequest {
   reviewedAt: string | null;
   generatedCode: string | null;
   approvalEmailSentAt?: string | null;
+  referredByName?: string | null;
 }
 
 type Filter = "pending" | "approved" | "rejected" | "all";
@@ -126,6 +127,7 @@ function RequestRow({
           </div>
           <div className="mt-0.5 truncate text-sm text-muted-foreground">
             {r.institution} · {ROLE_LABELS[r.role] ?? r.role}
+            {r.referredByName ? ` · Referred by ${r.referredByName}` : ""}
           </div>
         </div>
         <span

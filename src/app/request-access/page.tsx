@@ -53,7 +53,15 @@ export default function RequestAccessPage() {
       res = await fetch("/api/auth/request-access", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, institution, role, message }),
+        body: JSON.stringify({
+          name,
+          email,
+          institution,
+          role,
+          message,
+          // From a colleague's invite link; read here, not during render, so the page stays static.
+          ref: new URLSearchParams(window.location.search).get("ref") || undefined,
+        }),
       });
     } catch {
       setError("Unable to reach the server. Please check your internet connection and try again.");

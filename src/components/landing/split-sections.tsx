@@ -90,11 +90,11 @@ export function PricingOverview() {
         <div data-scroll-reveal className={reveal.stagger}>
           <Split id="pricing-heading" heading="Pricing">
             <p className={statement}>
-              Pricing a department can approve
-              <span className="block text-muted-foreground">One flat price, AI at cost</span>
+              Free for every teacher
+              <span className="block text-muted-foreground">AI at cost, $1 free every month</span>
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
+              <PrimaryPill href="/signup">Start free</PrimaryPill>
               <SecondaryPill href="/pricing">See full pricing</SecondaryPill>
             </div>
           </Split>

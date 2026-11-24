@@ -118,9 +118,16 @@ service cloud.firestore {
     }
     match /organizations/{id} {
       allow read: if member(id);
+      // aiBudgetLimit is the owner's own monthly AI spend cap (0 = none). Balances (aiFree*, aiBonus*,
+      // aiPaidCents) and usage counters are server-only: they are not in the list below.
       allow update: if teacher() && resource.data.ownerId == request.auth.uid && (
-        (!(resource.data.get('planId', 'free') in ['free', 'pilot']) || request.resource.data.get('aiBudgetLimit', 0) <= resource.data.get('aiBudgetLimit', 0)) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','aiBudgetLimit','practiceLimitPerStudent','practiceLimit','notebookLimitPerStudent','aiNotebookLimitPerStudent','aiTutorLimitPerStudent','notebookLimit']) ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','aiBudgetLimit','practiceLimitPerStudent','practiceLimit','notebookLimitPerStudent','aiNotebookLimitPerStudent','aiTutorLimitPerStudent','notebookLimit']) &&
+          request.resource.data.get('aiBudgetLimit', 0) is number && request.resource.data.get('aiBudgetLimit', 0) >= 0 ||
         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ownerId']) && user(request.resource.data.ownerId).role == 'teacher' && user(request.resource.data.ownerId).organizationId == id));
+      // Credit history: teachers in the network can read it; only the server writes it.
+      match /credit_ledger/{entry} {
+        allow read: if teacher() && member(id);
+      }
     }
     match /portfolios/{id} {
       allow read: if signedIn() && (resource.data.studentId == request.auth.uid || teaches(user(resource.data.studentId).get('teacherId', null)));

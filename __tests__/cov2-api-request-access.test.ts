@@ -113,7 +113,7 @@ describe('request-access list', () => {
     expect(res.status).toBe(200);
     expect((await res.json()).requests).toEqual([{
       id: 'r1', name: 'Ada', email: 'a@b.co', institution: 'MIT', role: 'Teacher', message: 'hello', status: 'approved',
-      createdAt: '2026-01-02T03:04:05.000Z', reviewedAt: '2026-02-03T04:05:06.000Z', generatedCode: 'SCORP-AAAA-BBBB', approvalEmailSentAt: null,
+      createdAt: '2026-01-02T03:04:05.000Z', reviewedAt: '2026-02-03T04:05:06.000Z', generatedCode: 'SCORP-AAAA-BBBB', approvalEmailSentAt: null, referredByName: null,
     }]);
   });
 

@@ -30,8 +30,12 @@ jest.mock('../src/lib/firebase-admin', () => ({
 import { checkBudget, recordUsage } from '../src/lib/usage-limit';
 
 const month = new Date().toISOString().slice(0, 7);
-const activeFree = { subscriptionStatus: 'active', planId: 'free', aiBudgetLimit: 50, aiUsageCurrent: 0, aiUsageReserved: 0 };
-const activePaid = { subscriptionStatus: 'active', planId: 'dept', aiBudgetLimit: 1250, aiUsageCurrent: 0, aiUsageReserved: 0, aiTutorLimitPerStudent: 7, aiNotebookLimitPerStudent: 4 };
+// Credit model: a fresh network has this month's free $1; a funded one also has paid credit.
+const activeFree = { planId: 'free', aiUsageReserved: 0 };
+const activePaid = { planId: 'free', aiPaidCents: 2000, aiUsageReserved: 0, aiTutorLimitPerStudent: 7, aiNotebookLimitPerStudent: 4 };
+const freeUsedUp = { aiFreeMonth: month, aiFreeUsedCents: 100 };
+const EMPTY = "Your AI balance is empty. Top up from $5 in Network settings, or wait for next month's free $1.";
+const STUDENT_PAUSED = 'Raise is paused for now. Let your teacher know so they can turn it back on.';
 
 beforeEach(() => {
   for (const k of Object.keys(orgs)) delete orgs[k];
@@ -44,8 +48,11 @@ beforeEach(() => {
 afterEach(() => jest.restoreAllMocks());
 
 describe('checkBudget preconditions', () => {
-  test.each([[undefined], [null], ['']])('organizationId %p requires a Department License and reads nothing', async id => {
-    expect(await checkBudget(id as string | undefined | null, 'grading')).toEqual({ allowed: false, error: 'AI Features require a Department License.' });
+  test.each([[undefined], [null], ['']])('organizationId %p needs a network and reads nothing', async id => {
+    expect(await checkBudget(id as string | undefined | null, 'grading')).toEqual({
+      allowed: false,
+      error: 'AI features need a Scorpio network. Create or join one in Network settings.',
+    });
     expect(reads).toEqual([]);
   });
 
@@ -72,39 +79,33 @@ describe('checkBudget decisions and messages', () => {
     expect(await checkBudget('o', 'grading')).toEqual({ allowed: true });
   });
 
-  test.each(['canceled', 'revoked', 'past_due', 'none', undefined])('subscription status %p -> "no longer active"', async status => {
-    orgs.o = { ...activePaid, subscriptionStatus: status };
-    expect(await checkBudget('o', 'grading')).toEqual({ allowed: false, error: 'Your subscription is no longer active.' });
+  test.each(['canceled', 'revoked', 'past_due', 'none', undefined])('legacy subscription status %p no longer matters', async status => {
+    orgs.o = { ...activeFree, subscriptionStatus: status };
+    expect(await checkBudget('o', 'grading')).toEqual({ allowed: true });
   });
 
-  test('free plan out of budget points at the Department License upgrade', async () => {
-    orgs.o = { ...activeFree, aiUsageCurrent: 50 };
+  test('an empty balance tells the teacher how to top up', async () => {
+    orgs.o = { ...activeFree, ...freeUsedUp };
+    expect(await checkBudget('o', 'grading')).toEqual({ allowed: false, error: EMPTY });
+  });
+
+  test('an empty balance never mentions money to a student', async () => {
+    orgs.o = { ...activeFree, ...freeUsedUp };
+    expect(await checkBudget('o', 'tutor', 'u')).toEqual({ allowed: false, error: STUDENT_PAUSED });
+    expect(await checkBudget('o', 'notebook', 'u')).toEqual({ allowed: false, error: STUDENT_PAUSED });
+  });
+
+  test('the monthly spend cap has its own message', async () => {
+    orgs.o = { ...activePaid, aiBudgetLimit: 500, aiUsageMonth: month, aiUsageCurrent: 500 };
     expect(await checkBudget('o', 'grading')).toEqual({
       allowed: false,
-      error: 'Free starter AI budget reached. Upgrade to a Department License in Network settings for unlimited AI access.',
+      error: 'Your network reached the monthly AI spend cap you set. Raise it in Network settings.',
     });
-  });
-
-  test('an org with no planId is treated as free in the message', async () => {
-    orgs.o = { subscriptionStatus: 'active', aiBudgetLimit: 50, aiUsageCurrent: 50 };
-    expect((await checkBudget('o', 'grading')).error).toMatch(/^Free starter AI budget reached/);
-  });
-
-  test('paid plan out of budget quotes the limit in dollars', async () => {
-    orgs.o = { ...activePaid, aiUsageCurrent: 1250 };
-    expect(await checkBudget('o', 'grading')).toEqual({
-      allowed: false,
-      error: 'Monthly AI budget ($12.50) reached. Please increase your limit in Network settings.',
-    });
-  });
-
-  test('a paid plan with no budget configured quotes $0.00', async () => {
-    orgs.o = { subscriptionStatus: 'active', planId: 'dept' };
-    expect((await checkBudget('o', 'grading')).error).toBe('Monthly AI budget ($0.00) reached. Please increase your limit in Network settings.');
+    expect(await checkBudget('o', 'tutor', 'u')).toEqual({ allowed: false, error: STUDENT_PAUSED });
   });
 
   test('reserved spend counts against the budget', async () => {
-    orgs.o = { ...activePaid, aiUsageCurrent: 1000, aiUsageReserved: 250 };
+    orgs.o = { ...activeFree, ...freeUsedUp, aiPaidCents: 250, aiUsageReserved: 250 };
     expect((await checkBudget('o', 'grading')).allowed).toBe(false);
   });
 
@@ -146,10 +147,10 @@ describe('checkBudget decisions and messages', () => {
     expect((await checkBudget('o', undefined, 'u')).allowed).toBe(true);
   });
 
-  test('the org budget is checked before the per-student allowance', async () => {
-    orgs.o = { ...activePaid, aiUsageCurrent: 1250 };
+  test('the network balance is checked before the per-student allowance', async () => {
+    orgs.o = { ...activePaid, aiPaidCents: 0, ...freeUsedUp };
     users.u = { usageMonth: month, tutorUsageCurrent: 7 };
-    expect((await checkBudget('o', 'tutor', 'u')).error).toMatch(/^Monthly AI budget/);
+    expect((await checkBudget('o', 'tutor', 'u')).error).toBe(STUDENT_PAUSED);
   });
 });
 

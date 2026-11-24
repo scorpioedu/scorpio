@@ -1,29 +1,24 @@
 /**
  * Initial fields for a newly created organization document, per creation path.
  *
- * KNOWN DIVERGENCE (audit G-003, RT-21): the two paths intentionally still differ.
- *  - 'register'   (/api/auth/register):                  'active' with a 50 cent starter AI budget.
- *  - 'membership' (/api/teacher/network/membership):     'none' with a 0 budget, so AI is refused
- *    (evaluateBudget treats a non-active status or a zero limit as no spend).
- * The owner has not decided what a newly created free network should get. To align them, change
- * the 'membership' preset below (one line each) and update __tests__/organization-defaults.test.ts.
- * See docs/quality-audit/remediation/HUMAN-TODO.md.
+ * Credit model (SCO-14): every network is active from the start and gets the monthly free
+ * allowance (FREE_MONTHLY_CENTS in functions/src/budget-policy.ts), whichever way it was created.
+ * `aiBudgetLimit` is now the owner's optional monthly spend cap, 0 = none. Both paths are kept
+ * as names so callers and tests read the same as before; they no longer differ.
  */
 export type OrganizationCreationPath = "register" | "membership";
 
-const PRESETS = {
-  register: {
-    planId: "free",
-    subscriptionStatus: "active",
-    aiUsageCurrent: 0,
-    aiBudgetLimit: 50,
-    baseMonthlyFee: 0,
-  },
-  membership: { planId: "free", subscriptionStatus: "none", aiUsageCurrent: 0, aiBudgetLimit: 0 },
+const BASE = {
+  planId: "free",
+  subscriptionStatus: "active",
+  aiUsageCurrent: 0,
+  aiBudgetLimit: 0,
+  aiBonusCents: 0,
+  aiPaidCents: 0,
 } as const;
 
-export function newOrganizationDefaults(path: OrganizationCreationPath) {
-  return { ...PRESETS[path] };
+export function newOrganizationDefaults(_path: OrganizationCreationPath) {
+  return { ...BASE };
 }
 
 export const DEFAULT_PILOT_BUDGET_CENTS = 1000;
@@ -49,8 +44,10 @@ export function pilotInviteFields(grant: PilotGrant = {}) {
 }
 
 /**
- * Fields that make a network a pilot: an active plan that counts as paid (isDepartmentPlanOrg),
- * with the budget an admin granted. evaluateBudget clamps it at PILOT_PLAN_BUDGET_CAP_CENTS.
+ * Fields that make a network a pilot. A pilot's AI comes as bonus credit (budgetCents), lasting
+ * until the pilot's end date or 12 months, whichever is later. `pilot.grantedCents` totals every
+ * pilot grant so the admin page can show spend against it. Use on a NEW network (bonus is set,
+ * not added); for an existing one, grant credit with grantCredit instead.
  */
 export function pilotOrganizationFields(
   grant: PilotGrant,
@@ -61,15 +58,24 @@ export function pilotOrganizationFields(
   return {
     planId: "pilot",
     subscriptionStatus: "active",
-    aiBudgetLimit: budgetCents,
+    aiBonusCents: budgetCents,
+    aiBonusExpiresAt: pilotBonusExpiry(grant.endsAt ?? null, now),
     pilot: {
       cohort: grant.cohort || DEFAULT_PILOT_COHORT,
       status: "active",
       startedAt: now.toISOString(),
       endsAt: grant.endsAt ?? null,
       budgetCents,
+      grantedCents: budgetCents,
       note: grant.note ?? null,
       source,
     },
   };
+}
+
+/** Later of the pilot end date and 12 months from now, as an ISO string. */
+export function pilotBonusExpiry(endsAt: string | null, now: Date = new Date()): string {
+  const year = now.getTime() + 365 * 864e5;
+  const ends = endsAt ? Date.parse(endsAt) : NaN;
+  return new Date(Number.isFinite(ends) ? Math.max(ends, year) : year).toISOString();
 }

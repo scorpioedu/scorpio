@@ -3,10 +3,11 @@ import { networkInvitePath } from "@/lib/onboarding-links";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
+import { summarizeBalance } from "../../../../functions/src/budget-policy";
 import {
   Card,
   CardContent,
@@ -45,7 +46,6 @@ import {
   MoreHorizontal,
   Crown,
   UserMinus,
-  Lock,
   CreditCard,
   Send,
   Pencil,
@@ -92,7 +92,6 @@ interface NetworkMember {
 export default function NetworkPage() {
   const router = useRouter();
   const { user, profile, loading: authLoading } = useAuth();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [networkMembers, setNetworkMembers] = useState<NetworkMember[]>([]);
@@ -142,10 +141,10 @@ export default function NetworkPage() {
   const [draftsFor, setDraftsFor] = useState<{ org: Organization | null } | null>(null);
   if (!draftsFor || draftsFor.org !== organization) {
     setDraftsFor({ org: organization });
-    if (organization?.aiBudgetLimit !== undefined) {
+    if (organization?.aiBudgetLimit && organization.aiBudgetLimit > 0) {
       setTempBudget((organization.aiBudgetLimit / 100).toFixed(2));
     } else {
-      setTempBudget("10.00");
+      setTempBudget("");
     }
 
     if (organization?.notebookLimitPerStudent !== undefined) {
@@ -166,13 +165,6 @@ export default function NetworkPage() {
       setTempTutorLimitPerStudent("30");
     }
   }
-
-  useEffect(() => {
-    if (searchParams?.get("success") === "true") {
-      toast.success("Subscription updated! Accessing Pro features...");
-      router.replace("/teacher/network");
-    }
-  }, [searchParams, router]);
 
   const handleRenameNetwork = async () => {
     if (!user || !organization || user.uid !== organization.ownerId || !renamedOrgName.trim())
@@ -250,9 +242,9 @@ export default function NetworkPage() {
   const handleUpdateBudget = async () => {
     if (!user || !organization || user.uid !== organization.ownerId) return;
 
-    const budget = parseFloat(tempBudget);
+    const budget = tempBudget.trim() === "" ? 0 : parseFloat(tempBudget);
     if (isNaN(budget) || budget < 0) {
-      toast.error("Please enter a valid budget.");
+      toast.error("Enter 0 or more, or leave it empty for no cap.");
       return;
     }
 
@@ -262,7 +254,11 @@ export default function NetworkPage() {
       await updateDoc(doc(db, "organizations", organization.id), {
         aiBudgetLimit: budgetInCents,
       });
-      toast.success(`Monthly AI Budget Cap set to $${budget.toFixed(2)}`);
+      toast.success(
+        budgetInCents > 0
+          ? `Monthly AI spend cap set to $${budget.toFixed(2)}`
+          : "Monthly AI spend cap removed",
+      );
       setOrganization((prev) =>
         prev
           ? {
@@ -542,11 +538,13 @@ export default function NetworkPage() {
   };
 
   // High-level calculations
-  const spentDollars = (organization?.aiUsageCurrent || 0) / 100;
-  const budgetCapDollars = (organization?.aiBudgetLimit || 0) / 100;
-  const budgetPercentUsed =
-    budgetCapDollars > 0 ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
-  const budgetRemaining = Math.max(budgetCapDollars - spentDollars, 0);
+  const balance = summarizeBalance(organization);
+  const spentDollars = balance.monthSpendCents / 100;
+  const availableDollars = balance.availableCents / 100;
+  const budgetCapDollars = balance.monthlyCapCents / 100;
+  const hasCap = budgetCapDollars > 0;
+  const budgetPercentUsed = hasCap ? Math.min((spentDollars / budgetCapDollars) * 100, 100) : 0;
+  const capRemaining = Math.max(budgetCapDollars - spentDollars, 0);
 
   if (loading || authLoading) {
     return (
@@ -559,9 +557,6 @@ export default function NetworkPage() {
     );
   }
 
-  const isFreePlan = organization?.planId === "free";
-  // Pilot budgets are granted by a Scorpio admin; owners can't raise them (firestore.rules).
-  const isPilot = organization?.planId === "pilot";
   const isOwner = user?.uid === organization?.ownerId;
   const inviteEmailBody = `Join ${organization?.name || "our Network"} on Scorpio to share teaching resources.\n\n${inviteUrl}`;
   const inviteEmailDraft = `mailto:?subject=Invitation%20to%20join%20Scorpio&body=${encodeURIComponent(inviteEmailBody)}`;
@@ -628,15 +623,10 @@ export default function NetworkPage() {
 
                 {organization && (
                   <Badge
-                    variant={isFreePlan ? "outline" : "default"}
-                    className={cn(
-                      "text-xs font-bold uppercase tracking-wider",
-                      isFreePlan
-                        ? "text-muted-foreground border-border"
-                        : "bg-emerald-600 text-white",
-                    )}
+                    variant="outline"
+                    className="text-xs font-bold uppercase tracking-wider text-emerald-700 border-emerald-300 dark:text-emerald-400"
                   >
-                    {isFreePlan ? "Free Plan" : isPilot ? "Founding Pilot" : "Department License"}
+                    AI credit ${availableDollars.toFixed(2)}
                   </Badge>
                 )}
               </div>
@@ -738,11 +728,15 @@ export default function NetworkPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline gap-1">
                     <span className="text-xl font-black font-mono leading-none text-emerald-600 dark:text-emerald-400">
-                      ${spentDollars.toFixed(2)}
+                      ${availableDollars.toFixed(2)}
                     </span>
                     <span className="text-[10px] font-mono font-bold text-muted-foreground">
-                      / ${budgetCapDollars.toFixed(2)}
+                      AI credit
                     </span>
+                  </div>
+                  <div className="text-[10px] font-mono text-muted-foreground mt-0.5">
+                    ${spentDollars.toFixed(2)} spent this month
+                    {hasCap ? ` / $${budgetCapDollars.toFixed(2)} cap` : ""}
                   </div>
                   <div className="mt-1.5 h-1.5 rounded-full bg-border/40 overflow-hidden">
                     <div
@@ -1067,25 +1061,20 @@ export default function NetworkPage() {
                         <CardTitle className="text-sm font-bold flex items-center justify-between">
                           <span className="flex items-center gap-2">
                             <CreditCard className="h-4 w-4 text-primary" />
-                            Department Billing
+                            AI credit
                           </span>
                           <Badge
                             variant="outline"
                             className="text-emerald-600 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px]"
                           >
-                            {organization.planId === "free"
-                              ? "Free Tier"
-                              : organization.planId === "pilot"
-                                ? "Pilot"
-                                : "Pro Active"}
+                            ${availableDollars.toFixed(2)}
                           </Badge>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          {isPilot
-                            ? "Your network is in the Scorpio pilot: the full Department License at no cost."
-                            : "Managed through Polar metered billing. Department spend is tracked centrally."}
+                          Scorpio is free. AI runs on a prepaid balance at Google&apos;s exact cost, with
+                          $1 free every month.
                         </p>
                         <Button
                           asChild
@@ -1093,7 +1082,7 @@ export default function NetworkPage() {
                           className="w-full text-xs h-9 font-semibold cursor-pointer"
                         >
                           <Link href="/teacher/network/billing">
-                            {isPilot ? "Pilot details" : "Manage Subscription & Invoices"}
+                            Add credit & view history
                           </Link>
                         </Button>
                       </CardContent>
@@ -1144,7 +1133,7 @@ export default function NetworkPage() {
                     variant="outline"
                     className="text-[10px] font-mono border-border bg-background"
                   >
-                    {isPilot ? "Budget covers the whole pilot" : "Resets Every 30 Days"}
+                    Free credit resets on the 1st
                   </Badge>
                   <Button
                     variant="outline"
@@ -1164,42 +1153,24 @@ export default function NetworkPage() {
                 <Card
                   className={cn(
                     "border-emerald-200/50 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm relative overflow-hidden",
-                    isFreePlan && "grayscale-[0.5]",
                   )}
                 >
-                  {isFreePlan && (
-                    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
-                      <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">
-                        Unlock Budget Controls on Pro
-                      </p>
-                      <Button
-                        asChild
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
-                      >
-                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
-                      </Button>
-                    </div>
-                  )}
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-bold flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
                         <HandCoins className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                        {isPilot ? "Pilot AI Budget" : "Monthly AI Spending Cap"}
+                        Monthly AI spend cap
                       </CardTitle>
                       <Badge
                         variant="outline"
                         className="text-[10px] font-mono border-emerald-300 text-emerald-700 bg-emerald-100/50 dark:bg-emerald-950 dark:text-emerald-400"
                       >
-                        HARD STOP SAFETY
+                        OPTIONAL
                       </Badge>
                     </div>
                     <CardDescription className="text-xs">
-                      {isPilot
-                        ? "Your pilot budget covers the whole pilot and is set by the Scorpio team."
-                        : "All AI features pause automatically when this exact dollar threshold is reached. No surprise invoices."}
+                      Optional. AI pauses for the month if spend reaches this amount, even when
+                      credit remains. Leave empty for no cap.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1207,7 +1178,7 @@ export default function NetworkPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-3 bg-background/80 border rounded-xl shadow-xs">
                         <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block mb-1">
-                          {isPilot ? "Spent So Far" : "Spent This Month"}
+                          Spent This Month
                         </span>
                         <span className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
                           ${spentDollars.toFixed(2)}
@@ -1215,19 +1186,19 @@ export default function NetworkPage() {
                       </div>
                       <div className="p-3 bg-background/80 border rounded-xl shadow-xs">
                         <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block mb-1">
-                          Remaining Buffer
+                          {hasCap ? "Left Under Cap" : "AI Credit Left"}
                         </span>
                         <span className="text-2xl font-black font-mono text-zinc-900 dark:text-zinc-100">
-                          ${budgetRemaining.toFixed(2)}
+                          ${(hasCap ? capRemaining : availableDollars).toFixed(2)}
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
                       <div className="flex justify-between text-xs font-bold">
-                        <span className="text-muted-foreground">Usage Consumption</span>
+                        <span className="text-muted-foreground">Cap Consumption</span>
                         <span className="font-mono text-emerald-600 dark:text-emerald-400">
-                          {budgetPercentUsed.toFixed(0)}%
+                          {hasCap ? `${budgetPercentUsed.toFixed(0)}%` : "No cap"}
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-border/40 overflow-hidden">
@@ -1244,20 +1215,14 @@ export default function NetworkPage() {
                         />
                       </div>
                     </div>
-
-                    {isPilot && (
-                      <p className="pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30 text-xs text-muted-foreground">
-                        Running low? Email the Scorpio team and we&apos;ll top up your pilot budget.
-                      </p>
-                    )}
-                    {isOwner && !isPilot && (
+                    {isOwner && (
                       <div className="space-y-3 pt-2 border-t border-emerald-200/40 dark:border-emerald-900/30">
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="ai-budget-input"
                             className="text-xs font-bold text-muted-foreground"
                           >
-                            Set Safety Cap (USD)
+                            Monthly cap (USD, empty = no cap)
                           </Label>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
@@ -1269,7 +1234,7 @@ export default function NetworkPage() {
                                 type="number"
                                 step="0.50"
                                 min="0"
-                                placeholder="15.00"
+                                placeholder="No cap"
                                 className="h-10 pl-7 font-mono font-bold text-sm bg-background"
                                 value={tempBudget}
                                 onChange={(e) => setTempBudget(e.target.value)}
@@ -1283,7 +1248,7 @@ export default function NetworkPage() {
                               {updatingBudget ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                               ) : (
-                                "Save Cap"
+                                "Save"
                               )}
                             </Button>
                           </div>
@@ -1316,25 +1281,8 @@ export default function NetworkPage() {
                 <Card
                   className={cn(
                     "border-purple-200/50 dark:border-purple-900/40 bg-purple-50/20 dark:bg-purple-950/10 shadow-sm relative overflow-hidden",
-                    isFreePlan && "grayscale-[0.5]",
                   )}
                 >
-                  {isFreePlan && (
-                    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
-                      <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">
-                        Unlock Raise Quotas on Pro
-                      </p>
-                      <Button
-                        asChild
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
-                      >
-                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
-                      </Button>
-                    </div>
-                  )}
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-bold flex items-center gap-2 text-purple-800 dark:text-purple-300">
@@ -1444,25 +1392,8 @@ export default function NetworkPage() {
                 <Card
                   className={cn(
                     "border-blue-200/50 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/10 shadow-sm relative overflow-hidden",
-                    isFreePlan && "grayscale-[0.5]",
                   )}
                 >
-                  {isFreePlan && (
-                    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] p-6 text-center">
-                      <Lock className="h-5 w-5 text-white mb-2" />
-                      <p className="text-xs font-bold text-white mb-3">
-                        Unlock Notebook Limits on Pro
-                      </p>
-                      <Button
-                        asChild
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 text-xs font-bold px-4 rounded-xl cursor-pointer"
-                      >
-                        <Link href="/teacher/network/billing">Upgrade to Pro</Link>
-                      </Button>
-                    </div>
-                  )}
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-bold flex items-center gap-2 text-blue-800 dark:text-blue-300">

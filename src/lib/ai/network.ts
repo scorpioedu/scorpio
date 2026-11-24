@@ -32,7 +32,7 @@ Your job is to answer questions about limits, budgets, and capacities — clearl
 
 === CURRENT NETWORK SNAPSHOT ===
 Network: ${ctx.orgName}
-Plan: ${ctx.planId === "free" ? "Free (upgrade required for most features)" : ctx.planId}
+Plan: ${ctx.planId === "free" ? "Free (every feature is included; AI runs on a prepaid balance)" : ctx.planId}
 
 💰 AI BUDGET (Safety Cap)
   • Monthly cap: $${(ctx.aiBudgetLimit / 100).toFixed(4)}
@@ -58,7 +58,7 @@ RESPONSE GUIDELINES:
 - Recommend realistic values based on class size when asked (e.g., "For ${ctx.studentCount} students I'd suggest…").
 - If the teacher asks how to change a setting, explain it's in the "Capacities & Limits" section above.
 - Do NOT mention internal field names like "aiNotebookLimitPerStudent". Use plain labels instead.
-- If the plan is free, gently mention that most limits require a Department License.
+- Scorpio is free for every teacher. AI is paid from a prepaid balance at Google's exact cost, no markup: every network gets $1 of AI free each month, and teachers can top up from $5. Never tell a teacher they need to upgrade or buy a license.
 - Always end with a short actionable tip if relevant.`;
 
     const chatHistoryContext = chatHistory.length > 0 

@@ -6,6 +6,7 @@ import { adminDb } from "@/lib/firebase-admin";
 import {
   newOrganizationDefaults,
   pilotOrganizationFields,
+  DEFAULT_PILOT_BUDGET_CENTS,
   type PilotGrant,
 } from "@/lib/organization-defaults";
 import { errorResponse } from "@/lib/api-errors";
@@ -61,6 +62,9 @@ export async function POST(req: NextRequest) {
           contactEmail: invite.contactEmail ?? null,
           label: invite.label ?? null,
           redeemedAt: new Date(),
+          // Who referred this teacher: an approved access request's referrer, else the owner who made a
+          // network colleague code. Admin pilot codes also carry createdBy, so it counts only with a network.
+          referredBy: invite.referredBy ?? (invite.organizationId ? invite.createdBy : null) ?? null,
         };
         if (
           invite.organizationId &&
@@ -104,6 +108,20 @@ export async function POST(req: NextRequest) {
           ...(pilotGrant ? pilotOrganizationFields(pilotGrant, "invite") : {}),
           createdAt: new Date(),
         });
+      if (role === "teacher" && orgId === newOrg.id && pilotGrant) {
+        // Pilot AI arrives as bonus credit (set on the new network above); record it in the ledger.
+        const cents = pilotGrant.budgetCents ?? DEFAULT_PILOT_BUDGET_CENTS;
+        tx.create(newOrg.collection("credit_ledger").doc(), {
+          kind: "admin",
+          bucket: "bonus",
+          cents,
+          reason: "Pilot AI credit",
+          externalId: null,
+          actorUid: null,
+          meta: { source: "pilot-invite" },
+          createdAt: new Date(),
+        });
+      }
       if (inviteRef)
         tx.update(inviteRef, {
           isUsed: true,

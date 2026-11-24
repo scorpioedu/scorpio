@@ -43,22 +43,28 @@ const faqs = [
     index: "05",
     question: "What are Waypoints?",
     answer:
-      "Waypoints are shared assignments. Every global Waypoint, including the AP Physics 1 sets, is free to copy into your own class and edit. Department Waypoints, shared inside your school network, need a Department License.",
+      "Waypoints are shared assignments. Every global Waypoint, including the AP Physics 1 sets, is free to copy into your own class and edit. Department Waypoints, shared inside your school network, are free too.",
   },
   {
     index: "06",
-    question: "How is pricing structured?",
+    question: "Is Scorpio really free?",
     answer:
-      "Individual teachers use Scorpio for free, including auto-grading and the misconception report, with a small starter AI budget. A Department License is $10 a month or $100 a year for the whole department and adds department sharing and higher AI limits. AI usage is passed through at the provider’s rate.",
+      "Yes. Every teacher gets every feature, including auto-grading, the misconception report, department sharing and the AI tools, with no card and no trial. The only thing that costs money is AI use, and every network gets $1 of AI free each month.",
   },
   {
     index: "07",
+    question: "What does AI cost?",
+    answer:
+      "AI is charged at Google’s exact cost, with no markup, from a prepaid balance. Gemini 3.8 Flash is $0.75 per 1M input tokens and $3.75 per 1M output tokens through 31 December 2026, then $1.50 and $7.50 from 1 January 2027. A Raise hint costs about a tenth of a cent. You can top up from $5, paid credit never expires, and schools can pay by invoice.",
+  },
+  {
+    index: "08",
     question: "Does Scorpio integrate with existing LMS platforms?",
     answer:
       "Not yet. Students join with a class code and teachers can export grades as CSV. Google Classroom and Canvas integrations are not built; tell us which one your school uses.",
   },
   {
-    index: "08",
+    index: "09",
     question: "How is student data protected?",
     answer:
       "Records are stored in Firebase with role-based access rules, and school records are not used for model training. Scorpio does not claim blanket FERPA or COPPA certification, so check with your school before students use it. See the privacy page for details.",

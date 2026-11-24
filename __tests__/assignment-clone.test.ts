@@ -483,10 +483,10 @@ describe("POST /api/assignments/clone", () => {
     });
   });
 
-  describe("free plan", () => {
+  describe("free for every teacher", () => {
     beforeEach(() => {
       mockDocs.set("organizations/orgB", { planId: "free", subscriptionStatus: "active" });
-      // Global waypoints are uncapped on the free plan.
+      // Global waypoints are uncapped.
       for (const id of ["g1", "g2", "g3", "g4"]) {
         mockDocs.set(`assignments/${id}`, { ...source, title: id });
         mockDocs.set(`assignment_keys/${id}`, { answers: { q1: "a", q2: "1", q3: "" } });
@@ -497,28 +497,34 @@ describe("POST /api/assignments/clone", () => {
       expect((await post({ sourceId: "g1" })).status).toBe(200);
     });
 
-    test("every global waypoint can be cloned on the free plan", async () => {
+    test("every global waypoint can be cloned", async () => {
       for (const id of ["g1", "g2", "g3", "g4"]) {
         expect((await post({ sourceId: id })).status).toBe(200);
       }
     });
 
-    test("a same-network waypoint is locked (network-share)", async () => {
+    test("a same-network waypoint can be cloned whatever the plan", async () => {
       mockDocs.set("assignments/net", {
         ...source,
         visibility: "network",
         organizationId: "orgB",
         teacherId: "colleague",
       });
-      const res = await post({ sourceId: "net" });
-      expect(res.status).toBe(403);
-      expect(await res.json()).toMatchObject({
-        code: "plan_upgrade_required",
-        feature: "network-share",
-      });
+      mockDocs.set("assignment_keys/net", { answers: { q1: "a", q2: "1", q3: "" } });
+      expect((await post({ sourceId: "net" })).status).toBe(200);
     });
 
-    test("teachers without an organization are on the free plan and can copy global waypoints", async () => {
+    test("another network's waypoint is still refused", async () => {
+      mockDocs.set("assignments/other", {
+        ...source,
+        visibility: "network",
+        organizationId: "someone-else",
+        teacherId: "colleague",
+      });
+      expect((await post({ sourceId: "other" })).status).toBe(403);
+    });
+
+    test("teachers without an organization can copy global waypoints", async () => {
       mockDocs.set("users/teacher1", { role: "teacher" });
       expect((await post({ sourceId: "g4" })).status).toBe(200);
     });
@@ -527,20 +533,6 @@ describe("POST /api/assignments/clone", () => {
       mockDocs.set("assignments/mine", { ...source, teacherId: "teacher1", visibility: "private" });
       mockDocs.set("assignment_keys/mine", { answers: { q1: "a", q2: "1", q3: "" } });
       expect((await post({ sourceId: "mine" })).status).toBe(200);
-    });
-
-    test("a lapsed paid subscription counts as free", async () => {
-      mockDocs.set("organizations/orgB", {
-        planId: "department-monthly",
-        subscriptionStatus: "canceled",
-      });
-      mockDocs.set("assignments/net", {
-        ...source,
-        visibility: "network",
-        organizationId: "orgB",
-        teacherId: "colleague",
-      });
-      expect((await post({ sourceId: "net" })).status).toBe(403);
     });
   });
 });

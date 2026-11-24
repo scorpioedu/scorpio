@@ -282,11 +282,13 @@ describe('POST /api/support/report', () => {
 });
 
 describe('POST /api/checkout', () => {
-  const body = { userId: 'u1', organizationId: 'org1', planId: 'standard_monthly' };
+  const body = { userId: 'u1', organizationId: 'org1', amountCents: 1000 };
   beforeEach(() => {
-    process.env.POLAR_MONTHLY_ID = 'price_monthly';
+    process.env.POLAR_CREDIT_PRODUCT_ID = 'prod_credit';
     store['users/u1'] = { role: 'teacher', organizationId: 'org1' };
+    store['organizations/org1'] = { ownerId: 'u1' };
   });
+  afterEach(() => { delete process.env.POLAR_CREDIT_PRODUCT_ID; });
 
   it('characterization: success returns {url}', async () => {
     polarCreate.mockResolvedValue({ url: 'https://polar.test/c/1' });

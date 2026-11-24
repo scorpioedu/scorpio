@@ -75,7 +75,6 @@ import {
   Copy,
   Edit2,
   LineChart,
-  Lock,
   MessageSquare,
   Mic,
   MicOff,
@@ -368,7 +367,6 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
 
   // Plan check & usage state
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
-  const [isFreePlan, setIsFreePlan] = useState(false);
   const [orgData, setOrgData] = useState<Organization | null>(null);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -408,7 +406,6 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
         if (orgSnap.exists()) {
           const data = orgSnap.data() as Organization;
           setOrgData(data);
-          setIsFreePlan(!data.planId || data.planId === "free");
         }
       } catch (e) {
         console.error("Error checking plan:", e);
@@ -839,40 +836,6 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
               </CardDescription>
             </div>
             <JoinClassForm />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Free Tier Restriction Guard
-  if (isFreePlan && variant === "student") {
-    return (
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4 bg-background">
-        <Card className="w-full max-w-md border-dashed shadow-xl bg-card">
-          <CardContent className="flex flex-col items-center gap-4 pt-10 pb-10 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20 shadow-sm">
-              <Lock className="h-8 w-8 text-amber-500" />
-            </div>
-            <div className="space-y-2">
-              <CardTitle className="text-xl font-bold">Raise isn&apos;t available</CardTitle>
-              <CardDescription>
-                Your network is on the Free tier. Raise needs an active Department Network
-                subscription. Everything else in Scorpio works without it.
-              </CardDescription>
-            </div>
-            <div className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground border border-border/40">
-              Ask your teacher or department lead if you would like Raise turned on.
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(cfg.home)}
-              className="mt-2"
-            >
-              <ArrowLeft className="size-4 mr-2" />
-              Back to Dashboard
-            </Button>
           </CardContent>
         </Card>
       </div>

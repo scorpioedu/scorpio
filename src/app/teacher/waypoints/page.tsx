@@ -9,12 +9,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ChevronRight, Lock, Search, Users } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, Search, Users } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useAuth } from "@/contexts/auth-context";
-import { useDepartmentPlan } from "@/hooks/use-department-plan";
-import { isWaypointLocked } from "@/lib/plan-limits";
 import { apCourseOf, apUnit, isApCourseId, type ApCourseId } from "@/data/ap";
 import {
   CURRICULA,
@@ -36,7 +35,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CourseIcon } from "@/components/teacher/course-icon";
-import { DepartmentUpgradeDialog } from "@/components/teacher/department-upgrade-dialog";
 import { TopicChips, UnitTile } from "@/app/teacher/courses/unit-look";
 import { SetPreviewDialog, type PreviewTarget } from "@/app/teacher/courses/set-preview-dialog";
 import { cn } from "@/lib/utils";
@@ -135,7 +133,6 @@ function courseOfRow(row: Row): string {
 export default function LibraryPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const router = useRouter();
-  const { isFreePlan, hasNoOrg } = useDepartmentPlan();
 
   const [source, setSource] = useState<Source>("global");
   const [items, setItems] = useState<LibrarySet[] | null>(null);
@@ -144,9 +141,7 @@ export default function LibraryPage() {
   const [search, setSearch] = useState("");
   const [preview, setPreview] = useState<Row | null>(null);
   const [copying, setCopying] = useState<string | null>(null);
-  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
-  const locked = isWaypointLocked(isFreePlan, source);
   const orgId = profile?.organizationId;
 
   useEffect(() => {
@@ -168,7 +163,7 @@ export default function LibraryPage() {
     if (!user || authLoading) return;
     setItems(null);
     setFailed(false);
-    if (source === "network" && (!orgId || isFreePlan)) {
+    if (source === "network" && !orgId) {
       setItems([]);
       return;
     }
@@ -187,7 +182,7 @@ export default function LibraryPage() {
       console.error("Library fetch error:", e);
       setFailed(true);
     }
-  }, [user, authLoading, source, orgId, isFreePlan]);
+  }, [user, authLoading, source, orgId]);
 
   useEffect(() => {
     // Loads the chosen source once the account is known.
@@ -245,10 +240,6 @@ export default function LibraryPage() {
   const shown = groups.reduce((n, g) => n + g.rows.length, 0);
 
   const copySet = async (row: Row) => {
-    if (locked) {
-      setUpgradeOpen(true);
-      return;
-    }
     setCopying(row.item.id);
     try {
       const res = await authenticatedFetch("/api/assignments/clone", {
@@ -258,10 +249,6 @@ export default function LibraryPage() {
         body: JSON.stringify({ sourceId: row.item.id, title: row.item.title }),
       });
       const data = await res.json().catch(() => ({}));
-      if (res.status === 403 && data.code === "plan_upgrade_required") {
-        setUpgradeOpen(true);
-        return;
-      }
       if (!res.ok || typeof data.id !== "string") {
         toast.error(data.error || "Could not copy this set. Please try again.");
         return;
@@ -303,9 +290,8 @@ export default function LibraryPage() {
             <TabsTrigger value="global" className="px-3">
               Scorpio sets
             </TabsTrigger>
-            <TabsTrigger value="network" className="gap-1.5 px-3">
+            <TabsTrigger value="network" className="px-3">
               Your department
-              {isFreePlan && <Lock aria-label="Department License" className="size-3" />}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -349,16 +335,16 @@ export default function LibraryPage() {
         </div>
       </div>
 
-      {locked ? (
+      {source === "network" && !orgId ? (
         <div className="mx-auto max-w-lg space-y-3 rounded-2xl border border-dashed border-border p-8 text-center">
           <Users aria-hidden className="mx-auto size-8 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Share sets with your department</h2>
           <p className="text-sm text-muted-foreground">
-            With a Department License, teachers in your school can share the sets they write and
-            use each other&apos;s. Every Scorpio set stays free.
+            Join or start a school network and teachers can share the sets they write and use each
+            other&apos;s. It is free.
           </p>
-          <Button onClick={() => setUpgradeOpen(true)}>
-            {hasNoOrg ? "Set up a department" : "See the Department License"}
+          <Button asChild>
+            <Link href="/teacher/network">Set up a network</Link>
           </Button>
         </div>
       ) : failed ? (
@@ -431,13 +417,6 @@ export default function LibraryPage() {
         assignLabel="Use this set"
         keyNote="Answers show in the editor after you use this set."
         assignBusy={copying !== null}
-      />
-
-      <DepartmentUpgradeDialog
-        open={upgradeOpen}
-        onOpenChange={setUpgradeOpen}
-        feature="network-share"
-        hasNoOrg={hasNoOrg}
       />
     </div>
   );

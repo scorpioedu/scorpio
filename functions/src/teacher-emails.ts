@@ -10,6 +10,7 @@ import { onDocumentUpdated, onDocumentWritten } from "firebase-functions/v2/fire
 import { defineSecret } from "firebase-functions/params";
 import { sendEmail } from "./lib/email";
 import { TeacherNoticeEmail } from "./templates/TeacherNoticeEmail";
+import { payReferralIfEligible } from "./referrals";
 import {
   TEACHER_GRADES,
   TEACHER_HOME,
@@ -38,6 +39,15 @@ async function claim(ref: admin.firestore.DocumentReference, field: string): Pro
     tx.update(ref, { [field]: new Date() });
     return true;
   });
+}
+
+/** A referral payout failure must never stop the onboarding email that follows it. */
+async function payReferralSafely(teacherId: string): Promise<void> {
+  try {
+    await payReferralIfEligible(teacherId, { apiKey: resendApiKey.value() });
+  } catch (err) {
+    logger.error("Referral payout failed", { teacherId, err });
+  }
 }
 
 /** Admin approved a request: send the code as a link that opens signup with it filled in. */
@@ -76,6 +86,8 @@ export const onStudentEnrolled = onDocumentWritten(
   async (event) => {
     const enrolled = newEnrollment(event.data?.before.data(), event.data?.after.data());
     if (!enrolled) return;
+    // The 5th student can arrive after the first results; pay a pending referral then.
+    await payReferralSafely(enrolled.teacherId);
     const db = admin.firestore();
     const teacherRef = db.collection("users").doc(enrolled.teacherId);
     if (!(await claim(teacherRef, "onboardingEmails.firstStudentAt"))) return;
@@ -124,6 +136,7 @@ export const onFirstResults = onDocumentUpdated(
   async (event) => {
     const result = newResult(event.data?.before.data(), event.data?.after.data());
     if (!result) return;
+    await payReferralSafely(result.teacherId);
     const db = admin.firestore();
     const teacherRef = db.collection("users").doc(result.teacherId);
     if (!(await claim(teacherRef, "onboardingEmails.firstResultsAt"))) return;
