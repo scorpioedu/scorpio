@@ -42,7 +42,9 @@ export function planParagraphFor(i: AnnouncementInput): string {
 }
 
 export function firstNameOf(name: unknown): string {
-  return typeof name === "string" ? (name.trim().split(/\s+/)[0] ?? "") : "";
+  const first = typeof name === "string" ? (name.trim().split(/\s+/)[0] ?? "") : "";
+  // Placeholder display names read badly in a greeting; fall back to "Hi,".
+  return /^(unknown|user|teacher|test)$/i.test(first) ? "" : first;
 }
 
 export function buildAnnouncement(i: AnnouncementInput): { subject: string; text: string; html: string } {
