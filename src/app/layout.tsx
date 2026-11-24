@@ -10,6 +10,7 @@ import {
   Roboto_Mono,
 } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/providers";
 
 // Default font for the whole app (the font-figtree class and font-sans); other fonts are opt-in in Settings.
@@ -19,7 +20,15 @@ const figtree = Figtree({
   style: ["normal", "italic"],
   display: "swap",
   preload: true,
-  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+  fallback: [
+    "system-ui",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "Helvetica Neue",
+    "Arial",
+    "sans-serif",
+  ],
 });
 
 const lora = Lora({
@@ -202,6 +211,8 @@ export default function RootLayout({
         className={`${inter.variable} ${ibmPlexSans.variable} ${ptSerif.variable} ${atkinson.variable} ${robotoMono.variable} antialiased bg-background text-foreground`}
       >
         <Providers>{children}</Providers>
+        {/* Cookieless page-view counts (Vercel Web Analytics); no personal data */}
+        <Analytics />
       </body>
     </html>
   );
