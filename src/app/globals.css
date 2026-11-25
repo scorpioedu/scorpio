@@ -325,42 +325,100 @@
   }
 }
 
-/* Theme Overrides */
+/* Theme Overrides
+   Each accent sets only --primary (and its text colour). Everything that sits on or around the
+   accent (hover tints, focus rings, sidebar, chart-2) is derived from --primary below, so no
+   theme is left with the default purple in its hovers or inputs. Backgrounds are untouched. */
 .theme-blue {
   --primary: #1d4ed8;
-  --primary-foreground: #fff;
-  --accent: #eff6ff;
-  --accent-foreground: var(--primary);
+  --primary-foreground: oklch(1 0 0);
+}
+
+.dark.theme-blue {
+  --primary: #3b82f6;
+  --primary-foreground: oklch(1 0 0);
+}
+
+.theme-emerald {
+  --primary: oklch(0.56 0.15 150);
+  --primary-foreground: oklch(1 0 0);
+}
+
+.dark.theme-emerald {
+  --primary: oklch(0.60 0.16 150);
+  --primary-foreground: oklch(1 0 0);
+}
+
+/* --primary-foreground for custom is set from the colour's lightness in appearance-context. */
+/* Tints mix in oklab: the backgrounds have no hue, and an oklch mix would swing it toward pink.
+   Text on the tint clamps the accent's lightness so even a pale custom colour stays readable. */
+:is(.theme-blue, .theme-emerald, .theme-custom) {
+  --accent: color-mix(in oklab, var(--primary) 9%, var(--background));
+  --accent-foreground: color-mix(in oklab, var(--primary), black 22%);
+  --accent-foreground: oklch(from var(--primary) min(l, 0.48) c h);
   --ring: var(--primary);
+  --chart-2: var(--primary);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: var(--accent);
   --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-ring: var(--ring);
+  --sidebar-ring: var(--primary);
 }
 
-.dark.theme-blue {
-  --primary: #60a5fa;
-  --primary-foreground: #0f172a;
-  --accent: #1e293b;
+/* The faint tint in muted surfaces, hovers and borders carries the default purple's hue (291).
+   Other accents keep the same lightness and chroma but take their own hue, so a muted hover
+   no longer reads purple under Blue or Green. */
+:is(.theme-blue, .theme-emerald, .theme-custom) {
+  --secondary: oklch(from var(--primary) 0.9540 0.0063 h);
+  --border: oklch(from var(--primary) 0.9300 0.0094 h);
+  --sidebar: oklch(from var(--primary) 0.9777 0.0051 h);
 }
 
-.theme-emerald {
-  --primary: oklch(0.78 0.18 150);
-  --primary-foreground: oklch(0.1 0.05 150);
-  --ring: oklch(0.78 0.18 150);
+.dark:is(.theme-blue, .theme-emerald, .theme-custom) {
+  --secondary: oklch(from var(--primary) 0.2940 0.0130 h);
+  --muted: oklch(from var(--primary) 0.2940 0.0130 h);
+  --border: oklch(from var(--primary) 0.3289 0.0092 h);
+  --input: oklch(from var(--primary) 0.3289 0.0092 h);
+  --sidebar: oklch(from var(--primary) 0.2011 0.0039 h);
+  --sidebar-border: oklch(from var(--primary) 0.3289 0.0092 h);
+  --accent: color-mix(in oklab, var(--primary) 16%, var(--background));
+  --accent-foreground: color-mix(in oklab, var(--primary), white 40%);
+  --accent-foreground: oklch(from var(--primary) max(l, 0.80) min(c, 0.15) h);
+  --sidebar-accent: color-mix(in oklab, var(--primary) 14%, var(--sidebar));
 }
 
 .theme-monochrome {
+  --secondary: oklch(0.9540 0 0);
+  --border: oklch(0.9300 0 0);
+  --sidebar: oklch(0.9777 0 0);
   --primary: oklch(0.09 0 0);
   --primary-foreground: oklch(0.99 0 0);
   --ring: oklch(0.09 0 0);
+  --accent: oklch(0.9550 0 0);
+  --accent-foreground: oklch(0.09 0 0);
+  --chart-2: oklch(0.09 0 0);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.9401 0 0);
+  --sidebar-accent-foreground: oklch(0.09 0 0);
+  --sidebar-ring: var(--ring);
 }
 
 :is(html.dark.theme-monochrome, .dark .theme-monochrome) {
   --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.20 0 0);
   --ring: oklch(0.8 0 0);
+  --secondary: oklch(0.2940 0 0);
+  --muted: oklch(0.2940 0 0);
+  --border: oklch(0.3289 0 0);
+  --input: oklch(0.3289 0 0);
+  --sidebar: oklch(0.2011 0 0);
+  --sidebar-border: oklch(0.3289 0 0);
+  --accent: oklch(0.2940 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --chart-2: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.2940 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
 }
 
 /* Base layer overrides */

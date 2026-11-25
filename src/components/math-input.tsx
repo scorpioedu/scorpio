@@ -7,61 +7,98 @@ import "katex/dist/katex.min.css";
 import { MathBuilderModal, type BuilderType } from "@/components/math-builder-modal";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { cn } from "@/lib/utils";
-import { Bold, Italic, List, ListOrdered, Calculator, AtSign, ChevronDown, ChevronUp, PenLine, Eye } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Calculator,
+  AtSign,
+  ChevronDown,
+  ChevronUp,
+  PenLine,
+  Eye,
+} from "lucide-react";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function esc(s: string) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function valueToHTML(value: string): string {
   if (!value) return "";
-  
+
   // 1. Isolate Math Chips to protect them from parsing
   const chips: string[] = [];
   let processed = value.replace(/\$(.*?)\$/g, (_, latex) => {
     chips.push(latex);
     return `__MATH_${chips.length - 1}__`;
   });
-  
+
   processed = esc(processed);
   processed = processed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   processed = processed.replace(/_(.*?)_/g, "<em>$1</em>");
-  
+
   // Create blocks / lists
   const lines = processed.split("\n");
   let html = "";
   let inUL = false;
   let inOL = false;
-  
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const ulMatch = line.match(/^-\s+(.*)$/);
     const olMatch = line.match(/^\d+\.\s+(.*)$/);
-    
+
     if (ulMatch) {
-      if (inOL) { html += "</ol>"; inOL = false; }
-      if (!inUL) { html += "<ul>"; inUL = true; }
+      if (inOL) {
+        html += "</ol>";
+        inOL = false;
+      }
+      if (!inUL) {
+        html += "<ul>";
+        inUL = true;
+      }
       html += `<li>${ulMatch[1]}</li>`;
     } else if (olMatch) {
-      if (inUL) { html += "</ul>"; inUL = false; }
-      if (!inOL) { html += "<ol>"; inOL = true; }
+      if (inUL) {
+        html += "</ul>";
+        inUL = false;
+      }
+      if (!inOL) {
+        html += "<ol>";
+        inOL = true;
+      }
       html += `<li>${olMatch[1]}</li>`;
     } else {
-      if (inUL) { html += "</ul>"; inUL = false; }
-      if (inOL) { html += "</ol>"; inOL = false; }
+      if (inUL) {
+        html += "</ul>";
+        inUL = false;
+      }
+      if (inOL) {
+        html += "</ol>";
+        inOL = false;
+      }
       html += `<div>${line || "<br>"}</div>`;
     }
   }
   if (inUL) html += "</ul>";
   if (inOL) html += "</ol>";
-  
+
   return html.replace(/__MATH_(\d+)__/g, (_, idx) => chipHTML(chips[Number(idx)]));
 }
 
 function chipHTML(latex: string): string {
   try {
-    const rendered = katex.renderToString(latex, { throwOnError: false, displayMode: false, output: "html" });
+    const rendered = katex.renderToString(latex, {
+      throwOnError: false,
+      displayMode: false,
+      output: "html",
+    });
     return `<span contenteditable="false" data-math="${esc(latex)}" class="math-chip">${rendered}</span>`;
   } catch {
     return `<span contenteditable="false" data-math="${esc(latex)}" class="math-chip">[${esc(latex)}]</span>`;
@@ -71,23 +108,42 @@ function chipHTML(latex: string): string {
 function domToValue(div: HTMLElement): string {
   let out = "";
   function walk(node: Node) {
-    if (node.nodeType === Node.TEXT_NODE) { out += node.textContent ?? ""; return; }
-    if (!(node instanceof HTMLElement)) return;
-    if (node.hasAttribute("data-math")) { out += `$${node.getAttribute("data-math")}$`; return; }
-    const tag = node.tagName.toUpperCase();
-    if (tag === "BR") { out += "\n"; return; }
-    if (tag === "STRONG" || tag === "B") { out += "**"; node.childNodes.forEach(walk); out += "**"; return; }
-    if (tag === "EM" || tag === "I") { out += "_"; node.childNodes.forEach(walk); out += "_"; return; }
-    if (tag === "LI") { 
-      const parentTag = node.parentElement?.tagName.toUpperCase();
-      out += parentTag === "OL" ? "\n1. " : "\n- "; 
-      node.childNodes.forEach(walk); 
-      return; 
+    if (node.nodeType === Node.TEXT_NODE) {
+      out += node.textContent ?? "";
+      return;
     }
-    if (tag === "UL" || tag === "OL") { 
+    if (!(node instanceof HTMLElement)) return;
+    if (node.hasAttribute("data-math")) {
+      out += `$${node.getAttribute("data-math")}$`;
+      return;
+    }
+    const tag = node.tagName.toUpperCase();
+    if (tag === "BR") {
+      out += "\n";
+      return;
+    }
+    if (tag === "STRONG" || tag === "B") {
+      out += "**";
+      node.childNodes.forEach(walk);
+      out += "**";
+      return;
+    }
+    if (tag === "EM" || tag === "I") {
+      out += "_";
+      node.childNodes.forEach(walk);
+      out += "_";
+      return;
+    }
+    if (tag === "LI") {
+      const parentTag = node.parentElement?.tagName.toUpperCase();
+      out += parentTag === "OL" ? "\n1. " : "\n- ";
+      node.childNodes.forEach(walk);
+      return;
+    }
+    if (tag === "UL" || tag === "OL") {
       if (out !== "" && !out.endsWith("\n")) out += "\n";
-      node.childNodes.forEach(walk); 
-      return; 
+      node.childNodes.forEach(walk);
+      return;
     }
     if (tag === "DIV" || tag === "P") {
       // If we are starting a block AND already have content, add a newline
@@ -102,29 +158,48 @@ function domToValue(div: HTMLElement): string {
 }
 
 // ─── Symbol data ──────────────────────────────────────────────────────────────
-interface Sym { label: string; insert: string; tip: string; }
+interface Sym {
+  label: string;
+  insert: string;
+  tip: string;
+}
 const COMMON_SYMS: Sym[] = [
-  { label: "÷", insert: "÷", tip: "Division" }, { label: "×", insert: "×", tip: "Multiplication" },
-  { label: "±", insert: "±", tip: "Plus or minus" }, { label: "≠", insert: "≠", tip: "Not equal" },
-  { label: "≈", insert: "≈", tip: "Approx. equal" }, { label: "≤", insert: "≤", tip: "≤" },
-  { label: "≥", insert: "≥", tip: "≥" }, { label: "∞", insert: "∞", tip: "Infinity" },
-  { label: "°", insert: "°", tip: "Degrees" }, { label: "²", insert: "²", tip: "Squared" },
+  { label: "÷", insert: "÷", tip: "Division" },
+  { label: "×", insert: "×", tip: "Multiplication" },
+  { label: "±", insert: "±", tip: "Plus or minus" },
+  { label: "≠", insert: "≠", tip: "Not equal" },
+  { label: "≈", insert: "≈", tip: "Approx. equal" },
+  { label: "≤", insert: "≤", tip: "≤" },
+  { label: "≥", insert: "≥", tip: "≥" },
+  { label: "∞", insert: "∞", tip: "Infinity" },
+  { label: "°", insert: "°", tip: "Degrees" },
+  { label: "²", insert: "²", tip: "Squared" },
   { label: "³", insert: "³", tip: "Cubed" },
 ];
 const GREEK_SYMS: Sym[] = [
-  { label: "α", insert: "α", tip: "Alpha" }, { label: "β", insert: "β", tip: "Beta" },
-  { label: "γ", insert: "γ", tip: "Gamma" }, { label: "θ", insert: "θ", tip: "Theta" },
-  { label: "λ", insert: "λ", tip: "Lambda" }, { label: "μ", insert: "μ", tip: "Mu" },
-  { label: "π", insert: "π", tip: "Pi" }, { label: "σ", insert: "σ", tip: "Sigma" },
-  { label: "ω", insert: "ω", tip: "Omega" }, { label: "Δ", insert: "Δ", tip: "Delta" },
-  { label: "φ", insert: "φ", tip: "Phi" }, { label: "ρ", insert: "ρ", tip: "Rho" },
+  { label: "α", insert: "α", tip: "Alpha" },
+  { label: "β", insert: "β", tip: "Beta" },
+  { label: "γ", insert: "γ", tip: "Gamma" },
+  { label: "θ", insert: "θ", tip: "Theta" },
+  { label: "λ", insert: "λ", tip: "Lambda" },
+  { label: "μ", insert: "μ", tip: "Mu" },
+  { label: "π", insert: "π", tip: "Pi" },
+  { label: "σ", insert: "σ", tip: "Sigma" },
+  { label: "ω", insert: "ω", tip: "Omega" },
+  { label: "Δ", insert: "Δ", tip: "Delta" },
+  { label: "φ", insert: "φ", tip: "Phi" },
+  { label: "ρ", insert: "ρ", tip: "Rho" },
   { label: "Ω", insert: "Ω", tip: "Ohm" },
 ];
 const PHYSICS_UNITS: Sym[] = [
-  { label: "m/s", insert: " m/s", tip: "m/s" }, { label: "m/s²", insert: " m/s²", tip: "Acceleration" },
-  { label: "kg", insert: " kg", tip: "Kilograms" }, { label: "N", insert: " N", tip: "Newtons" },
-  { label: "J", insert: " J", tip: "Joules" }, { label: "W", insert: " W", tip: "Watts" },
-  { label: "Pa", insert: " Pa", tip: "Pascals" }, { label: "Hz", insert: " Hz", tip: "Hertz" },
+  { label: "m/s", insert: " m/s", tip: "m/s" },
+  { label: "m/s²", insert: " m/s²", tip: "Acceleration" },
+  { label: "kg", insert: " kg", tip: "Kilograms" },
+  { label: "N", insert: " N", tip: "Newtons" },
+  { label: "J", insert: " J", tip: "Joules" },
+  { label: "W", insert: " W", tip: "Watts" },
+  { label: "Pa", insert: " Pa", tip: "Pascals" },
+  { label: "Hz", insert: " Hz", tip: "Hertz" },
 ];
 const MATH_BUILDERS: { label: string; type: BuilderType; symbol: string; desc: string }[] = [
   { label: "Fraction", type: "fraction", symbol: "½", desc: "like 3/4" },
@@ -191,12 +266,15 @@ export function MathInputField({
   }, [onChange]);
 
   // Insert text at cursor
-  const insertText = useCallback((text: string) => {
-    if (disabled) return;
-    editorRef.current?.focus();
-    document.execCommand("insertText", false, text);
-    syncValue();
-  }, [disabled, syncValue]);
+  const insertText = useCallback(
+    (text: string) => {
+      if (disabled) return;
+      editorRef.current?.focus();
+      document.execCommand("insertText", false, text);
+      syncValue();
+    },
+    [disabled, syncValue],
+  );
 
   // ← KEY FIX: Save range before modal steals focus, restore on insert
   const openBuilder = useCallback((type: BuilderType) => {
@@ -217,65 +295,77 @@ export function MathInputField({
     setBuilderType(type);
   }, []);
 
-  const insertMath = useCallback((latexWithDollars: string) => {
-    const div = editorRef.current;
-    if (!div || disabled) return;
-    const raw = latexWithDollars.replace(/^\$|\$$/g, "");
+  const insertMath = useCallback(
+    (latexWithDollars: string) => {
+      const div = editorRef.current;
+      if (!div || disabled) return;
+      const raw = latexWithDollars.replace(/^\$|\$$/g, "");
 
-    // Restore saved range (cursor was lost when Dialog opened)
-    const sel = window.getSelection();
-    if (sel && savedRange.current) {
-      try {
-        sel.removeAllRanges();
-        sel.addRange(savedRange.current);
-      } catch {
-        // Range may be detached; fall back to appending
+      // Restore saved range (cursor was lost when Dialog opened)
+      const sel = window.getSelection();
+      if (sel && savedRange.current) {
+        try {
+          sel.removeAllRanges();
+          sel.addRange(savedRange.current);
+        } catch {
+          // Range may be detached; fall back to appending
+        }
       }
-    }
 
-    // Build rendered chip
-    const chip = document.createElement("span");
-    chip.contentEditable = "false";
-    chip.setAttribute("data-math", raw);
-    chip.className = "math-chip";
-    try { katex.render(raw, chip, { throwOnError: false, displayMode: false }); }
-    catch { chip.textContent = `[${raw}]`; }
+      // Build rendered chip
+      const chip = document.createElement("span");
+      chip.contentEditable = "false";
+      chip.setAttribute("data-math", raw);
+      chip.className = "math-chip";
+      try {
+        katex.render(raw, chip, { throwOnError: false, displayMode: false });
+      } catch {
+        chip.textContent = `[${raw}]`;
+      }
 
-    if (sel && sel.rangeCount > 0) {
-      const range = sel.getRangeAt(0);
-      range.deleteContents();
-      const anchor = document.createTextNode("\u200B");
-      range.insertNode(anchor);
-      range.insertNode(chip);
-      const newRange = document.createRange();
-      newRange.setStartAfter(anchor);
-      newRange.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(newRange);
-    } else {
-      // Fallback: append to div
-      div.appendChild(chip);
-      div.appendChild(document.createTextNode("\u200B"));
-    }
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const anchor = document.createTextNode("\u200B");
+        range.insertNode(anchor);
+        range.insertNode(chip);
+        const newRange = document.createRange();
+        newRange.setStartAfter(anchor);
+        newRange.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      } else {
+        // Fallback: append to div
+        div.appendChild(chip);
+        div.appendChild(document.createTextNode("\u200B"));
+      }
 
-    savedRange.current = null;
-    syncValue();
-    setBuilderType(null);
-  }, [disabled, syncValue]);
+      savedRange.current = null;
+      syncValue();
+      setBuilderType(null);
+    },
+    [disabled, syncValue],
+  );
 
-  const applyFormat = useCallback((cmd: "bold" | "italic") => {
-    if (disabled) return;
-    editorRef.current?.focus();
-    document.execCommand(cmd, false);
-    syncValue();
-  }, [disabled, syncValue]);
+  const applyFormat = useCallback(
+    (cmd: "bold" | "italic") => {
+      if (disabled) return;
+      editorRef.current?.focus();
+      document.execCommand(cmd, false);
+      syncValue();
+    },
+    [disabled, syncValue],
+  );
 
-  const applyList = useCallback((type: "unordered" | "ordered") => {
-    if (disabled) return;
-    editorRef.current?.focus();
-    document.execCommand(type === "ordered" ? "insertOrderedList" : "insertUnorderedList", false);
-    syncValue();
-  }, [disabled, syncValue]);
+  const applyList = useCallback(
+    (type: "unordered" | "ordered") => {
+      if (disabled) return;
+      editorRef.current?.focus();
+      document.execCommand(type === "ordered" ? "insertOrderedList" : "insertUnorderedList", false);
+      syncValue();
+    },
+    [disabled, syncValue],
+  );
 
   const symCls = cn(
     "inline-flex items-center justify-center rounded-md border border-border",
@@ -310,9 +400,8 @@ export function MathInputField({
             "focus:ring-2 focus:ring-ring/50 focus:border-ring",
             "[&_.math-chip]:inline-flex [&_.math-chip]:items-center [&_.math-chip]:mx-0.5",
             "[&_.math-chip]:px-1.5 [&_.math-chip]:py-0.5 [&_.math-chip]:rounded-md",
-            "[&_.math-chip]:bg-violet-100 [&_.math-chip]:dark:bg-violet-950/40",
-            "[&_.math-chip]:border [&_.math-chip]:border-violet-300 [&_.math-chip]:dark:border-violet-700",
-            "[&_.math-chip]:text-violet-800 [&_.math-chip]:dark:text-violet-300",
+            "[&_.math-chip]:bg-accent [&_.math-chip]:text-accent-foreground",
+            "[&_.math-chip]:border [&_.math-chip]:border-primary/35",
             "[&_.math-chip]:select-none [&_.math-chip]:cursor-default [&_.math-chip]:text-sm",
             "[&_strong]:font-bold [&_em]:italic",
             disabled && "opacity-50 cursor-not-allowed pointer-events-none",
@@ -379,7 +468,9 @@ export function MathInputField({
               {value}
             </MarkdownRenderer>
           ) : (
-            <span className="text-sm text-muted-foreground italic">Start typing to see a preview…</span>
+            <span className="text-sm text-muted-foreground italic">
+              Start typing to see a preview…
+            </span>
           )}
         </div>
       )}
@@ -389,15 +480,18 @@ export function MathInputField({
         <div className="rounded-xl border border-border bg-muted/20 overflow-hidden">
           {/* Tabs */}
           <div className="flex border-b border-border bg-muted/40">
-            {([
+            {[
               { id: "math" as Tab, label: "Math", icon: <Calculator className="h-3 w-3" /> },
               { id: "symbols" as Tab, label: "Symbols", icon: <AtSign className="h-3 w-3" /> },
               { id: "writing" as Tab, label: "Writing", icon: <PenLine className="h-3 w-3" /> },
-            ]).map((tab) => (
+            ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
-                onMouseDown={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setActiveTab(tab.id);
+                }}
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide transition-all cursor-pointer",
                   activeTab === tab.id
@@ -405,7 +499,8 @@ export function MathInputField({
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {tab.icon}{tab.label}
+                {tab.icon}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -415,14 +510,18 @@ export function MathInputField({
             {activeTab === "math" && (
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  Click a button — a guided form opens. You&apos;ll see a preview of the math before inserting. No code to type!
+                  Click a button — a guided form opens. You&apos;ll see a preview of the math before
+                  inserting. No code to type!
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {MATH_BUILDERS.map((b) => (
                     <button
                       key={b.type}
                       type="button"
-                      onMouseDown={(e) => { e.preventDefault(); openBuilder(b.type); }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        openBuilder(b.type);
+                      }}
                       className="flex items-center gap-2 rounded-xl border border-border p-2.5 bg-background hover:bg-primary/5 hover:border-primary/40 active:scale-[0.98] transition-all text-left cursor-pointer"
                     >
                       <span className="text-lg w-6 text-center shrink-0">{b.symbol}</span>
@@ -440,22 +539,42 @@ export function MathInputField({
             {activeTab === "symbols" && (
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Operators</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Operators
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {COMMON_SYMS.map((s, i) => (
-                      <button key={i} type="button" title={s.tip} className={symCls}
-                        onMouseDown={(e) => { e.preventDefault(); insertText(s.insert); }}>
+                      <button
+                        key={i}
+                        type="button"
+                        title={s.tip}
+                        className={symCls}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          insertText(s.insert);
+                        }}
+                      >
                         {s.label}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Greek Letters</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Greek Letters
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {GREEK_SYMS.map((s, i) => (
-                      <button key={i} type="button" title={s.tip} className={symCls}
-                        onMouseDown={(e) => { e.preventDefault(); insertText(s.insert); }}>
+                      <button
+                        key={i}
+                        type="button"
+                        title={s.tip}
+                        className={symCls}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          insertText(s.insert);
+                        }}
+                      >
                         {s.label}
                       </button>
                     ))}
@@ -463,11 +582,21 @@ export function MathInputField({
                 </div>
                 {!compact && (
                   <div className="space-y-1.5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Physics Units</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      Physics Units
+                    </p>
                     <div className="flex flex-wrap gap-1.5">
                       {PHYSICS_UNITS.map((s, i) => (
-                        <button key={i} type="button" title={s.tip} className={symCls}
-                          onMouseDown={(e) => { e.preventDefault(); insertText(s.insert); }}>
+                        <button
+                          key={i}
+                          type="button"
+                          title={s.tip}
+                          className={symCls}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            insertText(s.insert);
+                          }}
+                        >
                           {s.label}
                         </button>
                       ))}
@@ -481,19 +610,43 @@ export function MathInputField({
             {activeTab === "writing" && (
               <div className="space-y-3">
                 <p className="text-xs text-muted-foreground">
-                  Select words in your answer, then click <strong>Bold</strong> or <strong>Italic</strong>.
+                  Select words in your answer, then click <strong>Bold</strong> or{" "}
+                  <strong>Italic</strong>.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { icon: <Bold className="h-4 w-4" />, label: "Bold", action: () => applyFormat("bold") },
-                    { icon: <Italic className="h-4 w-4" />, label: "Italic", action: () => applyFormat("italic") },
-                    { icon: <List className="h-4 w-4" />, label: "Bullets", action: () => applyList("unordered") },
-                    { icon: <ListOrdered className="h-4 w-4" />, label: "Numbered", action: () => applyList("ordered") },
+                    {
+                      icon: <Bold className="h-4 w-4" />,
+                      label: "Bold",
+                      action: () => applyFormat("bold"),
+                    },
+                    {
+                      icon: <Italic className="h-4 w-4" />,
+                      label: "Italic",
+                      action: () => applyFormat("italic"),
+                    },
+                    {
+                      icon: <List className="h-4 w-4" />,
+                      label: "Bullets",
+                      action: () => applyList("unordered"),
+                    },
+                    {
+                      icon: <ListOrdered className="h-4 w-4" />,
+                      label: "Numbered",
+                      action: () => applyList("ordered"),
+                    },
                   ].map((b, i) => (
-                    <button key={i} type="button"
-                      onMouseDown={(e) => { e.preventDefault(); b.action(); }}
-                      className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">
-                      {b.icon}{b.label}
+                    <button
+                      key={i}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        b.action();
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer"
+                    >
+                      {b.icon}
+                      {b.label}
                     </button>
                   ))}
                   {[
@@ -501,15 +654,22 @@ export function MathInputField({
                     { label: "∴ Therefore", insert: " ∴ " },
                     { label: "∵ Because", insert: " ∵ " },
                   ].map((b, i) => (
-                    <button key={i} type="button"
-                      onMouseDown={(e) => { e.preventDefault(); insertText(b.insert); }}
-                      className="inline-flex items-center rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer">
+                    <button
+                      key={i}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        insertText(b.insert);
+                      }}
+                      className="inline-flex items-center rounded border border-border bg-background hover:bg-muted active:scale-95 transition-all h-8 px-2.5 text-sm font-medium text-foreground cursor-pointer"
+                    >
                       {b.label}
                     </button>
                   ))}
                 </div>
                 <div className="text-xs text-muted-foreground bg-muted/40 rounded-lg p-2.5 border border-border/50">
-                  <strong>Tip:</strong> Highlight words in your answer box, then click Bold or Italic above.
+                  <strong>Tip:</strong> Highlight words in your answer box, then click Bold or
+                  Italic above.
                 </div>
               </div>
             )}
