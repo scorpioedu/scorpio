@@ -13,12 +13,17 @@ import {
   type PlannedAssignment,
   type SizeChoice,
 } from "@/lib/assign-sets";
-import { DEFAULT_SET_SIZE } from "@/data/curricula";
+import { DEFAULT_SET_SIZE, curriculumSet, getCurriculum } from "@/data/curricula";
+import { apTopic as apTopicInfo } from "@/data/ap";
+import { lessonTopics } from "@/lib/read-first";
+import { BookOpen } from "lucide-react";
+import { LessonDialog, useLessons, type LessonTarget } from "@/components/guide/lesson-dialog";
 import { parseDateInput } from "@/lib/first-run";
 import type { SchoolDayTest } from "@/lib/school-calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -93,6 +98,7 @@ export function AssignDialog({
   className,
   sets,
   problemsPerSet,
+  lessonsCourse = null,
   start,
   spacing,
   isSchoolDay,
@@ -109,6 +115,8 @@ export function AssignDialog({
   sets: AssignableSet[];
   /** The number of problems this class was last given per set; the control opens on it. */
   problemsPerSet?: number | null;
+  /** The course, when it has lessons: offers "Read the lessons first", with a preview of each. */
+  lessonsCourse?: string | null;
   start: string;
   spacing: string;
   isSchoolDay: SchoolDayTest;
@@ -128,6 +136,22 @@ export function AssignDialog({
   const [count, setCountState] = useState(choice.initial);
   /** Problems the teacher chose by hand, by set key (positions in the set). */
   const [picks, setPicks] = useState<Record<string, number[]>>({});
+  const [readFirst, setReadFirst] = useState(false);
+  // The lessons the sets cover, in course order: what students would read.
+  const lessonList = useMemo(
+    () =>
+      lessonsCourse
+        ? lessonTopics({
+            curriculumId: lessonsCourse,
+            apTopics: sets.flatMap((s) => curriculumSet(lessonsCourse, s.key)?.topics ?? []),
+          })
+        : [],
+    [lessonsCourse, sets],
+  );
+  const lessons = lessonList.length > 0;
+  const lessonGuides = useLessons(lessonsCourse, lessonList);
+  const [previewing, setPreviewing] = useState<LessonTarget | null>(null);
+  const apCourse = lessonsCourse ? getCurriculum(lessonsCourse)?.apCourse : undefined;
   // Another size is another pick: a hand-made choice does not carry over.
   const setCount = (n: number) => {
     setCountState(n);
@@ -142,16 +166,17 @@ export function AssignDialog({
           ...p,
           ...(choice.offered ? { count } : {}),
           ...(picks[p.key] ? { pick: picks[p.key] } : {}),
+          ...(lessons && readFirst ? { readFirst: true } : {}),
         }),
       ),
     // startDate is derived from `start`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sets, none, start, spacing, isSchoolDay, choice.offered, count, picks],
+    [sets, none, start, spacing, isSchoolDay, choice.offered, count, picks, lessons, readFirst],
   );
 
   return (
     <Dialog open onOpenChange={(open) => !open && !busy && onClose()}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl lg:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="break-words">Assign {unitLabel}</DialogTitle>
           <DialogDescription>
@@ -184,6 +209,52 @@ export function AssignDialog({
             disabled={busy}
           />
         </div>
+        {lessons && (
+          <div className="flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-4 py-3">
+            <Checkbox
+              id="assign-read-first"
+              checked={readFirst}
+              onCheckedChange={(v) => setReadFirst(v === true)}
+              disabled={busy}
+              aria-describedby="assign-read-first-help"
+              className="mt-0.5"
+            />
+            <div className="space-y-0.5">
+              <Label htmlFor="assign-read-first">Read the lessons first</Label>
+              <p id="assign-read-first-help" className="text-xs text-muted-foreground">
+                Students read the lesson for each topic and mark it read before the problems open.
+              </p>
+              {apCourse && (
+                <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+                  <span className="text-xs text-muted-foreground">Preview:</span>
+                  {lessonList.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setPreviewing({ topic: t })}
+                      disabled={!lessonGuides.guide}
+                      className="inline-flex max-w-full items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-xs hover:border-primary/60 hover:text-primary disabled:opacity-60"
+                    >
+                      <BookOpen className="size-3 shrink-0" aria-hidden />
+                      <span className="font-semibold tabular-nums">{t}</span>
+                      <span className="truncate">{apTopicInfo(t, apCourse)?.title}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {apCourse && (
+          // What students would read, as they would see it (no teacher notes).
+          <LessonDialog
+            course={apCourse}
+            guide={lessonGuides.guide}
+            topics={lessonList}
+            target={previewing}
+            onTarget={setPreviewing}
+          />
+        )}
         {startDate ? (
           <ul className="divide-y divide-border rounded-xl border border-border text-sm">
             {plan.map((p) => (

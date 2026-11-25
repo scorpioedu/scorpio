@@ -203,6 +203,8 @@ export interface AssignmentSettingsValue {
   requireWorkSubmission: boolean;
   enableTabDetection: boolean;
   lockdownMode: boolean;
+  /** Students read the lessons for the assignment's AP topics first (src/lib/read-first.ts). */
+  readFirst: boolean;
   gradingType: "ai" | "manual";
   visibility: "private" | "network" | "global";
 }
@@ -218,6 +220,7 @@ export const DEFAULT_SETTINGS: AssignmentSettingsValue = {
   requireWorkSubmission: false,
   enableTabDetection: true,
   lockdownMode: false,
+  readFirst: false,
   gradingType: "ai",
   visibility: "private",
 };
@@ -237,6 +240,7 @@ export function settingsFrom(a: Record<string, unknown>): AssignmentSettingsValu
     requireWorkSubmission: bool("requireWorkSubmission"),
     enableTabDetection: bool("enableTabDetection"),
     lockdownMode: bool("lockdownMode"),
+    readFirst: bool("readFirst"),
     gradingType: a.gradingType === "manual" ? "manual" : "ai",
     visibility:
       a.visibility === "network" || a.visibility === "global"

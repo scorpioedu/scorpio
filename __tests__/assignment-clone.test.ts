@@ -421,6 +421,16 @@ describe("POST /api/assignments/clone", () => {
       expect(shown.archivedAt).toBeUndefined();
     });
 
+    test("readFirst: the copy asks students to read the lessons first; without it, the field is absent", async () => {
+      seed(10);
+      const reading = (await copyOf({ readFirst: true })).copy as unknown as {
+        readFirst?: unknown;
+      };
+      expect(reading.readFirst).toBe(true);
+      const plain = (await copyOf()).copy as unknown as { readFirst?: unknown };
+      expect(plain.readFirst).toBeUndefined();
+    });
+
     test("a count of 10: the whole pool", async () => {
       seed(10);
       const { copy, key } = await copyOf({ count: 10 });

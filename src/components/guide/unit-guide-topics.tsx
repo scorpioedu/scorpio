@@ -1,10 +1,10 @@
 "use client";
 
-// A unit's topics, each with its guide behind "Read the guide". Collapsed, a topic is its number,
+// A unit's topics, each with its lesson (the topic's guide) behind "Read the lesson". Collapsed, a topic is its number,
 // title and one-line summary; a link to #topic-4-1 opens that topic. Shared by the teacher's unit
-// guide ("What it covers") and the student guide page.
+// guide (its Lessons tab) and the student guide page.
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import { BookOpen, ChevronDown } from "lucide-react";
 import { apTopic, type ApCourseId } from "@/data/ap";
 import { topicAnchor, topicFromAnchor, topicGuide, type UnitGuide } from "@/lib/guides";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ export interface UnitGuideTopicsProps {
   course: ApCourseId;
   /** Topic ids, in the order to list them. */
   topics: string[];
-  /** null while the guide file is loading: the rows show, without "Read the guide". */
+  /** null while the guide file is loading: the rows show, without "Read the lesson". */
   guide: UnitGuide | null;
   teacher?: boolean;
   practiceFor?: (topicId: string) => PracticeLink[];
@@ -28,6 +28,11 @@ export interface UnitGuideTopicsProps {
   defaultOpen?: string[];
   /** Level of a topic's title; the guide's sections are one lower. */
   headingLevel?: 2 | 3;
+  /**
+   * Opens a topic's lesson somewhere else (the teacher's lesson dialog) instead of below its row.
+   * The address (#topic-4-1) then opens nothing here: the page handles it.
+   */
+  onRead?: (topicId: string) => void;
 }
 
 export function UnitGuideTopics({
@@ -41,6 +46,7 @@ export function UnitGuideTopics({
   chipClassName = "bg-muted text-foreground",
   defaultOpen = [],
   headingLevel = 2,
+  onRead,
 }: UnitGuideTopicsProps) {
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set(defaultOpen));
   const Title = `h${headingLevel}` as "h2" | "h3";
@@ -49,7 +55,9 @@ export function UnitGuideTopics({
   // the address changes.
   const listed = topics.join(",");
   const loaded = !!guide;
+  const inline = !onRead;
   useEffect(() => {
+    if (!inline) return;
     const show = () => {
       const id = topicFromAnchor(window.location.hash);
       if (!id || !listed.split(",").includes(id)) return;
@@ -57,20 +65,24 @@ export function UnitGuideTopics({
       // A link to one "Common mistakes" entry (#topic-4-2-mistake-…) lands on that entry once the
       // guide has drawn; otherwise on the topic.
       const exact = window.location.hash.slice(1);
-      window.setTimeout(
-        () =>
-          (
-            document.getElementById(exact) ?? document.getElementById(topicAnchor(id))
-          )?.scrollIntoView({ behavior: "smooth" }),
-        50,
-      );
+      const target = () =>
+        document.getElementById(exact) ?? document.getElementById(topicAnchor(id));
+      window.setTimeout(() => target()?.scrollIntoView({ behavior: "smooth" }), 50);
+      // The lesson's equations and diagrams draw after it opens and push an entry further down, so
+      // the first scroll can stop short: line up once more when it has settled.
+      window.setTimeout(() => {
+        const el = target();
+        if (el && Math.abs(el.getBoundingClientRect().top) > window.innerHeight / 2)
+          el.scrollIntoView({ behavior: "smooth" });
+      }, 700);
     };
     show();
     window.addEventListener("hashchange", show);
     return () => window.removeEventListener("hashchange", show);
-  }, [listed, loaded]);
+  }, [listed, loaded, inline]);
 
   const toggle = (id: string) => {
+    if (onRead) return onRead(id);
     const next = new Set(open);
     if (next.has(id)) next.delete(id);
     else {
@@ -121,17 +133,21 @@ export function UnitGuideTopics({
               {g && (
                 <Button
                   type="button"
-                  variant={isOpen ? "outline" : "default"}
+                  variant={isOpen ? "outline" : inline ? "default" : "outline"}
                   size="sm"
-                  aria-expanded={isOpen}
-                  aria-controls={panel}
+                  aria-expanded={inline ? isOpen : undefined}
+                  aria-controls={inline ? panel : undefined}
                   onClick={() => toggle(id)}
                 >
-                  <ChevronDown
-                    className={cn("transition-transform", isOpen && "rotate-180")}
-                    aria-hidden
-                  />
-                  {isOpen ? "Hide the guide" : "Read the guide"}
+                  {inline ? (
+                    <ChevronDown
+                      className={cn("transition-transform", isOpen && "rotate-180")}
+                      aria-hidden
+                    />
+                  ) : (
+                    <BookOpen aria-hidden />
+                  )}
+                  {isOpen ? "Hide the lesson" : "Read the lesson"}
                   <span className="sr-only">: {topic?.title}</span>
                 </Button>
               )}

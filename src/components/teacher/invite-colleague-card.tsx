@@ -1,15 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ReferralInfo {
   link: string;
   stats: { invited: number; activated: number; earnedCents: number };
+}
+
+/** Set once the teacher closes the card; it stays closed in this browser. */
+const CLOSED_KEY = "scorpio.home.invite-colleague-closed";
+
+function isClosed() {
+  try {
+    return typeof window !== "undefined" && !!localStorage.getItem(CLOSED_KEY);
+  } catch {
+    return false; // Storage blocked: the card shows, and closing it lasts for this visit.
+  }
 }
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(cents % 100 ? 2 : 0)}`;
@@ -18,8 +36,12 @@ const dollars = (cents: number) => `$${(cents / 100).toFixed(cents % 100 ? 2 : 0
 export function InviteColleagueCard() {
   const [info, setInfo] = useState<ReferralInfo | null>(null);
   const [copied, setCopied] = useState(false);
+  // Read once on mount; the card itself only appears after its link loads, so the server's
+  // render (nothing) always matches.
+  const [closed, setClosed] = useState(isClosed);
 
   useEffect(() => {
+    if (isClosed()) return;
     let active = true;
     authenticatedFetch("/api/teacher/referral")
       .then((res) => (res.ok ? res.json() : null))
@@ -32,7 +54,21 @@ export function InviteColleagueCard() {
     };
   }, []);
 
-  if (!info) return null;
+  if (!info || closed) return null;
+
+  const remember = (value: boolean) => {
+    try {
+      if (value) localStorage.setItem(CLOSED_KEY, "1");
+      else localStorage.removeItem(CLOSED_KEY);
+    } catch {
+      // Private window: closed for this visit only.
+    }
+    setClosed(value);
+  };
+  const close = () => {
+    remember(true);
+    toast("Invite card closed", { action: { label: "Undo", onClick: () => remember(false) } });
+  };
 
   const copy = async () => {
     try {
@@ -53,6 +89,18 @@ export function InviteColleagueCard() {
           When a colleague you invite gets their first class results, you get $5 of AI credit and
           they get $2.
         </CardDescription>
+        <CardAction>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="-mr-2 -mt-1 size-8 text-muted-foreground"
+            onClick={close}
+            aria-label="Close the invite card"
+            title="Close"
+          >
+            <X />
+          </Button>
+        </CardAction>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">

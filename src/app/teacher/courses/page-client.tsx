@@ -12,12 +12,15 @@ import {
   CalendarDays,
   CalendarRange,
   ChartNoAxesColumn,
-  ChevronDown,
+  History,
   List as ListIcon,
   ListOrdered,
   MoreHorizontal,
   Plus,
+  UserPlus,
+  X,
 } from "lucide-react";
+import { guideUnits } from "@/lib/guides";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import {
   CURRICULA,
@@ -76,6 +79,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AssignDialog } from "./assign-dialog";
+
+/** Per class, how many old-course sets the teacher has seen and put the note about away. */
+const ELSEWHERE_KEY = "scorpio.courses.elsewhere-seen";
 import { assignmentHref } from "@/lib/assignment-actions";
 import { parseProblemsPerSet } from "@/lib/assignment-defaults";
 import { CourseStats } from "./course-stats";
@@ -170,6 +176,25 @@ export default function CoursesClient() {
           a.curriculumId !== curriculum.id,
       )
     : [];
+  // A teacher can put the note about them away; it comes back if more turn up.
+  const [elsewhereSeen, setElsewhereSeen] = useState<Record<string, number>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(ELSEWHERE_KEY) ?? "{}") ?? {};
+    } catch {
+      return {};
+    }
+  });
+  const dismissElsewhere = (classId: string, count: number) => {
+    const next = { ...elsewhereSeen, [classId]: count };
+    setElsewhereSeen(next);
+    try {
+      localStorage.setItem(ELSEWHERE_KEY, JSON.stringify(next));
+    } catch {
+      // Private window: dismissed for this visit only.
+    }
+  };
+  const shownElsewhere =
+    elsewhere.length > 0 && !!selected && (elsewhereSeen[selected.id] ?? 0) < elsewhere.length;
   const elsewhereCourses = [
     ...new Set(elsewhere.map((a) => getCurriculum(a.curriculumId)?.name ?? "another course")),
   ];
@@ -328,6 +353,35 @@ export default function CoursesClient() {
       setAssigning({ label: `${s.set.key}: ${s.set.title}`, sets: toAssignable([s]) });
   }, [roadmap, selected, published, openUnit, toAssignable]);
 
+  const look = courseLook(curriculum.id);
+
+  // List or Calendar: on the Calendar it heads the page with the unit filter; on the List it sits
+  // at the end of the class's figures.
+  const viewToggle = (
+    <div
+      role="group"
+      aria-label="View"
+      className="inline-flex rounded-full border border-border bg-muted/40 p-1"
+    >
+      {(
+        [
+          ["list", "List", ListIcon],
+          ["calendar", "Calendar", CalendarRange],
+        ] as const
+      ).map(([value, label, Icon]) => (
+        <button
+          key={value}
+          type="button"
+          aria-pressed={view === value}
+          onClick={() => setView(value)}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring ${view === value ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          <Icon className="size-4" aria-hidden /> {label}
+        </button>
+      ))}
+    </div>
+  );
+
   const schedule = selected && (
     <ScheduleTab
       course={curriculum.apCourse}
@@ -350,15 +404,38 @@ export default function CoursesClient() {
   return (
     <div className="space-y-6 md:pb-16">
       <TeacherPageHeader
-        title="Course"
+        // With a course on screen, the course is the heading: its name, level and what it covers.
+        title={
+          needsCourse ? (
+            "Course"
+          ) : (
+            <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              {curriculum.name}
+              {look.level && (
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-medium tracking-normal ${look.tint}`}
+                >
+                  {look.level}
+                </span>
+              )}
+            </span>
+          )
+        }
+        leading={
+          needsCourse ? undefined : (
+            <CourseBadge
+              curriculumId={curriculum.id}
+              className="size-12 shrink-0 rounded-2xl"
+              iconClassName="size-7"
+            />
+          )
+        }
         description={
           needsCourse ? (
             "A class follows one course: its units in order, each with short auto-graded sets."
           ) : (
             <>
-              {onCalendar
-                ? "Every set on the day it is due. Drag an assigned set to another day, or click it."
-                : "Units in order, each with short auto-graded sets. Assign, re-date or skip right on the roadmap."}
+              {look.covers} <span className="whitespace-nowrap">{courseSize(curriculum)}.</span>
             </>
           )
         }
@@ -368,20 +445,6 @@ export default function CoursesClient() {
             editing ? toast.info("Save or discard the new order first.") : change()
           }
         />
-        {/* Which course this class is on, said loudly; pressing it changes the course. */}
-        {selected && follows && (
-          <Button
-            variant="outline"
-            className="border-primary/60 bg-primary/10 font-semibold text-foreground hover:bg-primary/15"
-            disabled={busy !== null || editing}
-            aria-label={`Course: ${curriculum.name}. Change course`}
-            title={`${selected.name} follows ${curriculum.name}. Press to change the course.`}
-            onClick={() => setCourseDraft(selected.curriculumId)}
-          >
-            <CourseIcon curriculumId={curriculum.id} className="text-primary" /> {curriculum.name}
-            <ChevronDown aria-hidden className="opacity-60" />
-          </Button>
-        )}
         {classes?.length === 0 && CURRICULA.length > 1 && (
           <Select
             value={curriculum.id}
@@ -418,8 +481,8 @@ export default function CoursesClient() {
             </span>
           </Button>
         )}
-        {/* Everything a teacher does now and then, behind one button. */}
-        {selected && follows && ready && (
+        {/* Everything a teacher does now and then, the course included, behind one button. */}
+        {selected && follows && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" aria-label="More course actions">
@@ -427,6 +490,18 @@ export default function CoursesClient() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-72">
+              <DropdownMenuItem
+                disabled={busy !== null || editing}
+                onSelect={() => setCourseDraft(selected.curriculumId)}
+              >
+                <CourseIcon curriculumId={curriculum.id} />
+                <span className="min-w-0 flex-1">
+                  Change course
+                  <span className="block truncate text-xs text-muted-foreground">
+                    Now {curriculum.name}
+                  </span>
+                </span>
+              </DropdownMenuItem>
               {ready && !editing && (
                 <DropdownMenuItem onSelect={() => setShowProgress((v) => !v)}>
                   <ChartNoAxesColumn /> {showProgress ? "Hide" : "Show"} course progress
@@ -465,18 +540,6 @@ export default function CoursesClient() {
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
-        </p>
-      )}
-      {selected && elsewhere.length > 0 && (
-        <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
-          {selected.name} also has {elsewhere.length} assigned set
-          {elsewhere.length === 1 ? "" : "s"} from {elsewhereCourses.join(" and ")}, from before its
-          course changed. Students still see {elsewhere.length === 1 ? "it" : "them"}, with their
-          work, under Other assignments; you will find {elsewhere.length === 1 ? "it" : "them"} in{" "}
-          <Link className="underline underline-offset-2" href="/teacher/assignments">
-            My Assignments
-          </Link>
-          .
         </p>
       )}
       {needsCourse && selected ? (
@@ -563,6 +626,51 @@ export default function CoursesClient() {
         </section>
       ) : classes === null ? null : (
         <>
+          {selected && (shownElsewhere || (canView && progress?.students === 0)) && (
+            // The class's loose ends, as one quiet box with a line each.
+            <ul className="space-y-1.5 rounded-2xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+              {canView && progress?.students === 0 && (
+                <li className="flex gap-2.5">
+                  <UserPlus className="mt-0.5 size-4 shrink-0" aria-hidden />
+                  <span>
+                    No students yet. Share the join code{" "}
+                    <span className="font-mono font-semibold text-foreground">{selected.code}</span>{" "}
+                    or an invite link from{" "}
+                    <Link className="underline underline-offset-2" href="/teacher/students">
+                      Classes
+                    </Link>
+                    . Sets you assign now will be waiting for them.
+                  </span>
+                </li>
+              )}
+              {shownElsewhere && (
+                <li className="flex gap-2.5">
+                  <History className="mt-0.5 size-4 shrink-0" aria-hidden />
+                  <span>
+                    {elsewhere.length === 1 ? "1 set" : `${elsewhere.length} sets`} from{" "}
+                    {elsewhereCourses.join(" and ")} {elsewhere.length === 1 ? "is" : "are"} still
+                    assigned from before the course changed. Students see{" "}
+                    {elsewhere.length === 1 ? "it" : "them"} under Other assignments; find{" "}
+                    {elsewhere.length === 1 ? "it" : "them"} in{" "}
+                    <Link className="underline underline-offset-2" href="/teacher/assignments">
+                      My Assignments
+                    </Link>
+                    .
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => dismissElsewhere(selected.id, elsewhere.length)}
+                    className="-my-0.5 ml-auto shrink-0 rounded-md p-0.5 hover:bg-muted hover:text-foreground"
+                    aria-label="Dismiss this note"
+                    title="Dismiss"
+                  >
+                    <X className="size-4" aria-hidden />
+                  </button>
+                </li>
+              )}
+            </ul>
+          )}
+
           {!written ? (
             <Card className="shadow-none" role="status">
               <CardHeader>
@@ -606,30 +714,9 @@ export default function CoursesClient() {
             )
           )}
 
-          {canView && !editing && (
+          {canView && !editing && onCalendar && (
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-              <div
-                role="group"
-                aria-label="View"
-                className="inline-flex rounded-full border border-border bg-muted/40 p-1"
-              >
-                {(
-                  [
-                    ["list", "List", ListIcon],
-                    ["calendar", "Calendar", CalendarRange],
-                  ] as const
-                ).map(([value, label, Icon]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={view === value}
-                    onClick={() => setView(value)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring ${view === value ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                  >
-                    <Icon className="size-4" aria-hidden /> {label}
-                  </button>
-                ))}
-              </div>
+              {viewToggle}
               {onCalendar && (
                 <UnitFilter
                   units={roadmap.map((u) => ({ unit: u.unit, title: u.info?.title ?? "" }))}
@@ -649,18 +736,6 @@ export default function CoursesClient() {
               loading={progress === null}
             />
           )}
-          {canView && selected && progress?.students === 0 && (
-            <p className="rounded-2xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground">
-              No students have joined {selected.name} yet. Share its join code{" "}
-              <span className="font-mono font-semibold text-foreground">{selected.code}</span> with
-              them, or copy an invite link from{" "}
-              <Link className="underline underline-offset-2" href="/teacher/students">
-                Classes
-              </Link>
-              . You can assign sets now; they will be waiting.
-            </p>
-          )}
-
           {loadError ? (
             <p role="alert" className="text-sm text-destructive">
               Could not load the roadmap. Refresh to try again.
@@ -709,6 +784,7 @@ export default function CoursesClient() {
               onAssign={openUnit}
               onPreview={setPreview}
               actions={rowActions}
+              toolbar={canView && !editing ? viewToggle : undefined}
             />
           )}
         </>
@@ -785,6 +861,7 @@ export default function CoursesClient() {
           className={selected.name}
           sets={assigning.sets}
           problemsPerSet={parseProblemsPerSet(selected.assignmentDefaults)}
+          lessonsCourse={curriculum && guideUnits(curriculum.id).length > 0 ? curriculum.id : null}
           start={start}
           spacing={spacing}
           isSchoolDay={isSchoolDay}

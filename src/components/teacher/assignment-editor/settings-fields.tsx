@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { DEFAULT_AP_COURSE, apUnit as findApUnit, apUnitKey, parseApUnitKey } from "@/data/ap";
 import { ApUnitSelectItems } from "@/components/ap-unit-select-items";
+import { lessonTopics } from "@/lib/read-first";
 import type { AssignmentSettingsValue } from "./types";
 
 export function SettingsFields({
@@ -28,6 +29,11 @@ export function SettingsFields({
   showSharing?: boolean;
 }) {
   const set = (patch: Partial<AssignmentSettingsValue>) => onChange({ ...value, ...patch });
+  // "Read the lessons first" needs AP topics that have lessons; it stays on (and does nothing) when
+  // the topics are cleared, so ticking them again brings it back.
+  const lessons = value.apUnit
+    ? lessonTopics({ apCourse: value.apCourse, apTopics: value.apTopics })
+    : [];
   return (
     <>
       <section className="space-y-3 py-5" aria-labelledby="assignment-options-heading">
@@ -163,6 +169,17 @@ export function SettingsFields({
               checked: value.lockdownMode,
               setChecked: (lockdownMode: boolean) => set({ lockdownMode }),
             },
+            ...(lessons.length > 0
+              ? [
+                  {
+                    id: "readFirst",
+                    label: "Read the lessons first",
+                    description: `Students read the lesson${lessons.length === 1 ? "" : "s"} for ${lessons.join(", ")} and mark ${lessons.length === 1 ? "it" : "each"} read before the problems open.`,
+                    checked: value.readFirst,
+                    setChecked: (readFirst: boolean) => set({ readFirst }),
+                  },
+                ]
+              : []),
           ].map(({ id, label, description, checked, setChecked }) => (
             <div key={id} className="flex items-start gap-2.5">
               <Checkbox

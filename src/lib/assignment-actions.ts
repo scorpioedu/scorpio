@@ -14,6 +14,7 @@ export interface AssignmentPatch {
   lockdownMode?: boolean;
   allowAIHelp?: boolean;
   allowCalculator?: boolean;
+  readFirst?: boolean;
   rubric?: string | null;
   questions?: Record<string, unknown>[];
   archived?: boolean;

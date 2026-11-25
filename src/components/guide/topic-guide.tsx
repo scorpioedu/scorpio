@@ -1,6 +1,6 @@
 "use client";
 
-// One AP topic's guide, for teachers (unit guide, "What it covers") and students
+// One AP topic's guide, for teachers (unit guide, its Lessons tab) and students
 // (/student/courses/{course}/{unit}). The content is src/data/guides; the sections come in the
 // order of the schema (src/lib/guides/schema.ts). Text goes through the app's Markdown renderer, so
 // $…$ math and ```dg diagrams work in every field.

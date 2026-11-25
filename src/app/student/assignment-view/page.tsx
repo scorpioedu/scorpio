@@ -66,6 +66,8 @@ import {
   topicGuideHref,
   useUnitGuides,
 } from "./guide-links";
+import { ReadFirst } from "./read-first";
+import { lessonCourse, readFirstTopics } from "@/lib/read-first";
 
 interface Question {
   id: string;
@@ -115,6 +117,8 @@ interface Assignment {
   courseId?: string;
   /** The course the assignment is a set of; its guides are linked from the questions. */
   curriculumId?: string;
+  /** "Read the lessons first": the topics to read before the problems open, and their course. */
+  readFirst?: { curriculumId: string; topics: string[] };
 }
 
 interface ChatMessage {
@@ -148,6 +152,8 @@ function AssignmentDetailContent() {
   // Timer State
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  /** Every lesson the teacher asked for is read (always true when none is asked for). */
+  const [lessonsRead, setLessonsRead] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [inGracePeriod, setInGracePeriod] = useState(false);
 
@@ -317,7 +323,7 @@ function AssignmentDetailContent() {
             allowAIHelp: data.allowAIHelp || false,
             allowCalculator: data.allowCalculator || false,
             enableTabDetection: data.enableTabDetection ?? true,
-// Assignments saved without this field have always opened locked, and teachers may be
+            // Assignments saved without this field have always opened locked, and teachers may be
             // relying on that, so they stay locked. Everything created now writes the field: the
             // editor and the copy route both default it to off.
             lockdownMode: data.lockdownMode ?? true,
@@ -325,6 +331,11 @@ function AssignmentDetailContent() {
             teacherId: data.teacherId || studentTeacherId,
             courseId: data.courseId || studentCourseId,
             curriculumId: typeof data.curriculumId === "string" ? data.curriculumId : undefined,
+            readFirst: (() => {
+              const topics = readFirstTopics(data);
+              const course = lessonCourse(data);
+              return topics.length && course ? { curriculumId: course, topics } : undefined;
+            })(),
           };
 
           setAssignment(assignmentData);
@@ -375,8 +386,9 @@ function AssignmentDetailContent() {
                   // For now, let's just set it to 0 and let the timer effect handle it
                 }
               }
-            } else if (!firstAssignment) {
-              setHasStarted(true); // No timer, so "started" immediately
+            } else if (!firstAssignment && !assignmentData.readFirst) {
+              // No timer and nothing to read first, so "started" immediately
+              setHasStarted(true);
             }
           }
         }
@@ -411,7 +423,9 @@ function AssignmentDetailContent() {
   const isGraded = !!existingSubmission?.graded;
   const taggedUnits = isGraded
     ? (assignment?.questions ?? []).flatMap((q) => {
-        const tags = existingSubmission?.answers?.find((a) => a.questionId === q.id)?.misconceptions;
+        const tags = existingSubmission?.answers?.find(
+          (a) => a.questionId === q.id,
+        )?.misconceptions;
         const unit = guideUnitOf(q.apTopic);
         return unit !== null && Array.isArray(tags) && tags.length ? [unit] : [];
       })
@@ -593,8 +607,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content:
-            errorMessage(error) || "Raise couldn't reply just now. Please try again.",
+          content: errorMessage(error) || "Raise couldn't reply just now. Please try again.",
         },
       ]);
     } finally {
@@ -846,6 +859,14 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               <Badge variant="outline">Work upload required</Badge>
             )}
           </div>
+          {assignment.readFirst && (
+            <ReadFirst
+              assignmentId={assignment.id}
+              curriculumId={assignment.readFirst.curriculumId}
+              topics={assignment.readFirst.topics}
+              onAllRead={setLessonsRead}
+            />
+          )}
           <section
             aria-labelledby="before-start"
             className="space-y-2 rounded-xl border border-border bg-card p-4 sm:p-5"
@@ -869,8 +890,8 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               )}
               {!assignment.lockdownMode && (
                 <li>
-                  You don’t have to finish in one go. Save Draft keeps your answers so you can
-                  come back.
+                  You don’t have to finish in one go. Save Draft keeps your answers so you can come
+                  back.
                 </li>
               )}
               <li>
@@ -886,9 +907,19 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               <li>Use a stable connection and keep this page open.</li>
             </ul>
           </section>
-          <Button onClick={handleStartAssignment}>
-            <Play /> Start Assignment
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              onClick={handleStartAssignment}
+              disabled={!!assignment.readFirst && !lessonsRead}
+            >
+              <Play /> Start Assignment
+            </Button>
+            {assignment.readFirst && !lessonsRead && (
+              <p className="text-sm text-muted-foreground">
+                Read the lesson{assignment.readFirst.topics.length === 1 ? "" : "s"} above to start.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -1187,154 +1218,155 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       )
                     : null;
                   return (
-                  <Card
-                    key={question.id}
-                    className="overflow-hidden gap-0 border-border py-0 shadow-none"
-                  >
-                    <CardHeader className="bg-muted/20 border-b px-4 pt-3 [.border-b]:pb-3 sm:px-6">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-sm font-semibold">Question {index + 1}</h2>
-                          {existingSubmission?.graded && (
-                            <Badge variant="secondary" className="text-[10px] font-bold">
-                              {existingSubmission.answers?.find((a) => a.questionId === question.id)
-                                ?.score ?? 0}{" "}
-                              / {question.points ?? 10} PTS
-                            </Badge>
-                          )}
+                    <Card
+                      key={question.id}
+                      className="overflow-hidden gap-0 border-border py-0 shadow-none"
+                    >
+                      <CardHeader className="bg-muted/20 border-b px-4 pt-3 [.border-b]:pb-3 sm:px-6">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-sm font-semibold">Question {index + 1}</h2>
+                            {existingSubmission?.graded && (
+                              <Badge variant="secondary" className="text-[10px] font-bold">
+                                {existingSubmission.answers?.find(
+                                  (a) => a.questionId === question.id,
+                                )?.score ?? 0}{" "}
+                                / {question.points ?? 10} PTS
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {assignment.allowCalculator && !submitted && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={openGraph}
+                                className="h-7 gap-1.5 px-2 text-xs font-normal text-muted-foreground hover:text-foreground"
+                                aria-label={`Graph for Question ${index + 1}`}
+                                title="Open the graphing calculator"
+                              >
+                                <LineChart className="size-3.5" />
+                                Graph
+                              </Button>
+                            )}
+                            {guideHref && (
+                              <GuideLink href={guideHref} newTab={!submitted}>
+                                Lesson
+                              </GuideLink>
+                            )}
+                            <Badge variant="outline">{question.points || 10} pts</Badge>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {assignment.allowCalculator && !submitted && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={openGraph}
-                              className="h-7 gap-1.5 px-2 text-xs font-normal text-muted-foreground hover:text-foreground"
-                              aria-label={`Graph for Question ${index + 1}`}
-                              title="Open the graphing calculator"
+                      </CardHeader>
+                      <CardContent className="space-y-4 p-4 sm:p-6">
+                        <MarkdownRenderer className="prose prose-sm dark:prose-invert max-w-none text-foreground leading-relaxed">
+                          {question.text}
+                        </MarkdownRenderer>
+
+                        <div className="pt-2">
+                          {question.type === "multiple-choice" && question.options ? (
+                            <RadioGroup
+                              value={answers[question.id] || ""}
+                              onValueChange={(value) =>
+                                setAnswers({ ...answers, [question.id]: value })
+                              }
+                              disabled={submitted}
                             >
-                              <LineChart className="size-3.5" />
-                              Graph
-                            </Button>
-                          )}
-                          {guideHref && (
-                            <GuideLink href={guideHref} newTab={!submitted}>
-                              Lesson
-                            </GuideLink>
-                          )}
-                          <Badge variant="outline">{question.points || 10} pts</Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4 p-4 sm:p-6">
-                      <MarkdownRenderer className="prose prose-sm dark:prose-invert max-w-none text-foreground leading-relaxed">
-                        {question.text}
-                      </MarkdownRenderer>
-
-                      <div className="pt-2">
-                        {question.type === "multiple-choice" && question.options ? (
-                          <RadioGroup
-                            value={answers[question.id] || ""}
-                            onValueChange={(value) =>
-                              setAnswers({ ...answers, [question.id]: value })
-                            }
-                            disabled={submitted}
-                          >
-                            {question.options.map((option, optionIndex) => (
-                              <div key={optionIndex} className="flex items-center space-x-2">
-                                <RadioGroupItem
-                                  value={option}
-                                  id={`${question.id}-${optionIndex}`}
-                                />
-                                <Label htmlFor={`${question.id}-${optionIndex}`}>{option}</Label>
+                              {question.options.map((option, optionIndex) => (
+                                <div key={optionIndex} className="flex items-center space-x-2">
+                                  <RadioGroupItem
+                                    value={option}
+                                    id={`${question.id}-${optionIndex}`}
+                                  />
+                                  <Label htmlFor={`${question.id}-${optionIndex}`}>{option}</Label>
+                                </div>
+                              ))}
+                            </RadioGroup>
+                          ) : question.type === "true-false" ? (
+                            <RadioGroup
+                              value={answers[question.id] || ""}
+                              onValueChange={(value) =>
+                                setAnswers({ ...answers, [question.id]: value })
+                              }
+                              disabled={submitted}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="True" id={`${question.id}-true`} />
+                                <Label htmlFor={`${question.id}-true`}>True</Label>
                               </div>
-                            ))}
-                          </RadioGroup>
-                        ) : question.type === "true-false" ? (
-                          <RadioGroup
-                            value={answers[question.id] || ""}
-                            onValueChange={(value) =>
-                              setAnswers({ ...answers, [question.id]: value })
-                            }
-                            disabled={submitted}
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="True" id={`${question.id}-true`} />
-                              <Label htmlFor={`${question.id}-true`}>True</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="False" id={`${question.id}-false`} />
-                              <Label htmlFor={`${question.id}-false`}>False</Label>
-                            </div>
-                          </RadioGroup>
-                        ) : question.type === "numeric" ? (
-                          <MathInputField
-                            value={answers[question.id] || ""}
-                            onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
-                            placeholder="Your answer with its unit, like 12.5 m/s"
-                            ariaLabel={`Answer to question ${index + 1}`}
-                            disabled={submitted}
-                            rows={1}
-                          />
-                        ) : question.type === "short-answer" ? (
-                          <MathInputField
-                            value={answers[question.id] || ""}
-                            onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
-                            placeholder="Type your answer here…"
-                            ariaLabel={`Answer to question ${index + 1}`}
-                            disabled={submitted}
-                            rows={2}
-                          />
-                        ) : (
-                          <MathInputField
-                            value={answers[question.id] || ""}
-                            onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
-                            placeholder="Type your answer here…"
-                            ariaLabel={`Answer to question ${index + 1}`}
-                            disabled={submitted}
-                            rows={4}
-                          />
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="False" id={`${question.id}-false`} />
+                                <Label htmlFor={`${question.id}-false`}>False</Label>
+                              </div>
+                            </RadioGroup>
+                          ) : question.type === "numeric" ? (
+                            <MathInputField
+                              value={answers[question.id] || ""}
+                              onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                              placeholder="Your answer with its unit, like 12.5 m/s"
+                              ariaLabel={`Answer to question ${index + 1}`}
+                              disabled={submitted}
+                              rows={1}
+                            />
+                          ) : question.type === "short-answer" ? (
+                            <MathInputField
+                              value={answers[question.id] || ""}
+                              onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                              placeholder="Type your answer here…"
+                              ariaLabel={`Answer to question ${index + 1}`}
+                              disabled={submitted}
+                              rows={2}
+                            />
+                          ) : (
+                            <MathInputField
+                              value={answers[question.id] || ""}
+                              onChange={(value) => setAnswers({ ...answers, [question.id]: value })}
+                              placeholder="Type your answer here…"
+                              ariaLabel={`Answer to question ${index + 1}`}
+                              disabled={submitted}
+                              rows={4}
+                            />
+                          )}
+                        </div>
+
+                        {existingSubmission?.graded && (
+                          <div className="mt-8 pt-6 border-t space-y-4">
+                            {existingSubmission.answers?.find((a) => a.questionId === question.id)
+                              ?.feedback && (
+                              <div className="bg-muted/30 rounded-xl p-5 border">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <MessagesSquare className="h-4 w-4 text-primary" />
+                                  <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                                    Feedback
+                                  </span>
+                                </div>
+                                <div className="text-sm leading-relaxed text-foreground italic">
+                                  &quot;
+                                  {
+                                    existingSubmission.answers?.find(
+                                      (a) => a.questionId === question.id,
+                                    )?.feedback
+                                  }
+                                  &quot;
+                                </div>
+                              </div>
+                            )}
+
+                            {mistakeHref && (
+                              <GuideLink href={mistakeHref}>Why this is a common mistake</GuideLink>
+                            )}
+
+                            <SolutionBlock
+                              correctAnswer={question.correctAnswer}
+                              score={gradedAnswer?.score}
+                              points={question.points || 10}
+                              solution={solutions?.solutions[question.id]}
+                              pending={solutionsNotice(solutions)}
+                            />
+                          </div>
                         )}
-                      </div>
-
-                      {existingSubmission?.graded && (
-                        <div className="mt-8 pt-6 border-t space-y-4">
-                          {existingSubmission.answers?.find((a) => a.questionId === question.id)
-                            ?.feedback && (
-                            <div className="bg-muted/30 rounded-xl p-5 border">
-                              <div className="flex items-center gap-2 mb-2">
-                                <MessagesSquare className="h-4 w-4 text-primary" />
-                                <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
-                                  Feedback
-                                </span>
-                              </div>
-                              <div className="text-sm leading-relaxed text-foreground italic">
-                                &quot;
-                                {
-                                  existingSubmission.answers?.find(
-                                    (a) => a.questionId === question.id,
-                                  )?.feedback
-                                }
-                                &quot;
-                              </div>
-                            </div>
-                          )}
-
-                          {mistakeHref && (
-                            <GuideLink href={mistakeHref}>Why this is a common mistake</GuideLink>
-                          )}
-
-                          <SolutionBlock
-                            correctAnswer={question.correctAnswer}
-                            score={gradedAnswer?.score}
-                            points={question.points || 10}
-                            solution={solutions?.solutions[question.id]}
-                            pending={solutionsNotice(solutions)}
-                          />
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
                   );
                 })}
               </div>
@@ -1479,9 +1511,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
         {!isMobile && aiHelperOpen && (
           <>
-            <ResizableHandle
-              withHandle
-            />
+            <ResizableHandle withHandle />
             <ResizablePanel
               id="ai-tutor-panel"
               order={2}

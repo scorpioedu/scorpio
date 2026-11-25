@@ -50,7 +50,8 @@ const SOLUTIONS = "assignment_solutions";
  * A published course set (global, with a curriculumSetKey) is a pool: the copy gets its first `count`
  * problems, or the first 5 when no count is sent, and never more than the pool holds; `pick` names
  * the exact problems instead (positions in the pool, in the copy's order). `hidden` creates the copy
- * archived, so students do not see it until the teacher assigns it. Every other
+ * archived, so students do not see it until the teacher assigns it. `readFirst` has students read the
+ * lessons for the copy's topics before its problems open (src/lib/read-first.ts). Every other
  * source is copied whole and `count` is ignored. The key, the distractors and the worked solutions
  * (assignment_solutions/{sourceId} -> assignment_solutions/{newId}) are copied for the copied
  * questions only.
@@ -59,7 +60,7 @@ export const POST = withAuthorizedRequest(
   async (req, { caller, profile, requestId }) => {
     const parsed = await parseJsonBody(req, cloneAssignmentBody, { message: "Invalid request" });
     if (!parsed.ok) return parsed.response;
-    const { sourceId, courseId, title, dueDate, count, pick, hidden } = parsed.data;
+    const { sourceId, courseId, title, dueDate, count, pick, hidden, readFirst } = parsed.data;
 
     const sourceRef = adminDb.collection("assignments").doc(sourceId);
     const source = (await sourceRef.get()).data();
@@ -168,6 +169,7 @@ export const POST = withAuthorizedRequest(
       dueDate: dueDate ? new Date(dueDate) : null,
       createdAt: new Date(),
       ...(hidden ? { archivedAt: new Date() } : {}),
+      ...(readFirst ? { readFirst: true } : {}),
     });
     batch.set(adminDb.collection("assignment_keys").doc(ref.id), {
       answers: split.answers,

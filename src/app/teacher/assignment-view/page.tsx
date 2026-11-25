@@ -12,7 +12,8 @@ import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
-import { getTeacherAssignment } from "@/lib/authenticated-fetch";
+import { authenticatedFetch, getTeacherAssignment } from "@/lib/authenticated-fetch";
+import { lessonTopics, readAll, type LessonReads } from "@/lib/read-first";
 import { downloadCSV } from "@/lib/utils";
 import { parseDueDate } from "@/lib/due-date";
 import { validateQuestionAnswers } from "@/lib/assignment-validation";
@@ -179,6 +180,8 @@ function AssignmentHub() {
   const [assigningNow, setAssigningNow] = useState(false);
   const [confirmRegrade, setConfirmRegrade] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  /** "Read the lessons first": what each student has read, by student id (from the server). */
+  const [lessonReads, setLessonReads] = useState<Record<string, LessonReads> | null>(null);
 
   const uid = user?.uid;
   useEffect(() => {
@@ -198,6 +201,31 @@ function AssignmentHub() {
       active = false;
     };
   }, [assignmentId, uid]);
+
+  // The lessons students read first, by the saved settings (a draft is not asked of students yet).
+  const readTopics = useMemo(
+    () =>
+      assignment?.settings.readFirst
+        ? lessonTopics({
+            ...assignment.raw,
+            apCourse: assignment.settings.apCourse,
+            apTopics: assignment.settings.apTopics,
+          })
+        : [],
+    [assignment],
+  );
+  const readKey = readTopics.join(",");
+  useEffect(() => {
+    if (!assignmentId || !readKey) return;
+    let active = true;
+    authenticatedFetch(`/api/assignments/${encodeURIComponent(assignmentId)}/lesson-reads`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body) => active && setLessonReads(body?.students ?? null))
+      .catch(() => active && setLessonReads(null));
+    return () => {
+      active = false;
+    };
+  }, [assignmentId, readKey]);
 
   const original = useMemo(() => (assignment ? draftFrom(assignment) : null), [assignment]);
   const dirty = !!draft && !!original && !sameJson(draft, original);
@@ -293,6 +321,7 @@ function AssignmentHub() {
       "lockdownMode",
       "allowAIHelp",
       "allowCalculator",
+      "readFirst",
     ] as const)
       if (s[key] !== o[key]) (patch as Record<string, unknown>)[key] = s[key];
     if (s.apUnit !== o.apUnit || s.apCourse !== o.apCourse || !sameJson(s.apTopics, o.apTopics)) {
@@ -334,6 +363,13 @@ function AssignmentHub() {
     ? Math.round(scores.reduce((t, x) => t + x, 0) / gradedCount)
     : 0;
   const reviewCount = submissions.filter((s) => s.reviewQuestions?.length).length;
+  const readCount = Object.values(lessonReads ?? {}).filter((r) => readAll(readTopics, r)).length;
+  /** "Read" or "1 of 3": how much of the reading a student has done. */
+  const readLabel = (studentId: string) => {
+    const r = lessonReads?.[studentId];
+    const n = readTopics.filter((t) => r?.[t]).length;
+    return n === readTopics.length ? "Read" : `${n} of ${readTopics.length}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -474,7 +510,17 @@ function AssignmentHub() {
           />
           <Card className="min-w-0 gap-0 py-0">
             <CardHeader className="px-4 py-4 sm:px-5">
-              <h2 className="text-base font-semibold">Submissions</h2>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h2 className="text-base font-semibold">Submissions</h2>
+                {readTopics.length > 0 && lessonReads && (
+                  <p className="text-xs text-muted-foreground">
+                    Read the lessons first ({readTopics.join(", ")}):{" "}
+                    <span className="font-medium text-foreground">
+                      {readCount} student{readCount === 1 ? " has" : "s have"} read them
+                    </span>
+                  </p>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="border-t p-0">
               {handedIn === 0 ? (
@@ -487,6 +533,7 @@ function AssignmentHub() {
                     <TableRow>
                       <TableHead className="pl-4 sm:pl-5">Student</TableHead>
                       <TableHead>Submitted</TableHead>
+                      {readTopics.length > 0 && <TableHead>Lessons</TableHead>}
                       <TableHead>Score</TableHead>
                       <TableHead className="pr-4 text-right sm:pr-5">Review</TableHead>
                     </TableRow>
@@ -509,6 +556,11 @@ function AssignmentHub() {
                             })}
                           </p>
                         </TableCell>
+                        {readTopics.length > 0 && (
+                          <TableCell className="text-sm tabular-nums text-muted-foreground">
+                            {lessonReads ? readLabel(s.studentId) : "—"}
+                          </TableCell>
+                        )}
                         <TableCell className="font-medium tabular-nums">
                           {typeof s.score === "number" ? (
                             `${s.score}%`

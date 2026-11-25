@@ -4,6 +4,7 @@
 // colour says how far along it is (green finished, amber out with students, grey not started), a bar with one
 // segment per set, and its own Assign button; its sets hang off a rail under it, each
 // with a status mark (told apart by shape), its AP topics, its due date and how the class did.
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
 import type { ApCourseId } from "@/data/ap";
@@ -20,7 +21,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CourseBadge, courseLook, courseSize } from "@/components/teacher/course-icon";
 import { DueDateChip } from "@/components/teacher/due-date-chip";
 import { AssignmentActionsMenu } from "@/components/teacher/assignment-actions-menu";
 import { assignmentHref } from "@/lib/assignment-actions";
@@ -340,6 +340,7 @@ export function RoadmapTab({
   onAssign,
   onPreview,
   actions,
+  toolbar,
 }: {
   curriculum: Curriculum;
   roadmap: RoadmapUnit[];
@@ -353,11 +354,12 @@ export function RoadmapTab({
   onAssign: (u: RoadmapUnit) => void;
   onPreview: (t: PreviewTarget) => void;
   actions?: SetRowActions;
+  /** On the right of the class's figures (the List / Calendar switch). */
+  toolbar?: ReactNode;
 }) {
   const hasClass = className !== null;
   const students = progress?.students ?? 0;
   const status = setStatuses(boardColumns(roadmap, progress?.sets, students));
-  const course = courseLook(curriculum.id);
 
   // Work out where every unit stands. "Up next" is a single unit: the first one not started yet.
   const standing = (u: RoadmapUnit): UnitState | "unstarted" => {
@@ -391,6 +393,13 @@ export function RoadmapTab({
   const open = String(current?.u.unit ?? nextUnitNumber ?? roadmap[0]?.unit ?? "");
 
   const doneUnits = rows.filter((r) => r.state === "done").length;
+  const skippedUnits = rows.filter((r) => r.state === "skipped").length;
+  // Finished and skipped units fold away so the units still to teach lead; either can be shown.
+  const [showDone, setShowDone] = useState(false);
+  const [showSkipped, setShowSkipped] = useState(false);
+  const shownRows = rows.filter(
+    (r) => (r.state !== "done" || showDone) && (r.state !== "skipped" || showSkipped),
+  );
   const overdueSets = roadmap.reduce(
     (n, u) =>
       n + u.sets.filter((s) => s.assigned && (progress?.sets[s.set.key]?.overdue ?? 0) > 0).length,
@@ -406,54 +415,34 @@ export function RoadmapTab({
 
   return (
     <div className="space-y-5">
-      {/* Which course this is, in its own colour. */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <CourseBadge
-          curriculumId={curriculum.id}
-          className="size-12 rounded-2xl"
-          iconClassName="size-7"
-        />
-        <div className="min-w-0 flex-1 basis-64">
-          <h2 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold tracking-tight">
-            {curriculum.name}
-            {className && (
-              <span className="font-normal text-muted-foreground">
-                <span aria-hidden>· </span>
-                {className}
-              </span>
-            )}
-            {course.level && (
-              <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", course.tint)}>
-                {course.level}
-              </span>
-            )}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {course.covers} <span className="whitespace-nowrap">{courseSize(curriculum)}.</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Where the class is, before the table. */}
-      {hasClass && (
-        <dl className="flex flex-wrap gap-2">
-          <Fact
-            value={current && current.state === "progress" ? `Unit ${current.u.unit}` : "None"}
-            label="in progress"
-          />
-          <Fact value={`${doneUnits} of ${roadmap.length}`} label="units done" />
-          <Fact
-            value={String(overdueSets)}
-            label={overdueSets === 1 ? "set overdue" : "sets overdue"}
-            warn={overdueSets > 0}
-          />
-          {upNext && (
-            <Fact
-              value={`Unit ${upNext.u.unit}`}
-              label={upNextWhen ? `up next · ${upNextWhen}` : "up next"}
-            />
+      {/* Where the class is, before the table; a figure with nothing to say is left out. The
+          course itself is the page's heading. */}
+      {(hasClass || toolbar) && (
+        // The List / Calendar switch on the left, as on the Calendar; the figures as one box on the right.
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {toolbar ?? <span />}
+          {hasClass && (
+            <dl className="grid w-full grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:ml-auto sm:flex sm:w-auto [&>*:last-child:nth-child(odd)]:col-span-2">
+              {current && current.state === "progress" && (
+                <Fact value={`Unit ${current.u.unit}`} label="in progress" />
+              )}
+              <Fact value={`${doneUnits} of ${roadmap.length}`} label="units done" />
+              {overdueSets > 0 && (
+                <Fact
+                  value={String(overdueSets)}
+                  label={overdueSets === 1 ? "set overdue" : "sets overdue"}
+                  warn
+                />
+              )}
+              {upNext && (
+                <Fact
+                  value={`Unit ${upNext.u.unit}`}
+                  label={upNextWhen ? `up next · ${upNextWhen}` : "up next"}
+                />
+              )}
+            </dl>
           )}
-        </dl>
+        </div>
       )}
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -471,13 +460,43 @@ export function RoadmapTab({
             <span className="hidden md:block">Progress</span>
           </div>
         </div>
+        {hasClass && (doneUnits > 0 || skippedUnits > 0) && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-border px-4 py-2 text-xs text-muted-foreground">
+            {doneUnits > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowDone((v) => !v)}
+                aria-pressed={showDone}
+                className="inline-flex items-center gap-1.5 hover:text-foreground"
+              >
+                {showDone ? "Hide" : "Show"} {doneUnits} completed unit{doneUnits === 1 ? "" : "s"}
+              </button>
+            )}
+            {skippedUnits > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowSkipped((v) => !v)}
+                aria-pressed={showSkipped}
+                className="inline-flex items-center gap-1.5 hover:text-foreground"
+              >
+                {showSkipped ? "Hide" : "Show"} {skippedUnits} skipped unit
+                {skippedUnits === 1 ? "" : "s"}
+              </button>
+            )}
+          </div>
+        )}
+        {shownRows.length === 0 && (
+          <p className="px-4 py-6 text-center text-sm text-muted-foreground">
+            Every unit is completed or skipped. Show them above.
+          </p>
+        )}
         <Accordion
           type="multiple"
           defaultValue={open ? [open] : []}
           // Re-open the right unit when the class changes.
           key={`${className}-${open}`}
         >
-          {rows.map(({ u, wanted, out, state }) => {
+          {shownRows.map(({ u, wanted, out, state }) => {
             const isNext = state === "next";
             const assigned = wanted.filter((s) => s.assigned).length;
             const insight = progress?.units.find((x) => x.unit === u.unit);
@@ -597,24 +616,23 @@ export function RoadmapTab({
                     </ul>
                     {insight && insight.top.length > 0 && <MisconceptionList insight={insight} />}
                     <div className="flex flex-wrap items-center gap-2">
-                      {hasClass && u.assignable.length > 0 && (
-                        <Button
-                          size="sm"
-                          // The one obvious thing to press: the unit that is current.
-                          variant={isNext || state === "progress" ? "default" : "outline"}
-                          onClick={() => onAssign(u)}
-                          disabled={busy}
-                        >
-                          <Plus aria-hidden /> Assign{" "}
-                          {u.assignable.length === wanted.length ? "this unit" : "the rest"} (
-                          {u.assignable.length} set{u.assignable.length === 1 ? "" : "s"})
-                        </Button>
-                      )}
-                      <Button variant="outline" size="sm" asChild>
+                      {/* The unit guide is the way in; assigning is one step beside it. */}
+                      <Button size="sm" asChild>
                         <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
                           Unit guide <ChevronRight aria-hidden />
                         </Link>
                       </Button>
+                      {hasClass && u.assignable.length > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => onAssign(u)}
+                          disabled={busy}
+                        >
+                          <Plus aria-hidden />{" "}
+                          {u.assignable.length === wanted.length ? "Assign all" : "Assign the rest"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </AccordionContent>
@@ -653,8 +671,13 @@ const LEGEND: Record<UnitState, string> = {
 
 function Fact({ value, label, warn }: { value: string; label: string; warn?: boolean }) {
   return (
-    <div className="rounded-xl border border-border bg-card px-3.5 py-2">
-      <dd className={cn("text-lg font-semibold leading-tight", warn && "text-destructive")}>
+    <div className="min-w-0 bg-card px-4 py-2">
+      <dd
+        className={cn(
+          "whitespace-nowrap text-lg font-semibold leading-tight",
+          warn && "text-destructive",
+        )}
+      >
         {value}
       </dd>
       <dt className="text-xs text-muted-foreground">{label}</dt>

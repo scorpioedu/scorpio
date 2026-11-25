@@ -3,19 +3,25 @@ import type { ReactNode } from "react";
 export function WorkspaceHeader({
   title,
   description,
+  leading,
   children,
 }: {
-  title: string;
+  title: ReactNode;
   description?: ReactNode;
+  /** Beside the title, before it (a course's badge). */
+  leading?: ReactNode;
   children?: ReactNode;
 }) {
   return (
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
-      <div className="min-w-0 space-y-1.5">
-        <h1 className="break-words text-3xl font-semibold tracking-tight">{title}</h1>
-        {description && (
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>
-        )}
+      <div className="flex min-w-0 flex-1 basis-72 items-start gap-4">
+        {leading}
+        <div className="min-w-0 space-y-1.5">
+          <h1 className="break-words text-3xl font-semibold tracking-tight">{title}</h1>
+          {description && (
+            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+          )}
+        </div>
       </div>
       {/* Controls sit on the right whether or not they fit beside the title (sm:ml-auto keeps a
           wrapped row on the right too); on phones they stay left on their own row. */}

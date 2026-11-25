@@ -1,14 +1,16 @@
 "use client";
 
-// The unit guide: a unit's home page. What the unit covers and its AP topics, each set with what it
-// practises and how the chosen class did, what students got wrong and what to re-teach, and one
-// clear Assign action. A class follows one course, so the guide belongs to the chosen class's
+// The unit guide: a unit's home page. Its sets, each with what it practises and how the chosen class
+// did; its AP topics as the lessons students read (Lessons tab, #lessons; each lesson opens in a
+// dialog); what students got wrong, with what to re-teach and the lesson that explains each mistake;
+// and one clear Assign action. A class follows one course, so the guide belongs to the chosen class's
 // course: a unit of another course is not shown for that class.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   ChevronRight,
   Eye,
   Plus,
@@ -18,19 +20,20 @@ import {
 } from "lucide-react";
 import { apTopic, misconceptionTag } from "@/data/ap";
 import { getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
-import { shownProfile, typeSummary } from "@/data/curricula/profiles";
+import { shownProfile } from "@/data/curricula/profiles";
 import { assignmentHref } from "@/lib/assignment-actions";
 import { boardColumns, setStatuses, toCheck, type SetStatus } from "@/lib/course-board";
 import type { ReteachAction, UnitInsight } from "@/lib/course-progress";
 import { deriveRoadmap, type RoadmapSet } from "@/lib/curriculum-roadmap";
 import { normalisePlan } from "@/lib/curriculum-plan";
-import { hasUnitGuide, topicAnchor, topicFromAnchor } from "@/lib/guides";
+import { hasUnitGuide, misconceptionAnchor, topicAnchor, topicFromAnchor } from "@/lib/guides";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClassPicker } from "@/components/teacher/class-picker";
 import { CourseBadge } from "@/components/teacher/course-icon";
 import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
+import { LessonDialog, type LessonTarget } from "@/components/guide/lesson-dialog";
 import { useUnitGuide } from "@/components/guide/use-unit-guide";
 import { SetPreviewDialog, type PreviewTarget } from "../../set-preview-dialog";
 import {
@@ -44,7 +47,10 @@ import {
 import { shortDate, useCourseData, type ClassOption } from "../../use-course-data";
 import { setDisplayTitle } from "../../use-set-actions";
 
-type GuideTab = "sets" | "topics" | "wrong";
+type GuideTab = "sets" | "lessons" | "wrong";
+
+/** The address opens the Lessons tab: #lessons, a topic (#topic-4-1) or one of its mistakes. */
+const opensLessons = (hash: string) => hash === "#lessons" || !!topicFromAnchor(hash);
 
 const percent = (share: number) => `${Math.round(share * 100)}%`;
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -137,7 +143,16 @@ function SectionHeading({ id, title, note }: { id: string; title: string; note?:
   );
 }
 
-function Reteach({ insight, className }: { insight: UnitInsight; className: string }) {
+function Reteach({
+  insight,
+  className,
+  lesson,
+}: {
+  insight: UnitInsight;
+  className: string;
+  /** The lesson that explains a mistake, when one does. */
+  lesson: (tag: string) => ReactNode;
+}) {
   return (
     <ul className="grid gap-3 lg:grid-cols-2">
       {insight.top.map((m) => {
@@ -178,6 +193,7 @@ function Reteach({ insight, className }: { insight: UnitInsight; className: stri
               <p className="break-words font-semibold">{m.label}</p>
               <p className="break-words leading-relaxed text-muted-foreground">{m.suggestion}</p>
             </div>
+            {lesson(m.tag)}
           </li>
         );
       })}
@@ -197,13 +213,37 @@ export default function UnitGuideClient({
   const data = useCourseData(curriculumId);
   const { classes, selected, published, classAssignments, progress, classLoaded } = data;
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
-  // A link to #topic-4-1 opens "What it covers" on that topic. (Nothing of the tabs is rendered
-  // until the classes have loaded in the browser, so reading the address here is safe.)
+  // #lessons opens the Lessons tab; a link to #topic-4-1 (or a mistake in it) also opens that lesson.
+  // (Nothing of the tabs is rendered until the classes have loaded in the browser, so reading the
+  // address here is safe.)
   const [tab, setTab] = useState<GuideTab>(() =>
-    typeof window !== "undefined" && topicFromAnchor(window.location.hash) ? "topics" : "sets",
+    typeof window !== "undefined" && opensLessons(window.location.hash) ? "lessons" : "sets",
   );
-  // The unit's topic guides, when it has a guide file (src/data/guides).
+  /** The lesson open in the dialog, and the topics its Previous / Next step through. */
+  const [lesson, setLesson] = useState<{ target: LessonTarget; topics: string[] } | null>(null);
+  useEffect(() => {
+    const follow = () => {
+      const hash = window.location.hash;
+      if (!opensLessons(hash)) return;
+      setTab("lessons");
+      const topic = topicFromAnchor(hash);
+      // Only a topic of this unit opens here; another unit's lands on the Lessons tab.
+      if (topic && Number(topic.split(".")[0]) === unit)
+        setLesson({ target: { topic, anchor: hash.slice(1) }, topics: [] });
+    };
+    follow();
+    window.addEventListener("hashchange", follow);
+    return () => window.removeEventListener("hashchange", follow);
+  }, [unit]);
+  // The unit's topic lessons, when it has a guide file (src/data/guides).
   const topicGuides = useUnitGuide(curriculumId, unit);
+  /** Each misconception tag the unit's lessons explain, with the topic whose "Common mistakes" has it. */
+  const lessonOfTag = useMemo(() => {
+    const byTag = new Map<string, string>();
+    for (const g of topicGuides.guide?.guides ?? [])
+      for (const m of g.misconceptions) if (m.tag && !byTag.has(m.tag)) byTag.set(m.tag, g.topic);
+    return byTag;
+  }, [topicGuides.guide]);
 
   const follows = selected?.curriculumId === curriculumId;
   const roadmap = useMemo(
@@ -285,13 +325,49 @@ export default function UnitGuideClient({
 
   const wrongCount = insight?.top.length ?? 0;
   /** A topic or misconception link to a set: show the Sets tab first, then scroll to the set. */
-  const toSet = (key: string) => (e: React.MouseEvent) => {
+  const toSet = (key: string) => (e: MouseEvent) => {
     e.preventDefault();
     setTab("sets");
     window.setTimeout(
       () => document.getElementById(`set-${key}`)?.scrollIntoView({ behavior: "smooth" }),
       50,
     );
+  };
+  const hasLessons = topicGuides.exists;
+  /** A lesson's "Practise this": the unit's sets on the topic (closes the dialog, shows the set). */
+  const lessonPractice = (id: string) =>
+    roadmapUnit.sets
+      .filter((s) => s.set.topics.includes(id))
+      .map((s) => ({
+        label: `${s.set.key} · ${s.set.title}`,
+        href: `#set-${s.set.key}`,
+        onClick: (e: MouseEvent) => {
+          setLesson(null);
+          toSet(s.set.key)(e);
+        },
+      }));
+  /** A prerequisite topic's lesson, on its own unit's guide (or in this dialog, for this unit). */
+  const lessonPrerequisite = (id: string) => {
+    const at = apTopic(id, curriculum.apCourse);
+    return at && hasUnitGuide(curriculumId, at.unit)
+      ? `/teacher/courses/${curriculumId}/${at.unit}#${topicAnchor(id)}`
+      : undefined;
+  };
+  /** Opens a lesson in the dialog; Previous / Next walk `within` (the unit's topics by default). */
+  const readLesson = (topic: string, within: string[] = topics, anchor?: string) =>
+    setLesson({ target: { topic, anchor }, topics: within });
+  /** "Lesson 2.2": the lesson that explains a mistake, or nothing when none of the unit's does. */
+  const mistakeLesson = (tag: string) => {
+    const topic = lessonOfTag.get(tag);
+    return topic ? (
+      <button
+        type="button"
+        onClick={() => readLesson(topic, topics, misconceptionAnchor(topic, tag))}
+        className="inline-flex items-center gap-1 text-xs font-medium text-primary underline-offset-2 hover:underline"
+      >
+        <BookOpen className="size-3.5" aria-hidden /> Lesson {topic}
+      </button>
+    ) : null;
   };
 
   return (
@@ -321,11 +397,10 @@ export default function UnitGuideClient({
             )}
           </div>
           {classReady && roadmapUnit.assignable.length > 0 && (
-            <Button size="lg" asChild>
+            <Button asChild>
               <Link href={assignHref(unit)}>
-                <Plus aria-hidden /> Assign{" "}
-                {roadmapUnit.assignable.length === wanted.length ? "this unit" : "the rest"} (
-                {plural(roadmapUnit.assignable.length, "set")})
+                <Plus aria-hidden />{" "}
+                {roadmapUnit.assignable.length === wanted.length ? "Assign all" : "Assign the rest"}
               </Link>
             </Button>
           )}
@@ -357,14 +432,17 @@ export default function UnitGuideClient({
         {/* Three long labels are wider than a phone: the strip scrolls sideways, not the page. */}
         <TabsList className="h-10 max-w-full justify-start self-start overflow-x-auto overflow-y-hidden [&>*]:flex-none">
           <TabsTrigger value="sets">Sets ({roadmapUnit.sets.length})</TabsTrigger>
-          <TabsTrigger value="topics">What it covers ({topics.length})</TabsTrigger>
+          <TabsTrigger value="lessons">
+            {hasLessons ? "Lessons" : "What it covers"} ({topics.length})
+          </TabsTrigger>
           <TabsTrigger value="wrong">
             What students got wrong{classReady && wrongCount > 0 ? ` (${wrongCount})` : ""}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="sets">
-          <ol className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+          {/* One card per set: what it is, the lessons behind it, how the class did, one next step. */}
+          <ol className="grid gap-3 md:grid-cols-2">
             {roadmapUnit.sets.map((s) => {
               const p = shown(curriculumId, s);
               const st: SetStatus = status.get(s.set.key) ?? "upNext";
@@ -372,132 +450,172 @@ export default function UnitGuideClient({
               const outOf = result ? Math.max(students, result.submitted) : 0;
               const title = setDisplayTitle(curriculumId, s);
               const canAssign = classReady && !!s.published && !s.assigned && !s.skipped;
+              const caught = p?.misconceptions ?? [];
+              const seen = caught.filter((m) => hit.has(m.tag)).length;
               return (
                 <li
                   key={s.set.key}
                   id={`set-${s.set.key}`}
                   className={cn(
-                    "grid scroll-mt-24 gap-x-6 gap-y-3 px-4 py-4 sm:px-5 lg:grid-cols-[minmax(0,1fr)_16rem]",
+                    "flex scroll-mt-24 flex-col gap-3 rounded-2xl border border-border bg-card p-4",
                     st === "skipped" && "opacity-70",
                   )}
                 >
-                  <div className="min-w-0 space-y-2">
-                    <h3 className="flex flex-wrap items-center gap-x-2.5 gap-y-1 break-words text-base font-semibold">
-                      <span className={cn("font-mono text-sm", look.text)}>{s.set.key}</span>
-                      <button
-                        type="button"
-                        onClick={() => open(s)}
-                        className={cn(
-                          "text-left hover:text-primary hover:underline",
-                          st === "skipped" && "line-through decoration-muted-foreground/60",
-                        )}
-                      >
-                        {title}
-                      </button>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <div className="flex items-start gap-3">
+                    <span
+                      className={cn(
+                        "shrink-0 rounded-lg px-2 py-1 font-mono text-sm font-semibold",
+                        look.tile,
+                      )}
+                    >
+                      {s.set.key}
+                    </span>
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <h3 className="break-words text-base font-semibold leading-snug">
+                        <button
+                          type="button"
+                          onClick={() => open(s)}
+                          className={cn(
+                            "text-left hover:text-primary hover:underline",
+                            st === "skipped" && "line-through decoration-muted-foreground/60",
+                          )}
+                        >
+                          {title}
+                        </button>
+                      </h3>
+                      <p className="inline-flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
                         <StatusMark status={st} label={false} className="size-3.5" />
-                        {hasClass && !classReady
-                          ? "Loading…"
-                          : hasClass || !s.published
-                            ? STATUS_LABEL[st]
-                            : "Ready to assign"}
-                        {s.assigned && s.dueDate && <>· due {shortDate(s.dueDate)}</>}
-                      </span>
-                    </h3>
-                    <p className="break-words text-sm leading-relaxed text-muted-foreground">
-                      {s.set.description}
-                    </p>
-                    {p && (
-                      <p className="text-xs text-muted-foreground">
-                        {p.count} ({typeSummary(p)}) ·{" "}
-                        {(["easy", "medium", "hard"] as const)
-                          .filter((d) => p.difficulty[d] > 0)
-                          .map((d) => `${p.difficulty[d]} ${d}`)
-                          .join(", ")}{" "}
-                        · about {p.minutes} min
-                      </p>
-                    )}
-                    <TopicChips topics={s.set.topics} course={curriculum.apCourse} titles />
-                    {p && p.misconceptions.length > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        Wrong answers catch:{" "}
-                        {p.misconceptions.map((m, i) => (
-                          <span key={m.tag}>
-                            {i > 0 && ", "}
-                            <span
-                              className={cn(
-                                hit.has(m.tag) && "font-medium text-amber-700 dark:text-amber-400",
-                              )}
-                            >
-                              {misconceptionTag(m.tag)?.label ?? m.tag}
-                            </span>
+                        <span className="font-medium">
+                          {hasClass && !classReady
+                            ? "Loading…"
+                            : hasClass || !s.published
+                              ? STATUS_LABEL[st]
+                              : "Ready to assign"}
+                        </span>
+                        {s.assigned && s.dueDate && <span>· due {shortDate(s.dueDate)}</span>}
+                        {p && (
+                          <span>
+                            · {plural(p.problems, "problem")} · about {p.minutes} min
                           </span>
-                        ))}
+                        )}
                       </p>
+                    </div>
+                  </div>
+
+                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                    {s.set.description}
+                  </p>
+
+                  {/* The topics, each a way into its lesson. */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {s.set.topics.map((id) =>
+                      hasLessons ? (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => readLesson(id, s.set.topics)}
+                          title={`Read lesson ${id}`}
+                          className="inline-flex max-w-full items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs hover:border-primary/60 hover:text-primary"
+                        >
+                          <BookOpen className="size-3 shrink-0" aria-hidden />
+                          <span className="font-semibold tabular-nums">{id}</span>
+                          <span className="truncate text-muted-foreground">
+                            {apTopic(id, curriculum.apCourse)?.title}
+                          </span>
+                        </button>
+                      ) : (
+                        <TopicChips key={id} topics={[id]} course={curriculum.apCourse} titles />
+                      ),
                     )}
                   </div>
 
-                  {/* How the class did, and what to do next. */}
-                  <div className="space-y-3 text-sm lg:self-start">
-                    {result && (
-                      <dl className="space-y-2 rounded-xl bg-muted/40 p-3">
-                        <div className="space-y-1">
-                          <div className="flex items-baseline justify-between gap-2 text-xs">
-                            <dt className="text-muted-foreground">Handed in</dt>
-                            <dd className="tabular-nums">
-                              {outOf === 0 ? "No students yet" : `${result.submitted} of ${outOf}`}
-                            </dd>
-                          </div>
-                          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                            <div
-                              className={cn("h-full rounded-full", look.solid)}
-                              style={{ width: outOf ? percent(result.submitted / outOf) : 0 }}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-baseline justify-between gap-2 text-xs">
-                          <dt className="text-muted-foreground">Average</dt>
-                          <dd className="text-base font-semibold tabular-nums">
-                            {result.averageScore === null ? "—" : `${result.averageScore}%`}
-                          </dd>
-                        </div>
-                        {toCheck(result) > 0 && (
-                          <div className="flex items-baseline justify-between gap-2 text-xs">
-                            <dt className="text-muted-foreground">Waiting for you</dt>
-                            <dd className="font-medium text-amber-700 dark:text-amber-400">
-                              {plural(toCheck(result), "answer")}
-                            </dd>
-                          </div>
+                  {caught.length > 0 && (
+                    <details className="group text-xs text-muted-foreground">
+                      <summary className="cursor-pointer list-none hover:text-foreground [&::-webkit-details-marker]:hidden">
+                        <ChevronRight
+                          className="mr-1 inline size-3.5 transition-transform group-open:rotate-90"
+                          aria-hidden
+                        />
+                        Catches {plural(caught.length, "common mistake")}
+                        {seen > 0 && (
+                          <span className="font-medium text-amber-700 dark:text-amber-400">
+                            {" "}
+                            · {seen} seen in this class
+                          </span>
                         )}
-                        {result.overdue > 0 && (
-                          <div className="flex items-baseline justify-between gap-2 text-xs">
-                            <dt className="text-muted-foreground">Overdue</dt>
-                            <dd className="font-medium text-destructive">
-                              {plural(result.overdue, "student")}
-                            </dd>
-                          </div>
-                        )}
-                      </dl>
-                    )}
-                    <div className="flex flex-wrap gap-1.5">
-                      {canAssign && (
-                        <Button size="sm" asChild>
-                          <Link href={assignHref(s.set.key)}>
-                            <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
-                          </Link>
-                        </Button>
-                      )}
-                      {s.assignmentId && (
-                        <Button size="sm" asChild>
-                          <Link href={assignmentHref(s.assignmentId)}>
-                            {st === "needsYou" ? "Review" : "Results"} <ChevronRight aria-hidden />
-                          </Link>
-                        </Button>
-                      )}
-                      <Button size="sm" variant="outline" onClick={() => open(s)}>
-                        <Eye aria-hidden /> Preview
-                      </Button>
+                      </summary>
+                      <ul className="mt-2 flex flex-wrap gap-1.5">
+                        {caught.map((m) => (
+                          <li
+                            key={m.tag}
+                            className={cn(
+                              "rounded-full bg-muted px-2 py-0.5",
+                              hit.has(m.tag) &&
+                                "bg-amber-500/15 font-medium text-amber-800 dark:text-amber-300",
+                            )}
+                          >
+                            {misconceptionTag(m.tag)?.label ?? m.tag}
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+
+                  {/* How the class did: one bar and the numbers that matter. */}
+                  {result && (
+                    <div className="space-y-1.5 rounded-xl bg-muted/40 px-3 py-2.5">
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3 text-xs">
+                        <span className="text-muted-foreground">
+                          {outOf === 0
+                            ? "No students yet"
+                            : `${result.submitted} of ${outOf} handed in`}
+                          {toCheck(result) > 0 && (
+                            <span className="font-medium text-amber-700 dark:text-amber-400">
+                              {" "}
+                              · {toCheck(result)} to check
+                            </span>
+                          )}
+                          {result.overdue > 0 && (
+                            <span className="font-medium text-destructive">
+                              {" "}
+                              · {result.overdue} overdue
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-sm font-semibold tabular-nums">
+                          {result.averageScore === null ? "—" : `${result.averageScore}%`}
+                          <span className="ml-1 text-xs font-normal text-muted-foreground">
+                            avg
+                          </span>
+                        </span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={cn("h-full rounded-full", look.solid)}
+                          style={{ width: outOf ? percent(result.submitted / outOf) : 0 }}
+                        />
+                      </div>
                     </div>
+                  )}
+
+                  <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
+                    {canAssign && (
+                      <Button size="sm" asChild>
+                        <Link href={assignHref(s.set.key)}>
+                          <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
+                        </Link>
+                      </Button>
+                    )}
+                    {s.assignmentId && (
+                      <Button size="sm" asChild>
+                        <Link href={assignmentHref(s.assignmentId)}>
+                          {st === "needsYou" ? "Review" : "Results"} <ChevronRight aria-hidden />
+                        </Link>
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" onClick={() => open(s)}>
+                      <Eye aria-hidden /> Preview
+                    </Button>
                   </div>
                 </li>
               );
@@ -505,10 +623,10 @@ export default function UnitGuideClient({
           </ol>
         </TabsContent>
 
-        <TabsContent value="topics" className="space-y-3">
+        <TabsContent value="lessons" className="space-y-3">
           {topicGuides.failed && (
             <p role="alert" className="text-sm text-muted-foreground">
-              The topic guides could not be loaded. Reload the page to try again.
+              The lessons could not be loaded. Reload the page to try again.
             </p>
           )}
           {topicGuides.exists ? (
@@ -517,22 +635,8 @@ export default function UnitGuideClient({
               topics={topics}
               guide={topicGuides.guide}
               teacher
+              onRead={(id) => readLesson(id)}
               chipClassName={look.tile}
-              practiceFor={(id) =>
-                roadmapUnit.sets
-                  .filter((s) => s.set.topics.includes(id))
-                  .map((s) => ({
-                    label: `${s.set.key} · ${s.set.title}`,
-                    href: `#set-${s.set.key}`,
-                    onClick: toSet(s.set.key),
-                  }))
-              }
-              prerequisiteHref={(id) => {
-                const at = apTopic(id, curriculum.apCourse);
-                return at && hasUnitGuide(curriculumId, at.unit)
-                  ? `/teacher/courses/${curriculumId}/${at.unit}#${topicAnchor(id)}`
-                  : undefined;
-              }}
               meta={(id) => (
                 <p className="text-xs text-muted-foreground">
                   Practised in{" "}
@@ -610,7 +714,7 @@ export default function UnitGuideClient({
               />
               {insight && insight.top.length > 0 ? (
                 <>
-                  <Reteach insight={insight} className={selected.name} />
+                  <Reteach insight={insight} className={selected.name} lesson={mistakeLesson} />
                   <Link
                     href="/teacher/insights"
                     className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
@@ -652,6 +756,7 @@ export default function UnitGuideClient({
                         {meta?.description && (
                           <p className="break-words text-muted-foreground">{meta.description}</p>
                         )}
+                        {mistakeLesson(tag)}
                       </div>
                       <p className="shrink-0 text-xs text-muted-foreground">
                         {keys.map((k) => (
@@ -706,6 +811,23 @@ export default function UnitGuideClient({
       </nav>
 
       <SetPreviewDialog canShowKey target={preview} onClose={() => setPreview(null)} />
+      <LessonDialog
+        course={curriculum.apCourse}
+        guide={topicGuides.guide}
+        topics={lesson?.topics.length ? lesson.topics : topics}
+        target={lesson?.target ?? null}
+        onTarget={(target) => {
+          // Closing a lesson opened from the address takes it out of the address, so a reload
+          // does not open it again.
+          if (!target && topicFromAnchor(window.location.hash))
+            window.history.replaceState(null, "", "#lessons");
+          setLesson(target ? { target, topics: lesson?.topics ?? topics } : null);
+        }}
+        failed={topicGuides.failed}
+        teacher
+        practiceFor={lessonPractice}
+        prerequisiteHref={lessonPrerequisite}
+      />
     </div>
   );
 }
