@@ -62,6 +62,8 @@ Each set contains ten problems. Problems are drafted with AI assistance, validat
 
 The Courses page (`/teacher/courses`) is organized around one class at a time.
 
+![Course roadmap for a class part-way through AP Physics 1](./public/screenshots/teacher-course-roadmap.png)
+
 - **Roadmap.** Units appear in the class's order. Each set shows its description, problem count, estimated time, status, and, once assigned, how many students have submitted and the class average. A preview shows the problems as students see them, along with the topics covered and the misconceptions the wrong answers are designed to catch.
 - **Assign in bulk.** One dialog copies a whole unit into the class with staggered due dates. It lists exactly what will be created before anything is saved, and skips sets the class already has.
 - **Pacing.** A pacing guide dates every remaining set, projects a finish date at the current pace, and warns when the course would run into the AP exam window. Due dates can be moved in bulk, by unit or across the whole class.
@@ -70,9 +72,17 @@ The Courses page (`/teacher/courses`) is organized around one class at a time.
 - **Unit guides.** Each unit has a page covering its sets, topics, question types, difficulty mix and targeted misconceptions. With a class selected, it also shows that class's results.
 - **Re-teach suggestions.** When a misconception is widespread in a unit, the page recommends a response: re-teach to the whole class, pull a small group, or check in individually. These suggestions are rule-based, so the same data always produces the same advice.
 
+| Unit guide | Calendar view |
+| :-: | :-: |
+| ![Unit guide with class results](./public/screenshots/teacher-unit-guide.png) | ![Course calendar with due dates and school holidays](./public/screenshots/teacher-course-calendar.png) |
+
 ### What a student sees
 
 The student dashboard shows a roadmap card with progress through each unit, the student's own average, and the next assignment due. The assignments page groups work under unit headings in the order the class is following.
+
+| Student home | Lesson reader |
+| :-: | :-: |
+| ![Student home with next assignment and course progress](./public/screenshots/student-home.png) | ![Lesson reader for a unit topic](./public/screenshots/student-lesson-reader.png) |
 
 For the data model, API routes and admin publishing workflow, see [docs/courses.md](docs/courses.md).
 
@@ -82,7 +92,7 @@ For the data model, API routes and admin publishing workflow, see [docs/courses.
 
 Raise is Scorpio's physics tutor. It is a context-aware assistant, not a general chatbot: it declines off-topic requests, explains concepts directly, and guides numerical problem solving with questions instead of solutions. Within an assignment it is limited to short, strictly pedagogical hints.
 
-![Raise tutoring a student](./public/ai-tutor.png)
+![Raise answering a student with a drawn velocity-time graph](./public/screenshots/student-raise-diagram.png)
 
 ### The four-layer constraint system
 
@@ -121,6 +131,8 @@ On a labelled set of 50 AP Physics 1 answers, the shared grading core placed 99.
 
 Each graded answer carries tags for the misconceptions it reveals. The report at `/teacher/insights` ranks them by the number of students affected, for example "8 of 24 students", and breaks them down by class, assignment and AP unit. It is available on every plan.
 
+![Class misconception report](./public/screenshots/teacher-misconceptions.png)
+
 ---
 
 ## Other capabilities
@@ -129,7 +141,7 @@ Each graded answer carries tags for the misconceptions it reveals. The report at
 
 The network dashboard at `/teacher/network` supports organization-level work: shared department Waypoints, AI-assisted student portfolios, and administrative oversight.
 
-![Teacher network dashboard](./public/mission-control.png)
+![Department dashboard](./public/screenshots/teacher-department.png)
 
 - **Department sharing.** Waypoints can be shared across a school network.
 - **Onboarding.** Teacher invite codes support attributed, controlled registration.
@@ -137,7 +149,7 @@ The network dashboard at `/teacher/network` supports organization-level work: sh
 
 ### Mathematical rendering
 
-![Equation Vault](./public/equation-vault.png)
+![Raise explaining forces on a ramp with rendered equations](./public/screenshots/student-raise.png)
 
 - **Visual math builder.** Equations can be constructed without writing raw LaTeX.
 - **KaTeX rendering.** Fast client-side typesetting for all physics expressions.
