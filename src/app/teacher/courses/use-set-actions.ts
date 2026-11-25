@@ -131,13 +131,14 @@ export function useSetActions({
       );
       if (planned.some((p) => have.has(p.key)))
         todo = planAssignments(target.sets, have, startDate, spacing, isSchoolDay).map(
-          // The re-plan keeps the number of problems, and the problems, the teacher chose.
+          // The re-plan keeps the number of problems, the problems and the reading the teacher chose.
           (p): PlannedAssignment => {
             const chosen = planned.find((x) => x.key === p.key);
             return {
               ...p,
               ...(planned[0]?.count === undefined ? {} : { count: planned[0].count }),
               ...(chosen?.pick ? { pick: chosen.pick } : {}),
+              ...(planned[0]?.readFirst ? { readFirst: true } : {}),
             };
           },
         );
@@ -150,7 +151,11 @@ export function useSetActions({
       await runAssignments(todo, (item) => {
         const copy = archived.get(item.key);
         return copy && restoresArchived(item, copy)
-          ? updateAssignment(copy.id, { archived: false, dueDate: dueParam(item.due) })
+          ? updateAssignment(copy.id, {
+              archived: false,
+              dueDate: dueParam(item.due),
+              ...(item.readFirst ? { readFirst: true } : {}),
+            })
           : cloneSetToClass(authenticatedFetch, selected.id, item);
       });
       void rememberCount(todo[0]?.count);

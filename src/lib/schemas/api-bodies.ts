@@ -57,6 +57,7 @@ export const createAssignmentBody = z
     lockdownMode: z.boolean().optional(),
     allowAIHelp: z.boolean().optional(),
     allowCalculator: z.boolean().optional(),
+    readFirst: z.boolean().optional(),
     totalPoints: z.number().optional(),
     type: z.string().max(64).optional(),
     googleFormLink: z.string().max(2048).nullish(),
@@ -93,6 +94,8 @@ export const updateAssignmentBody = z
     lockdownMode: z.boolean(),
     allowAIHelp: z.boolean(),
     allowCalculator: z.boolean(),
+    /** Students read the lessons for the assignment's topics first (src/lib/read-first). */
+    readFirst: z.boolean(),
     rubric: z.string().max(100000).nullable(),
     questions: z.array(assignmentQuestionSchema).min(1).max(100),
     archived: z.boolean(),
@@ -136,6 +139,14 @@ export const cloneAssignmentBody = z.object({
    * it ("Edit problems first" in the assign dialog).
    */
   hidden: z.boolean().optional(),
+  /** Students read the lessons for the set's topics before its problems open (src/lib/read-first). */
+  readFirst: z.boolean().optional(),
+});
+
+// ─── POST /api/assignments/{id}/lesson-reads ───────────────────────────────
+export const lessonReadBody = z.object({
+  /** The AP topic whose lesson the student has read ("4.1"). */
+  topic: z.string().regex(/^\d{1,2}\.\d{1,2}$/),
 });
 
 // ─── POST /api/notebook/chat ───────────────────────────────────────────────

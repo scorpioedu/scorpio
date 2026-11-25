@@ -28,6 +28,8 @@ export interface PlannedAssignment extends AssignableSet {
    * Absent: the set's usual pick for `count`.
    */
   pick?: number[];
+  /** Students read the lessons for the set's topics before its problems open. */
+  readFirst?: boolean;
 }
 
 /**
@@ -125,6 +127,7 @@ export async function cloneSetToClass(
       ...(item.count !== undefined ? { count: item.count } : {}),
       ...(item.pick ? { pick: item.pick } : {}),
       ...(hidden ? { hidden: true } : {}),
+      ...(item.readFirst ? { readFirst: true } : {}),
     }),
   });
   const body = await res.json().catch(() => ({}));

@@ -243,6 +243,7 @@ function CreateAssignmentForm() {
           lockdownMode: settings.lockdownMode,
           allowAIHelp: settings.allowAIHelp,
           allowCalculator: settings.allowCalculator,
+          ...(settings.readFirst && settings.apUnit ? { readFirst: true } : {}),
           totalPoints: assignmentPoints,
           questions: scoredQuestions,
           createdAt: new Date(),

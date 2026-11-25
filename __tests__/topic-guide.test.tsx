@@ -239,7 +239,7 @@ describe("UnitGuideTopics", () => {
       expect(out).toContain(`id="${id}"`);
     expect(out).toContain("Change in momentum and impulse");
     expect(out).toContain("Impulse equals change in momentum");
-    expect(out.match(/Read the guide/g)).toHaveLength(4);
+    expect(out.match(/Read the lesson/g)).toHaveLength(4);
     expect(out.match(/<h2/g)).toHaveLength(4);
     expect(out).not.toContain("Big idea");
   });
@@ -249,8 +249,8 @@ describe("UnitGuideTopics", () => {
       <UnitGuideTopics course="physics-1" topics={topics} guide={unit} defaultOpen={["4.2"]} />,
     );
     expect(out.match(/Big idea/g)).toHaveLength(1);
-    expect(out).toContain("Hide the guide");
-    expect(out.match(/Read the guide/g)).toHaveLength(3);
+    expect(out).toContain("Hide the lesson");
+    expect(out.match(/Read the lesson/g)).toHaveLength(3);
     const section = out.slice(out.indexOf('id="topic-4-2"'), out.indexOf('id="topic-4-3"'));
     order(section, "<h2", "<h3", "<h4");
     expect(section).toContain("Big idea");
@@ -262,7 +262,7 @@ describe("UnitGuideTopics", () => {
       <UnitGuideTopics course="physics-1" topics={topics} guide={null} defaultOpen={["4.2"]} />,
     );
     expect(out).toContain("Conservation of linear momentum");
-    expect(out).not.toContain("Read the guide");
+    expect(out).not.toContain("Read the lesson");
     expect(out).not.toContain("Big idea");
   });
 
