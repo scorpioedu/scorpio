@@ -879,7 +879,7 @@ export function AnimatedSidebarMenuSubButton({
   );
 
   const interactiveClassName = cn(
-    "flex min-h-8 w-full min-w-0 items-center gap-2 rounded-lg px-2 text-left text-xs outline-none",
+    "flex min-h-8 w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2 text-left text-xs outline-none",
     "text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground",
     "focus-visible:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring",
     isActive && "bg-muted/70 text-foreground",
@@ -1038,7 +1038,7 @@ export const AnimatedSidebarMenuButton = forwardRef<
   );
 
   const interactiveClassName = cn(
-    "relative flex min-h-10 w-full min-w-0 items-center gap-3 overflow-hidden rounded-xl px-3 text-left text-sm font-medium outline-none",
+    "relative flex min-h-10 w-full min-w-0 cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 text-left text-sm font-medium outline-none",
     "text-muted-foreground transition-colors hover:text-foreground",
     "focus-visible:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring",
     isActive && "text-foreground font-semibold",

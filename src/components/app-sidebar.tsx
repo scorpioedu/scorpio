@@ -4,14 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import {
-  Menu,
-  X,
-  Leaf,
-  PanelLeftClose,
-  PanelLeftOpen,
-  PlaneLanding,
-} from "lucide-react";
+import { Menu, X, Leaf, PanelLeftClose, PanelLeftOpen, PlaneLanding } from "lucide-react";
 import { CompassLogo } from "@/components/ui/compass-logo";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +21,9 @@ import {
   AnimatedSidebarMenu,
   AnimatedSidebarMenuButton,
   AnimatedSidebarMenuItem,
+  AnimatedSidebarMenuSub,
+  AnimatedSidebarMenuSubButton,
+  AnimatedSidebarMenuSubItem,
   AnimatedSidebarProvider,
   AnimatedSidebarRail,
   AnimatedSidebarTrigger,
@@ -53,6 +49,15 @@ interface NavLink {
   badge?: string;
   /** Other route prefixes that also mark this item active (pages grouped under it). */
   match?: string[];
+  /** Pages listed under this item. The item then folds open instead of linking. */
+  children?: NavChild[];
+}
+
+interface NavChild {
+  href: string;
+  label: string;
+  /** Other route prefixes that also mark this child active. */
+  match?: string[];
 }
 
 type NavItem = NavLink | { dialog: "sustainability"; label: string };
@@ -72,9 +77,11 @@ function routeMatches(path: string, href: string): boolean {
   return path === href || path.startsWith(href + "/");
 }
 
-function isNavLinkActive(item: NavLink, path: string | null): boolean {
+function isNavLinkActive(item: NavLink | NavChild, path: string | null): boolean {
   if (!path) return false;
-  return [item.href, ...(item.match ?? [])].some((href) => routeMatches(path, href));
+  const own = [item.href, ...(item.match ?? [])].some((href) => routeMatches(path, href));
+  if (own) return true;
+  return "children" in item && !!item.children?.some((child) => isNavLinkActive(child, path));
 }
 
 export interface AppSidebarProps {
@@ -228,6 +235,10 @@ export function AppSidebar({
   sample,
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const currentPath = sample ? sample.activeHref : pathname;
+  // Groups the user folded open or shut. Until they do, a group is open while one of its pages
+  // is showing, so it unfolds by itself when you land on it.
+  const [toggledGroups, setToggledGroups] = useState<Record<string, boolean>>({});
 
   return (
     <AnimatedSidebarProvider
@@ -296,9 +307,42 @@ export function AppSidebar({
                       return <SustainabilityDialogItem key={item.dialog} label={item.label} />;
                     }
 
-                    const isActive = isNavLinkActive(item, sample ? sample.activeHref : pathname);
+                    const isActive = isNavLinkActive(item, currentPath);
 
                     const Icon = item.icon;
+
+                    if (item.children?.length) {
+                      const isOpen = toggledGroups[item.href] ?? isActive;
+                      return (
+                        <AnimatedSidebarMenuItem key={item.href}>
+                          <AnimatedSidebarMenuButton
+                            isActive={isActive}
+                            ariaExpanded={isOpen}
+                            icon={<Icon className="size-5" />}
+                            onSelect={() =>
+                              setToggledGroups((current) => ({ ...current, [item.href]: !isOpen }))
+                            }
+                          >
+                            {item.label}
+                          </AnimatedSidebarMenuButton>
+                          <AnimatedSidebarMenuSub open={isOpen}>
+                            {item.children.map((child) => (
+                              <AnimatedSidebarMenuSubItem key={child.href}>
+                                <AnimatedSidebarMenuSubButton
+                                  href={sample ? undefined : child.href}
+                                  isActive={isNavLinkActive(child, currentPath)}
+                                  onSelect={sample ? () => sample.onSelect(child.href) : undefined}
+                                  className="text-sm"
+                                >
+                                  {child.label}
+                                </AnimatedSidebarMenuSubButton>
+                              </AnimatedSidebarMenuSubItem>
+                            ))}
+                          </AnimatedSidebarMenuSub>
+                        </AnimatedSidebarMenuItem>
+                      );
+                    }
+
                     return (
                       <AnimatedSidebarMenuItem key={item.href}>
                         <AnimatedSidebarMenuButton

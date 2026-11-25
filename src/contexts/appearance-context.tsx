@@ -19,6 +19,18 @@ interface AppearanceContextType {
   setCustomColor: (color: string) => void;
 }
 
+/** White text on a #rrggbb fill, or near-black when the fill is light (white would fall under ~3:1). */
+function readableTextOn(hex: string): string {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
+  if (!m) return "oklch(1 0 0)";
+  const [r, g, b] = m.slice(1).map((h) => {
+    const c = parseInt(h, 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 0.3 ? "oklch(0.15 0 0)" : "oklch(1 0 0)";
+}
+
 const AppearanceContext = React.createContext<AppearanceContextType | undefined>(undefined);
 
 export function AppearanceProvider({ children }: { children: React.ReactNode }) {
@@ -30,9 +42,15 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     const storedFont = localStorage.getItem("app-font") as FontOption;
     if (
       storedFont &&
-      ["figtree", "inter", "ibm-plex-sans", "verdana", "roboto-mono", "pt-serif", "atkinson"].includes(
-        storedFont,
-      )
+      [
+        "figtree",
+        "inter",
+        "ibm-plex-sans",
+        "verdana",
+        "roboto-mono",
+        "pt-serif",
+        "atkinson",
+      ].includes(storedFont)
     ) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser storage after mount so the server render and the first client render match
       setFontState(storedFont);
@@ -72,6 +90,7 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem("app-custom-color", newColor);
     if (themeColor === "custom") {
       document.documentElement.style.setProperty("--primary", newColor);
+      document.documentElement.style.setProperty("--primary-foreground", readableTextOn(newColor));
     }
   };
 
@@ -98,10 +117,12 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
 
     if (themeColor === "custom") {
       html.style.setProperty("--primary", customColor);
-      // Also update other primary-related variables if necessary
-      // e.g., --primary-foreground can be calculated or set to a default
+      // Hover tints, rings and the sidebar follow --primary in globals.css; only the text on
+      // top needs picking here: white unless the colour is too light for it.
+      html.style.setProperty("--primary-foreground", readableTextOn(customColor));
     } else {
       html.style.removeProperty("--primary");
+      html.style.removeProperty("--primary-foreground");
     }
   }, [font, themeColor, customColor]);
 

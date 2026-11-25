@@ -6,7 +6,7 @@ import { NAV_ICONS } from "./nav-icons";
 
 // Five pages, one question each: what now (Home), what's due (Assignments), how did I do
 // (Grades), my study tools (Study), help if I want it (Raise). `match` lists the routes each
-// page groups; the Study tabs (Lessons first) live in components/student/section-tabs.tsx.
+// page groups; Study lists its pages (Lessons first) as children that fold open in the sidebar.
 const navSections: NavSection[] = [
   {
     items: [
@@ -27,7 +27,17 @@ const navSections: NavSection[] = [
         href: "/student/lessons",
         label: "Study",
         icon: NAV_ICONS.study,
-        match: ["/student/guides", "/student/notebook", "/student/vault", "/student/resources", "/student/courses"],
+        children: [
+          // Guides and course pages are lesson reading, so they light up Lessons.
+          {
+            href: "/student/lessons",
+            label: "Lessons",
+            match: ["/student/guides", "/student/courses"],
+          },
+          { href: "/student/notebook", label: "Notebook" },
+          { href: "/student/vault", label: "Formula vault" },
+          { href: "/student/resources", label: "Resources" },
+        ],
       },
     ],
   },
