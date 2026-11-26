@@ -18,7 +18,9 @@ beforeAll(async () => {
    'assignment_keys/aa':{teacherId:'ta',answers:{q:'secret'}},
    'submissions/suba':{studentId:'sa',assignmentId:'aa',teacherId:'ta',status:'submitted',graded:false},
    'notebooks/na':{studentId:'sa'}, 'tutor_sessions/sa':{studentId:'sa'},
-   'portfolios/sa':{studentId:'sa',teacherId:'ta',organizationId:'a'}
+   'portfolios/sa':{studentId:'sa',teacherId:'ta',organizationId:'a'},
+   'study_progress/sa':{studentId:'sa',problems:{},review:{},misconceptions:{},days:[],shareToken:'tok'},
+   'study_shares/tok':{studentId:'sa',name:'S'}
   };
   await Promise.all(Object.entries(docs).map(([path,data])=>setDoc(doc(db,path),data)));
  });
@@ -51,6 +53,15 @@ test('student cannot forge grading fields or create submissions directly',async(
 test('student cannot take ownership of another notebook or tutor session',async()=>{
  await assertFails(setDoc(doc(db('sb'),'notebooks/na'),{studentId:'sb'}));
  await assertFails(setDoc(doc(db('sb'),'tutor_sessions/sa'),{studentId:'sb'}));
+});
+test('study progress: a student reads only their own, and no client writes it or its share links',async()=>{
+ await assertSucceeds(getDoc(doc(db('sa'),'study_progress/sa')));
+ for (const who of ['sb','ta']) await assertFails(getDoc(doc(db(who),'study_progress/sa')));
+ await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(),'study_progress/sa')));
+ await assertFails(setDoc(doc(db('sa'),'study_progress/sa'),{studentId:'sa',problems:{x:{correct:true}}}));
+ await assertFails(setDoc(doc(db('sb'),'study_progress/sb'),{studentId:'sb'}));
+ for (const who of ['sa','ta']) await assertFails(getDoc(doc(db(who),'study_shares/tok')));
+ await assertFails(setDoc(doc(db('sa'),'study_shares/new'),{studentId:'sa'}));
 });
 test('owner can change display settings but cannot forge subscription or usage',async()=>{
  await assertSucceeds(updateDoc(doc(db('ta'),'organizations/a'),{name:'Physics'}));

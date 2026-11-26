@@ -6,8 +6,9 @@ import { NAV_ICONS } from "./nav-icons";
 
 // Five pages, one question each: what now (Home), what's due (Assignments), how did I do
 // (Grades), my study tools (Study), help if I want it (Raise). `match` lists the routes each
-// page groups; Study lists its pages (Lessons first) as children that fold open in the sidebar.
-const navSections: NavSection[] = [
+// page groups; Study lists its pages (the Study map first) as children that fold open in the
+// sidebar.
+export const studentNavSections: NavSection[] = [
   {
     items: [
       { href: "/student", label: "Home", icon: NAV_ICONS.home },
@@ -24,15 +25,17 @@ const navSections: NavSection[] = [
         match: ["/student/submissions"],
       },
       {
-        href: "/student/lessons",
+        href: "/student/study",
         label: "Study",
         icon: NAV_ICONS.study,
         children: [
-          // Guides and course pages are lesson reading, so they light up Lessons.
+          // The one map of every course, with review run on it. The lesson reader
+          // (/student/courses/…, where a topic's practice also lives), practice runs and progress
+          // are all part of it, and old Lessons, Guides and Review links redirect here.
           {
-            href: "/student/lessons",
-            label: "Lessons",
-            match: ["/student/guides", "/student/courses"],
+            href: "/student/study",
+            label: "Study",
+            match: ["/student/courses", "/student/lessons", "/student/guides"],
           },
           { href: "/student/notebook", label: "Notebook" },
           { href: "/student/vault", label: "Formula vault" },
@@ -63,7 +66,7 @@ export function StudentSidebar({
     <AppSidebar
       roleLabel="Student"
       roleIcon={GraduationCap}
-      navSections={navSections}
+      navSections={studentNavSections}
       isCollapsed={isCollapsed}
       onToggle={onToggle}
     />

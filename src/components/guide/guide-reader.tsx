@@ -4,7 +4,19 @@
 // left, one topic at a time on the right, with Previous and Next at the bottom that carry on into
 // the neighbouring units. The topic shown is the one in the address (#topic-4-1), so links from
 // assignments and prerequisites land on it; with no topic in the address it is the first one.
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+//
+// The student reader adds practice: a topic's practice under its lesson (renderPractice), a unit
+// check after the last topic (renderUnitCheck), and each topic's Study level in the sidebar
+// (topicStatus). Without those props the reader is just the lessons.
+import {
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, ChevronsUpDown, List } from "lucide-react";
 import { apUnit, type ApCourseId } from "@/data/ap";
@@ -25,7 +37,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LEVEL_LABEL, LevelMeter } from "@/components/student/study-display";
+import type { StudyTopic } from "@/lib/study/catalog";
 import { TopicGuide, type PracticeLink } from "./topic-guide";
+
+/** A topic's place in the student's Study progress. */
+export interface ReaderTopicStatus {
+  level: StudyTopic["level"];
+  inReview: boolean;
+  /** The lesson has been opened (on any device). */
+  read: boolean;
+}
+
+/** The id of the unit check, so a "Unit check" button can scroll to it. */
+export const UNIT_CHECK_ID = "unit-check";
 
 export interface GuideReaderProps {
   curriculumId: string;
@@ -37,8 +62,20 @@ export interface GuideReaderProps {
   failed?: boolean;
   practiceFor?: (topicId: string) => PracticeLink[];
   prerequisiteHref?: (topicId: string) => string | undefined;
-  /** Where "Lessons" in the top bar goes. */
+  /** Where the back link in the top bar goes, and what it says. */
   backHref?: string;
+  backLabel?: string;
+  /** Practice for the topic shown, after its lesson and before the "Practise this" links. */
+  renderPractice?: (topicId: string) => ReactNode;
+  /** A check on the whole unit, after the last topic's lesson. */
+  renderUnitCheck?: () => ReactNode;
+  /**
+   * The student's Study progress on a topic: a level meter per topic in the sidebar and a short
+   * status under the topic's title. A topic counts as read when this says so or this device has it.
+   */
+  topicStatus?: (topicId: string) => ReaderTopicStatus | undefined;
+  /** Called once a topic is shown (its lesson loaded), each time it becomes the open topic. */
+  onTopicOpen?: (topicId: string) => void;
 }
 
 // The address hash as a store, so the topic follows links, Back and Forward without an effect.
@@ -58,6 +95,19 @@ function readMarks(curriculumId: string): string {
     return window.localStorage.getItem(readKey(curriculumId)) ?? "";
   } catch {
     return "";
+  }
+}
+/** The topics this device has marked read in a course (the same marks the reader shows). */
+export function localReadMarks(curriculumId: string): string[] {
+  return readMarks(curriculumId).split(",").filter(Boolean);
+}
+/** Forgets this device's marks for a course (once they have been copied into a Study account). */
+export function clearLocalReadMarks(curriculumId: string) {
+  try {
+    window.localStorage.removeItem(readKey(curriculumId));
+    window.dispatchEvent(new Event(READ_EVENT));
+  } catch {
+    // Blocked storage: nothing was kept to clear.
   }
 }
 function subscribeMarks(onChange: () => void) {
@@ -89,7 +139,12 @@ export function GuideReader({
   failed = false,
   practiceFor,
   prerequisiteHref,
-  backHref = "/student/lessons",
+  backHref = "/student/study",
+  backLabel = "Study",
+  renderPractice,
+  renderUnitCheck,
+  topicStatus,
+  onTopicOpen,
 }: GuideReaderProps) {
   const info = apUnit(unit, course);
   const topics = useMemo(() => info?.topics ?? [], [info]);
@@ -103,8 +158,12 @@ export function GuideReader({
     () => readMarks(curriculumId),
     () => "",
   );
-  const read = useMemo(() => new Set(marks.split(",").filter(Boolean)), [marks]);
-  const readHere = topics.filter((t) => read.has(t.id)).length;
+  const local = useMemo(() => new Set(marks.split(",").filter(Boolean)), [marks]);
+  // A signed-in student's reading is their Study progress, never this browser's marks (which a
+  // shared school laptop would mix between students); without Study the device's marks are used.
+  const isRead = (topicId: string) =>
+    topicStatus ? !!topicStatus(topicId)?.read : local.has(topicId);
+  const readHere = topics.filter((t) => isRead(t.id)).length;
 
   const units = guideUnits(curriculumId);
   const unitAt = units.indexOf(unit);
@@ -142,12 +201,20 @@ export function GuideReader({
     return () => window.clearTimeout(t);
   }, [activeId, loaded, curriculumId]);
 
+  // The page hears about each topic as it opens (the student reader saves it as read).
+  const opened = useEffectEvent((topicId: string) => onTopicOpen?.(topicId));
+  useEffect(() => {
+    if (activeId && loaded) opened(activeId);
+  }, [activeId, loaded]);
+
   // ← and → move between topics (not while typing or dragging a Try it slider).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
       const el = e.target as HTMLElement | null;
       if (el?.closest("input, textarea, select, [contenteditable='true'], [role='slider']")) return;
+      // Nor inside practice, where a key press mid-problem would swap the topic and lose the run.
+      if (el?.closest("[data-no-topic-keys]")) return;
       if (e.key === "ArrowRight" && index >= 0 && index < topics.length - 1)
         show(topics[index + 1].id);
       else if (e.key === "ArrowLeft" && index > 0) show(topics[index - 1].id);
@@ -157,6 +224,20 @@ export function GuideReader({
   });
 
   const g = active ? topicGuide(guide, active.id) : undefined;
+  const activeStatus = active ? topicStatus?.(active.id) : undefined;
+  // Practice waits for the lesson, so it sits under it rather than jumping down as it loads.
+  const practice =
+    active && guide && renderPractice ? (
+      <div key={active.id} data-no-topic-keys="">
+        {renderPractice(active.id)}
+      </div>
+    ) : null;
+  const unitCheck =
+    active && guide && renderUnitCheck && index === topics.length - 1 ? (
+      <div id={UNIT_CHECK_ID} className="mt-10 scroll-mt-6" data-no-topic-keys="">
+        {renderUnitCheck()}
+      </div>
+    ) : null;
 
   const contents = (
     <nav aria-label="Lesson contents" className="flex min-h-0 flex-1 flex-col">
@@ -183,7 +264,7 @@ export function GuideReader({
             {units.map((u) => {
               const uInfo = apUnit(u, course);
               const total = uInfo?.topics.length ?? 0;
-              const done = uInfo?.topics.filter((t) => read.has(t.id)).length ?? 0;
+              const done = uInfo?.topics.filter((t) => isRead(t.id)).length ?? 0;
               return (
                 <DropdownMenuItem key={u} asChild>
                   <Link
@@ -236,6 +317,7 @@ export function GuideReader({
         <ol className="space-y-0.5">
           {topics.map((t) => {
             const isActive = t.id === active?.id;
+            const status = topicStatus?.(t.id);
             return (
               <li key={t.id}>
                 <a
@@ -261,9 +343,10 @@ export function GuideReader({
                     {t.id}
                   </span>
                   <span className="min-w-0 flex-1 leading-snug">{t.title}</span>
-                  {read.has(t.id) && !isActive && (
+                  {isRead(t.id) && !isActive && (
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-label="Read" />
                   )}
+                  {status && <LevelMeter level={status.level} className="mt-0.5 shrink-0" />}
                 </a>
               </li>
             );
@@ -313,7 +396,7 @@ export function GuideReader({
           className="text-muted-foreground hover:text-foreground"
         >
           <Link href={backHref}>
-            <ArrowLeft aria-hidden /> Lessons
+            <ArrowLeft aria-hidden /> {backLabel}
           </Link>
         </Button>
         <Button
@@ -362,6 +445,7 @@ export function GuideReader({
                       {active.summary}
                     </p>
                   )}
+                  {activeStatus && <TopicStatusLine status={activeStatus} />}
                 </header>
                 {failed ? (
                   <p role="alert" className="text-sm text-muted-foreground">
@@ -377,14 +461,19 @@ export function GuideReader({
                     guide={g}
                     course={course}
                     practice={practiceFor?.(active.id)}
+                    beforePractice={practice}
                     prerequisiteHref={prerequisiteHref}
                     headingLevel={2}
                   />
                 ) : (
-                  <p className="rounded-2xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                    The lesson for this topic is coming soon.
-                  </p>
+                  <div className="space-y-6">
+                    <p className="rounded-2xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                      The lesson for this topic is coming soon.
+                    </p>
+                    {practice}
+                  </div>
                 )}
+                {unitCheck}
               </>
             ) : (
               <p className="text-sm text-muted-foreground">This unit has no topics listed.</p>
@@ -403,6 +492,21 @@ export function GuideReader({
         </div>
       </div>
     </div>
+  );
+}
+
+/** "Practised · In review" under the topic's title. */
+function TopicStatusLine({ status }: { status: ReaderTopicStatus }) {
+  return (
+    <p className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
+      <span aria-hidden>
+        <LevelMeter level={status.level} />
+      </span>
+      <span>
+        {LEVEL_LABEL[status.level]}
+        {status.inReview ? " · In review" : ""}
+      </span>
+    </p>
   );
 }
 

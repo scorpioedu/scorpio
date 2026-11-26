@@ -78,6 +78,15 @@ service cloud.firestore {
       allow create: if teacher() && request.resource.data.teacherId == request.auth.uid;
       allow update, delete: if teacher() && resource.data.teacherId == request.auth.uid;
     }
+    // Study progress: written only by the server (POST /api/study/check); a student reads their own.
+    match /study_progress/{uid} {
+      allow read: if signedIn() && uid == request.auth.uid;
+      allow write: if false;
+    }
+    // Study share links: server only (the shared progress page reads them with the Admin SDK).
+    match /study_shares/{token} {
+      allow read, write: if false;
+    }
     match /practice_history/{id} {
       allow read: if signedIn() && (resource.data.studentId == request.auth.uid || teaches(user(resource.data.studentId).get('teacherId', null)));
       allow create: if signedIn() && request.resource.data.studentId == request.auth.uid;

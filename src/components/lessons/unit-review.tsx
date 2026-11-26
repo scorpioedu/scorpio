@@ -8,7 +8,9 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { PrimaryPill } from "@/components/landing/split-kit";
 import { plainText, type PublicUnitPage } from "@/lib/guides/public";
 import { cn } from "@/lib/utils";
-import { Breadcrumbs, JsonLd, OG_IMAGE, PracticeBand, SITE, wrap } from "./lessons-ui";
+import { TopicPractice } from "./topic-practice";
+import { Breadcrumbs, JsonLd, OG_IMAGE, AccountBand, SITE, wrap } from "./lessons-ui";
+import { studentGuideHref } from "@/lib/guides";
 
 export function unitReviewMetadata(page: PublicUnitPage): Metadata {
   const { course, unit } = page;
@@ -196,10 +198,13 @@ export function UnitReview({ page }: { page: PublicUnitPage }) {
           </section>
         )}
 
-        <PracticeBand
-          heading={`Practice Unit ${unit.unit} with feedback`}
-          line="Each unit's problem sets grade themselves, and Raise hints at the next step instead of giving the answer."
+        <TopicPractice
+          course={course.id}
+          unit={unit.unit}
+          heading={`Practice problems: Unit ${unit.unit}`}
         />
+
+        <AccountBand next={studentGuideHref(course.id, unit.unit)} />
 
         {(prev || next) && (
           <nav aria-label="Previous and next unit" className="grid gap-3 sm:grid-cols-2">

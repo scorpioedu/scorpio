@@ -7,7 +7,7 @@ import {
   Breadcrumbs,
   JsonLd,
   OG_IMAGE,
-  PracticeBand,
+  AccountBand,
   SITE,
   wrap,
 } from "@/components/lessons/lessons-ui";
@@ -217,10 +217,7 @@ export default async function CourseLessonsPage({ params }: Params) {
       </div>
 
       <div className={cn(wrap, "pb-20 sm:pb-28")}>
-        <PracticeBand
-          heading={`Practice ${course.name}, unit by unit`}
-          line="Each unit has problem sets that grade themselves. Students get hints from Raise, not answers, and teachers see who is stuck on what."
-        />
+        <AccountBand next="/student/study" />
       </div>
     </div>
   );

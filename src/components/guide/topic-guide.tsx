@@ -42,6 +42,11 @@ export interface TopicGuideProps {
   teacher?: boolean;
   /** "Practise this" links: sets for a teacher, the class's assignments for a student. */
   practice?: PracticeLink[];
+  /**
+   * Shown after the lesson and before the "Practise this" links (the student reader's practice).
+   * With it, those links are the class's own assignments, so they are headed "From your class".
+   */
+  beforePractice?: ReactNode;
   /** Where a prerequisite topic's guide is, when it has one; without it the topic is plain text. */
   prerequisiteHref?: (topicId: string) => string | undefined;
   /** Level of the section headings ("Equations"); titles inside a section are one lower. */
@@ -379,6 +384,7 @@ function TopicGuideBody({
   course,
   teacher = false,
   practice = [],
+  beforePractice,
   prerequisiteHref,
   headingLevel = 3,
   className,
@@ -541,8 +547,10 @@ function TopicGuideBody({
         </section>
       )}
 
+      {beforePractice}
+
       {practice.length > 0 && (
-        <Section level={level} title="Practise this">
+        <Section level={level} title={beforePractice ? "From your class" : "Practise this"}>
           <ul className="flex flex-wrap gap-2">
             {practice.map((p) => (
               <li key={p.href}>

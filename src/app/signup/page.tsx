@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { inviteAuthPath } from "@/lib/onboarding-links";
+import { inviteAuthPath, STUDY_HOME, studyNextPath } from "@/lib/onboarding-links";
 import { register } from "@/lib/firebase";
 import { InviteCelebration } from "@/components/invite-celebration";
 import { AuthSplit } from "@/components/landing/auth-split";
@@ -28,6 +28,7 @@ function SignupForm() {
   const params = useSearchParams();
   const teacherInvite = params.get("teacherInvite") || "";
   const classInvite = params.get("classCode") || "";
+  const studyNext = studyNextPath(params.get("next"));
   const signInPath = teacherInvite
     ? inviteAuthPath("login", "network", teacherInvite)
     : classInvite
@@ -145,7 +146,13 @@ function SignupForm() {
         throw new Error("Your account was created. Please sign in to continue.");
 
       router.refresh();
-      router.push(role === "teacher" ? "/teacher" : "/student");
+      // A student who joined no class has nothing on Home yet, so they start in Study (or the Study
+      // page a link asked for).
+      router.push(
+        role === "teacher"
+          ? "/teacher"
+          : (studyNext ?? (classCode.trim() ? "/student" : STUDY_HOME)),
+      );
     } catch (err: unknown) {
       console.error(err);
       if (errorCode(err) === "auth/email-already-in-use") {

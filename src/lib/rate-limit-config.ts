@@ -55,6 +55,9 @@ export const RATE_LIMITS = {
   teacherCode: { windowMs: MINUTE, maxRequests: 30, onError: "closed", noIp: 600 },
   requestAccess: { windowMs: MINUTE, maxRequests: 20, onError: "closed", noIp: 600 },
   githubStats: { windowMs: MINUTE, maxRequests: 30, onError: "open", noIp: "skip" },
+  // Study practice: open to visitors (per IP) and students (per uid). Answers reveal keys, so a
+  // generous human pace but not a scrape.
+  study: { windowMs: MINUTE, maxRequests: 60, onError: "open", noIp: "skip" },
 } as const satisfies Record<string, RateLimitPolicy>;
 
 export type RateLimitKind = keyof typeof RATE_LIMITS;

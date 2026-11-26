@@ -557,3 +557,20 @@ export const adminPilotBody = z.discriminatedUnion("action", [
   }),
 ]);
 export type AdminPilotBody = z.infer<typeof adminPilotBody>;
+
+// ─── /api/study ────────────────────────────────────────────────────────────
+export const studyCheckBody = z.object({
+  /** "<course set id>:<question id>" */
+  key: z.string().min(3).max(200),
+  answer: z.string().trim().min(1).max(500),
+});
+
+export const studyReadBody = z.object({
+  /** Curriculum id, e.g. "ap-physics-1". */
+  course: z.string().regex(/^[a-z0-9-]{1,40}$/),
+  /** AP topic ids, e.g. ["3.4"]: one as a lesson is opened, or several moved over from the browser. */
+  topics: z
+    .array(z.string().regex(/^\d{1,2}\.\d{1,2}$/))
+    .min(1)
+    .max(100),
+});

@@ -4,16 +4,17 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Flag } from "lucide-react";
 import { LessonNav, type NavSection } from "@/components/lessons/lesson-nav";
 import { LessonTopic } from "@/components/lessons/lesson-topic";
+import { TopicPractice } from "@/components/lessons/topic-practice";
 import { UnitReview, unitReviewMetadata } from "@/components/lessons/unit-review";
 import {
   Breadcrumbs,
   JsonLd,
   OG_IMAGE,
-  PracticeBand,
+  AccountBand,
   SITE,
   wrap,
 } from "@/components/lessons/lessons-ui";
-import { guideSectionId } from "@/lib/guides";
+import { guideSectionId, studentGuideHref } from "@/lib/guides";
 import {
   isUnitSlug,
   plainText,
@@ -235,11 +236,14 @@ function TopicLesson({ page }: { page: PublicTopicPage }) {
             />
           </div>
 
-          <PracticeBand
+          <TopicPractice
             className="mt-16"
-            heading={`Practice ${topic.id} with feedback`}
-            line={`Problem sets for Unit ${unit.unit} grade themselves, and Raise hints at the next step instead of giving the answer.`}
+            course={course.id}
+            topic={topic.id}
+            heading={`Practice problems: ${topic.id} ${topic.title}`}
           />
+
+          <AccountBand className="mt-6" next={studentGuideHref(course.id, unit.unit, topic.id)} />
 
           {(prev || next) && (
             <nav aria-label="Previous and next lesson" className="mt-10 grid gap-3 sm:grid-cols-2">
