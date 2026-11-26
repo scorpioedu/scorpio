@@ -56,7 +56,7 @@ A teacher can attach a course to a class. Classes that follow no course behave e
 | AP Physics C: Mechanics                 |     7 |   28 |      280 |
 | AP Physics C: Electricity and Magnetism |     6 |   24 |      240 |
 
-Each set contains ten problems. Problems are drafted with AI assistance, validated automatically, independently re-solved by a second model call, and then reviewed before publication. Review of answer keys is ongoing, and review logs are kept in `content/`. A course whose sets contain no problems is shown as planned and cannot be assigned.
+Each set contains ten problems. Problems are drafted with AI assistance, validated automatically, independently re-solved by a second model call, and checked by a person before publication. Every problem in all four courses has been checked by a person, and all four courses are live. Review logs are kept in `content/`. A course whose sets contain no problems is shown as planned and cannot be assigned.
 
 ### What a teacher can do
 

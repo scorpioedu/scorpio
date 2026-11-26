@@ -261,7 +261,9 @@ function runVerify(entries, chosen, opts = {}) {
     });
     const marked = draft.reviewKind === "verified";
     let action = null;
-    if (opts.write && result.verdict === "verified") {
+    // A person's check outranks the verifier's mark: it is never replaced or removed here.
+    const human = draft.reviewKind === "human";
+    if (opts.write && !human && result.verdict === "verified") {
       draft.verification = result.verification;
       draft.reviewKind = "verified";
       action = marked ? "re-stamped" : "stamped";

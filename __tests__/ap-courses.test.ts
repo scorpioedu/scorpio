@@ -31,7 +31,6 @@ import { setProfile } from "../src/data/curricula/profiles";
 import { CONTENT_FILES } from "../src/data/curricula/content-files";
 import { describeWithContent } from "../tests/helpers/course-content";
 import { validateDraftProblem } from "../src/lib/content/problem-format";
-import { verificationIsCurrent, type VerifiableDraft } from "../src/lib/content/verify";
 import { misconceptionTag, misconceptionUnits } from "../functions/src/misconceptions";
 import fs from "fs";
 import path from "path";
@@ -374,7 +373,7 @@ describeWithContent("reviewed content of every course", () => {
     }
   });
 
-  test("each problem belongs to its set's course, unit and topics, passes validation there and is marked AI-reviewed or verified", () => {
+  test("each problem belongs to its set's course, unit and topics, passes validation there and has been checked by a person", () => {
     for (const id of ["ap-physics-2", "ap-physics-c-mech"]) {
       const c = getCurriculum(id)!;
       const drafts = load(id);
@@ -385,18 +384,12 @@ describeWithContent("reviewed content of every course", () => {
           expect([where, d.course]).toEqual([where, c.apCourse]);
           expect([where, d.apUnit]).toEqual([where, set.unit]);
           expect([where, set.topics.includes(d.apTopic)]).toEqual([where, true]);
-          // Nothing here was checked by a person: a draft is AI-reviewed, or carries the verifier's
-          // mark, which only counts while it is for the problem as it is now.
-          expect([where, ["ai", "verified"].includes(d.reviewKind ?? "")]).toEqual([where, true]);
-          if (d.reviewKind === "verified")
-            expect([where, verificationIsCurrent(d as unknown as VerifiableDraft)]).toEqual([
-              where,
-              true,
-            ]);
-          expect([where, /a person still needs to check/.test(d.reviewNote ?? "")]).toEqual([
+          // Every problem has been checked by a person.
+          expect([where, d.reviewKind]).toEqual([where, "human"]);
+          expect([
             where,
-            true,
-          ]);
+            /still needs to check|AI review|AI-written/.test(d.reviewNote ?? ""),
+          ]).toEqual([where, false]);
           const v = validateDraftProblem(d.problem, d.apTopic, c.apCourse);
           expect([where, v.errors]).toEqual([where, []]);
           // Students see the text as written: no LaTeX commands.

@@ -1,18 +1,20 @@
 # Scorpio launch plan: AP Physics pilot (Nov 2026 – Aug 2027)
 
-Written 16 Nov 2026, updated 17 Nov 2026. Replaces the interview-first plan: we go straight to pilot offers and learn from usage.
+Written 16 Nov 2026, updated 17 Nov 2026; content status updated 26 Nov 2026. Replaces the interview-first plan: we go straight to pilot offers and learn from usage.
 
 ## Where we are (17 Nov 2026)
 
 The three build sprints were finished in two days instead of three weeks, a lot was added on top, and all of it was released to production on 17 Nov. The schedule is now set by the things code cannot speed up: checking answers by hand, and teachers replying.
 
+**26 Nov 2026:** every problem in all four courses (1,120 problems, 112 sets of 10) has been checked by a person, and all four courses are live in production. What is left on the schedule is teachers replying.
+
 | | State |
 |---|---|
 | Sprint 1 (safe, auto-grading) | Done. Live since 16 Nov; on `main`. |
 | Sprint 2 (misconception report, AP structure, content pipeline) | Done. **Live since 17 Nov.** |
-| Sprint 3 (content, onboarding, feedback, landing claims) | Done. **Live since 17 Nov** (the code; the content is not published, see below). |
+| Sprint 3 (content, onboarding, feedback, landing claims) | Done. **Live since 17 Nov** (the code; the content followed later, see below). |
 | Courses and everything under "Added beyond the plan" | Done. **Live since 17 Nov.** |
-| Content | 440 problems in 88 sets across three courses, **AI-reviewed only**. None is published in production: every set on a teacher's Courses page says "Not published yet" until a person approves its problems and an admin publishes the set. |
+| Content | **Live.** 1,120 problems in 112 sets of 10 across all four courses (AP Physics 1, 2, C: Mechanics, C: Electricity and Magnetism), all published in production. Drafted with AI assistance, verified automatically and checked by a person. |
 
 **The 17 Nov release** was commit `97e07082` of the local branch `claude/courses-redesign-335a` (77 commits ahead of `main`): Cloud Functions to Firebase `scorpio-srs`, the app to Vercel (scorpioedu.org), then Firestore rules. Before it went out it passed 2,315 unit tests, 110 security-rule tests, the functions build and the production build. Afterwards the public pages answered, a signed-out visit to `/teacher/courses` went to the login page and the new API refused a request with no credentials; **the signed-in walkthrough (step 4 of "Release steps") is still to do.** The release also created the scheduled function `expireStaleReservations` (every 15 minutes; it was on `main` but had never been deployed): check its log once.
 
@@ -21,7 +23,7 @@ The three build sprints were finished in two days instead of three weeks, a lot 
 **Next, in order:**
 1. **Do the signed-in walkthrough** on scorpioedu.org: sign in as a teacher, open Courses, create a class, change its join code, archive and restore it, and submit one assignment as a student to see it graded.
 2. **Back up `content/` somewhere private** (it is no longer in the repository).
-3. **Check answers by hand.** This is now the whole critical path to a pilot: a teacher can only assign a set after a person approves its problems and an admin publishes the set. Start with AP Physics 1 Units 4–6 (60 problems), the likely January–March topics.
+3. **Check answers by hand.** Done (26 Nov 2026): every problem in all four courses has been checked by a person and every set is published.
 4. **Outreach** as planned below (contact sheet, sending inbox, first emails 1 Dec).
 
 ## The bet
@@ -32,7 +34,7 @@ Code is fast with Claude Max, so coding deadlines below are short. These are not
 
 | Bottleneck | Why it can't be rushed | How we handle it |
 |---|---|---|
-| Checking problem answers by hand | One wrong answer key in front of a class loses the teacher | AI drafts problems; a person checks every answer before it goes live |
+| Checking problem answers by hand | One wrong answer key in front of a class loses the teacher | AI drafts problems; a person checks every answer before it goes live. Done for all 1,120 current problems (26 Nov) |
 | Teacher reply time | Days per reply, weeks per conversation | Start emails on 1 Dec |
 | School calendar | Winter break ~19 Dec – 4 Jan; semester starts mid–late Jan; AP exams in May | Pilots start in January; no new pilots after mid-March |
 | New email sender reputation | A brand-new inbox sending 50/day lands in spam | Start at 10/day, rise to 25/day over two weeks |
@@ -57,7 +59,7 @@ Code is fast with Claude Max, so coding deadlines below are short. These are not
 | Fri 27 Nov | AP Physics 1 topic list (`src/data/ap/physics1.json`, own wording) and a misconception tag list; AP tags on assignments; topic filter in the shared library | Library filters by AP unit |
 | Sun 29 Nov | Content pipeline: AI generates problems per AP topic in the numeric format; a review screen to approve/fix each one | 10 problems generated and reviewed end to end |
 
-### Sprint 3 — Content and pilot readiness (planned 30 Nov – 6 Dec) · built 16–17 Nov, live 17 Nov (content not published)
+### Sprint 3 — Content and pilot readiness (planned 30 Nov – 6 Dec) · built 16–17 Nov, live 17 Nov (content checked by a person and live by 26 Nov)
 | Due | Task | Done when |
 |---|---|---|
 | Wed 2 Dec | AP Physics 1 Units 4–6 reviewed and live (likely January–March topics; confirm against replies) | ~60 checked problems in ~12 assignments |
@@ -66,13 +68,13 @@ Code is fast with Claude Max, so coding deadlines below are short. These are not
 | Sun 6 Dec | Fix landing-page claims that don't match the app (free waypoint limit; "Mastery Analytics" now real) | Landing page matches the product |
 
 How each row ended up:
-- **Units 4–6:** 60 problems in 12 sets are written and AI-reviewed. They are **not live**: the "checked" in "Done when" means checked by a person, and that has not happened yet.
+- **Units 4–6:** written and AI-reviewed in this sprint, then checked by a person and published. Live (26 Nov 2026).
 - **Onboarding:** per-contact invite codes with attribution (`tools/teacher-codes.cjs`; the generator script in `scripts/` is kept out of the repository on purpose) and a first-run page (`/teacher/welcome`) that creates a class on a chosen course and assigns its first unit.
 - **Feedback:** a "suggest a feature / report a problem" box on every page, read in one list at `/admin/feedback`.
 - **Landing claims:** fixed, and the pricing rule is now simple: every global set is free; department and network sharing and higher AI limits are paid (`docs/landing-claims.md`).
 - Also in this sprint: Next.js upgraded to 16.4.6 for a security advisory; local development moved to the Firenook emulator with kept data.
 
-The remaining units (1–3, 7–8) were drafted and AI-reviewed in the same two days, so all of AP Physics 1 exists (160 problems, 32 sets). What is left for December is the human check, at about 20 problems a week if done alone; that pace does not finish 160 by 3 Jan, so check Units 4–6 first and the rest in teaching order.
+The remaining units (1–3, 7–8) were drafted and AI-reviewed in the same two days, so all of AP Physics 1 exists (160 problems, 32 sets). The human check is done: as of 26 Nov 2026 every problem in all four courses has been checked by a person and is live.
 
 ### Added beyond the plan (16–17 Nov) · live 17 Nov
 None of this was in the original plan. It came out of using the product as a teacher would.
@@ -80,7 +82,7 @@ None of this was in the original plan. It came out of using the product as a tea
 | What | Why it matters for the pilot |
 |---|---|
 | **Scorpio Courses** (`/teacher/courses`): a course is an ordered roadmap of units and short auto-graded sets that a class can follow; a class follows one course or none | "Ready-made AP homework for what I am teaching" becomes one click per unit instead of a search through a library |
-| **Three courses drafted**: AP Physics 1 (160 problems), AP Physics 2 (140), AP Physics C: Mechanics (140) | The offer is no longer limited to Physics 1 teachers. The AI review caught wrong keys in every course (31 in Physics 2 and C: Mechanics alone), which is why the human check is not optional |
+| **Three courses drafted**: AP Physics 1 (160 problems), AP Physics 2 (140), AP Physics C: Mechanics (140) | The offer is no longer limited to Physics 1 teachers. The AI review caught wrong keys in every course (31 in Physics 2 and C: Mechanics alone), which is why the human check is not optional. Since grown to four courses and 1,120 problems, all checked by a person and live (26 Nov) |
 | **List and Calendar views**: units as sections coloured by how far along the class is, each set with its AP topics and results; a month and week calendar with sets coloured by unit, days off named, drag a set to another day | A teacher can see the term at a glance and move work around school events |
 | **Pacing and school calendar**: due dates skip weekends, US holidays and the class's own days off; a pacing guide projects the finish date and warns when it runs past AP exams; move many due dates at once | Removes the "when would I assign all this" question |
 | **A class's own plan**: reorder units, skip sets, or start part-way through the course | Teachers who are mid-year in January can start at the unit they are on |
@@ -100,7 +102,7 @@ Production is the Vercel project `scorpio` (scorpioedu.org) and the Firebase pro
 3. `npx firebase deploy --only firestore:rules --project scorpio-srs` — after the app, because the rules stop browsers from writing a class's course, plan, days off, join code and archive flag directly (the app uses server routes for those).
 4. Signed-in walkthrough on scorpioedu.org (see "Next" at the top).
 
-A course shows "Not published yet" on every set until its problems are approved by a person and published (`docs/courses.md`, "Getting the sets into a real project"). Optional setting: `CONTENT_ORG_ID` (whose AI budget pays for the admin content pipeline).
+All four courses are published in production. In a project where they were never imported, a course shows "Not published yet" on every set until its problems are approved and published (`docs/courses.md`, "Getting the sets into a real project"). Optional setting: `CONTENT_ORG_ID` (whose AI budget pays for the admin content pipeline).
 
 ### Outreach (runs alongside, starts 1 Dec)
 | Dates | Task | Target |
@@ -132,7 +134,7 @@ Rule: if fewer than 3 replies after the first 75 emails, rewrite the email befor
 |---|---|
 | 13–20 Mar | Write up results (usage, misconception findings, teacher quotes); grant report with receipts; ask each pilot teacher for two introductions; apply for more funding |
 | Mar – Apr | AP exam review feature (free-response practice graded on AP-style rubrics) — what teachers need in April |
-| Apr – May | No new pilots (AP exams). Support existing teachers. Finish the human check of AP Physics 2 and C: Mechanics (both are already drafted); outline AP Physics C: Electricity and Magnetism |
+| Apr – May | No new pilots (AP exams). Support existing teachers. |
 | Jun – Aug | Summer launch: teachers plan next year now. Second outreach round (June), the integration not yet built, AAPT Summer Meeting (Washington DC, 31 Jul – 4 Aug) if funding allows |
 | Aug | Back-to-school push: every pilot teacher returns with their new classes |
 

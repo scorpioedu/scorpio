@@ -10,7 +10,7 @@ You are continuing work on Scorpio, a physics homework platform for teachers (Ne
 
 - **Production:** https://scorpioedu.org runs commit `bc165569`, which is the same code as GitHub `main` (`scorpioedu/scorpio`, public repo, commit `afcb18a3`). Firebase project `scorpio-srs`. Deploys are manual; merging to `main` deploys nothing.
 - **Local:** worktree `/Users/rushilmahadevu/source/typescript/scorpio/.claude/worktrees/teacher-ui-085412`, currently on branch `claude/raise-diagrams` (production code plus an unreleased diagram feature, switched off by default). Its dev server is `http://localhost:3110` against the Firebase emulator, signed in as "Pilot Teacher" with seeded demo data (4 classes, 14 students, graded work). No Gemini key locally.
-- **All three courses are published in production** (AP Physics 1: 32 sets, AP Physics C: Mechanics: 28, AP Physics 2: 28). The problems are AI-reviewed only; no person has checked the answer keys.
+- **All four courses are published in production** (AP Physics 1: 32 sets, AP Physics 2: 28, AP Physics C: Mechanics: 28, AP Physics C: E&M: 24). Every problem has been checked by a person (26 Nov 2026).
 - **The owner has a demo on 18 Nov 2026.** The demo steps are in `docs/demo-script.md` in the main checkout. Until the owner says the demo is over, change nothing in production: no deploys, no data changes.
 - **Read first:** `AGENTS.md` (this Next.js version differs from older ones; read `node_modules/next/dist/docs/` before framework changes), `docs/courses.md`, `docs/demo-script.md`.
 

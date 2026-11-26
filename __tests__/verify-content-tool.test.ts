@@ -435,6 +435,18 @@ describe("verifying", () => {
     expect(readDrafts()[1].reviewKind).toBe("verified");
   });
 
+  test("--write never replaces a person's check, whether the problem passes or fails", () => {
+    solveAll();
+    const file = JSON.parse(fs.readFileSync(contentFile(), "utf8"));
+    for (const d of file.drafts) d.reviewKind = "human";
+    fs.writeFileSync(contentFile(), JSON.stringify(file, null, 2) + "\n");
+    const written = run({ write: true });
+    expect(written.changed).toBe(0);
+    expect(written.rows.every((r: { action?: string }) => r.action == null)).toBe(true);
+    tool.saveContent(written.files, root);
+    expect(readDrafts().every((d: { reviewKind: string }) => d.reviewKind === "human")).toBe(true);
+  });
+
   test("the near-duplicate check looks at the whole set even when one draft is selected", () => {
     const file = JSON.parse(fs.readFileSync(contentFile(), "utf8"));
     file.drafts[1] = { ...file.drafts[0], id: "truck" };

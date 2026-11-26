@@ -2,18 +2,18 @@
 
 Sprint 3. **Waypoints** is still the library of single sets (global, department, mine). A **course** is an ordered roadmap on top of it: units in order, each with its sets in order. A teacher can optionally attach a course to a class; classes that follow none work exactly as before.
 
-**Four courses: three written, one planned.**
+**Four courses, all written and live.** Every set has 10 problems: 112 sets, 1,120 problems. The problems were drafted with AI assistance, verified automatically and checked by a person, and every set is published in production.
 
 | Course | `curriculumId` | State |
 |---|---|---|
-| AP Physics 1 | `ap-physics-1` | Complete: 8 units × 4 sets × 5 problems = 32 sets, 160 problems (1A–8D). All are AI-reviewed only and need a person's approval before they can go live; see [units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md) and [units-1-3-7-8-review.md](../content/ap-physics-1/units-1-3-7-8-review.md). In the Firenook emulator all 32 sets are published and tagged. |
-| AP Physics 2 | `ap-physics-2` | Complete: 7 units (9–15) × 4 sets × 5 problems = 28 sets, 140 problems (9A–15D). AI-reviewed only; see [units-9-15-review.md](../content/ap-physics-2/units-9-15-review.md). Published and tagged in the Firenook emulator. |
-| AP Physics C: Mechanics | `ap-physics-c-mech` | Complete: 7 units (1–7) × 4 sets × 5 problems = 28 sets, 140 problems (1A–7D), calculus-based. AI-reviewed only; see [units-1-7-review.md](../content/ap-physics-c-mech/units-1-7-review.md). Published and tagged in the Firenook emulator. |
-| AP Physics C: Electricity and Magnetism | `ap-physics-c-em` | **Planned: outline only, no problems.** 6 units (8–13), 31 topics, 24 planned sets (8A–13D, four per unit, `draftIds: []`), calculus-based. Units, topics and numbering follow the College Board Course and Exam Description (effective Fall 2024; read from AP Central on 21 Nov 2026, URLs in the `note` of `src/data/ap/physicsc-em.json`). No content folder, no unit guides, nothing published anywhere. |
+| AP Physics 1 | `ap-physics-1` | Complete and live: 8 units × 4 sets × 10 problems = 32 sets, 320 problems (1A–8D). Review logs: [units-4-6-review.md](../content/ap-physics-1/units-4-6-review.md) and [units-1-3-7-8-review.md](../content/ap-physics-1/units-1-3-7-8-review.md). |
+| AP Physics 2 | `ap-physics-2` | Complete and live: 7 units (9–15) × 4 sets × 10 problems = 28 sets, 280 problems (9A–15D). Review log: [units-9-15-review.md](../content/ap-physics-2/units-9-15-review.md). |
+| AP Physics C: Mechanics | `ap-physics-c-mech` | Complete and live: 7 units (1–7) × 4 sets × 10 problems = 28 sets, 280 problems (1A–7D), calculus-based. Review log: [units-1-7-review.md](../content/ap-physics-c-mech/units-1-7-review.md). |
+| AP Physics C: Electricity and Magnetism | `ap-physics-c-em` | Complete and live: 6 units (8–13) × 4 sets × 10 problems = 24 sets, 240 problems (8A–13D), calculus-based. Units, topics and numbering follow the College Board Course and Exam Description (effective Fall 2024; read from AP Central on 21 Nov 2026, URLs in the `note` of `src/data/ap/physicsc-em.json`). |
 
-Every problem in the three written courses still needs a person's check before it can go live: the AI review found wrong keys in each course (the review logs list them), and it can miss others.
+As of 26 Nov 2026 every problem in all four courses has been checked by a person. New AI drafts still go through the same gate before they can be published (see [content-pipeline.md](content-pipeline.md)).
 
-**How a planned course shows.** A course whose sets have no problems (`hasContent(c)` is false) is never offered as if it were ready:
+**How a planned course shows.** No course is planned at present; this is how one shows. A course whose sets have no problems (`hasContent(c)` is false) is never offered as if it were ready:
 
 - Landing page course grid (`src/components/landing/course-grid.tsx`): its card says "Planned · problem sets not written yet" in place of a set count, and the heading counts only written courses ("Three AP Physics courses, already written"). The "Pick your course" preview (`workflow-rows.tsx`) lists written courses only. The hero, FAQ and page metadata name AP Physics 1, 2 and C: Mechanics only.
 - `/teacher/courses`: the chooser card says "Planned" with a disabled **Not ready yet** button; the course dialog row is disabled; a teacher with no class who browses it sees "{course} is planned" and every set with a lock and "Planned". `/teacher/welcome` does not list it.
@@ -122,7 +122,7 @@ Unit numbers and topic ids repeat between courses: AP Physics 1 and AP Physics C
 
 ## Why a teacher may see "Not published yet" on every set
 
-The roadmap lists every set in the definition, but a set can only be assigned once it exists as a published global waypoint **in the Firebase project the app is running against**. The 440 problems of the three written courses were published only in the local Firenook emulator, so `npm run dev` against a real project shows every set as "Not published yet" (this used to read "Coming soon"). Three states (`setAvailability` in `src/lib/curriculum-roadmap.ts`):
+The roadmap lists every set in the definition, but a set can only be assigned once it exists as a published global waypoint **in the Firebase project the app is running against**. All 112 sets are published in production. A project where they were never imported or published (a fresh emulator, a new Firebase project) shows every set as "Not published yet" (this used to read "Coming soon"). Three states (`setAvailability` in `src/lib/curriculum-roadmap.ts`):
 
 | State | Meaning |
 |---|---|
@@ -140,8 +140,9 @@ The page explains this in a notice, and admins get a link to **Admin → Content
    node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-1/units-4-6.json
    node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-2/units-9-15.json
    node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-c-mech/units-1-7.json
+   node tools/content-drafts.cjs import --project <project-id> --file content/ap-physics-c-em/units-8-13.json
    ```
-2. At `/admin/content` → **Approved**, open each problem, solve it, check the key and the misconception tags, and approve it yourself. Imported drafts are `reviewKind: "ai"` and publish refuses those outside the emulator. The review logs in `content/<id>/*-review.md` list what the AI review changed, problem by problem.
+2. Check the approvals at `/admin/content` → **Approved**. Every problem in the current files has been checked by a person and is `reviewKind: "human"`, so nothing needs re-approving. A draft marked `reviewKind: "ai"` (a new AI draft, or one imported with only the AI review) is refused by publish outside the emulator: open it, solve it, check the key and the misconception tags, and approve it yourself. The review logs in `content/<id>/*-review.md` list what the AI review changed, problem by problem.
 3. On the **Sets** tab, press **Publish set** for each set. `/teacher/courses` then shows it as ready.
 
 ## Teachers: `/teacher/courses`

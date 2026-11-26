@@ -13,7 +13,7 @@ account: create class, assign, join, submit, auto-grade, results. Every step bel
    Dashboard press **Leave class** → **Leave Class**. Do this before the audience is watching.
    (To put the student back afterwards: Leave class, then open `scorpioedu.org/join/class/CODE123`.)
 4. Solve the five problems of the set you will open live (Unit 1A) and compare with the key.
-   The problems are AI-reviewed only.
+   Every problem has been checked by a person, so this is only so you know the answers.
 5. If you rehearse with a class, archive it afterwards: Dashboard → My classes → the class's
    settings → **Archive**.
 

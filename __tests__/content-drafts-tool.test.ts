@@ -21,7 +21,15 @@ describeWithContent("content-drafts tool", () => {
 
   test("import writes approved, unpublished, unassigned drafts and keeps the AI-review mark", () => {
     const now = new Date("2026-12-01T00:00:00Z");
-    const doc = toImportDoc({ ...file.drafts[0], status: "published", reviewKind: "ai" }, now);
+    const doc = toImportDoc(
+      {
+        ...file.drafts[0],
+        status: "published",
+        reviewKind: "ai",
+        reviewNote: "AI review; a person still needs to check this.",
+      },
+      now,
+    );
     expect(doc).toMatchObject({
       status: "approved",
       assignmentId: null,
@@ -106,8 +114,8 @@ describeWithContent("Units 4–6 content file", () => {
       expect(s.draftIds.length).toBeLessThanOrEqual(10);
       expect(new Set(s.draftIds.map((id: string) => unit[id])).size).toBe(1);
     }
-    // "verified" once tools/verify-content.cjs --write has stamped a draft.
-    expect(file.drafts.every((d) => ["ai", "verified"].includes(d.reviewKind))).toBe(true);
+    // Every problem has been checked by a person.
+    expect(file.drafts.every((d) => d.reviewKind === "human")).toBe(true);
   });
 
   test("every problem still passes the pipeline's checks with no errors", () => {
@@ -136,7 +144,7 @@ describeWithContent("Units 1–3, 7, 8 content file", () => {
     expect(new Set(ids)).toEqual(new Set(drafts.map((d) => d.id)));
     expect(ids).toHaveLength(drafts.length);
     expect(new Set(drafts.map((d) => d.apUnit))).toEqual(new Set([1, 2, 3, 7, 8]));
-    expect(drafts.every((d) => ["ai", "verified"].includes(d.reviewKind))).toBe(true);
+    expect(drafts.every((d) => d.reviewKind === "human")).toBe(true);
   });
 
   test("every problem passes the pipeline's checks", () => {
