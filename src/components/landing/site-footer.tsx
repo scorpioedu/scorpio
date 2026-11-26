@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
 const footerLinks = [
-  { label: "Lessons", href: "/lessons" },
+  { label: "Study", href: "/lessons" },
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
   { label: "Sustainability", href: "/sustainability" },
@@ -25,7 +25,10 @@ export function SiteFooter({ reveal = false }: { reveal?: boolean }) {
           <Logo size={18} aria-hidden="true" />
           <span className="font-inter font-black tracking-tight">Scorpio</span>
         </span>
-        <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+        <nav
+          aria-label="Footer"
+          className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground"
+        >
           {footerLinks.map(({ label, href }) => (
             <Link key={href} href={href} className="transition-colors hover:text-foreground">
               {label}

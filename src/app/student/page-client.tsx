@@ -407,7 +407,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             {
               title: "4. Study",
               description:
-                "Your study tools, in four tabs: Lessons that walk through each unit topic by topic, Notebook for your own notes and derivations, Formula vault for the equations and constants in your course, and Resources for files your teacher shared.",
+                "Your study tools: Study, one page for your course where every topic has a short lesson and practice with each answer checked, and the topics you missed come back for review; Notebook for your own notes and derivations; Formula vault for the equations and constants in your course; and Resources for files your teacher shared.",
               icon: NAV_ICONS.study,
             },
             {
@@ -442,19 +442,42 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           Checking your enrollment…
         </p>
       ) : !courseId ? (
-        <Card className="shadow-none">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Join your class</CardTitle>
-            <CardDescription className="text-base">
-              {teacherId
-                ? "Enter your class code to see your assignments and what your teacher shares."
-                : "Enter the class code from your teacher. If they sent an invite link, opening it does this for you."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <JoinClassForm />
-          </CardContent>
-        </Card>
+        // Without a class, Study is what there is to do: it comes first, and joining a class is
+        // offered below it for students who have a code.
+        <>
+          <Card className="shadow-none">
+            <CardHeader className="flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <CardTitle className="text-lg">Start studying</CardTitle>
+                <CardDescription className="mt-1">
+                  A lesson and practice for every AP Physics topic, and review of what you missed.
+                  Free, no class needed.
+                </CardDescription>
+              </div>
+              <Button asChild size="lg">
+                <Link href="/student/study">
+                  Open Study
+                  <ArrowRight aria-hidden />
+                </Link>
+              </Button>
+            </CardHeader>
+          </Card>
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">
+                {teacherId ? "Join your class" : "Have a class code?"}
+              </CardTitle>
+              <CardDescription className="text-base">
+                {teacherId
+                  ? "Enter your class code to see your assignments and what your teacher shares."
+                  : "If your teacher gave you one, enter it to see their assignments too. An invite link does this for you."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <JoinClassForm />
+            </CardContent>
+          </Card>
+        </>
       ) : (
         <Card className="shadow-none">
           <CardHeader className="flex flex-wrap items-center justify-between gap-3">
@@ -498,7 +521,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
             Loading your assignments…
           </p>
         ) : roadmap && roadmap.units.some((u) => u.assigned > 0) ? (
-          // The full unit list is on Study > Guides; here it is one small card beside Next up.
+          // The full unit list is on Study; here it is one small card beside Next up.
           <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
             <NextUpCard
               assignment={nextAssignment}
@@ -541,12 +564,15 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         cancelText="Stay"
       />
 
-      <StudentProgressChart
-        totalAssignments={stats.totalAssignments}
-        completedAssignments={stats.completedAssignments}
-        pendingAssignments={stats.pendingAssignments}
-        scores={recentScores}
-      />
+      {/* Completion and scores come from class assignments, so they mean nothing without a class. */}
+      {courseId && (
+        <StudentProgressChart
+          totalAssignments={stats.totalAssignments}
+          completedAssignments={stats.completedAssignments}
+          pendingAssignments={stats.pendingAssignments}
+          scores={recentScores}
+        />
+      )}
 
       <section aria-labelledby="study-heading" className="space-y-3 pt-1">
         <h2 id="study-heading" className="text-sm font-semibold tracking-tight text-foreground">
@@ -554,16 +580,18 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Link
-            href="/student/lessons"
+            href="/student/study"
             className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                Lessons
+                Study
               </span>
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Unit lessons with worked examples</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Lessons and practice for every topic
+            </p>
           </Link>
 
           <Link

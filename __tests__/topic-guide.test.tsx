@@ -10,6 +10,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 jest.mock("@/components/lazy-markdown-renderer", () => ({
   LazyMarkdownRenderer: ({ children }: { children: string }) => <div data-md>{children}</div>,
 }));
+// The reader's level meter comes from the Study UI, which loads Firebase for its progress hook.
+jest.mock("@/contexts/auth-context", () => ({ useAuth: () => ({ user: null }) }));
+jest.mock("@/lib/authenticated-fetch", () => ({ authenticatedFetch: jest.fn() }));
 jest.mock("next/link", () => ({
   __esModule: true,
   default: ({ href, children }: { href: string; children: ReactNode }) => (
@@ -20,11 +23,8 @@ jest.mock("next/link", () => ({
 import { Reveal, TopicGuide, TryIt, WorkedExampleCard } from "@/components/guide/topic-guide";
 import { UnitGuideTopics } from "@/components/guide/unit-guide-topics";
 import { GuideReader } from "@/components/guide/guide-reader";
-import { StudentGuideGrid } from "@/components/dashboard/student-course-roadmap";
-import { buildStudentRoadmap } from "@/lib/student-roadmap";
 import unit4 from "@/data/guides/ap-physics-1/unit-4.json";
 import type { UnitGuide } from "@/lib/guides/schema";
-import { hasUnitGuide } from "@/lib/guides";
 import { topicFixture } from "../tests/helpers/guide-fixture";
 
 const guide = topicFixture("4.2", {
@@ -285,33 +285,6 @@ describe("UnitGuideTopics", () => {
   });
 });
 
-describe("StudentGuideGrid", () => {
-  const roadmap = buildStudentRoadmap(
-    "ap-physics-1",
-    null,
-    [
-      { id: "a4", title: "4A", curriculumSetKey: "4A", curriculumId: "ap-physics-1" },
-      { id: "a5", title: "5A", curriculumSetKey: "5A", curriculumId: "ap-physics-1" },
-    ],
-    [],
-  )!;
-  const units = roadmap.units.map((u) => ({ unit: u.unit, state: u.state }));
-
-  test("each unit card links to its guide only when the unit has one", () => {
-    expect(roadmap.curriculumId).toBe("ap-physics-1");
-    const out = html(<StudentGuideGrid curriculumId="ap-physics-1" units={units} />);
-    expect(out).toContain('<a href="/student/courses/ap-physics-1/4"');
-    expect(out).toContain("Linear momentum");
-    expect(out).toContain("You&#x27;re here");
-    // One link per unit shown that has a guide, and none for a unit without one.
-    const withGuide = units.filter((u) => hasUnitGuide("ap-physics-1", u.unit));
-    expect(out.match(/\/student\/courses\//g)).toHaveLength(withGuide.length);
-    expect(html(<StudentGuideGrid curriculumId="no-such-course" units={units} />)).not.toContain(
-      "/student/courses/",
-    );
-  });
-});
-
 describe("GuideReader", () => {
   const props = {
     curriculumId: "ap-physics-1",
@@ -336,7 +309,8 @@ describe("GuideReader", () => {
     expect(out).toMatch(/href="\/student\/courses\/ap-physics-1\/3#topic-3-\d+"/);
     expect(out).toContain("4.2 Change in momentum and impulse");
     expect(out).toContain("0 of 4 read");
-    expect(out).toContain('href="/student/lessons"');
+    // Lessons live in Study now: the back link goes there.
+    expect(out).toContain('href="/student/study"');
   });
 
   test("loading, and a topic without a guide", () => {

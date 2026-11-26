@@ -1,0 +1,164 @@
+/* The course blocks on /lessons: the hero's lit ground, each block's entrance, and the small physics
+   diagram in each block that moves when the block is hovered or focused. Colours come from the
+   site's tokens (--primary follows the chosen accent). Everything rests under reduced motion. */
+
+/* ── The hero's ground: one soft light behind the blocks, graph paper fading out from it ───── */
+.ground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ground::before {
+  content: "";
+  position: absolute;
+  inset: -10% -10% -10% 30%;
+  background: radial-gradient(
+    ellipse 55% 50% at 62% 50%,
+    color-mix(in oklch, var(--primary) 16%, transparent) 0%,
+    color-mix(in oklch, var(--primary) 9%, transparent) 30%,
+    color-mix(in oklch, var(--primary) 4%, transparent) 55%,
+    color-mix(in oklch, var(--primary) 1%, transparent) 75%,
+    transparent 100%
+  );
+}
+.ground::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklch, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse 45% 55% at 72% 50%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 45% 55% at 72% 50%, black 0%, transparent 75%);
+}
+@media (max-width: 1023px) {
+  .ground::before {
+    inset: 20% -20% -10% -20%;
+  }
+  .ground::after {
+    mask-image: radial-gradient(ellipse 70% 40% at 50% 62%, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 40% at 50% 62%, black 0%, transparent 75%);
+  }
+}
+
+/* ── Entrance: the four blocks rise into place once, one after another ───────────────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.enter {
+  animation: rise 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(120ms + var(--i, 0) * 70ms);
+}
+
+/* ── The diagram frame ───────────────────────────────────────────────────────────────────── */
+.diagram {
+  position: relative;
+  width: 96px;
+  height: 56px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.diagram svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.faint {
+  stroke: color-mix(in oklch, var(--foreground) 22%, transparent);
+}
+.move {
+  transition: transform 700ms cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+/* Physics 1: a ball rolls down the ramp. */
+.ball {
+  transform: translate(0, 0);
+}
+.block:hover .ball,
+.block:focus-visible .ball {
+  transform: translate(30px, 12.6px);
+}
+
+/* Physics 2: a wave travels to the right, one wavelength. */
+.wave {
+  transform: translateX(0);
+}
+.block:hover .wave,
+.block:focus-visible .wave {
+  transform: translateX(24px);
+}
+
+/* C: Mechanics: the tangent (the derivative) slides along the position curve. */
+.tangent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 2px;
+  margin: -1px 0 0 -13px;
+  border-radius: 2px;
+  background: currentColor;
+  offset-path: path("M10 46 Q 52 46 86 10");
+  offset-rotate: auto;
+  offset-distance: 28%;
+  transition: offset-distance 800ms cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.tangent::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.block:hover .tangent,
+.block:focus-visible .tangent {
+  offset-distance: 82%;
+}
+
+/* C: E&M: the field lines push out from the charge. */
+.field {
+  transform-origin: 48px 28px;
+  transform: scale(0.82);
+  opacity: 0.75;
+  transition:
+    transform 700ms cubic-bezier(0.3, 0.7, 0.2, 1),
+    opacity 700ms ease;
+}
+.block:hover .field,
+.block:focus-visible .field {
+  transform: scale(1);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none;
+  }
+  .move,
+  .tangent,
+  .field {
+    transition: none;
+  }
+}

@@ -7,7 +7,15 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/student/", "/teacher/", "/admin/", "/api/", "/join/", "/research/admin"],
+        disallow: [
+          "/student/",
+          "/teacher/",
+          "/admin/",
+          "/api/",
+          "/join/",
+          "/research/admin",
+          "/study/share/",
+        ],
       },
     ],
     sitemap: "https://scorpioedu.org/sitemap.xml",

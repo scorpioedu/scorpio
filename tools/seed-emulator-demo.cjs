@@ -8,6 +8,9 @@
  * Accounts: teacher@demo.test / demo-teacher-pass, student@demo.test / demo-student-pass,
  * otherteacher@demo.test / demo-other-pass (owns the library waypoints),
  * admin@demo.test / demo-admin-pass (admin claim, for /admin).
+ * Made by hand through /signup (not by this script): solo@demo.test / demo-solo-pass, a student
+ * with no class, for trying Study; solo2@demo.test / demo-solo-pass, made the same way to test sign-up
+ * from a lesson page landing in Study.
  */
 const admin = require("firebase-admin");
 if (!process.env.FIRESTORE_EMULATOR_HOST || !process.env.FIREBASE_AUTH_EMULATOR_HOST) {

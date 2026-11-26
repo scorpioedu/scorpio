@@ -49,7 +49,8 @@ const resourcesItems: MenuItem[] = [
 
 const navItems: NavItem[] = [
   { id: "platform", label: "Platform", menu: platformItems },
-  { id: "lessons", label: "Lessons", href: "/lessons" },
+  // Study on the public site: the lessons, each with its practice (the hub is /lessons).
+  { id: "study", label: "Study", href: "/lessons" },
   { id: "raise", label: "Test Raise", href: "/ai" },
   { id: "pricing", label: "Pricing", href: "/pricing" },
   { id: "resources", label: "Resources", menu: resourcesItems },
@@ -81,7 +82,7 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
 
   const currentNav = (() => {
     if (pathname.startsWith("/demos")) return "platform";
-    if (pathname.startsWith("/lessons")) return "lessons";
+    if (pathname.startsWith("/lessons") || pathname.startsWith("/study")) return "study";
     if (pathname === "/ai") return "raise";
     if (pathname === "/pricing") return "pricing";
     if (
@@ -354,7 +355,7 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
               >
                 <ul role="list" className="list-none">
                   {[
-                    { label: "Lessons", href: "/lessons" },
+                    { label: "Study", href: "/lessons" },
                     { label: "Test Raise", href: "/ai" },
                     { label: "Pricing", href: "/pricing" },
                   ].map((l) => (

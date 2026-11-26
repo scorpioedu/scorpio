@@ -2,7 +2,12 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { classInvitePath, inviteAuthPath, networkInvitePath } from "@/lib/onboarding-links";
+import {
+  classInvitePath,
+  inviteAuthPath,
+  networkInvitePath,
+  studyNextPath,
+} from "@/lib/onboarding-links";
 import { login, logout } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { AuthSplit } from "@/components/landing/auth-split";
@@ -47,6 +52,7 @@ function LoginForm() {
   const params = useSearchParams();
   const teacherInvite = params.get("teacherInvite") || "";
   const classCode = params.get("classCode") || "";
+  const studyNext = studyNextPath(params.get("next"));
   const signUpPath = teacherInvite
     ? inviteAuthPath("signup", "network", teacherInvite)
     : classCode
@@ -101,7 +107,7 @@ function LoginForm() {
             : "/teacher"
           : classCode
             ? classInvitePath(classCode)
-            : "/student";
+            : (studyNext ?? "/student");
       // "Sign in and join" joins here. Anything the join can't settle on its own (a bad code, or
       // already being in another class) falls through to the invite page, which explains it.
       if (sessionData.role === "student" && classCode) {

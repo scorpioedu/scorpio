@@ -4,7 +4,7 @@ import { publicCourses } from "@/lib/guides/public";
 import reveal from "./home-reveal.module.css";
 import { CircleLink, Section, Split, statement } from "./split-kit";
 
-/** The home page's Lessons section: the free lessons, with a way into each course. */
+/** The home page's Study section: the free lessons and their practice, with a way into each course. */
 export async function LessonsTeaser() {
   const courses = await publicCourses();
   const total = courses.reduce((n, c) => n + c.topicCount, 0);
@@ -12,15 +12,15 @@ export async function LessonsTeaser() {
   return (
     <Section id="lessons" labelledBy="lessons-heading">
       <div data-scroll-reveal className={reveal.stagger}>
-        <Split id="lessons-heading" heading="Lessons">
+        <Split id="lessons-heading" heading="Study">
           <p className={statement}>
-            {total} free lessons, topic by topic
+            {total} free lessons, each with practice
             <span className="block text-muted-foreground">
-              Equations, worked examples and common mistakes. No account needed
+              Worked examples, then problems checked as you answer. No account needed
             </span>
           </p>
           <CircleLink href="/lessons" className="mt-8">
-            Browse all lessons
+            Start studying
           </CircleLink>
         </Split>
       </div>
@@ -45,7 +45,7 @@ export async function LessonsTeaser() {
                   {c.name}
                 </span>
                 <span className="mt-1 block text-sm tabular-nums text-muted-foreground">
-                  {c.units.length} units · {c.topicCount} topic lessons
+                  {c.units.length} units · {c.topicCount} topics
                 </span>
               </span>
               <ArrowRight
