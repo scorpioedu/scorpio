@@ -47,10 +47,13 @@ export function AssignmentDefaultsFields({
   value,
   onChange,
   idPrefix,
+  raiseOn,
 }: {
   value: AssignmentDefaults;
   onChange: (next: AssignmentDefaults) => void;
   idPrefix: string;
+  /** Whether Raise is on for the class's students. Hints cannot be allowed while it is off. */
+  raiseOn: boolean;
 }) {
   const set = (patch: Partial<AssignmentDefaults>) => onChange({ ...value, ...patch });
   return (
@@ -94,19 +97,26 @@ export function AssignmentDefaultsFields({
       <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
         {TOGGLES.map(({ key, label, description }) => {
           const id = `${idPrefix}-${key}`;
+          // Hints need Raise on for the class: locked, shown off, and says why.
+          const locked = key === "allowAIHelp" && !raiseOn;
           return (
             <div key={key} className="flex items-start gap-2.5">
               <Checkbox
                 id={id}
-                checked={value[key]}
+                checked={value[key] && !locked}
+                disabled={locked}
                 onCheckedChange={(checked) => set({ [key]: checked === true })}
                 aria-describedby={`${id}-help`}
                 className="mt-0.5"
               />
               <div className="space-y-0.5">
-                <Label htmlFor={id}>{label}</Label>
+                <Label htmlFor={id} className={locked ? "text-muted-foreground" : undefined}>
+                  {label}
+                </Label>
                 <p id={`${id}-help`} className="text-xs text-muted-foreground">
-                  {description}
+                  {locked
+                    ? "Raise is off for this class. Turn on Raise for students first."
+                    : description}
                 </p>
               </div>
             </div>

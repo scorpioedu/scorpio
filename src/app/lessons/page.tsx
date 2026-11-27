@@ -109,10 +109,10 @@ export default async function LessonsPage() {
             </h1>
             <p className="mt-5 max-w-[52ch] text-pretty text-lg leading-relaxed text-muted-foreground">
               Pick your course to start. Each topic has a short lesson with worked examples, then
-              problems checked as you answer.
+              problems checked as you answer. No AI: every problem has been checked by a person.
             </p>
             <p className="mt-4 text-sm tabular-nums text-muted-foreground">
-              {topicTotal} topics in {courses.length} courses · free · no account needed
+              {topicTotal} topics in {courses.length} courses · free · no AI · no account needed
             </p>
           </div>
 

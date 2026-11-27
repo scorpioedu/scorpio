@@ -10,11 +10,9 @@ jest.mock(require.resolve("../functions/node_modules/firebase-admin"), () => {
 });
 // Resolve like functions/src/grading.ts does (bare specifier, honours the package's "exports"), or the mock is missed.
 jest.mock(require.resolve("@google/genai", { paths: [`${__dirname}/../functions`] }), () => ({
-  GoogleGenAI: jest
-    .fn()
-    .mockImplementation(() => ({
-      models: { generateContent: (...a: unknown[]) => mockGenerate(...a) },
-    })),
+  GoogleGenAI: jest.fn().mockImplementation(() => ({
+    models: { generateContent: (...a: unknown[]) => mockGenerate(...a) },
+  })),
 }));
 
 import {
@@ -34,6 +32,8 @@ const shim = (v: unknown): unknown => {
 const present = (d: Doc | undefined): Doc | undefined =>
   d ? Object.fromEntries(Object.entries(d).map(([k, v]) => [k, shim(v)])) : undefined;
 const raw = (v: unknown) => (v instanceof Date ? v.getTime() : v);
+
+import { currentUsageMonth } from "../functions/src/budget-policy";
 
 class FakeDb {
   store = new Map<string, Doc>();
@@ -58,6 +58,9 @@ class FakeDb {
       },
       update: async (u: Doc) => {
         this.store.set(path, { ...this.store.get(path), ...u });
+      },
+      set: async (d: Doc) => {
+        this.store.set(path, d);
       },
       delete: async () => {
         this.store.delete(path);
@@ -190,6 +193,15 @@ const grade = () =>
   });
 const sub = () => db.store.get("submissions/s1") as Doc;
 const answersOf = () => sub().answers as Doc[];
+// What the AI scored is a draft: it sits in submission_drafts (teacher-only) and the submission
+// waits. `held` is the submission in that state; `draftOf()` the drafts by question id.
+const draftOf = () =>
+  (((db.store.get("submission_drafts/s1") as Doc) ?? {}).answers ?? {}) as Record<string, Doc>;
+const held = {
+  graded: false,
+  status: "pending_review",
+  gradingError: expect.stringMatching(/AI draft/),
+};
 
 beforeEach(() => {
   db = new FakeDb();
@@ -264,18 +276,25 @@ describe("grading pipeline: objective and AI-graded questions", () => {
     });
     mockGenerate.mockResolvedValue(modelReply(7.5));
     await grade();
-    expect(answersOf()[0]).toMatchObject({
+    expect(draftOf().q1).toMatchObject({
       score: 15,
       feedback: "fb7.5",
       reasoning: "why7.5",
       maxPoints: 20,
     });
-    expect(sub()).toMatchObject({
-      graded: true,
-      status: "graded",
-      score: 75,
-      totalPoints: 20,
-      earnedPoints: 15,
+    expect(db.store.get("submission_drafts/s1")).toMatchObject({
+      assignmentId: "a1",
+      studentId: "stu",
+    });
+    // The submission, which the student can read, waits and holds nothing from the AI.
+    expect(sub()).toMatchObject({ ...held, totalPoints: 20, earnedPoints: 0 });
+    expect(sub().score).toBeUndefined();
+    expect(answersOf()[0]).toEqual({
+      questionId: "q1",
+      answer: "Force equals mass times acceleration, so heavier things accelerate less.",
+      maxPoints: 20,
+      method: "ai",
+      reviewFlag: "Waiting for your teacher",
     });
     const call = mockGenerate.mock.calls[0][0];
     expect(call.model).toBe("gemini-3.8-flash");
@@ -304,7 +323,7 @@ describe("grading pipeline: objective and AI-graded questions", () => {
     expect(mockGenerate.mock.calls[0][0].contents[0].parts[0].text).toContain(
       "assignment-level rubric",
     );
-    expect(answersOf()[0]).toMatchObject({ score: 4, maxPoints: 10 });
+    expect(draftOf().q1).toMatchObject({ score: 4, maxPoints: 10 });
   });
 
   test("student and classmate names are masked in what is sent to the model", async () => {
@@ -349,10 +368,11 @@ describe("grading pipeline: objective and AI-graded questions", () => {
     });
     await grade();
     expect(mockGenerate).not.toHaveBeenCalled();
-    expect(answersOf()[0]).toMatchObject({
+    expect(draftOf().q1).toMatchObject({
       score: 0,
       feedback: "Missing question or answer text for grading.",
     });
+    expect(sub()).toMatchObject(held);
   });
 
   test("an assignment with no questions grades to zero percent", async () => {
@@ -393,11 +413,14 @@ describe("grading pipeline: teacher review routing", () => {
       gradingError: "Possible prompt injection in the submission; teacher review required",
     });
     expect(sub().score).toBeUndefined();
-    expect(answersOf()[0]).toMatchObject({
+    // The grader's warning and suggested score are for the teacher only.
+    expect(draftOf().q1).toMatchObject({
       reviewFlag: expect.stringContaining("prompt injection"),
-      aiSuggestedScore: 10,
+      score: 10,
       maxPoints: 10,
     });
+    expect(answersOf()[0]).toMatchObject({ reviewFlag: "Waiting for your teacher" });
+    expect(answersOf()[0]).not.toHaveProperty("aiSuggestedScore");
   });
 
   test("a model failure (empty reply) sends the submission to review with the generic failure message", async () => {
@@ -517,8 +540,13 @@ describe("grading pipeline: preconditions", () => {
   });
 
   test.each([
-    ["inactive subscription", { subscriptionStatus: "past_due" }],
-    ["exhausted AI budget", { aiBudgetLimit: 5, aiUsageCurrent: 5 }],
+    // The credit model: a network may spend while it has balance (the free monthly allowance, bonus
+    // or paid credit) and is under its optional monthly cap.
+    ["a used-up balance", { aiFreeMonth: currentUsageMonth(), aiFreeUsedCents: 100 }],
+    [
+      "a reached monthly spend cap",
+      { aiBudgetLimit: 5, aiUsageCurrent: 5, aiUsageMonth: currentUsageMonth() },
+    ],
   ])("%s routes to review with an AI budget message", async (_n, org) => {
     seedBase({
       org,

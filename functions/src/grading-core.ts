@@ -599,3 +599,93 @@ export async function gradeSubmissionAnswers(
     aiCalls,
   };
 }
+
+// --- Holding AI results for the teacher ------------------------------------------------------
+// A score or feedback written by the AI is a draft until a teacher releases it. Students can read
+// their own submission document, so a draft never goes on it: holdAiDrafts() splits a grade into
+// what the submission may store and the drafts kept in submission_drafts/{submissionId}, which only
+// the assignment's teacher can read. Answers marked by plain code (choice, numeric, exact match)
+// are not drafts and stay on the submission.
+
+/** Why a submission with AI drafts waits; stored as `gradingError` and shown to the teacher. */
+export const DRAFT_REVIEW_REASON = "AI draft ready: check it and save to release";
+/** The flag on a held answer in the student-readable submission. It says nothing about the draft. */
+export const HELD_ANSWER_FLAG = "Waiting for your teacher";
+
+/** The AI's unreleased result for one answer. */
+export interface AiDraft {
+  score: number;
+  maxPoints: number;
+  feedback: string;
+  reasoning: string;
+  misconceptions: string[];
+  misconceptionNotes?: string[];
+  /** Set when the grader itself asked for a teacher (suspected injection, implausible marks). */
+  reviewFlag?: string;
+}
+
+export interface HeldGrade {
+  /** What the submission document stores: AI-scored answers carry no score, feedback or tags. */
+  answers: (GradedAnswer | SubmittedAnswer)[];
+  /** The AI's results by question id. Empty when no answer got an AI result. */
+  drafts: Record<string, AiDraft>;
+  /** Answers that wait for the teacher (AI-scored, or needing AI that was unavailable). */
+  held: number;
+  /** Points from answers marked by code only. */
+  earnedPoints: number;
+}
+
+/** Everything the AI contributes to a graded answer; none of it stays on a held answer. */
+const AI_RESULT_FIELDS = [
+  "score",
+  "feedback",
+  "reasoning",
+  "misconceptions",
+  "misconceptionNotes",
+  "aiSuggestedScore",
+  "reviewFlag",
+] as const;
+
+/** The document stored at submission_drafts/{submissionId}. */
+export function draftDocument(
+  submission: { assignmentId: string; studentId: string },
+  drafts: Record<string, AiDraft>,
+) {
+  return {
+    assignmentId: submission.assignmentId,
+    studentId: submission.studentId,
+    answers: drafts,
+    createdAt: new Date(),
+  };
+}
+
+export function holdAiDrafts(answers: (GradedAnswer | SubmittedAnswer)[]): HeldGrade {
+  const drafts: Record<string, AiDraft> = {};
+  let held = 0;
+  let earnedPoints = 0;
+  const kept = answers.map((a) => {
+    const g = a as GradedAnswer;
+    if (g.method !== "ai") {
+      if (typeof g.score === "number") earnedPoints += g.score;
+      return a;
+    }
+    held++;
+    // No AI result at all (no budget): nothing to draft, the teacher grades it from scratch.
+    const unavailable = !!g.reviewFlag && g.aiSuggestedScore === undefined && !g.feedback;
+    if (!unavailable) {
+      drafts[g.questionId] = {
+        score: g.aiSuggestedScore ?? g.score,
+        maxPoints: g.maxPoints,
+        feedback: g.feedback,
+        reasoning: g.reasoning,
+        misconceptions: g.misconceptions,
+        ...(g.misconceptionNotes?.length ? { misconceptionNotes: g.misconceptionNotes } : {}),
+        ...(g.reviewFlag ? { reviewFlag: g.reviewFlag } : {}),
+      };
+    }
+    const submitted: Record<string, unknown> = { ...g };
+    for (const field of AI_RESULT_FIELDS) delete submitted[field];
+    return { ...submitted, reviewFlag: HELD_ANSWER_FLAG } as unknown as GradedAnswer;
+  });
+  return { answers: kept, drafts, held, earnedPoints: round2(earnedPoints) };
+}

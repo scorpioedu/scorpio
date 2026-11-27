@@ -701,6 +701,7 @@ function AssignmentHub() {
               onChange={(settings) => setDraft({ ...draft, settings })}
               hasNetwork={!!profile?.organizationId}
               showSharing={false}
+              raiseOn={classes?.find((c) => c.id === assignment.courseId)?.studentAi === true}
             />
           </div>
           <p className="text-xs text-muted-foreground">

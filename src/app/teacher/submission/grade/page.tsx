@@ -4,7 +4,7 @@ import { getTeacherAssignment } from "@/lib/authenticated-fetch";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, deleteField, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, type WorkFile } from "@/lib/firebase";
 import { getAssignmentPoints } from "@/lib/assignment-points";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,6 +51,16 @@ interface Answer {
   reasoning?: string;
 }
 
+/** An AI result waiting for this teacher (submission_drafts/{id}); the student cannot see it. */
+interface AiDraft {
+  score: number;
+  feedback?: string;
+  reasoning?: string;
+  misconceptions?: string[];
+  misconceptionNotes?: string[];
+  reviewFlag?: string;
+}
+
 interface Submission {
   id: string;
   assignmentId: string;
@@ -93,6 +103,24 @@ export default function GradeSubmissionPage() {
     feedback: {},
   });
   const [confirmRegrade, setConfirmRegrade] = useState(false);
+  // AI drafts not yet released. They fill the score and feedback boxes as unsaved edits, so the
+  // teacher reads them and Save is what releases them to the student.
+  const [drafts, setDrafts] = useState<Record<string, AiDraft>>({});
+  const draftCount = Object.keys(drafts).length;
+
+  const applyDrafts = (incoming: Record<string, AiDraft>) => {
+    if (Object.keys(incoming).length === 0) return;
+    setDrafts(incoming);
+    const pick = <T,>(get: (d: AiDraft) => T | undefined) =>
+      Object.fromEntries(
+        Object.entries(incoming)
+          .map(([questionId, d]) => [questionId, get(d)] as const)
+          .filter(([, v]) => v !== undefined && v !== ""),
+      ) as Record<string, T>;
+    setGrades((cur) => ({ ...cur, ...pick((d) => d.score) }));
+    setFeedback((cur) => ({ ...cur, ...pick((d) => d.feedback) }));
+    setAiReasoning((cur) => ({ ...cur, ...pick((d) => d.reasoning) }));
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -129,6 +157,15 @@ export default function GradeSubmissionPage() {
           setFeedback(initialFeedback);
           setAiReasoning(initialReasoning);
           setBaseline({ grades: initialGrades, feedback: initialFeedback });
+
+          // AI drafts held for this teacher, if any.
+          try {
+            const draftSnap = await getDoc(doc(db, "submission_drafts", id!));
+            const held = draftSnap.exists() ? draftSnap.data().answers : null;
+            if (held && typeof held === "object") applyDrafts(held as Record<string, AiDraft>);
+          } catch (error) {
+            console.error("Error fetching AI drafts:", error);
+          }
         }
       } catch (error) {
         console.error("Error fetching submission:", error);
@@ -158,6 +195,9 @@ export default function GradeSubmissionPage() {
       });
 
       if (response.ok) {
+        const result = (await response.json().catch(() => ({}))) as {
+          drafts?: Record<string, AiDraft>;
+        };
         // Refresh the submission data
         const docSnap = await getDoc(doc(db, "submissions", submission.id));
         if (docSnap.exists()) {
@@ -176,8 +216,22 @@ export default function GradeSubmissionPage() {
           setFeedback(initialFeedback);
           setAiReasoning(initialReasoning);
           setBaseline({ grades: initialGrades, feedback: initialFeedback });
-          setSubmission({ ...submission, ...updatedSub, answers: updatedSub.answers });
-          toast.success("AI grading complete!");
+          // The stored date is a Firestore timestamp; keep the Date this page already made from it.
+          setSubmission({
+            ...submission,
+            ...updatedSub,
+            submittedAt: submission.submittedAt,
+            answers: updatedSub.answers,
+          });
+          const drafted = Object.keys(result.drafts ?? {}).length;
+          if (drafted > 0) {
+            applyDrafts(result.drafts!);
+            toast.success(
+              `Raise drafted ${drafted} answer${drafted === 1 ? "" : "s"}. Check ${drafted === 1 ? "it" : "them"}, then save to release.`,
+            );
+          } else {
+            toast.success("Grading complete");
+          }
         }
       } else {
         let errMsg = "AI grading failed.";
@@ -226,12 +280,23 @@ export default function GradeSubmissionPage() {
 
     try {
       // Update answers with new grades/feedback
-      const updatedAnswers = submission.answers.map((ans) => ({
-        ...ans,
-        score: grades[ans.questionId] || 0,
-        feedback: feedback[ans.questionId] || "",
-        reasoning: aiReasoning[ans.questionId] || "",
-      }));
+      const updatedAnswers = submission.answers.map((ans) => {
+        // A held answer carries a "waiting for your teacher" flag; saving is the teacher's decision.
+        const answer: Answer & { reviewFlag?: string } = { ...ans };
+        delete answer.reviewFlag;
+        const draft = drafts[ans.questionId];
+        return {
+          ...answer,
+          score: grades[ans.questionId] || 0,
+          feedback: feedback[ans.questionId] || "",
+          reasoning: aiReasoning[ans.questionId] || "",
+          // The misconception tags the AI chose travel with the draft the teacher is releasing.
+          ...(draft?.misconceptions ? { misconceptions: draft.misconceptions } : {}),
+          ...(draft?.misconceptionNotes?.length
+            ? { misconceptionNotes: draft.misconceptionNotes }
+            : {}),
+        };
+      });
 
       await updateDoc(doc(db, "submissions", id), {
         answers: updatedAnswers,
@@ -241,14 +306,28 @@ export default function GradeSubmissionPage() {
         totalEarnedPoints,
         totalPossiblePoints,
         graded: true,
+        status: "graded",
+        gradingError: deleteField(),
         gradedAt: new Date(),
         teacherGraded: handGraded,
         // The teacher has looked at the whole submission, so nothing is waiting for review.
         reviewQuestions: [],
       });
 
+      // The drafts are now the released grade (as edited); nothing is held any more.
+      if (draftCount > 0) {
+        await deleteDoc(doc(db, "submission_drafts", id)).catch((error) =>
+          console.error("Error clearing AI drafts:", error),
+        );
+        setDrafts({});
+      }
       setBaseline({ grades, feedback });
-      setSubmission({ ...submission, answers: updatedAnswers, teacherGraded: handGraded });
+      setSubmission({
+        ...submission,
+        answers: updatedAnswers,
+        graded: true,
+        teacherGraded: handGraded,
+      });
       toast.success("Grades saved");
       router.back();
     } catch (error) {
@@ -314,6 +393,25 @@ export default function GradeSubmissionPage() {
         </motion.div>
       )}
 
+      {draftCount > 0 && (
+        <div
+          role="status"
+          className="mx-4 flex items-start gap-3 rounded-xl border bg-muted/40 px-4 py-3 text-sm"
+        >
+          <RaiseLogo size={16} className="mt-0.5 shrink-0 text-foreground" />
+          <div className="space-y-0.5">
+            <p className="font-medium text-foreground">
+              Raise drafted {draftCount === 1 ? "a score" : "scores"} and feedback for {draftCount}{" "}
+              written answer{draftCount === 1 ? "" : "s"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {submission.studentName || "The student"} sees nothing from the AI yet. Read each
+              draft, change what you disagree with, then save to release the grade.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4">
         <div className="space-y-4">
@@ -368,7 +466,7 @@ export default function GradeSubmissionPage() {
           </Button>
           <Button onClick={handleSave} disabled={saving} size="sm">
             <Save className="h-4 w-4 mr-2" />
-            {saving ? "Saving..." : "Save Grades"}
+            {saving ? "Saving..." : draftCount > 0 ? "Save and release" : "Save Grades"}
           </Button>
         </div>
       </div>
@@ -660,7 +758,7 @@ export default function GradeSubmissionPage() {
         <SaveBar
           dirty={dirty}
           saving={saving}
-          saveLabel="Save grades"
+          saveLabel={draftCount > 0 ? "Save and release" : "Save grades"}
           onSave={handleSave}
           onDiscard={() => {
             setGrades(baseline.grades);

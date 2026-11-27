@@ -16,7 +16,7 @@ export async function LessonsTeaser() {
           <p className={statement}>
             {total} free lessons, each with practice
             <span className="block text-muted-foreground">
-              Worked examples, then problems checked as you answer. No account needed
+              Worked examples, then problems checked as you answer. No AI, no account needed
             </span>
           </p>
           <CircleLink href="/lessons" className="mt-8">

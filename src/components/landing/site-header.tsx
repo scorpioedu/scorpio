@@ -33,13 +33,13 @@ type NavItem =
 const platformItems: MenuItem[] = [
   { href: "/demos", label: "Demos", desc: "The tour video and a sample classroom" },
   { href: "/demos/teacher", label: "Teacher demo", desc: "Click around a class with sample data" },
-  { target: "solution", label: "How Raise works", desc: "Hints and questions instead of answers" },
-  { target: "features", label: "Classroom workflow", desc: "Assign, hint and review in one place" },
-  { target: "efficacy", label: "Research results", desc: "How often Raise gave the answer away" },
+  { target: "features", label: "Classroom workflow", desc: "Assign, mark and review in one place" },
+  { target: "efficacy", label: "AI in Scorpio", desc: "Off for students unless you turn it on" },
 ];
 
 const resourcesItems: MenuItem[] = [
-  { href: "/research", label: "Research", desc: "How we tested Raise" },
+  { href: "/research", label: "Research", desc: "How we tested Raise, the optional assistant" },
+  { href: "/ai", label: "Try Raise", desc: "Ask the optional assistant a physics question" },
   { href: "/sustainability", label: "Sustainability", desc: "Energy, water and paper, measured" },
   { href: "/about", label: "About", desc: "Why we built Scorpio" },
   { target: "faq", label: "FAQ", desc: "Pricing, data and getting started" },
@@ -51,7 +51,6 @@ const navItems: NavItem[] = [
   { id: "platform", label: "Platform", menu: platformItems },
   // Study on the public site: the lessons, each with its practice (the hub is /lessons).
   { id: "study", label: "Study", href: "/lessons" },
-  { id: "raise", label: "Test Raise", href: "/ai" },
   { id: "pricing", label: "Pricing", href: "/pricing" },
   { id: "resources", label: "Resources", menu: resourcesItems },
 ];

@@ -8,6 +8,7 @@ import { errorResponse } from "@/lib/api-errors";
 import { assertValidAnswerKeys, assignmentAccess, stripAnswerKey } from "@/lib/answer-key-access";
 import { assertCanCreateAssignment, resolveCallerPlan } from "@/lib/plan-gates";
 import { apCourseOf, isApTopicId, normaliseApTags } from "@/data/ap";
+import { hintsAllowedFor } from "@/lib/student-ai";
 
 export const POST = withAuthorizedRequest(
   async (req, { requestId }) => {
@@ -18,11 +19,14 @@ export const POST = withAuthorizedRequest(
     if (!parsed.ok) return parsed.response;
     const data = parsed.data;
     const profile = (await adminDb.collection("users").doc(caller.uid).get()).data()!;
+    let course: FirebaseFirestore.DocumentData | undefined;
     if (data.courseId) {
-      const course = (await adminDb.collection("courses").doc(data.courseId).get()).data();
+      course = (await adminDb.collection("courses").doc(data.courseId).get()).data();
       if (course?.teacherId !== caller.uid)
         return NextResponse.json({ error: "Invalid class" }, { status: 403 });
     }
+    // Hints need Raise on for the class; an assignment in no class, or in one with Raise off, has none.
+    data.allowAIHelp = hintsAllowedFor(course, data.allowAIHelp);
     const {
       rubric,
       dueDate,

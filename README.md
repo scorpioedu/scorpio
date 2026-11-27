@@ -11,11 +11,14 @@
 
 > **Empower thinking. Stop AI solvers.**
 
-Scorpio is a homework and classroom platform for AP Physics. It has three parts that work together:
+Scorpio is a homework and classroom platform for AP Physics. It has four parts that work together:
 
-- **Courses.** Ordered, unit-by-unit roadmaps of ready-made problem sets that a teacher can follow, pace and adjust for each class.
-- **Raise.** A Socratic AI assistant that gives students hints instead of answers, so homework still reflects what they understand.
-- **Grading and insight.** Automatic grading of numeric and multiple-choice work, and a class report that ranks the misconceptions students are showing.
+- **Courses.** Ordered, unit-by-unit roadmaps of ready-made problem sets that a teacher can follow, pace and adjust for each class. Every course problem has been checked by a person.
+- **Study.** A free lesson and practice for every topic, with each answer checked as the student goes. No AI.
+- **Grading and insight.** Numeric and multiple-choice work is marked by plain code, and a class report ranks the misconceptions students are showing.
+- **Raise (optional).** An AI assistant that gives hints instead of answers. It is off for students unless their teacher turns it on for the class.
+
+Nothing a student does in Scorpio needs AI. AI is a teacher's tool: drafting problems and rubrics, and drafting a grade for a written answer that the student sees only after the teacher has checked it.
 
 Scorpio supports four courses: AP Physics 1, AP Physics 2, AP Physics C: Mechanics, and AP Physics C: Electricity and Magnetism.
 
@@ -24,7 +27,7 @@ Scorpio supports four courses: AP Physics 1, AP Physics 2, AP Physics C: Mechani
 ## Contents
 
 1. [Courses](#courses)
-2. [Raise, the AI assistant](#raise-the-ai-assistant)
+2. [Raise, the optional AI assistant](#raise-the-optional-ai-assistant)
 3. [Grading and the misconception report](#grading-and-the-misconception-report)
 4. [Other capabilities](#other-capabilities)
 5. [Architecture](#architecture)
@@ -88,7 +91,9 @@ For the data model, API routes and admin publishing workflow, see [docs/courses.
 
 ---
 
-## Raise, the AI assistant
+## Raise, the optional AI assistant
+
+Raise is off for students by default. A teacher turns it on for a class in the class's settings, after a notice listing what to weigh (it can be wrong, some students lean on it, its energy and water cost, the AI credit it spends, and what leaves Scorpio). The server enforces the setting, not only the page.
 
 Raise is Scorpio's physics tutor. It is a context-aware assistant, not a general chatbot: it declines off-topic requests, explains concepts directly, and guides numerical problem solving with questions instead of solutions. Within an assignment it is limited to short, strictly pedagogical hints.
 
@@ -123,7 +128,7 @@ One grading core, shared by the submit-time Cloud Function and the teacher's gra
 
 - **Numeric answers** are checked for value, unit and tolerance. Equivalent units are converted, rounded answers within tolerance pass, and common slips such as sign errors and powers of ten are identified by name.
 - **Multiple choice and true/false** are matched exactly.
-- **Free response** is graded by AI against the expected answer and the teacher's rubric. Answers that look like prompt injection, or that the grader cannot assess confidently, are routed to the teacher for review instead of receiving a grade.
+- **Free response** gets an AI draft against the expected answer and the teacher's rubric. The draft is stored where only the teacher can read it, and the student sees a score and feedback only after the teacher has checked them and saved. Answers that look like prompt injection, or that the grader cannot assess confidently, are flagged in the same queue.
 
 On a labelled set of 50 AP Physics 1 answers, the shared grading core placed 99.3% of scores in the band a teacher would accept. See [docs/grading.md](docs/grading.md).
 

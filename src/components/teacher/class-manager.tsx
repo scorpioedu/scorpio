@@ -36,6 +36,8 @@ export interface TeacherClass {
   curriculumId?: string | null;
   /** Raw stored class-wide assignment settings; read with parseAssignmentDefaults. */
   assignmentDefaults?: unknown;
+  /** Whether students in the class may use Raise. Missing means off. */
+  studentAi?: boolean;
 }
 
 export async function copyClassInvite(course: Pick<TeacherClass, "code">, link: boolean) {
@@ -204,6 +206,8 @@ export function useClassManager({
                   idPrefix="new-class"
                   value={newDefaults}
                   onChange={setNewDefaults}
+                  // A new class starts with Raise off; hints can be allowed once it is turned on.
+                  raiseOn={false}
                 />
                 <button
                   type="button"

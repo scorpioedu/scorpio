@@ -3,6 +3,7 @@ import { withAuthorizedRequest } from "@/lib/auth-verify";
 import { adminDb, adminFieldWithValue } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
 import { parseJsonBody } from "@/lib/api-schema";
+import { hintsAllowedFor } from "@/lib/student-ai";
 import { courseAssignmentDefaultsBody } from "@/lib/schemas/api-bodies";
 import {
   PROBLEMS_PER_SET,
@@ -51,7 +52,12 @@ export const PATCH = withAuthorizedRequest(
           problemsPerSet,
         });
       }
-      const assignmentDefaults = parseAssignmentDefaults(parsed.data.assignmentDefaults);
+      const sent = parseAssignmentDefaults(parsed.data.assignmentDefaults);
+      // "Allow Raise hints" cannot be on in a class that has Raise off for its students.
+      const assignmentDefaults = sent && {
+        ...sent,
+        allowAIHelp: hintsAllowedFor(course, sent.allowAIHelp),
+      };
       const problemsPerSet = parseProblemsPerSet(course.assignmentDefaults);
       const remembered = problemsPerSet === null ? {} : { [PROBLEMS_PER_SET]: problemsPerSet };
       const stored =

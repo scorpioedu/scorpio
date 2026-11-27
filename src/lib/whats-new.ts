@@ -23,6 +23,29 @@ export interface WhatsNewEntry {
 
 export const WHATS_NEW: WhatsNewEntry[] = [
   {
+    id: "2026-11-27-student-raise-off",
+    date: "2026-11-27",
+    title: "Raise is now off for students unless you turn it on",
+    items: [
+      {
+        text: "Students no longer see Raise, hints or the page-finding assistant by default. Study, lessons, practice and marking never used AI and work as before.",
+      },
+      {
+        text: 'To give a class Raise back, open the class\'s settings and tick "Let students in this class use Raise". Hints on an assignment also need "Allow Raise hints" on that assignment.',
+        href: "/teacher/students",
+        linkLabel: "Open your classes",
+      },
+      {
+        text: "Written answers now wait for you: Raise drafts a score and feedback, and the student sees them only after you check them and save. Multiple choice and numeric answers are still graded at once.",
+        href: "/teacher/grades",
+        linkLabel: "Open grading",
+      },
+      {
+        text: "Your other AI tools are unchanged: writing and importing problems, and Raise for teachers.",
+      },
+    ],
+  },
+  {
     id: "2026-11-23-free-ai-credits",
     date: "2026-11-23",
     title: "Scorpio is now free",

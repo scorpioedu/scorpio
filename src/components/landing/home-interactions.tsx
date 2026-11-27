@@ -1,13 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/landing/site-header";
-
-export const HomeChatbot = dynamic(
-  () => import("@/components/landing-chatbot").then((m) => m.LandingChatbot),
-  { ssr: false },
-);
 
 export function HomeScrollReveal() {
   useEffect(() => {

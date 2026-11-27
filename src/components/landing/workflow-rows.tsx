@@ -194,8 +194,8 @@ const scores = [
 
 const autoSteps: Step[] = [
   {
-    title: "Gives hints, not answers",
-    text: "A stuck student gets a nudge toward the next step.",
+    title: "Names the mix-up",
+    text: "A wrong answer is told which idea went wrong, from a list written by people. No AI.",
     preview: (
       <div className="space-y-2.5">
         <div className="rounded-lg bg-muted/60 p-2.5">
@@ -205,18 +205,18 @@ const autoSteps: Step[] = [
           </p>
         </div>
         <p className="ml-auto w-fit max-w-[88%] rounded-lg rounded-br-sm bg-muted px-2.5 py-2">
-          Is the normal force just mg?
+          2.94 m/s² <span className="text-muted-foreground">· not yet</span>
         </p>
         <p className="w-fit max-w-[94%] rounded-lg rounded-bl-sm border border-primary/20 bg-primary/5 px-2.5 py-2">
-          <span className="font-semibold text-primary">Hint</span> · Tilt your axes to match the
-          ramp. Which part of gravity pushes into the surface?
+          <span className="font-semibold text-primary">Mix-up</span> · Normal force taken as mg. On
+          a ramp the surface pushes back with mg cos θ.
         </p>
       </div>
     ),
   },
   {
-    title: "Grades the answers",
-    text: "Numeric and multiple-choice answers are marked on submit.",
+    title: "Marks the answers",
+    text: "Numeric and multiple-choice answers are marked on submit. Written ones wait for you.",
     preview: (
       <div className="space-y-2">
         {scores.map(([name, score]) => (

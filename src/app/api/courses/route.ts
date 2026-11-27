@@ -36,7 +36,13 @@ export const POST = withAuthorizedRequest(
           createdAt: new Date().toISOString(),
           ...(curriculumId ? { curriculumId } : {}),
           ...(assignmentDefaults
-            ? { assignmentDefaults: parseAssignmentDefaults(assignmentDefaults) }
+            ? {
+                // A new class has Raise off for students, so its settings cannot allow hints yet.
+                assignmentDefaults: {
+                  ...parseAssignmentDefaults(assignmentDefaults),
+                  allowAIHelp: false,
+                },
+              }
             : {}),
         });
       });

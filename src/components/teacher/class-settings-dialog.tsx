@@ -1,8 +1,10 @@
 "use client";
 
-// Everything about one class in one place: name, period, description, join code, archive, delete.
-// Name, period and description save together; the other actions save at once.
-import { useState } from "react";
+// Everything about one class in one place, one section per kind of setting: details, course, Raise
+// for students, the settings new assignments start with, the join code, and archive or delete.
+// Name, period and description save together (Save, in the footer); the assignment settings have
+// their own Save; everything else saves at once.
+import { useState, type ReactNode } from "react";
 import { Archive, ArchiveRestore, Loader2, RotateCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
@@ -12,6 +14,7 @@ import { AssignmentDefaultsFields } from "@/components/teacher/assignment-defaul
 import { resolveAssignmentDefaults, type AssignmentDefaults } from "@/lib/assignment-defaults";
 import { CourseSelect } from "@/components/teacher/course-select";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,6 +39,8 @@ export interface ClassSettingsValue {
   curriculumId?: string | null;
   /** Raw stored class-wide assignment settings. */
   assignmentDefaults?: unknown;
+  /** Whether students in the class may use Raise. Missing means off. */
+  studentAi?: boolean;
 }
 
 async function call(path: string, method: string, body?: unknown) {
@@ -47,6 +52,51 @@ async function call(path: string, method: string, body?: unknown) {
   if (!res.ok) throw new Error(await apiError(res, "Could not save the change"));
   return res.json();
 }
+
+/** One titled block of the dialog; blocks are separated by a rule. */
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="space-y-3 py-5 first:pt-4 last:pb-4">
+      <div className="space-y-0.5">
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/** What a teacher should weigh before giving a class an AI assistant. Shown once, on turning it on. */
+const RAISE_CAUTIONS: { title: string; text: string }[] = [
+  {
+    title: "It can be wrong.",
+    text: "Raise is an AI model, and a hint can be misleading or incorrect.",
+  },
+  {
+    title: "Some students lean on it.",
+    text: "A hint can replace the struggle that builds understanding, and some students would rather not use AI at all.",
+  },
+  {
+    title: "It has an environmental cost.",
+    text: "Each hint uses about 0.2 Wh of electricity and up to 0.5 mL of cooling water.",
+  },
+  {
+    title: "It spends your network's AI credit.",
+    text: "A hint costs about a tenth of a cent.",
+  },
+  {
+    title: "Questions leave Scorpio.",
+    text: "What students type is sent to Google's AI model, with names and email addresses removed first.",
+  },
+];
 
 export function ClassSettingsDialog({
   value,
@@ -64,8 +114,10 @@ export function ClassSettingsDialog({
   const [name, setName] = useState(value.name);
   const [period, setPeriod] = useState(value.period ?? "");
   const [description, setDescription] = useState(value.description ?? "");
-  const [busy, setBusy] = useState<"" | "save" | "code" | "archive" | "course" | "defaults">("");
-  const [confirm, setConfirm] = useState<"" | "code" | "delete">("");
+  const [busy, setBusy] = useState<"" | "save" | "code" | "archive" | "course" | "defaults" | "ai">(
+    "",
+  );
+  const [confirm, setConfirm] = useState<"" | "code" | "delete" | "ai">("");
   const [defaults, setDefaults] = useState<AssignmentDefaults>(() =>
     resolveAssignmentDefaults(value.assignmentDefaults),
   );
@@ -113,7 +165,10 @@ export function ClassSettingsDialog({
     setBusy("defaults");
     try {
       const result = await call(`${path}/assignment-defaults`, "PATCH", {
-        assignmentDefaults: defaults,
+        assignmentDefaults: {
+          ...defaults,
+          allowAIHelp: defaults.allowAIHelp && value.studentAi === true,
+        },
       });
       onChanged({ assignmentDefaults: result.assignmentDefaults });
       toast.success("Assignment settings saved. New assignments in this class will use them.");
@@ -144,6 +199,30 @@ export function ClassSettingsDialog({
       );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not change the course");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  /** Raise for the class's students saves at once, with Undo. */
+  const setStudentAi = async (studentAi: boolean) => {
+    const change = async (next: boolean) => {
+      await call(path, "PATCH", { studentAi: next });
+      onChanged({ studentAi: next });
+      // Hints cannot stay allowed in a class without Raise; the server clears the stored setting too.
+      if (!next) setDefaults((cur) => ({ ...cur, allowAIHelp: false }));
+    };
+    setBusy("ai");
+    try {
+      await change(studentAi);
+      undoToast(
+        studentAi
+          ? `Raise is on for students in "${value.name}".`
+          : `Raise is off for students in "${value.name}".`,
+        () => change(!studentAi),
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not change the setting");
     } finally {
       setBusy("");
     }
@@ -193,125 +272,199 @@ export function ClassSettingsDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={reset}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="flex max-h-[calc(100dvh-2rem)] flex-col gap-0 p-0 sm:max-w-xl">
+          <DialogHeader className="border-b px-6 py-4">
             <DialogTitle>Class settings</DialogTitle>
-            <DialogDescription>
-              Rename the class, change its join code, or archive it.
-            </DialogDescription>
+            <DialogDescription>{value.name}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-[1fr_8rem]">
-              <div className="space-y-1.5">
-                <Label htmlFor="class-name">Name</Label>
-                <Input
-                  id="class-name"
-                  value={name}
-                  maxLength={120}
-                  onChange={(e) => setName(e.target.value)}
-                />
+          <div className="min-h-0 flex-1 divide-y overflow-y-auto px-6">
+            <Section title="Details">
+              <div className="grid gap-3 sm:grid-cols-[1fr_8rem]">
+                <div className="space-y-1.5">
+                  <Label htmlFor="class-name">Name</Label>
+                  <Input
+                    id="class-name"
+                    value={name}
+                    maxLength={120}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="class-period">Period</Label>
+                  <Input
+                    id="class-period"
+                    value={period}
+                    maxLength={40}
+                    placeholder="e.g. 5"
+                    onChange={(e) => setPeriod(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="class-period">Period</Label>
-                <Input
-                  id="class-period"
-                  value={period}
-                  maxLength={40}
-                  placeholder="e.g. 5"
-                  onChange={(e) => setPeriod(e.target.value)}
+                <Label htmlFor="class-description">
+                  Description <span className="font-normal text-muted-foreground">(optional)</span>
+                </Label>
+                <Textarea
+                  id="class-description"
+                  rows={2}
+                  maxLength={2000}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="class-description">
-                Description <span className="font-normal text-muted-foreground">(optional)</span>
-              </Label>
-              <Textarea
-                id="class-description"
-                rows={2}
-                maxLength={2000}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="class-course">Course</Label>
+            </Section>
+
+            <Section
+              title="Course"
+              description="A class follows one course, or none. Changing it saves at once and keeps every assignment; sets from the old course show under Other assignments."
+            >
               <CourseSelect
                 id="class-course"
                 value={value.curriculumId ?? null}
                 onChange={(id) => void setCourse(id)}
                 disabled={busy !== ""}
               />
-              <p className="text-xs text-muted-foreground">
-                A class follows one course, or none. Changing it saves at once and keeps every
-                assignment; sets from the old course show under Other assignments.
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label>Assignment settings</Label>
+            </Section>
+
+            <Section title="Raise for students">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="class-student-ai">Let students in this class use Raise</Label>
+                  <p id="class-student-ai-help" className="text-xs text-muted-foreground">
+                    Off unless you turn it on. When on, students can ask Raise, an AI assistant, for
+                    hints and explanations. Study, lessons and marking never use AI.
+                  </p>
+                </div>
+                <Switch
+                  id="class-student-ai"
+                  checked={value.studentAi === true}
+                  disabled={busy !== ""}
+                  // Turning it on asks first; turning it off is immediate.
+                  onCheckedChange={(on) => (on ? setConfirm("ai") : void setStudentAi(false))}
+                  aria-describedby="class-student-ai-help"
+                  className="mt-0.5"
+                />
+              </div>
+            </Section>
+
+            <Section
+              title="New assignments start with"
+              description="Settings for assignments you make in this class from now on. You can still change one assignment, and existing ones are not touched."
+            >
               <AssignmentDefaultsFields
                 idPrefix="class-defaults"
                 value={defaults}
                 onChange={setDefaults}
+                raiseOn={value.studentAi === true}
               />
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs text-muted-foreground">
-                  New assignments in this class start with these. You can still change one
-                  assignment.
-                </p>
+              <div className="flex justify-end">
                 <Button variant="outline" size="sm" disabled={!!busy} onClick={saveDefaults}>
-                  {busy === "defaults" && <Loader2 className="animate-spin" />} Save settings
+                  {busy === "defaults" && <Loader2 className="animate-spin" />} Save assignment
+                  settings
                 </Button>
               </div>
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-muted/30 px-3 py-2.5">
-              <div>
-                <p className="text-xs text-muted-foreground">Join code</p>
-                <p className="font-mono text-sm font-semibold">{value.code}</p>
+            </Section>
+
+            <Section
+              title="Join code"
+              description="Students join the class with this code. A new code stops the old one working; students already in the class stay in it."
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-sm font-semibold tracking-wide">{value.code}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!!busy}
+                  onClick={() => setConfirm("code")}
+                >
+                  {busy === "code" ? <Loader2 className="animate-spin" /> : <RotateCcw />} New code
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!!busy}
-                onClick={() => setConfirm("code")}
-              >
-                {busy === "code" ? <Loader2 className="animate-spin" /> : <RotateCcw />} New code
-              </Button>
-            </div>
+            </Section>
+
+            <Section
+              title={value.archived ? "Restore or delete" : "Archive or delete"}
+              description="Archiving hides the class from your lists and keeps everything. Deleting cannot be undone."
+            >
+              <div className="flex flex-wrap gap-2">
+                {value.archived ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!!busy}
+                    onClick={() => setArchived(false)}
+                  >
+                    <ArchiveRestore /> Restore class
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!!busy}
+                    onClick={() => setArchived(true)}
+                  >
+                    <Archive /> Archive class
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  disabled={!!busy}
+                  onClick={() => setConfirm("delete")}
+                >
+                  <Trash2 /> Delete class
+                </Button>
+              </div>
+            </Section>
           </div>
-          <DialogFooter className="flex-wrap gap-2 sm:justify-between">
-            <div className="flex gap-2">
-              {value.archived ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={!!busy}
-                  onClick={() => setArchived(false)}
-                >
-                  <ArchiveRestore /> Restore
-                </Button>
-              ) : (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={!!busy}
-                  onClick={() => setArchived(true)}
-                >
-                  <Archive /> Archive
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive"
-                disabled={!!busy}
-                onClick={() => setConfirm("delete")}
-              >
-                <Trash2 /> Delete
-              </Button>
-            </div>
+          <DialogFooter className="border-t px-6 py-4">
+            <Button variant="outline" onClick={() => reset(false)}>
+              Close
+            </Button>
             <Button onClick={save} disabled={!dirty || !!busy}>
-              {busy === "save" && <Loader2 className="animate-spin" />} Save
+              {busy === "save" && <Loader2 className="animate-spin" />} Save details
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={confirm === "ai"} onOpenChange={(o) => !o && setConfirm("")}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Turn on Raise for this class?</DialogTitle>
+            <DialogDescription>
+              Students in &ldquo;{value.name}&rdquo; will be able to ask an AI assistant for hints
+              and explanations. Before you turn it on:
+            </DialogDescription>
+          </DialogHeader>
+          <ul className="space-y-2.5 text-sm">
+            {RAISE_CAUTIONS.map(({ title, text }) => (
+              <li key={title} className="flex gap-2.5">
+                <span
+                  aria-hidden
+                  className="mt-2 size-1.5 shrink-0 rounded-full bg-muted-foreground/60"
+                />
+                <span>
+                  <span className="font-medium text-foreground">{title}</span>{" "}
+                  <span className="text-muted-foreground">{text}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-muted-foreground">
+            Raise stays optional for students, and you can turn it off here at any time.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirm("")}>
+              Keep it off
+            </Button>
+            <Button
+              onClick={() => {
+                setConfirm("");
+                void setStudentAi(true);
+              }}
+            >
+              Turn on Raise
             </Button>
           </DialogFooter>
         </DialogContent>

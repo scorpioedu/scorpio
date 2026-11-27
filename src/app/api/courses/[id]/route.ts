@@ -9,9 +9,10 @@ const classId = (pathname: string) =>
   decodeURIComponent(pathname.split("/").filter(Boolean).at(-1) ?? "");
 
 /**
- * PATCH /api/courses/{id} { name?, period?, description?, archived? } -> { id }
- * The owner renames a class, sets its period or description, or archives it (hidden from the
- * teacher's pickers; students and assignments are untouched) and restores it.
+ * PATCH /api/courses/{id} { name?, period?, description?, archived?, studentAi? } -> { id }
+ * The owner renames a class, sets its period or description, archives it (hidden from the
+ * teacher's pickers; students and assignments are untouched) and restores it, or turns Raise on
+ * or off for its students.
  */
 export const PATCH = withAuthorizedRequest(
   async (req, { caller, requestId }) => {
@@ -27,6 +28,9 @@ export const PATCH = withAuthorizedRequest(
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       const { archived, ...fields } = parsed.data;
       const update: Record<string, unknown> = { ...fields };
+      // With Raise off for the class, its assignment settings cannot still allow hints.
+      if (fields.studentAi === false && course.assignmentDefaults?.allowAIHelp === true)
+        update["assignmentDefaults.allowAIHelp"] = false;
       if (archived !== undefined) update.archivedAt = archived ? new Date().toISOString() : null;
       await ref.update(update);
       return NextResponse.json({ id });

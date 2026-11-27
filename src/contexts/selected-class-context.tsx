@@ -15,6 +15,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { chooseClass } from "@/lib/teacher-edit";
+import { classStudentAiOn } from "@/lib/student-ai";
 
 export interface TeacherClass {
   id: string;
@@ -28,6 +29,8 @@ export interface TeacherClass {
   daysOff: unknown;
   /** Raw stored class-wide assignment settings; read with parseAssignmentDefaults. */
   assignmentDefaults: unknown;
+  /** Whether students in the class may use Raise. */
+  studentAi: boolean;
   archived: boolean;
   createdAt: string;
 }
@@ -73,6 +76,7 @@ export function toTeacherClass(id: string, d: Record<string, unknown>): TeacherC
     curriculumPlan: d.curriculumPlan ?? null,
     daysOff: d.daysOff ?? null,
     assignmentDefaults: d.assignmentDefaults ?? null,
+    studentAi: classStudentAiOn(d),
     archived: d.archivedAt != null,
     createdAt: str(d.createdAt),
   };

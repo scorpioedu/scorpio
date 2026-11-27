@@ -239,6 +239,8 @@ export const updateCourseBody = z
     period: z.string().trim().max(40).nullable(),
     description: z.string().trim().max(2000).nullable(),
     archived: z.boolean(),
+    // Whether students in the class may use Raise (src/lib/student-ai.ts). Off unless set.
+    studentAi: z.boolean(),
   })
   .partial()
   .refine((v) => Object.keys(v).length > 0, "Nothing to change");

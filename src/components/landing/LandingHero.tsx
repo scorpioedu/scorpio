@@ -35,8 +35,8 @@ const unitLabel = unit?.title ?? "Dynamics";
 const features = [
   "Every AP unit planned",
   "A lesson for every unit",
-  "Hints instead of answers",
-  "Graded as students work",
+  "Every problem checked by a person",
+  "Marked as students work",
   "A reteach list for you",
   "Students join with a code",
 ] as const;
@@ -137,7 +137,8 @@ export function LandingHero() {
             <p className="text-pretty text-[clamp(1.4rem,2.2vw,1.85rem)] font-medium leading-[1.2] tracking-[-0.03em]">
               Assign a unit today.{" "}
               <span className="text-muted-foreground">
-                Hints instead of answers, grading as students work, and a list of what to reteach.
+                Problems checked by a person, answers marked as students work, and a list of what to
+                reteach.
               </span>
             </p>
             <div className="mt-8 sm:mt-0 xl:mt-8">

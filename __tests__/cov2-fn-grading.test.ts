@@ -21,11 +21,9 @@ jest.mock(
 );
 // Resolve like functions/src/grading.ts does (bare specifier, honours the package's "exports"), or the mock is missed.
 jest.mock(require.resolve("@google/genai", { paths: [`${__dirname}/../functions`] }), () => ({
-  GoogleGenAI: jest
-    .fn()
-    .mockImplementation(() => ({
-      models: { generateContent: (...a: unknown[]) => mockGenerate(...a) },
-    })),
+  GoogleGenAI: jest.fn().mockImplementation(() => ({
+    models: { generateContent: (...a: unknown[]) => mockGenerate(...a) },
+  })),
 }));
 
 import * as logger from "../functions/node_modules/firebase-functions/lib/logger/index.js";
@@ -42,6 +40,8 @@ const shim = (v: unknown): unknown => {
 const present = (d: Doc | undefined): Doc | undefined =>
   d ? Object.fromEntries(Object.entries(d).map(([k, v]) => [k, shim(v)])) : undefined;
 const raw = (v: unknown) => (v instanceof Date ? v.getTime() : v);
+
+import { currentUsageMonth } from "../functions/src/budget-policy";
 
 class FakeDb {
   store = new Map<string, Doc>();
@@ -72,6 +72,9 @@ class FakeDb {
       },
       update: async (u: Doc) => {
         this.store.set(path, { ...this.store.get(path), ...u });
+      },
+      set: async (d: Doc) => {
+        this.store.set(path, d);
       },
       delete: async () => {
         this.store.delete(path);
@@ -205,6 +208,15 @@ const grade = () =>
   });
 const sub = () => db.store.get("submissions/s1") as Doc;
 const answersOf = () => sub().answers as Doc[];
+// What the AI scored is a draft: it sits in submission_drafts (teacher-only) and the submission
+// waits. `held` is the submission in that state; `draftOf()` the drafts by question id.
+const draftOf = () =>
+  (((db.store.get("submission_drafts/s1") as Doc) ?? {}).answers ?? {}) as Record<string, Doc>;
+const held = {
+  graded: false,
+  status: "pending_review",
+  gradingError: expect.stringMatching(/AI draft/),
+};
 
 beforeEach(() => {
   db = new FakeDb();
@@ -221,6 +233,8 @@ const promptSent = () => mockGenerate.mock.calls[0][0].contents[0].parts[0].text
 const fr = { id: "q1", text: "Explain why the sky appears blue during the day", type: "text" };
 const frAnswers = [{ questionId: "q1", answer: "Rayleigh scattering" }];
 const noBudget = { status: "pending_review", gradingError: "AI budget unavailable", graded: false };
+// A network with nothing left to spend this month: its free allowance is used and it has no credit.
+const spent = { aiFreeMonth: currentUsageMonth(), aiFreeUsedCents: 100 };
 
 describe("organization resolution", () => {
   test("a missing student profile: free response is flagged for the teacher, the model is never called", async () => {
@@ -290,7 +304,8 @@ describe("roster name resolution", () => {
     mockGenerate.mockResolvedValue(modelReply(6));
     await grade();
     expect(promptSent()).not.toMatch(/Quinn|Zeta|Peggy/);
-    expect(sub()).toMatchObject({ graded: true });
+    expect(sub()).toMatchObject(held);
+    expect(draftOf().q1).toMatchObject({ score: 6 });
   });
 
   test("a student with no name at all is graded without adding a name to the roster", async () => {
@@ -312,7 +327,8 @@ describe("roster name resolution", () => {
       submissionId: "s1",
       error: "roster offline",
     });
-    expect(sub()).toMatchObject({ graded: true, score: 100 });
+    expect(sub()).toMatchObject(held);
+    expect(draftOf().q1).toMatchObject({ score: 10 });
   });
 });
 
@@ -325,23 +341,31 @@ describe("assignment and organization documents", () => {
     expect(sub()).toMatchObject({ status: "submitted", graded: false });
   });
 
-  test("an organization with no budget limit is treated as having no budget", async () => {
-    seedBase({ org: { aiBudgetLimit: undefined }, questions: [fr], answers: frAnswers });
+  test("an organization whose balance is used up has no budget", async () => {
+    seedBase({ org: spent, questions: [fr], answers: frAnswers });
     await grade();
     expect(sub()).toMatchObject(noBudget);
+    expect(mockGenerate).not.toHaveBeenCalled();
+    expect(db.store.has("submission_drafts/s1")).toBe(false);
+  });
+
+  test("no monthly cap is not a missing budget: the free allowance pays for a draft", async () => {
+    seedBase({ org: { aiBudgetLimit: 0 }, questions: [fr], answers: frAnswers });
+    mockGenerate.mockResolvedValue(modelReply(7));
+    await grade();
+    expect(sub()).toMatchObject(held);
+    expect(draftOf().q1).toMatchObject({ score: 7 });
   });
 
   test("no budget still grades the deterministic answers and keeps their scores for the teacher", async () => {
     seedBase({
-      org: { aiBudgetLimit: undefined },
+      org: spent,
       questions: [mc, { ...fr, id: "q2" }],
       answers: [...mcAnswers, { questionId: "q2", answer: "Rayleigh scattering" }],
     });
     await grade();
     expect(sub()).toMatchObject({ ...noBudget, earnedPoints: 10, totalPoints: 20 });
-    expect(answersOf()[1]).toMatchObject({
-      reviewFlag: expect.stringMatching(/AI grading unavailable/),
-    });
+    expect(answersOf()[1]).toMatchObject({ reviewFlag: "Waiting for your teacher" });
   });
 
   test("a trialing organization with a limit and no usage recorded yet may be graded", async () => {
@@ -406,7 +430,8 @@ describe("model failures", () => {
     });
     mockGenerate.mockResolvedValue({ text: modelReply(8).text, usageMetadata: {} });
     await grade();
-    expect(sub()).toMatchObject({ graded: true, score: 80 });
+    expect(sub()).toMatchObject(held);
+    expect(draftOf().q1).toMatchObject({ score: 8 });
     const org = db.store.get("organizations/org1") as Doc;
     expect(org.aiUsageCurrent).toBe(0);
     expect(org.aiUsageReserved).toBe(0);

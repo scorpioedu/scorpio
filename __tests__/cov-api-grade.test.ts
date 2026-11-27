@@ -3,6 +3,8 @@ import { NextRequest } from "next/server";
 type Doc = Record<string, unknown> | undefined;
 const mockDocs = new Map<string, Doc>();
 const mockUpdates: Array<{ path: string; data: Record<string, unknown> }> = [];
+// Documents written whole: the teacher-only AI drafts (submission_drafts/{submissionId}).
+const mockSets: Array<{ path: string; data: Record<string, unknown> }> = [];
 let mockStudentsQuery: Array<Record<string, unknown>> = [];
 let mockStudentsQueryThrows = false;
 let mockDbNull = false;
@@ -19,6 +21,9 @@ jest.mock("../src/lib/firebase-admin", () => ({
           },
           update: async (d: Record<string, unknown>) => {
             mockUpdates.push({ path: `${name}/${id}`, data: d });
+          },
+          set: async (d: Record<string, unknown>) => {
+            mockSets.push({ path: `${name}/${id}`, data: d });
           },
         }),
         where: () => ({
@@ -101,6 +106,7 @@ const seed = (
 beforeEach(() => {
   mockDocs.clear();
   mockUpdates.length = 0;
+  mockSets.length = 0;
   mockStudentsQuery = [];
   mockStudentsQueryThrows = false;
   mockDbNull = false;
@@ -306,6 +312,9 @@ describe("POST /api/grade AI grading", () => {
     });
   };
 
+  const drafted = () =>
+    (mockSets[0]?.data.answers ?? {}) as Record<string, Record<string, unknown>>;
+
   test("scales the AI score by points, records usage, and scrubs known student names", async () => {
     seedAi();
     mockStudentsQuery = [{ displayName: "Bob" }, { name: "Cy" }, {}];
@@ -316,7 +325,21 @@ describe("POST /api/grade AI grading", () => {
       usage: { inputTokens: 100, outputTokens: 40 },
     });
     const res = await call({ submissionId: "s1" });
-    expect(await res.json()).toEqual({ success: true, score: 50 });
+    // An AI score is a draft for the teacher, never a grade: it comes back for the grading page
+    // and is stored where only the teacher can read it.
+    const draft = {
+      score: 10,
+      maxPoints: 20,
+      feedback: "ok",
+      reasoning: "why",
+      misconceptions: [],
+    };
+    expect(await res.json()).toEqual({
+      success: false,
+      pendingReview: true,
+      reason: expect.stringMatching(/AI draft/),
+      drafts: { q1: draft },
+    });
     const [q, a, rubric, names, reference] = mockGradeResponse.mock.calls[0];
     expect(q).toBe("Explain inertia");
     expect(a).toBe("Objects resist change");
@@ -325,8 +348,37 @@ describe("POST /api/grade AI grading", () => {
     expect(rubric).toBe("Be precise");
     expect(names).toEqual(["Bob", "Cy", "Ada"]);
     expect(mockRecordUsage).toHaveBeenCalledWith("org1", "grading", 100, 40);
+    expect(mockSets).toEqual([
+      {
+        path: "submission_drafts/s1",
+        data: {
+          assignmentId: "a1",
+          studentId: "stu1",
+          answers: { q1: draft },
+          createdAt: expect.any(Date),
+        },
+      },
+    ]);
+    // The submission, which the student can read, holds nothing from the AI.
+    expect(mockUpdates).toHaveLength(1);
+    expect(mockUpdates[0].data).toMatchObject({ status: "pending_review", graded: false });
     const answers = mockUpdates[0].data.answers as Array<Record<string, unknown>>;
-    expect(answers[0]).toMatchObject({ score: 10, feedback: "ok", reasoning: "why" });
+    expect(answers[0]).toEqual({
+      questionId: "q1",
+      answer: "Objects resist change",
+      maxPoints: 20,
+      method: "ai",
+      reviewFlag: "Waiting for your teacher",
+    });
+  });
+
+  test("an AI draft for a submission that is already graded leaves the released grade alone", async () => {
+    seedAi({ graded: true });
+    mockGradeResponse.mockResolvedValue({ score: 5, feedback: "ok", reasoning: "why" });
+    const res = await call({ submissionId: "s1" });
+    expect((await res.json()).drafts.q1.score).toBe(10);
+    expect(mockSets).toHaveLength(1);
+    expect(mockUpdates).toHaveLength(0);
   });
 
   test("does not duplicate the current student name and tolerates a result without usage or reasoning", async () => {
@@ -336,7 +388,7 @@ describe("POST /api/grade AI grading", () => {
     await call({ submissionId: "s1" });
     expect(mockGradeResponse.mock.calls[0][3]).toEqual(["Ada"]);
     expect(mockRecordUsage).not.toHaveBeenCalled();
-    expect((mockUpdates[0].data.answers as Array<Record<string, unknown>>)[0].reasoning).toBe("");
+    expect(drafted().q1.reasoning).toBe("");
   });
 
   test("still grades when student-name lookup fails", async () => {
@@ -370,8 +422,15 @@ describe("POST /api/grade AI grading", () => {
       success: false,
       pendingReview: true,
       reason: "suspected injection",
+      drafts: { q1: expect.objectContaining({ score: 20, reviewFlag: "suspected injection" }) },
     });
     expect(mockRecordUsage).toHaveBeenCalledWith("org1", "grading", 7, 3);
+    // The grader's own warning is for the teacher; the student's copy only says it is waiting.
+    expect(drafted().q1).toMatchObject({
+      score: 20,
+      feedback: "",
+      reviewFlag: "suspected injection",
+    });
     expect(mockUpdates).toEqual([
       {
         path: "submissions/s1",
@@ -380,12 +439,13 @@ describe("POST /api/grade AI grading", () => {
           gradingError: "suspected injection",
           graded: false,
           answers: [
-            expect.objectContaining({
+            {
               questionId: "q1",
-              score: 0,
-              aiSuggestedScore: 20,
-              reviewFlag: "suspected injection",
-            }),
+              answer: "Objects resist change",
+              maxPoints: 20,
+              method: "ai",
+              reviewFlag: "Waiting for your teacher",
+            },
           ],
         },
       },

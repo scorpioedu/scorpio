@@ -17,6 +17,8 @@ jest.mock("next/link", () => ({
 }));
 jest.mock("@/contexts/auth-context", () => ({ useAuth: () => ({ user: { uid: "u1" } }) }));
 jest.mock("@/lib/authenticated-fetch", () => ({ authenticatedFetch: jest.fn() }));
+// The sidebar reads the class switch from context (which loads the Firebase client); the nav lists are what is tested.
+jest.mock("@/contexts/student-ai-context", () => ({ useStudentAi: () => true }));
 type MockRoadmap = {
   status: string;
   roadmap?: { curriculumId: string; units: { unit: number; state: string }[] };

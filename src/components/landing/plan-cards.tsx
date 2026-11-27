@@ -20,7 +20,7 @@ const free = [
   "Every published problem set",
   "Auto-grading and the class misconception report",
   "Department sharing and shared Waypoints",
-  "Raise hints, AI grading, rubric drafting and student portfolios",
+  "Optional AI: draft problems, rubrics and grades, and Raise if you turn it on",
 ];
 
 const atCost = [
@@ -31,8 +31,20 @@ const atCost = [
 ];
 
 const cards = [
-  { name: "Free", audience: "For every teacher", price: "$0", detail: "No card, no seat fees", includes: free },
-  { name: "AI at cost", audience: "Prepaid balance", price: freeMonthly, detail: "of AI free each month", includes: atCost },
+  {
+    name: "Free",
+    audience: "For every teacher",
+    price: "$0",
+    detail: "No card, no seat fees",
+    includes: free,
+  },
+  {
+    name: "AI at cost",
+    audience: "Prepaid balance",
+    price: freeMonthly,
+    detail: "of AI free each month",
+    includes: atCost,
+  },
 ];
 
 export function PlanCards() {

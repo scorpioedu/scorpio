@@ -85,7 +85,8 @@ function yAt(values: number[], i: number) {
 
 const STATUS: Record<Status, [string, string]> = {
   correct: ["Correct", "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"],
-  hint: ["Hint given", "bg-primary/10 text-primary dark:text-primary"],
+  // A wrong answer that matches a known mix-up is told which one, from a list written by people.
+  hint: ["Mix-up named", "bg-primary/10 text-primary dark:text-primary"],
   notyet: ["Not yet", "bg-rose-500/10 text-rose-700 dark:text-rose-300"],
 };
 
@@ -228,8 +229,9 @@ export function HeroLiveClass({
       className={`${resetting ? intro.resetting : ""} overflow-hidden rounded-xl bg-card text-card-foreground shadow-[0_30px_60px_-28px_rgb(0_0_0/0.35),0_10px_20px_-12px_rgb(0_0_0/0.2)] ring-1 ring-black/5 dark:ring-white/10`}
     >
       <p className="sr-only">
-        A live preview of a Scorpio class: student answers arrive with hints instead of answers, the
-        class numbers update, and wrong answers build a list of concepts to reteach.
+        A live preview of a Scorpio class: student answers arrive and are marked, a wrong answer is
+        told which mix-up is behind it, the class numbers update, and wrong answers build a list of
+        concepts to reteach.
       </p>
 
       {/* Top bar, like an app window. */}
@@ -327,7 +329,7 @@ export function HeroLiveClass({
             {[
               ["First try", <Tween key="p" value={state.pct} suffix="%" />],
               ["Submitted", <Tween key="s" value={state.submitted} suffix="/25" />],
-              ["Hints given", <Tween key="h" value={state.hints} />],
+              ["Mix-ups named", <Tween key="h" value={state.hints} />],
             ].map(([label, value], i) => (
               <div key={i} className="min-w-0">
                 <p className="truncate text-xs text-muted-foreground">{label}</p>
@@ -343,7 +345,7 @@ export function HeroLiveClass({
               <span className="h-0.5 w-3 rounded-full bg-primary" /> Answers
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 border-t border-dashed border-muted-foreground" /> Hints
+              <span className="w-3 border-t border-dashed border-muted-foreground" /> Mix-ups
             </span>
           </div>
 

@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/lib/api-schema";
 import { cloneAssignmentBody } from "@/lib/schemas/api-bodies";
 import { errorResponse } from "@/lib/api-errors";
 import { parseAssignmentDefaults } from "@/lib/assignment-defaults";
+import { hintsAllowedFor } from "@/lib/student-ai";
 import { DEFAULT_SET_SIZE } from "@/data/curricula";
 import {
   assertValidAnswerKeys,
@@ -67,8 +68,9 @@ export const POST = withAuthorizedRequest(
     if (!source || !assignmentAccess(source, caller.uid, profile))
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     let classDefaults: ReturnType<typeof parseAssignmentDefaults> = null;
+    let course: FirebaseFirestore.DocumentData | undefined;
     if (courseId) {
-      const course = (await adminDb.collection("courses").doc(courseId).get()).data();
+      course = (await adminDb.collection("courses").doc(courseId).get()).data();
       if (course?.teacherId !== caller.uid)
         return NextResponse.json({ error: "Invalid class" }, { status: 403 });
       classDefaults = parseAssignmentDefaults(course.assignmentDefaults);
@@ -157,6 +159,8 @@ export const POST = withAuthorizedRequest(
       ...(classDefaults
         ? { ...classDefaults, timeLimit: classDefaults.timeLimit ?? copied.timeLimit ?? null }
         : {}),
+      // Whatever the source or the class settings say, hints need Raise on for this class.
+      allowAIHelp: hintsAllowedFor(course, classDefaults?.allowAIHelp ?? copied.allowAIHelp),
       teacherId: caller.uid,
       organizationId: profile.organizationId || null,
       courseId: courseId || null,

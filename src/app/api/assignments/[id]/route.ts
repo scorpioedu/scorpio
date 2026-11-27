@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { hintsAllowedFor } from "@/lib/student-ai";
 import { withAuthorizedRequest } from "@/lib/auth-verify";
 import { adminDb } from "@/lib/firebase-admin";
 import { errorResponse } from "@/lib/api-errors";
@@ -43,6 +44,19 @@ export const PATCH = withAuthorizedRequest(
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
 
       const update: Record<string, unknown> = { ...fields, updatedAt: new Date() };
+      // Hints can be turned on only where Raise is on for the assignment's class.
+      if (update.allowAIHelp === true) {
+        const courseId = current.courseId;
+        const course =
+          typeof courseId === "string" && courseId && !courseId.includes("/")
+            ? (await adminDb.collection("courses").doc(courseId).get()).data()
+            : undefined;
+        if (!hintsAllowedFor(course, true))
+          return NextResponse.json(
+            { error: "Turn on Raise for this class before allowing hints on an assignment." },
+            { status: 400 },
+          );
+      }
       if (title !== undefined) update.title = title;
       if (dueDate !== undefined) {
         const nextDue = dueDate == null ? null : new Date(dueDate);
@@ -50,7 +64,11 @@ export const PATCH = withAuthorizedRequest(
         // A moved due date earns a new day-before reminder (functions/src/student-emails.ts).
         const cur = current.dueDate;
         const currentMs =
-          cur instanceof Date ? cur.getTime() : typeof cur?.toMillis === "function" ? cur.toMillis() : null;
+          cur instanceof Date
+            ? cur.getTime()
+            : typeof cur?.toMillis === "function"
+              ? cur.toMillis()
+              : null;
         if ((nextDue?.getTime() ?? null) !== currentMs) update.reminderSentAt = null;
       }
       if (archived !== undefined) update.archivedAt = archived ? new Date() : null;
