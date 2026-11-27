@@ -134,7 +134,7 @@ describe("GuideReader with Study", () => {
   test("goes back to Study by default", () => {
     const out = html(<GuideReader {...props} />);
     expect(out).toContain('href="/student/study"');
-    expect(out).toMatch(/<\/svg> Study<\/a>/);
+    expect(out).toMatch(/<\/svg><\/div> Study<\/a>/);
   });
 });
 

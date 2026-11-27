@@ -5,17 +5,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
 import { collection, doc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
-import { Loader2, ChevronLeft, Building2, Cpu, Gift, HandCoins, Sparkles, Info } from "lucide-react";
+import { Loader2, Building2, Cpu, Gift, HandCoins, Sparkles, Info } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -219,7 +215,7 @@ export default function BillingPage() {
             href="/teacher/network"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-2"
           >
-            <ChevronLeft className="h-4 w-4" /> Back to Network
+            <ClickIcon icon={AnimatedChevronLeft} className="h-4 w-4" /> Back to Network
           </Link>
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
             AI credit
@@ -442,9 +438,7 @@ export default function BillingPage() {
                   <p
                     className={cn(
                       "font-mono text-sm font-semibold shrink-0",
-                      entry.cents < 0
-                        ? "text-red-500"
-                        : "text-emerald-600 dark:text-emerald-400",
+                      entry.cents < 0 ? "text-red-500" : "text-emerald-600 dark:text-emerald-400",
                     )}
                   >
                     {signedDollars(entry.cents)}
@@ -478,8 +472,8 @@ export default function BillingPage() {
               <span>At Google&apos;s exact cost</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              AI is charged at what Google charges Scorpio, with no markup. Polar&apos;s payment
-              fee comes out of each deposit.
+              AI is charged at what Google charges Scorpio, with no markup. Polar&apos;s payment fee
+              comes out of each deposit.
             </p>
           </div>
           <div className="space-y-1.5">

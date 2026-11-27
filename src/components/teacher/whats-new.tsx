@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Megaphone, X } from "lucide-react";
+import { Megaphone } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { useAuth } from "@/contexts/auth-context";
 import { updateUserProfile } from "@/lib/firebase";
 import { unseenWhatsNew, WHATS_NEW } from "@/lib/whats-new";
@@ -51,7 +54,10 @@ export function WhatsNew() {
           className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           {open ? "Hide" : "See what changed"}
-          <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+          <ClickIcon
+            icon={AnimatedChevronDown}
+            className={cn("size-3.5 transition-transform", open && "rotate-180")}
+          />
         </button>
         <button
           type="button"
@@ -60,7 +66,7 @@ export function WhatsNew() {
           title="Dismiss"
           className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
-          <X className="size-4" />
+          <ClickIcon icon={AnimatedX} className="size-4" />
         </button>
       </div>
       {open && (
@@ -80,7 +86,10 @@ export function WhatsNew() {
               <ul className="mt-1.5 space-y-1.5 text-muted-foreground">
                 {entry.items.map((item) => (
                   <li key={item.text} className="flex gap-2">
-                    <span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-purple-400/70" />
+                    <span
+                      aria-hidden
+                      className="mt-2 size-1 shrink-0 rounded-full bg-purple-400/70"
+                    />
                     <span>
                       {item.text}
                       {item.href && item.linkLabel && (

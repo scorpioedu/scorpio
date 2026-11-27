@@ -3,7 +3,8 @@
 // Schedule: the pacing guide, moving due dates in bulk, and the class's days off.
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apUnitLabel, type ApCourseId } from "@/data/ap";
 import { parseDateInput } from "@/lib/first-run";
@@ -443,7 +444,7 @@ function DaysOffCard({
                   aria-label={`Remove ${d.label}`}
                   onClick={() => change(list.filter((_, j) => j !== i))}
                 >
-                  <Trash2 aria-hidden />
+                  <ClickIcon icon={AnimatedTrash2} aria-hidden />
                 </Button>
               </li>
             ))}

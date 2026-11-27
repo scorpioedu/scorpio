@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, CirclePause, Maximize } from "lucide-react";
+import { CirclePause } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { MaximizeIcon as AnimatedMaximize } from "@animateicons/react/lucide/maximize-icon";
 import { motion, AnimatePresence } from "framer-motion";
 
 /** iOS Safari exposes webkitEnterFullscreen instead of the standard requestFullscreen on video elements. */
@@ -169,7 +173,7 @@ export function DemoCarousel() {
           className="absolute left-2 z-30 rounded-full bg-background sm:left-4"
           aria-label="Previous slide"
         >
-          <ChevronLeft />
+          <ClickIcon icon={AnimatedChevronLeft} />
         </Button>
 
         {/* Track */}
@@ -253,7 +257,7 @@ export function DemoCarousel() {
                   className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                   aria-label="Fullscreen"
                 >
-                  <Maximize className="h-4 w-4 cursor-pointer" />
+                  <ClickIcon icon={AnimatedMaximize} className="h-4 w-4 cursor-pointer" />
                 </button>
               </div>
             )}
@@ -293,7 +297,7 @@ export function DemoCarousel() {
           className="absolute right-2 z-30 rounded-full bg-background sm:right-4"
           aria-label="Next slide"
         >
-          <ChevronRight />
+          <ClickIcon icon={AnimatedChevronRight} />
         </Button>
       </div>
 

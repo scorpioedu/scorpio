@@ -35,25 +35,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
-import {
-  Send,
-  Loader2,
-  Save,
-  PenLine,
-  Eye,
-  Trash2,
-  Maximize2,
-  BookMarked,
-  Lock,
-  Plus,
-  MoreVertical,
-  X,
-  Crown,
-  ZoomIn,
-  ZoomOut,
-  RotateCcw,
-  Minimize2,
-} from "lucide-react";
+import { Loader2, PenLine, Trash2, BookMarked, Lock, Crown } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { EllipsisVerticalIcon as AnimatedEllipsisVertical } from "@animateicons/react/lucide/ellipsis-vertical-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { Maximize2Icon as AnimatedMaximize2 } from "@animateicons/react/lucide/maximize-2-icon";
+import { Minimize2Icon as AnimatedMinimize2 } from "@animateicons/react/lucide/minimize-2-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
+import { SaveIcon as AnimatedSave } from "@animateicons/react/lucide/save-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
+import { ZoomInIcon as AnimatedZoomIn } from "@animateicons/react/lucide/zoom-in-icon";
+import { ZoomOutIcon as AnimatedZoomOut } from "@animateicons/react/lucide/zoom-out-icon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -524,7 +518,7 @@ export default function NotebookPage() {
                   aria-label="Zoom out"
                   onClick={() => setZoomLevel((prev) => Math.max(50, prev - 10))}
                 >
-                  <ZoomOut className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedZoomOut} className="h-4 w-4" />
                 </Button>
                 <div className="px-3 min-w-[60px] text-center">
                   <span className="text-[11px] font-black font-mono">{zoomLevel}%</span>
@@ -536,7 +530,7 @@ export default function NotebookPage() {
                   aria-label="Zoom in"
                   onClick={() => setZoomLevel((prev) => Math.min(200, prev + 10))}
                 >
-                  <ZoomIn className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedZoomIn} className="h-4 w-4" />
                 </Button>
                 <div className="w-px h-4 bg-muted mx-1" />
                 <Button
@@ -546,7 +540,7 @@ export default function NotebookPage() {
                   aria-label="Reset zoom"
                   onClick={() => setZoomLevel(100)}
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedRotateCcw} className="h-3.5 w-3.5" />
                 </Button>
               </div>
 
@@ -558,7 +552,7 @@ export default function NotebookPage() {
                   setZoomLevel(100);
                 }}
               >
-                <Minimize2 className="h-4 w-4" /> Exit focus
+                <ClickIcon icon={AnimatedMinimize2} className="h-4 w-4" /> Exit focus
               </Button>
             </div>
           </div>
@@ -597,7 +591,7 @@ export default function NotebookPage() {
           >
             {isEditing ? (
               <>
-                <Eye /> Preview
+                <ClickIcon icon={AnimatedEye} /> Preview
               </>
             ) : (
               <>
@@ -620,7 +614,7 @@ export default function NotebookPage() {
             </Select>
           ) : (
             <Button variant="ghost" size="sm" onClick={() => setIsFullScreen(true)}>
-              <Maximize2 /> Focus view
+              <ClickIcon icon={AnimatedMaximize2} /> Focus view
             </Button>
           )}
         </div>
@@ -636,7 +630,7 @@ export default function NotebookPage() {
             </Button>
           )}
           <Button size="sm" onClick={saveNotebook} disabled={!hasUnsavedChanges || isSaving}>
-            <Save /> {isSaving ? "Saving…" : "Save"}
+            <ClickIcon icon={AnimatedSave} /> {isSaving ? "Saving…" : "Save"}
           </Button>
         </div>
       </div>
@@ -663,7 +657,7 @@ export default function NotebookPage() {
               aria-label="New notebook"
               onClick={createNewNotebook}
             >
-              <Plus className="h-3.5 w-3.5" />
+              <ClickIcon icon={AnimatedPlus} className="h-3.5 w-3.5" />
             </Button>
           </div>
           <div className="max-h-36 overflow-y-auto lg:max-h-[54dvh]">
@@ -730,7 +724,7 @@ export default function NotebookPage() {
                         aria-label={`Options for ${nb.title || "Untitled"}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MoreVertical className="h-3 w-3" />
+                        <ClickIcon icon={AnimatedEllipsisVertical} className="h-3 w-3" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
@@ -873,7 +867,7 @@ export default function NotebookPage() {
                   aria-label="Close Raise help"
                   onClick={() => setShowCopilot(false)}
                 >
-                  <X className="h-3 w-3" />
+                  <ClickIcon icon={AnimatedX} className="h-3 w-3" />
                 </Button>
               </div>
             </div>
@@ -999,7 +993,7 @@ export default function NotebookPage() {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading || isAiDisabled}
                 >
-                  <Send className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedSend} className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>

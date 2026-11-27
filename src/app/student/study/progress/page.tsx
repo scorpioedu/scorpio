@@ -5,7 +5,12 @@
 // replaced or turned off at any time).
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Copy, Link2, RefreshCw, Unlink } from "lucide-react";
+import { Link2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { RefreshCwIcon as AnimatedRefreshCw } from "@animateicons/react/lucide/refresh-cw-icon";
+import { UnlinkIcon as AnimatedUnlink } from "@animateicons/react/lucide/unlink-icon";
 import { WorkspaceHeader, WorkspaceSummary } from "@/components/ui/workspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +39,7 @@ export default function StudyProgressPage() {
       >
         <Button asChild variant="outline" size="sm">
           <Link href="/student/study">
-            <ArrowLeft aria-hidden />
+            <ClickIcon icon={AnimatedArrowLeft} aria-hidden />
             Back to Study
           </Link>
         </Button>
@@ -296,15 +301,15 @@ function ShareCard({
           </div>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" onClick={copy} disabled={busy}>
-              <Copy aria-hidden />
+              <ClickIcon icon={AnimatedCopy} aria-hidden />
               Copy link
             </Button>
             <Button size="sm" variant="outline" onClick={() => create(true)} disabled={busy}>
-              <RefreshCw aria-hidden />
+              <ClickIcon icon={AnimatedRefreshCw} aria-hidden />
               Make a new link
             </Button>
             <Button size="sm" variant="ghost" onClick={stop} disabled={busy}>
-              <Unlink aria-hidden />
+              <ClickIcon icon={AnimatedUnlink} aria-hidden />
               Stop sharing
             </Button>
           </div>

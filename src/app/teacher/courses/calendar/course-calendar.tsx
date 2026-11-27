@@ -9,7 +9,12 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { CalendarOff, ChevronLeft, ChevronRight, Eye, Plus } from "lucide-react";
+import { CalendarOff } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
 import {
   DndContext,
   DragOverlay,
@@ -227,11 +232,12 @@ function SetChip({ item, ctx, roomy }: { item: CalendarItem; ctx: ChipContext; r
                   ctx.actions.onAssignSet!(item.s);
                 }}
               >
-                <Plus aria-hidden /> {item.s.archivedId ? "Restore" : "Assign"}
+                <ClickIcon icon={AnimatedPlus} aria-hidden />{" "}
+                {item.s.archivedId ? "Restore" : "Assign"}
               </Button>
             )}
             <Button size="sm" variant="outline" onClick={preview}>
-              <Eye aria-hidden /> Preview
+              <ClickIcon icon={AnimatedEye} aria-hidden /> Preview
             </Button>
           </div>
         ) : (
@@ -250,7 +256,7 @@ function SetChip({ item, ctx, roomy }: { item: CalendarItem; ctx: ChipContext; r
                 </Link>
               </Button>
               <Button size="sm" variant="outline" onClick={preview}>
-                <Eye aria-hidden /> Preview
+                <ClickIcon icon={AnimatedEye} aria-hidden /> Preview
               </Button>
             </div>
           </>
@@ -505,7 +511,7 @@ export function CourseCalendar({
             aria-label={mode === "month" ? "Previous month" : "Previous week"}
             onClick={() => step(-1)}
           >
-            <ChevronLeft />
+            <ClickIcon icon={AnimatedChevronLeft} />
           </Button>
           <Button
             variant="outline"
@@ -513,7 +519,7 @@ export function CourseCalendar({
             aria-label={mode === "month" ? "Next month" : "Next week"}
             onClick={() => step(1)}
           >
-            <ChevronRight />
+            <ClickIcon icon={AnimatedChevronRight} />
           </Button>
           <h2 aria-live="polite" className="ml-2 text-lg font-semibold">
             {heading}

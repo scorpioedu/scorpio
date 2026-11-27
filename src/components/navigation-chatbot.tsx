@@ -3,18 +3,17 @@ import { authenticatedFetch } from "@/lib/authenticated-fetch";
 
 import { useState, useRef, useEffect, useId } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  X,
-  Send,
-  Rocket,
-  LifeBuoy,
-  Compass,
-  ArrowRight,
-  Image as ImageIcon,
-  Trash2,
-  Maximize2,
-  Minimize2,
-} from "lucide-react";
+import { Rocket, Compass } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { CompassIcon as AnimatedCompass } from "@animateicons/react/lucide/compass-icon";
+import { ImageIcon as AnimatedImage } from "@animateicons/react/lucide/image-icon";
+import { LifeBuoyIcon as AnimatedLifeBuoy } from "@animateicons/react/lucide/life-buoy-icon";
+import { Maximize2Icon as AnimatedMaximize2 } from "@animateicons/react/lucide/maximize-2-icon";
+import { Minimize2Icon as AnimatedMinimize2 } from "@animateicons/react/lucide/minimize-2-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { LazyMarkdownRenderer as MarkdownRenderer } from "./lazy-markdown-renderer";
@@ -393,12 +392,12 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
       >
         {isOpen ? (
           <>
-            <X className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+            <ClickIcon icon={AnimatedX} className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
             <span className="text-xs sm:text-sm font-bold">Close</span>
           </>
         ) : (
           <>
-            <LifeBuoy className="h-5 w-5 sm:h-6 sm:w-6 shrink-0" />
+            <ClickIcon icon={AnimatedLifeBuoy} className="h-5 w-5 sm:h-6 sm:w-6 shrink-0" />
             <span className="text-xs sm:text-sm font-bold tracking-tight">Support</span>
           </>
         )}
@@ -437,7 +436,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                         : "text-muted-foreground hover:text-foreground",
                     )}
                   >
-                    <Compass className="h-3.5 w-3.5" />
+                    <ClickIcon icon={AnimatedCompass} className="h-3.5 w-3.5" />
                     <span>Nav Help</span>
                   </button>
                 )}
@@ -451,7 +450,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  <LifeBuoy className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedLifeBuoy} className="h-3.5 w-3.5" />
                   <span>Feedback &amp; support</span>
                 </button>
               </div>
@@ -465,9 +464,9 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                   title={isExpanded ? "Collapse" : "Expand"}
                 >
                   {isExpanded ? (
-                    <Minimize2 className="h-4 w-4" />
+                    <ClickIcon icon={AnimatedMinimize2} className="h-4 w-4" />
                   ) : (
-                    <Maximize2 className="h-4 w-4" />
+                    <ClickIcon icon={AnimatedMaximize2} className="h-4 w-4" />
                   )}
                 </button>
                 <button
@@ -479,7 +478,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                   className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                   aria-label="Close dialog"
                 >
-                  <X className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedX} className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -565,7 +564,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                               onClick={() => handleNavigation(nav.path)}
                               className="h-7 text-xs font-bold rounded-full border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer gap-1 shadow-xs max-w-[200px]"
                             >
-                              <Compass className="h-3 w-3 shrink-0" />
+                              <ClickIcon icon={AnimatedCompass} className="h-3 w-3 shrink-0" />
                               <span className="truncate">Open {nav.label} →</span>
                             </Button>
                           ))}
@@ -584,7 +583,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                           onClick={() => sendMessage(p)}
                           className="flex items-center gap-1.5 w-full text-left text-xs text-muted-foreground hover:text-foreground p-1.5 rounded-md hover:bg-muted transition-colors cursor-pointer"
                         >
-                          <ArrowRight className="h-3 w-3 shrink-0" />
+                          <ClickIcon icon={AnimatedArrowRight} className="h-3 w-3 shrink-0" />
                           <span>{p}</span>
                         </button>
                       ))}
@@ -633,7 +632,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                       disabled={!input.trim() || isLoading}
                       className="h-6 w-6 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity cursor-pointer shrink-0"
                     >
-                      <Send className="h-3 w-3" />
+                      <ClickIcon icon={AnimatedSend} className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
@@ -739,7 +738,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                             disabled={screenshots.length >= 3}
                             className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-50"
                           >
-                            <ImageIcon className="h-3.5 w-3.5" />
+                            <ClickIcon icon={AnimatedImage} className="h-3.5 w-3.5" />
                             <span>
                               Add Screenshot {screenshots.length > 0 && `(${screenshots.length}/3)`}
                             </span>
@@ -763,7 +762,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
                                   onClick={() => removeScreenshot(i)}
                                   className="absolute top-1 right-1 p-1 rounded-md bg-black/70 text-white hover:bg-black transition-colors cursor-pointer"
                                 >
-                                  <Trash2 className="h-3 w-3" />
+                                  <ClickIcon icon={AnimatedTrash2} className="h-3 w-3" />
                                 </button>
                               </div>
                             ))}

@@ -3,7 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Copy, Link2, Presentation } from "lucide-react";
+import { Check, Link2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { PresentationIcon as AnimatedPresentation } from "@animateicons/react/lucide/presentation-icon";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
@@ -548,7 +551,7 @@ export default function WelcomeClient() {
                   {course.code}
                 </code>
                 <Button variant="outline" size="sm" onClick={() => copy(course.code, "Class code")}>
-                  <Copy />
+                  <ClickIcon icon={AnimatedCopy} />
                   Copy code
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => copy(joinUrl, "Invite link")}>
@@ -556,7 +559,7 @@ export default function WelcomeClient() {
                   Copy link
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => setProjecting(true)}>
-                  <Presentation />
+                  <ClickIcon icon={AnimatedPresentation} />
                   Show on screen
                 </Button>
               </div>
@@ -572,7 +575,7 @@ export default function WelcomeClient() {
               />
               <div className="flex flex-wrap gap-2">
                 <Button onClick={() => copy(message, "Message")}>
-                  <Copy />
+                  <ClickIcon icon={AnimatedCopy} />
                   Copy message
                 </Button>
               </div>

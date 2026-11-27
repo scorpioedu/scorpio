@@ -66,29 +66,31 @@ import {
 } from "firebase/firestore";
 import { toast } from "sonner";
 import {
-  ArrowLeft,
   Activity,
   FileQuestion,
   ListChecks,
-  ArrowUp,
-  Check,
-  Copy,
   Edit2,
   LineChart,
   MessageSquare,
-  Mic,
-  MicOff,
-  MoreHorizontal,
   Move,
-  PanelLeft,
-  Pencil,
-  PlusIcon,
   Search,
-  Trash,
   Trash2,
   Triangle,
-  X,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowUpIcon as AnimatedArrowUp } from "@animateicons/react/lucide/arrow-up-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { MicIcon as AnimatedMic } from "@animateicons/react/lucide/mic-icon";
+import { MicOffIcon as AnimatedMicOff } from "@animateicons/react/lucide/mic-off-icon";
+import { PanelLeftIcon as AnimatedPanelLeft } from "@animateicons/react/lucide/panel-left-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { SearchIcon as AnimatedSearch } from "@animateicons/react/lucide/search-icon";
+import { TrashIcon as AnimatedTrash } from "@animateicons/react/lucide/trash-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 
 // Typewriter effect for fresh assistant responses
 // The reveal takes a set time, not a set speed: about 2.5 ms a character, between 0.4 s and 1.5 s.
@@ -219,17 +221,20 @@ const TEACHER_STARTERS = [
   {
     tag: "Motion graph",
     icon: LineChart,
-    prompt: "Draw a velocity–time graph for a ball thrown straight up and caught at the same height.",
+    prompt:
+      "Draw a velocity–time graph for a ball thrown straight up and caught at the same height.",
   },
   {
     tag: "Forces",
     icon: Move,
-    prompt: "Draw a free-body diagram for a block sliding down a rough 30° incline, and solve for its acceleration.",
+    prompt:
+      "Draw a free-body diagram for a block sliding down a rough 30° incline, and solve for its acceleration.",
   },
   {
     tag: "Misconceptions",
     icon: ListChecks,
-    prompt: "What misconceptions do students usually have about Newton's third law, and how do I address each?",
+    prompt:
+      "What misconceptions do students usually have about Newton's third law, and how do I address each?",
   },
 ];
 
@@ -248,8 +253,10 @@ const RAISE_VARIANTS = {
     modes: true,
     starters: STARTER_PROMPTS,
     followUps: FOLLOW_UPS,
-    heading: (name?: string) => (name ? `Hi ${name}, what are you stuck on?` : "What are you stuck on?"),
-    intro: "Ask about an idea or a problem. Raise explains, draws diagrams and gives hints, not answers. It is optional.",
+    heading: (name?: string) =>
+      name ? `Hi ${name}, what are you stuck on?` : "What are you stuck on?",
+    intro:
+      "Ask about an idea or a problem. Raise explains, draws diagrams and gives hints, not answers. It is optional.",
     placeholder: "Ask about a physics concept…",
   },
   teacher: {
@@ -258,8 +265,10 @@ const RAISE_VARIANTS = {
     modes: false,
     starters: TEACHER_STARTERS,
     followUps: TEACHER_FOLLOW_UPS,
-    heading: (name?: string) => (name ? `Hi ${name}, what are you preparing?` : "What are you preparing?"),
-    intro: "Practice sets with answer keys, worked solutions, rubrics and diagrams. Unlike the student version, Raise gives you the whole answer.",
+    heading: (name?: string) =>
+      name ? `Hi ${name}, what are you preparing?` : "What are you preparing?",
+    intro:
+      "Practice sets with answer keys, worked solutions, rubrics and diagrams. Unlike the student version, Raise gives you the whole answer.",
     placeholder: "Ask for a practice set, a worked solution, a diagram…",
   },
 };
@@ -829,7 +838,9 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
         <Card className="w-full max-w-md shadow-none">
           <CardContent className="space-y-4 pt-8 pb-8">
             <div className="space-y-2">
-              <CardTitle className="text-xl font-bold">Raise opens once you’re in a class</CardTitle>
+              <CardTitle className="text-xl font-bold">
+                Raise opens once you’re in a class
+              </CardTitle>
               <CardDescription>
                 Raise is the tutor that gives hints on your class’s work. Enter the class code from
                 your teacher and it will be ready here.
@@ -918,29 +929,29 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
           {/* Left Actions */}
           <div className="flex items-center gap-1.5">
             {cfg.modes && (
-            <div
-              role="group"
-              aria-label="Kind of help"
-              className="flex items-center rounded-full border border-border bg-muted/50 p-0.5"
-            >
-              {MODES.map((item) => (
-                <button
-                  key={item.value}
-                  type="button"
-                  title={item.hint}
-                  onClick={() => setMode(item.value)}
-                  aria-pressed={mode === item.value}
-                  className={cn(
-                    "cursor-pointer rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                    mode === item.value
-                      ? "bg-background text-foreground shadow-xs"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
+              <div
+                role="group"
+                aria-label="Kind of help"
+                className="flex items-center rounded-full border border-border bg-muted/50 p-0.5"
+              >
+                {MODES.map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    title={item.hint}
+                    onClick={() => setMode(item.value)}
+                    aria-pressed={mode === item.value}
+                    className={cn(
+                      "cursor-pointer rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
+                      mode === item.value
+                        ? "bg-background text-foreground shadow-xs"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
@@ -958,7 +969,11 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                 aria-label={isRecording ? "Stop listening" : "Voice input"}
                 onClick={toggleVoiceRecording}
               >
-                {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
+                {isRecording ? (
+                  <ClickIcon icon={AnimatedMicOff} size={16} />
+                ) : (
+                  <ClickIcon icon={AnimatedMic} size={16} />
+                )}
               </Button>
             </PromptInputAction>
 
@@ -971,7 +986,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
               className="size-8 rounded-full shadow-xs transition-transform active:scale-95 cursor-pointer"
             >
               {!isLoading ? (
-                <ArrowUp size={16} />
+                <ClickIcon icon={AnimatedArrowUp} size={16} />
               ) : (
                 <span className="size-2 rounded-2xs bg-background animate-spin" />
               )}
@@ -1041,7 +1056,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                 onClick={() => setShowSearchInput(!showSearchInput)}
                 title="Search chats (⌘K)"
               >
-                <Search className="size-3.5" />
+                <ClickIcon icon={AnimatedSearch} className="size-3.5" />
               </Button>
               <Button
                 variant="ghost"
@@ -1050,7 +1065,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                 onClick={() => setSidebarOpen(false)}
                 aria-label="Close chat history"
               >
-                <PanelLeft className="size-4" />
+                <ClickIcon icon={AnimatedPanelLeft} className="size-4" />
               </Button>
             </div>
           </div>
@@ -1066,7 +1081,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
               }}
             >
               <span className="flex items-center gap-2">
-                <PlusIcon className="size-3.5" />
+                <ClickIcon icon={AnimatedPlus} className="size-3.5" />
                 <span>New chat</span>
               </span>
             </Button>
@@ -1087,7 +1102,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                     className="absolute right-2 text-muted-foreground hover:text-foreground cursor-pointer"
                     onClick={() => setSidebarSearch("")}
                   >
-                    <X className="size-3" />
+                    <ClickIcon icon={AnimatedX} className="size-3" />
                   </button>
                 )}
               </div>
@@ -1144,7 +1159,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                               className="size-6 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10 cursor-pointer"
                               onClick={() => handleRename(conversation.id, editingTitleText)}
                             >
-                              <Check className="size-3.5" />
+                              <ClickIcon icon={AnimatedCheck} className="size-3.5" />
                             </Button>
                             <Button
                               aria-label="Cancel renaming"
@@ -1153,7 +1168,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                               className="size-6 text-muted-foreground hover:bg-muted cursor-pointer"
                               onClick={() => setEditingTitleId(null)}
                             >
-                              <X className="size-3.5" />
+                              <ClickIcon icon={AnimatedX} className="size-3.5" />
                             </Button>
                           </div>
                         );
@@ -1193,7 +1208,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                 )}
                                 aria-label={`Options for ${conversation.title}`}
                               >
-                                <MoreHorizontal className="size-3.5" />
+                                <ClickIcon icon={AnimatedEllipsis} className="size-3.5" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-36">
@@ -1249,7 +1264,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                   onClick={() => setSidebarOpen(true)}
                   aria-label="Open chat history"
                 >
-                  <PanelLeft className="size-4" />
+                  <ClickIcon icon={AnimatedPanelLeft} className="size-4" />
                 </Button>
               )}
               <div className="flex items-center gap-2 min-w-0">
@@ -1267,7 +1282,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" aria-label="Conversation options">
-                      <MoreHorizontal className="size-4" />
+                      <ClickIcon icon={AnimatedEllipsis} className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
@@ -1302,7 +1317,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                 aria-label="Back to dashboard"
                 onClick={() => router.push(cfg.home)}
               >
-                <ArrowLeft className="size-3.5" />
+                <ClickIcon icon={AnimatedArrowLeft} className="size-3.5" />
                 <span className="hidden sm:inline">Dashboard</span>
               </Button>
             </div>
@@ -1446,7 +1461,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                       className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
                                       onClick={() => handleCopyMessage(message.content)}
                                     >
-                                      <Copy className="size-3.5" />
+                                      <ClickIcon icon={AnimatedCopy} className="size-3.5" />
                                     </Button>
                                   </MessageAction>
 
@@ -1458,7 +1473,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                       className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
                                       onClick={() => handleDeleteMessage(message.id)}
                                     >
-                                      <Trash className="size-3.5" />
+                                      <ClickIcon icon={AnimatedTrash} className="size-3.5" />
                                     </Button>
                                   </MessageAction>
                                 </MessageActions>
@@ -1480,7 +1495,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                       className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
                                       onClick={() => handleEditMessage(message.content)}
                                     >
-                                      <Pencil className="size-3.5" />
+                                      <ClickIcon icon={AnimatedPencil} className="size-3.5" />
                                     </Button>
                                   </MessageAction>
 
@@ -1492,7 +1507,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                       className="size-7 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
                                       onClick={() => handleCopyMessage(message.content)}
                                     >
-                                      <Copy className="size-3.5" />
+                                      <ClickIcon icon={AnimatedCopy} className="size-3.5" />
                                     </Button>
                                   </MessageAction>
 
@@ -1504,7 +1519,7 @@ export function RaiseChat({ variant }: { variant: RaiseVariant }) {
                                       className="size-7 rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
                                       onClick={() => handleDeleteMessage(message.id)}
                                     >
-                                      <Trash className="size-3.5" />
+                                      <ClickIcon icon={AnimatedTrash} className="size-3.5" />
                                     </Button>
                                   </MessageAction>
                                 </MessageActions>

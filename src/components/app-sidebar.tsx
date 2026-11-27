@@ -4,7 +4,14 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, Leaf, PanelLeftClose, PanelLeftOpen, PlaneLanding } from "lucide-react";
+import { PlaneLanding } from "lucide-react";
+import { useIconHover } from "@animateicons/react";
+import { LeafIcon } from "@animateicons/react/lucide/leaf-icon";
+import { MenuIcon } from "@animateicons/react/lucide/menu-icon";
+import { PanelLeftCloseIcon } from "@animateicons/react/lucide/panel-left-close-icon";
+import { PanelLeftOpenIcon } from "@animateicons/react/lucide/panel-left-open-icon";
+import { XIcon } from "@animateicons/react/lucide/x-icon";
+import type { AnimatedIcon } from "@/components/nav-animated-icons";
 import { CompassLogo } from "@/components/ui/compass-logo";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +27,7 @@ import {
   AnimatedSidebarHeader,
   AnimatedSidebarMenu,
   AnimatedSidebarMenuButton,
+  type AnimatedSidebarMenuButtonProps,
   AnimatedSidebarMenuItem,
   AnimatedSidebarMenuSub,
   AnimatedSidebarMenuSubButton,
@@ -45,7 +53,7 @@ const SettingsDialog = dynamic(() =>
 interface NavLink {
   href: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: AnimatedIcon;
   badge?: string;
   /** Other route prefixes that also mark this item active (pages grouped under it). */
   match?: string[];
@@ -96,6 +104,83 @@ export interface AppSidebarProps {
   };
 }
 
+/**
+ * A sidebar row whose icon plays its animation when the row is clicked. The row, not
+ * the icon, is the trigger, so the whole button reacts.
+ */
+function NavMenuButton({
+  icon: Icon,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  ...props
+}: Omit<AnimatedSidebarMenuButtonProps, "icon"> & {
+  icon: AnimatedIcon;
+  ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
+}) {
+  const { ref, triggerProps } = useIconHover({ trigger: "click" });
+  return (
+    <AnimatedSidebarMenuButton
+      {...props}
+      icon={<Icon ref={ref} size={20} />}
+      onClick={(event) => {
+        onClick?.(event);
+        triggerProps.onClick?.(event);
+      }}
+      onMouseEnter={(event) => {
+        onMouseEnter?.(event);
+        triggerProps.onMouseEnter?.(event);
+      }}
+      onMouseLeave={(event) => {
+        onMouseLeave?.(event);
+        triggerProps.onMouseLeave?.(event);
+      }}
+    />
+  );
+}
+
+/** The collapse/expand button in the sidebar footer. */
+function CollapseTrigger({ isCollapsed }: { isCollapsed: boolean }) {
+  const { ref, triggerProps } = useIconHover({ trigger: "click" });
+  const Icon = isCollapsed ? PanelLeftOpenIcon : PanelLeftCloseIcon;
+  return (
+    <AnimatedSidebarTrigger
+      {...triggerProps}
+      className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+      aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+    >
+      <Icon ref={ref} size={18} />
+    </AnimatedSidebarTrigger>
+  );
+}
+
+/** The menu button in the mobile top bar. */
+function MobileMenuTrigger() {
+  const { ref, triggerProps } = useIconHover({ trigger: "click" });
+  return (
+    <AnimatedSidebarTrigger
+      {...triggerProps}
+      className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+      aria-label="Open sidebar"
+    >
+      <MenuIcon ref={ref} size={20} />
+    </AnimatedSidebarTrigger>
+  );
+}
+
+/** The close button at the top of the mobile drawer. */
+function MobileCloseButton() {
+  const { ref, triggerProps } = useIconHover({ trigger: "click" });
+  return (
+    <AnimatedSidebarClose
+      {...triggerProps}
+      className="ml-auto text-muted-foreground hover:text-foreground hover:bg-muted md:hidden"
+    >
+      <XIcon ref={ref} size={18} aria-hidden="true" />
+    </AnimatedSidebarClose>
+  );
+}
+
 function SustainabilityDialogItem({ label }: { label: string }) {
   const [open, setOpen] = useState(false);
   const context = useAnimatedSidebar();
@@ -111,13 +196,9 @@ function SustainabilityDialogItem({ label }: { label: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <AnimatedSidebarMenuItem>
         <DialogTrigger asChild>
-          <AnimatedSidebarMenuButton
-            icon={<Leaf className="size-5" />}
-            onSelect={handleOpen}
-            closeOnSelect={false}
-          >
+          <NavMenuButton icon={LeafIcon} onSelect={handleOpen} closeOnSelect={false}>
             {label}
-          </AnimatedSidebarMenuButton>
+          </NavMenuButton>
         </DialogTrigger>
       </AnimatedSidebarMenuItem>
       <DialogContent
@@ -212,16 +293,7 @@ function SidebarFooterSection({
         <div className="flex items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
           <SettingsDialog />
         </div>
-        <AnimatedSidebarTrigger
-          className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? (
-            <PanelLeftOpen className="size-4.5" />
-          ) : (
-            <PanelLeftClose className="size-4.5" />
-          )}
-        </AnimatedSidebarTrigger>
+        <CollapseTrigger isCollapsed={isCollapsed} />
       </div>
     </AnimatedSidebarFooter>
   );
@@ -257,12 +329,7 @@ export function AppSidebar({
           <CompassLogo className="size-6 text-foreground" />
           <span className="font-inter font-black text-lg tracking-tight">Scorpio</span>
         </div>
-        <AnimatedSidebarTrigger
-          className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
-          aria-label="Open sidebar"
-        >
-          <Menu className="size-5" />
-        </AnimatedSidebarTrigger>
+        <MobileMenuTrigger />
       </div>
 
       {/* Main Animated Sidebar */}
@@ -285,9 +352,7 @@ export function AppSidebar({
             <span className="truncate text-lg font-black tracking-tight font-inter text-foreground group-data-[state=collapsed]/sidebar:hidden">
               Scorpio
             </span>
-            <AnimatedSidebarClose className="ml-auto text-muted-foreground hover:text-foreground hover:bg-muted md:hidden">
-              <X aria-hidden="true" className="size-4.5" />
-            </AnimatedSidebarClose>
+            <MobileCloseButton />
           </div>
         </AnimatedSidebarHeader>
 
@@ -309,22 +374,20 @@ export function AppSidebar({
 
                     const isActive = isNavLinkActive(item, currentPath);
 
-                    const Icon = item.icon;
-
                     if (item.children?.length) {
                       const isOpen = toggledGroups[item.href] ?? isActive;
                       return (
                         <AnimatedSidebarMenuItem key={item.href}>
-                          <AnimatedSidebarMenuButton
+                          <NavMenuButton
                             isActive={isActive}
                             ariaExpanded={isOpen}
-                            icon={<Icon className="size-5" />}
+                            icon={item.icon}
                             onSelect={() =>
                               setToggledGroups((current) => ({ ...current, [item.href]: !isOpen }))
                             }
                           >
                             {item.label}
-                          </AnimatedSidebarMenuButton>
+                          </NavMenuButton>
                           <AnimatedSidebarMenuSub open={isOpen}>
                             {item.children.map((child) => (
                               <AnimatedSidebarMenuSubItem key={child.href}>
@@ -345,11 +408,11 @@ export function AppSidebar({
 
                     return (
                       <AnimatedSidebarMenuItem key={item.href}>
-                        <AnimatedSidebarMenuButton
+                        <NavMenuButton
                           href={sample ? undefined : item.href}
                           isActive={isActive}
                           onSelect={sample ? () => sample.onSelect(item.href) : undefined}
-                          icon={<Icon className="size-5" />}
+                          icon={item.icon}
                           badge={
                             item.badge ? (
                               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
@@ -359,7 +422,7 @@ export function AppSidebar({
                           }
                         >
                           {item.label}
-                        </AnimatedSidebarMenuButton>
+                        </NavMenuButton>
                       </AnimatedSidebarMenuItem>
                     );
                   })}
@@ -384,16 +447,7 @@ export function AppSidebar({
             </div>
 
             <div className="hidden items-center justify-end border-t border-border/20 pt-1 md:flex group-data-[state=collapsed]/sidebar:justify-center">
-              <AnimatedSidebarTrigger
-                className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-                aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                {isCollapsed ? (
-                  <PanelLeftOpen className="size-4.5" />
-                ) : (
-                  <PanelLeftClose className="size-4.5" />
-                )}
-              </AnimatedSidebarTrigger>
+              <CollapseTrigger isCollapsed={isCollapsed} />
             </div>
           </AnimatedSidebarFooter>
         ) : (

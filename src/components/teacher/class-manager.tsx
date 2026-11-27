@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import { Copy, Link2, PlusCircle, RotateCcw, Settings2 } from "lucide-react";
+import { Link2, Settings2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CirclePlusIcon as AnimatedCirclePlus } from "@animateicons/react/lucide/circle-plus-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
@@ -143,7 +147,7 @@ export function useClassManager({
     <Dialog open={dialogOpen} onOpenChange={changeDialog}>
       <DialogTrigger asChild>
         <Button size="sm" className="h-7 text-xs" disabled={!canCreate}>
-          <PlusCircle className="size-3.5" />
+          <ClickIcon icon={AnimatedCirclePlus} className="size-3.5" />
           New class
         </Button>
       </DialogTrigger>
@@ -184,7 +188,7 @@ export function useClassManager({
               }}
               className="cursor-pointer"
             >
-              <RotateCcw className="h-4 w-4" />
+              <ClickIcon icon={AnimatedRotateCcw} className="h-4 w-4" />
               Generate code
             </Button>
             <p className="text-xs text-muted-foreground">
@@ -271,7 +275,7 @@ export function useClassManager({
                 aria-label={`Copy class code for ${c.name}`}
                 onClick={() => copyClassInvite(c, false)}
               >
-                <Copy className="size-3" />
+                <ClickIcon icon={AnimatedCopy} className="size-3" />
               </Button>
               <Button
                 variant="ghost"

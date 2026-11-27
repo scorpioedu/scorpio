@@ -16,7 +16,10 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import { apCourseName, apTopic, apTopicLabel, misconceptionTag, type ApCourseId } from "@/data/ap";
 import { guideSectionId, misconceptionAnchor } from "@/lib/guides";
 import type { TopicGuide as TopicGuideData, WorkedExample } from "@/lib/guides/schema";
@@ -180,7 +183,11 @@ export function Reveal({
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
       >
-        <ChevronDown className={cn("transition-transform", open && "rotate-180")} aria-hidden />
+        <ClickIcon
+          icon={AnimatedChevronDown}
+          className={cn("transition-transform", open && "rotate-180")}
+          aria-hidden
+        />
         {open ? hide : show}
       </Button>
       {open ? (
@@ -561,7 +568,7 @@ function TopicGuideBody({
                   className="h-auto min-h-8 whitespace-normal py-1.5 text-left"
                 >
                   <Link href={p.href} onClick={p.onClick}>
-                    {p.label} <ArrowRight aria-hidden />
+                    {p.label} <ClickIcon icon={AnimatedArrowRight} aria-hidden />
                   </Link>
                 </Button>
               </li>

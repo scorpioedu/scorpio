@@ -4,17 +4,19 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
 import { collection, doc, writeBatch, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -53,9 +55,9 @@ export function RosterImport() {
       const text = e.target?.result as string;
       const lines = text.split("\n");
       const headers = lines[0].toLowerCase().split(",");
-      
-      const emailIdx = headers.findIndex(h => h.includes("email"));
-      const nameIdx = headers.findIndex(h => h.includes("name") || h.includes("student"));
+
+      const emailIdx = headers.findIndex((h) => h.includes("email"));
+      const nameIdx = headers.findIndex((h) => h.includes("name") || h.includes("student"));
 
       if (emailIdx === -1) {
         setError("CSV must have an 'email' column.");
@@ -68,7 +70,7 @@ export function RosterImport() {
         if (cols.length > emailIdx && cols[emailIdx].trim()) {
           parsed.push({
             email: cols[emailIdx].trim(),
-            name: nameIdx !== -1 ? cols[nameIdx].trim() : cols[emailIdx].split("@")[0]
+            name: nameIdx !== -1 ? cols[nameIdx].trim() : cols[emailIdx].split("@")[0],
           });
         }
       }
@@ -79,18 +81,18 @@ export function RosterImport() {
 
   const handleImport = async () => {
     if (!user || data.length === 0) return;
-    
+
     setImporting(true);
     setError(null);
-    
+
     try {
       // Use Firebase JS SDK directly for batches
       const batch = writeBatch(db);
-      
+
       data.forEach((student) => {
         // Generate a standard Firebase-style random ID
         const userDoc = doc(collection(db, "users"));
-        
+
         const commonData = {
           email: student.email,
           displayName: student.name,
@@ -98,7 +100,7 @@ export function RosterImport() {
           role: "student",
           createdAt: serverTimestamp(),
           status: "pending_invite",
-          importedBy: user.uid
+          importedBy: user.uid,
         };
 
         // Unified collection
@@ -109,14 +111,13 @@ export function RosterImport() {
       setSuccess(data.length);
       setData([]);
       setFile(null);
-      
+
       // Close after a brief delay
       setTimeout(() => {
         setOpen(false);
         setSuccess(null);
         router.refresh(); // Refresh to see new students without full reload
       }, 2000);
-
     } catch (err: unknown) {
       console.error("Import error:", err);
       setError("Failed to import roster. Please check your permissions.");
@@ -129,7 +130,7 @@ export function RosterImport() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Upload className="size-4" />
+          <ClickIcon icon={AnimatedUpload} className="size-4" />
           Import Roster
         </Button>
       </DialogTrigger>
@@ -143,19 +144,19 @@ export function RosterImport() {
 
         <div className="grid gap-4 py-4">
           {!file ? (
-            <div 
+            <div
               className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-accent/50 transition-colors"
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload className="size-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm font-medium">Click to upload or drag and drop</p>
               <p className="text-xs text-muted-foreground mt-1">CSV files only</p>
-              <input 
+              <input
                 ref={fileInputRef}
-                type="file" 
-                accept=".csv" 
-                className="hidden" 
-                onChange={handleFileChange} 
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={handleFileChange}
               />
             </div>
           ) : (
@@ -165,7 +166,14 @@ export function RosterImport() {
                 <p className="text-sm font-medium truncate">{file.name}</p>
                 <p className="text-xs text-muted-foreground">{data.length} students found</p>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => { setFile(null); setData([]); }}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setFile(null);
+                  setData([]);
+                }}
+              >
                 Change
               </Button>
             </div>
@@ -189,15 +197,11 @@ export function RosterImport() {
         </div>
 
         <DialogFooter>
-          <Button 
-            variant="ghost" 
-            onClick={() => setOpen(false)}
-            disabled={importing}
-          >
+          <Button variant="ghost" onClick={() => setOpen(false)} disabled={importing}>
             Cancel
           </Button>
-          <Button 
-            disabled={!file || data.length === 0 || importing || !!success} 
+          <Button
+            disabled={!file || data.length === 0 || importing || !!success}
             onClick={handleImport}
             className="gap-2"
           >

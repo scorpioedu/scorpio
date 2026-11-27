@@ -28,24 +28,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  ArrowLeft,
-  Send,
   MessagesSquare,
   CheckCircle,
   Clock,
   AlertTriangle,
-  Play,
   Upload,
-  X,
   FileText,
   Image as ImageIcon,
   AlertCircle,
-  Save,
   Lock,
-  Hand,
-  Calculator,
-  LineChart,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { CalculatorIcon as AnimatedCalculator } from "@animateicons/react/lucide/calculator-icon";
+import { ChartLineIcon as AnimatedChartLine } from "@animateicons/react/lucide/chart-line-icon";
+import { HandIcon as AnimatedHand } from "@animateicons/react/lucide/hand-icon";
+import { PlayIcon as AnimatedPlay } from "@animateicons/react/lucide/play-icon";
+import { SaveIcon as AnimatedSave } from "@animateicons/react/lucide/save-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { toast } from "sonner";
 import { MathInputField } from "@/components/math-input";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -847,7 +849,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-2xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
           <Button variant="ghost" size="sm" onClick={handleBackClick}>
-            <ArrowLeft /> Assignments
+            <ClickIcon icon={AnimatedArrowLeft} /> Assignments
           </Button>
           <WorkspaceHeader title={assignment.title} description={assignment.description} />
           <div className="flex flex-wrap gap-2">
@@ -919,7 +921,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               onClick={handleStartAssignment}
               disabled={!!assignment.readFirst && !lessonsRead}
             >
-              <Play /> Start Assignment
+              <ClickIcon icon={AnimatedPlay} /> Start Assignment
             </Button>
             {assignment.readFirst && !lessonsRead && (
               <p className="text-sm text-muted-foreground">
@@ -1055,7 +1057,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               Leave without saving
             </Button>
             <Button onClick={handleSaveAndLeave} disabled={submitting}>
-              <Save className="mr-2 h-4 w-4" />
+              <ClickIcon icon={AnimatedSave} className="mr-2 h-4 w-4" />
               Save draft & leave
             </Button>
           </div>
@@ -1079,7 +1081,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     onClick={handleBackClick}
                     className="px-2 text-sm text-muted-foreground hover:text-foreground"
                   >
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <ClickIcon icon={AnimatedArrowLeft} className="h-4 w-4 mr-2" />
                     Back
                   </Button>
                   {assignment.lockdownMode && hasStarted && !submitted && (
@@ -1125,7 +1127,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       aria-label="Calculator"
                       aria-pressed={calculatorOpen}
                     >
-                      <Calculator className="h-4 w-4" />
+                      <ClickIcon icon={AnimatedCalculator} className="h-4 w-4" />
                       <span className="hidden sm:inline">Calculator</span>
                     </Button>
                   )}
@@ -1138,7 +1140,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       aria-label="Raise hand"
                       aria-pressed={aiHelperOpen}
                     >
-                      <Hand className={`h-4 w-4`} />
+                      <ClickIcon icon={AnimatedHand} className={`h-4 w-4`} />
                       <span className="hidden sm:inline">Raise hand</span>
                     </Button>
                   )}
@@ -1252,7 +1254,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                                 aria-label={`Graph for Question ${index + 1}`}
                                 title="Open the graphing calculator"
                               >
-                                <LineChart className="size-3.5" />
+                                <ClickIcon icon={AnimatedChartLine} className="size-3.5" />
                                 Graph
                               </Button>
                             )}
@@ -1412,7 +1414,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                         }}
                         disabled={submitted}
                       >
-                        <Upload className="h-4 w-4 mr-2" />
+                        <ClickIcon icon={AnimatedUpload} className="h-4 w-4 mr-2" />
                         Choose Files
                       </Button>
                       <span className="text-sm text-muted-foreground">
@@ -1462,7 +1464,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                                 onClick={() => removeFile(index)}
                                 disabled={submitted || submitting}
                               >
-                                <X className="h-4 w-4" />
+                                <ClickIcon icon={AnimatedX} className="h-4 w-4" />
                               </Button>
                             </div>
                           ))}
@@ -1505,7 +1507,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                       )
                     ) : (
                       <>
-                        <Send className="h-4 w-4 mr-2" />
+                        <ClickIcon icon={AnimatedSend} className="h-4 w-4 mr-2" />
                         Submit Assignment
                       </>
                     )}

@@ -10,15 +10,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Users,
-  ShieldCheck,
-  BrainCircuit,
-  Zap,
-  ChevronRight,
-  ChevronLeft,
-  LayoutDashboard,
-} from "lucide-react";
+import { Users, ShieldCheck, BrainCircuit, Zap, LayoutDashboard } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
 import { cn } from "@/lib/utils";
 
 interface Step {
@@ -140,7 +135,7 @@ export function NetworkTutorial({ open, onOpenChange }: NetworkTutorialProps) {
               disabled={currentStep === 0}
               className="cursor-pointer font-bold text-xs uppercase tracking-widest"
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
+              <ClickIcon icon={AnimatedChevronLeft} className="mr-2 h-4 w-4" />
               Back
             </Button>
             <Button
@@ -152,7 +147,7 @@ export function NetworkTutorial({ open, onOpenChange }: NetworkTutorialProps) {
               ) : (
                 <>
                   Next
-                  <ChevronRight className="ml-2 h-4 w-4" />
+                  <ClickIcon icon={AnimatedChevronRight} className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>

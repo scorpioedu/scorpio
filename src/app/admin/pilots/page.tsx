@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Copy, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import type { OrganizationPilot } from "@/lib/types";
@@ -253,8 +255,7 @@ export default function AdminPilotsPage() {
         <p className="mt-6 text-xs text-muted-foreground">
           Pilot AI is bonus credit on top of the free $1 a month. It lasts until the pilot ends or
           12 months, whichever is later. One grant can be at most {dollars(data.defaults.capCents)}.
-          Updated{" "}
-          {new Date(data.generatedAt).toLocaleTimeString()}.
+          Updated {new Date(data.generatedAt).toLocaleTimeString()}.
         </p>
       )}
     </>
@@ -271,7 +272,7 @@ function CopyLink({ path }: { path: string }) {
         toast.success("Invite link copied");
       }}
     >
-      <Copy className="size-3.5" />
+      <ClickIcon icon={AnimatedCopy} className="size-3.5" />
       Copy link
     </Button>
   );

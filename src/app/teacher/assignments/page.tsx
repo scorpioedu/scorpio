@@ -5,7 +5,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { Archive, Globe, Lock, PlusCircle, ShieldAlert, ShieldCheck, X } from "lucide-react";
+import { Globe, Lock, ShieldAlert, ShieldCheck } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArchiveIcon as AnimatedArchive } from "@animateicons/react/lucide/archive-icon";
+import { CirclePlusIcon as AnimatedCirclePlus } from "@animateicons/react/lucide/circle-plus-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
@@ -258,7 +262,7 @@ export default function AssignmentsPage() {
         <ClassPicker allowAll />
         <Button asChild>
           <Link href="/teacher/create">
-            <PlusCircle /> Create assignment
+            <ClickIcon icon={AnimatedCirclePlus} /> Create assignment
           </Link>
         </Button>
       </TeacherPageHeader>
@@ -338,7 +342,7 @@ export default function AssignmentsPage() {
             </Button>
             {status !== "archived" && (
               <Button size="sm" variant="ghost" onClick={archiveSelected}>
-                <Archive /> Archive
+                <ClickIcon icon={AnimatedArchive} /> Archive
               </Button>
             )}
             <Button
@@ -347,7 +351,7 @@ export default function AssignmentsPage() {
               className="ml-auto"
               onClick={() => setSelected(new Set())}
             >
-              <X /> Clear
+              <ClickIcon icon={AnimatedX} /> Clear
             </Button>
           </div>
         )}

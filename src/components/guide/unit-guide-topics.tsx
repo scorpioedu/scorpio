@@ -4,7 +4,9 @@
 // title and one-line summary; a link to #topic-4-1 opens that topic. Shared by the teacher's unit
 // guide (its Lessons tab) and the student guide page.
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
-import { BookOpen, ChevronDown } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import { apTopic, type ApCourseId } from "@/data/ap";
 import { topicAnchor, topicFromAnchor, topicGuide, type UnitGuide } from "@/lib/guides";
 import { cn } from "@/lib/utils";
@@ -140,12 +142,13 @@ export function UnitGuideTopics({
                   onClick={() => toggle(id)}
                 >
                   {inline ? (
-                    <ChevronDown
+                    <ClickIcon
+                      icon={AnimatedChevronDown}
                       className={cn("transition-transform", isOpen && "rotate-180")}
                       aria-hidden
                     />
                   ) : (
-                    <BookOpen aria-hidden />
+                    <ClickIcon icon={AnimatedBookOpen} aria-hidden />
                   )}
                   {isOpen ? "Hide the lesson" : "Read the lesson"}
                   <span className="sr-only">: {topic?.title}</span>

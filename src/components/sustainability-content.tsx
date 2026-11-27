@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Copy, Check } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -383,11 +385,11 @@ Scorpio prioritizes reducing energy and paper use. We plan to support long-term 
                 >
                   {copiedDisclosure ? (
                     <>
-                      <Check className="h-4 w-4" /> Copied
+                      <ClickIcon icon={AnimatedCheck} className="h-4 w-4" /> Copied
                     </>
                   ) : (
                     <>
-                      <Copy className="h-4 w-4" /> Copy
+                      <ClickIcon icon={AnimatedCopy} className="h-4 w-4" /> Copy
                     </>
                   )}
                 </Button>

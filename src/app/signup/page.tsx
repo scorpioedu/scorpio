@@ -11,7 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { GraduationCap, Presentation, Eye, EyeOff, Info } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { EyeOffIcon as AnimatedEyeOff } from "@animateicons/react/lucide/eye-off-icon";
+import { GraduationCapIcon as AnimatedGraduationCap } from "@animateicons/react/lucide/graduation-cap-icon";
+import { InfoIcon as AnimatedInfo } from "@animateicons/react/lucide/info-icon";
+import { PresentationIcon as AnimatedPresentation } from "@animateicons/react/lucide/presentation-icon";
 import { motion } from "framer-motion";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { errorCode } from "@/lib/error-utils";
@@ -197,11 +202,11 @@ function SignupForm() {
             >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="student" className="flex items-center gap-2 cursor-pointer">
-                  <GraduationCap className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedGraduationCap} className="h-4 w-4" />
                   Student
                 </TabsTrigger>
                 <TabsTrigger value="teacher" className="flex items-center gap-2 cursor-pointer">
-                  <Presentation className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedPresentation} className="h-4 w-4" />
                   Teacher
                 </TabsTrigger>
               </TabsList>
@@ -272,9 +277,9 @@ function SignupForm() {
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
                         )}
                       </Button>
                     </div>
@@ -310,7 +315,10 @@ function SignupForm() {
                       <Label htmlFor="student-code">Class Code (Optional)</Label>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                          <ClickIcon
+                            icon={AnimatedInfo}
+                            className="h-3 w-3 text-muted-foreground cursor-help"
+                          />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="text-xs">
@@ -418,9 +426,9 @@ function SignupForm() {
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
                         )}
                       </Button>
                     </div>
@@ -457,7 +465,10 @@ function SignupForm() {
                         <Label htmlFor="teacher-code">Access Code</Label>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                            <ClickIcon
+                              icon={AnimatedInfo}
+                              className="h-3 w-3 text-muted-foreground cursor-help"
+                            />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p className="text-xs">
@@ -494,9 +505,9 @@ function SignupForm() {
                         aria-label={showAccessCode ? "Hide access code" : "Show access code"}
                       >
                         {showAccessCode ? (
-                          <EyeOff className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
                         )}
                       </Button>
                     </div>

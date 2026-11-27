@@ -24,7 +24,11 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowLeft, ChevronDown, Eye, Loader2, Settings2 } from "lucide-react";
+import { Loader2, Settings2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
 import { toast } from "sonner";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import { SmartDateTimePicker } from "@/components/ui/smart-datetime-picker";
@@ -61,7 +65,8 @@ function AdvancedSettings({ children }: { children: React.ReactNode }) {
             Time limits, student tools, and sharing
           </span>
         </span>
-        <ChevronDown
+        <ClickIcon
+          icon={AnimatedChevronDown}
           className={`size-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
@@ -294,7 +299,7 @@ function CreateAssignmentForm() {
         href="/teacher/assignments"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="size-4" />
+        <ClickIcon icon={AnimatedArrowLeft} className="size-4" />
         Assignments
       </Link>
       <TeacherPageHeader title="New assignment" />
@@ -433,7 +438,7 @@ function CreateAssignmentForm() {
             <div className="flex flex-wrap items-center gap-2">
               <DialogTrigger asChild>
                 <Button type="button" variant="outline">
-                  <Eye /> Preview
+                  <ClickIcon icon={AnimatedEye} /> Preview
                 </Button>
               </DialogTrigger>
               <Button type="submit" disabled={loading}>

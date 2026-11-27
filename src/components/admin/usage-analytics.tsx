@@ -25,17 +25,18 @@ import {
   Zap,
   Component,
   BowArrow,
-  Download,
   FileJson,
   FileSpreadsheet,
-  ExternalLink,
   Printer,
   Notebook,
   PencilRuler,
   Sparkles,
-  HelpCircle,
   BrainCircuit,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CircleQuestionMarkIcon as AnimatedCircleQuestionMark } from "@animateicons/react/lucide/circle-question-mark-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
+import { ExternalLinkIcon as AnimatedExternalLink } from "@animateicons/react/lucide/external-link-icon";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import {
   Dialog,
@@ -332,7 +333,10 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                   Interactions & Cost Trend
                   <UITooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help transition-all hover:text-purple-500" />
+                      <ClickIcon
+                        icon={AnimatedCircleQuestionMark}
+                        className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help transition-all hover:text-purple-500"
+                      />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[320px] p-0 overflow-hidden border-purple-200/50 shadow-2xl rounded-2xl">
                       <div className="bg-purple-600 p-4 text-white">
@@ -756,7 +760,10 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                 Interactions by Type
                 <UITooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help transition-all hover:text-emerald-500" />
+                    <ClickIcon
+                      icon={AnimatedCircleQuestionMark}
+                      className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help transition-all hover:text-emerald-500"
+                    />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[320px] p-0 overflow-hidden border-emerald-200/50 shadow-2xl rounded-2xl">
                     <div className="bg-emerald-600 p-4 text-white">
@@ -869,7 +876,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                   size="sm"
                   className="h-8 text-[10px] font-bold uppercase tracking-wider gap-2 cursor-pointer"
                 >
-                  <ExternalLink className="h-3 w-3" />
+                  <ClickIcon icon={AnimatedExternalLink} className="h-3 w-3" />
                   Full Report & Export
                 </Button>
               </DialogTrigger>
@@ -888,7 +895,7 @@ export function UsageAnalytics({ organizationId }: { organizationId: string | nu
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button className="gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold text-xs h-9 cursor-pointer">
-                        <Download className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedDownload} className="h-4 w-4" />
                         Export Data
                       </Button>
                     </DropdownMenuTrigger>

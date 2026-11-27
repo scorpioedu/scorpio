@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { PrimaryPill, SecondaryPill } from "@/components/landing/split-kit";
 import { LessonSearch, type SearchTopic } from "@/components/lessons/lesson-search";
 import { CourseBlocks, UnitBar, courseBlockStyles } from "@/components/lessons/course-blocks";
@@ -178,7 +179,7 @@ export default async function LessonsPage() {
                     </span>
                     <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground transition-transform group-hover:translate-x-0.5">
                       Open
-                      <ArrowRight aria-hidden className="size-3" />
+                      <ClickIcon icon={AnimatedArrowRight} aria-hidden className="size-3" />
                     </span>
                   </span>
                   <span className="mt-1.5 block text-xs tabular-nums text-muted-foreground">

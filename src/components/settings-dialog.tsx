@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   User,
   LogOut,
-  SlidersHorizontal as SettingsIcon,
   Palette,
   Info,
   RotateCcwKey,
@@ -16,6 +15,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useIconHover } from "@animateicons/react";
+import { SlidersHorizontalIcon } from "@animateicons/react/lucide/sliders-horizontal-icon";
 
 import { AppearancePreferences, ThemeModeControl } from "@/components/appearance-settings";
 import { Button } from "@/components/ui/button";
@@ -67,13 +68,13 @@ function ToggleSwitch({
       onClick={() => onCheckedChange(!checked)}
       className={cn(
         "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        checked ? "bg-primary" : "bg-muted"
+        checked ? "bg-primary" : "bg-muted",
       )}
     >
       <span
         className={cn(
           "pointer-events-none inline-block size-5 transform rounded-full bg-background shadow-md ring-0 transition duration-200 ease-in-out",
-          checked ? "translate-x-5" : "translate-x-0"
+          checked ? "translate-x-5" : "translate-x-0",
         )}
       />
     </button>
@@ -81,6 +82,9 @@ function ToggleSwitch({
 }
 
 export function SettingsDialog() {
+  const { ref: settingsIconRef, triggerProps: settingsIconTrigger } = useIconHover({
+    trigger: "click",
+  });
   const { user, role, profile } = useAuth();
   const router = useRouter();
 
@@ -231,8 +235,9 @@ export function SettingsDialog() {
           size="icon"
           className="size-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
           aria-label="Open settings"
+          {...settingsIconTrigger}
         >
-          <SettingsIcon className="size-4.5" />
+          <SlidersHorizontalIcon ref={settingsIconRef} size={18} />
         </Button>
       </DialogTrigger>
 
@@ -284,7 +289,7 @@ export function SettingsDialog() {
                   "border rounded-xl text-xs py-2.5",
                   alertType === "error"
                     ? "border-destructive/30 bg-destructive/10 text-destructive"
-                    : "border-primary/30 bg-primary/10 text-primary"
+                    : "border-primary/30 bg-primary/10 text-primary",
                 )}
               >
                 <AlertDescription>{alertMessage}</AlertDescription>
@@ -500,10 +505,30 @@ export function SettingsDialog() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  { label: "Documentation", href: "/research", icon: FileText, desc: "Methodology & architecture" },
-                  { label: "Contact & Support", href: "/contact", icon: Mail, desc: "Get help from the team" },
-                  { label: "Privacy Policy", href: "/privacy", icon: Shield, desc: "Data protection & privacy" },
-                  { label: "Terms of Service", href: "/terms", icon: FileText, desc: "Usage terms & guidelines" },
+                  {
+                    label: "Documentation",
+                    href: "/research",
+                    icon: FileText,
+                    desc: "Methodology & architecture",
+                  },
+                  {
+                    label: "Contact & Support",
+                    href: "/contact",
+                    icon: Mail,
+                    desc: "Get help from the team",
+                  },
+                  {
+                    label: "Privacy Policy",
+                    href: "/privacy",
+                    icon: Shield,
+                    desc: "Data protection & privacy",
+                  },
+                  {
+                    label: "Terms of Service",
+                    href: "/terms",
+                    icon: FileText,
+                    desc: "Usage terms & guidelines",
+                  },
                 ].map((item) => {
                   const Icon = item.icon;
                   return (
@@ -524,7 +549,9 @@ export function SettingsDialog() {
                           <p className="text-xs font-semibold text-foreground">{item.label}</p>
                           <ExternalLink className="size-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{item.desc}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                          {item.desc}
+                        </p>
                       </div>
                     </button>
                   );

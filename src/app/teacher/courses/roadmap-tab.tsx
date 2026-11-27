@@ -6,7 +6,12 @@
 // with a status mark (told apart by shape), its AP topics, its due date and how the class did.
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ChevronRight, Eye, EyeOff, MoreHorizontal, Plus } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
 import type { ApCourseId } from "@/data/ap";
 import type { Curriculum } from "@/data/curricula";
 import { shownProfile } from "@/data/curricula/profiles";
@@ -64,7 +69,8 @@ function MisconceptionList({ insight }: { insight: UnitInsight }) {
         href="/teacher/insights"
         className="inline-flex items-center gap-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
       >
-        Full misconception report <ChevronRight className="size-3" aria-hidden />
+        Full misconception report{" "}
+        <ClickIcon icon={AnimatedChevronRight} className="size-3" aria-hidden />
       </Link>
     </div>
   );
@@ -247,14 +253,15 @@ function SetRow({
           </span>
           {canAssign && (
             <Button size="sm" variant="outline" onClick={() => actions.onAssignSet!(s)}>
-              <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
+              <ClickIcon icon={AnimatedPlus} aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
             </Button>
           )}
           {s.assignmentId ? (
             <>
               <Button variant="ghost" size="sm" asChild>
                 <Link href={assignmentHref(s.assignmentId)}>
-                  {status === "needsYou" ? "Review" : "Results"} <ChevronRight aria-hidden />
+                  {status === "needsYou" ? "Review" : "Results"}{" "}
+                  <ClickIcon icon={AnimatedChevronRight} aria-hidden />
                 </Link>
               </Button>
               {actions.onCopyChanged ? (
@@ -278,7 +285,7 @@ function SetRow({
                 />
               ) : (
                 <Button variant="outline" size="sm" onClick={preview}>
-                  <Eye aria-hidden /> Preview
+                  <ClickIcon icon={AnimatedEye} aria-hidden /> Preview
                 </Button>
               )}
             </>
@@ -291,7 +298,7 @@ function SetRow({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${s.set.key}`}>
-                  <MoreHorizontal />
+                  <ClickIcon icon={AnimatedEllipsis} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
@@ -305,7 +312,7 @@ function SetRow({
             </DropdownMenu>
           ) : (
             <Button variant="outline" size="sm" onClick={preview}>
-              <Eye aria-hidden /> Preview
+              <ClickIcon icon={AnimatedEye} aria-hidden /> Preview
             </Button>
           )}
         </div>
@@ -619,7 +626,7 @@ export function RoadmapTab({
                       {/* The unit guide is the way in; assigning is one step beside it. */}
                       <Button size="sm" asChild>
                         <Link href={`/teacher/courses/${curriculum.id}/${u.unit}`}>
-                          Unit guide <ChevronRight aria-hidden />
+                          Unit guide <ClickIcon icon={AnimatedChevronRight} aria-hidden />
                         </Link>
                       </Button>
                       {hasClass && u.assignable.length > 0 && (
@@ -629,7 +636,7 @@ export function RoadmapTab({
                           onClick={() => onAssign(u)}
                           disabled={busy}
                         >
-                          <Plus aria-hidden />{" "}
+                          <ClickIcon icon={AnimatedPlus} aria-hidden />{" "}
                           {u.assignable.length === wanted.length ? "Assign all" : "Assign the rest"}
                         </Button>
                       )}

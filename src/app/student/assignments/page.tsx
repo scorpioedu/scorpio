@@ -14,7 +14,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import { groupByUnit, sortByDueThenCourse } from "@/lib/student-grouping";
 import { TONE, pillClass, type Tone } from "@/components/student/tones";
 import { normalisePlan } from "@/lib/curriculum-plan";
@@ -423,7 +424,8 @@ export default function StudentAssignmentsPage() {
                 {showSubmitted
                   ? "Hide past submissions"
                   : `Show past submissions (${handedIn.length})`}
-                <ChevronDown
+                <ClickIcon
+                  icon={AnimatedChevronDown}
                   className={`ml-1.5 size-3.5 opacity-60 transition-transform ${showSubmitted ? "rotate-180" : ""}`}
                 />
               </Button>
@@ -458,7 +460,7 @@ export default function StudentAssignmentsPage() {
                     if (filter === "pastDue") return `Past Due (${counts.pastDue})`;
                     return "All";
                   })()}{" "}
-                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                  <ClickIcon icon={AnimatedChevronDown} className="w-3.5 h-3.5 ml-1.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
@@ -489,7 +491,10 @@ export default function StudentAssignmentsPage() {
                       if (sort === "titleDesc") return "Title (Z–A)";
                       return "Due Date (Earliest)";
                     })()}{" "}
-                    <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                    <ClickIcon
+                      icon={AnimatedChevronDown}
+                      className="w-3.5 h-3.5 ml-1.5 opacity-60"
+                    />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">

@@ -7,18 +7,12 @@ import "katex/dist/katex.min.css";
 import { MathBuilderModal, type BuilderType } from "@/components/math-builder-modal";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { cn } from "@/lib/utils";
-import {
-  Bold,
-  Italic,
-  List,
-  ListOrdered,
-  Calculator,
-  AtSign,
-  ChevronDown,
-  ChevronUp,
-  PenLine,
-  Eye,
-} from "lucide-react";
+import { Bold, Italic, List, ListOrdered, Calculator, AtSign, PenLine } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CalculatorIcon as AnimatedCalculator } from "@animateicons/react/lucide/calculator-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { ChevronUpIcon as AnimatedChevronUp } from "@animateicons/react/lucide/chevron-up-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function esc(s: string) {
@@ -431,9 +425,13 @@ export function MathInputField({
                 : "bg-muted/50 text-muted-foreground border-border hover:bg-muted hover:text-foreground",
             )}
           >
-            <Calculator className="h-3 w-3" />
+            <ClickIcon icon={AnimatedCalculator} className="h-3 w-3" />
             {showToolbar ? "Hide Tools" : "Math & Formatting"}
-            {showToolbar ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            {showToolbar ? (
+              <ClickIcon icon={AnimatedChevronUp} className="h-3 w-3" />
+            ) : (
+              <ClickIcon icon={AnimatedChevronDown} className="h-3 w-3" />
+            )}
           </button>
 
           {!compact && (
@@ -449,7 +447,7 @@ export function MathInputField({
                   : "bg-muted/50 text-muted-foreground border-border hover:bg-muted hover:text-foreground",
               )}
             >
-              <Eye className="h-3 w-3" />
+              <ClickIcon icon={AnimatedEye} className="h-3 w-3" />
               {showPreview ? "Hide Preview" : "Preview Answer"}
             </button>
           )}

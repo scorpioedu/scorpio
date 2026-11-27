@@ -1,6 +1,7 @@
 import StickyBannerDemo from "@/components/sticky-banner-demo";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
 
 export const metadata = {
   title: "Sticky Banner Demo",
@@ -15,7 +16,7 @@ export default function StickyBannerDemoPage() {
           href="/demos"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="size-4" /> Back to Demos
+          <ClickIcon icon={AnimatedArrowLeft} className="size-4" /> Back to Demos
         </Link>
         <div className="border border-border rounded-2xl overflow-hidden shadow-2xl bg-card">
           <StickyBannerDemo />

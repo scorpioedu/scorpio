@@ -4,18 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  X,
-  ArrowRight,
-  ArrowUp,
-  Maximize2,
-  Minimize2,
-  HelpCircle,
-  CircleDollarSign,
-  GraduationCap,
-  Microscope,
-  Compass,
-} from "lucide-react";
+import { HelpCircle, CircleDollarSign, GraduationCap, Microscope, Compass } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { ArrowUpIcon as AnimatedArrowUp } from "@animateicons/react/lucide/arrow-up-icon";
+import { Maximize2Icon as AnimatedMaximize2 } from "@animateicons/react/lucide/maximize-2-icon";
+import { Minimize2Icon as AnimatedMinimize2 } from "@animateicons/react/lucide/minimize-2-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import type { LucideIcon } from "lucide-react";
 import { LazyMarkdownRenderer as MarkdownRenderer } from "./lazy-markdown-renderer";
 import { hideOpenDiagramBlock } from "@/lib/diagram/blocks";
@@ -304,7 +299,7 @@ export function LandingChatbot() {
                     aria-label="Dismiss hint"
                     className="ml-1 size-5 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-muted grid place-items-center shrink-0 cursor-pointer"
                   >
-                    <X className="size-3" />
+                    <ClickIcon icon={AnimatedX} className="size-3" />
                   </button>
                 </motion.div>
               )}
@@ -328,7 +323,7 @@ export function LandingChatbot() {
             >
               {isOpen ? (
                 <>
-                  <X aria-hidden="true" className="size-4" />
+                  <ClickIcon icon={AnimatedX} aria-hidden="true" className="size-4" />
                   <span>Close</span>
                 </>
               ) : (
@@ -404,9 +399,9 @@ export function LandingChatbot() {
                   className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
                 >
                   {isExpanded ? (
-                    <Minimize2 className="size-4" aria-hidden="true" />
+                    <ClickIcon icon={AnimatedMinimize2} className="size-4" aria-hidden="true" />
                   ) : (
-                    <Maximize2 className="size-4" aria-hidden="true" />
+                    <ClickIcon icon={AnimatedMaximize2} className="size-4" aria-hidden="true" />
                   )}
                 </Button>
                 <Button
@@ -418,7 +413,7 @@ export function LandingChatbot() {
                   aria-label="Close chat"
                   className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
                 >
-                  <X className="size-4" aria-hidden="true" />
+                  <ClickIcon icon={AnimatedX} className="size-4" aria-hidden="true" />
                 </Button>
               </div>
 
@@ -471,7 +466,8 @@ export function LandingChatbot() {
                                 </div>
                                 <p className="font-medium text-foreground truncate">{item.text}</p>
                               </div>
-                              <ArrowRight
+                              <ClickIcon
+                                icon={AnimatedArrowRight}
                                 aria-hidden="true"
                                 className="size-3.5 shrink-0 text-muted-foreground"
                               />
@@ -584,7 +580,12 @@ export function LandingChatbot() {
                     </p>
                     <Button asChild size="sm" className="mt-3 rounded-lg">
                       <Link href="/signup" onClick={closeChat}>
-                        Sign up for free <ArrowRight aria-hidden="true" className="ml-1 size-3.5" />
+                        Sign up for free{" "}
+                        <ClickIcon
+                          icon={AnimatedArrowRight}
+                          aria-hidden="true"
+                          className="ml-1 size-3.5"
+                        />
                       </Link>
                     </Button>
                   </div>
@@ -634,7 +635,7 @@ export function LandingChatbot() {
                     disabled={!input.trim() || isBusy || limitReached}
                     className="size-9 rounded-lg shrink-0 cursor-pointer"
                   >
-                    <ArrowUp aria-hidden="true" className="size-4" />
+                    <ClickIcon icon={AnimatedArrowUp} aria-hidden="true" className="size-4" />
                   </Button>
                 </div>
                 <div className="mt-2 flex items-center justify-between px-0.5">

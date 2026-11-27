@@ -7,17 +7,14 @@
 // course: a unit of another course is not shown for that class.
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  ChevronRight,
-  Eye,
-  Plus,
-  User,
-  Users,
-  UsersRound,
-} from "lucide-react";
+import { User, Users, UsersRound } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
 import { apTopic, misconceptionTag } from "@/data/ap";
 import { getCurriculum, hasContent, type Curriculum } from "@/data/curricula";
 import { shownProfile } from "@/data/curricula/profiles";
@@ -118,7 +115,8 @@ function OtherCourse({
         <div className="flex flex-wrap justify-center gap-2">
           <Button asChild>
             <Link href="/teacher/courses">
-              {own ? `Open ${own.name}` : "Choose a course"} <ArrowRight aria-hidden />
+              {own ? `Open ${own.name}` : "Choose a course"}{" "}
+              <ClickIcon icon={AnimatedArrowRight} aria-hidden />
             </Link>
           </Button>
           {here.map((c) => (
@@ -365,7 +363,7 @@ export default function UnitGuideClient({
         onClick={() => readLesson(topic, topics, misconceptionAnchor(topic, tag))}
         className="inline-flex items-center gap-1 text-xs font-medium text-primary underline-offset-2 hover:underline"
       >
-        <BookOpen className="size-3.5" aria-hidden /> Lesson {topic}
+        <ClickIcon icon={AnimatedBookOpen} className="size-3.5" aria-hidden /> Lesson {topic}
       </button>
     ) : null;
   };
@@ -377,7 +375,7 @@ export default function UnitGuideClient({
           href="/teacher/courses"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-4" aria-hidden /> {curriculum.name}
+          <ClickIcon icon={AnimatedArrowLeft} className="size-4" aria-hidden /> {curriculum.name}
         </Link>
         {written && classes.length > 0 && <ClassPicker />}
       </div>
@@ -399,7 +397,7 @@ export default function UnitGuideClient({
           {classReady && roadmapUnit.assignable.length > 0 && (
             <Button asChild>
               <Link href={assignHref(unit)}>
-                <Plus aria-hidden />{" "}
+                <ClickIcon icon={AnimatedPlus} aria-hidden />{" "}
                 {roadmapUnit.assignable.length === wanted.length ? "Assign all" : "Assign the rest"}
               </Link>
             </Button>
@@ -517,7 +515,11 @@ export default function UnitGuideClient({
                           title={`Read lesson ${id}`}
                           className="inline-flex max-w-full items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs hover:border-primary/60 hover:text-primary"
                         >
-                          <BookOpen className="size-3 shrink-0" aria-hidden />
+                          <ClickIcon
+                            icon={AnimatedBookOpen}
+                            className="size-3 shrink-0"
+                            aria-hidden
+                          />
                           <span className="font-semibold tabular-nums">{id}</span>
                           <span className="truncate text-muted-foreground">
                             {apTopic(id, curriculum.apCourse)?.title}
@@ -532,8 +534,9 @@ export default function UnitGuideClient({
                   {caught.length > 0 && (
                     <details className="group text-xs text-muted-foreground">
                       <summary className="cursor-pointer list-none hover:text-foreground [&::-webkit-details-marker]:hidden">
-                        <ChevronRight
-                          className="mr-1 inline size-3.5 transition-transform group-open:rotate-90"
+                        <ClickIcon
+                          icon={AnimatedChevronRight}
+                          className="mr-1 size-3.5 align-middle transition-transform group-open:rotate-90"
                           aria-hidden
                         />
                         Catches {plural(caught.length, "common mistake")}
@@ -602,19 +605,21 @@ export default function UnitGuideClient({
                     {canAssign && (
                       <Button size="sm" asChild>
                         <Link href={assignHref(s.set.key)}>
-                          <Plus aria-hidden /> {s.archivedId ? "Restore" : "Assign"}
+                          <ClickIcon icon={AnimatedPlus} aria-hidden />{" "}
+                          {s.archivedId ? "Restore" : "Assign"}
                         </Link>
                       </Button>
                     )}
                     {s.assignmentId && (
                       <Button size="sm" asChild>
                         <Link href={assignmentHref(s.assignmentId)}>
-                          {st === "needsYou" ? "Review" : "Results"} <ChevronRight aria-hidden />
+                          {st === "needsYou" ? "Review" : "Results"}{" "}
+                          <ClickIcon icon={AnimatedChevronRight} aria-hidden />
                         </Link>
                       </Button>
                     )}
                     <Button size="sm" variant="ghost" onClick={() => open(s)}>
-                      <Eye aria-hidden /> Preview
+                      <ClickIcon icon={AnimatedEye} aria-hidden /> Preview
                     </Button>
                   </div>
                 </li>
@@ -719,7 +724,8 @@ export default function UnitGuideClient({
                     href="/teacher/insights"
                     className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
                   >
-                    Full misconception report <ChevronRight className="size-4" aria-hidden />
+                    Full misconception report{" "}
+                    <ClickIcon icon={AnimatedChevronRight} className="size-4" aria-hidden />
                   </Link>
                 </>
               ) : (

@@ -8,13 +8,14 @@ import {
   BookCheck,
   Inbox,
   LayoutDashboard,
-  LogOut,
-  Menu,
   MessageSquare,
   ShieldCheck,
   Sparkles,
   Users,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { LogOutIcon as AnimatedLogOut } from "@animateicons/react/lucide/log-out-icon";
+import { MenuIcon as AnimatedMenu } from "@animateicons/react/lucide/menu-icon";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { logout } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
@@ -106,7 +107,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   className="md:hidden"
                   aria-label="Open admin menu"
                 >
-                  <Menu className="size-5" />
+                  <ClickIcon icon={AnimatedMenu} className="size-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-64 p-0" aria-describedby={undefined}>
@@ -134,7 +135,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               className="text-muted-foreground"
               onClick={() => void logout()}
             >
-              <LogOut className="size-4" />
+              <ClickIcon icon={AnimatedLogOut} className="size-4" />
               <span className="hidden sm:inline">Log out</span>
             </Button>
           </div>

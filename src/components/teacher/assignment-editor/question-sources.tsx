@@ -2,7 +2,10 @@
 
 // Add questions by generating them with the AI or importing pasted text.
 import { useState } from "react";
-import { FileDown, Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { FileDownIcon as AnimatedFileDown } from "@animateicons/react/lucide/file-down-icon";
+import { SparklesIcon as AnimatedSparkles } from "@animateicons/react/lucide/sparkles-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { parseQuestionsManually } from "@/lib/assignment-parser";
@@ -154,12 +157,8 @@ export function QuestionSources({
     <div className="flex flex-wrap gap-2">
       <Dialog open={aiOpen} onOpenChange={setAiOpen}>
         <DialogTrigger asChild>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-          >
-            <Sparkles />
+          <Button type="button" size="sm" variant="outline">
+            <ClickIcon icon={AnimatedSparkles} />
             Generate with AI
           </Button>
         </DialogTrigger>
@@ -270,12 +269,8 @@ export function QuestionSources({
       </Dialog>
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
         <DialogTrigger asChild>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-          >
-            <FileDown />
+          <Button type="button" size="sm" variant="outline">
+            <ClickIcon icon={AnimatedFileDown} />
             Import text
           </Button>
         </DialogTrigger>

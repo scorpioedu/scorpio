@@ -4,7 +4,8 @@
 // with the accent colour, left to right. The blocks rise into place once on load.
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import type { PublicCourse } from "@/lib/guides/public";
 import { cn } from "@/lib/utils";
 import styles from "./course-blocks.module.css";
@@ -143,7 +144,8 @@ export function CourseBlocks({
           >
             <span className="flex items-start justify-between gap-2">
               <CourseDiagram courseId={c.id} />
-              <ArrowRight
+              <ClickIcon
+                icon={AnimatedArrowRight}
                 aria-hidden
                 className="size-4 text-muted-foreground transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-primary"
               />

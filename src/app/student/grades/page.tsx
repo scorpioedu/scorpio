@@ -6,7 +6,10 @@ import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowUpRight, Award, CheckCircle2, ChevronDown, Clock, FileCheck2 } from "lucide-react";
+import { Award, CheckCircle2, Clock, FileCheck2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowUpRightIcon as AnimatedArrowUpRight } from "@animateicons/react/lucide/arrow-up-right-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import type { LucideIcon } from "lucide-react";
 import { TONE, pillClass, scoreTone } from "@/components/student/tones";
 import {
@@ -257,7 +260,8 @@ export default function StudentGradesPage() {
                         <span className="hidden sm:inline">
                           {isOpen ? "Hide problems" : "Problems"}
                         </span>
-                        <ChevronDown
+                        <ClickIcon
+                          icon={AnimatedChevronDown}
                           className={`size-4 transition-transform sm:ml-1 ${isOpen ? "rotate-180" : ""}`}
                         />
                       </Button>
@@ -316,7 +320,7 @@ function FullViewLink({ submission }: { submission: Submission }) {
         aria-label={`Open ${submission.assignmentTitle} in full`}
       >
         <span className="hidden sm:inline">Full view</span>
-        <ArrowUpRight className="size-4 sm:ml-1" />
+        <ClickIcon icon={AnimatedArrowUpRight} className="size-4 sm:ml-1" />
       </Link>
     </Button>
   );

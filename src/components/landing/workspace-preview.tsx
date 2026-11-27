@@ -22,20 +22,15 @@ import { Label } from "@/components/ui/label";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
 import type { StudentPortfolio } from "@/lib/types";
 import { toast } from "sonner";
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  Copy,
-  FileUp,
-  HelpCircle,
-  Lock,
-  PlusCircle,
-  ShieldAlert,
-  Sparkles,
-  Trash2,
-  Users,
-} from "lucide-react";
+import { BookOpen, HelpCircle, Lock, ShieldAlert, Sparkles, Users } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CirclePlusIcon as AnimatedCirclePlus } from "@animateicons/react/lucide/circle-plus-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { FileUpIcon as AnimatedFileUp } from "@animateicons/react/lucide/file-up-icon";
+import { LockIcon as AnimatedLock } from "@animateicons/react/lucide/lock-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
 import {
   courseName,
   dueLabel,
@@ -411,7 +406,7 @@ export function WorkspacePreview() {
                       className="h-9 cursor-pointer"
                       onClick={() => navigate("/teacher/create")}
                     >
-                      <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedCirclePlus} className="mr-1.5 h-3.5 w-3.5" />
                       Create Assignment
                     </Button>
                   </TeacherPageHeader>
@@ -434,7 +429,7 @@ export function WorkspacePreview() {
                           onClick={() => navigate("/teacher/grades")}
                         >
                           Open Gradebook
-                          <ArrowRight className="ml-1 h-3 w-3" />
+                          <ClickIcon icon={AnimatedArrowRight} className="ml-1 h-3 w-3" />
                         </Button>
                       ),
                       rows: ungradedSubmissions.map((sub) => {
@@ -465,7 +460,7 @@ export function WorkspacePreview() {
                               onClick={() => openSubmissionInTerminal(sub.id)}
                             >
                               Grade
-                              <ArrowRight className="ml-1 h-3 w-3" />
+                              <ClickIcon icon={AnimatedArrowRight} className="ml-1 h-3 w-3" />
                             </Button>
                           </li>
                         );
@@ -511,7 +506,7 @@ export function WorkspacePreview() {
                               size="sm"
                               className="h-8 text-xs cursor-pointer"
                             >
-                              <PlusCircle className="mr-1 h-3.5 w-3.5" />
+                              <ClickIcon icon={AnimatedCirclePlus} className="mr-1 h-3.5 w-3.5" />
                               New class
                             </Button>
                           </DialogTrigger>
@@ -588,7 +583,7 @@ export function WorkspacePreview() {
                               className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0 cursor-pointer"
                               onClick={() => setCourseToDelete(course)}
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <ClickIcon icon={AnimatedTrash2} className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                           <div className="flex items-center justify-between gap-2 pt-0.5">
@@ -600,13 +595,16 @@ export function WorkspacePreview() {
                             >
                               {copiedCode === course.code ? (
                                 <>
-                                  <Check className="h-3 w-3 text-emerald-600" />
+                                  <ClickIcon
+                                    icon={AnimatedCheck}
+                                    className="h-3 w-3 text-emerald-600"
+                                  />
                                   Copied
                                 </>
                               ) : (
                                 <>
                                   {course.code}
-                                  <Copy className="h-3 w-3 opacity-60" />
+                                  <ClickIcon icon={AnimatedCopy} className="h-3 w-3 opacity-60" />
                                 </>
                               )}
                             </button>
@@ -635,7 +633,7 @@ export function WorkspacePreview() {
                       className="h-8 text-xs cursor-pointer"
                       onClick={() => navigate("/teacher/uploads")}
                     >
-                      <FileUp className="mr-1.5 h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedFileUp} className="mr-1.5 h-3.5 w-3.5" />
                       Upload PDF
                     </Button>
                     <Button
@@ -644,7 +642,7 @@ export function WorkspacePreview() {
                       className="h-8 text-xs cursor-pointer"
                       onClick={() => navigate("/teacher/vault")}
                     >
-                      <Lock className="mr-1.5 h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedLock} className="mr-1.5 h-3.5 w-3.5" />
                       Vault Controls
                     </Button>
                   </div>

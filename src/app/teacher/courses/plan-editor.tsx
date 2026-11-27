@@ -5,7 +5,10 @@
 // can be re-dated so their due dates follow the new order.
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowDownIcon as AnimatedArrowDown } from "@animateicons/react/lucide/arrow-down-icon";
+import { ArrowUpIcon as AnimatedArrowUp } from "@animateicons/react/lucide/arrow-up-icon";
+import { GripVerticalIcon as AnimatedGripVertical } from "@animateicons/react/lucide/grip-vertical-icon";
 import {
   closestCenter,
   DndContext,
@@ -69,7 +72,7 @@ function Handle({
       {...attributes}
       {...listeners}
     >
-      <GripVertical className="size-4" aria-hidden />
+      <ClickIcon icon={AnimatedGripVertical} className="size-4" aria-hidden />
     </button>
   );
 }
@@ -283,7 +286,7 @@ export function PlanEditor({
                               setPlan({ ...plan, order: moveUnit(plan.order, unit, -1) })
                             }
                           >
-                            <ArrowUp aria-hidden />
+                            <ClickIcon icon={AnimatedArrowUp} aria-hidden />
                           </Button>
                           <Button
                             variant="ghost"
@@ -294,7 +297,7 @@ export function PlanEditor({
                               setPlan({ ...plan, order: moveUnit(plan.order, unit, 1) })
                             }
                           >
-                            <ArrowDown aria-hidden />
+                            <ClickIcon icon={AnimatedArrowDown} aria-hidden />
                           </Button>
                         </span>
                       </div>
@@ -348,7 +351,7 @@ export function PlanEditor({
                                             })
                                           }
                                         >
-                                          <ArrowUp aria-hidden />
+                                          <ClickIcon icon={AnimatedArrowUp} aria-hidden />
                                         </Button>
                                         <Button
                                           variant="ghost"
@@ -359,7 +362,7 @@ export function PlanEditor({
                                             setPlan({ ...plan, order: moveSet(plan.order, key, 1) })
                                           }
                                         >
-                                          <ArrowDown aria-hidden />
+                                          <ClickIcon icon={AnimatedArrowDown} aria-hidden />
                                         </Button>
                                       </span>
                                     </div>

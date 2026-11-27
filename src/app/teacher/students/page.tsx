@@ -17,7 +17,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
 import { RosterImport } from "@/components/roster-import";
 import { NetworkStudents } from "@/components/teacher/network-students";
 import { TeacherPageHeader } from "@/components/teacher/workspace";
@@ -250,7 +252,7 @@ export default function StudentsPage() {
                                 size="icon-sm"
                                 aria-label={`Actions for ${student.name || student.email}`}
                               >
-                                <MoreHorizontal />
+                                <ClickIcon icon={AnimatedEllipsis} />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">

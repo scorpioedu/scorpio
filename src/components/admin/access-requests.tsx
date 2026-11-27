@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, ChevronDown, Copy, Mail, RefreshCw, Search, X } from "lucide-react";
+import { RefreshCw, Search } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { MailIcon as AnimatedMail } from "@animateicons/react/lucide/mail-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { errorMessage } from "@/lib/error-utils";
@@ -136,7 +142,8 @@ function RequestRow({
         >
           {ago(r.createdAt)}
         </span>
-        <ChevronDown
+        <ClickIcon
+          icon={AnimatedChevronDown}
           className={cn(
             "mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform",
             open && "rotate-180",
@@ -174,11 +181,11 @@ function RequestRow({
                 {r.generatedCode}
               </code>
               <Button variant="outline" size="sm" onClick={() => copy(r.generatedCode!)}>
-                <Copy className="size-3.5" /> Copy
+                <ClickIcon icon={AnimatedCopy} className="size-3.5" /> Copy
               </Button>
               <Button variant="outline" size="sm" asChild>
                 <a href={inviteMailto(r)}>
-                  <Mail className="size-3.5" />{" "}
+                  <ClickIcon icon={AnimatedMail} className="size-3.5" />{" "}
                   {r.approvalEmailSentAt ? "Email again" : "Email code"}
                 </a>
               </Button>
@@ -198,7 +205,7 @@ function RequestRow({
                 {busy ? (
                   <RefreshCw className="size-3.5 animate-spin" />
                 ) : (
-                  <Check className="size-3.5" />
+                  <ClickIcon icon={AnimatedCheck} className="size-3.5" />
                 )}
                 Approve and create code
               </Button>
@@ -226,7 +233,7 @@ function RequestRow({
                   onClick={() => setConfirmReject(true)}
                   disabled={busy}
                 >
-                  <X className="size-3.5" /> Reject
+                  <ClickIcon icon={AnimatedX} className="size-3.5" /> Reject
                 </Button>
               )}
             </div>

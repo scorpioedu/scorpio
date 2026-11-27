@@ -9,7 +9,9 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { Organization } from "@/lib/types";
 import { RaiseLogo } from "@/components/ui/raise-logo";
 import { summarizeBalance, LOW_BALANCE_CENTS } from "../../functions/src/budget-policy";
-import { ArrowRight, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -54,7 +56,7 @@ export function DepartmentBanner({ className }: { className?: string }) {
         (error) => {
           console.error("Error fetching organization for department banner:", error);
           setOrganization(null);
-        }
+        },
       );
     } catch (err) {
       console.error("Failed to subscribe to organization for department banner:", err);
@@ -106,7 +108,7 @@ export function DepartmentBanner({ className }: { className?: string }) {
           aria-live="polite"
           className={cn(
             "pointer-events-auto flex items-center gap-2 rounded-full border border-purple-500/35 bg-purple-950/85 px-3.5 py-1.5 text-xs text-purple-200 shadow-md shadow-purple-950/40 backdrop-blur-md transition-colors hover:border-purple-500/50",
-            className
+            className,
           )}
         >
           <RaiseLogo size={13} className="text-purple-400 shrink-0" />
@@ -119,7 +121,7 @@ export function DepartmentBanner({ className }: { className?: string }) {
             className="inline-flex items-center gap-0.5 text-[11px] sm:text-xs font-bold text-white underline underline-offset-2 hover:text-purple-200 transition-colors ml-0.5"
           >
             Top up
-            <ArrowRight className="size-3 inline-block" />
+            <ClickIcon icon={AnimatedArrowRight} className="size-3" />
           </Link>
           <button
             type="button"
@@ -128,7 +130,7 @@ export function DepartmentBanner({ className }: { className?: string }) {
             aria-label="Dismiss for 7 days"
             title="Dismiss for 7 days"
           >
-            <X className="size-3.5" />
+            <ClickIcon icon={AnimatedX} className="size-3.5" />
           </button>
         </motion.div>
       </AnimatePresence>

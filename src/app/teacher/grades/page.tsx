@@ -39,7 +39,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUpRight, BarChart3, MoreHorizontal, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowUpRightIcon as AnimatedArrowUpRight } from "@animateicons/react/lucide/arrow-up-right-icon";
+import { ChartColumnIcon as AnimatedChartColumn } from "@animateicons/react/lucide/chart-column-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
 import Link from "next/link";
 import { GradeExportButton } from "@/components/grade-export-button";
 import { GradeDistributionChart } from "@/components/admin/grade-distribution-chart";
@@ -352,7 +356,7 @@ export default function TeacherGradesPage() {
             aria-controls="grade-distribution"
             onClick={() => setShowDistribution((open) => !open)}
           >
-            <BarChart3 />
+            <ClickIcon icon={AnimatedChartColumn} />
             {showDistribution ? "Hide distribution" : "Grade distribution"}
           </Button>
         </CardHeader>
@@ -406,7 +410,8 @@ export default function TeacherGradesPage() {
                         className="inline-flex items-baseline gap-1.5 break-words font-medium hover:text-primary hover:underline"
                       >
                         {student.name}{" "}
-                        <ArrowUpRight
+                        <ClickIcon
+                          icon={AnimatedArrowUpRight}
                           aria-hidden="true"
                           className="size-3 shrink-0 text-muted-foreground"
                         />
@@ -433,7 +438,7 @@ export default function TeacherGradesPage() {
                             size="icon-sm"
                             aria-label={`Actions for ${student.name}`}
                           >
-                            <MoreHorizontal />
+                            <ClickIcon icon={AnimatedEllipsis} />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

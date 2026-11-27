@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
 
 interface GradeData {
   studentName: string;
@@ -17,28 +18,36 @@ interface GradeExportButtonProps {
   filename?: string;
 }
 
-export function GradeExportButton({ data, filename = "scorpio-grades.csv" }: GradeExportButtonProps) {
+export function GradeExportButton({
+  data,
+  filename = "scorpio-grades.csv",
+}: GradeExportButtonProps) {
   const exportToCsv = () => {
     if (data.length === 0) return;
 
     // CSV Headers
-    const headers = ["Student Name", "Email", "Assignment", "Score", "Total Points", "Percentage", "Date"];
+    const headers = [
+      "Student Name",
+      "Email",
+      "Assignment",
+      "Score",
+      "Total Points",
+      "Percentage",
+      "Date",
+    ];
 
     // CSV Rows
-    const rows = data.map(item => [
+    const rows = data.map((item) => [
       `"${item.studentName}"`,
       `"${item.studentEmail}"`,
       `"${item.assignmentTitle}"`,
       item.score,
       item.totalPoints,
       ((item.score / item.totalPoints) * 100).toFixed(2) + "%",
-      `"${item.submittedAt}"`
+      `"${item.submittedAt}"`,
     ]);
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -59,7 +68,7 @@ export function GradeExportButton({ data, filename = "scorpio-grades.csv" }: Gra
       disabled={data.length === 0}
       className="gap-2"
     >
-      <Download className="size-4" />
+      <ClickIcon icon={AnimatedDownload} className="size-4" />
       Export Grades (.CSV)
     </Button>
   );

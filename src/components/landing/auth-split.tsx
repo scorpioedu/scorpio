@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
 import { Logo } from "@/components/ui/logo";
 
 /** Flowing field lines that bend toward a focal point, drawn once on the server. */
@@ -60,7 +61,7 @@ export function AuthSplit({
             href="/"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ClickIcon icon={AnimatedChevronLeft} className="h-4 w-4" />
             Home
           </Link>
           <Link href="/" className="lg:hidden" aria-label="Scorpio home">

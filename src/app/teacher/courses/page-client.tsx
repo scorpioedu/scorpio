@@ -8,18 +8,19 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
-  ArrowRight,
   CalendarDays,
   CalendarRange,
   ChartNoAxesColumn,
   History,
   List as ListIcon,
   ListOrdered,
-  MoreHorizontal,
-  Plus,
   UserPlus,
-  X,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { guideUnits } from "@/lib/guides";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import {
@@ -475,7 +476,7 @@ export default function CoursesClient() {
             disabled={busy !== null}
             title={`Unit ${next.unit}: ${next.info?.title ?? ""}`}
           >
-            <Plus aria-hidden /> Assign next {next.assignable.length}
+            <ClickIcon icon={AnimatedPlus} aria-hidden /> Assign next {next.assignable.length}
             <span className="sr-only">
               {next.assignable.length === 1 ? " set" : " sets"}, from Unit {next.unit}
             </span>
@@ -486,7 +487,7 @@ export default function CoursesClient() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" aria-label="More course actions">
-                <MoreHorizontal />
+                <ClickIcon icon={AnimatedEllipsis} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-72">
@@ -609,7 +610,7 @@ export default function CoursesClient() {
                       onClick={() => setCourseDraft(c.id)}
                     >
                       {ready ? `Start ${c.name}` : "Not ready yet"}
-                      {ready && <ArrowRight aria-hidden />}
+                      {ready && <ClickIcon icon={AnimatedArrowRight} aria-hidden />}
                     </Button>
                   </div>
                 </li>
@@ -664,7 +665,7 @@ export default function CoursesClient() {
                     aria-label="Dismiss this note"
                     title="Dismiss"
                   >
-                    <X className="size-4" aria-hidden />
+                    <ClickIcon icon={AnimatedX} className="size-4" aria-hidden />
                   </button>
                 </li>
               )}

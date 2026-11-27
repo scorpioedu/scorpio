@@ -10,7 +10,9 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { ChevronRight, Search, Users } from "lucide-react";
+import { Search, Users } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
 import { db } from "@/lib/firebase";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { useAuth } from "@/contexts/auth-context";
@@ -95,7 +97,9 @@ function toLibrarySet(id: string, d: Record<string, unknown>): LibrarySet {
 
 function toRow(item: LibrarySet): Row {
   const set =
-    item.curriculumId && item.setKey ? (curriculumSet(item.curriculumId, item.setKey) ?? null) : null;
+    item.curriculumId && item.setKey
+      ? (curriculumSet(item.curriculumId, item.setKey) ?? null)
+      : null;
   return { item, set, title: set?.title ?? item.title };
 }
 
@@ -388,7 +392,9 @@ export default function LibraryPage() {
                   ) : null}
                   <div className="min-w-0">
                     <h2 id={`lib-${group.key}`} className="break-words font-semibold">
-                      {group.unit && !needle ? `Unit ${group.unit} · ${group.heading}` : group.heading}
+                      {group.unit && !needle
+                        ? `Unit ${group.unit} · ${group.heading}`
+                        : group.heading}
                     </h2>
                     <p className="text-xs text-muted-foreground">
                       {group.rows.length} {group.rows.length === 1 ? "set" : "sets"}
@@ -398,11 +404,7 @@ export default function LibraryPage() {
               )}
               <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
                 {group.rows.map((row) => (
-                  <SetRow
-                    key={row.item.id}
-                    row={row}
-                    onOpen={() => setPreview(row)}
-                  />
+                  <SetRow key={row.item.id} row={row} onOpen={() => setPreview(row)} />
                 ))}
               </ul>
             </section>
@@ -465,7 +467,7 @@ function SetRow({ row, onOpen }: { row: Row; onOpen: () => void }) {
           </span>
         </span>
         <span className="mt-0.5 hidden shrink-0 items-center gap-1 text-sm text-muted-foreground group-hover:text-foreground sm:flex">
-          Preview <ChevronRight aria-hidden className="size-4" />
+          Preview <ClickIcon icon={AnimatedChevronRight} aria-hidden className="size-4" />
         </span>
       </button>
     </li>

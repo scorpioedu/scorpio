@@ -8,15 +8,13 @@
 // Works the same with or without a class.
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  ChevronDown,
-  ChevronRight,
-  Dumbbell,
-  RotateCcw,
-} from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { DumbbellIcon as AnimatedDumbbell } from "@animateicons/react/lucide/dumbbell-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Button } from "@/components/ui/button";
 import {
@@ -337,7 +335,7 @@ function FocusCard({
       <Button asChild className="mt-auto w-fit">
         <Link href={href}>
           {action}
-          <ArrowRight aria-hidden />
+          <ClickIcon icon={AnimatedArrowRight} aria-hidden />
         </Link>
       </Button>
     </section>
@@ -416,7 +414,8 @@ function CourseChoiceCard({
           >
             <span className="flex w-full items-center justify-between gap-2 text-sm font-medium">
               {c.name}
-              <ArrowRight
+              <ClickIcon
+                icon={AnimatedArrowRight}
                 aria-hidden
                 className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5"
               />
@@ -578,7 +577,7 @@ function ReviewCard({
       </div>
       {due > 0 && (
         <Button className="w-fit" disabled={run.phase === "loading"} onClick={() => void start()}>
-          <RotateCcw aria-hidden />
+          <ClickIcon icon={AnimatedRotateCcw} aria-hidden />
           {run.phase === "loading"
             ? "Loading review…"
             : run.phase === "error"
@@ -729,7 +728,8 @@ function UnitCard({
             )}
           </span>
           <TopicStrip topics={unit.topics} className="hidden w-28 shrink-0 sm:flex lg:w-40" />
-          <ChevronDown
+          <ClickIcon
+            icon={AnimatedChevronDown}
             aria-hidden
             className={cn(
               "size-4 shrink-0 text-muted-foreground transition-transform",
@@ -750,7 +750,7 @@ function UnitCard({
               {firstLesson && (
                 <Button asChild variant="ghost" size="sm" className="h-8 text-xs">
                   <Link href={firstLesson}>
-                    <BookOpen aria-hidden />
+                    <ClickIcon icon={AnimatedBookOpen} aria-hidden />
                     Open unit lessons<span className="sr-only">, unit {unit.unit}</span>
                   </Link>
                 </Button>
@@ -758,7 +758,7 @@ function UnitCard({
               {unit.practisable > 0 && (
                 <Button asChild variant="ghost" size="sm" className="h-8 text-xs">
                   <Link href={unitPracticeHref(courseId, unit.unit)}>
-                    <Dumbbell aria-hidden />
+                    <ClickIcon icon={AnimatedDumbbell} aria-hidden />
                     Practice whole unit<span className="sr-only">, unit {unit.unit}</span>
                   </Link>
                 </Button>

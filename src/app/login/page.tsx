@@ -16,7 +16,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { GraduationCap, Presentation, Eye, EyeOff } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { EyeOffIcon as AnimatedEyeOff } from "@animateicons/react/lucide/eye-off-icon";
+import { GraduationCapIcon as AnimatedGraduationCap } from "@animateicons/react/lucide/graduation-cap-icon";
+import { PresentationIcon as AnimatedPresentation } from "@animateicons/react/lucide/presentation-icon";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { errorMessage } from "@/lib/error-utils";
@@ -191,11 +195,11 @@ function LoginForm() {
               >
                 <TabsList className="grid w-full grid-cols-2 bg-muted/30 p-1">
                   <TabsTrigger value="student" className="flex items-center gap-2 cursor-pointer">
-                    <GraduationCap className="h-4 w-4" />
+                    <ClickIcon icon={AnimatedGraduationCap} className="h-4 w-4" />
                     Student
                   </TabsTrigger>
                   <TabsTrigger value="teacher" className="flex items-center gap-2 cursor-pointer">
-                    <Presentation className="h-4 w-4" />
+                    <ClickIcon icon={AnimatedPresentation} className="h-4 w-4" />
                     Teacher
                   </TabsTrigger>
                 </TabsList>
@@ -266,11 +270,11 @@ function LoginForm() {
             >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="student" className="flex items-center gap-2 cursor-pointer">
-                  <GraduationCap className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedGraduationCap} className="h-4 w-4" />
                   Student
                 </TabsTrigger>
                 <TabsTrigger value="teacher" className="flex items-center gap-2 cursor-pointer">
-                  <Presentation className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedPresentation} className="h-4 w-4" />
                   Teacher
                 </TabsTrigger>
               </TabsList>
@@ -333,9 +337,9 @@ function LoginForm() {
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
                         )}
                       </Button>
                     </div>
@@ -427,9 +431,9 @@ function LoginForm() {
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
                         )}
                       </Button>
                     </div>

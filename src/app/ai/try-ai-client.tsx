@@ -2,7 +2,11 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, ArrowRight, RefreshCw, CornerDownLeft, Shapes } from "lucide-react";
+import { CornerDownLeft, Shapes } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { RefreshCwIcon as AnimatedRefreshCw } from "@animateicons/react/lucide/refresh-cw-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -474,7 +478,7 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
                       onClick={reset}
                       className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
                     >
-                      <RefreshCw className="h-3 w-3" />
+                      <ClickIcon icon={AnimatedRefreshCw} className="h-3 w-3" />
                       Start over
                     </button>
                     <Button
@@ -484,7 +488,7 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
                     >
                       <Link href="/signup">
                         Get access
-                        <ArrowRight className="h-3 w-3 ml-1" />
+                        <ClickIcon icon={AnimatedArrowRight} className="h-3 w-3 ml-1" />
                       </Link>
                     </Button>
                   </div>
@@ -555,7 +559,7 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
                     : "bg-muted text-muted-foreground/40 cursor-not-allowed",
                 )}
               >
-                <Send className="h-3.5 w-3.5" />
+                <ClickIcon icon={AnimatedSend} className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
@@ -569,7 +573,7 @@ export function TryAiClient({ diagrams }: { diagrams: boolean }) {
                 onClick={reset}
                 className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-pointer flex items-center gap-1"
               >
-                <RefreshCw className="h-2.5 w-2.5" />
+                <ClickIcon icon={AnimatedRefreshCw} className="h-2.5 w-2.5" />
                 Start over
               </button>
             ) : (

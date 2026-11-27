@@ -5,19 +5,18 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
-import {
-  Bold,
-  Italic,
-  Underline as UnderlineIcon,
-  List,
-  ListOrdered,
-  Heading1,
-  Heading2,
-  Undo,
-  Redo,
-  Quote,
-  Strikethrough,
-} from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { BoldIcon as AnimatedBold } from "@animateicons/react/lucide/bold-icon";
+import { Heading1Icon as AnimatedHeading1 } from "@animateicons/react/lucide/heading-1-icon";
+import { Heading2Icon as AnimatedHeading2 } from "@animateicons/react/lucide/heading-2-icon";
+import { ItalicIcon as AnimatedItalic } from "@animateicons/react/lucide/italic-icon";
+import { ListIcon as AnimatedList } from "@animateicons/react/lucide/list-icon";
+import { ListOrderedIcon as AnimatedListOrdered } from "@animateicons/react/lucide/list-ordered-icon";
+import { QuoteIcon as AnimatedQuote } from "@animateicons/react/lucide/quote-icon";
+import { RedoIcon as AnimatedRedo } from "@animateicons/react/lucide/redo-icon";
+import { StrikethroughIcon as AnimatedStrikethrough } from "@animateicons/react/lucide/strikethrough-icon";
+import { UnderlineIcon as AnimatedUnderline } from "@animateicons/react/lucide/underline-icon";
+import { UndoIcon as AnimatedUndo } from "@animateicons/react/lucide/undo-icon";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
@@ -155,7 +154,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleBold().run();
             }}
           >
-            <Bold className="h-4 w-4" />
+            <ClickIcon icon={AnimatedBold} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("Italic")}
@@ -164,7 +163,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleItalic().run();
             }}
           >
-            <Italic className="h-4 w-4" />
+            <ClickIcon icon={AnimatedItalic} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("Underline")}
@@ -173,7 +172,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleUnderline().run();
             }}
           >
-            <UnderlineIcon className="h-4 w-4" />
+            <ClickIcon icon={AnimatedUnderline} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("Strikethrough")}
@@ -182,7 +181,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleStrike().run();
             }}
           >
-            <Strikethrough className="h-4 w-4" />
+            <ClickIcon icon={AnimatedStrikethrough} className="h-4 w-4" />
           </ToolbarButton>
 
           <div className="w-[1px] h-4 bg-zinc-300 dark:bg-zinc-700 mx-1 self-center" />
@@ -194,7 +193,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleHeading({ level: 1 }).run();
             }}
           >
-            <Heading1 className="h-4 w-4" />
+            <ClickIcon icon={AnimatedHeading1} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("H2")}
@@ -203,7 +202,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleHeading({ level: 2 }).run();
             }}
           >
-            <Heading2 className="h-4 w-4" />
+            <ClickIcon icon={AnimatedHeading2} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("Quote")}
@@ -212,7 +211,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleBlockquote().run();
             }}
           >
-            <Quote className="h-4 w-4" />
+            <ClickIcon icon={AnimatedQuote} className="h-4 w-4" />
           </ToolbarButton>
 
           <div className="w-[1px] h-4 bg-zinc-300 dark:bg-zinc-700 mx-1 self-center" />
@@ -224,7 +223,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleBulletList().run();
             }}
           >
-            <List className="h-4 w-4" />
+            <ClickIcon icon={AnimatedList} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             isActive={activeFormats.includes("Numbered")}
@@ -233,7 +232,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
               editor.chain().focus().toggleOrderedList().run();
             }}
           >
-            <ListOrdered className="h-4 w-4" />
+            <ClickIcon icon={AnimatedListOrdered} className="h-4 w-4" />
           </ToolbarButton>
         </div>
 
@@ -267,13 +266,13 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().undo()}
           >
-            <Undo className="h-4 w-4" />
+            <ClickIcon icon={AnimatedUndo} className="h-4 w-4" />
           </ToolbarButton>
           <ToolbarButton
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!editor.can().redo()}
           >
-            <Redo className="h-4 w-4" />
+            <ClickIcon icon={AnimatedRedo} className="h-4 w-4" />
           </ToolbarButton>
         </div>
       </div>

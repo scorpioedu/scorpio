@@ -3,7 +3,12 @@
 // The questions of an assignment: type, prompt, answer key, choices, points, order.
 // Used by the create page and by the assignment's Problems tab.
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
-import { ArrowDown, ArrowUp, Plus, Trash2, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowDownIcon as AnimatedArrowDown } from "@animateicons/react/lucide/arrow-down-icon";
+import { ArrowUpIcon as AnimatedArrowUp } from "@animateicons/react/lucide/arrow-up-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Button } from "@/components/ui/button";
@@ -221,7 +226,7 @@ export function QuestionsEditor({
                 onClick={() => moveQuestion(index, -1)}
                 aria-label={`Move question ${index + 1} up`}
               >
-                <ArrowUp className="h-4 w-4" />
+                <ClickIcon icon={AnimatedArrowUp} className="h-4 w-4" />
               </Button>
               <Button
                 type="button"
@@ -231,7 +236,7 @@ export function QuestionsEditor({
                 onClick={() => moveQuestion(index, 1)}
                 aria-label={`Move question ${index + 1} down`}
               >
-                <ArrowDown className="h-4 w-4" />
+                <ClickIcon icon={AnimatedArrowDown} className="h-4 w-4" />
               </Button>
               <Button
                 type="button"
@@ -240,7 +245,7 @@ export function QuestionsEditor({
                 onClick={() => removeQuestion(question.id)}
                 aria-label={`Remove question ${index + 1}`}
               >
-                <Trash2 className="h-4 w-4 text-destructive" />
+                <ClickIcon icon={AnimatedTrash2} className="h-4 w-4 text-destructive" />
               </Button>
             </div>
           </div>
@@ -373,7 +378,7 @@ export function QuestionsEditor({
                         }
                         aria-label={`Remove choice ${optionIndex + 1}`}
                       >
-                        <X className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedX} className="h-4 w-4" />
                       </Button>
                     )}
                   </div>
@@ -384,7 +389,7 @@ export function QuestionsEditor({
                   size="sm"
                   onClick={() => addOption(question.id)}
                 >
-                  <Plus /> Add choice
+                  <ClickIcon icon={AnimatedPlus} /> Add choice
                 </Button>
               </fieldset>
             )}
@@ -442,7 +447,7 @@ export function QuestionsEditor({
           variant={questions.length ? "outline" : "default"}
           onClick={addQuestion}
         >
-          <Plus />
+          <ClickIcon icon={AnimatedPlus} />
           {questions.length ? "Add another question" : "Add a question"}
         </Button>
       </div>

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { Button } from "@/components/ui/button";
@@ -98,7 +101,7 @@ export function InviteColleagueCard() {
             aria-label="Close the invite card"
             title="Close"
           >
-            <X />
+            <ClickIcon icon={AnimatedX} />
           </Button>
         </CardAction>
       </CardHeader>
@@ -108,7 +111,11 @@ export function InviteColleagueCard() {
             {info.link}
           </code>
           <Button variant="outline" size="sm" onClick={copy}>
-            {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+            {copied ? (
+              <ClickIcon icon={AnimatedCheck} className="size-3.5" />
+            ) : (
+              <ClickIcon icon={AnimatedCopy} className="size-3.5" />
+            )}
             Copy link
           </Button>
         </div>

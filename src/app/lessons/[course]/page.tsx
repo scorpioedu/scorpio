@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { PrimaryPill } from "@/components/landing/split-kit";
 import {
   Breadcrumbs,
@@ -175,7 +176,8 @@ export default async function CourseLessonsPage({ params }: Params) {
                       className="group mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                       Unit review and equations
-                      <ArrowRight
+                      <ClickIcon
+                        icon={AnimatedArrowRight}
                         aria-hidden
                         className="size-4 transition-transform group-hover:translate-x-0.5"
                       />
@@ -202,7 +204,8 @@ export default async function CourseLessonsPage({ params }: Params) {
                             {t.summary}
                           </span>
                         </span>
-                        <ArrowRight
+                        <ClickIcon
+                          icon={AnimatedArrowRight}
                           aria-hidden
                           className="mt-1 size-4 shrink-0 text-muted-foreground transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-foreground"
                         />

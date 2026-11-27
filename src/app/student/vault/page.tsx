@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, LayoutGrid, List, PackageOpen, Copy, Check } from "lucide-react";
+import { Search, PackageOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { LayoutGridIcon as AnimatedLayoutGrid } from "@animateicons/react/lucide/layout-grid-icon";
+import { ListIcon as AnimatedList } from "@animateicons/react/lucide/list-icon";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -357,7 +362,7 @@ export default function Vault() {
             aria-label="Grid view"
             aria-pressed={viewMode === "grid"}
           >
-            <LayoutGrid />
+            <ClickIcon icon={AnimatedLayoutGrid} />
           </Button>
           <Button
             variant={viewMode === "list" ? "default" : "outline"}
@@ -366,7 +371,7 @@ export default function Vault() {
             aria-label="List view"
             aria-pressed={viewMode === "list"}
           >
-            <List />
+            <ClickIcon icon={AnimatedList} />
           </Button>
         </div>
       </div>
@@ -413,7 +418,11 @@ export default function Vault() {
                       copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`
                     }
                   >
-                    {copiedId === formula.id ? <Check /> : <Copy />}
+                    {copiedId === formula.id ? (
+                      <ClickIcon icon={AnimatedCheck} />
+                    ) : (
+                      <ClickIcon icon={AnimatedCopy} />
+                    )}
                   </Button>
                 </div>
                 <div className="space-y-1">
@@ -459,7 +468,11 @@ export default function Vault() {
                   copiedId === formula.id ? `Copied ${formula.name}` : `Copy ${formula.name}`
                 }
               >
-                {copiedId === formula.id ? <Check /> : <Copy />}
+                {copiedId === formula.id ? (
+                  <ClickIcon icon={AnimatedCheck} />
+                ) : (
+                  <ClickIcon icon={AnimatedCopy} />
+                )}
               </Button>
             </li>
           ))}

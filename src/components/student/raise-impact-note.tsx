@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Info } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { InfoIcon as AnimatedInfo } from "@animateicons/react/lucide/info-icon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +29,7 @@ export function RaiseImpactNote({
           className,
         )}
       >
-        <Info className="size-4" />
+        <ClickIcon icon={AnimatedInfo} className="size-4" />
       </PopoverTrigger>
       <PopoverContent align={align} className="w-72 space-y-2 text-xs leading-relaxed">
         <p className="text-sm font-medium text-foreground">Raise is optional</p>
