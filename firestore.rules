@@ -63,6 +63,14 @@ service cloud.firestore {
         request.resource.data.assignmentId == resource.data.assignmentId && request.resource.data.studentId == resource.data.studentId;
       allow delete: if ownsAssignment(resource.data.assignmentId);
     }
+    // AI results a teacher has not released yet (functions/src/grading-core.ts, holdAiDrafts). Written
+    // only by the server; the assignment's teacher reads one and removes it on saving the grades.
+    // A student can never read one: this is what keeps unreviewed AI feedback away from students.
+    match /submission_drafts/{id} {
+      allow get: if resource == null ? teacher() : ownsAssignment(resource.data.assignmentId);
+      allow delete: if ownsAssignment(resource.data.assignmentId);
+      allow list, create, update: if false;
+    }
     match /courses/{id} {
       allow read: if signedIn() && (resource.data.teacherId == request.auth.uid || me().get('courseId', null) == id || (teacher() && teaches(resource.data.teacherId)));
 

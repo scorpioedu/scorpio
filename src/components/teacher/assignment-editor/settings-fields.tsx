@@ -215,7 +215,7 @@ export function SettingsFields({
               value: "ai",
               label: "Automatic",
               description:
-                "Grade each submission as soon as it comes in. Multiple choice, true/false and numeric answers are checked against your key; written answers are graded by AI. Anything doubtful comes to you for review.",
+                "Multiple choice, true/false and numeric answers are checked against your key and graded as soon as they come in. Written answers get an AI draft that waits for you: the student sees nothing from it until you check it and save.",
             },
             {
               value: "manual",

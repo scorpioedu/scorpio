@@ -6,7 +6,7 @@ import {
   assertFails,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getBytes } from 'firebase/storage';
 import * as fs from 'node:fs';
 
@@ -33,6 +33,7 @@ jest.mock('../../src/lib/firebase-admin', () => {
 import { POST as teacherCode } from '../../src/app/api/auth/teacher-code/route';
 import { POST as register } from '../../src/app/api/auth/register/route';
 import { POST as createCourse } from '../../src/app/api/courses/route';
+import { PATCH as updateCourse } from '../../src/app/api/courses/[id]/route';
 import { POST as enroll } from '../../src/app/api/student/enrollment/route';
 import { POST as createAssignment, GET as getTeacherAssignment } from '../../src/app/api/assignments/route';
 import { POST as cloneAssignment } from '../../src/app/api/assignments/clone/route';
@@ -442,16 +443,31 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     expect(studentKeyAttempt.status).toBe(403);
 
     // Student asks Raise AI Tutor for a conceptual hint while working on Question 3
-    const tutorRes = await tutorChat(
-      apiReq('student/tutor', STUDENT_1_UID, {
-        message: 'I am working on Question 3. How do I relate mass and acceleration to force?',
-        userId: STUDENT_1_UID,
-        role: 'student',
-        mode: 'tutor',
-        chatHistory: [],
-        assignmentContext: 'Question 3: A 5 kg block is accelerated at 3 m/s^2...',
+    const askTutor = () =>
+      tutorChat(
+        apiReq('student/tutor', STUDENT_1_UID, {
+          message: 'I am working on Question 3. How do I relate mass and acceleration to force?',
+          userId: STUDENT_1_UID,
+          role: 'student',
+          mode: 'tutor',
+          chatHistory: [],
+          assignmentContext: 'Question 3: A 5 kg block is accelerated at 3 m/s^2...',
+        })
+      );
+    // Raise is off for students until the teacher turns it on for the class; a student cannot.
+    const refused = await askTutor();
+    expect(refused.status).toBe(403);
+    expect((await refused.json()).code).toBe('student_ai_off');
+    await assertFails(updateDoc(doc(clientDb(STUDENT_1_UID), 'courses', courseId), { studentAi: true }));
+    const turnOn = await updateCourse(
+      new NextRequest(`http://localhost/api/courses/${courseId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${TEACHER_UID}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentAi: true }),
       })
     );
+    expect(turnOn.status).toBe(200);
+    const tutorRes = await askTutor();
     expect(tutorRes.status).toBe(200);
     const tutorData = await tutorRes.json();
     expect(tutorData.response).toContain('Newton’s Second Law');
@@ -598,61 +614,92 @@ describe('Full End-to-End Student-Teacher Workflow', () => {
     );
     expect(new TextDecoder().decode(downloadedBytes)).toContain('15 N');
 
-    // Teacher triggers AI-assisted grading via POST /api/grade for Student 1
+    // Teacher triggers AI-assisted grading via POST /api/grade for Student 1. What the AI scores is
+    // a draft for the teacher: nothing is final and the student sees none of it.
     const grade1Res = await gradeSubmission(
       apiReq('grade', TEACHER_UID, { submissionId: submission1Id })
     );
     expect(grade1Res.status).toBe(200);
     const grade1Data = await grade1Res.json();
-    // Q1: 30/30 (exact match), Q2: 20/20 (exact match), Q3: (9.0/10)*50 = 45/50 -> Total = 95/100 (95%)
-    expect(grade1Data).toEqual({ success: true, score: 95 });
+    // Q3: (9.0/10)*50 = 45/50, as a draft.
+    expect(grade1Data).toMatchObject({ success: false, pendingReview: true });
+    expect(grade1Data.reason).toMatch(/AI draft/);
+    expect(grade1Data.drafts['q3-free'].score).toBe(45);
+    expect(grade1Data.drafts['q3-free'].feedback).toContain('Newton’s Second Law');
 
-    // Teacher triggers AI-assisted grading via POST /api/grade for Student 2
     const grade2Res = await gradeSubmission(
       apiReq('grade', TEACHER_UID, { submissionId: submission2Id })
     );
     expect(grade2Res.status).toBe(200);
     const grade2Data = await grade2Res.json();
-    // Q1: 0/30, Q2: 20/20, Q3: 45/50 -> Total = 65/100 (65%)
-    expect(grade2Data).toEqual({ success: true, score: 65 });
+    expect(grade2Data.drafts['q3-free'].score).toBe(45);
 
-    // Verify AI grading populated per-question scores, feedback, and reasoning in Firestore
-    const sub1AfterAi = (
-      await assertSucceeds(getDoc(doc(clientDb(TEACHER_UID), 'submissions', submission1Id)))
+    // The submission waits. The answers marked by code keep their scores; the written answer
+    // carries nothing from the AI, and the student cannot reach the draft.
+    const sub1Held = (
+      await assertSucceeds(getDoc(doc(clientDb(STUDENT_1_UID), 'submissions', submission1Id)))
     ).data()!;
-    expect(sub1AfterAi.graded).toBe(true);
-    expect(sub1AfterAi.status).toBe('graded');
-    expect(sub1AfterAi.score).toBe(95);
-    expect(sub1AfterAi.earnedPoints).toBe(95);
-    expect(sub1AfterAi.totalPoints).toBe(100);
-    expect(sub1AfterAi.answers[0].score).toBe(30);
-    expect(sub1AfterAi.answers[1].score).toBe(20);
-    expect(sub1AfterAi.answers[2].score).toBe(45);
-    expect(sub1AfterAi.answers[2].feedback).toContain('Newton’s Second Law');
-    expect(sub1AfterAi.answers[2].reasoning).toContain('F = ma');
+    expect(sub1Held.graded).toBe(false);
+    expect(sub1Held.status).toBe('pending_review');
+    expect(sub1Held.answers[0].score).toBe(30);
+    expect(sub1Held.answers[1].score).toBe(20);
+    expect(sub1Held.answers[2].score).toBeUndefined();
+    expect(sub1Held.answers[2].feedback).toBeUndefined();
+    expect(sub1Held.answers[2]).not.toHaveProperty('reasoning');
+    expect(sub1Held.answers[2]).not.toHaveProperty('misconceptions');
+    await assertFails(getDoc(doc(clientDb(STUDENT_1_UID), 'submission_drafts', submission1Id)));
 
-    // Teacher reviews Student 1's submission in GradeSubmissionPage and manually adjusts Q3 to full 50/50 points with custom feedback
-    const updatedAnswers = sub1AfterAi.answers.map((ans: { questionId: string; feedback?: string }) =>
-      ans.questionId === 'q3-free'
-        ? {
-            ...ans,
-            score: 50,
-            feedback: `${ans.feedback}\n\nInstructor Note: Full credit awarded after reviewing attached free-body diagram PDF!`,
-          }
-        : ans
-    );
-    await assertSucceeds(
-      updateDoc(doc(clientDb(TEACHER_UID), 'submissions', submission1Id), {
-        answers: updatedAnswers,
-        score: 100,
-        earnedPoints: 100,
+    // Teacher opens GradeSubmissionPage, which loads the draft only the teacher can read.
+    const draft1 = (
+      await assertSucceeds(getDoc(doc(clientDb(TEACHER_UID), 'submission_drafts', submission1Id)))
+    ).data()!;
+    expect(draft1.answers['q3-free'].reasoning).toContain('F = ma');
+
+    // Teacher adjusts Q3 to full 50/50 with a note and saves, which releases the grade.
+    const release = (
+      id: string,
+      held: { answers: Array<{ questionId: string; score?: number; reviewFlag?: string }> },
+      q3: { score: number; feedback: string },
+    ) => {
+      const answers = held.answers.map((ans) => {
+        const { reviewFlag: _waiting, ...rest } = ans;
+        return ans.questionId === 'q3-free' ? { ...rest, ...q3 } : rest;
+      });
+      const earned = answers.reduce((sum, a) => sum + (a.score ?? 0), 0);
+      return updateDoc(doc(clientDb(TEACHER_UID), 'submissions', id), {
+        answers,
+        score: earned,
+        earnedPoints: earned,
         totalPoints: 100,
-        totalEarnedPoints: 100,
+        totalEarnedPoints: earned,
         totalPossiblePoints: 100,
         graded: true,
+        status: 'graded',
         gradedAt: new Date(),
+      });
+    };
+    await assertSucceeds(
+      release(submission1Id, sub1Held as never, {
+        score: 50,
+        feedback: `${draft1.answers['q3-free'].feedback}\n\nInstructor Note: Full credit awarded after reviewing attached free-body diagram PDF!`,
       })
     );
+    await assertSucceeds(deleteDoc(doc(clientDb(TEACHER_UID), 'submission_drafts', submission1Id)));
+
+    // Student 2's draft is released as the AI wrote it: Q1 0/30, Q2 20/20, Q3 45/50 = 65%.
+    const sub2Held = (
+      await assertSucceeds(getDoc(doc(clientDb(TEACHER_UID), 'submissions', submission2Id)))
+    ).data()!;
+    const draft2 = (
+      await assertSucceeds(getDoc(doc(clientDb(TEACHER_UID), 'submission_drafts', submission2Id)))
+    ).data()!;
+    await assertSucceeds(
+      release(submission2Id, sub2Held as never, {
+        score: draft2.answers['q3-free'].score,
+        feedback: draft2.answers['q3-free'].feedback,
+      })
+    );
+    await assertSucceeds(deleteDoc(doc(clientDb(TEACHER_UID), 'submission_drafts', submission2Id)));
   });
 
   test('7. Students see their final grades, scores, and question-by-question feedback, and cannot tamper with graded submissions', async () => {

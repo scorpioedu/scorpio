@@ -907,7 +907,9 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
               <li>
                 {assignment.gradingType === "manual"
                   ? "Your teacher grades this one, so your score shows up on Grades once they have."
-                  : "When you submit, it is graded straight away and you see feedback on each question."}
+                  : assignment.questions.some((q) => q.type === "text")
+                    ? "Multiple-choice and numeric answers are checked when you submit. Your teacher looks over written answers, so your score shows up on Grades once they have."
+                    : "When you submit, it is graded straight away and you see feedback on each question."}
               </li>
               <li>Use a stable connection and keep this page open.</li>
             </ul>

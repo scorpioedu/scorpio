@@ -8,7 +8,10 @@ import { checkBudget, recordUsage } from "@/lib/usage-limit";
 import { parseJsonBody } from "@/lib/api-schema";
 import { gradeBody } from "@/lib/schemas/api-bodies";
 import {
+  DRAFT_REVIEW_REASON,
+  draftDocument,
   gradeSubmissionAnswers,
+  holdAiDrafts,
   needsAi,
   type AiGrader,
   type GradableQuestion,
@@ -140,19 +143,35 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       );
     }
 
-    if (result.reviewReasons.length > 0) {
-      // Suspected prompt injection, implausible full marks or a missing key: never auto-finalise.
+    // Anything the AI scored is a draft for the teacher, never a grade: it is stored where only
+    // the teacher can read it and returned here for the grading page to show. A submission that is
+    // already graded keeps its released grade until the teacher saves. Flagged answers (suspected
+    // prompt injection, implausible full marks, a missing key) wait the same way.
+    const hold = holdAiDrafts(result.answers);
+    if (hold.held > 0 || result.reviewReasons.length > 0) {
+      const reason = result.reviewReasons[0] ?? DRAFT_REVIEW_REASON;
+      if (Object.keys(hold.drafts).length > 0) {
+        await adminDb
+          .collection("submission_drafts")
+          .doc(submissionId)
+          .set(draftDocument({ assignmentId, studentId }, hold.drafts));
+      }
       if (!submissionData?.graded) {
         await submissionRef.update({
-          answers: result.answers,
+          answers: hold.answers,
           status: "pending_review",
-          gradingError: result.reviewReasons[0],
+          gradingError: reason,
           graded: false,
         });
         await recordEvents(false);
       }
       return NextResponse.json(
-        { success: false, pendingReview: true, reason: result.reviewReasons[0] },
+        {
+          success: false,
+          pendingReview: true,
+          reason,
+          ...(Object.keys(hold.drafts).length > 0 ? { drafts: hold.drafts } : {}),
+        },
         { status: 200 },
       );
     }

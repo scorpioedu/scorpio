@@ -36,7 +36,12 @@ export const WHATS_NEW: WhatsNewEntry[] = [
         linkLabel: "Open your classes",
       },
       {
-        text: "Your own AI tools are unchanged: grading, writing and importing problems, and Raise for teachers.",
+        text: "Written answers now wait for you: Raise drafts a score and feedback, and the student sees them only after you check them and save. Multiple choice and numeric answers are still graded at once.",
+        href: "/teacher/grades",
+        linkLabel: "Open grading",
+      },
+      {
+        text: "Your other AI tools are unchanged: writing and importing problems, and Raise for teachers.",
       },
     ],
   },

@@ -16,13 +16,17 @@ import {
   sweepStuckSubmissions,
 } from "./grading-runner";
 import {
+  DRAFT_REVIEW_REASON,
+  draftDocument,
   gradeSubmissionAnswers,
+  holdAiDrafts,
   needsAi,
   type AiGrader,
   type GradableQuestion,
   type SubmittedAnswer,
 } from "./grading-core";
 import { recordMisconceptionEvents } from "./misconception-events";
+import { evaluateBudget } from "./budget-policy";
 import { nonDefaultApCourse, type ApCourseKey } from "./misconceptions";
 
 const resendApiKey = defineSecret("RESEND_API_KEY");
@@ -151,10 +155,9 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
     const org = organizationId
       ? (await db.collection("organizations").doc(organizationId).get()).data()
       : undefined;
-    const budgetOk =
-      !!org &&
-      ["active", "trialing"].includes(org.subscriptionStatus) &&
-      (org.aiBudgetLimit || 0) > (org.aiUsageCurrent || 0);
+    // The network's credit (free monthly allowance, bonus, paid) and its optional monthly cap. Each
+    // call is still reserved and settled by gradeResponseAI; this only avoids starting without any.
+    const budgetOk = evaluateBudget(org, null, "grading").allowed;
     if (!organizationId) logger.error("No organization found for grading budget", { submissionId });
     if (budgetOk) {
       const studentNames = await rosterNames(db, studentData, submissionId);
@@ -197,24 +200,35 @@ async function gradeSubmission(submissionId: string, submissionData: admin.fires
         }),
     );
 
-  if (result.reviewReasons.length > 0) {
-    await db
-      .collection("submissions")
-      .doc(submissionId)
-      .update({
-        answers: result.answers,
-        earnedPoints: result.earnedPoints,
-        totalPoints: result.totalPoints,
-        graded: false,
-        status: "pending_review",
-        gradingError:
-          aiGrader || !result.reviewReasons.every((r) => r.startsWith("AI grading unavailable"))
-            ? result.reviewReasons[0]
-            : "AI budget unavailable",
-      });
+  // Anything the AI scored is a draft: it waits in submission_drafts (teacher-only) and the
+  // submission, which the student can read, holds nothing from the AI until the teacher saves.
+  const hold = holdAiDrafts(result.answers);
+  if (hold.held > 0 || result.reviewReasons.length > 0) {
+    if (Object.keys(hold.drafts).length > 0) {
+      await db
+        .collection("submission_drafts")
+        .doc(submissionId)
+        .set(draftDocument({ assignmentId, studentId }, hold.drafts));
+    }
+    const reason =
+      result.reviewReasons.length === 0
+        ? DRAFT_REVIEW_REASON
+        : aiGrader || !result.reviewReasons.every((r) => r.startsWith("AI grading unavailable"))
+          ? result.reviewReasons[0]
+          : "AI budget unavailable";
+    await db.collection("submissions").doc(submissionId).update({
+      answers: hold.answers,
+      earnedPoints: hold.earnedPoints,
+      totalPoints: result.totalPoints,
+      graded: false,
+      status: "pending_review",
+      gradingError: reason,
+    });
     await recordEvents(false);
-    logger.warn("Submission routed to teacher review", {
+    logger.info("Submission waits for the teacher", {
       submissionId,
+      heldAnswers: hold.held,
+      drafts: Object.keys(hold.drafts).length,
       flaggedAnswers: result.reviewReasons.length,
     });
     return;
