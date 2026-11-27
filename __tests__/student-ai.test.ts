@@ -6,7 +6,7 @@ type Data = Record<string, unknown>;
 const mockDocs = new Map<string, Data>();
 
 jest.mock("../src/lib/firebase-admin", () => ({
-  adminFieldWithValue: { increment: (n: number) => ({ increment: n }) },
+  adminFieldWithValue: { increment: (n: number) => ({ increment: n }), delete: () => undefined },
   adminDb: {
     collection: (name: string) => {
       const q = {
@@ -53,13 +53,14 @@ jest.mock("../src/lib/ai/chatbot", () => ({
   getNavigationResponse: (...a: unknown[]) => mockNav(...a),
 }));
 
-import { STUDENT_AI_OFF_MESSAGE, classStudentAiOn } from "../src/lib/student-ai";
+import { STUDENT_AI_OFF_MESSAGE, classStudentAiOn, hintsAllowedFor } from "../src/lib/student-ai";
 import { studentAiAllowed } from "../src/lib/student-ai-server";
 import { updateCourseBody } from "../src/lib/schemas/api-bodies";
 import { POST as tutorPost } from "../src/app/api/student/tutor/route";
 import { POST as notebookPost } from "../src/app/api/notebook/chat/route";
 import { POST as chatPost } from "../src/app/api/chat/route";
 import { PATCH as coursePatch } from "../src/app/api/courses/[id]/route";
+import { PATCH as defaultsPatch } from "../src/app/api/courses/[id]/assignment-defaults/route";
 import { studentNavSections, studentNavSectionsNoAi } from "../src/components/student-sidebar";
 
 jest.mock("../src/components/app-sidebar", () => ({ AppSidebar: () => null }));
@@ -128,6 +129,74 @@ describe("the class setting", () => {
       403,
     );
     expect(mockDocs.get("courses/c1")?.studentAi).toBe(false);
+  });
+});
+
+describe("Allow Raise hints needs Raise on for the class", () => {
+  const defaults = {
+    timeLimit: null,
+    gradingType: "ai",
+    allowCalculator: true,
+    allowAIHelp: true,
+    requireWorkSubmission: false,
+    enableTabDetection: true,
+    lockdownMode: false,
+  };
+  const saveDefaults = () =>
+    defaultsPatch(
+      post("/api/courses/c1/assignment-defaults", { assignmentDefaults: defaults }, "PATCH"),
+    );
+
+  test.each([
+    [{ studentAi: true }, true, true],
+    [{ studentAi: true }, false, false],
+    [{ studentAi: false }, true, false],
+    [{}, true, false],
+    [undefined, true, false],
+    [{ studentAi: true }, "true", false],
+  ])("hintsAllowedFor(%j, %j) is %s", (course, wanted, allowed) => {
+    expect(hintsAllowedFor(course, wanted)).toBe(allowed);
+  });
+
+  test("class settings cannot store hints as on while Raise is off for the class", async () => {
+    mockUid = "t1";
+    mockDocs.set("courses/c1", { teacherId: "t1" });
+    const res = await saveDefaults();
+    expect(res.status).toBe(200);
+    expect((await res.json()).assignmentDefaults).toMatchObject({
+      allowAIHelp: false,
+      allowCalculator: true,
+    });
+    expect(mockDocs.get("courses/c1")?.assignmentDefaults).toMatchObject({ allowAIHelp: false });
+  });
+
+  test("with Raise on for the class the same settings keep hints on", async () => {
+    mockUid = "t1";
+    mockDocs.set("courses/c1", { teacherId: "t1", studentAi: true });
+    await saveDefaults();
+    expect(mockDocs.get("courses/c1")?.assignmentDefaults).toMatchObject({ allowAIHelp: true });
+  });
+
+  test("turning Raise off for a class turns hints off in its assignment settings", async () => {
+    mockUid = "t1";
+    mockDocs.set("courses/c1", { teacherId: "t1", studentAi: true, assignmentDefaults: defaults });
+    await coursePatch(post("/api/courses/c1", { studentAi: false }, "PATCH"));
+    // The route updates the one nested field (a Firestore field path).
+    expect(mockDocs.get("courses/c1")).toMatchObject({
+      studentAi: false,
+      "assignmentDefaults.allowAIHelp": false,
+    });
+  });
+
+  test("turning Raise on, or off where hints were never allowed, leaves the settings alone", async () => {
+    mockUid = "t1";
+    mockDocs.set("courses/c1", {
+      teacherId: "t1",
+      assignmentDefaults: { ...defaults, allowAIHelp: false },
+    });
+    await coursePatch(post("/api/courses/c1", { studentAi: true }, "PATCH"));
+    await coursePatch(post("/api/courses/c1", { studentAi: false }, "PATCH"));
+    expect(mockDocs.get("courses/c1")).not.toHaveProperty(["assignmentDefaults.allowAIHelp"]);
   });
 });
 

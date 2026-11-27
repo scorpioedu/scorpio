@@ -206,6 +206,8 @@ export function useClassManager({
                   idPrefix="new-class"
                   value={newDefaults}
                   onChange={setNewDefaults}
+                  // A new class starts with Raise off; hints can be allowed once it is turned on.
+                  raiseOn={false}
                 />
                 <button
                   type="button"

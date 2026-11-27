@@ -22,11 +22,14 @@ export function SettingsFields({
   onChange,
   hasNetwork,
   showSharing = true,
+  raiseOn,
 }: {
   value: AssignmentSettingsValue;
   onChange: (next: AssignmentSettingsValue) => void;
   hasNetwork: boolean;
   showSharing?: boolean;
+  /** Whether Raise is on for the assignment's class. Hints cannot be allowed while it is off. */
+  raiseOn: boolean;
 }) {
   const set = (patch: Partial<AssignmentSettingsValue>) => onChange({ ...value, ...patch });
   // "Read the lessons first" needs AP topics that have lessons; it stays on (and does nothing) when
@@ -144,10 +147,12 @@ export function SettingsFields({
             {
               id: "allowAIHelp",
               label: "Allow Raise hints",
-              description:
-                "Give students guided hints as they work. Only when Raise is on for the class.",
-              checked: value.allowAIHelp,
+              description: raiseOn
+                ? "Give students guided hints as they work."
+                : "Raise is off for this class. Turn it on in the class settings first.",
+              checked: value.allowAIHelp && raiseOn,
               setChecked: (allowAIHelp: boolean) => set({ allowAIHelp }),
+              disabled: !raiseOn,
             },
             {
               id: "requireWork",
@@ -181,17 +186,20 @@ export function SettingsFields({
                   },
                 ]
               : []),
-          ].map(({ id, label, description, checked, setChecked }) => (
+          ].map(({ id, label, description, checked, setChecked, disabled }) => (
             <div key={id} className="flex items-start gap-2.5">
               <Checkbox
                 id={id}
                 checked={checked}
+                disabled={disabled === true}
                 onCheckedChange={(value) => setChecked(value === true)}
                 aria-describedby={`${id}-help`}
                 className="mt-0.5"
               />
               <div className="space-y-1">
-                <Label htmlFor={id}>{label}</Label>
+                <Label htmlFor={id} className={disabled ? "text-muted-foreground" : undefined}>
+                  {label}
+                </Label>
                 <p id={`${id}-help`} className="text-xs text-muted-foreground">
                   {description}
                 </p>

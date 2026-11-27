@@ -133,7 +133,7 @@ export default function StudyHomePage() {
     <div className="space-y-8">
       <WorkspaceHeader
         title="Study"
-        description="A short lesson for every topic, practice checked as you go, and review that brings back what you missed. Free, and no AI."
+        description="A short lesson for every topic, practice checked as you go, and review that brings back what you missed. Free, no AI, and every problem checked by a person."
       >
         {progress && courseId && (
           <CourseSwitcher courses={progress.courses} value={courseId} onChange={choose} />

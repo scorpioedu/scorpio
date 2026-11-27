@@ -76,6 +76,8 @@ interface CourseItem {
   name?: string;
   code?: string;
   assignmentDefaults?: unknown;
+  /** Whether Raise is on for the class's students. */
+  studentAi?: boolean;
 }
 
 export default function CreateAssignmentPage() {
@@ -106,6 +108,8 @@ function CreateAssignmentForm() {
     courses.find((course) => course.id === initialCourseId)?.id ||
     courses.find((course) => course.id === selectedClassId)?.id ||
     "";
+  // Hints can be allowed only where Raise is on for the chosen class.
+  const raiseOn = courses.find((course) => course.id === selectedCourseId)?.studentAi === true;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
@@ -241,7 +245,7 @@ function CreateAssignmentForm() {
           requireWorkSubmission: settings.requireWorkSubmission,
           enableTabDetection: settings.enableTabDetection,
           lockdownMode: settings.lockdownMode,
-          allowAIHelp: settings.allowAIHelp,
+          allowAIHelp: settings.allowAIHelp && raiseOn,
           allowCalculator: settings.allowCalculator,
           ...(settings.readFirst && settings.apUnit ? { readFirst: true } : {}),
           totalPoints: assignmentPoints,
@@ -411,6 +415,7 @@ function CreateAssignmentForm() {
               value={settings}
               onChange={setSettings}
               hasNetwork={!!profile?.organizationId}
+              raiseOn={raiseOn}
             />
           </AdvancedSettings>
 

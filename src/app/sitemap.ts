@@ -12,7 +12,6 @@ const PAGES: {
 }[] = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/lessons", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/features", priority: 0.7, changeFrequency: "monthly" },
   { path: "/pricing", priority: 0.7, changeFrequency: "monthly" },
   { path: "/demos", priority: 0.6, changeFrequency: "monthly" },
   { path: "/demos/teacher", priority: 0.5, changeFrequency: "monthly" },

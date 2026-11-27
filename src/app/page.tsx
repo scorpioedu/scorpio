@@ -1,6 +1,6 @@
-import { Comparison } from "@/components/landing/comparison";
+import { AiOnYourTerms } from "@/components/landing/comparison";
 import { CourseGrid } from "@/components/landing/course-grid";
-import { HomeChatbot, HomeHeader, HomeScrollReveal } from "@/components/landing/home-interactions";
+import { HomeHeader, HomeScrollReveal } from "@/components/landing/home-interactions";
 import reveal from "@/components/landing/home-reveal.module.css";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LessonsTeaser } from "@/components/landing/lessons-teaser";
@@ -41,7 +41,7 @@ export default function Home() {
           aria-labelledby="research-heading"
           className="border-b border-border/60"
         >
-          <Comparison />
+          <AiOnYourTerms />
         </section>
 
         <NotForProfit />
@@ -73,8 +73,6 @@ export default function Home() {
       </main>
 
       <SiteFooter reveal />
-
-      <HomeChatbot />
     </div>
   );
 }

@@ -19,19 +19,19 @@ const faqs = [
     index: "01",
     question: "What is Scorpio?",
     answer:
-      "Scorpio is a homework tool for physics classes, starting with AP Physics 1. Teachers assign ready-made or custom problems that are graded automatically, students can ask Raise for a hint instead of an answer, and a class misconception report shows which wrong ideas students hold.",
+      "Scorpio is a homework tool for physics classes, starting with AP Physics 1. Teachers assign ready-made or custom problems that are marked as students work, every problem in the course sets has been checked by a person, and a class misconception report shows which wrong ideas students hold.",
   },
   {
     index: "02",
-    question: "How does Raise decide what hint to give?",
+    question: "Is there AI in Scorpio?",
     answer:
-      "Raise checks what the student is asking for and applies rules to keep the reply focused on the next step. The research page explains how we tested those rules.",
+      "Not for students unless you turn it on. Study, lessons, practice and the marking of multiple-choice and numeric answers use no AI. Teachers can use AI to draft problems and rubrics, and to draft a grade for a written answer, which the student sees only after the teacher has checked it. A teacher can also turn on Raise, an optional hint assistant, for a class.",
   },
   {
     index: "03",
-    question: "Can students bypass the AI and get direct answers?",
+    question: "If I turn Raise on, can students get direct answers from it?",
     answer:
-      "Raise is designed to give hints. In our 125-response study, the version with all four checks gave no direct answers. That is a result on 25 test questions, not a guarantee for every question.",
+      "Raise is designed to give hints, not answers. In our 125-response study, the version with all four checks gave no direct answers. That is a result on 25 test questions, not a guarantee for every question. Raise stays off for a class until its teacher turns it on.",
   },
   {
     index: "04",
@@ -49,7 +49,7 @@ const faqs = [
     index: "06",
     question: "Is Scorpio really free?",
     answer:
-      "Yes. Every teacher gets every feature, including auto-grading, the misconception report, department sharing and the AI tools, with no card and no trial. The only thing that costs money is AI use, and every network gets $1 of AI free each month.",
+      "Yes. Every teacher gets every feature, including auto-grading, the misconception report, department sharing and the optional AI tools, with no card and no trial. The only thing that costs money is AI use, which you can leave off, and every network gets $1 of AI free each month.",
   },
   {
     index: "07",

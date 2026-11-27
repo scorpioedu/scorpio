@@ -24,7 +24,7 @@ const chapters = [
 const screens = [
   {
     title: "Raise",
-    body: "Students ask for help and get a question or a hint back, never the final answer.",
+    body: "Optional, and off unless a teacher turns it on: a student who asks gets a question or a hint back, not the final answer.",
     src: "/ai-tutor.png",
   },
   {
@@ -168,8 +168,8 @@ export default function DemosPage() {
                 <span className="text-sm text-muted-foreground">Three questions</span>
               </div>
               <p className="mt-3 text-[15px] text-muted-foreground">
-                Ask a physics question and see how Raise guides you with hints instead of
-                giving the answer.
+                Ask a physics question and see how Raise guides you with hints instead of giving the
+                answer.
               </p>
               <div className="relative mt-8 aspect-video overflow-hidden rounded-lg border border-border">
                 <Image
@@ -221,9 +221,7 @@ export default function DemosPage() {
           <Split id="results-heading" heading="Results">
             <p className={statement}>
               Tested before it reaches a class
-              <span className="block text-muted-foreground">
-                How Raise did on our own test set
-              </span>
+              <span className="block text-muted-foreground">How Raise did on our own test set</span>
             </p>
           </Split>
 

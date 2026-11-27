@@ -37,8 +37,8 @@ export function PilotStory() {
             />
             <p className="mt-8 text-pretty text-[clamp(1.15rem,1.7vw,1.4rem)] leading-[1.45] tracking-[-0.015em]">
               Scorpio is in a classroom pilot in AP Physics 1 at Sage Ridge School: problem sets
-              assigned in Scorpio, hints instead of answers while students work, and a reteach list
-              for the teacher after every set.
+              assigned in Scorpio, answers marked as students work, and a reteach list for the
+              teacher after every set.
             </p>
             <p className="mt-6 text-sm text-muted-foreground">Pilot school · AP Physics 1</p>
           </div>
@@ -67,8 +67,8 @@ export function NotForProfit() {
               </span>
             </p>
             <p className="mt-10 max-w-xl text-pretty text-[clamp(1.05rem,1.4vw,1.2rem)] leading-[1.55] text-muted-foreground">
-              Scorpio has no investors and no shareholders. A Department plan covers hosting and the
-              AI your students use, at cost. Scorpio is not a registered nonprofit yet; we are
+              Scorpio has no investors and no shareholders. A Department plan covers hosting and any
+              AI you choose to use, at cost. Scorpio is not a registered nonprofit yet; we are
               applying for 501(c)(3) status.
             </p>
             <CircleLink href="/about" className="mt-10">
@@ -91,7 +91,9 @@ export function PricingOverview() {
           <Split id="pricing-heading" heading="Pricing">
             <p className={statement}>
               Free for every teacher
-              <span className="block text-muted-foreground">AI at cost, $1 free every month</span>
+              <span className="block text-muted-foreground">
+                AI is optional and at cost, $1 free every month
+              </span>
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <PrimaryPill href="/signup">Start free</PrimaryPill>

@@ -28,6 +28,9 @@ export const PATCH = withAuthorizedRequest(
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       const { archived, ...fields } = parsed.data;
       const update: Record<string, unknown> = { ...fields };
+      // With Raise off for the class, its assignment settings cannot still allow hints.
+      if (fields.studentAi === false && course.assignmentDefaults?.allowAIHelp === true)
+        update["assignmentDefaults.allowAIHelp"] = false;
       if (archived !== undefined) update.archivedAt = archived ? new Date().toISOString() : null;
       await ref.update(update);
       return NextResponse.json({ id });

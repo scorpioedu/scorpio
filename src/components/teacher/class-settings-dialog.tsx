@@ -165,7 +165,10 @@ export function ClassSettingsDialog({
     setBusy("defaults");
     try {
       const result = await call(`${path}/assignment-defaults`, "PATCH", {
-        assignmentDefaults: defaults,
+        assignmentDefaults: {
+          ...defaults,
+          allowAIHelp: defaults.allowAIHelp && value.studentAi === true,
+        },
       });
       onChanged({ assignmentDefaults: result.assignmentDefaults });
       toast.success("Assignment settings saved. New assignments in this class will use them.");
@@ -206,6 +209,8 @@ export function ClassSettingsDialog({
     const change = async (next: boolean) => {
       await call(path, "PATCH", { studentAi: next });
       onChanged({ studentAi: next });
+      // Hints cannot stay allowed in a class without Raise; the server clears the stored setting too.
+      if (!next) setDefaults((cur) => ({ ...cur, allowAIHelp: false }));
     };
     setBusy("ai");
     try {
@@ -350,6 +355,7 @@ export function ClassSettingsDialog({
                 idPrefix="class-defaults"
                 value={defaults}
                 onChange={setDefaults}
+                raiseOn={value.studentAi === true}
               />
               <div className="flex justify-end">
                 <Button variant="outline" size="sm" disabled={!!busy} onClick={saveDefaults}>
