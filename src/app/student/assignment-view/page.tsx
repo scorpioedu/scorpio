@@ -10,6 +10,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db, uploadFilesToStorage, type WorkFile } from "@/lib/firebase";
 import { SubmittedDialog } from "@/components/student/submitted-dialog";
+import { useStudentAi } from "@/contexts/student-ai-context";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -138,6 +139,8 @@ function AssignmentDetailContent() {
   const firstAssignment = searchParams?.get("first") === "1";
   const router = useRouter();
   const { user, profile } = useAuth();
+  // Hints need Raise on for the class as well as allowed on this assignment.
+  const aiOn = useStudentAi() === true;
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [confirmBlank, setConfirmBlank] = useState(false);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
@@ -894,11 +897,13 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                   back.
                 </li>
               )}
-              <li>
-                {assignment.allowAIHelp
-                  ? "Stuck? Raise hand, at the top, gives you a hint on the question you’re on. It won’t give the answer."
-                  : "Your teacher has turned hints off for this one, so Raise won’t open here."}
-              </li>
+              {aiOn && (
+                <li>
+                  {assignment.allowAIHelp
+                    ? "Stuck? Raise hand, at the top, gives you a hint on the question you’re on. It won’t give the answer."
+                    : "Your teacher has turned hints off for this one, so Raise won’t open here."}
+                </li>
+              )}
               <li>
                 {assignment.gradingType === "manual"
                   ? "Your teacher grades this one, so your score shows up on Grades once they have."
@@ -1123,7 +1128,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
                     </Button>
                   )}
 
-                  {assignment?.allowAIHelp && !submitted && (
+                  {aiOn && assignment?.allowAIHelp && !submitted && (
                     <Button
                       variant={aiHelperOpen ? "secondary" : "ghost"}
                       size="sm"
@@ -1509,7 +1514,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
           </div>
         </ResizablePanel>
 
-        {!isMobile && aiHelperOpen && (
+        {!isMobile && aiOn && aiHelperOpen && (
           <>
             <ResizableHandle withHandle />
             <ResizablePanel
@@ -1527,7 +1532,7 @@ Text: ${q.text || "[This question has no text description. Refer to the assignme
 
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
-        {isMobile && aiHelperOpen && (
+        {isMobile && aiOn && aiHelperOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}

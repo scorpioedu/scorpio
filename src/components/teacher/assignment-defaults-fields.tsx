@@ -23,7 +23,7 @@ const TOGGLES: {
   {
     key: "allowAIHelp",
     label: "Allow Raise hints",
-    description: "Give students guided hints as they work.",
+    description: "Give students guided hints as they work. Only when Raise is on for the class.",
   },
   {
     key: "requireWorkSubmission",

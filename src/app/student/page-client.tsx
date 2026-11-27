@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useStudentAi } from "@/contexts/student-ai-context";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkspaceHeader } from "@/components/ui/workspace";
@@ -79,6 +80,8 @@ interface ScorePoint {
 export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }) {
   const router = useRouter();
   const { user, profile } = useAuth();
+  // Raise is mentioned only where the teacher has turned it on for the class.
+  const aiOn = useStudentAi() === true;
   const [stats, setStats] = useState<Stats>({
     totalAssignments: 0,
     completedAssignments: 0,
@@ -410,18 +413,22 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
                 "Your study tools: Study, one page for your course where every topic has a short lesson and practice with each answer checked, and the topics you missed come back for review; Notebook for your own notes and derivations; Formula vault for the equations and constants in your course; and Resources for files your teacher shared.",
               icon: NAV_ICONS.study,
             },
-            {
-              title: "5. Raise (optional)",
-              description:
-                "Raise is there if you want an idea talked through. Nothing in your coursework requires it.",
-              icon: NAV_ICONS.raise,
-            },
-            {
-              title: "6. If you use Raise",
-              description:
-                "Say what you've tried or share a partial derivation, and Raise will give a hint toward the next step rather than the answer. Each message uses energy and water, so ask when it actually helps.",
-              icon: ShieldCheck,
-            },
+            ...(aiOn
+              ? [
+                  {
+                    title: "5. Raise (optional)",
+                    description:
+                      "Raise is there if you want an idea talked through. Nothing in your coursework requires it.",
+                    icon: NAV_ICONS.raise,
+                  },
+                  {
+                    title: "6. If you use Raise",
+                    description:
+                      "Say what you've tried or share a partial derivation, and Raise will give a hint toward the next step rather than the answer. Each message uses energy and water, so ask when it actually helps.",
+                    icon: ShieldCheck,
+                  },
+                ]
+              : []),
           ]}
         />
       </WorkspaceHeader>
@@ -621,16 +628,18 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
           </Link>
 
           <Link
-            href="/student/tutor"
+            href={aiOn ? "/student/tutor" : "/student/resources"}
             className="group rounded-xl border border-border/80 bg-card p-4 transition-all hover:border-primary/50 hover:bg-muted/20"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                Raise
+                {aiOn ? "Raise" : "Resources"}
               </span>
               <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Optional hints when you’re stuck</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {aiOn ? "Optional hints when you’re stuck" : "Files your teacher shared"}
+            </p>
           </Link>
         </div>
       </section>

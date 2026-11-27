@@ -90,7 +90,9 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("nav");
+  // Page-finding help asks a model, which is a teacher tool; students get the support form only.
+  const supportOnly = userRole === "student";
+  const [activeTab, setActiveTab] = useState<ActiveTab>(supportOnly ? "support" : "nav");
 
   // Support Form State
   const [issueType, setIssueType] = useState<"bug" | "feature" | "question">("bug");
@@ -379,7 +381,7 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
         type="button"
         onClick={() => {
           if (!isOpen) {
-            setActiveTab("nav");
+            setActiveTab(supportOnly ? "support" : "nav");
           }
           setIsOpen(!isOpen);
         }}
@@ -424,19 +426,21 @@ export function NavigationChatbot({ userRole }: NavigationChatbotProps) {
             <div className="flex items-center justify-between px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-border/70 bg-muted/30 shrink-0">
               {/* Tab Switcher: Nav Help first, then Feedback & support */}
               <div className="flex items-center gap-1 bg-muted p-1 rounded-full">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("nav")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
-                    activeTab === "nav"
-                      ? "bg-background text-foreground shadow-xs"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  <Compass className="h-3.5 w-3.5" />
-                  <span>Nav Help</span>
-                </button>
+                {!supportOnly && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("nav")}
+                    className={cn(
+                      "px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                      activeTab === "nav"
+                        ? "bg-background text-foreground shadow-xs"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <Compass className="h-3.5 w-3.5" />
+                    <span>Nav Help</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setActiveTab("support")}

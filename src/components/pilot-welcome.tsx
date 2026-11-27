@@ -72,8 +72,9 @@ export function PilotWelcome() {
       title={`${organization?.name ?? "Your network"} is now a Scorpio pilot`}
       body={
         <>
-          Your network has {budget} of AI credit, so Raise is on for your students
-          {ends ? <>. Your pilot runs through {ends}</> : null}. Everything else in Scorpio is free.
+          Your network has {budget} of AI credit for grading, writing problems and Raise
+          {ends ? <>. Your pilot runs through {ends}</> : null}. Raise stays off for students until
+          you turn it on in a class&apos;s settings. Everything else in Scorpio is free.
         </>
       }
       action="Let's go"

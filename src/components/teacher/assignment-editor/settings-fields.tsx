@@ -144,7 +144,8 @@ export function SettingsFields({
             {
               id: "allowAIHelp",
               label: "Allow Raise hints",
-              description: "Give students guided hints as they work.",
+              description:
+                "Give students guided hints as they work. Only when Raise is on for the class.",
               checked: value.allowAIHelp,
               setChecked: (allowAIHelp: boolean) => set({ allowAIHelp }),
             },

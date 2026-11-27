@@ -9,9 +9,10 @@ const classId = (pathname: string) =>
   decodeURIComponent(pathname.split("/").filter(Boolean).at(-1) ?? "");
 
 /**
- * PATCH /api/courses/{id} { name?, period?, description?, archived? } -> { id }
- * The owner renames a class, sets its period or description, or archives it (hidden from the
- * teacher's pickers; students and assignments are untouched) and restores it.
+ * PATCH /api/courses/{id} { name?, period?, description?, archived?, studentAi? } -> { id }
+ * The owner renames a class, sets its period or description, archives it (hidden from the
+ * teacher's pickers; students and assignments are untouched) and restores it, or turns Raise on
+ * or off for its students.
  */
 export const PATCH = withAuthorizedRequest(
   async (req, { caller, requestId }) => {

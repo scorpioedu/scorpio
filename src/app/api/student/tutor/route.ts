@@ -8,12 +8,14 @@ import { checkBudget, recordUsage } from "@/lib/usage-limit";
 import { verifyCallerIdentity } from "@/lib/auth-verify";
 import { parseJsonBody } from "@/lib/api-schema";
 import { tutorBody } from "@/lib/schemas/api-bodies";
+import { studentAiAllowed, studentAiOffResponse } from "@/lib/student-ai-server";
 
 async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   try {
     const parsed = await parseJsonBody(req, tutorBody, { message: "Invalid request body" });
     if (!parsed.ok) return parsed.response;
-    const { message, userId, role, mode, chatHistory, assignmentContext, assignmentId } = parsed.data;
+    const { message, userId, role, mode, chatHistory, assignmentContext, assignmentId } =
+      parsed.data;
 
     if (!message || !userId || role !== "student") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +45,30 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     }
 
     if (!organizationId) {
-      return NextResponse.json({ error: "You must be enrolled in an active Scorpio Network to use Raise." }, { status: 403 });
+      return NextResponse.json(
+        { error: "You must be enrolled in an active Scorpio Network to use Raise." },
+        { status: 403 },
+      );
+    }
+
+    // 1.5 Student AI is off unless the teacher turned it on for the student's class.
+    if (!(await studentAiAllowed(userData))) return studentAiOffResponse();
+
+    // 1.6 A hint on an assignment also needs that assignment to allow hints. The assignment is read
+    // here (the client only names it); one that is missing or another teacher's allows nothing.
+    let assignment: FirebaseFirestore.DocumentData | undefined;
+    if (mode !== "concept" && assignmentId) {
+      if (!assignmentId.includes("/")) {
+        const found = (await adminDb.collection("assignments").doc(assignmentId).get()).data();
+        if (found && userData?.teacherId && found.teacherId === userData.teacherId)
+          assignment = found;
+      }
+      if (assignment?.allowAIHelp !== true) {
+        return NextResponse.json(
+          { error: "Hints are off for this assignment.", code: "hints_off" },
+          { status: 403 },
+        );
+      }
     }
 
     // 2.5 Resolve Student Names for PII Scrubbing
@@ -51,13 +76,16 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
     try {
       // Get all students for the teacher to mask fellow student names in the conversation
       const teacherId = userData?.teacherId || userId;
-      const studentsSnapshot = await adminDb.collection("users")
+      const studentsSnapshot = await adminDb
+        .collection("users")
         .where("teacherId", "==", teacherId)
         .where("role", "==", "student")
         .get();
-      
-      studentNames = studentsSnapshot.docs.map(doc => doc.data().displayName || doc.data().name).filter(Boolean);
-      
+
+      studentNames = studentsSnapshot.docs
+        .map((doc) => doc.data().displayName || doc.data().name)
+        .filter(Boolean);
+
       // Also include current user just in case
       if (userData?.displayName && !studentNames.includes(userData.displayName)) {
         studentNames.push(userData.displayName);
@@ -72,40 +100,34 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
       return NextResponse.json({ error: budgetCheck.error }, { status: 403 });
     }
 
-    // 2.6 The assignment's AP course, read from the assignment itself (the client only names the
-    // assignment). It only narrows the diagram reference, so it is looked up only when diagrams are
-    // on, and anything unexpected (no id, another teacher's assignment, no course) means "unknown".
-    let course: string | undefined;
-    if (mode !== "concept" && assignmentId && !assignmentId.includes("/")) {
-      try {
-        const assignment = diagramsOn()
-          ? (await adminDb.collection("assignments").doc(assignmentId).get()).data()
-          : undefined;
-        if (
-          assignment &&
-          userData?.teacherId &&
-          assignment.teacherId === userData.teacherId &&
-          isApCourseId(assignment.apCourse)
-        )
-          course = assignment.apCourse;
-      } catch (e) {
-        console.error("Error resolving assignment course for tutor:", e);
-      }
-    }
+    // 2.6 The assignment's AP course only narrows the diagram reference, so it is used only when
+    // diagrams are on; an assignment without a course means "unknown".
+    const course =
+      assignment && diagramsOn() && isApCourseId(assignment.apCourse)
+        ? (assignment.apCourse as string)
+        : undefined;
 
     // 3. Perform AI Operation
-    const result = mode === "concept" 
-      ? await explainPhysicsConcept(message, chatHistory, "FULL", studentNames)
-      : await helpSolveProblem(message, chatHistory, "STRICT_CONCISE", assignmentContext ?? undefined, studentNames, ...(course ? [course] : []));
+    const result =
+      mode === "concept"
+        ? await explainPhysicsConcept(message, chatHistory, "FULL", studentNames)
+        : await helpSolveProblem(
+            message,
+            chatHistory,
+            "STRICT_CONCISE",
+            assignmentContext ?? undefined,
+            studentNames,
+            ...(course ? [course] : []),
+          );
 
     // 4. Record usage if possible
     if (result.usage) {
       await recordUsage(
-        organizationId, 
-        "tutor", 
-        result.usage.inputTokens, 
+        organizationId,
+        "tutor",
+        result.usage.inputTokens,
         result.usage.outputTokens,
-        userId
+        userId,
       );
     }
 
@@ -116,4 +138,9 @@ async function handlePost(req: NextRequest, { requestId }: AuthorizedContext) {
   }
 }
 
-export const POST = withAuthorizedRequest(handlePost, {"identityField": "userId", "teacher": false, "feature": "tutor", "rateLimit": "tutor"});
+export const POST = withAuthorizedRequest(handlePost, {
+  identityField: "userId",
+  teacher: false,
+  feature: "tutor",
+  rateLimit: "tutor",
+});
