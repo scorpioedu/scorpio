@@ -6,7 +6,10 @@
 // back for review on the Study page.
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, Loader2, RotateCcw } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
 import {
   PracticeAgain,
   PracticeSession,
@@ -145,7 +148,7 @@ export function InlinePractice({
           ) : (
             <>
               {topic ? "Practise this topic" : "Start the unit check"}
-              <ArrowRight aria-hidden className="ml-1 size-4" />
+              <ClickIcon icon={AnimatedArrowRight} aria-hidden className="ml-1 size-4" />
             </>
           )}
         </Button>
@@ -157,7 +160,7 @@ export function InlinePractice({
             {state.message}
           </p>
           <Button variant="outline" onClick={() => void load()}>
-            <RotateCcw aria-hidden className="mr-1 size-4" />
+            <ClickIcon icon={AnimatedRotateCcw} aria-hidden className="mr-1 size-4" />
             Try again
           </Button>
         </div>
@@ -216,12 +219,14 @@ export function PracticeEnd({
           ("href" in next ? (
             <Button asChild>
               <a href={next.href}>
-                {next.label} <ArrowRight aria-hidden className="ml-1 size-4" />
+                {next.label}{" "}
+                <ClickIcon icon={AnimatedArrowRight} aria-hidden className="ml-1 size-4" />
               </a>
             </Button>
           ) : (
             <Button onClick={next.onClick}>
-              {next.label} <ArrowRight aria-hidden className="ml-1 size-4" />
+              {next.label}{" "}
+              <ClickIcon icon={AnimatedArrowRight} aria-hidden className="ml-1 size-4" />
             </Button>
           ))
         ) : (

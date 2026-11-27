@@ -2,15 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  CheckCircle2,
-  Loader2,
-  Plus,
-  Sparkles,
-  Trash2,
-  TriangleAlert,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, Loader2, TriangleAlert, XCircle } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CircleCheckIcon as AnimatedCircleCheck } from "@animateicons/react/lucide/circle-check-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { SparklesIcon as AnimatedSparkles } from "@animateicons/react/lucide/sparkles-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
 import { useAdminAccess } from "@/lib/use-admin-access";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import {
@@ -312,7 +309,7 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
                   size="sm"
                   onClick={() => set("options", [...(p.options ?? []), ""])}
                 >
-                  <Plus /> Option
+                  <ClickIcon icon={AnimatedPlus} /> Option
                 </Button>
               )}
             </fieldset>
@@ -397,7 +394,7 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
                       )
                     }
                   >
-                    <Trash2 />
+                    <ClickIcon icon={AnimatedTrash2} />
                   </Button>
                 )}
               </div>
@@ -414,7 +411,7 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
                   ])
                 }
               >
-                <Plus /> Wrong answer
+                <ClickIcon icon={AnimatedPlus} /> Wrong answer
               </Button>
             )}
           </fieldset>
@@ -485,8 +482,12 @@ function DraftEditor({ draft, onChange }: { draft: Draft; onChange: (d: Draft) =
           ) : (
             <div className="flex flex-wrap gap-2">
               <Button onClick={() => act("approve")} disabled={!!busy}>
-                {busy === "approve" ? <Loader2 className="animate-spin" /> : <CheckCircle2 />} I
-                checked the answer: approve
+                {busy === "approve" ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <ClickIcon icon={AnimatedCircleCheck} />
+                )}{" "}
+                I checked the answer: approve
               </Button>
               <Button variant="outline" onClick={() => act("save")} disabled={!!busy}>
                 Save edits
@@ -670,7 +671,11 @@ export default function ContentReviewPage() {
             />
           </div>
           <Button onClick={generate} disabled={generating}>
-            {generating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+            {generating ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <ClickIcon icon={AnimatedSparkles} />
+            )}
             {generating ? "Drafting and checking…" : "Draft problems"}
           </Button>
         </CardHeader>

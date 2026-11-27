@@ -1,4 +1,5 @@
-import { ArrowUpRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowUpRightIcon as AnimatedArrowUpRight } from "@animateicons/react/lucide/arrow-up-right-icon";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
@@ -40,7 +41,7 @@ export function SiteFooter({ reveal = false }: { reveal?: boolean }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 transition-colors hover:text-foreground"
           >
-            GitHub <ArrowUpRight aria-hidden="true" className="size-3" />
+            GitHub <ClickIcon icon={AnimatedArrowUpRight} aria-hidden="true" className="size-3" />
           </Link>
         </nav>
         <p className="text-xs leading-relaxed text-muted-foreground">

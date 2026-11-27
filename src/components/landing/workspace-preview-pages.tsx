@@ -58,18 +58,11 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
   AlertCircle,
-  ArrowLeft,
-  ArrowUpDown,
-  BarChart3,
   BookOpen,
   Calendar as CalendarIcon,
-  Check,
   CheckCircle2,
-  ChevronDown,
-  ChevronUp,
   Clock,
   Copy,
-  ExternalLink,
   Eye,
   FileText,
   FileUp,
@@ -78,17 +71,29 @@ import {
   HelpCircle,
   Loader2,
   Lock,
-  MoreHorizontal,
-  Plus,
-  PlusCircle,
-  RefreshCw,
   Search,
   Settings2,
   ShieldAlert,
   Sparkles,
   Trash2,
-  Upload,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowUpDownIcon as AnimatedArrowUpDown } from "@animateicons/react/lucide/arrow-up-down-icon";
+import { ChartColumnIcon as AnimatedChartColumn } from "@animateicons/react/lucide/chart-column-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { ChevronUpIcon as AnimatedChevronUp } from "@animateicons/react/lucide/chevron-up-icon";
+import { CircleCheckIcon as AnimatedCircleCheck } from "@animateicons/react/lucide/circle-check-icon";
+import { CirclePlusIcon as AnimatedCirclePlus } from "@animateicons/react/lucide/circle-plus-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { ExternalLinkIcon as AnimatedExternalLink } from "@animateicons/react/lucide/external-link-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { RefreshCwIcon as AnimatedRefreshCw } from "@animateicons/react/lucide/refresh-cw-icon";
+import { SparklesIcon as AnimatedSparkles } from "@animateicons/react/lucide/sparkles-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
 import {
   courseName,
   dueLabel,
@@ -207,7 +212,7 @@ export function GradingTerminalView({
     <div className="space-y-6 pb-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={onBack} className="cursor-pointer">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ClickIcon icon={AnimatedArrowLeft} className="mr-2 h-4 w-4" />
           Back to Gradebook
         </Button>
         {courseLabel && (
@@ -265,14 +270,14 @@ export function GradingTerminalView({
             {isRegrading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <RefreshCw className="mr-2 h-4 w-4" />
+              <ClickIcon icon={AnimatedRefreshCw} className="mr-2 h-4 w-4" />
             )}
             Re-grade with Raise
           </Button>
           <Button size="sm" onClick={handleSave} className="h-10 px-6 font-bold cursor-pointer">
             {savedNotice ? (
               <>
-                <Check className="mr-1.5 h-4 w-4" />
+                <ClickIcon icon={AnimatedCheck} className="mr-1.5 h-4 w-4" />
                 Saved
               </>
             ) : (
@@ -495,7 +500,7 @@ export function GradingTerminalView({
                       className="h-8 w-8 shrink-0 cursor-pointer"
                       onClick={() => setWorkDialogOpen(true)}
                     >
-                      <ExternalLink className="h-4 w-4" />
+                      <ClickIcon icon={AnimatedExternalLink} className="h-4 w-4" />
                     </Button>
                   </div>
                 ))
@@ -671,7 +676,7 @@ export function GradebookPage({
             onClick={() => setSelectedStudentId(null)}
             className="mb-3 -ml-2 text-muted-foreground hover:text-foreground cursor-pointer"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ClickIcon icon={AnimatedArrowLeft} className="mr-2 h-4 w-4" />
             Back to Gradebook
           </Button>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -840,12 +845,12 @@ export function GradebookPage({
           className="h-9 gap-1.5 shrink-0 cursor-pointer"
           onClick={() => setShowAnalytics((v) => !v)}
         >
-          <BarChart3 className="h-3.5 w-3.5" />
+          <ClickIcon icon={AnimatedChartColumn} className="h-3.5 w-3.5" />
           Grade distribution
           {showAnalytics ? (
-            <ChevronUp className="h-3.5 w-3.5" />
+            <ClickIcon icon={AnimatedChevronUp} className="h-3.5 w-3.5" />
           ) : (
-            <ChevronDown className="h-3.5 w-3.5" />
+            <ClickIcon icon={AnimatedChevronDown} className="h-3.5 w-3.5" />
           )}
         </Button>
       </div>
@@ -1030,7 +1035,7 @@ export function AssignmentDetailsView({
           onClick={onBack}
           className="mb-3 -ml-2 h-8 text-muted-foreground cursor-pointer"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ClickIcon icon={AnimatedArrowLeft} className="mr-2 h-4 w-4" />
           My Assignments
         </Button>
         <TeacherPageHeader
@@ -1240,7 +1245,7 @@ export function AssignmentsPage({
         description="Filter by class or status, adjust visibility, duplicate templates, or inspect submissions."
       >
         <Button size="sm" className="h-9 cursor-pointer" onClick={onOpenCreate}>
-          <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
+          <ClickIcon icon={AnimatedCirclePlus} className="mr-1.5 h-3.5 w-3.5" />
           Create assignment
         </Button>
       </TeacherPageHeader>
@@ -1287,7 +1292,10 @@ export function AssignmentsPage({
           </label>
           <Select value={sortOrder} onValueChange={setSortOrder}>
             <SelectTrigger id={`${uid}-sort`} className="h-9">
-              <ArrowUpDown className="mr-1.5 h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <ClickIcon
+                icon={AnimatedArrowUpDown}
+                className="mr-1.5 h-3.5 w-3.5 text-muted-foreground shrink-0"
+              />
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
@@ -1364,7 +1372,7 @@ export function AssignmentsPage({
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-                          <MoreHorizontal className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedEllipsis} className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -1759,7 +1767,7 @@ export function CreateAssignmentPage({
               <Dialog open={aiGenOpen} onOpenChange={setAiGenOpen}>
                 <DialogTrigger asChild>
                   <Button type="button" variant="outline" size="sm" className="h-9 cursor-pointer">
-                    <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                    <ClickIcon icon={AnimatedSparkles} className="mr-1.5 h-3.5 w-3.5" />
                     Generate with AI
                   </Button>
                 </DialogTrigger>
@@ -1823,7 +1831,7 @@ export function CreateAssignmentPage({
                         </>
                       ) : (
                         <>
-                          <Sparkles className="mr-2 h-4 w-4" />
+                          <ClickIcon icon={AnimatedSparkles} className="mr-2 h-4 w-4" />
                           Generate Questions
                         </>
                       )}
@@ -1836,7 +1844,7 @@ export function CreateAssignmentPage({
               <Dialog open={importOpen} onOpenChange={setImportOpen}>
                 <DialogTrigger asChild>
                   <Button type="button" variant="outline" size="sm" className="h-9 cursor-pointer">
-                    <Upload className="mr-1.5 h-3.5 w-3.5" />
+                    <ClickIcon icon={AnimatedUpload} className="mr-1.5 h-3.5 w-3.5" />
                     Import text
                   </Button>
                 </DialogTrigger>
@@ -1950,7 +1958,7 @@ export function CreateAssignmentPage({
                     onClick={() => removeQuestion(q.id)}
                     disabled={questions.length <= 1}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <ClickIcon icon={AnimatedTrash2} className="h-4 w-4" />
                   </Button>
                 </div>
 
@@ -2033,7 +2041,8 @@ export function CreateAssignmentPage({
                             className="h-8 w-8 shrink-0 rounded-lg cursor-pointer"
                             onClick={() => updateQuestion(q.id, "correctAnswer", opt)}
                           >
-                            <CheckCircle2
+                            <ClickIcon
+                              icon={AnimatedCircleCheck}
                               className={cn(
                                 "h-4 w-4",
                                 q.correctAnswer === opt ? "scale-100" : "scale-75 opacity-30",
@@ -2080,7 +2089,7 @@ export function CreateAssignmentPage({
               onClick={addQuestion}
               className="w-full cursor-pointer"
             >
-              <PlusCircle className="mr-2 h-4 w-4" />
+              <ClickIcon icon={AnimatedCirclePlus} className="mr-2 h-4 w-4" />
               Add Question
             </Button>
           </CardContent>
@@ -2103,9 +2112,9 @@ export function CreateAssignmentPage({
             </div>
             <Button variant="ghost" size="sm" type="button">
               {advancedOpen ? (
-                <ChevronUp className="h-4 w-4" />
+                <ClickIcon icon={AnimatedChevronUp} className="h-4 w-4" />
               ) : (
-                <ChevronDown className="h-4 w-4" />
+                <ClickIcon icon={AnimatedChevronDown} className="h-4 w-4" />
               )}
             </Button>
           </CardHeader>
@@ -2192,7 +2201,7 @@ export function CreateAssignmentPage({
                     {isSynthesizingRubric ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
-                      <Sparkles className="h-3 w-3 text-primary" />
+                      <ClickIcon icon={AnimatedSparkles} className="h-3 w-3 text-primary" />
                     )}
                     Synthesize with AI
                   </Button>
@@ -2219,7 +2228,7 @@ export function CreateAssignmentPage({
             onClick={() => setPreviewOpen(true)}
             className="cursor-pointer"
           >
-            <Eye className="mr-1.5 h-4 w-4" />
+            <ClickIcon icon={AnimatedEye} className="mr-1.5 h-4 w-4" />
             Student preview
           </Button>
           <Button type="submit" disabled={!isPointsValid} className="cursor-pointer">
@@ -2334,7 +2343,7 @@ export function ResourcesPage({
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="cursor-pointer">
-              <Plus className="mr-2 h-4 w-4" /> Add Resource
+              <ClickIcon icon={AnimatedPlus} className="mr-2 h-4 w-4" /> Add Resource
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
@@ -2391,7 +2400,7 @@ export function ResourcesPage({
                   Cancel
                 </Button>
                 <Button type="submit" className="cursor-pointer">
-                  <Upload className="mr-2 h-4 w-4" />
+                  <ClickIcon icon={AnimatedUpload} className="mr-2 h-4 w-4" />
                   Upload
                 </Button>
               </DialogFooter>
@@ -2474,7 +2483,10 @@ export function ResourcesPage({
                               className="font-medium hover:underline flex items-center gap-1.5 text-left cursor-pointer"
                             >
                               {resource.title}
-                              <ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                              <ClickIcon
+                                icon={AnimatedExternalLink}
+                                className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity"
+                              />
                             </button>
                             <span className="text-[10px] text-muted-foreground/70 font-mono uppercase">
                               {resource.type} · {resource.url}
@@ -2499,7 +2511,10 @@ export function ResourcesPage({
                             onClick={() => setPreviewResource(resource)}
                             title="View Document"
                           >
-                            <ExternalLink className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                            <ClickIcon
+                              icon={AnimatedExternalLink}
+                              className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                            />
                           </Button>
                           <Button
                             variant="ghost"
@@ -2508,7 +2523,7 @@ export function ResourcesPage({
                             onClick={() => setResourceToDelete(resource)}
                             title="Delete Resource"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <ClickIcon icon={AnimatedTrash2} className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>

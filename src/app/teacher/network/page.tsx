@@ -33,28 +33,32 @@ import {
   Users,
   ShieldAlert,
   HandCoins,
-  Info,
   PlusCircle,
   UserPlus,
-  Link as LinkIcon,
-  Copy,
-  LogOut,
-  ChevronRight,
-  ArrowRight,
   Loader2,
   NotebookPen,
-  MoreHorizontal,
   Crown,
   UserMinus,
   CreditCard,
-  Send,
-  Pencil,
   Share2,
-  Check,
   Sliders,
-  BarChart3,
-  GraduationCap,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { ChartColumnIcon as AnimatedChartColumn } from "@animateicons/react/lucide/chart-column-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { CreditCardIcon as AnimatedCreditCard } from "@animateicons/react/lucide/credit-card-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { GraduationCapIcon as AnimatedGraduationCap } from "@animateicons/react/lucide/graduation-cap-icon";
+import { InfoIcon as AnimatedInfo } from "@animateicons/react/lucide/info-icon";
+import { LinkIcon as AnimatedLink } from "@animateicons/react/lucide/link-icon";
+import { LogOutIcon as AnimatedLogOut } from "@animateicons/react/lucide/log-out-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
+import { UserPlusIcon as AnimatedUserPlus } from "@animateicons/react/lucide/user-plus-icon";
+import { UsersIcon as AnimatedUsers } from "@animateicons/react/lucide/users-icon";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -615,7 +619,7 @@ export default function NetworkPage() {
                         }}
                         title="Rename Department"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedPencil} className="h-4 w-4" />
                       </Button>
                     )}
                   </div>
@@ -653,7 +657,7 @@ export default function NetworkPage() {
                       onClick={() => changeInviteDialog(true)}
                       className="h-9 gap-2 text-xs font-bold shadow-sm rounded-xl px-4"
                     >
-                      <UserPlus className="h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedUserPlus} className="h-3.5 w-3.5" />
                       Invite Colleague
                     </Button>
                   )}
@@ -665,7 +669,7 @@ export default function NetworkPage() {
                       className="h-9 gap-2 text-xs font-semibold rounded-xl cursor-pointer"
                     >
                       <Link href="/teacher/network/billing">
-                        <CreditCard className="h-3.5 w-3.5" />
+                        <ClickIcon icon={AnimatedCreditCard} className="h-3.5 w-3.5" />
                         Billing & Plan
                       </Link>
                     </Button>
@@ -678,7 +682,7 @@ export default function NetworkPage() {
                 className="h-9 text-[11px] font-bold gap-1.5 rounded-xl px-3 cursor-pointer"
                 onClick={() => setTutorialOpen(true)}
               >
-                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                <ClickIcon icon={AnimatedInfo} className="h-3.5 w-3.5 text-muted-foreground" />
                 Guide
               </Button>
             </div>
@@ -706,12 +710,15 @@ export default function NetworkPage() {
               <Link href="/teacher/students?tab=insights" className="block group">
                 <div className="flex items-center gap-3 p-2 bg-background/70 hover:bg-background border border-border/40 hover:border-primary/50 transition-all rounded-xl cursor-pointer">
                   <div className="size-7 rounded-lg sm:size-10 bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center shrink-0 transition-colors">
-                    <GraduationCap className="h-5 w-5 text-primary" />
+                    <ClickIcon icon={AnimatedGraduationCap} className="h-5 w-5 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xl font-black font-mono leading-none flex items-center justify-between">
                       <span>{studentCount}</span>
-                      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ClickIcon
+                        icon={AnimatedArrowRight}
+                        className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                      />
                     </div>
                     <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-1 truncate">
                       Student insights
@@ -822,7 +829,7 @@ export default function NetworkPage() {
                     className="w-full h-11 font-bold cursor-pointer"
                   >
                     Create Department
-                    <ChevronRight className="ml-2 h-4 w-4" />
+                    <ClickIcon icon={AnimatedChevronRight} className="ml-2 h-4 w-4" />
                   </Button>
                 </CardFooter>
               </Card>
@@ -861,7 +868,7 @@ export default function NetworkPage() {
                     className="w-full h-11 font-bold cursor-pointer"
                   >
                     Join Team
-                    <LinkIcon className="ml-2 h-4 w-4" />
+                    <ClickIcon icon={AnimatedLink} className="ml-2 h-4 w-4" />
                   </Button>
                 </CardFooter>
               </Card>
@@ -878,7 +885,7 @@ export default function NetworkPage() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-3">
               <TabsList className="grid h-auto w-full grid-cols-3 sm:w-auto">
                 <TabsTrigger value="faculty" className="min-h-8 px-2 sm:px-4">
-                  <Users className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedUsers} className="h-3.5 w-3.5" />
                   Faculty
                 </TabsTrigger>
                 <TabsTrigger value="limits" className="min-h-8 px-2 sm:px-4">
@@ -886,7 +893,7 @@ export default function NetworkPage() {
                   Quotas
                 </TabsTrigger>
                 <TabsTrigger value="analytics" className="min-h-8 px-2 sm:px-4">
-                  <BarChart3 className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedChartColumn} className="h-3.5 w-3.5" />
                   Analytics
                 </TabsTrigger>
               </TabsList>
@@ -927,7 +934,7 @@ export default function NetworkPage() {
                         className="text-xs font-semibold rounded-xl"
                         onClick={() => changeInviteDialog(true)}
                       >
-                        <UserPlus className="h-3.5 w-3.5" />
+                        <ClickIcon icon={AnimatedUserPlus} className="h-3.5 w-3.5" />
                         Add Teacher
                       </Button>
                     )}
@@ -991,7 +998,7 @@ export default function NetworkPage() {
                                       size="sm"
                                       className="h-8 w-8 p-0 cursor-pointer"
                                     >
-                                      <MoreHorizontal className="h-4 w-4" />
+                                      <ClickIcon icon={AnimatedEllipsis} className="h-4 w-4" />
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
@@ -1073,17 +1080,15 @@ export default function NetworkPage() {
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          Scorpio is free. AI runs on a prepaid balance at Google&apos;s exact cost, with
-                          $1 free every month.
+                          Scorpio is free. AI runs on a prepaid balance at Google&apos;s exact cost,
+                          with $1 free every month.
                         </p>
                         <Button
                           asChild
                           variant="outline"
                           className="w-full text-xs h-9 font-semibold cursor-pointer"
                         >
-                          <Link href="/teacher/network/billing">
-                            Add credit & view history
-                          </Link>
+                          <Link href="/teacher/network/billing">Add credit & view history</Link>
                         </Button>
                       </CardContent>
                     </Card>
@@ -1104,7 +1109,7 @@ export default function NetworkPage() {
                         className="w-full text-xs h-9 text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer font-semibold"
                         onClick={leaveNetwork}
                       >
-                        <LogOut className="mr-2 h-3.5 w-3.5" />
+                        <ClickIcon icon={AnimatedLogOut} className="mr-2 h-3.5 w-3.5" />
                         {isOwner ? "Disband Department Network" : "Leave Department"}
                       </Button>
                     </CardContent>
@@ -1556,7 +1561,11 @@ export default function NetworkPage() {
                       <a href={inviteEmailDraft}>Email draft</a>
                     </Button>
                     <Button onClick={copyInviteLink}>
-                      {copiedLink ? <Check className="size-4" /> : <Copy className="size-4" />}
+                      {copiedLink ? (
+                        <ClickIcon icon={AnimatedCheck} className="size-4" />
+                      ) : (
+                        <ClickIcon icon={AnimatedCopy} className="size-4" />
+                      )}
                       {copiedLink ? "Link copied" : "Copy link"}
                     </Button>
                   </>
@@ -1637,7 +1646,7 @@ export default function NetworkPage() {
                   onClick={sendLimitsMessage}
                   disabled={limitsLoading || !limitsInput.trim()}
                 >
-                  <Send className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedSend} className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>

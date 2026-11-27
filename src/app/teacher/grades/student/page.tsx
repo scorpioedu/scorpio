@@ -15,7 +15,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
 import Link from "next/link";
 import {
   Select,
@@ -153,7 +155,7 @@ export default function StudentDetailsPage() {
         <div className="flex items-center gap-4">
           <Button asChild variant="ghost" size="icon">
             <Link href="/teacher/grades" aria-label="Back to grades">
-              <ArrowLeft className="h-4 w-4" />
+              <ClickIcon icon={AnimatedArrowLeft} className="h-4 w-4" />
             </Link>
           </Button>
           <div>
@@ -176,7 +178,7 @@ export default function StudentDetailsPage() {
         href="/teacher/grades"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="size-4" /> Gradebook
+        <ClickIcon icon={AnimatedArrowLeft} className="size-4" /> Gradebook
       </Link>
 
       <TeacherPageHeader title={studentName} description="Submission history and grades.">
@@ -260,7 +262,8 @@ export default function StudentDetailsPage() {
                     <TableCell className="text-right pr-4 sm:pr-5">
                       <Button asChild variant={submission.graded ? "ghost" : "outline"} size="sm">
                         <Link href={`/teacher/submission/grade?id=${submission.id}`}>
-                          {submission.graded ? "Review" : "Grade"} <ChevronRight />
+                          {submission.graded ? "Review" : "Grade"}{" "}
+                          <ClickIcon icon={AnimatedChevronRight} />
                         </Link>
                       </Button>
                     </TableCell>

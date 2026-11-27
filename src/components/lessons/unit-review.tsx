@@ -3,7 +3,9 @@
 // and "unit 3 equations". Server component; same plain style as the course page.
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { PrimaryPill } from "@/components/landing/split-kit";
 import { plainText, type PublicUnitPage } from "@/lib/guides/public";
@@ -141,7 +143,8 @@ export function UnitReview({ page }: { page: PublicUnitPage }) {
                       {t.bigIdea}
                     </MarkdownRenderer>
                   </span>
-                  <ArrowRight
+                  <ClickIcon
+                    icon={AnimatedArrowRight}
                     aria-hidden
                     className="mt-1 size-4 shrink-0 text-muted-foreground transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-foreground"
                   />
@@ -238,9 +241,9 @@ function UnitLink({
           dir === "next" && "self-end",
         )}
       >
-        {dir === "prev" && <ArrowLeft aria-hidden className="size-3.5" />}
+        {dir === "prev" && <ClickIcon icon={AnimatedArrowLeft} aria-hidden className="size-3.5" />}
         {dir === "prev" ? "Previous unit" : "Next unit"}
-        {dir === "next" && <ArrowRight aria-hidden className="size-3.5" />}
+        {dir === "next" && <ClickIcon icon={AnimatedArrowRight} aria-hidden className="size-3.5" />}
       </span>
       <span className="font-medium leading-snug">
         <span className="font-mono text-sm tabular-nums text-muted-foreground">{unit.unit}</span>{" "}

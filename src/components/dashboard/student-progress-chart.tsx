@@ -12,7 +12,9 @@ import {
 } from "recharts";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import Link from "next/link";
 
 interface ScoreDataPoint {
@@ -28,22 +30,24 @@ interface StudentProgressChartProps {
   scores: ScoreDataPoint[];
 }
 
-function CustomTooltip({ active, payload }: { active?: boolean; payload?: { payload: unknown }[] }) {
+function CustomTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { payload: unknown }[];
+}) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as ScoreDataPoint;
 
   return (
     <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-md">
-      <p className="max-w-[200px] truncate text-xs font-medium text-foreground">
-        {item.title}
-      </p>
+      <p className="max-w-[200px] truncate text-xs font-medium text-foreground">{item.title}</p>
       <div className="mt-1 flex items-center justify-between gap-3 text-xs">
         <span className="text-muted-foreground">Score:</span>
         <span className="font-semibold text-primary">{item.score}%</span>
       </div>
-      {item.date && (
-        <p className="mt-0.5 text-[10px] text-muted-foreground">{item.date}</p>
-      )}
+      {item.date && <p className="mt-0.5 text-[10px] text-muted-foreground">{item.date}</p>}
     </div>
   );
 }
@@ -55,18 +59,14 @@ export function StudentProgressChart({
   scores,
 }: StudentProgressChartProps) {
   const completionPercentage =
-    totalAssignments > 0
-      ? Math.round((completedAssignments / totalAssignments) * 100)
-      : 0;
+    totalAssignments > 0 ? Math.round((completedAssignments / totalAssignments) * 100) : 0;
 
   const hasScoreHistory = scores.length >= 2;
 
   // Calculate average score if scores are available
   const avgScore =
     scores.length > 0
-      ? Math.round(
-          scores.reduce((sum, item) => sum + item.score, 0) / scores.length
-        )
+      ? Math.round(scores.reduce((sum, item) => sum + item.score, 0) / scores.length)
       : null;
 
   return (
@@ -81,7 +81,7 @@ export function StudentProgressChart({
           href="/student/grades"
           className="flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
-          View Grades <ArrowRight className="size-3.5" />
+          View Grades <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
         </Link>
       </CardHeader>
 
@@ -91,17 +91,12 @@ export function StudentProgressChart({
           <div className="space-y-4">
             <div>
               <div className="flex items-baseline justify-between">
-                <span className="text-xs font-medium text-muted-foreground">
-                  Course Completion
-                </span>
+                <span className="text-xs font-medium text-muted-foreground">Course Completion</span>
                 <span className="text-sm font-semibold tabular-nums text-foreground">
                   {completionPercentage}%
                 </span>
               </div>
-              <Progress
-                value={completionPercentage}
-                className="mt-2 h-2.5 bg-muted"
-              />
+              <Progress value={completionPercentage} className="mt-2 h-2.5 bg-muted" />
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-1 text-center">
@@ -136,28 +131,11 @@ export function StudentProgressChart({
                 </div>
                 <div className="h-[120px] w-full pt-1">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={scores}
-                      margin={{ top: 8, right: 8, left: -24, bottom: 0 }}
-                    >
+                    <AreaChart data={scores} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
                       <defs>
-                        <linearGradient
-                          id="scoreGradient"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor="var(--primary)"
-                            stopOpacity={0.25}
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="var(--primary)"
-                            stopOpacity={0.0}
-                          />
+                        <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.25} />
+                          <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid
@@ -166,12 +144,7 @@ export function StudentProgressChart({
                         vertical={false}
                         opacity={0.6}
                       />
-                      <XAxis
-                        dataKey="title"
-                        tick={false}
-                        axisLine={false}
-                        tickLine={false}
-                      />
+                      <XAxis dataKey="title" tick={false} axisLine={false} tickLine={false} />
                       <YAxis
                         domain={[0, 100]}
                         ticks={[0, 50, 100]}

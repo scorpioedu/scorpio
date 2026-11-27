@@ -5,7 +5,11 @@
 // under the site header that opens the same contents in a sheet.
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Check, ChevronDown, ChevronsUpDown, List } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { ChevronsUpDownIcon as AnimatedChevronsUpDown } from "@animateicons/react/lucide/chevrons-up-down-icon";
+import { ListIcon as AnimatedList } from "@animateicons/react/lucide/list-icon";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -118,7 +122,7 @@ function Contents({
             >
               <span className="w-12 shrink-0 text-[11px] text-muted-foreground">Course</span>
               <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{courseName}</span>
-              <ChevronsUpDown aria-hidden className={chevronClass} />
+              <ClickIcon icon={AnimatedChevronsUpDown} aria-hidden className={chevronClass} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" sideOffset={6} className={menuClass}>
@@ -136,7 +140,13 @@ function Contents({
                     )}
                   >
                     <span className="min-w-0 flex-1">{c.name}</span>
-                    {current && <Check aria-hidden className="size-4 shrink-0 text-primary" />}
+                    {current && (
+                      <ClickIcon
+                        icon={AnimatedCheck}
+                        aria-hidden
+                        className="size-4 shrink-0 text-primary"
+                      />
+                    )}
                   </Link>
                 </DropdownMenuItem>
               );
@@ -158,7 +168,7 @@ function Contents({
               <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
                 {unitInfo?.title ?? `Unit ${unit}`}
               </span>
-              <ChevronsUpDown aria-hidden className={chevronClass} />
+              <ClickIcon icon={AnimatedChevronsUpDown} aria-hidden className={chevronClass} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" sideOffset={6} className={menuClass}>
@@ -193,7 +203,13 @@ function Contents({
                     >
                       {u.title}
                     </span>
-                    {current && <Check aria-hidden className="size-4 shrink-0 text-primary" />}
+                    {current && (
+                      <ClickIcon
+                        icon={AnimatedCheck}
+                        aria-hidden
+                        className="size-4 shrink-0 text-primary"
+                      />
+                    )}
                   </Link>
                 </DropdownMenuItem>
               );
@@ -228,7 +244,11 @@ function Contents({
                 </span>
                 <span className="min-w-0 flex-1">{t.title}</span>
                 {read.has(t.id) && !isActive && (
-                  <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-label="Read" />
+                  <ClickIcon
+                    icon={AnimatedCheck}
+                    className="mt-0.5 size-3.5 shrink-0 text-primary"
+                    aria-label="Read"
+                  />
                 )}
               </Link>
               {isActive && sections.length > 0 && (
@@ -276,13 +296,21 @@ export function LessonNav(props: LessonNavProps) {
           className="flex h-12 w-full items-center gap-3 text-left text-sm"
           aria-label="Open the lesson contents"
         >
-          <List aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+          <ClickIcon
+            icon={AnimatedList}
+            aria-hidden
+            className="size-4 shrink-0 text-muted-foreground"
+          />
           <span className="min-w-0 flex-1 truncate">
             <span className="font-mono text-xs tabular-nums text-primary">{props.active}</span>{" "}
             <span className="font-medium">{activeTopic?.title}</span>
             {currentTitle && <span className="text-muted-foreground"> · {currentTitle}</span>}
           </span>
-          <ChevronDown aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+          <ClickIcon
+            icon={AnimatedChevronDown}
+            aria-hidden
+            className="size-4 shrink-0 text-muted-foreground"
+          />
         </button>
       </div>
       <Sheet open={open} onOpenChange={setOpen}>

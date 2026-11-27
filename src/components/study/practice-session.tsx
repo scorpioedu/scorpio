@@ -4,7 +4,11 @@
 // misconception a wrong answer points to and the worked solution. Used by the lesson pages (signed
 // out or in) and by Study in the student app.
 import { useId, useState, type ReactNode } from "react";
-import { ArrowRight, Check, ChevronDown, RotateCcw, X } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
 import { track } from "@vercel/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -293,7 +297,8 @@ function ProblemCard({
                 className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium"
               >
                 Worked solution
-                <ChevronDown
+                <ClickIcon
+                  icon={AnimatedChevronDown}
                   aria-hidden
                   className={cn("size-4 transition-transform", showSolution && "rotate-180")}
                 />
@@ -308,7 +313,7 @@ function ProblemCard({
 
           <Button onClick={onNext} autoFocus>
             {last ? "See how you did" : "Next problem"}
-            <ArrowRight aria-hidden className="ml-1 size-4" />
+            <ClickIcon icon={AnimatedArrowRight} aria-hidden className="ml-1 size-4" />
           </Button>
         </div>
       )}
@@ -320,7 +325,7 @@ function ProblemCard({
 export function PracticeAgain({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   return (
     <Button variant="outline" onClick={onClick}>
-      <RotateCcw aria-hidden className="mr-1 size-4" />
+      <ClickIcon icon={AnimatedRotateCcw} aria-hidden className="mr-1 size-4" />
       {children}
     </Button>
   );

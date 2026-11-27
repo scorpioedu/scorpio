@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy, Download, FileCode, Image as ImageIcon, Share2 } from "lucide-react";
+import { Copy, FileCode, Image as ImageIcon, Share2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
 import { toast } from "sonner";
 import { render } from "@/lib/diagram";
 import {
@@ -136,9 +139,9 @@ function DiagramImageMenu({
           className="absolute right-2 top-2 flex size-8 cursor-pointer items-center justify-center rounded-full border border-border bg-background/90 text-muted-foreground opacity-0 shadow-xs outline-none backdrop-blur-sm transition-opacity hover:text-foreground focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 group-hover/dg:opacity-100 group-focus-within/dg:opacity-100 data-[state=open]:opacity-100 [@media(hover:none)]:size-7 [@media(hover:none)]:opacity-100"
         >
           {copied ? (
-            <Check className="size-4" aria-hidden />
+            <ClickIcon icon={AnimatedCheck} className="size-4" aria-hidden />
           ) : (
-            <Download className="size-4" aria-hidden />
+            <ClickIcon icon={AnimatedDownload} className="size-4" aria-hidden />
           )}
         </button>
       </DropdownMenuTrigger>

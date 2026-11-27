@@ -14,7 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import Link from "next/link";
 import { NAV_ICONS } from "@/components/nav-icons";
 import { RundownDialog } from "@/components/ui/rundown-dialog";
@@ -464,7 +466,7 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <Button asChild size="lg">
                 <Link href="/student/study">
                   Open Study
-                  <ArrowRight aria-hidden />
+                  <ClickIcon icon={AnimatedArrowRight} aria-hidden />
                 </Link>
               </Button>
             </CardHeader>
@@ -594,7 +596,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 Study
               </span>
-              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+              <ClickIcon
+                icon={AnimatedArrowRight}
+                className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+              />
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               Lessons and practice for every topic
@@ -609,7 +614,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 Notebook
               </span>
-              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+              <ClickIcon
+                icon={AnimatedArrowRight}
+                className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+              />
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Derivations & Markdown notes</p>
           </Link>
@@ -622,7 +630,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 Formula vault
               </span>
-              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+              <ClickIcon
+                icon={AnimatedArrowRight}
+                className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+              />
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Physics formulas & constants</p>
           </Link>
@@ -635,7 +646,10 @@ export default function StudentDashboard({ onLoaded }: { onLoaded?: () => void }
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 {aiOn ? "Raise" : "Resources"}
               </span>
-              <ArrowRight className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+              <ClickIcon
+                icon={AnimatedArrowRight}
+                className="size-3.5 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+              />
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {aiOn ? "Optional hints when you’re stuck" : "Files your teacher shared"}
@@ -760,7 +774,7 @@ function NextUpCard({
                 href={`/student/assignment-view?id=${encodeURIComponent(assignment.id)}${anySubmitted ? "" : "&first=1"}`}
               >
                 {anySubmitted ? "Start" : "Start your first assignment"}
-                <ArrowRight className="size-4" />
+                <ClickIcon icon={AnimatedArrowRight} className="size-4" />
               </Link>
             </Button>
           </div>
@@ -775,7 +789,7 @@ function NextUpCard({
               href="/student/assignments"
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
-              All <ArrowRight className="size-3.5" aria-hidden />
+              All <ClickIcon icon={AnimatedArrowRight} className="size-3.5" aria-hidden />
             </Link>
           </div>
           {later.length > 0 ? (

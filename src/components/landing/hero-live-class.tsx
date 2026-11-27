@@ -1,6 +1,8 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { PauseIcon as AnimatedPause } from "@animateicons/react/lucide/pause-icon";
+import { PlayIcon as AnimatedPlay } from "@animateicons/react/lucide/play-icon";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Logo } from "@/components/ui/logo";
 import intro from "./hero-intro.module.css";
@@ -255,9 +257,10 @@ export function HeroLiveClass({
           <span aria-hidden="true">{paused ? "Paused" : "Live · Period 3"}</span>
           {!still &&
             (paused ? (
-              <Play aria-hidden="true" className="size-3" />
+              <ClickIcon icon={AnimatedPlay} aria-hidden="true" className="size-3" />
             ) : (
-              <Pause
+              <ClickIcon
+                icon={AnimatedPause}
                 aria-hidden="true"
                 className="size-3 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
               />

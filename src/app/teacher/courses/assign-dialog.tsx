@@ -16,7 +16,8 @@ import {
 import { DEFAULT_SET_SIZE, curriculumSet, getCurriculum } from "@/data/curricula";
 import { apTopic as apTopicInfo } from "@/data/ap";
 import { lessonTopics } from "@/lib/read-first";
-import { BookOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
 import { LessonDialog, useLessons, type LessonTarget } from "@/components/guide/lesson-dialog";
 import { parseDateInput } from "@/lib/first-run";
 import type { SchoolDayTest } from "@/lib/school-calendar";
@@ -235,7 +236,7 @@ export function AssignDialog({
                       disabled={!lessonGuides.guide}
                       className="inline-flex max-w-full items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-xs hover:border-primary/60 hover:text-primary disabled:opacity-60"
                     >
-                      <BookOpen className="size-3 shrink-0" aria-hidden />
+                      <ClickIcon icon={AnimatedBookOpen} className="size-3 shrink-0" aria-hidden />
                       <span className="font-semibold tabular-nums">{t}</span>
                       <span className="truncate">{apTopicInfo(t, apCourse)?.title}</span>
                     </button>

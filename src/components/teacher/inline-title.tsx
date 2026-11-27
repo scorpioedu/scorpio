@@ -3,7 +3,9 @@
 // A title you can click to rename. Enter or leaving the field saves; Escape cancels.
 import { useEffect, useRef, useState, type ElementType } from "react";
 import Link from "next/link";
-import { Check, Loader2, Pencil } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
 import { cn } from "@/lib/utils";
 
 export function InlineTitle({
@@ -101,7 +103,7 @@ export function InlineTitle({
         aria-label={`${label}: ${value}`}
         className="shrink-0 rounded p-0.5 text-muted-foreground opacity-60 transition-opacity hover:bg-accent hover:opacity-100 focus-visible:opacity-100 group-hover:opacity-100"
       >
-        <Pencil className="size-3.5" />
+        <ClickIcon icon={AnimatedPencil} className="size-3.5" />
       </button>
     </Tag>
   );

@@ -18,7 +18,12 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, ChevronsUpDown, List } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { ChevronsUpDownIcon as AnimatedChevronsUpDown } from "@animateicons/react/lucide/chevrons-up-down-icon";
+import { ListIcon as AnimatedList } from "@animateicons/react/lucide/list-icon";
 import { apUnit, type ApCourseId } from "@/data/ap";
 import {
   guideUnits,
@@ -257,7 +262,11 @@ export function GuideReader({
                 Unit {unit}
                 {info ? `: ${info.title}` : ""}
               </span>
-              <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+              <ClickIcon
+                icon={AnimatedChevronsUpDown}
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden
+              />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="max-h-[70dvh] w-72 overflow-y-auto">
@@ -278,7 +287,11 @@ export function GuideReader({
                     </span>
                     <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                       {done === total && total > 0 ? (
-                        <Check className="size-3.5 text-primary" aria-label="All read" />
+                        <ClickIcon
+                          icon={AnimatedCheck}
+                          className="size-3.5 text-primary"
+                          aria-label="All read"
+                        />
                       ) : (
                         `${done}/${total}`
                       )}
@@ -344,7 +357,11 @@ export function GuideReader({
                   </span>
                   <span className="min-w-0 flex-1 leading-snug">{t.title}</span>
                   {isRead(t.id) && !isActive && (
-                    <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-label="Read" />
+                    <ClickIcon
+                      icon={AnimatedCheck}
+                      className="mt-0.5 size-3.5 shrink-0 text-primary"
+                      aria-label="Read"
+                    />
                   )}
                   {status && <LevelMeter level={status.level} className="mt-0.5 shrink-0" />}
                 </a>
@@ -396,7 +413,7 @@ export function GuideReader({
           className="text-muted-foreground hover:text-foreground"
         >
           <Link href={backHref}>
-            <ArrowLeft aria-hidden /> {backLabel}
+            <ClickIcon icon={AnimatedArrowLeft} aria-hidden /> {backLabel}
           </Link>
         </Button>
         <Button
@@ -406,7 +423,7 @@ export function GuideReader({
           onClick={() => setContentsOpen(true)}
           aria-label="Open the contents"
         >
-          <List aria-hidden /> Contents
+          <ClickIcon icon={AnimatedList} aria-hidden /> Contents
         </Button>
         <p className="min-w-0 flex-1 truncate text-center text-sm text-muted-foreground">
           {courseName} · Unit {unit}

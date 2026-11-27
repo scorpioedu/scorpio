@@ -4,7 +4,8 @@
 // the work is graded, the guide's entry for a misconception the grader tagged on an answer.
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
 import {
   hasUnitGuide,
   loadUnitGuide,
@@ -88,7 +89,7 @@ export function GuideLink({
       {...(newTab ? { target: "_blank", rel: "noopener" } : {})}
       className="inline-flex items-center gap-1.5 text-xs font-medium text-primary underline-offset-4 hover:underline"
     >
-      <BookOpen className="size-3.5" aria-hidden />
+      <ClickIcon icon={AnimatedBookOpen} className="size-3.5" aria-hidden />
       {children}
     </Link>
   );

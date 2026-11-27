@@ -14,7 +14,9 @@ import { shownProfile, typeSummary } from "@/data/curricula/profiles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Pencil, Plus } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
 import { assignmentHref } from "@/lib/assignment-actions";
 import { Maths } from "./maths";
 import {
@@ -148,7 +150,7 @@ export function SetPreviewDialog({
             <>
               <Button size="sm" asChild>
                 <Link href={assignmentHref(target.assignmentId, "problems")}>
-                  <Pencil aria-hidden /> Edit problems
+                  <ClickIcon icon={AnimatedPencil} aria-hidden /> Edit problems
                 </Link>
               </Button>
               <Button variant="outline" size="sm" asChild>
@@ -159,7 +161,8 @@ export function SetPreviewDialog({
             target.publishedId &&
             onAssign && (
               <Button size="sm" onClick={onAssign} disabled={assignBusy}>
-                <Plus aria-hidden /> {assignBusy ? "Copying…" : assignLabel}
+                <ClickIcon icon={AnimatedPlus} aria-hidden />{" "}
+                {assignBusy ? "Copying…" : assignLabel}
               </Button>
             )
           )}

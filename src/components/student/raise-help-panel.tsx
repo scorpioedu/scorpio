@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowUp, Check, Copy, RotateCcw, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowUpIcon as AnimatedArrowUp } from "@animateicons/react/lucide/arrow-up-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -93,7 +98,7 @@ export function RaiseHelpPanel({
             disabled={messages.length === 0}
             className="size-8 text-muted-foreground hover:text-foreground"
           >
-            <RotateCcw className="size-4" />
+            <ClickIcon icon={AnimatedRotateCcw} className="size-4" />
           </Button>
           <Button
             aria-label="Close Raise"
@@ -102,7 +107,7 @@ export function RaiseHelpPanel({
             onClick={onClose}
             className="size-8 text-muted-foreground hover:text-foreground"
           >
-            <X className="size-4" />
+            <ClickIcon icon={AnimatedX} className="size-4" />
           </Button>
         </div>
       </div>
@@ -158,11 +163,11 @@ export function RaiseHelpPanel({
               >
                 {copiedMessageId === msg.id ? (
                   <>
-                    <Check className="size-3" /> Copied
+                    <ClickIcon icon={AnimatedCheck} className="size-3" /> Copied
                   </>
                 ) : (
                   <>
-                    <Copy className="size-3" /> Copy
+                    <ClickIcon icon={AnimatedCopy} className="size-3" /> Copy
                   </>
                 )}
               </button>
@@ -231,7 +236,7 @@ export function RaiseHelpPanel({
             size="icon"
             className="size-8 shrink-0 rounded-full"
           >
-            <ArrowUp className="size-4" />
+            <ClickIcon icon={AnimatedArrowUp} className="size-4" />
           </Button>
         </div>
       </div>

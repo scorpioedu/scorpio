@@ -35,7 +35,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2, ExternalLink, Plus, Upload, FileText, Search } from "lucide-react";
+import { FileText, Search } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ExternalLinkIcon as AnimatedExternalLink } from "@animateicons/react/lucide/external-link-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
 
 import { TeacherPageHeader } from "@/components/teacher/workspace";
 import {
@@ -209,7 +214,7 @@ export default function ResourcesPage() {
         >
           <DialogTrigger asChild>
             <Button>
-              <Plus /> Add Resource
+              <ClickIcon icon={AnimatedPlus} /> Add Resource
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
@@ -293,7 +298,7 @@ export default function ResourcesPage() {
                     disabled={adding}
                     onClick={() => fileInput.current?.click()}
                   >
-                    <Upload /> Choose File
+                    <ClickIcon icon={AnimatedUpload} /> Choose File
                   </Button>
                 </div>
                 {file && (
@@ -401,7 +406,8 @@ export default function ResourcesPage() {
                         title={resource.url}
                       >
                         {resource.title}{" "}
-                        <ExternalLink
+                        <ClickIcon
+                          icon={AnimatedExternalLink}
                           aria-hidden="true"
                           className="size-3 shrink-0 text-muted-foreground"
                         />
@@ -427,7 +433,7 @@ export default function ResourcesPage() {
                         className="text-muted-foreground hover:text-destructive"
                         onClick={() => setResourceToDelete(resource.id)}
                       >
-                        <Trash2 />
+                        <ClickIcon icon={AnimatedTrash2} />
                       </Button>
                     </TableCell>
                   </TableRow>

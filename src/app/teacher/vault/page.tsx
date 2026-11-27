@@ -2,18 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Search,
-  PackageOpen,
-  Shield,
-  Lock,
-  Unlock,
-  Filter,
-  Plus,
-  Trash2,
-  RotateCcw,
-  HelpCircle,
-} from "lucide-react";
+import { Search, PackageOpen, Filter } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CircleQuestionMarkIcon as AnimatedCircleQuestionMark } from "@animateicons/react/lucide/circle-question-mark-icon";
+import { LockIcon as AnimatedLock } from "@animateicons/react/lucide/lock-icon";
+import { LockOpenIcon as AnimatedLockOpen } from "@animateicons/react/lucide/lock-open-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
+import { ShieldIcon as AnimatedShield } from "@animateicons/react/lucide/shield-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -313,11 +310,7 @@ export default function TeacherVault() {
     id: string;
     courses: Course[];
   } | null>(null);
-  if (
-    !loadedFor ||
-    loadedFor.id !== selectedCourseId ||
-    loadedFor.courses !== courses
-  ) {
+  if (!loadedFor || loadedFor.id !== selectedCourseId || loadedFor.courses !== courses) {
     setLoadedFor({ id: selectedCourseId, courses });
     if (selectedCourse) {
       setRestrictedIds(selectedCourse.restrictedFormulaIds || []);
@@ -431,7 +424,7 @@ export default function TeacherVault() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button type="button" variant="outline">
-                  <HelpCircle /> Guide
+                  <ClickIcon icon={AnimatedCircleQuestionMark} /> Guide
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="max-w-72" side="bottom">
@@ -442,7 +435,7 @@ export default function TeacherVault() {
           <Dialog open={isAddingFormula} onOpenChange={setIsAddingFormula}>
             <DialogTrigger asChild>
               <Button>
-                <Plus />
+                <ClickIcon icon={AnimatedPlus} />
                 Add Formula
               </Button>
             </DialogTrigger>
@@ -518,7 +511,6 @@ export default function TeacherVault() {
           </Dialog>
         </TeacherPageHeader>
 
-
         <div className="bg-muted/50 p-2 rounded-[2rem] border border-border flex flex-col lg:flex-row items-center gap-2 mb-4">
           <div className="w-full lg:w-72">
             <Select value={selectedCourseId} onValueChange={onCourseSelectAttempt}>
@@ -527,7 +519,7 @@ export default function TeacherVault() {
                 className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4"
               >
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-primary" />
+                  <ClickIcon icon={AnimatedShield} className="h-4 w-4 text-primary" />
                   <SelectValue placeholder="Select Class" />
                 </div>
               </SelectTrigger>
@@ -604,7 +596,7 @@ export default function TeacherVault() {
                   onClick={handleDiscard}
                   className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold rounded-xl h-10"
                 >
-                  <RotateCcw className="h-4 w-4 mr-2" />
+                  <ClickIcon icon={AnimatedRotateCcw} className="h-4 w-4 mr-2" />
                   Discard
                 </Button>
                 <Button size="sm" onClick={handleSave} disabled={saving} className="h-10">
@@ -665,7 +657,7 @@ export default function TeacherVault() {
                           removeCustomFormula(formula.id);
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedTrash2} className="h-4 w-4" />
                       </Button>
                     )}
                     <Button
@@ -681,7 +673,11 @@ export default function TeacherVault() {
                         toggleFormula(formula.id);
                       }}
                     >
-                      {isRestricted ? <Lock /> : <Unlock />}
+                      {isRestricted ? (
+                        <ClickIcon icon={AnimatedLock} />
+                      ) : (
+                        <ClickIcon icon={AnimatedLockOpen} />
+                      )}
                     </Button>
                   </div>
                 </div>

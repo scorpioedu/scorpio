@@ -3,7 +3,8 @@
 // The problems of one set inside the assign dialog: what students will get, with the answers, before
 // anything is assigned. The teacher can leave a problem out or take one of the set's extra problems.
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import { loadSetPool, type PoolQuestion } from "@/lib/set-pool";
 import { sizeFor, type AssignableSet } from "@/lib/assign-sets";
 import { pickSetIndexes } from "@/lib/set-pick";
@@ -120,7 +121,11 @@ export function AssignProblems({
         aria-controls={id}
         onClick={() => setOpen((v) => !v)}
       >
-        <ChevronDown aria-hidden className={cn("transition-transform", open && "rotate-180")} />
+        <ClickIcon
+          icon={AnimatedChevronDown}
+          aria-hidden
+          className={cn("transition-transform", open && "rotate-180")}
+        />
         {open ? "Hide problems" : "See problems and answers"}
         {pick ? ` · ${pick.length} chosen by you` : ""}
       </Button>

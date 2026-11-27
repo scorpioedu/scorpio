@@ -1,4 +1,6 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -65,7 +67,8 @@ export function PrimaryPill({ href, children }: { href: string; children: React.
     >
       <Link href={href}>
         {children}
-        <ArrowRight
+        <ClickIcon
+          icon={AnimatedArrowRight}
           aria-hidden="true"
           className="size-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
         />

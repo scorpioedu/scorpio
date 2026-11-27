@@ -3,7 +3,10 @@
 // Picks the course a class follows: one of the course roadmaps, or none. A class has at most one.
 // Two shapes of the same choice: a dropdown for forms, and a list of rows for a dialog where the
 // choice is the whole point.
-import { Check, CircleOff } from "lucide-react";
+import { CircleOff } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CircleOffIcon as AnimatedCircleOff } from "@animateicons/react/lucide/circle-off-icon";
 import { CURRICULA, getCurriculum, hasContent } from "@/data/curricula";
 import { cn } from "@/lib/utils";
 import { CourseBadge, CourseIcon, courseLook, courseSize } from "@/components/teacher/course-icon";
@@ -100,7 +103,7 @@ export function CourseOptionList({
               <CourseBadge curriculumId={c.id} />
             ) : (
               <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-                <CircleOff aria-hidden className="size-5" />
+                <ClickIcon icon={AnimatedCircleOff} aria-hidden className="size-5" />
               </span>
             )}
             <span className="min-w-0 flex-1">
@@ -118,7 +121,8 @@ export function CourseOptionList({
                   : "The class keeps its own assignments, with no roadmap."}
               </span>
             </span>
-            <Check
+            <ClickIcon
+              icon={AnimatedCheck}
               aria-hidden
               className={cn("size-5 shrink-0 text-primary", on ? "opacity-100" : "opacity-0")}
             />

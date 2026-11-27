@@ -7,8 +7,16 @@ import { useAuth } from "@/contexts/auth-context";
 import { JoinClassPrompt } from "@/components/student/join-class-form";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ExternalLink, FileText, Search, Video, Globe } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FileText, Search, Video, Globe } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ExternalLinkIcon as AnimatedExternalLink } from "@animateicons/react/lucide/external-link-icon";
 import Link from "next/link";
 
 interface Resource {
@@ -45,34 +53,38 @@ export default function StudentResourcesPage() {
               teacherId = teacherId || studentData.teacherId;
               studentCourseId = studentCourseId || studentData.courseId;
             }
-          } catch (e) { console.error("Could not fetch legacy student profile", e); }
+          } catch (e) {
+            console.error("Could not fetch legacy student profile", e);
+          }
         }
         setNotInClass(!teacherId && !studentCourseId);
 
         // --- LEGACY RESOLUTION START ---
         if (teacherId && !studentCourseId) {
-           const codeMatch = await getDocs(query(collection(db, "courses"), where("code", "==", teacherId.trim())));
-           if (!codeMatch.empty) {
-              const courseDoc = codeMatch.docs[0];
-              const courseData = courseDoc.data();
-              studentCourseId = courseDoc.id;
-              teacherId = courseData.teacherId;
-           }
+          const codeMatch = await getDocs(
+            query(collection(db, "courses"), where("code", "==", teacherId.trim())),
+          );
+          if (!codeMatch.empty) {
+            const courseDoc = codeMatch.docs[0];
+            const courseData = courseDoc.data();
+            studentCourseId = courseDoc.id;
+            teacherId = courseData.teacherId;
+          }
         }
         // --- LEGACY RESOLUTION END ---
-        
+
         if (!teacherId) {
-             setResources([]);
-             setLoading(false);
-             return;
+          setResources([]);
+          setLoading(false);
+          return;
         }
 
         // Fetch all resources for this teacher
         // Note: Filtering by course is done client-side so "All Classes" (null) resources are visible
         const q = query(
-          collection(db, "resources"), 
-          where("teacherId", "==", teacherId), 
-          orderBy("createdAt", "desc")
+          collection(db, "resources"),
+          where("teacherId", "==", teacherId),
+          orderBy("createdAt", "desc"),
         );
 
         const querySnapshot = await getDocs(q);
@@ -80,12 +92,12 @@ export default function StudentResourcesPage() {
           id: doc.id,
           ...doc.data(),
         })) as Resource[];
-        
+
         // Filter: include resources for specific course OR for all classes (null)
-        const finalResources = resourceList.filter(r => 
-          !r.courseId || r.courseId === studentCourseId
+        const finalResources = resourceList.filter(
+          (r) => !r.courseId || r.courseId === studentCourseId,
         );
-        
+
         setResources(finalResources);
       } catch (error) {
         console.error("Error fetching resources:", error);
@@ -96,12 +108,15 @@ export default function StudentResourcesPage() {
     fetchResources();
   }, [user, profile]);
 
-  const filteredResources = resources.filter(resource => {
+  const filteredResources = resources.filter((resource) => {
     const matchesSearch = resource.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTab = activeTab === "all" || 
-      (resource.type === activeTab) || 
-      (activeTab === "video" && (resource.url.includes("youtube") || resource.url.includes("vimeo"))) ||
-      (activeTab === "document" && (resource.url.includes(".pdf") || resource.url.includes(".doc")));
+    const matchesTab =
+      activeTab === "all" ||
+      resource.type === activeTab ||
+      (activeTab === "video" &&
+        (resource.url.includes("youtube") || resource.url.includes("vimeo"))) ||
+      (activeTab === "document" &&
+        (resource.url.includes(".pdf") || resource.url.includes(".doc")));
     return matchesSearch && matchesTab;
   });
 
@@ -125,41 +140,65 @@ export default function StudentResourcesPage() {
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">All Types</SelectItem>
-            <SelectItem value="video" className="cursor-pointer">Videos</SelectItem>
-            <SelectItem value="document" className="cursor-pointer">Documents</SelectItem>
-            <SelectItem value="link" className="cursor-pointer">Websites</SelectItem>
+            <SelectItem value="all" className="cursor-pointer">
+              All Types
+            </SelectItem>
+            <SelectItem value="video" className="cursor-pointer">
+              Videos
+            </SelectItem>
+            <SelectItem value="document" className="cursor-pointer">
+              Documents
+            </SelectItem>
+            <SelectItem value="link" className="cursor-pointer">
+              Websites
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         {loading ? (
-          <p role="status" className="p-6 text-sm text-muted-foreground">Loading resources…</p>
+          <p role="status" className="p-6 text-sm text-muted-foreground">
+            Loading resources…
+          </p>
         ) : notInClass ? (
           <JoinClassPrompt what="what your teacher shares" />
         ) : filteredResources.length === 0 ? (
           <p className="p-6 text-sm text-muted-foreground">
-            {resources.length ? "No resources match your filters." : "Your teacher hasn’t shared any resources yet."}
+            {resources.length
+              ? "No resources match your filters."
+              : "Your teacher hasn’t shared any resources yet."}
           </p>
         ) : (
           <ul className="divide-y divide-border">
             {filteredResources.map((resource) => {
-              const Icon = resource.type === "video" || /youtube|vimeo/.test(resource.url)
-                ? Video
-                : resource.type === "document" || /\.pdf|\.doc/.test(resource.url) ? FileText : Globe;
+              const Icon =
+                resource.type === "video" || /youtube|vimeo/.test(resource.url)
+                  ? Video
+                  : resource.type === "document" || /\.pdf|\.doc/.test(resource.url)
+                    ? FileText
+                    : Globe;
               return (
                 <li key={resource.id}>
-                  <Link href={resource.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-4 hover:bg-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:px-5">
+                  <Link
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-4 hover:bg-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:px-5"
+                  >
                     <Icon className="size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0 flex-1">
                       <h2 className="break-words text-sm font-medium">{resource.title}</h2>
                       <p className="text-xs capitalize text-muted-foreground">
                         {resource.type || "Link"}
-                        {resource.createdAt?.toDate && ` · ${resource.createdAt.toDate().toLocaleDateString()}`}
+                        {resource.createdAt?.toDate &&
+                          ` · ${resource.createdAt.toDate().toLocaleDateString()}`}
                       </p>
                     </div>
-                    <ExternalLink className="size-4 shrink-0 text-muted-foreground" />
+                    <ClickIcon
+                      icon={AnimatedExternalLink}
+                      className="size-4 shrink-0 text-muted-foreground"
+                    />
                     <span className="sr-only">(opens in a new tab)</span>
                   </Link>
                 </li>

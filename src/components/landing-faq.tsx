@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Mail, Github, BookOpen } from "lucide-react";
+import { Mail, Github, BookOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import reveal from "@/components/landing/home-reveal.module.css";
 import { CircleLink, label } from "@/components/landing/split-kit";
 import Link from "next/link";
@@ -246,7 +248,10 @@ export function LandingFAQ({ minimal = false }: { minimal?: boolean }) {
                       <span
                         className={`shrink-0 flex items-center justify-center w-7 h-7 rounded-full border border-border/50 bg-muted/40 transition-transform duration-300 ${isOpen ? "rotate-180 border-primary/40 bg-primary/5" : "group-hover:border-border"}`}
                       >
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                        <ClickIcon
+                          icon={AnimatedChevronDown}
+                          className="h-3.5 w-3.5 text-muted-foreground"
+                        />
                       </span>
                     </button>
 

@@ -7,7 +7,12 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { ArrowLeft, ChevronRight, Download, Eye, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
+import { EyeIcon as AnimatedEye } from "@animateicons/react/lucide/eye-icon";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
@@ -377,7 +382,7 @@ function AssignmentHub() {
         href="/teacher/assignments"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="size-4" /> Assignments
+        <ClickIcon icon={AnimatedArrowLeft} className="size-4" /> Assignments
       </Link>
 
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
@@ -442,7 +447,7 @@ function AssignmentHub() {
               )
             }
           >
-            <Download /> Export CSV
+            <ClickIcon icon={AnimatedDownload} /> Export CSV
           </Button>
           <AssignmentActionsMenu
             id={assignment.id}
@@ -584,7 +589,8 @@ function AssignmentHub() {
                             size="sm"
                           >
                             <Link href={`/teacher/submission/grade?id=${s.id}`}>
-                              {typeof s.score === "number" ? "Review" : "Grade"} <ChevronRight />
+                              {typeof s.score === "number" ? "Review" : "Grade"}{" "}
+                              <ClickIcon icon={AnimatedChevronRight} />
                             </Link>
                           </Button>
                         </TableCell>
@@ -630,7 +636,7 @@ function AssignmentHub() {
                   variant="outline"
                   onClick={() => setPreviewOpen(true)}
                 >
-                  <Eye /> Student view
+                  <ClickIcon icon={AnimatedEye} /> Student view
                 </Button>
               </div>
             </CardHeader>

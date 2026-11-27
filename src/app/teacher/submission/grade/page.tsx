@@ -13,16 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Save,
-  FileText,
-  Image as ImageIcon,
-  Download,
-  Sparkles,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
+import { FileText, Image as ImageIcon, Sparkles, AlertTriangle, CheckCircle } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
+import { SaveIcon as AnimatedSave } from "@animateicons/react/lucide/save-icon";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { motion, AnimatePresence } from "framer-motion";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -348,7 +343,7 @@ export default function GradeSubmissionPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button aria-label="Go back" variant="ghost" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
+            <ClickIcon icon={AnimatedArrowLeft} className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-3xl font-bold">Error</h1>
@@ -421,7 +416,7 @@ export default function GradeSubmissionPage() {
             onClick={() => router.back()}
             className="text-muted-foreground hover:text-foreground -ml-2"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ClickIcon icon={AnimatedArrowLeft} className="h-4 w-4 mr-2" />
             Back to Submissions
           </Button>
           <div className="space-y-1">
@@ -465,7 +460,7 @@ export default function GradeSubmissionPage() {
             Re-grade with Raise
           </Button>
           <Button onClick={handleSave} disabled={saving} size="sm">
-            <Save className="h-4 w-4 mr-2" />
+            <ClickIcon icon={AnimatedSave} className="h-4 w-4 mr-2" />
             {saving ? "Saving..." : draftCount > 0 ? "Save and release" : "Save Grades"}
           </Button>
         </div>
@@ -734,7 +729,7 @@ export default function GradeSubmissionPage() {
                             link.click();
                           }}
                         >
-                          <Download className="h-4 w-4" />
+                          <ClickIcon icon={AnimatedDownload} className="h-4 w-4" />
                         </Button>
                       </div>
                       {file.type.startsWith("image/") && (

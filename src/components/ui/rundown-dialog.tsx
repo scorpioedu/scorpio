@@ -9,7 +9,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Info, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronLeftIcon as AnimatedChevronLeft } from "@animateicons/react/lucide/chevron-left-icon";
+import { ChevronRightIcon as AnimatedChevronRight } from "@animateicons/react/lucide/chevron-right-icon";
+import { InfoIcon as AnimatedInfo } from "@animateicons/react/lucide/info-icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +70,7 @@ export function RundownDialog({
           variant="outline"
           className="gap-2 cursor-pointer shadow-sm hover:bg-primary/5 transition-all"
         >
-          <Info className="h-4 w-4" />
+          <ClickIcon icon={AnimatedInfo} className="h-4 w-4" />
           {triggerLabel}
         </Button>
       </DialogTrigger>
@@ -141,7 +145,10 @@ export function RundownDialog({
               disabled={currentStep === 0}
               className="px-4 font-bold rounded-full group transition-all"
             >
-              <ChevronLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+              <ClickIcon
+                icon={AnimatedChevronLeft}
+                className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform"
+              />
               Previous
             </Button>
 
@@ -153,7 +160,10 @@ export function RundownDialog({
                 className="px-6 font-bold rounded-full shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 Next
-                <ChevronRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <ClickIcon
+                  icon={AnimatedChevronRight}
+                  className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform"
+                />
               </Button>
             ) : (
               <DialogClose asChild>

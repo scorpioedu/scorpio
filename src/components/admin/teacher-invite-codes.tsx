@@ -24,7 +24,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, RefreshCw, Copy, Check, ShieldX, KeyRound, User, Clock, Tag } from "lucide-react";
+import { RefreshCw, Check, KeyRound, User, Clock, Tag } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { ShieldXIcon as AnimatedShieldX } from "@animateicons/react/lucide/shield-x-icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { errorMessage } from "@/lib/error-utils";
@@ -174,7 +179,7 @@ export function TeacherInviteCodes() {
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="gap-1.5">
-                  <Plus className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedPlus} className="h-3.5 w-3.5" />
                   New Code
                 </Button>
               </DialogTrigger>
@@ -264,11 +269,11 @@ export function TeacherInviteCodes() {
               >
                 {copiedCode === lastGenerated ? (
                   <>
-                    <Check className="h-3 w-3" /> Copied
+                    <ClickIcon icon={AnimatedCheck} className="h-3 w-3" /> Copied
                   </>
                 ) : (
                   <>
-                    <Copy className="h-3 w-3" /> Copy
+                    <ClickIcon icon={AnimatedCopy} className="h-3 w-3" /> Copy
                   </>
                 )}
               </Button>
@@ -352,9 +357,12 @@ export function TeacherInviteCodes() {
                                 onClick={() => copyToClipboard(c.code)}
                               >
                                 {copiedCode === c.code ? (
-                                  <Check className="h-3.5 w-3.5 text-green-500" />
+                                  <ClickIcon
+                                    icon={AnimatedCheck}
+                                    className="h-3.5 w-3.5 text-green-500"
+                                  />
                                 ) : (
-                                  <Copy className="h-3.5 w-3.5" />
+                                  <ClickIcon icon={AnimatedCopy} className="h-3.5 w-3.5" />
                                 )}
                               </Button>
                             </TooltipTrigger>
@@ -369,7 +377,7 @@ export function TeacherInviteCodes() {
                                 onClick={() => handleRevoke(c.code)}
                                 disabled={revoking === c.code}
                               >
-                                <ShieldX className="h-3.5 w-3.5" />
+                                <ClickIcon icon={AnimatedShieldX} className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Revoke code</TooltipContent>

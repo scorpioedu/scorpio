@@ -3,7 +3,9 @@
 // Click a due date to change it: a calendar in a popover, saved as soon as a day is picked.
 // The time of day is kept (new dates default to 23:59). "Clear" removes the date when allowed.
 import { useState } from "react";
-import { CalendarDays, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CalendarDaysIcon as AnimatedCalendarDays } from "@animateicons/react/lucide/calendar-days-icon";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -65,7 +67,7 @@ export function DueDateChip({
           {saving ? (
             <Loader2 className="size-3.5 animate-spin" />
           ) : (
-            <CalendarDays className="size-3.5" />
+            <ClickIcon icon={AnimatedCalendarDays} className="size-3.5" />
           )}
           {label}
           {state === "past" && <span className="font-normal">· past</span>}

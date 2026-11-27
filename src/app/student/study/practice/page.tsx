@@ -7,7 +7,9 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
 import { WorkspaceHeader } from "@/components/ui/workspace";
 import { Button } from "@/components/ui/button";
 import { PracticeAgain, PracticeSession } from "@/components/study/practice-session";
@@ -98,7 +100,7 @@ function PracticeRun() {
   const backButton = (
     <Button asChild variant="outline" size="sm">
       <Link href="/student/study">
-        <ArrowLeft aria-hidden />
+        <ClickIcon icon={AnimatedArrowLeft} aria-hidden />
         Back to Study
       </Link>
     </Button>
@@ -117,7 +119,7 @@ function PracticeRun() {
         {topicInfo?.lessonHref && (
           <Button asChild variant="outline" size="sm">
             <Link href={topicInfo.lessonHref}>
-              <BookOpen aria-hidden />
+              <ClickIcon icon={AnimatedBookOpen} aria-hidden />
               Read the lesson
             </Link>
           </Button>
@@ -176,7 +178,7 @@ function PracticeRun() {
                   {topicInfo?.lessonHref && (
                     <Button asChild variant="outline">
                       <Link href={topicInfo.lessonHref}>
-                        <BookOpen aria-hidden />
+                        <ClickIcon icon={AnimatedBookOpen} aria-hidden />
                         Read the lesson
                       </Link>
                     </Button>

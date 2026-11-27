@@ -3,42 +3,25 @@
 import { useState } from "react";
 import {
   Activity,
-  ArrowRight,
-  ArrowUpRight,
-  BarChart3,
   BrainCircuit,
-  Check,
   Clock,
   Component,
-  Copy,
   CreditCard,
   Crown,
   DollarSign,
-  Download,
   FileJson,
   FileSpreadsheet,
   Filter,
   Globe,
   GraduationCap,
   HandCoins,
-  HelpCircle,
-  Info,
-  Lock,
-  LogOut,
-  Mail,
   MapPinned,
   MessageCircle,
-  MoreHorizontal,
   Notebook,
   NotebookPen,
   PackageOpen,
-  Pencil,
-  Plus,
-  RotateCcw,
   Search,
-  Send,
   Share2,
-  Shield,
   ShieldAlert,
   ShieldCheck,
   Sliders,
@@ -46,14 +29,38 @@ import {
   Star,
   Trash2,
   TrendingUp,
-  Unlock,
-  Upload,
   UserMinus,
   UserPlus,
   Users,
   Waypoints,
   Zap,
 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { ArrowUpRightIcon as AnimatedArrowUpRight } from "@animateicons/react/lucide/arrow-up-right-icon";
+import { ChartColumnIcon as AnimatedChartColumn } from "@animateicons/react/lucide/chart-column-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
+import { CircleQuestionMarkIcon as AnimatedCircleQuestionMark } from "@animateicons/react/lucide/circle-question-mark-icon";
+import { CopyIcon as AnimatedCopy } from "@animateicons/react/lucide/copy-icon";
+import { CreditCardIcon as AnimatedCreditCard } from "@animateicons/react/lucide/credit-card-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { GlobeIcon as AnimatedGlobe } from "@animateicons/react/lucide/globe-icon";
+import { GraduationCapIcon as AnimatedGraduationCap } from "@animateicons/react/lucide/graduation-cap-icon";
+import { InfoIcon as AnimatedInfo } from "@animateicons/react/lucide/info-icon";
+import { LockIcon as AnimatedLock } from "@animateicons/react/lucide/lock-icon";
+import { LockOpenIcon as AnimatedLockOpen } from "@animateicons/react/lucide/lock-open-icon";
+import { LogOutIcon as AnimatedLogOut } from "@animateicons/react/lucide/log-out-icon";
+import { MailIcon as AnimatedMail } from "@animateicons/react/lucide/mail-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
+import { PlusIcon as AnimatedPlus } from "@animateicons/react/lucide/plus-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
+import { ShieldIcon as AnimatedShield } from "@animateicons/react/lucide/shield-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
+import { UserPlusIcon as AnimatedUserPlus } from "@animateicons/react/lucide/user-plus-icon";
+import { UsersIcon as AnimatedUsers } from "@animateicons/react/lucide/users-icon";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import { toast } from "sonner";
@@ -278,7 +285,7 @@ export function NetworkPage({
                       }}
                       title="Rename Department"
                     >
-                      <Pencil className="h-4 w-4" />
+                      <ClickIcon icon={AnimatedPencil} className="h-4 w-4" />
                     </Button>
                   </div>
                 )}
@@ -300,7 +307,7 @@ export function NetworkPage({
                 onClick={() => setInviteModalOpen(true)}
                 className="h-9 gap-2 text-xs font-bold shadow-sm rounded-xl px-4 cursor-pointer"
               >
-                <UserPlus className="h-3.5 w-3.5" />
+                <ClickIcon icon={AnimatedUserPlus} className="h-3.5 w-3.5" />
                 Invite Colleague
               </Button>
               <Button
@@ -309,7 +316,7 @@ export function NetworkPage({
                 className="h-9 gap-2 text-xs font-semibold rounded-xl cursor-pointer"
                 onClick={() => setActiveTab("limits")}
               >
-                <CreditCard className="h-3.5 w-3.5" />
+                <ClickIcon icon={AnimatedCreditCard} className="h-3.5 w-3.5" />
                 Billing & Plan
               </Button>
               <Button
@@ -318,7 +325,7 @@ export function NetworkPage({
                 className="h-9 text-[11px] font-bold gap-1.5 rounded-xl px-3 cursor-pointer"
                 onClick={() => setTutorialOpen(true)}
               >
-                <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                <ClickIcon icon={AnimatedInfo} className="h-3.5 w-3.5 text-muted-foreground" />
                 Guide
               </Button>
             </div>
@@ -341,12 +348,15 @@ export function NetworkPage({
             <button type="button" onClick={onOpenStudentInsights} className="block group text-left">
               <div className="flex items-center gap-3 p-2 bg-background/70 hover:bg-background border border-border/40 hover:border-primary/50 transition-all rounded-xl cursor-pointer">
                 <div className="size-7 rounded-lg sm:size-10 bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center shrink-0 transition-colors">
-                  <GraduationCap className="h-5 w-5 text-primary" />
+                  <ClickIcon icon={AnimatedGraduationCap} className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-xl font-black font-mono leading-none flex items-center justify-between">
                     <span>{studentCount}</span>
-                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ClickIcon
+                      icon={AnimatedArrowRight}
+                      className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    />
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-1 truncate">
                     Student insights
@@ -407,7 +417,7 @@ export function NetworkPage({
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-3">
             <TabsList className="grid h-auto w-full grid-cols-3 sm:w-auto">
               <TabsTrigger value="faculty" className="min-h-8 px-2 sm:px-4 cursor-pointer">
-                <Users className="h-3.5 w-3.5" />
+                <ClickIcon icon={AnimatedUsers} className="h-3.5 w-3.5" />
                 Faculty
               </TabsTrigger>
               <TabsTrigger value="limits" className="min-h-8 px-2 sm:px-4 cursor-pointer">
@@ -415,7 +425,7 @@ export function NetworkPage({
                 Quotas
               </TabsTrigger>
               <TabsTrigger value="analytics" className="min-h-8 px-2 sm:px-4 cursor-pointer">
-                <BarChart3 className="h-3.5 w-3.5" />
+                <ClickIcon icon={AnimatedChartColumn} className="h-3.5 w-3.5" />
                 Analytics
               </TabsTrigger>
             </TabsList>
@@ -452,7 +462,7 @@ export function NetworkPage({
                     className="text-xs font-semibold rounded-xl cursor-pointer"
                     onClick={() => setAddTeacherOpen(true)}
                   >
-                    <UserPlus className="h-3.5 w-3.5" />
+                    <ClickIcon icon={AnimatedUserPlus} className="h-3.5 w-3.5" />
                     Add Teacher
                   </Button>
                 </CardHeader>
@@ -510,7 +520,7 @@ export function NetworkPage({
                                     className="h-8 w-8 p-0 cursor-pointer"
                                     aria-label={`Manage ${member.name}`}
                                   >
-                                    <MoreHorizontal className="h-4 w-4" />
+                                    <ClickIcon icon={AnimatedEllipsis} className="h-4 w-4" />
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
@@ -582,9 +592,12 @@ export function NetworkPage({
                         onClick={copyLink}
                       >
                         {copiedLink ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-500" />
+                          <ClickIcon
+                            icon={AnimatedCheck}
+                            className="h-3.5 w-3.5 text-emerald-500"
+                          />
                         ) : (
-                          <Copy className="h-3.5 w-3.5" />
+                          <ClickIcon icon={AnimatedCopy} className="h-3.5 w-3.5" />
                         )}
                       </Button>
                     </div>
@@ -594,9 +607,9 @@ export function NetworkPage({
                         onClick={copyLink}
                       >
                         {copiedLink ? (
-                          <Check className="h-3.5 w-3.5" />
+                          <ClickIcon icon={AnimatedCheck} className="h-3.5 w-3.5" />
                         ) : (
-                          <Copy className="h-3.5 w-3.5" />
+                          <ClickIcon icon={AnimatedCopy} className="h-3.5 w-3.5" />
                         )}
                         {copiedLink ? "Copied!" : "Copy Link"}
                       </Button>
@@ -605,7 +618,7 @@ export function NetworkPage({
                         className="flex-1 h-9 text-xs font-bold cursor-pointer"
                         onClick={() => setInviteModalOpen(true)}
                       >
-                        <Mail className="h-3.5 w-3.5" />
+                        <ClickIcon icon={AnimatedMail} className="h-3.5 w-3.5" />
                         Invite Details
                       </Button>
                     </div>
@@ -655,7 +668,7 @@ export function NetworkPage({
                       className="w-full text-xs h-9 text-destructive border-destructive/20 hover:bg-destructive/10 cursor-pointer font-semibold"
                       onClick={() => toast.info("Department network is active in this demo.")}
                     >
-                      <LogOut className="mr-2 h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedLogOut} className="mr-2 h-3.5 w-3.5" />
                       Disband Department Network
                     </Button>
                   </CardContent>
@@ -1513,7 +1526,7 @@ export function NetworkPage({
                       size="sm"
                       className="h-8 text-[10px] font-bold uppercase tracking-wider gap-2 cursor-pointer"
                     >
-                      <Download className="h-3 w-3" />
+                      <ClickIcon icon={AnimatedDownload} className="h-3 w-3" />
                       Export Audit Log
                     </Button>
                   </DropdownMenuTrigger>
@@ -1619,9 +1632,9 @@ export function NetworkPage({
                     onClick={copyLink}
                   >
                     {copiedLink ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      <ClickIcon icon={AnimatedCheck} className="h-3.5 w-3.5 text-emerald-500" />
                     ) : (
-                      <Copy className="h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedCopy} className="h-3.5 w-3.5" />
                     )}
                   </Button>
                 </div>
@@ -1640,9 +1653,9 @@ export function NetworkPage({
                     onClick={copyId}
                   >
                     {copiedId ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      <ClickIcon icon={AnimatedCheck} className="h-3.5 w-3.5 text-emerald-500" />
                     ) : (
-                      <Copy className="h-3.5 w-3.5" />
+                      <ClickIcon icon={AnimatedCopy} className="h-3.5 w-3.5" />
                     )}
                   </Button>
                 </div>
@@ -1795,7 +1808,7 @@ export function NetworkPage({
                     ]);
                   }}
                 >
-                  <Send className="h-3.5 w-3.5" />
+                  <ClickIcon icon={AnimatedSend} className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
@@ -1848,12 +1861,12 @@ export function StudentsPage({
         description="Your classes, their join codes and the students in each."
       >
         <Button variant="outline" onClick={onManageClasses} className="cursor-pointer">
-          Manage Classes <ArrowUpRight />
+          Manage Classes <ClickIcon icon={AnimatedArrowUpRight} />
         </Button>
         <Dialog open={importOpen} onOpenChange={setImportOpen}>
           <DialogTrigger asChild>
             <Button className="cursor-pointer">
-              <Upload /> Import Roster
+              <ClickIcon icon={AnimatedUpload} /> Import Roster
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
@@ -1990,7 +2003,7 @@ export function StudentsPage({
                               className="cursor-pointer"
                               aria-label={`Actions for ${student.name}`}
                             >
-                              <MoreHorizontal />
+                              <ClickIcon icon={AnimatedEllipsis} />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
@@ -2124,11 +2137,11 @@ export function WaypointsPage({ onFork }: { onFork: (waypoint: WaypointTemplate)
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
           <TabsList className="h-auto w-full">
             <TabsTrigger value="global" className="min-h-9 gap-2 px-3 cursor-pointer">
-              <Globe className="h-4 w-4" />
+              <ClickIcon icon={AnimatedGlobe} className="h-4 w-4" />
               Global
             </TabsTrigger>
             <TabsTrigger value="network" className="min-h-9 gap-2 px-3 cursor-pointer">
-              <Users className="h-4 w-4" />
+              <ClickIcon icon={AnimatedUsers} className="h-4 w-4" />
               Department
             </TabsTrigger>
           </TabsList>
@@ -2223,9 +2236,12 @@ export function WaypointsPage({ onFork }: { onFork: (waypoint: WaypointTemplate)
                   }}
                   className="w-full h-11 font-bold active:scale-[0.98] cursor-pointer"
                 >
-                  <Copy className="h-4 w-4" />
+                  <ClickIcon icon={AnimatedCopy} className="h-4 w-4" />
                   Acquire Template
-                  <ArrowUpRight className="h-4 w-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
+                  <ClickIcon
+                    icon={AnimatedArrowUpRight}
+                    className="h-4 w-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+                  />
                 </Button>
               </CardFooter>
             </Card>
@@ -2302,7 +2318,7 @@ export function VaultPage({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button type="button" variant="outline" className="cursor-pointer">
-                <HelpCircle /> Guide
+                <ClickIcon icon={AnimatedCircleQuestionMark} /> Guide
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-72" side="bottom">
@@ -2315,7 +2331,7 @@ export function VaultPage({
         <Dialog open={isAddingFormula} onOpenChange={setIsAddingFormula}>
           <DialogTrigger asChild>
             <Button className="cursor-pointer">
-              <Plus />
+              <ClickIcon icon={AnimatedPlus} />
               Add Formula
             </Button>
           </DialogTrigger>
@@ -2418,7 +2434,7 @@ export function VaultPage({
               className="w-full data-[size=default]:h-12 rounded-2xl border-border bg-background dark:bg-background shadow-sm font-bold px-4 cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-primary" />
+                <ClickIcon icon={AnimatedShield} className="h-4 w-4 text-primary" />
                 <SelectValue placeholder="Select Class" />
               </div>
             </SelectTrigger>
@@ -2489,7 +2505,7 @@ export function VaultPage({
               }}
               className="text-muted-foreground hover:text-destructive font-bold rounded-xl h-9 cursor-pointer"
             >
-              <RotateCcw className="h-4 w-4 mr-1.5" />
+              <ClickIcon icon={AnimatedRotateCcw} className="h-4 w-4 mr-1.5" />
               Discard
             </Button>
             <Button
@@ -2566,7 +2582,7 @@ export function VaultPage({
                           setRestrictedIds((prev) => prev.filter((id) => id !== formula.id));
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedTrash2} className="h-4 w-4" />
                       </Button>
                     )}
                     <Button
@@ -2585,7 +2601,11 @@ export function VaultPage({
                         toggleFormula(formula.id);
                       }}
                     >
-                      {isRestricted ? <Lock /> : <Unlock />}
+                      {isRestricted ? (
+                        <ClickIcon icon={AnimatedLock} />
+                      ) : (
+                        <ClickIcon icon={AnimatedLockOpen} />
+                      )}
                     </Button>
                   </div>
                 </div>

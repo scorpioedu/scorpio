@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { publicCourses } from "@/lib/guides/public";
 import reveal from "./home-reveal.module.css";
 import { CircleLink, Section, Split, statement } from "./split-kit";
@@ -48,7 +49,8 @@ export async function LessonsTeaser() {
                   {c.units.length} units · {c.topicCount} topics
                 </span>
               </span>
-              <ArrowRight
+              <ClickIcon
+                icon={AnimatedArrowRight}
                 aria-hidden
                 className="size-4 shrink-0 text-muted-foreground transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-foreground"
               />

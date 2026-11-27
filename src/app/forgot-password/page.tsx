@@ -10,7 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SpaceBackground } from "@/components/ui/space-background";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
-import { Send, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { SendIcon as AnimatedSend } from "@animateicons/react/lucide/send-icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { errorCode } from "@/lib/error-utils";
 
@@ -50,7 +52,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-dvh flex items-center justify-center px-4 pt-20 pb-8 relative">
       <SpaceBackground />
-      
+
       <AuthPageNav backToLogin />
 
       <motion.div
@@ -72,23 +74,26 @@ export default function ForgotPasswordPage() {
             </div>
             <CardTitle className="text-2xl font-bold tracking-tight">Forgot Password?</CardTitle>
             <CardDescription className="text-balance px-4 mt-2">
-              No problem! It happens to the best of us. Enter your email and we&apos;ll send you a link to reset it.
+              No problem! It happens to the best of us. Enter your email and we&apos;ll send you a
+              link to reset it.
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="pt-6">
             <AnimatePresence mode="wait">
               {!success ? (
-                <motion.form 
+                <motion.form
                   key="form"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 10 }}
-                  onSubmit={handleSubmit} 
+                  onSubmit={handleSubmit}
                   className="space-y-4"
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium ml-1">Email Address</Label>
+                    <Label htmlFor="email" className="text-sm font-medium ml-1">
+                      Email Address
+                    </Label>
                     <Input
                       id="email"
                       type="email"
@@ -102,7 +107,7 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   {error && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium rounded-lg flex items-center gap-2"
@@ -112,8 +117,8 @@ export default function ForgotPasswordPage() {
                     </motion.div>
                   )}
 
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90"
                     disabled={loading}
                   >
@@ -124,14 +129,14 @@ export default function ForgotPasswordPage() {
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        <Send className="h-4 w-4" />
+                        <ClickIcon icon={AnimatedSend} className="h-4 w-4" />
                         Send Reset Link
                       </span>
                     )}
                   </Button>
                 </motion.form>
               ) : (
-                <motion.div 
+                <motion.div
                   key="success"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -144,20 +149,26 @@ export default function ForgotPasswordPage() {
                     <div className="space-y-2">
                       <h3 className="text-xl font-semibold">Check your email</h3>
                       <p className="text-sm text-muted-foreground px-4">
-                        We&apos;ve sent a password reset link to <span className="font-medium text-foreground">{email}</span>. Click the link in the email to set a new password.
+                        We&apos;ve sent a password reset link to{" "}
+                        <span className="font-medium text-foreground">{email}</span>. Click the link
+                        in the email to set a new password.
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="pt-4 space-y-3">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="w-full h-11"
                       onClick={() => setSuccess(false)}
                     >
                       Try a different email
                     </Button>
-                    <Button asChild variant="ghost" className="w-full text-muted-foreground hover:text-foreground">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="w-full text-muted-foreground hover:text-foreground"
+                    >
                       <Link href="/login" className="block">
                         Return to sign in
                       </Link>
@@ -168,7 +179,7 @@ export default function ForgotPasswordPage() {
             </AnimatePresence>
           </CardContent>
         </Card>
-        
+
         <p className="text-center mt-8 text-xs text-muted-foreground/60 tracking-wider font-medium">
           SCORPIO PLATFORM &copy; 2026
         </p>

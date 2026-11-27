@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Lightbulb, RefreshCw } from "lucide-react";
+import { Lightbulb, RefreshCw } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
 import { useAuth } from "@/contexts/auth-context";
 import { useSelectedClass } from "@/contexts/selected-class-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
@@ -82,7 +84,8 @@ function TagCard({ row, rank, denominator }: { row: TagRow; rank: number; denomi
             </span>
           </span>
         </span>
-        <ChevronDown
+        <ClickIcon
+          icon={AnimatedChevronDown}
           className={`mt-1 size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
           aria-hidden
         />

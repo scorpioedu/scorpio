@@ -1,7 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ChevronDownIcon as AnimatedChevronDown } from "@animateicons/react/lucide/chevron-down-icon";
+import { MenuIcon as AnimatedMenu } from "@animateicons/react/lucide/menu-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -232,7 +235,8 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
                   className={cn(linkClass, tone)}
                 >
                   {item.label}
-                  <ChevronDown
+                  <ClickIcon
+                    icon={AnimatedChevronDown}
                     aria-hidden="true"
                     className={cn(
                       "size-3.5 opacity-60 transition-transform duration-200",
@@ -323,7 +327,7 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
-                <Menu className="size-4" />
+                <ClickIcon icon={AnimatedMenu} className="size-4" />
               </Button>
             </SheetTrigger>
 
@@ -344,7 +348,7 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
                   onClick={() => setMenuOpen(false)}
                   aria-label="Close menu"
                 >
-                  <X className="size-4" />
+                  <ClickIcon icon={AnimatedX} className="size-4" />
                 </Button>
               </div>
 

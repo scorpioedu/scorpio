@@ -2,7 +2,8 @@
 
 import { useId, useState } from "react";
 import { usePathname } from "next/navigation";
-import { MessageSquarePlus } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { MessageSquarePlusIcon as AnimatedMessageSquarePlus } from "@animateicons/react/lucide/message-square-plus-icon";
 import { useAuth } from "@/contexts/auth-context";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import {
@@ -109,7 +110,7 @@ export function FeedbackWidget() {
             "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           )}
         >
-          <MessageSquarePlus className="size-3.5" aria-hidden="true" />
+          <ClickIcon icon={AnimatedMessageSquarePlus} className="size-3.5" aria-hidden="true" />
           Feedback
         </button>
       </DialogTrigger>

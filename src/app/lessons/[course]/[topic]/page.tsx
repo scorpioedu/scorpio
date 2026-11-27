@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Flag } from "lucide-react";
+import { Flag } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { LessonNav, type NavSection } from "@/components/lessons/lesson-nav";
 import { LessonTopic } from "@/components/lessons/lesson-topic";
 import { TopicPractice } from "@/components/lessons/topic-practice";
@@ -301,14 +304,16 @@ function StepLink({
         )}
       >
         {dir === "prev" && (
-          <ArrowLeft
+          <ClickIcon
+            icon={AnimatedArrowLeft}
             aria-hidden
             className="size-3.5 transition-transform group-hover:-translate-x-0.5"
           />
         )}
         {dir === "prev" ? "Previous" : "Next"}
         {dir === "next" && (
-          <ArrowRight
+          <ClickIcon
+            icon={AnimatedArrowRight}
             aria-hidden
             className="size-3.5 transition-transform group-hover:translate-x-0.5"
           />

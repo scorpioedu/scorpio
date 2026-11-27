@@ -3,7 +3,10 @@
 // Find a topic across every course's lessons. "/" focuses the field; results are links.
 import { useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Search, X } from "lucide-react";
+import { Search } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { XIcon as AnimatedX } from "@animateicons/react/lucide/x-icon";
 import { cn } from "@/lib/utils";
 
 export interface SearchTopic {
@@ -99,7 +102,7 @@ export function LessonSearch({ topics }: { topics: SearchTopic[] }) {
             aria-label="Clear the search"
             className="grid size-8 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <X className="size-4" aria-hidden />
+            <ClickIcon icon={AnimatedX} className="size-4" aria-hidden />
           </button>
         ) : (
           <kbd className="hidden shrink-0 rounded-md border border-border bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground sm:block">
@@ -130,7 +133,8 @@ export function LessonSearch({ topics }: { topics: SearchTopic[] }) {
                         {t.course} · Unit {t.unit}: {t.unitTitle}
                       </span>
                     </span>
-                    <ArrowRight
+                    <ClickIcon
+                      icon={AnimatedArrowRight}
                       aria-hidden
                       className="size-4 shrink-0 text-muted-foreground opacity-0 transition-[opacity,transform] group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100"
                     />

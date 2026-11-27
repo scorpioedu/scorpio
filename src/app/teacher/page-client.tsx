@@ -17,13 +17,12 @@ import {
 import { db, updateUserProfile } from "@/lib/firebase";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  PlusCircle,
-  Upload,
-  PackageCheck,
-  ShieldCheck,
-} from "lucide-react";
+import { PlusCircle, Upload, PackageCheck, ShieldCheck } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { CirclePlusIcon as AnimatedCirclePlus } from "@animateicons/react/lucide/circle-plus-icon";
+import { PackageCheckIcon as AnimatedPackageCheck } from "@animateicons/react/lucide/package-check-icon";
+import { UploadIcon as AnimatedUpload } from "@animateicons/react/lucide/upload-icon";
 import Link from "next/link";
 import { NAV_ICONS } from "@/components/nav-icons";
 import { useRouter } from "next/navigation";
@@ -456,7 +455,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
         />
         <Button asChild>
           <Link href="/teacher/create">
-            <PlusCircle />
+            <ClickIcon icon={AnimatedCirclePlus} />
             New assignment
           </Link>
         </Button>
@@ -532,7 +531,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               className="h-7 text-xs text-muted-foreground hover:text-foreground"
             >
               <Link href="/teacher/grades">
-                Gradebook <ArrowRight className="size-3.5" />
+                Gradebook <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
               </Link>
             </Button>
           ),
@@ -554,7 +553,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                   href={`/teacher/submission/grade?id=${submission.id}`}
                   aria-label={`Grade ${submission.assignmentTitle}`}
                 >
-                  Grade <ArrowRight className="size-3.5" />
+                  Grade <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
                 </Link>
               </Button>
             </li>
@@ -569,7 +568,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               className="h-7 text-xs text-muted-foreground hover:text-foreground"
             >
               <Link href="/teacher/assignments">
-                All Assignments <ArrowRight className="size-3.5" />
+                All Assignments <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
               </Link>
             </Button>
           ),
@@ -587,7 +586,8 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                     {assignmentDueLabel(assignment.dueDate)}
                   </span>
                 </div>
-                <ArrowRight
+                <ClickIcon
+                  icon={AnimatedArrowRight}
                   aria-hidden="true"
                   className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
                 />
@@ -605,7 +605,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
                 className="h-7 text-xs text-muted-foreground hover:text-foreground"
               >
                 <Link href="/teacher/students">
-                  Manage <ArrowRight className="size-3.5" />
+                  Manage <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
                 </Link>
               </Button>
               {classManager.createButton}
@@ -618,12 +618,12 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
       <nav aria-label="Classroom tools" className="flex flex-wrap gap-2">
         <Button variant="outline" asChild>
           <Link href="/teacher/uploads">
-            <Upload /> Upload PDF
+            <ClickIcon icon={AnimatedUpload} /> Upload PDF
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/teacher/vault">
-            <PackageCheck /> Formula vault
+            <ClickIcon icon={AnimatedPackageCheck} /> Formula vault
           </Link>
         </Button>
       </nav>

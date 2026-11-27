@@ -6,15 +6,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteDoc, doc } from "firebase/firestore";
-import {
-  Archive,
-  ArchiveRestore,
-  Copy,
-  ExternalLink,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { Archive, ArchiveRestore, Copy, Trash2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { EllipsisIcon as AnimatedEllipsis } from "@animateicons/react/lucide/ellipsis-icon";
+import { ExternalLinkIcon as AnimatedExternalLink } from "@animateicons/react/lucide/external-link-icon";
+import { PencilIcon as AnimatedPencil } from "@animateicons/react/lucide/pencil-icon";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -92,20 +88,20 @@ export function AssignmentActionsMenu({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${title}`}>
-            <MoreHorizontal />
+            <ClickIcon icon={AnimatedEllipsis} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align={align} className="w-52">
           {!hideOpen && (
             <DropdownMenuItem asChild>
               <Link href={assignmentHref(id)}>
-                <ExternalLink /> Open
+                <ClickIcon icon={AnimatedExternalLink} /> Open
               </Link>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem asChild>
             <Link href={assignmentHref(id, "problems")}>
-              <Pencil /> Edit problems
+              <ClickIcon icon={AnimatedPencil} /> Edit problems
             </Link>
           </DropdownMenuItem>
           {extraItems}

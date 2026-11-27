@@ -3,7 +3,9 @@
 // The course the student's class follows, as a short progress summary for the dashboard. The full
 // unit list, with each unit's lessons and practice, is Study.
 import Link from "next/link";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
+import { BookOpenIcon as AnimatedBookOpen } from "@animateicons/react/lucide/book-open-icon";
 import { hasUnitGuide, studentGuideHref } from "@/lib/guides";
 import type { StudentRoadmap } from "@/lib/student-roadmap";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -31,7 +33,7 @@ export function StudentRoadmapSummary({ roadmap }: { roadmap: StudentRoadmap }) 
           className="h-7 shrink-0 text-xs text-muted-foreground hover:text-foreground"
         >
           <Link href="/student/study">
-            All units <ArrowRight className="size-3.5" aria-hidden />
+            All units <ClickIcon icon={AnimatedArrowRight} className="size-3.5" aria-hidden />
           </Link>
         </Button>
       </CardHeader>
@@ -57,7 +59,7 @@ export function StudentRoadmapSummary({ roadmap }: { roadmap: StudentRoadmap }) 
             {hasUnitGuide(roadmap.curriculumId, current.unit) && (
               <Button asChild size="sm" variant="outline" className="h-8 shrink-0 text-xs">
                 <Link href={studentGuideHref(roadmap.curriculumId, current.unit)}>
-                  <BookOpen aria-hidden /> Lesson
+                  <ClickIcon icon={AnimatedBookOpen} aria-hidden /> Lesson
                 </Link>
               </Button>
             )}

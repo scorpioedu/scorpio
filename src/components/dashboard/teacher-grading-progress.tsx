@@ -2,7 +2,8 @@
 
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import Link from "next/link";
 
 interface TeacherGradingProgressProps {
@@ -21,9 +22,7 @@ export function TeacherGradingProgress({
 }: TeacherGradingProgressProps) {
   const totalSubmissions = completedSubmissions + pendingSubmissions;
   const gradedPercentage =
-    totalSubmissions > 0
-      ? Math.round((completedSubmissions / totalSubmissions) * 100)
-      : 0;
+    totalSubmissions > 0 ? Math.round((completedSubmissions / totalSubmissions) * 100) : 0;
 
   return (
     <Card className="gap-0 py-0 shadow-none overflow-hidden">
@@ -36,7 +35,7 @@ export function TeacherGradingProgress({
             href="/teacher/grades"
             className="flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
-            Open Gradebook <ArrowRight className="size-3.5" />
+            Open Gradebook <ClickIcon icon={AnimatedArrowRight} className="size-3.5" />
           </Link>
         )}
       </CardHeader>
@@ -45,27 +44,19 @@ export function TeacherGradingProgress({
         <div className="grid gap-5 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:items-center">
           <div className="space-y-3">
             <div className="flex items-baseline justify-between text-xs">
-              <span className="font-medium text-muted-foreground">
-                Grading Turnaround
-              </span>
+              <span className="font-medium text-muted-foreground">Grading Turnaround</span>
               <span className="font-semibold tabular-nums text-foreground">
                 {dataReady && totalSubmissions > 0 ? `${gradedPercentage}% graded` : "—"}
               </span>
             </div>
-            <Progress
-              value={dataReady ? gradedPercentage : 0}
-              className="h-2.5 bg-muted"
-            />
+            <Progress value={dataReady ? gradedPercentage : 0} className="h-2.5 bg-muted" />
             <p className="text-xs text-muted-foreground">
               {!dataReady ? (
                 "Loading review status…"
               ) : pendingSubmissions > 0 ? (
                 <>
-                  <span className="font-medium text-foreground">
-                    {pendingSubmissions}
-                  </span>{" "}
-                  {pendingSubmissions === 1 ? "submission" : "submissions"}{" "}
-                  waiting for grading.
+                  <span className="font-medium text-foreground">{pendingSubmissions}</span>{" "}
+                  {pendingSubmissions === 1 ? "submission" : "submissions"} waiting for grading.
                 </>
               ) : totalSubmissions > 0 ? (
                 "All student submissions are graded."

@@ -4,7 +4,9 @@
 // teacher's unit guide opens it from its Lessons tab, a set or a mistake; a student's read-first
 // assignment opens it from the "Before you start" list, with a footer to mark the lesson read.
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArrowLeftIcon as AnimatedArrowLeft } from "@animateicons/react/lucide/arrow-left-icon";
+import { ArrowRightIcon as AnimatedArrowRight } from "@animateicons/react/lucide/arrow-right-icon";
 import { apTopic, type ApCourseId } from "@/data/ap";
 import { loadUnitGuide, topicFromAnchor, topicGuide, type UnitGuide } from "@/lib/guides";
 import { Button } from "@/components/ui/button";
@@ -186,7 +188,7 @@ export function LessonDialog({
               disabled={at <= 0}
               onClick={() => onTarget({ topic: topics[at - 1] })}
             >
-              <ArrowLeft aria-hidden /> Previous
+              <ClickIcon icon={AnimatedArrowLeft} aria-hidden /> Previous
             </Button>
             <Button
               variant="ghost"
@@ -194,7 +196,7 @@ export function LessonDialog({
               disabled={at < 0 || at >= topics.length - 1}
               onClick={() => onTarget({ topic: topics[at + 1] })}
             >
-              Next <ArrowRight aria-hidden />
+              Next <ClickIcon icon={AnimatedArrowRight} aria-hidden />
             </Button>
           </div>
           {id && footer?.(id)}

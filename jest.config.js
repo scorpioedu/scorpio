@@ -12,5 +12,9 @@ module.exports = {
     "/src/lib/content/spec\\.ts$",
   ],
   modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/.next-gate/", "<rootDir>/.claude/"],
-  moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    // Animated icons ship as ESM-only subpaths; tests get a still stand-in.
+    "^@animateicons/react/lucide/.+$": "<rootDir>/__mocks__/animated-icon.cjs",
+  },
 };

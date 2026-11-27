@@ -5,7 +5,11 @@
 // Name, period and description save together (Save, in the footer); the assignment settings have
 // their own Save; everything else saves at once.
 import { useState, type ReactNode } from "react";
-import { Archive, ArchiveRestore, Loader2, RotateCcw, Trash2 } from "lucide-react";
+import { ArchiveRestore, Loader2 } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { ArchiveIcon as AnimatedArchive } from "@animateicons/react/lucide/archive-icon";
+import { RotateCcwIcon as AnimatedRotateCcw } from "@animateicons/react/lucide/rotate-ccw-icon";
+import { Trash2Icon as AnimatedTrash2 } from "@animateicons/react/lucide/trash-2-icon";
 import { toast } from "sonner";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import { apiError, undoToast } from "@/lib/undo-toast";
@@ -377,7 +381,12 @@ export function ClassSettingsDialog({
                   disabled={!!busy}
                   onClick={() => setConfirm("code")}
                 >
-                  {busy === "code" ? <Loader2 className="animate-spin" /> : <RotateCcw />} New code
+                  {busy === "code" ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <ClickIcon icon={AnimatedRotateCcw} />
+                  )}{" "}
+                  New code
                 </Button>
               </div>
             </Section>
@@ -403,7 +412,7 @@ export function ClassSettingsDialog({
                     disabled={!!busy}
                     onClick={() => setArchived(true)}
                   >
-                    <Archive /> Archive class
+                    <ClickIcon icon={AnimatedArchive} /> Archive class
                   </Button>
                 )}
                 <Button
@@ -413,7 +422,7 @@ export function ClassSettingsDialog({
                   disabled={!!busy}
                   onClick={() => setConfirm("delete")}
                 >
-                  <Trash2 /> Delete class
+                  <ClickIcon icon={AnimatedTrash2} /> Delete class
                 </Button>
               </div>
             </Section>

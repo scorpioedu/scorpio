@@ -6,6 +6,8 @@
 // student to another device and the teacher sees them.
 import { useEffect, useState } from "react";
 import { BookOpen, Check } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CheckIcon as AnimatedCheck } from "@animateicons/react/lucide/check-icon";
 import { toast } from "sonner";
 import { apTopic } from "@/data/ap";
 import { getCurriculum } from "@/data/curricula";
@@ -137,7 +139,7 @@ export function ReadFirst({
               >
                 {read ? (
                   <>
-                    <Check aria-hidden /> Read
+                    <ClickIcon icon={AnimatedCheck} aria-hidden /> Read
                   </>
                 ) : (
                   "Read lesson"
@@ -162,7 +164,7 @@ export function ReadFirst({
             </span>
           ) : (
             <Button size="sm" onClick={() => markRead(t)} disabled={marking}>
-              <Check aria-hidden /> {marking ? "Saving…" : "Mark as read"}
+              <ClickIcon icon={AnimatedCheck} aria-hidden /> {marking ? "Saving…" : "Mark as read"}
             </Button>
           )
         }

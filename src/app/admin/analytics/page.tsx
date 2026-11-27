@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Download, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { DownloadIcon as AnimatedDownload } from "@animateicons/react/lucide/download-icon";
 import { authenticatedFetch } from "@/lib/authenticated-fetch";
 import type { UsageSummary } from "@/lib/admin/summaries";
 import { AdminHeader, StatTile } from "@/components/admin/admin-shell";
@@ -216,7 +218,7 @@ function UsagePanel() {
             onClick={exportCsv}
             disabled={!usage || usage.events === 0}
           >
-            <Download className="size-3.5" /> CSV
+            <ClickIcon icon={AnimatedDownload} className="size-3.5" /> CSV
           </Button>
           <Button variant="outline" size="sm" onClick={() => void load()} disabled={loading}>
             <RefreshCw className={cn("size-3.5", loading && "animate-spin")} /> Refresh

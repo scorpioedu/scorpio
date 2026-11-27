@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Calculator, Sparkles, User, HelpCircle, ArrowRight, Zap, Info } from "lucide-react";
+import { Calculator, Sparkles, User, ArrowRight, Zap, Info } from "lucide-react";
+import { ClickIcon } from "@/components/ui/click-icon";
+import { CircleQuestionMarkIcon as AnimatedCircleQuestionMark } from "@animateicons/react/lucide/circle-question-mark-icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSpring, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -69,7 +71,10 @@ export function AICostCalculator() {
                 Investment Estimator
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-zinc-400 cursor-help inline-flex ml-2 transition-all hover:text-black dark:hover:text-white" />
+                    <ClickIcon
+                      icon={AnimatedCircleQuestionMark}
+                      className="h-4 w-4 text-zinc-400 cursor-help inline-flex ml-2 transition-all hover:text-black dark:hover:text-white"
+                    />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[320px] p-0 overflow-hidden border-zinc-200/50 shadow-2xl rounded-2xl">
                     <div className="bg-zinc-900 p-4 text-white">
