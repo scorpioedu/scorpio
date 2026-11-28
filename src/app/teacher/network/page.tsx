@@ -790,8 +790,8 @@ export default function NetworkPage() {
                 Connect with Your Science Department
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Collaborate with fellow physics teachers, pool student AI tutoring allowances, and
-                share Waypoints curriculum.
+                Work with the other physics teachers at your school, share Waypoint assignments, and
+                share one AI balance if you use AI.
               </p>
             </div>
 

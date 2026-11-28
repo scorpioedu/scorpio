@@ -86,5 +86,10 @@ export { expireStaleReservations } from "./reservations";
 
 export { onLowBalance } from "./credit-emails";
 
-export { onAccessRequestApproved, onStudentEnrolled, onFirstResults } from "./teacher-emails";
+export {
+  onAccessRequestCreated,
+  onAccessRequestApproved,
+  onStudentEnrolled,
+  onFirstResults,
+} from "./teacher-emails";
 export { sendTeacherDigests } from "./teacher-digest";

@@ -107,7 +107,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Scorpio • AP Physics homework, graded for you",
+    default: "Scorpio • AP Physics",
     template: "%s • Scorpio",
   },
   description:
@@ -134,7 +134,7 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL("https://scorpioedu.org"),
   openGraph: {
-    title: "Scorpio • AP Physics homework, graded for you",
+    title: "Scorpio • AP Physics",
     description:
       "Ready-made AP Physics 1, 2, C: Mechanics and C: E&M problem sets, checked by a person and marked as students work. No AI for students unless their teacher turns it on. Run not for profit.",
     url: "https://scorpioedu.org",
@@ -144,11 +144,19 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Scorpio: AP Physics homework, graded for you",
+        alt: "Scorpio",
       },
     ],
     locale: "en_US",
     type: "website",
+  },
+  // X and other sites that read twitter:* tags get the same large share image.
+  twitter: {
+    card: "summary_large_image",
+    title: "Scorpio • AP Physics",
+    description:
+      "Ready-made AP Physics 1, 2, C: Mechanics and C: E&M problem sets, checked by a person and marked as students work. Run not for profit.",
+    images: ["/og-image.jpg"],
   },
   other: {
     language: "en",

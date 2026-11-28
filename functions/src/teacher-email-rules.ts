@@ -16,6 +16,17 @@ export function approvedRequest(
   return { email, code, name: text(after.name) ?? "" };
 }
 
+/**
+ * A brand-new access request that still needs a reply, with an address to confirm it to. Only
+ * pending requests count, so an admin-made record that starts approved is not confirmed.
+ */
+export function newPendingRequest(after: Doc): { email: string; name: string } | null {
+  if (!after || after.status !== "pending") return null;
+  const email = text(after.email);
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
+  return { email, name: text(after.name) ?? "" };
+}
+
 /** The teacher a student has just been enrolled with, or null when the write did not enroll anyone. */
 export function newEnrollment(
   before: Doc,
@@ -59,4 +70,5 @@ export function signupLink(code: string): string {
 }
 
 export const TEACHER_HOME = `${SITE}/teacher`;
+export const PUBLIC_LESSONS = `${SITE}/lessons`;
 export const TEACHER_GRADES = `${SITE}/teacher/grades`;

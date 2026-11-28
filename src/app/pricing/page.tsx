@@ -26,7 +26,7 @@ export default function PricingPage() {
               <span className="block text-muted-foreground">AI is paid at cost, never marked up</span>
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <PrimaryPill href="/signup">Start free</PrimaryPill>
+              <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
               <SecondaryPill href="/contact">Pay by invoice</SecondaryPill>
             </div>
           </Split>
@@ -118,7 +118,7 @@ export default function PricingPage() {
               <span className="block text-muted-foreground">Free for every teacher, no card required</span>
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <PrimaryPill href="/signup">Start free</PrimaryPill>
+              <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
               <CircleLink href="/contact" className="ml-2">
                 Pay by invoice
               </CircleLink>

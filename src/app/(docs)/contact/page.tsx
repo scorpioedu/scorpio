@@ -4,24 +4,24 @@ import { DocHeader, DocSection, DocList, docLink } from "@/components/docs-prose
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with the Scorpio team. We're here to help schools and educators transform physics education with AI.",
+    "Get in touch with the Scorpio team: questions from teachers and schools, account help, invoices and department demos.",
 };
 
 export default function ContactPage() {
   return (
     <article className="w-full pb-20">
       <DocHeader
-        title="Contact support"
-        summary="Whether you're an educator deploying Scorpio in your classroom or a developer exploring the architecture, here is where to reach us."
+        title="Contact"
+        summary="Questions about using Scorpio in your classes, help with your account, invoices or a department demo: here is where to reach us."
       />
 
       <DocSection title="Ways to reach us">
         <DocList
           items={[
             {
-              term: "Technical support",
+              term: "Teachers, schools and support",
               description: (
-                <>For platform bugs, account issues, or deployment questions: <a href="mailto:rushil@scorpioedu.org" className={docLink}>rushil@scorpioedu.org</a></>
+                <>For questions about Scorpio, account help, invoices or a department demo: <a href="mailto:rushil@scorpioedu.org" className={docLink}>rushil@scorpioedu.org</a></>
               ),
             },
             {
@@ -46,8 +46,8 @@ export default function ContactPage() {
           items={[
             { term: "Is Scorpio open source?", description: "Yes. Scorpio is licensed under the MIT license and is available for community contributions on GitHub." },
             { term: "How do I reset my password?", description: "Password resets are handled securely through Firebase Auth. Click “Forgot Password” on the login screen." },
-            { term: "Can I use this in my school?", description: "Scorpio is built for scale. Contact us for priority setup or documentation on self-hosting your own instance." },
-            { term: "What AI models are supported?", description: "We currently optimize for Gemini 3.8 Flash, but our constraint architecture is model-agnostic." },
+            { term: "Can I use this in my school?", description: "Yes. Teachers request access, and we can set up a department pilot with you. Email us to talk it through." },
+            { term: "Do students use AI in Scorpio?", description: "Not unless their teacher turns it on. Study, lessons, practice and marking use no AI. Teachers can choose to use AI for their own tools." },
           ]}
         />
       </DocSection>

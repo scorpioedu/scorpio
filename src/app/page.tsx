@@ -64,7 +64,7 @@ export default function Home() {
                 </p>
                 <div className="mt-10 flex flex-wrap gap-3">
                   <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
-                  <SecondaryPill href="/contact">Request a department demo</SecondaryPill>
+                  <SecondaryPill href="mailto:rushil@scorpioedu.org?subject=Department%20demo">Request a department demo</SecondaryPill>
                 </div>
               </Split>
             </div>

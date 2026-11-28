@@ -359,7 +359,6 @@ export function SiteHeader({ activeSection, autoHide = true }: SiteHeaderProps) 
                 <ul role="list" className="list-none">
                   {[
                     { label: "Study", href: "/lessons" },
-                    { label: "Test Raise", href: "/ai" },
                     { label: "Pricing", href: "/pricing" },
                   ].map((l) => (
                     <li key={l.href}>

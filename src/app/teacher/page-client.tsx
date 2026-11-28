@@ -413,7 +413,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
             {
               title: "4. New assignment",
               description:
-                "Build your own assignment: paste text or upload a file and Scorpio turns it into questions you can edit before assigning.",
+                "Build your own assignment, or paste text or upload a file and let AI turn it into questions you can edit before assigning.",
               icon: PlusCircle,
             },
             {
@@ -425,7 +425,7 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
             {
               title: "6. Classes",
               description:
-                "Make classes, share join codes and invite links, change class settings, and manage each roster. Learning insights shows how students use Raise.",
+                "Make classes, share join codes and invite links, change class settings, and manage each roster. If you turn Raise on for a class, Learning insights shows how students use it.",
               icon: NAV_ICONS.classes,
             },
             {
@@ -445,9 +445,9 @@ export default function TeacherDashboard({ onLoaded }: { onLoaded?: () => void }
               icon: NAV_ICONS.department,
             },
             {
-              title: "10. How Socratic AI Works",
+              title: "10. AI in Scorpio",
               description:
-                "Scorpio's AI acts as a 4-layer pedagogical guardrail. It assesses student input for logic, identifies the specific misconception, and provides a scaffolded hint rather than the answer. This ensures verifiable academic integrity at scale.",
+                "AI is off for students unless you turn it on for a class in its settings. Numeric and multiple-choice answers are marked by plain code. When you use AI, it only drafts: problems, rubrics and grades for written answers, which students see after you check and save them. If you turn Raise on, it gives hints, not answers.",
               icon: ShieldCheck,
               isSpecial: true,
             },

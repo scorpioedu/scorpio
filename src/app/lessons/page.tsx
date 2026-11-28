@@ -27,6 +27,12 @@ export const metadata: Metadata = {
     url: "/lessons",
     images: OG_IMAGE,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free AP Physics lessons and practice • Scorpio",
+    description:
+      "Every unit of AP Physics 1, 2 and C, topic by topic: a lesson, worked examples, and practice problems checked as you answer. No account needed.",
+  },
 };
 
 // "1 day later, then 3, 7 and 14 days": the review steps, from the same constant the scheduler uses.

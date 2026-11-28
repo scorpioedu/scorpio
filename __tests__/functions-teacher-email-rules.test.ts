@@ -2,6 +2,7 @@ import {
   approvedRequest,
   firstName,
   newEnrollment,
+  newPendingRequest,
   newResult,
   signupLink,
 } from "../functions/src/teacher-email-rules";
@@ -27,6 +28,24 @@ describe("approvedRequest", () => {
     ).toBeNull();
     expect(approvedRequest({ status: "pending" }, { ...approved, generatedCode: "" })).toBeNull();
     expect(approvedRequest({ status: "pending" }, { ...approved, email: undefined })).toBeNull();
+  });
+});
+
+describe("newPendingRequest", () => {
+  it("fires for a new pending request with a usable address", () => {
+    expect(
+      newPendingRequest({ status: "pending", email: "t@school.test", name: " Dana Rivera " }),
+    ).toEqual({ email: "t@school.test", name: "Dana Rivera" });
+    expect(newPendingRequest({ status: "pending", email: "t@school.test" })).toEqual({
+      email: "t@school.test",
+      name: "",
+    });
+  });
+  it("ignores missing docs, non-pending records and bad addresses", () => {
+    expect(newPendingRequest(undefined)).toBeNull();
+    expect(newPendingRequest({ status: "approved", email: "t@school.test" })).toBeNull();
+    expect(newPendingRequest({ status: "pending", email: "nope" })).toBeNull();
+    expect(newPendingRequest({ status: "pending", email: "  " })).toBeNull();
   });
 });
 

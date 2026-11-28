@@ -114,7 +114,19 @@ describe('request-access list', () => {
     expect((await res.json()).requests).toEqual([{
       id: 'r1', name: 'Ada', email: 'a@b.co', institution: 'MIT', role: 'Teacher', message: 'hello', status: 'approved',
       createdAt: '2026-01-02T03:04:05.000Z', reviewedAt: '2026-02-03T04:05:06.000Z', generatedCode: 'SCORP-AAAA-BBBB', approvalEmailSentAt: null, referredByName: null,
+      courses: [], pilotInterest: false,
     }]);
+  });
+
+  test('lists each request once, with courses and pilot interest when the form sent them', async () => {
+    // The route reads pending requests and the newest requests separately; one doc in both shows once.
+    listDocs = [{
+      id: 'r9',
+      data: { name: 'D', email: 'd@b.co', institution: 'I', role: 'T', status: 'pending', courses: ['AP Physics 2'], pilotInterest: true },
+    }];
+    const body = await (await call({ action: 'list' })).json();
+    expect(body.requests).toHaveLength(1);
+    expect(body.requests[0]).toMatchObject({ id: 'r9', courses: ['AP Physics 2'], pilotInterest: true });
   });
 
   test('absent optional fields become null, and non-timestamp dates become null', async () => {
@@ -224,6 +236,14 @@ describe('request-access public submission', () => {
     expect(txSets[0].data).toMatchObject({
       name: 'Ada', email: 'ada@example.com', institution: 'MIT', role: 'Teacher', message: null, status: 'pending', generatedCode: null,
     });
+  });
+
+  test('courses and pilot interest are stored only when given, courses trimmed and deduplicated', async () => {
+    await call(valid);
+    await call({ ...valid, courses: [' AP Physics 1 ', 'AP Physics 1', '', 'AP Physics C: E&M'], pilotInterest: true });
+    expect(txSets[0].data).not.toHaveProperty('courses');
+    expect(txSets[0].data).not.toHaveProperty('pilotInterest');
+    expect(txSets[1].data).toMatchObject({ courses: ['AP Physics 1', 'AP Physics C: E&M'], pilotInterest: true });
   });
 
   test('a blank-only message is stored as null and a real one is trimmed', async () => {

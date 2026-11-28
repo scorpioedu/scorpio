@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description,
     alternates: { canonical: course.href },
     openGraph: { title: `${title} • Scorpio`, description, url: course.href, images: OG_IMAGE },
+    twitter: { card: "summary_large_image", title: `${title} • Scorpio`, description },
   };
 }
 

@@ -24,6 +24,8 @@ interface AccessRequest {
   institution: string;
   role: string;
   message: string | null;
+  courses?: string[];
+  pilotInterest?: boolean;
   status: "pending" | "approved" | "rejected";
   createdAt: string | null;
   reviewedAt: string | null;
@@ -37,8 +39,9 @@ type Filter = "pending" | "approved" | "rejected" | "all";
 const ROLE_LABELS: Record<string, string> = {
   professor: "Professor",
   instructor: "Instructor / Lecturer",
-  high_school_teacher: "High school teacher",
+  high_school_teacher: "Physics teacher",
   department_head: "Department head",
+  other_teacher: "Other teacher",
   dean: "Dean / Admin",
   ta: "Teaching assistant",
   other: "Other",
@@ -130,6 +133,11 @@ function RequestRow({
             >
               {r.status}
             </Badge>
+            {r.pilotInterest && (
+              <Badge variant="outline" className="text-[11px]">
+                Wants a pilot
+              </Badge>
+            )}
           </div>
           <div className="mt-0.5 truncate text-sm text-muted-foreground">
             {r.institution} · {ROLE_LABELS[r.role] ?? r.role}
@@ -165,6 +173,7 @@ function RequestRow({
             </span>
             <span>Submitted: {r.createdAt ? new Date(r.createdAt).toLocaleString() : "—"}</span>
             {r.reviewedAt && <span>Reviewed: {new Date(r.reviewedAt).toLocaleString()}</span>}
+            {r.courses && r.courses.length > 0 && <span>Teaches: {r.courses.join(", ")}</span>}
           </div>
 
           {r.message ? (

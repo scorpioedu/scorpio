@@ -32,15 +32,23 @@ async function handleRequestAccess(req: NextRequest) {
 
     // ─── LIST (admin only) ────────────────────────────────────────────────────
     if (action === "list") {
-      const snapshot = await adminDb
-        .collection("accessRequests")
-        .orderBy("createdAt", "desc")
-        .limit(200)
-        .get();
+      // Every pending request, then the newest 200 of any status, so a busy week can never push
+      // an unreviewed request off the page. Pending is filtered without orderBy (no index needed).
+      const [pendingSnap, recentSnap] = await Promise.all([
+        adminDb.collection("accessRequests").where("status", "==", "pending").limit(1000).get(),
+        adminDb.collection("accessRequests").orderBy("createdAt", "desc").limit(200).get(),
+      ]);
+      const seen = new Set<string>();
+      const docs = [...pendingSnap.docs, ...recentSnap.docs]
+        .filter((d) => (seen.has(d.id) ? false : (seen.add(d.id), true)))
+        .sort(
+          (a, b) =>
+            (b.data().createdAt?.toMillis?.() ?? 0) - (a.data().createdAt?.toMillis?.() ?? 0),
+        );
 
       const referrerIds = [
         ...new Set(
-          snapshot.docs
+          docs
             .map((d) => d.data().referredBy)
             .filter((v): v is string => typeof v === "string" && !!v),
         ),
@@ -54,7 +62,7 @@ async function handleRequestAccess(req: NextRequest) {
         }
       }
 
-      const requests = snapshot.docs.map((d) => {
+      const requests = docs.map((d) => {
         const data = d.data();
         return {
           id: d.id,
@@ -63,6 +71,8 @@ async function handleRequestAccess(req: NextRequest) {
           institution: data.institution,
           role: data.role,
           message: data.message ?? null,
+          courses: Array.isArray(data.courses) ? data.courses : [],
+          pilotInterest: data.pilotInterest === true,
           status: data.status,
           createdAt: data.createdAt?.toDate?.()?.toISOString() ?? null,
           reviewedAt: data.reviewedAt?.toDate?.()?.toISOString() ?? null,
@@ -143,7 +153,9 @@ async function handleRequestAccess(req: NextRequest) {
     // ─── SUBMIT (public — called from /request-access page) ──────────────────
     const submission = parseValue(raw, requestAccessSubmitBody, "Missing required fields.");
     if (!submission.ok) return submission.response;
-    const { name, email, institution, role, message, ref } = submission.data;
+    const { name, email, institution, role, message, ref, courses, pilotInterest } =
+      submission.data;
+    const cleanCourses = [...new Set((courses ?? []).map((c) => c.trim()).filter(Boolean))];
 
     if (!name?.trim() || !email?.trim() || !institution?.trim() || !role?.trim()) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
@@ -175,6 +187,8 @@ async function handleRequestAccess(req: NextRequest) {
         institution: institution.trim(),
         role: role.trim(),
         message: message?.trim() || null,
+        ...(cleanCourses.length ? { courses: cleanCourses } : {}),
+        ...(pilotInterest ? { pilotInterest: true } : {}),
         status: "pending",
         createdAt: FieldValue.serverTimestamp(),
         reviewedAt: null,

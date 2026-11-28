@@ -175,6 +175,10 @@ export const requestAccessSubmitBody = z.object({
   message: z.string().max(10000).nullish(),
   /** A teacher's referral code from the ?ref= link; unknown codes are ignored server-side. */
   ref: z.string().max(40).nullish(),
+  /** Courses the teacher says they teach (labels from the form); optional. */
+  courses: z.array(z.string().max(80)).max(10).nullish(),
+  /** Ticked "interested in a department pilot". */
+  pilotInterest: z.boolean().nullish(),
 });
 export const requestAccessReviewBody = z.object({ id: docId, pilot: z.boolean().optional() });
 

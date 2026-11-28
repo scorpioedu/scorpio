@@ -23,7 +23,22 @@ import { GraduationCapIcon as AnimatedGraduationCap } from "@animateicons/react/
 import { PresentationIcon as AnimatedPresentation } from "@animateicons/react/lucide/presentation-icon";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { errorMessage } from "@/lib/error-utils";
+import { errorCode, errorMessage } from "@/lib/error-utils";
+
+/** What to tell someone whose sign-in failed. Only a real credential failure blames the password. */
+function loginErrorText(err: unknown): string {
+  const code = errorCode(err);
+  const message = errorMessage(err);
+  if (code === "auth/too-many-requests" || message === "rate-limited")
+    return "Too many sign-in attempts. Wait a few minutes, or reset your password.";
+  if (code === "auth/network-request-failed")
+    return "Can't reach Scorpio. Check your internet connection and try again.";
+  if (code === "auth/user-disabled")
+    return "This account has been turned off. Email rushil@scorpioedu.org for help.";
+  if (code === "auth/invalid-email") return "That email address doesn't look right.";
+  if (message === "Failed to create session") return "Session creation failed. Please try again.";
+  return "Invalid email or password";
+}
 
 export default function LoginPage() {
   return (
@@ -96,6 +111,7 @@ function LoginForm() {
       });
 
       console.log(`[Login] Session API response status: ${response.status}`);
+      if (response.status === 429) throw new Error("rate-limited");
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.error || "Failed to create session");
@@ -129,12 +145,7 @@ function LoginForm() {
       // The password was right but the profile is unfinished: the Account Recovery screen that
       // appears says what to do, so don't also claim the password was wrong.
       if (message === "Complete registration first") setError("");
-      else
-        setError(
-          message === "Failed to create session"
-            ? "Session creation failed. Please try again."
-            : "Invalid email or password",
-        );
+      else setError(loginErrorText(err));
       setLoading(false);
     }
   };
@@ -280,11 +291,16 @@ function LoginForm() {
               </TabsList>
 
               <TabsContent value="student" className="mt-4">
-                <motion.div
+                <motion.form
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!loading && !authLoading) handleLogin("student");
+                  }}
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -359,8 +375,8 @@ function LoginForm() {
                     transition={{ delay: 0.3 }}
                   >
                     <Button
+                      type="submit"
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      onClick={() => handleLogin("student")}
                       disabled={loading || authLoading}
                     >
                       {loading
@@ -370,15 +386,20 @@ function LoginForm() {
                           : "Sign in as Student"}
                     </Button>
                   </motion.div>
-                </motion.div>
+                </motion.form>
               </TabsContent>
 
               <TabsContent value="teacher" className="mt-4">
-                <motion.div
+                <motion.form
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!loading && !authLoading) handleLogin("teacher");
+                  }}
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -453,8 +474,8 @@ function LoginForm() {
                     transition={{ delay: 0.3 }}
                   >
                     <Button
+                      type="submit"
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      onClick={() => handleLogin("teacher")}
                       disabled={loading || authLoading}
                     >
                       {loading
@@ -464,7 +485,7 @@ function LoginForm() {
                           : "Sign in as Teacher"}
                     </Button>
                   </motion.div>
-                </motion.div>
+                </motion.form>
               </TabsContent>
             </Tabs>
 
