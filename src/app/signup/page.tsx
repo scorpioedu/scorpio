@@ -47,6 +47,11 @@ function SignupForm() {
   const [showAccessCode, setShowAccessCode] = useState(false);
   const [accessCode, setAccessCode] = useState(teacherInvite);
   const [classCode, setClassCode] = useState(classInvite);
+  // Teacher sign-up needs an access code. Without one in the link, the Teacher tab first explains
+  // how to get one instead of showing a form nobody can finish.
+  const [hasTeacherCode, setHasTeacherCode] = useState(
+    !!teacherInvite || params.get("role") === "teacher",
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -212,11 +217,16 @@ function SignupForm() {
               </TabsList>
 
               <TabsContent value="student" className="mt-4">
-                <motion.div
+                <motion.form
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!loading) handleSignup("student");
+                  }}
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -350,201 +360,244 @@ function SignupForm() {
                     transition={{ delay: 0.3 }}
                   >
                     <Button
+                      type="submit"
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      onClick={() => handleSignup("student")}
                       disabled={loading}
                     >
                       {loading ? "Creating Account..." : "Sign up as Student"}
                     </Button>
+                    <p className="mt-3 text-center text-xs text-muted-foreground">
+                      A teacher?{" "}
+                      <Link
+                        href="/request-access"
+                        className="font-medium text-primary hover:underline"
+                      >
+                        Request teacher access
+                      </Link>{" "}
+                      instead. A student account can&apos;t be changed to a teacher one later.
+                    </p>
                   </motion.div>
-                </motion.div>
+                </motion.form>
               </TabsContent>
 
               <TabsContent value="teacher" className="mt-4">
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-4"
-                >
+                {!hasTeacherCode ? (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="space-y-2"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="rounded-xl border border-border p-5"
                   >
-                    <Label htmlFor="teacher-name">Full Name</Label>
-                    <Input
-                      id="teacher-name"
-                      placeholder="Dr. Smith"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      aria-label="Full Name"
-                      required
-                    />
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                    className="space-y-2"
-                  >
-                    <Label htmlFor="teacher-email">Email</Label>
-                    <Input
-                      id="teacher-email"
-                      type="email"
-                      placeholder="teacher@school.edu"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      aria-label="Email"
-                      required
-                    />
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="space-y-2"
-                  >
-                    <Label htmlFor="teacher-password">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="teacher-password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pr-10"
-                        aria-label="Password"
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 text-muted-foreground"
-                        aria-label={showPassword ? "Hide password" : "Show password"}
-                      >
-                        {showPassword ? (
-                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
-                        ) : (
-                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                    {password && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="space-y-1"
-                      >
-                        <div className="flex h-1 w-full gap-1 overflow-hidden rounded-full bg-muted">
-                          {[1, 2, 3, 4, 5].map((i) => (
-                            <div
-                              key={i}
-                              className={`h-full flex-1 transition-colors duration-300 ${
-                                i <= strength ? strengthColor : "bg-transparent"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <p className="text-[10px] text-muted-foreground text-right">
-                          Strength: <span className="font-medium">{strengthText}</span>
-                        </p>
-                      </motion.div>
-                    )}
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="space-y-2"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <Label htmlFor="teacher-code">Access Code</Label>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <ClickIcon
-                              icon={AnimatedInfo}
-                              className="h-3 w-3 text-muted-foreground cursor-help"
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs">
-                              Enter the invite code sent to you. Don&apos;t have one? Request access
-                              below.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <Link
-                        href="/request-access"
-                        className="text-[11px] text-primary hover:underline font-medium shrink-0"
-                      >
-                        Request a code →
-                      </Link>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        id="teacher-code"
-                        type={showAccessCode ? "text" : "password"}
-                        placeholder="Required for teacher accounts"
-                        value={accessCode}
-                        onChange={(e) => setAccessCode(e.target.value)}
-                        className="pr-10"
-                        aria-label="Teacher Access Code"
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setShowAccessCode(!showAccessCode)}
-                        className="absolute inset-y-0 right-0 text-muted-foreground"
-                        aria-label={showAccessCode ? "Hide access code" : "Show access code"}
-                      >
-                        {showAccessCode ? (
-                          <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
-                        ) : (
-                          <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground">
-                      Don&apos;t have a code?{" "}
-                      <Link
-                        href="/request-access"
-                        className="text-primary hover:underline font-medium"
-                      >
-                        Request organization access
-                      </Link>{" "}
-                      — we&apos;ll review and send one within 1–2 business days.
+                    <h2 className="text-base font-semibold">Teachers need an access code</h2>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      Scorpio is free for teachers. Request access and we&apos;ll email you a code
+                      within 1–2 business days.
                     </p>
+                    <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                      <Button asChild className="sm:flex-1">
+                        <Link href="/request-access">Request access</Link>
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="sm:flex-1"
+                        onClick={() => setHasTeacherCode(true)}
+                      >
+                        I have a code
+                      </Button>
+                    </div>
                   </motion.div>
-                  {error && (
-                    <motion.p
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20"
-                    >
-                      {error}
-                    </motion.p>
-                  )}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
+                ) : (
+                  <motion.form
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                    noValidate
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!loading) handleSignup("teacher");
+                    }}
                   >
-                    <Button
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      onClick={() => handleSignup("teacher")}
-                      disabled={loading}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="space-y-2"
                     >
-                      {loading ? "Creating Account..." : "Sign up as Teacher"}
-                    </Button>
-                  </motion.div>
-                </motion.div>
+                      <Label htmlFor="teacher-name">Full Name</Label>
+                      <Input
+                        id="teacher-name"
+                        placeholder="Alex Rivera"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        aria-label="Full Name"
+                        required
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="space-y-2"
+                    >
+                      <Label htmlFor="teacher-email">Email</Label>
+                      <Input
+                        id="teacher-email"
+                        type="email"
+                        placeholder="teacher@school.edu"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        aria-label="Email"
+                        required
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="space-y-2"
+                    >
+                      <Label htmlFor="teacher-password">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="teacher-password"
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pr-10"
+                          aria-label="Password"
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute inset-y-0 right-0 text-muted-foreground"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                        >
+                          {showPassword ? (
+                            <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
+                          ) : (
+                            <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                      {password && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className="space-y-1"
+                        >
+                          <div className="flex h-1 w-full gap-1 overflow-hidden rounded-full bg-muted">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                              <div
+                                key={i}
+                                className={`h-full flex-1 transition-colors duration-300 ${
+                                  i <= strength ? strengthColor : "bg-transparent"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground text-right">
+                            Strength: <span className="font-medium">{strengthText}</span>
+                          </p>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="space-y-2"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <Label htmlFor="teacher-code">Access Code</Label>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <ClickIcon
+                                icon={AnimatedInfo}
+                                className="h-3 w-3 text-muted-foreground cursor-help"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">
+                                Enter the invite code sent to you. Don&apos;t have one? Request
+                                access below.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <Link
+                          href="/request-access"
+                          className="text-[11px] text-primary hover:underline font-medium shrink-0"
+                        >
+                          Request a code →
+                        </Link>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          id="teacher-code"
+                          type={showAccessCode ? "text" : "password"}
+                          placeholder="Required for teacher accounts"
+                          value={accessCode}
+                          onChange={(e) => setAccessCode(e.target.value)}
+                          className="pr-10"
+                          aria-label="Teacher Access Code"
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setShowAccessCode(!showAccessCode)}
+                          className="absolute inset-y-0 right-0 text-muted-foreground"
+                          aria-label={showAccessCode ? "Hide access code" : "Show access code"}
+                        >
+                          {showAccessCode ? (
+                            <ClickIcon icon={AnimatedEyeOff} className="h-4 w-4" />
+                          ) : (
+                            <ClickIcon icon={AnimatedEye} className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        Don&apos;t have a code?{" "}
+                        <Link
+                          href="/request-access"
+                          className="text-primary hover:underline font-medium"
+                        >
+                          Request teacher access
+                        </Link>{" "}
+                        and we&apos;ll email one within 1–2 business days.
+                      </p>
+                    </motion.div>
+                    {error && (
+                      <motion.p
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="text-sm font-medium text-destructive bg-destructive/10 p-2 rounded-md border border-destructive/20"
+                      >
+                        {error}
+                      </motion.p>
+                    )}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <Button
+                        type="submit"
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                        disabled={loading}
+                      >
+                        {loading ? "Creating Account..." : "Sign up as Teacher"}
+                      </Button>
+                    </motion.div>
+                  </motion.form>
+                )}
               </TabsContent>
             </Tabs>
           </TooltipProvider>

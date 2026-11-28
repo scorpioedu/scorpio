@@ -21,7 +21,7 @@ const faqs = [
     index: "01",
     question: "What is Scorpio?",
     answer:
-      "Scorpio is a homework tool for physics classes, starting with AP Physics 1. Teachers assign ready-made or custom problems that are marked as students work, every problem in the course sets has been checked by a person, and a class misconception report shows which wrong ideas students hold.",
+      "Scorpio is a homework tool for AP Physics 1, AP Physics 2, AP Physics C: Mechanics and AP Physics C: Electricity and Magnetism. Teachers assign ready-made or custom problems that are marked as students work, every problem in the course sets has been checked by a person, and a class misconception report shows which wrong ideas students hold.",
   },
   {
     index: "02",
@@ -45,7 +45,7 @@ const faqs = [
     index: "05",
     question: "What are Waypoints?",
     answer:
-      "Waypoints are shared assignments. Every global Waypoint, including the AP Physics 1 sets, is free to copy into your own class and edit. Department Waypoints, shared inside your school network, are free too.",
+      "Waypoints are shared assignments. Every global Waypoint, including the problem sets for all four AP Physics courses, is free to copy into your own class and edit. Department Waypoints, shared inside your school network, are free too.",
   },
   {
     index: "06",
@@ -57,7 +57,7 @@ const faqs = [
     index: "07",
     question: "What does AI cost?",
     answer:
-      "AI is charged at Google’s exact cost, with no markup, from a prepaid balance. Gemini 3.8 Flash is $0.75 per 1M input tokens and $3.75 per 1M output tokens through 31 December 2026, then $1.50 and $7.50 from 1 January 2027. A Raise hint costs about a tenth of a cent. You can top up from $5, paid credit never expires, and schools can pay by invoice.",
+      "AI is charged at Google’s exact cost, with no markup, from a prepaid balance. A Raise hint costs a fraction of a cent, and the current rates are on the pricing page. You can top up from $5, paid credit never expires, and schools can pay by invoice.",
   },
   {
     index: "08",

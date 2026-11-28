@@ -7,7 +7,9 @@ import { CircleLink, label, PrimaryPill, SecondaryPill, Split, statement } from 
 /*
  * Three quiet split sections in the same voice as the hero: a short label on the left, a two-tone
  * statement on the right (one line in ink, one in grey), then whatever the section shows.
- * Facts here come from /pricing and the Sage Ridge pilot; nothing is quoted from anyone.
+ * Facts here come from /pricing and Scorpio's own history; nothing is quoted from anyone.
+ * Sage Ridge School was the first school to use Scorpio, on an early version built before the AP
+ * courses. Never call it an AP Physics 1 pilot or name a course for it.
  */
 
 /* ── Sage Ridge ─────────────────────────────────────────────────────────── */
@@ -19,8 +21,8 @@ export function PilotStory() {
         <div className="grid gap-12 md:grid-cols-2 md:gap-12">
           <div data-scroll-reveal className={`${reveal.stagger} flex flex-col`}>
             <h2 id="partners" className={label}>
-              Piloting at Sage Ridge School
-              <span className="block text-muted-foreground">Our pilot school for AP Physics 1</span>
+              Where Scorpio started
+              <span className="block text-muted-foreground">Sage Ridge School, our first school</span>
             </h2>
             <CircleLink href="https://www.sageridge.org/" external className="mt-10">
               Visit Sage Ridge School
@@ -28,19 +30,24 @@ export function PilotStory() {
           </div>
 
           <div data-scroll-reveal className={reveal.stagger}>
-            <Image
-              src="/school-logos/SageRidgeSchool.svg"
-              alt="Sage Ridge School"
-              width={244}
-              height={130}
-              className="h-auto w-24 dark:brightness-0 dark:invert"
-            />
+            {/* The scroll reveal animates `filter` on each child of this column, which would
+                override the logo's dark-mode white filter mid-animation. The wrapper takes the
+                animation so the logo keeps its filter the whole time. */}
+            <div>
+              <Image
+                src="/school-logos/SageRidgeSchool.svg"
+                alt="Sage Ridge School"
+                width={244}
+                height={130}
+                className="h-auto w-24 dark:brightness-0 dark:invert"
+              />
+            </div>
             <p className="mt-8 text-pretty text-[clamp(1.15rem,1.7vw,1.4rem)] leading-[1.45] tracking-[-0.015em]">
-              Scorpio is in a classroom pilot in AP Physics 1 at Sage Ridge School: problem sets
-              assigned in Scorpio, answers marked as students work, and a reteach list for the
-              teacher after every set.
+              Scorpio started in physics classes at Sage Ridge School, on an early version built
+              before the AP courses. What we learned there shaped the problem sets, the marking
+              and the reteach list.
             </p>
-            <p className="mt-6 text-sm text-muted-foreground">Pilot school · AP Physics 1</p>
+            <p className="mt-6 text-sm text-muted-foreground">First school · Early version</p>
           </div>
         </div>
       </div>
@@ -63,13 +70,13 @@ export function NotForProfit() {
             <p className={statement}>
               Built by a high school junior
               <span className="block text-muted-foreground">
-                Fees pay for servers and AI. Nobody takes a profit.
+                Free to teach with. Nobody takes a profit.
               </span>
             </p>
             <p className="mt-10 max-w-xl text-pretty text-[clamp(1.05rem,1.4vw,1.2rem)] leading-[1.55] text-muted-foreground">
-              Scorpio has no investors and no shareholders. A Department plan covers hosting and any
-              AI you choose to use, at cost. Scorpio is not a registered nonprofit yet; we are
-              applying for 501(c)(3) status.
+              Scorpio has no investors and no shareholders. Teaching with Scorpio is free. If you
+              use AI, you pay what it costs us, with no markup. Scorpio is not a registered
+              nonprofit yet; we are applying for 501(c)(3) status.
             </p>
             <CircleLink href="/about" className="mt-10">
               Read about Scorpio
@@ -96,7 +103,7 @@ export function PricingOverview() {
               </span>
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <PrimaryPill href="/signup">Start free</PrimaryPill>
+              <PrimaryPill href="/request-access">Request teacher access</PrimaryPill>
               <SecondaryPill href="/pricing">See full pricing</SecondaryPill>
             </div>
           </Split>
@@ -127,15 +134,15 @@ export function PilotProgram() {
           <Split id="pilot-heading" heading="Pilot program">
             <p className={statement}>
               Run a pilot in your department
-              <span className="block text-muted-foreground">the way Sage Ridge School does</span>
+              <span className="block text-muted-foreground">We set up your teachers and classes with you</span>
             </p>
             <p className="mt-10 max-w-xl text-pretty text-[clamp(1.05rem,1.4vw,1.2rem)] leading-[1.55] text-muted-foreground">
               Start with one class and one unit. Tell us about your school and your AP Physics
-              courses, and we will set up your teachers and classes with you. After the unit, you
-              decide whether the department keeps going.
+              courses, and we will help you get going. After the unit, you decide whether the
+              department keeps going.
             </p>
             <div className="mt-10">
-              <PrimaryPill href="/request-access">Apply for a pilot</PrimaryPill>
+              <PrimaryPill href="/request-access?pilot=1">Apply for a pilot</PrimaryPill>
             </div>
           </Split>
         </div>

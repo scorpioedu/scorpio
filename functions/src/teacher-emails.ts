@@ -1,22 +1,29 @@
 /**
- * The three emails that carry a new teacher from "approved" to "my class is using this":
- * the access code, the first student joining, and the first results. Each is sent once.
+ * The emails that carry a new teacher from "requested access" to "my class is using this":
+ * the request confirmation, the access code, the first student joining, and the first results.
+ * Each is sent once.
  */
 
 import * as React from "react";
 import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
-import { onDocumentUpdated, onDocumentWritten } from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  onDocumentUpdated,
+  onDocumentWritten,
+} from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
 import { sendEmail } from "./lib/email";
 import { TeacherNoticeEmail } from "./templates/TeacherNoticeEmail";
 import { payReferralIfEligible } from "./referrals";
 import {
+  PUBLIC_LESSONS,
   TEACHER_GRADES,
   TEACHER_HOME,
   approvedRequest,
   firstName,
   newEnrollment,
+  newPendingRequest,
   newResult,
   signupLink,
 } from "./teacher-email-rules";
@@ -49,6 +56,35 @@ async function payReferralSafely(teacherId: string): Promise<void> {
     logger.error("Referral payout failed", { teacherId, err });
   }
 }
+
+/** A teacher asked for access: confirm it arrived and say when to expect the code. */
+export const onAccessRequestCreated = onDocumentCreated(
+  { document: "accessRequests/{requestId}", secrets: [resendApiKey] },
+  async (event) => {
+    const request = newPendingRequest(event.data?.data());
+    if (!request || !event.data) return;
+    if (!(await claim(event.data.ref, "receivedEmailSentAt"))) return;
+    const sent = await sendEmail({
+      apiKey: resendApiKey.value(),
+      replyTo: REPLY_TO,
+      to: request.email,
+      subject: "We got your Scorpio access request",
+      react: React.createElement(TeacherNoticeEmail, {
+        preview: "Your access code will arrive within 1–2 business days.",
+        headline: "We got your request",
+        greeting: hello(request.name),
+        paragraphs: [
+          "Thanks for asking for teacher access to Scorpio. We read every request ourselves, and we'll email you an access code within 1–2 business days.",
+          "While you wait, the lessons and practice for every AP Physics unit are free to look through, with no account needed.",
+        ],
+        action: { label: "Browse the free lessons", link: PUBLIC_LESSONS },
+        footer:
+          "You're getting this because someone used this address to request teacher access on scorpioedu.org. If that wasn't you, you can ignore it, or reply and tell us.",
+      }),
+    });
+    if (sent) logger.info("Request confirmation sent", { requestId: event.params.requestId });
+  },
+);
 
 /** Admin approved a request: send the code as a link that opens signup with it filled in. */
 export const onAccessRequestApproved = onDocumentUpdated(
